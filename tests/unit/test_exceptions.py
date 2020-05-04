@@ -61,12 +61,105 @@ class TestRedditErrorItem:
             "'invalid something', field='some_field')"
         )
 
+    def test_code_snippet_1(self):
+        error = RedditErrorItem("arg1", "arg2")
+        assert error.error_type == "arg1"
+        assert error.message == "arg2"
+        assert error.field == None
+
+    def test_code_snippet_2(self):
+        error = RedditErrorItem("arg1", "arg2", "arg3")
+        assert error.error_type == "arg1"
+        assert error.message == "arg2"
+        assert error.field == "arg3"
+
+    def test_code_snippet_3(self):
+        error = RedditErrorItem("arg1", "arg2", None)
+        assert error.error_type == "arg1"
+        assert error.message == "arg2"
+        assert error.field == None
+
 
 class TestAPIException:
     def test_catch(self):
         exc = RedditAPIException([["test", "testing", "test"]])
-        with pytest.raises(APIException):
+        with pytest.raises(APIException) as excinfo:
             raise exc
+        assert isinstance(excinfo.value.args[0], RedditErrorItem)
+        assert str(excinfo)
+
+    @pytest.mark.filterwarnings("ignore", category=DeprecationWarning)
+    def test_parse_exception_list(self):
+        value = RedditAPIException.parse_exception_list(
+            [["arg1", "arg2", "arg3"]]
+        )[0]
+        assert isinstance(value, RedditErrorItem)
+        assert value.error_type == "arg1"
+        assert value.message == "arg2"
+        assert value.field == "arg3"
+
+    def test_code_snippet_1(self):
+        with pytest.raises(RedditAPIException) as excinfo:
+            raise RedditAPIException([RedditErrorItem("arg1", "arg2")])
+        assert str(excinfo.value.args[0]) == "arg1: 'arg2'"
+
+    def test_code_snippet_2(self):
+        with pytest.raises(RedditAPIException) as excinfo:
+            raise RedditAPIException(
+                [
+                    RedditErrorItem("arg1", "arg2"),
+                    RedditErrorItem("arg1", "arg2", "arg3"),
+                ]
+            )
+        assert (
+            str(excinfo.value.args)
+            == "(arg1: 'arg2', arg1: 'arg2' on field 'arg3')"
+        )
+
+    def test_code_snippet_3(self):
+        with pytest.raises(RedditAPIException) as excinfo:
+            raise RedditAPIException([["arg1", "arg2"]])
+        assert str(excinfo.value.args[0]) == "arg1: 'arg2'"
+
+    def test_code_snippet_4(self):
+        with pytest.raises(RedditAPIException) as excinfo:
+            raise RedditAPIException(
+                [["arg1", "arg2"], ["arg1", "arg2", "arg3"]]
+            )
+        assert (
+            str(excinfo.value.args)
+            == "(arg1: 'arg2', arg1: 'arg2' on field 'arg3')"
+        )
+
+    def test_code_snippet_5(self):
+        with pytest.raises(RedditAPIException) as excinfo:
+            raise RedditAPIException(["arg1", "arg2"])
+        assert str(excinfo.value.args[0]) == "arg1: 'arg2'"
+
+    def test_code_snippet_6(self):
+        with pytest.raises(RedditAPIException) as excinfo:
+            raise RedditAPIException(["arg1", "arg2", "arg3"])
+        assert str(excinfo.value.args[0]) == "arg1: 'arg2' on field 'arg3'"
+
+    def test_code_snippet_7(self):
+        with pytest.raises(RedditAPIException) as excinfo:
+            raise RedditAPIException("arg1", "arg2")
+        assert str(excinfo.value.args[0]) == "arg1: 'arg2'"
+
+    def test_code_snippet_8(self):
+        with pytest.raises(RedditAPIException) as excinfo:
+            raise RedditAPIException("arg1", "arg2", "arg3")
+        assert str(excinfo.value.args[0]) == "arg1: 'arg2' on field 'arg3'"
+
+    def test_code_snippet_9(self):
+        with pytest.raises(RedditAPIException) as excinfo:
+            raise RedditAPIException(RedditErrorItem("arg1", "arg2"))
+        assert str(excinfo.value.args[0]) == "arg1: 'arg2'"
+
+    def test_code_snippet_10(self):
+        with pytest.raises(RedditAPIException) as excinfo:
+            raise RedditAPIException(RedditErrorItem("arg1", "arg2", "arg3"))
+        assert str(excinfo.value.args[0]) == "arg1: 'arg2' on field 'arg3'"
 
 
 class TestRedditAPIException:
