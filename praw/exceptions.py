@@ -35,6 +35,21 @@ class RedditErrorItem:
         :param error_type: The error type set on Reddit's end.
         :param message: The associated message for the error.
         :param field: The input field associated with the error, if available.
+
+        There are three ways to instantiate this class:
+
+        * .. code-block:: python
+
+            item = RedditErrorItem("arg1", "arg2")
+
+        * .. code-block:: python
+
+            item = RedditErrorItem("arg1", "arg2", "arg3")
+
+        * .. code-block:: python
+
+            item = RedditErrorItem("arg1", "arg2", None)
+
         """
         self.error_type = error_type
         self.message = message
