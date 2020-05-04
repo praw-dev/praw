@@ -54,6 +54,7 @@ class RedditErrorItem:
         self.error_type = error_type
         self.message = message
         self.field = field
+        self._called_from_reddit_api_exception = False
 
     def __eq__(self, other: Union["RedditErrorItem", List[str]]):
         """Check for equality."""
@@ -67,9 +68,14 @@ class RedditErrorItem:
 
     def __repr__(self):
         """Return repr(self)."""
-        return "{}(error_type={!r}, message={!r}, field={!r})".format(
-            self.__class__.__name__, self.error_type, self.message, self.field
-        )
+        if not self._called_from_reddit_api_exception:
+            return "{}(error_type={!r}, message={!r}, field={!r})".format(
+                self.__class__.__name__,
+                self.error_type,
+                self.message,
+                self.field,
+            )
+        return str(self)
 
     def __str__(self):
         """Get the message returned from str(self)."""
