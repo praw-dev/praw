@@ -614,7 +614,7 @@ class Subreddit(
                 ws_exception,
             )
         if ws_update.get("type") == "failed":
-            raise MediaPostFailed()
+            raise MediaPostFailed
         url = ws_update["payload"]["redirect"]
         return self._reddit.submission(url=url)
 

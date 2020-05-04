@@ -218,38 +218,6 @@ class InvalidURL(ClientException):
         super().__init__(message.format(url))
 
 
-class MediaPostFailed(RedditAPIException):
-    """Indicate exceptions where invalid media was uploaded."""
-
-    @property
-    def error_type(self) -> str:
-        """Constant representing the error type of all instances."""
-        return "Failed Media Upload"
-
-    @property
-    def message(self) -> str:
-        """Constant representing the message of all instances."""
-        return (
-            "The attempted media upload action has failed. Possible causes"
-            " include the corruption of media files. Check that the media "
-            "file can be opened on your local machine."
-        )
-
-    @property
-    def field(self) -> None:
-        """Constant representing the field of all instances."""
-        return None
-
-    @property
-    def error_item(self) -> RedditErrorItem:
-        """Constant representing a :class:`.RedditErrorItem` instance."""
-        return RedditErrorItem(self.error_type, self.message, self.field)
-
-    def __init__(self):
-        """Instantize MediaPostFailed."""
-        super().__init__(self.error_item)
-
-
 class MissingRequiredAttributeException(ClientException):
     """Indicate exceptions caused by not including a required attribute."""
 
@@ -276,11 +244,47 @@ class TooLargeMediaException(ClientException):
 class WebSocketException(ClientException):
     """Indicate exceptions caused by use of WebSockets."""
 
-    def __init__(self, message: str, exception: Exception):
+    @property
+    def original_exception(self) -> Exception:
+        """Access the original_exception attribute (now deprecated)."""
+        warn(
+            "Accessing the attribute original_exception is deprecated. Please"
+            " rewrite your code in such a way that this attribute does not"
+            " need to be used. It will be removed in PRAW 8.0.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        return self._original_exception
+
+    @original_exception.setter
+    def original_exception(self, value: Exception):
+        self._original_exception = value
+
+    @original_exception.deleter
+    def original_exception(self):
+        del self._original_exception
+
+    def __init__(self, message: str, exception: Optional[Exception]):
         """Initialize a WebSocketException.
 
         :param message: The exception message.
         :param exception: The exception thrown by the websocket library.
+
+            .. note:: This parameter is deprecated. It will be removed in PRAW
+                8.0.
         """
         super().__init__(message)
-        self.original_exception = exception
+        self._original_exception = exception
+
+
+class MediaPostFailed(WebSocketException):
+    """Indicate exceptions where media uploads failed.."""
+
+    def __init__(self):
+        """Instantiate MediaPostFailed."""
+        super().__init__(
+            "The attempted media upload action has failed. Possible causes"
+            " include the corruption of media files. Check that the media "
+            "file can be opened on your local machine.",
+            None,
+        )

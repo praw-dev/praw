@@ -1,5 +1,4 @@
 import json
-import os
 import pickle
 import pytest
 from unittest import mock

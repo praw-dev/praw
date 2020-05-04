@@ -25,6 +25,10 @@ Unreleased
 * :meth:`.SubredditRemovalReasons.__getitem__` now takes integers and slices to
   get removal reasons from the list of reasons as returned by Reddit.
 
+**Deprecated**
+
+* :attr:`.WebSocketException.original_exception` is deprecated and slated for removal in PRAW 8.0.
+
 **Fixed**
 
 * An issue where certain subreddit settings could not be set through
