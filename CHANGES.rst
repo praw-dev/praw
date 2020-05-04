@@ -25,6 +25,13 @@ Unreleased
 * :meth:`.SubredditRemovalReasons.__getitem__` now takes integers and slices to
   get removal reasons from the list of reasons as returned by Reddit.
 
+**Deprecated**
+
+* Method :meth:`.RedditAPIException.parse_exception_list` is deprecated and
+  slated for removal in PRAW 8.0.
+* Instantiating :class:`.APIException` directly will now print a deprecation
+  warning.
+
 **Fixed**
 
 * An issue where certain subreddit settings could not be set through
