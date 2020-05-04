@@ -93,12 +93,44 @@ class APIException(PRAWException):
         APIException, therefore sharing documentation.
     """
 
+    @classmethod
+    def _form_exception_list(
+        cls,
+        items: Union[
+            List[Union[RedditErrorItem, List[str], str]], str, RedditErrorItem
+        ],
+        *optional_args: str,
+    ) -> List[Union[RedditErrorItem, List[Optional[str]]]]:
+        """Form the final list that :meth:`~._parse_exception_list` uses.
+
+        The parameters are identical to :meth:`~.__init__`.
+        """
+        if isinstance(items, str):
+            items = [[items, *optional_args]]
+        if isinstance(items, RedditErrorItem):
+            items = [items]
+        if isinstance(items, list):
+            if isinstance(items[0], str):
+                items = [items] if len(items) == 3 else [items + [None]]
+            elif isinstance(items[0], list):
+                for sub_list_number, sub_list in enumerate(items.copy()):
+                    if not isinstance(sub_list, list):
+                        continue
+                    elif len(sub_list) == 2:
+                        items[sub_list_number] = sub_list + [None]
+        return items
+
     @staticmethod
-    def parse_exception_list(
+    def _parse_exception_list(
         exceptions: List[Union[RedditErrorItem, List[str]]]
-    ):
-        """Covert an exception list into a :class:`.RedditErrorItem` list."""
-        return [
+    ) -> List[RedditErrorItem]:
+        """Covert an exception list into a :class:`.RedditErrorItem` list.
+
+        :param exceptions: A list of either instances of
+            :class:`.RedditErrorItem` or a list of lists containing strings.
+        :returns: A list of instances of :class:`.RedditErrorItem`.
+        """
+        baselist = [
             exception
             if isinstance(exception, RedditErrorItem)
             else RedditErrorItem(
@@ -108,6 +140,10 @@ class APIException(PRAWException):
             )
             for exception in exceptions
         ]
+        for exception in baselist:
+            exception._called_from_reddit_api_exception = True
+        return baselist
+
 
     @property
     def error_type(self) -> str:
