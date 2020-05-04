@@ -88,6 +88,9 @@ class APIException(PRAWException):
     .. deprecated:: 7.0
         Class :class:`.APIException` has been deprecated in favor of
         :class:`.RedditAPIException`. This class will be removed in PRAW 8.0.
+
+    .. note:: To maintain compatbility, RedditAPIException inherits from
+        APIException, therefore sharing documentation.
     """
 
     @staticmethod
