@@ -144,6 +144,29 @@ class APIException(PRAWException):
             exception._called_from_reddit_api_exception = True
         return baselist
 
+    @classmethod
+    def parse_exception_list(
+        cls, exceptions: List[Union[RedditErrorItem, List[str]]]
+    ) -> List[RedditErrorItem]:
+        """Covert an exception list into a :class:`.RedditErrorItem` list.
+
+        .. warning:: This method is deprecated. Use the private method of the
+            same name ``(RedditAPIException._parse_exception_list``), which is
+            functionally identical. This function will be removed in PRAW 8.0.
+
+        :param exceptions: A list of either instances of
+            :class:`.RedditErrorItem` or a list of lists containing strings.
+        :returns: A list of instances of :class:`.RedditErrorItem`.
+        """
+        warn(
+            "Calling RedditAPIException.parse_exception_list is deprecated. "
+            "Use the private method of the same name (RedditAPIException"
+            "._parse_exception_list). This function will be removed in PRAW "
+            "8.0.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls._parse_exception_list(exceptions)
 
     @property
     def error_type(self) -> str:

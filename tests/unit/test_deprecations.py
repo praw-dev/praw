@@ -39,3 +39,16 @@ class TestDeprecation(UnitTest):
             "/other/subredditrules.html#praw.models.reddit.rules."
             "SubredditRules.__call__)."
         )
+
+    def test_redditapiexception_parse_exception_list(self):
+        with pytest.raises(DeprecationWarning) as excinfo:
+            RedditAPIException.parse_exception_list(
+                [["test", "testing", "test"]]
+            )
+        assert (
+            excinfo.value.args[0]
+            == "Calling RedditAPIException.parse_exception_list is deprecated. "
+            "Use the private method of the same name (RedditAPIException"
+            "._parse_exception_list). This function will be removed in PRAW "
+            "8.0."
+        )
