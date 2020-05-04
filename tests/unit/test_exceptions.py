@@ -65,7 +65,7 @@ class TestRedditErrorItem:
         error = RedditErrorItem("arg1", "arg2")
         assert error.error_type == "arg1"
         assert error.message == "arg2"
-        assert error.field == None
+        assert error.field is None
 
     def test_code_snippet_2(self):
         error = RedditErrorItem("arg1", "arg2", "arg3")
@@ -77,7 +77,7 @@ class TestRedditErrorItem:
         error = RedditErrorItem("arg1", "arg2", None)
         assert error.error_type == "arg1"
         assert error.message == "arg2"
-        assert error.field == None
+        assert error.field is None
 
 
 class TestAPIException:

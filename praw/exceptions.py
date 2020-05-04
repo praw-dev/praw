@@ -93,6 +93,8 @@ class APIException(PRAWException):
         APIException, therefore sharing documentation.
     """
 
+    _called_from_reddit_api_exception = False
+
     @classmethod
     def _form_exception_list(
         cls,
@@ -313,7 +315,7 @@ class APIException(PRAWException):
                 raise RedditAPIException(RedditErrorItem("arg1", "arg2"))
 
         """
-        if not _called_from_reddit_api_exception:
+        if not self._called_from_reddit_api_exception:
             warn(
                 "Directly initializing APIException is deprecated. Check out "
                 "https://praw.readthedocs.io/en/latest/package_info/"
@@ -329,16 +331,7 @@ class APIException(PRAWException):
 class RedditAPIException(APIException):
     """Container for error messages from Reddit's API."""
 
-    def __init__(
-        self,
-        items: Union[
-            List[Union[RedditErrorItem, List[str], str]], str, RedditErrorItem
-        ],
-        *optional_args: str,
-    ):
-        super().__init__(
-            items, *optional_args, _called_from_reddit_api_exception=True
-        )
+    _called_from_reddit_api_exception = True
 
 
 class ClientException(PRAWException):
