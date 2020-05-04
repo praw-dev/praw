@@ -228,21 +228,92 @@ class APIException(PRAWException):
 
     def __init__(
         self,
-        items: Union[List[Union[RedditErrorItem, List[str], str]], str],
-        *optional_args: str
+        items: Union[
+            List[Union[RedditErrorItem, List[str], str]], str, RedditErrorItem
+        ],
+        *optional_args: str,
     ):
         """Initialize an instance of RedditAPIException.
 
-        :param items: Either a list of instances of :class:`.RedditErrorItem`
-            or a list containing lists of unformed errors.
-        :param optional_args: Takes the second and third arguments that
-            :class:`.APIException` used to take.
+        :param items: The items representing the APIException. Can be one of
+            several things.
+
+                * A list of instances of :class:`.RedditErrorItem`.
+                * A list of two to three of the strings needed to construct an
+                  instance of :class:`.RedditErrorItem`.
+                * A list containing lists with the items mentioned in the
+                  second bullet.
+                * A string representing the first of the two to three of the
+                  strings needed to construct an instance of
+                  :class:`.RedditErrorItem`. In that case, parameter
+                  ``optional_args`` needs to be provided.
+                * An instance of :class:`.RedditErrorItem`.
+
+        :param optional_args: Takes the second and/or third arguments needed to
+            construct an instance of :class:`.RedditErrorItem`.
+
+        Examples of valid arguments to :class:`.RedditAPIException`:
+
+        * .. code-block:: python
+
+            raise RedditAPIException([RedditErrorItem("arg1", "arg2")])
+
+        * .. code-block:: python
+
+            raise RedditAPIException([RedditErrorItem("arg1", "arg2"),
+                                      RedditErrorItem("arg1", "arg2", "arg3")])
+
+        * .. code-block:: python
+
+            raise RedditAPIException([["arg1", "arg2"]])
+
+        * .. code-block:: python
+
+            raise RedditAPIException([["arg1", "arg2"],
+                                      ["arg1", "arg2", "arg3"]])
+
+        * .. code-block:: python
+
+            raise RedditAPIException(["arg1", "arg2"])
+
+        * .. code-block:: python
+
+            raise RedditAPIException(["arg1", "arg2", "arg3"])
+
+        * .. code-block:: python
+
+            raise RedditAPIException("arg1", "arg2")
+
+        * .. code-block:: python
+
+            raise RedditAPIException("arg1", "arg2", "arg3")
+
+        * .. code-block:: python
+
+            raise RedditAPIException(RedditErrorItem("arg1", "arg2"))
+
+        * .. code-block:: python
+
+            raise RedditAPIException(RedditErrorItem("arg1", "arg2", "arg3"))
+
+        .. note:: The argument ``"arg3"`` can be substituted with ``None`` to
+            achieve an effect similar to never including ``"arg3"``, so that:
+
+            .. code-block:: python
+
+                raise RedditAPIException("arg1", "arg2", None)
+                raise RedditAPIException(RedditErrorItem("arg1", "arg2", None))
+
+            is functionally equivalent to:
+
+            .. code-block:: python
+
+                raise RedditAPIException("arg1", "arg2")
+                raise RedditAPIException(RedditErrorItem("arg1", "arg2"))
+
         """
-        if isinstance(items, str):
-            items = [[items, *optional_args]]
-        elif isinstance(items, list) and isinstance(items[0], str):
-            items = [items]
-        self.items = self.parse_exception_list(items)
+        item_list = self._form_exception_list(items, *optional_args)
+        self.items = self._parse_exception_list(item_list)
         super().__init__(*self.items)
 
 
