@@ -166,7 +166,7 @@ class InvalidImplicitAuth(ClientException):
     """Indicate exceptions where an implicit auth type is used incorrectly."""
 
     def __init__(self):
-        """Instantize the class."""
+        """Instantiate the class."""
         super().__init__(
             "Implicit authorization can only be used with installed apps."
         )

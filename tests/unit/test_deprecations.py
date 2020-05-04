@@ -34,3 +34,8 @@ class TestDeprecation(UnitTest):
             excinfo.value.args[0] == "Calling SubredditRules to get a list of "
             "rules is deprecated. Remove the parentheses to use the iterator."
         )
+
+    def test_reddit_user_me_read_only(self):
+        self.reddit.read_only = True
+        with pytest.raises(DeprecationWarning):
+            self.reddit.user.me()
