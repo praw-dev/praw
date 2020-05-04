@@ -2,7 +2,7 @@
 
 import pytest
 
-from praw.exceptions import APIException
+from praw.exceptions import APIException, RedditAPIException
 
 from . import UnitTest
 
@@ -19,7 +19,17 @@ class TestDeprecation(UnitTest):
             self.reddit.validate_on_submit
 
     def test_api_exception(self):
-        exc = APIException(["test", "testing", "test"])
+        with pytest.raises(DeprecationWarning) as excinfo:
+            APIException(["test", "testing", "test"])
+        assert (
+            excinfo.value.args[0]
+            == "Directly initializing APIException is deprecated. Check out "
+            "https://praw.readthedocs.io/en/latest/package_info/"
+            "praw7_migration.html to learn how to migrate your code."
+        )
+
+    def test_reddit_api_exception_attributes(self):
+        exc = RedditAPIException(["test", "testing", "test"])
         with pytest.raises(DeprecationWarning):
             exc.error_type
         with pytest.raises(DeprecationWarning):
