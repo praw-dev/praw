@@ -13,7 +13,7 @@ _LiveThread = TypeVar("_LiveThread")
 _LiveThreadContribution = TypeVar("_LiveThreadContribution")
 _LiveUpdate = TypeVar("_LiveUpdate")
 _LiveUpdateContribution = TypeVar("_LiveUpdateContribution")
-Reddit = TypeVar("Reddit")
+
 Submission = TypeVar("Submission")
 
 
@@ -355,7 +355,7 @@ class LiveThread(RedditBase):
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",  # noqa: F821
         id: Optional[str] = None,
         _data: Optional[
             Dict[str, Any]
@@ -623,7 +623,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",  # noqa: F821
         thread_id: Optional[str] = None,
         update_id: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,

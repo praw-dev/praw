@@ -30,8 +30,8 @@ from .base import RedditBase
 from .emoji import SubredditEmoji
 from .mixins import FullnameMixin, MessageableMixin
 from .modmail import ModmailConversation
-from .rules import SubredditRules
 from .removal_reasons import SubredditRemovalReasons
+from .rules import SubredditRules
 from .widgets import SubredditWidgets, WidgetEncoder
 from .wikipage import WikiPage
 

@@ -7,7 +7,7 @@ from ...exceptions import ClientException
 from .base import RedditBase
 
 _Emoji = TypeVar("_Emoji")
-Reddit = TypeVar("Reddit")
+
 Subreddit = TypeVar("Subreddit")
 
 
@@ -56,7 +56,7 @@ class Emoji(RedditBase):
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",  # noqa: F821
         subreddit: Subreddit,
         name: str,
         _data: Optional[Dict[str, Any]] = None,

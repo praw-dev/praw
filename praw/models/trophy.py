@@ -4,7 +4,6 @@ from typing import Any, Dict, TypeVar, Union
 from .base import PRAWBase
 
 _Trophy = TypeVar("_Trophy")
-Reddit = TypeVar("Reddit")
 
 
 class Trophy(PRAWBase):
@@ -35,7 +34,7 @@ class Trophy(PRAWBase):
     ======================= ===================================================
     """
 
-    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
+    def __init__(self, reddit: "Reddit", _data: Dict[str, Any]):  # noqa: F821
         """Initialize a Trophy instance.
 
         :param reddit: An instance of :class:`.Reddit`.

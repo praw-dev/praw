@@ -13,7 +13,7 @@ _Redditor = TypeVar("_Redditor")
 _RedditorStream = TypeVar("_RedditorStream")
 Comment = TypeVar("Comment")
 Multireddit = TypeVar("Multireddit")
-Reddit = TypeVar("Reddit")
+
 Submission = TypeVar("Submission")
 Subreddit = TypeVar("Subreddit")
 Trophy = TypeVar("Trophy")
@@ -126,7 +126,7 @@ class Redditor(
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",  # noqa: F821
         name: Optional[str] = None,
         fullname: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,

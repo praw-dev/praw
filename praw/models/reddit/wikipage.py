@@ -8,7 +8,7 @@ from .base import RedditBase
 from .redditor import Redditor
 
 _WikiPage = TypeVar("_WikiPage")
-Reddit = TypeVar("Reddit")
+
 Subreddit = TypeVar("Subreddit")
 
 
@@ -165,7 +165,7 @@ class WikiPage(RedditBase):
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",  # noqa: F821
         subreddit: Subreddit,
         name: str,
         revision: Optional[str] = None,

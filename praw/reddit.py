@@ -38,7 +38,6 @@ try:
 except ImportError:  # pragma: no cover
     UPDATE_CHECKER_MISSING = True
 
-
 Comment = models.Comment
 Redditor = models.Redditor
 Submission = models.Submission

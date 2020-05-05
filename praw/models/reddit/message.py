@@ -1,13 +1,11 @@
 """Provide the Message class."""
-from typing import Any, Dict, TypeVar
+from typing import Any, Dict
 
 from ...const import API_PATH
 from .base import RedditBase
 from .mixins import FullnameMixin, InboxableMixin, ReplyableMixin
 from .redditor import Redditor
 from .subreddit import Subreddit
-
-Reddit = TypeVar("Reddit")
 
 
 class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
@@ -44,7 +42,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
     STR_FIELD = "id"
 
     @classmethod
-    def parse(cls, data: Dict[str, Any], reddit: Reddit):
+    def parse(cls, data: Dict[str, Any], reddit: "Reddit"):  # noqa: F821
         """Return an instance of Message or SubredditMessage from ``data``.
 
         :param data: The structured data.
@@ -78,7 +76,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
         """Return the class's kind."""
         return self._reddit.config.kinds["message"]
 
-    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
+    def __init__(self, reddit: "Reddit", _data: Dict[str, Any]):  # noqa: F821
         """Construct an instance of the Message object."""
         super().__init__(reddit, _data=_data)
         self._fetched = True

@@ -1,13 +1,11 @@
 """Provides the Objector class."""
 
 from json import loads
-from typing import Any, Dict, List, Optional, TypeVar, Union
+from typing import Any, Dict, List, Optional, Union
 
 from .exceptions import ClientException, RedditAPIException
 from .models.reddit.base import RedditBase
 from .util import snake_case_keys
-
-Reddit = TypeVar("Reddit")
 
 
 class Objector:
@@ -46,7 +44,9 @@ class Objector:
             raise error
 
     def __init__(
-        self, reddit: Reddit, parsers: Optional[Dict[str, Any]] = None
+        self,
+        reddit: "Reddit",  # noqa: F821
+        parsers: Optional[Dict[str, Any]] = None,
     ):
         """Initialize an Objector instance.
 

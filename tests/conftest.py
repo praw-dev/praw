@@ -63,7 +63,6 @@ def filter_access_token(interaction, current_cassette):
 
 os.environ["praw_check_for_updates"] = "False"
 
-
 placeholders = {
     x: env_default(x)
     for x in (
@@ -71,7 +70,6 @@ placeholders = {
         "test_subreddit user_agent username refresh_token"
     ).split()
 }
-
 
 placeholders["basic_auth"] = b64_string(
     "{}:{}".format(placeholders["client_id"], placeholders["client_secret"])

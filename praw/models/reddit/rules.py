@@ -1,16 +1,16 @@
 """Provide the Rule class."""
-from typing import Dict, Iterator, List, Optional, TypeVar, Union, Any
+from typing import Any, Dict, Iterator, List, Optional, TypeVar, Union
 from urllib.parse import quote
 from warnings import warn
 
-from .base import RedditBase
 from ...const import API_PATH
 from ...exceptions import ClientException
 from ...util.cache import cachedproperty
+from .base import RedditBase
 
 _RuleModeration = TypeVar("_RuleModeration")
 _SubredditRulesModeration = TypeVar("_SubredditRulesModeration")
-Reddit = TypeVar("Reddit")
+
 Subreddit = TypeVar("Subreddit")
 
 
@@ -71,7 +71,7 @@ class Rule(RedditBase):
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",  # noqa: F821
         subreddit: Optional[Subreddit] = None,
         short_name: Optional[str] = None,
         _data: Optional[Dict[str, str]] = None,

@@ -1,5 +1,5 @@
 """Provide the RedditorListingMixin class."""
-from typing import Any, Dict, Iterator, TypeVar, Union
+from typing import Any, Dict, Iterator, Union
 from urllib.parse import urljoin
 
 from ....util.cache import cachedproperty
@@ -7,13 +7,13 @@ from ..generator import ListingGenerator
 from .base import BaseListingMixin
 from .gilded import GildedListingMixin
 
-Reddit = TypeVar("Reddit")
-
 
 class SubListing(BaseListingMixin):
     """Helper class for generating :class:`.ListingGenerator` objects."""
 
-    def __init__(self, reddit: Reddit, base_path: str, subpath: str):
+    def __init__(
+        self, reddit: "Reddit", base_path: str, subpath: str  # noqa: F821
+    ):
         """Initialize a SubListing instance.
 
         :param reddit: An instance of :class:`.Reddit`.

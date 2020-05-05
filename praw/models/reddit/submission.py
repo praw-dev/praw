@@ -17,7 +17,6 @@ from .redditor import Redditor
 from .subreddit import Subreddit
 
 _Submission = TypeVar("_Submission")
-Reddit = TypeVar("Reddit")
 
 
 class SubmissionFlair:
@@ -529,7 +528,7 @@ class Submission(
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",  # noqa: F821
         id: Optional[str] = None,  # pylint: disable=redefined-builtin
         url: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,

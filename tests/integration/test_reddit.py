@@ -1,11 +1,12 @@
 """Test praw.reddit."""
-import pytest
 from unittest import mock
+
+import pytest
+from prawcore.exceptions import BadRequest
 
 from praw.models import LiveThread
 from praw.models.reddit.base import RedditBase
 from praw.models.reddit.submission import Submission
-from prawcore.exceptions import BadRequest
 
 from . import IntegrationTest
 

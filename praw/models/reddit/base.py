@@ -1,11 +1,9 @@
 """Provide the RedditBase class."""
-from typing import Any, Dict, Optional, TypeVar, Union
+from typing import Any, Dict, Optional, Union
 from urllib.parse import urlparse
 
 from ...exceptions import InvalidURL
 from ..base import PRAWBase
-
-Reddit = TypeVar("Reddit")
 
 
 class RedditBase(PRAWBase):
@@ -42,7 +40,9 @@ class RedditBase(PRAWBase):
         """Return the hash of the current instance."""
         return hash(self.__class__.__name__) ^ hash(str(self).lower())
 
-    def __init__(self, reddit: Reddit, _data: Optional[Dict[str, Any]]):
+    def __init__(
+        self, reddit: "Reddit", _data: Optional[Dict[str, Any]]  # noqa: F821
+    ):
         """Initialize a RedditBase instance (or a subclass).
 
         :param reddit: An instance of :class:`~.Reddit`.

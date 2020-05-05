@@ -10,7 +10,6 @@ from .reddit.redditor import Redditor
 from .reddit.subreddit import Subreddit
 
 Multireddit = TypeVar("Multireddit")
-Reddit = TypeVar("Reddit")
 
 
 class User(PRAWBase):
@@ -48,7 +47,7 @@ class User(PRAWBase):
         """
         return Preferences(self._reddit)
 
-    def __init__(self, reddit: Reddit):
+    def __init__(self, reddit: "Reddit"):  # noqa: F821
         """Initialize a User instance.
 
         This class is intended to be interfaced with through ``reddit.user``.

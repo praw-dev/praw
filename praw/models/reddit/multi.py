@@ -11,7 +11,6 @@ from .redditor import Redditor
 from .subreddit import Subreddit, SubredditStream
 
 _Multireddit = TypeVar("_Multireddit")
-Reddit = TypeVar("Reddit")
 
 
 class Multireddit(SubredditListingMixin, RedditBase):
@@ -94,7 +93,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         """
         return SubredditStream(self)
 
-    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
+    def __init__(self, reddit: "Reddit", _data: Dict[str, Any]):  # noqa: F821
         """Construct an instance of the Multireddit object."""
         self.path = None
         super().__init__(reddit, _data=_data)

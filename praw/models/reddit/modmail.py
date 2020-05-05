@@ -6,7 +6,6 @@ from ...util import snake_case_keys
 from .base import RedditBase
 
 _ModmailConversation = TypeVar("_ModmailConversation")
-Reddit = TypeVar("Reddit")
 
 
 class ModmailConversation(RedditBase):
@@ -95,7 +94,10 @@ class ModmailConversation(RedditBase):
 
     @classmethod
     def parse(  # pylint: disable=arguments-differ
-        cls, data: Dict[str, Any], reddit: Reddit, convert_objects: bool = True
+        cls,
+        data: Dict[str, Any],
+        reddit: "Reddit",  # noqa: F821
+        convert_objects: bool = True,
     ):
         """Return an instance of ModmailConversation from ``data``.
 
@@ -130,7 +132,7 @@ class ModmailConversation(RedditBase):
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",  # noqa: F821
         id: Optional[str] = None,  # pylint: disable=redefined-builtin
         mark_read: bool = False,
         _data: Optional[Dict[str, Any]] = None,

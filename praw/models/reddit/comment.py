@@ -16,7 +16,7 @@ from .redditor import Redditor
 
 _Comment = TypeVar("_Comment")
 _CommentModeration = TypeVar("_CommentModeration")
-Reddit = TypeVar("Reddit")
+
 Submission = TypeVar("Submission")
 Subreddit = TypeVar("Subreddit")
 
@@ -154,7 +154,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",  # noqa: F821
         id: Optional[str] = None,  # pylint: disable=redefined-builtin
         url: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,

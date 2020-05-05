@@ -9,7 +9,6 @@ from .base import RedditBase
 from .submission import Submission
 from .subreddit import Subreddit
 
-Reddit = TypeVar("Reddit")
 _CollectionModeration = TypeVar("_CollectionModeration")
 _SubredditCollectionsModeration = TypeVar("_SubredditCollectionsModeration")
 
@@ -97,7 +96,7 @@ class Collection(RedditBase):
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",  # noqa: F821
         _data: Dict[str, Any] = None,
         collection_id: Optional[str] = None,
         permalink: Optional[str] = None,
@@ -255,7 +254,7 @@ class CollectionModeration(PRAWBase):
         except ClientException:
             return self._reddit.submission(id=post).fullname
 
-    def __init__(self, reddit: Reddit, collection_id: str):
+    def __init__(self, reddit: "Reddit", collection_id: str):  # noqa: F821
         """Initialize an instance of CollectionModeration.
 
         :param collection_id: The ID of a collection.
@@ -468,7 +467,7 @@ class SubredditCollections(PRAWBase):
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",  # noqa: F821
         subreddit: Subreddit,
         _data: Optional[Dict[str, Any]] = None,
     ):
@@ -508,7 +507,7 @@ class SubredditCollectionsModeration(PRAWBase):
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",  # noqa: F821
         sub_fullname: str,
         _data: Optional[Dict[str, Any]] = None,
     ):

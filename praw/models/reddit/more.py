@@ -6,13 +6,12 @@ from ..base import PRAWBase
 
 _MoreComments = TypeVar("_MoreComments")
 Comment = TypeVar("Comment")
-Reddit = TypeVar("Reddit")
 
 
 class MoreComments(PRAWBase):
     """A class indicating there are more comments."""
 
-    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
+    def __init__(self, reddit: "Reddit", _data: Dict[str, Any]):  # noqa: F821
         """Construct an instance of the MoreComments object."""
         self.count = self.parent_id = None
         self.children = []

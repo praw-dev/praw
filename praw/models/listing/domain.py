@@ -1,16 +1,13 @@
 """Provide the DomainListing class."""
-from typing import TypeVar
 
 from ...const import API_PATH
 from .mixins import BaseListingMixin, RisingListingMixin
-
-Reddit = TypeVar("Reddit")
 
 
 class DomainListing(BaseListingMixin, RisingListingMixin):
     """Provide a set of functions to interact with domain listings."""
 
-    def __init__(self, reddit: Reddit, domain: str):
+    def __init__(self, reddit: "Reddit", domain: str):  # noqa: F821
         """Initialize a DomainListing instance.
 
         :param reddit: An instance of Reddit.

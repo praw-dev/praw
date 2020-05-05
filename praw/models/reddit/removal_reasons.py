@@ -6,7 +6,7 @@ from ...exceptions import ClientException
 from .base import RedditBase
 
 _RemovalReason = TypeVar("_RemovalReason")
-Reddit = TypeVar("Reddit")
+
 Subreddit = TypeVar("Subreddit")
 
 
@@ -44,7 +44,7 @@ class RemovalReason(RedditBase):
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",  # noqa: F821
         subreddit: Subreddit,
         reason_id: str,
         _data: Optional[Dict[str, Any]] = None,

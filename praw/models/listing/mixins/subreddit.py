@@ -10,7 +10,7 @@ from .gilded import GildedListingMixin
 from .rising import RisingListingMixin
 
 Comment = TypeVar("Comment")
-Reddit = TypeVar("Reddit")
+
 Subreddit = TypeVar("Subreddit")
 
 
@@ -65,7 +65,9 @@ class SubredditListingMixin(
         """
         return CommentHelper(self)
 
-    def __init__(self, reddit: Reddit, _data: Optional[Dict[str, Any]]):
+    def __init__(
+        self, reddit: "Reddit", _data: Optional[Dict[str, Any]]  # noqa: F821
+    ):
         """Initialize a SubredditListingMixin instance.
 
         :param reddit: An instance of :class:`.Reddit`.
