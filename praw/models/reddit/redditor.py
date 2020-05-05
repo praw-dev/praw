@@ -295,6 +295,22 @@ class Redditor(
         """
         return self._reddit.get(API_PATH["multireddit_user"].format(user=self))
 
+    def report(self, reason: str):
+        """Report a user to Reddit admins.
+
+        :param reason: The reason for the report. Should be ≤100 characters.
+
+        For example, to report user ``"NAME"`` for spamming:
+
+        .. code-block:: python
+
+            reddit.redditor("NAME").report("Spamming")
+
+        """
+        self._reddit.post(
+            API_PATH["report_user"], data={"reason": reason, "user": str(self)}
+        )
+
     def trophies(self) -> List["Trophy"]:
         """Return a list of the redditor's trophies.
 

@@ -144,6 +144,7 @@ API_PATH = {
     "remove":                  "api/remove/",
     "reorder_subreddit_rules": "api/reorder_subreddit_rules",
     "report":                  "api/report/",
+    "report_user":             "/api/report_user",
     "rules":                   "r/{subreddit}/about/rules",
     "save":                    "api/save/",
     "search":                  "r/{subreddit}/search/",

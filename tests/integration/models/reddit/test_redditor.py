@@ -99,6 +99,12 @@ class TestRedditor(IntegrationTest):
             else:
                 assert False, "sfwpornnetwork not found in multireddits"
 
+    def test_report(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestRedditor.test_report"):
+            redditor = self.reddit.redditor(self.FRIEND)
+            redditor.report("Test from PRAW")
+
     @mock.patch("time.sleep", return_value=None)
     def test_stream__comments(self, _):
         generator = self.reddit.redditor("AutoModerator").stream.comments()
