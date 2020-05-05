@@ -1602,15 +1602,17 @@ class TestSubredditRelationships(IntegrationTest):
     REDDITOR = "pyapitestuser3"
 
     @mock.patch("time.sleep", return_value=None)
-    def add_remove(self, base, user, relationship, _):
+    def add_remove(
+        self, base, user, relationship, _, add_kwargs={}, remove_kwargs={},
+    ):
         relationship = getattr(base, relationship)
-        relationship.add(user)
+        relationship.add(user, **add_kwargs)
         relationships = list(relationship())
         assert user in relationships
         redditor = relationships[relationships.index(user)]
         assert isinstance(redditor, Redditor)
         assert hasattr(redditor, "date")
-        relationship.remove(user)
+        relationship.remove(user, **remove_kwargs)
         assert user not in relationship()
 
     @property
@@ -1621,6 +1623,34 @@ class TestSubredditRelationships(IntegrationTest):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubredditRelationships.banned"):
             self.add_remove(self.subreddit, self.REDDITOR, "banned")
+
+    def test_banned_duration(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditRelationships.banned_duration"
+        ):
+            self.add_remove(
+                self.subreddit,
+                self.REDDITOR,
+                "banned",
+                add_kwargs={"duration": 7},
+            )
+
+    def test_banned_all_args(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditRelationships.banned_all_args"
+        ):
+            self.add_remove(
+                self.subreddit,
+                self.REDDITOR,
+                "banned",
+                add_kwargs={
+                    "ban_message": "PRAW Test",
+                    "ban_reason": "Mod Test",
+                    "note": "Testing Note",
+                },
+            )
 
     def test_banned__user_filter(self):
         self.reddit.read_only = False
@@ -1725,6 +1755,18 @@ class TestSubredditRelationships(IntegrationTest):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubredditRelationships.muted"):
             self.add_remove(self.subreddit, self.REDDITOR, "muted")
+
+    def test_muted_note(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditRelationships.muted_note"
+        ):
+            self.add_remove(
+                self.subreddit,
+                self.REDDITOR,
+                "muted",
+                add_kwargs={"note": "Test Note"},
+            )
 
     def test_moderator_remove_invite(self):
         self.reddit.read_only = False

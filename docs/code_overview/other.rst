@@ -51,8 +51,10 @@ instances of them bound to an attribute of one of the PRAW models.
    :maxdepth: 2
    :caption: Relationship Helpers
 
+   other/bannedrelationship
    other/contributorrelationship
    other/moderatorrelationship
+   other/mutedrelationship
    other/subredditrelationship
 
 .. toctree::

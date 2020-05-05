@@ -209,7 +209,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
     @cachedproperty
     def banned(self):
-        """Provide an instance of :class:`.BannnedRelationship`.
+        """Provide an instance of :class:`.BannedRelationship`.
 
         To list the banned users along with any notes, try:
 
@@ -2562,7 +2562,7 @@ class BannedRelationship(SubredditRelationship):
             "ban_message": ban_message,
             "ban_reason": ban_reason,
             "note": note,
-        }:
+        }.items():
             if value is not None:
                 other_settings[setting] = value
         super().add(redditor, **other_settings)
