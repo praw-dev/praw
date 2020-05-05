@@ -209,13 +209,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
     @cachedproperty
     def banned(self):
-        """Provide an instance of :class:`.SubredditRelationship`.
-
-        For example to ban a user try:
-
-        .. code-block:: python
-
-           reddit.subreddit("SUBREDDIT").banned.add("NAME", ban_reason="...")
+        """Provide an instance of :class:`.BannnedRelationship`.
 
         To list the banned users along with any notes, try:
 
@@ -224,8 +218,18 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
            for ban in reddit.subreddit("SUBREDDIT").banned():
                print('{}: {}'.format(ban, ban.note))
 
+        To ban a user:
+
+        .. code-block:: python
+
+            reddit.subreddit("SUBREDDIT").banned.add("NAME",
+                   ban_message="You have been banned",
+                   ban_reason="Bannable action",
+                   duration=5,
+                   note="Link to comment: ...")
+
         """
-        return SubredditRelationship(self, "banned")
+        return BannedRelationship(self)
 
     @cachedproperty
     def collections(self):
@@ -374,7 +378,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
     @cachedproperty
     def muted(self):
-        """Provide an instance of :class:`.SubredditRelationship`.
+        """Provide an instance of :class:`.MutedRelationship`.
 
         For example, muted users can be iterated through like so:
 
@@ -383,8 +387,14 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             for mute in reddit.subreddit("redditdev").muted():
                 print('{}: {}'.format(mute, mute.note))
 
+        To mute user ``"spez"``:
+
+        .. code-block:: python
+
+            reddit.subreddit("redditdev").muted.add("spez", note="Example note")
+
         """
-        return SubredditRelationship(self, "muted")
+        return MutedRelationship(self)
 
     @cachedproperty
     def quaran(self):
@@ -2500,6 +2510,64 @@ class SubredditRelationship:
         self.subreddit._reddit.post(url, data=data)
 
 
+class BannedRelationship(SubredditRelationship):
+    """Provides methods to interact with a Subreddit's banned members.
+
+    To list the banned users along with any notes, try:
+
+    .. code-block:: python
+
+       for ban in reddit.subreddit("SUBREDDIT").banned():
+           print('{}: {}'.format(ban, ban.note))
+
+    To ban a user:
+
+    .. code-block:: python
+
+        reddit.subreddit("SUBREDDIT").banned.add("NAME",
+               ban_message="You have been banned",
+               ban_reason="Bannable action",
+               duration=5,
+               note="Link to comment: ...")
+    """
+
+    def __init__(self, subreddit):
+        """Create a BannedRelationship instance.
+
+        :param subreddit: The subreddit for the relationship.
+        """
+        super().__init__(subreddit, "banned")
+
+    def add(
+        self,
+        redditor,
+        ban_message=None,
+        ban_reason=None,
+        duration=None,
+        note=None,
+    ):
+        """Ban a redditor.
+
+        :param redditor: The name of the Redditor you want to ban.
+        :param ban_message: The ban message which is sent to the user in raw
+            markdown text.
+        :param ban_reason: The ban reason seen only by moderators (≤100 chars).
+        :param duration: The duration of the ban 1-999 days, `None` for
+            permanent bans.
+        :param note: A note beside the ``ban_reason`` only seen by moderators
+            (≤300 chars).
+        """
+        other_settings = {"duration": duration}
+        for setting, value in {
+            "ban_message": ban_message,
+            "ban_reason": ban_reason,
+            "note": note,
+        }:
+            if value is not None:
+                other_settings[setting] = value
+        super().add(redditor, **other_settings)
+
+
 class ContributorRelationship(SubredditRelationship):
     """Provides methods to interact with a Subreddit's contributors.
 
@@ -2533,7 +2601,16 @@ class ModeratorRelationship(SubredditRelationship):
 
     """
 
-    PERMISSIONS = {"access", "config", "flair", "mail", "posts", "wiki"}
+    PERMISSIONS = {
+        "access",
+        "chat_config",
+        "chat_operator",
+        "config",
+        "flair",
+        "mail",
+        "posts",
+        "wiki",
+    }
 
     @staticmethod
     def _handle_permissions(permissions, other_settings):
@@ -2707,6 +2784,41 @@ class ModeratorRelationship(SubredditRelationship):
             permissions, {"name": str(redditor), "type": "moderator_invite"}
         )
         self.subreddit._reddit.post(url, data=data)
+
+
+class MutedRelationship(SubredditRelationship):
+    """Provide methods for interacting with a Subreddit's muted members.
+
+    For example, muted users can be iterated through like so:
+
+    .. code-block:: python
+
+        for mute in reddit.subreddit("redditdev").muted():
+            print('{}: {}'.format(mute, mute.note))
+
+    To mute user ``"spez"``:
+
+    .. code-block:: python
+
+        reddit.subreddit("redditdev").muted.add("spez", note="Example note")
+
+    """
+
+    def __init__(self, subreddit):
+        """Create a MutedRelationship instance.
+
+        :param subreddit: The subreddit for the relationship.
+        """
+        super().__init__(subreddit, "muted")
+
+    def add(self, redditor, note=None):
+        """Mute a redditor.
+
+        :param redditor: The name of the Redditor you want to mute.
+        :param note: A note only seen by moderators (≤300 chars).
+        """
+        other_settings = {"note": note} if note else {}
+        super().add(redditor, **other_settings)
 
 
 class Modmail:
