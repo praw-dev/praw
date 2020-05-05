@@ -124,8 +124,8 @@ class SubredditRules:
     .. code-block:: python
 
         reddit.subreddit("NAME").rules.mod.add(
-            short_name = "No spam",
-            kind = "all",
+            short_name="No spam",
+            kind="all",
             description="Do not spam. Spam bad")
     """
 
@@ -138,8 +138,8 @@ class SubredditRules:
         .. code-block:: python
 
            reddit.subreddit("NAME").rules.mod.add(
-                short_name = "No spam",
-                kind = "all",
+                short_name="No spam",
+                kind="all",
                 description="Do not spam. Spam bad")
 
         To move the fourth rule to the first position, and then to move the
@@ -358,8 +358,8 @@ class SubredditRulesModeration:
     .. code-block:: python
 
        reddit.subreddit("NAME").rules.mod.add(
-            short_name = "No spam",
-            kind = "all",
+            short_name="No spam",
+            kind="all",
             description="Do not spam. Spam bad")
 
     To move the fourth rule to the first position, and then to move the prior
@@ -403,8 +403,8 @@ class SubredditRulesModeration:
         .. code-block:: python
 
            reddit.subreddit("NAME").rules.mod.add(
-               short_name = "No spam",
-               kind = "all",
+               short_name="No spam",
+               kind="all",
                description="Do not spam. Spam bad")
 
         """

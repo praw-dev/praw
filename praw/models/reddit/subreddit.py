@@ -425,8 +425,8 @@ class Subreddit(
         .. code-block:: python
 
             reddit.subreddit("NAME").rules.mod.add(
-                short_name = "No spam",
-                kind = "all",
+                short_name="No spam",
+                kind="all",
                 description="Do not spam. Spam bad")
 
         """
