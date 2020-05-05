@@ -1,5 +1,5 @@
 """Provide the Rule class."""
-from typing import Any, Dict, Iterator, List, Optional, TypeVar, Union
+from typing import Any, Dict, Iterator, List, Optional, Union
 from urllib.parse import quote
 from warnings import warn
 
@@ -7,11 +7,6 @@ from ...const import API_PATH
 from ...exceptions import ClientException
 from ...util.cache import cachedproperty
 from .base import RedditBase
-
-_RuleModeration = TypeVar("_RuleModeration")
-_SubredditRulesModeration = TypeVar("_SubredditRulesModeration")
-
-Subreddit = TypeVar("Subreddit")
 
 
 class Rule(RedditBase):
@@ -50,7 +45,7 @@ class Rule(RedditBase):
     STR_FIELD = "short_name"
 
     @cachedproperty
-    def mod(self) -> _RuleModeration:
+    def mod(self) -> "RuleModeration":
         """Contain methods used to moderate rules.
 
         To delete ``"No spam"`` from the subreddit ``"NAME"`` try:
@@ -72,7 +67,7 @@ class Rule(RedditBase):
     def __init__(
         self,
         reddit: "Reddit",  # noqa: F821
-        subreddit: Optional[Subreddit] = None,
+        subreddit: Optional["Subreddit"] = None,
         short_name: Optional[str] = None,
         _data: Optional[Dict[str, str]] = None,
     ):
@@ -112,7 +107,7 @@ class SubredditRules:
     """Provide a set of functions to a Subreddit's rules."""
 
     @cachedproperty
-    def mod(self) -> _SubredditRulesModeration:
+    def mod(self) -> "SubredditRulesModeration":
         """Contain methods to moderate subreddit rules as a whole.
 
         To add rule ``"No spam"`` to the subreddit ``"NAME"`` try:
@@ -193,7 +188,7 @@ class SubredditRules:
             self._reddit, subreddit=self.subreddit, short_name=short_name
         )
 
-    def __init__(self, subreddit: Subreddit):
+    def __init__(self, subreddit: "Subreddit"):
         """Create a SubredditRules instance.
 
         :param subreddit: The subreddit whose rules to work with.

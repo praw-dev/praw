@@ -1,13 +1,9 @@
 """Provide the Reason class."""
-from typing import Any, Dict, Generator, Optional, TypeVar, Union
+from typing import Any, Dict, Generator, Optional, Union
 
 from ...const import API_PATH
 from ...exceptions import ClientException
 from .base import RedditBase
-
-_RemovalReason = TypeVar("_RemovalReason")
-
-Subreddit = TypeVar("Subreddit")
 
 
 class RemovalReason(RedditBase):
@@ -32,7 +28,7 @@ class RemovalReason(RedditBase):
 
     STR_FIELD = "id"
 
-    def __eq__(self, other: Union[str, _RemovalReason]) -> bool:
+    def __eq__(self, other: Union[str, "RemovalReason"]) -> bool:
         """Return whether the other instance equals the current."""
         if isinstance(other, str):
             return other == str(self)
@@ -45,7 +41,7 @@ class RemovalReason(RedditBase):
     def __init__(
         self,
         reddit: "Reddit",  # noqa: F821
-        subreddit: Subreddit,
+        subreddit: "Subreddit",
         reason_id: str,
         _data: Optional[Dict[str, Any]] = None,
     ):
@@ -122,7 +118,7 @@ class SubredditRemovalReasons:
         """
         return RemovalReason(self.subreddit._reddit, self.subreddit, reason_id)
 
-    def __init__(self, subreddit: Subreddit):
+    def __init__(self, subreddit: "Subreddit"):
         """Create a SubredditRemovalReasons instance.
 
         :param subreddit: The subreddit whose removal reasons to work with.

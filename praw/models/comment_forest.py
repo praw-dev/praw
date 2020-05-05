@@ -1,12 +1,9 @@
 """Provide CommentForest for Submission comments."""
 from heapq import heappop, heappush
-from typing import List, Optional, TypeVar, Union
+from typing import List, Optional, Union
 
 from ..exceptions import DuplicateReplaceException
 from .reddit.more import MoreComments
-
-Comment = TypeVar("Comment")
-Submission = TypeVar("Submission")
 
 
 class CommentForest:
@@ -55,7 +52,9 @@ class CommentForest:
         return self._comments[index]
 
     def __init__(
-        self, submission: Submission, comments: Optional[List[Comment]] = None
+        self,
+        submission: "Submission",
+        comments: Optional[List["Comment"]] = None,
     ):
         """Initialize a CommentForest instance.
 
@@ -91,7 +90,7 @@ class CommentForest:
         for comment in comments:
             comment.submission = self._submission
 
-    def list(self) -> Union[Comment, MoreComments]:
+    def list(self) -> Union["Comment", MoreComments]:
         """Return a flattened list of all Comments.
 
         This list may contain :class:`.MoreComments` instances if

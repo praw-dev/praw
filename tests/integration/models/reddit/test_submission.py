@@ -286,14 +286,16 @@ class TestSubmissionFlair(IntegrationTest):
             expected = [
                 {
                     "flair_text": "SATISFIED",
-                    "flair_template_id": "680f43b8-1fec-11e3-80d1-12313b0b80bc",  # noqa:E501
+                    "flair_template_id": "680f43b8-1fec-11e3-80d1-12313b0b80bc",
+                    # noqa:E501
                     "flair_text_editable": False,
                     "flair_position": "left",
                     "flair_css_class": "",
                 },
                 {
                     "flair_text": "STATS",
-                    "flair_template_id": "16cabd0a-a68d-11e5-8349-0e8ff96e6679",  # noqa:E501
+                    "flair_template_id": "16cabd0a-a68d-11e5-8349-0e8ff96e6679",
+                    # noqa:E501
                     "flair_text_editable": False,
                     "flair_position": "left",
                     "flair_css_class": "",

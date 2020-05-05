@@ -1,15 +1,11 @@
 """Provide the WikiPage class."""
-from typing import Any, Dict, Generator, Optional, TypeVar, Union
+from typing import Any, Dict, Iterator, Optional, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
 from ..listing.generator import ListingGenerator
 from .base import RedditBase
 from .redditor import Redditor
-
-_WikiPage = TypeVar("_WikiPage")
-
-Subreddit = TypeVar("Subreddit")
 
 
 class WikiPageModeration:
@@ -23,7 +19,7 @@ class WikiPageModeration:
         reddit.subreddit("test").wiki["praw_test"].mod.add("spez")
     """
 
-    def __init__(self, wikipage: _WikiPage):
+    def __init__(self, wikipage: "WikiPage"):
         """Create a WikiPageModeration instance.
 
         :param wikipage: The wikipage to moderate.
@@ -166,7 +162,7 @@ class WikiPage(RedditBase):
     def __init__(
         self,
         reddit: "Reddit",  # noqa: F821
-        subreddit: Subreddit,
+        subreddit: "Subreddit",
         name: str,
         revision: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
@@ -240,7 +236,7 @@ class WikiPage(RedditBase):
             data=other_settings,
         )
 
-    def revision(self, revision: str):
+    def revision(self, revision: str) -> "WikiPage":
         """Return a specific version of this page by revision ID.
 
         To view revision ``[ID]`` of ``"praw_test"`` in ``/r/test``:
@@ -256,7 +252,7 @@ class WikiPage(RedditBase):
 
     def revisions(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[_WikiPage, None, None]:
+    ) -> Iterator["WikiPage"]:
         """Return a :class:`.ListingGenerator` for page revisions.
 
         Additional keyword arguments are passed in the initialization of

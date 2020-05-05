@@ -1,7 +1,7 @@
 """Provide the Multireddit class."""
 import re
 from json import dumps
-from typing import Any, Dict, List, Optional, TypeVar, Union
+from typing import Any, Dict, List, Optional, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
@@ -9,8 +9,6 @@ from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
 from .redditor import Redditor
 from .subreddit import Subreddit, SubredditStream
-
-_Multireddit = TypeVar("_Multireddit")
 
 
 class Multireddit(SubredditListingMixin, RedditBase):
@@ -145,7 +143,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         self._reddit.put(url, data={"model": dumps({"name": str(subreddit)})})
         self._reset_attributes("subreddits")
 
-    def copy(self, display_name: Optional[str] = None) -> _Multireddit:
+    def copy(self, display_name: Optional[str] = None) -> "Multireddit":
         """Copy this multireddit and return the new multireddit.
 
         :param display_name: (optional) The display name for the copied

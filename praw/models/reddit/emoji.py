@@ -1,14 +1,10 @@
 """Provide the Emoji class."""
 import os
-from typing import Any, Dict, List, Optional, TypeVar, Union
+from typing import Any, Dict, List, Optional, Union
 
 from ...const import API_PATH
 from ...exceptions import ClientException
 from .base import RedditBase
-
-_Emoji = TypeVar("_Emoji")
-
-Subreddit = TypeVar("Subreddit")
 
 
 class Emoji(RedditBase):
@@ -36,7 +32,7 @@ class Emoji(RedditBase):
 
     STR_FIELD = "name"
 
-    def __eq__(self, other: Union[str, _Emoji]) -> bool:
+    def __eq__(self, other: Union[str, "Emoji"]) -> bool:
         """Return whether the other instance equals the current."""
         if isinstance(other, str):
             return other == str(self)
@@ -57,7 +53,7 @@ class Emoji(RedditBase):
     def __init__(
         self,
         reddit: "Reddit",  # noqa: F821
-        subreddit: Subreddit,
+        subreddit: "Subreddit",
         name: str,
         _data: Optional[Dict[str, Any]] = None,
     ):
@@ -164,7 +160,7 @@ class SubredditEmoji:
         """
         return Emoji(self._reddit, self.subreddit, name)
 
-    def __init__(self, subreddit: Subreddit):
+    def __init__(self, subreddit: "Subreddit"):
         """Create a SubredditEmoji instance.
 
         :param subreddit: The subreddit whose emoji are affected.

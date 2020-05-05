@@ -1,5 +1,5 @@
 """Provide the Submission class."""
-from typing import Any, Dict, List, Optional, TypeVar, Union
+from typing import Any, Dict, List, Optional, Union
 from urllib.parse import urljoin
 
 from prawcore import Conflict
@@ -16,13 +16,11 @@ from .poll import PollData
 from .redditor import Redditor
 from .subreddit import Subreddit
 
-_Submission = TypeVar("_Submission")
-
 
 class SubmissionFlair:
     """Provide a set of functions pertaining to Submission flair."""
 
-    def __init__(self, submission: _Submission):
+    def __init__(self, submission: "Submission"):
         """Create a SubmissionFlair instance.
 
         :param submission: The submission associated with the flair functions.
@@ -94,7 +92,7 @@ class SubmissionModeration(ThingModerationMixin):
 
     REMOVAL_MESSAGE_API = "removal_link_message"
 
-    def __init__(self, submission: _Submission):
+    def __init__(self, submission: "Submission"):
         """Create a SubmissionModeration instance.
 
         :param submission: The submission to moderate.
@@ -622,7 +620,7 @@ class Submission(
         data = {"links": self.fullname}
         self._reddit.post(API_PATH["store_visits"], data=data)
 
-    def hide(self, other_submissions: Optional[List[_Submission]] = None):
+    def hide(self, other_submissions: Optional[List["Submission"]] = None):
         """Hide Submission.
 
         :param other_submissions: When provided, additionally
@@ -642,7 +640,7 @@ class Submission(
         for submissions in self._chunk(other_submissions, 50):
             self._reddit.post(API_PATH["hide"], data={"id": submissions})
 
-    def unhide(self, other_submissions: Optional[List[_Submission]] = None):
+    def unhide(self, other_submissions: Optional[List["Submission"]] = None):
         """Unhide Submission.
 
         :param other_submissions: When provided, additionally
@@ -671,7 +669,7 @@ class Submission(
         flair_text: Optional[str] = None,
         nsfw: bool = False,
         spoiler: bool = False,
-    ) -> _Submission:
+    ) -> "Submission":
         """Crosspost the submission to a subreddit.
 
         .. note::

@@ -1,5 +1,5 @@
 """Provides the User class."""
-from typing import Dict, Iterator, List, Optional, TypeVar, Union
+from typing import Dict, Iterator, List, Optional, Union
 
 from ..const import API_PATH
 from ..models import Preferences
@@ -8,8 +8,6 @@ from .base import PRAWBase
 from .listing.generator import ListingGenerator
 from .reddit.redditor import Redditor
 from .reddit.subreddit import Subreddit
-
-Multireddit = TypeVar("Multireddit")
 
 
 class User(PRAWBase):
@@ -133,7 +131,7 @@ class User(PRAWBase):
             self._me = Redditor(self._reddit, _data=user_data)
         return self._me
 
-    def multireddits(self) -> List[Multireddit]:
+    def multireddits(self) -> List["Multireddit"]:
         """Return a list of multireddits belonging to the user."""
         return self._reddit.get(API_PATH["my_multireddits"])
 

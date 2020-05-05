@@ -1,9 +1,7 @@
 """Represent the Trophy class."""
-from typing import Any, Dict, TypeVar, Union
+from typing import Any, Dict, Union
 
 from .base import PRAWBase
-
-_Trophy = TypeVar("_Trophy")
 
 
 class Trophy(PRAWBase):
@@ -45,7 +43,7 @@ class Trophy(PRAWBase):
         assert isinstance(_data, dict) and "name" in _data
         super().__init__(reddit, _data=_data)
 
-    def __eq__(self, other: Union[_Trophy, Any]) -> bool:
+    def __eq__(self, other: Union["Trophy", Any]) -> bool:
         """Check if two Trophies are equal."""
         if isinstance(other, self.__class__):
             return self.name == other.name

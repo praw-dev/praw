@@ -1,11 +1,11 @@
 import os
 import sys
 
-from praw import __version__
-
 # Do not touch these. They use the local PRAW over the global PRAW.
 sys.path.insert(0, ".")
 sys.path.insert(1, "..")
+
+from praw import __version__
 
 
 copyright = "2020, Bryce Boe"
@@ -24,6 +24,7 @@ release = __version__
 source_suffix = ".rst"
 suppress_warnings = ["image.nonlocal_uri"]
 version = ".".join(__version__.split(".", 2)[:2])
+
 
 # Use RTD theme locally
 if not os.environ.get("READTHEDOCS"):

@@ -1,5 +1,5 @@
 """Provide the Comment class."""
-from typing import Any, Dict, Optional, TypeVar, Union
+from typing import Any, Dict, Optional, Union
 
 from ...const import API_PATH
 from ...exceptions import ClientException, InvalidURL
@@ -13,12 +13,6 @@ from .mixins import (
     UserContentMixin,
 )
 from .redditor import Redditor
-
-_Comment = TypeVar("_Comment")
-_CommentModeration = TypeVar("_CommentModeration")
-
-Submission = TypeVar("Submission")
-Subreddit = TypeVar("Subreddit")
 
 
 class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
@@ -95,7 +89,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return parent_type == self._reddit.config.kinds["submission"]
 
     @cachedproperty
-    def mod(self) -> _CommentModeration:
+    def mod(self) -> "CommentModeration":
         """Provide an instance of :class:`.CommentModeration`.
 
         Example usage:
@@ -135,7 +129,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return self._replies
 
     @property
-    def submission(self) -> Submission:
+    def submission(self) -> "Submission":
         """Return the Submission object this comment belongs to."""
         if not self._submission:  # Comment not from submission
             self._submission = self._reddit.submission(
@@ -144,7 +138,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return self._submission
 
     @submission.setter
-    def submission(self, submission: Submission):
+    def submission(self, submission: "Submission"):
         """Update the Submission associated with the Comment."""
         submission._comments_by_id[self.name] = self
         self._submission = submission
@@ -177,7 +171,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     def __setattr__(
         self,
         attribute: str,
-        value: Union[str, Redditor, CommentForest, Subreddit],
+        value: Union[str, Redditor, CommentForest, "Subreddit"],
     ):
         """Objectify author, replies, and subreddit."""
         if attribute == "author":
@@ -221,7 +215,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             return self.context.rsplit("/", 4)[1]
         return self.link_id.split("_", 1)[1]
 
-    def parent(self) -> Union[_Comment, Submission]:
+    def parent(self) -> Union["Comment", "Submission"]:
         """Return the parent of the comment.
 
         The returned parent will be an instance of either

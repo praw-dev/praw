@@ -1,5 +1,5 @@
 """Provide the SubredditListingMixin class."""
-from typing import Any, Dict, Iterator, Optional, TypeVar, Union
+from typing import Any, Dict, Iterator, Optional, Union
 from urllib.parse import urljoin
 
 from ....util.cache import cachedproperty
@@ -9,10 +9,6 @@ from .base import BaseListingMixin
 from .gilded import GildedListingMixin
 from .rising import RisingListingMixin
 
-Comment = TypeVar("Comment")
-
-Subreddit = TypeVar("Subreddit")
-
 
 class CommentHelper(PRAWBase):
     """Provide a set of functions to interact with a subreddit's comments."""
@@ -21,14 +17,14 @@ class CommentHelper(PRAWBase):
     def _path(self):
         return urljoin(self.subreddit._path, "comments/")
 
-    def __init__(self, subreddit: Subreddit):
+    def __init__(self, subreddit: "Subreddit"):
         """Initialize a CommentHelper instance."""
         super().__init__(subreddit._reddit, _data=None)
         self.subreddit = subreddit
 
     def __call__(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator[Any]:
+    ) -> Iterator["Comment"]:
         """Return a :class:`.ListingGenerator` for the Subreddit's comments.
 
         Additional keyword arguments are passed in the initialization of

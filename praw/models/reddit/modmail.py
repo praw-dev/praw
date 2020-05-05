@@ -1,11 +1,9 @@
 """Provide models for new modmail."""
-from typing import Any, Dict, List, Optional, TypeVar
+from typing import Any, Dict, List, Optional
 
 from ...const import API_PATH
 from ...util import snake_case_keys
 from .base import RedditBase
-
-_ModmailConversation = TypeVar("_ModmailConversation")
 
 
 class ModmailConversation(RedditBase):
@@ -210,7 +208,7 @@ class ModmailConversation(RedditBase):
         )
 
     def read(
-        self, other_conversations: Optional[List[_ModmailConversation]] = None
+        self, other_conversations: Optional[List["ModmailConversation"]] = None
     ):  # noqa: D207, D301
         """Mark the conversation(s) as read.
 
@@ -313,7 +311,7 @@ class ModmailConversation(RedditBase):
         )
 
     def unread(
-        self, other_conversations: Optional[List[_ModmailConversation]] = None
+        self, other_conversations: Optional[List["ModmailConversation"]] = None
     ):  # noqa: D207, D301
         """Mark the conversation(s) as unread.
 

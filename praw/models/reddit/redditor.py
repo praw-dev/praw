@@ -1,6 +1,6 @@
 """Provide the Redditor class."""
 from json import dumps
-from typing import Any, Dict, Generator, List, Optional, TypeVar, Union
+from typing import Any, Dict, Generator, List, Optional, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
@@ -8,15 +8,6 @@ from ..listing.mixins import RedditorListingMixin
 from ..util import stream_generator
 from .base import RedditBase
 from .mixins import FullnameMixin, MessageableMixin
-
-_Redditor = TypeVar("_Redditor")
-_RedditorStream = TypeVar("_RedditorStream")
-Comment = TypeVar("Comment")
-Multireddit = TypeVar("Multireddit")
-
-Submission = TypeVar("Submission")
-Subreddit = TypeVar("Subreddit")
-Trophy = TypeVar("Trophy")
 
 
 class Redditor(
@@ -85,14 +76,16 @@ class Redditor(
     STR_FIELD = "name"
 
     @classmethod
-    def from_data(cls, reddit, data):
+    def from_data(
+        cls, reddit: "Reddit", data: Optional[Dict[str, Any]]
+    ) -> Optional["Redditor"]:
         """Return an instance of Redditor, or None from ``data``."""
         if data == "[deleted]":
             return None
         return cls(reddit, data)
 
     @cachedproperty
-    def stream(self) -> _RedditorStream:
+    def stream(self) -> "RedditorStream":
         """Provide an instance of :class:`.RedditorStream`.
 
         Streams can be used to indefinitely retrieve new comments made by a
@@ -219,7 +212,7 @@ class Redditor(
         """
         self._friend("PUT", data={"note": note} if note else {})
 
-    def friend_info(self) -> _Redditor:
+    def friend_info(self) -> "Redditor":
         """Return a Redditor instance with specific friend-related attributes.
 
         :returns: A :class:`.Redditor` instance with fields ``date``, ``id``,
@@ -255,7 +248,7 @@ class Redditor(
             data={"months": months},
         )
 
-    def moderated(self) -> List[Subreddit]:
+    def moderated(self) -> List["Subreddit"]:
         """Return a list of the redditor's moderated subreddits.
 
         :returns: A ``list`` of :class:`~praw.models.Subreddit` objects.
@@ -283,7 +276,7 @@ class Redditor(
             ]
             return subreddits
 
-    def multireddits(self) -> List[Multireddit]:
+    def multireddits(self) -> List["Multireddit"]:
         """Return a list of the redditor's public multireddits.
 
         For example, to to get Redditor ``spez``'s multireddits:
@@ -296,7 +289,7 @@ class Redditor(
         """
         return self._reddit.get(API_PATH["multireddit_user"].format(user=self))
 
-    def trophies(self) -> List[Trophy]:
+    def trophies(self) -> List["Trophy"]:
         """Return a list of the redditor's trophies.
 
         :returns: A ``list`` of :class:`~praw.models.Trophy` objects.
@@ -359,7 +352,7 @@ class RedditorStream:
 
     def comments(
         self, **stream_options: Union[str, int, Dict[str, str]]
-    ) -> Generator[Comment, None, None]:
+    ) -> Generator["Comment", None, None]:
         """Yield new comments as they become available.
 
         Comments are yielded oldest first. Up to 100 historical comments will
@@ -380,7 +373,7 @@ class RedditorStream:
 
     def submissions(
         self, **stream_options: Union[str, int, Dict[str, str]]
-    ) -> Generator[Submission, None, None]:
+    ) -> Generator["Submission", None, None]:
         """Yield new submissions as they become available.
 
         Submissions are yielded oldest first. Up to 100 historical submissions

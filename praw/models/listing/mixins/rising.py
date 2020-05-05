@@ -1,11 +1,9 @@
 """Provide the RisingListingMixin class."""
-from typing import Dict, Iterator, TypeVar, Union
+from typing import Dict, Iterator, Union
 from urllib.parse import urljoin
 
 from ...base import PRAWBase
 from ..generator import ListingGenerator
-
-Submission = TypeVar("Submission")
 
 
 class RisingListingMixin(PRAWBase):
@@ -13,7 +11,7 @@ class RisingListingMixin(PRAWBase):
 
     def random_rising(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator[Submission]:
+    ) -> Iterator["Submission"]:
         """Return a :class:`.ListingGenerator` for random rising submissions.
 
         Additional keyword arguments are passed in the initialization of
@@ -35,7 +33,7 @@ class RisingListingMixin(PRAWBase):
 
     def rising(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator[Submission]:
+    ) -> Iterator["Submission"]:
         """Return a :class:`.ListingGenerator` for rising submissions.
 
         Additional keyword arguments are passed in the initialization of

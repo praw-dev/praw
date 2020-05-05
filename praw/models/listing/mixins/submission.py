@@ -1,11 +1,9 @@
 """Provide the SubmissionListingMixin class."""
-from typing import Dict, Iterator, TypeVar, Union
+from typing import Dict, Iterator, Union
 
 from ....const import API_PATH
 from ...base import PRAWBase
 from ..generator import ListingGenerator
-
-Submission = TypeVar("Submission")
 
 
 class SubmissionListingMixin(PRAWBase):
@@ -13,7 +11,7 @@ class SubmissionListingMixin(PRAWBase):
 
     def duplicates(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator[Submission]:
+    ) -> Iterator["Submission"]:
         """Return a :class:`.ListingGenerator` for the submission's duplicates.
 
         Additional keyword arguments are passed in the initialization of

@@ -1,5 +1,5 @@
 """Provide Collections functionality."""
-from typing import Any, Dict, Generator, List, Optional, TypeVar, Union
+from typing import Any, Dict, Generator, List, Optional, Union
 
 from ...const import API_PATH
 from ...exceptions import ClientException
@@ -8,9 +8,6 @@ from ..base import PRAWBase
 from .base import RedditBase
 from .submission import Submission
 from .subreddit import Subreddit
-
-_CollectionModeration = TypeVar("_CollectionModeration")
-_SubredditCollectionsModeration = TypeVar("_SubredditCollectionsModeration")
 
 
 class Collection(RedditBase):
@@ -61,7 +58,7 @@ class Collection(RedditBase):
     STR_FIELD = "collection_id"
 
     @cachedproperty
-    def mod(self) -> _CollectionModeration:
+    def mod(self) -> "CollectionModeration":
         """Get an instance of :class:`.CollectionModeration`.
 
         Provides access to various methods, including
@@ -411,7 +408,7 @@ class SubredditCollections(PRAWBase):
     """
 
     @cachedproperty
-    def mod(self) -> _SubredditCollectionsModeration:
+    def mod(self) -> "SubredditCollectionsModeration":
         """Get an instance of :class:`.SubredditCollectionsModeration`.
 
         Provides :meth:`~SubredditCollectionsModeration.create`:
