@@ -218,7 +218,13 @@ class Subreddit(
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").banned.add("NAME", ban_reason="...")
+           reddit.subreddit("SUBREDDIT").banned.add("NAME", ban_message="str", ban_reason="str", duration=days, note="str")
+           
+        :param username: The name of the Redditor you want to ban.
+        :param ban_message: The ban message which is sent to the user in raw markdown text.
+        :param ban_reason: The ban reason seen only by moderators (≤100 chars).
+        :param duration: The duration of the ban 1-999 days, `None` for permanent bans.
+        :param note: A note beside the `ban_reason` only seen by moderators (≤300 chars).
 
         To list the banned users along with any notes, try:
 
