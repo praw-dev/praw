@@ -21,10 +21,10 @@ class TestRule(IntegrationTest):
                 description="Test by PRAW",
                 violation_reason="PTest",
             )
-            assert rule.short_name == "PRAW Test"
-            assert rule.kind == "all"
-            assert rule.description == "Test by PRAW"
-            assert rule.violation_reason == "PTest"
+        assert rule.short_name == "PRAW Test"
+        assert rule.kind == "all"
+        assert rule.description == "Test by PRAW"
+        assert rule.violation_reason == "PTest"
 
     def test_add_rule_without_violation_reason(self):
         self.reddit.read_only = False
@@ -64,7 +64,7 @@ class TestRule(IntegrationTest):
             rule = self.subreddit.rules["PRAW Test"]
             assert isinstance(rule, Rule)
             rule._fetch()
-            assert "kind" in vars(rule)
+            assert rule.kind
 
     def test_iter_rule_invalid(self):
         with self.recorder.use_cassette("TestRule.test_iter_rules"):

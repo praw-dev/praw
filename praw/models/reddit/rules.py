@@ -109,7 +109,25 @@ class Rule(RedditBase):
 
 
 class SubredditRules:
-    """Provide a set of functions to a Subreddit's rules."""
+    """Provide a set of functions to access a Subreddit's rules.
+
+    For example, to list all the rules for a subreddit:
+
+    .. code-block:: python
+
+        for rule in reddit.subreddit("AskReddit").rules:
+            print(rule)
+
+    Moderators can also add rules to the subreddit. For example, to make
+    a rule called ``"No spam"`` in the subreddit ``"NAME"``:
+
+    .. code-block:: python
+
+        reddit.subreddit("NAME").rules.mod.add(
+            short_name = "No spam",
+            kind = "all",
+            description="Do not spam. Spam bad")
+    """
 
     @cachedproperty
     def mod(self) -> _SubredditRulesModeration:
@@ -120,9 +138,9 @@ class SubredditRules:
         .. code-block:: python
 
            reddit.subreddit("NAME").rules.mod.add(
-               "No spam",
-               "all",
-               description="Do not spam. Spam bad")
+                short_name = "No spam",
+                kind = "all",
+                description="Do not spam. Spam bad")
 
         To move the fourth rule to the first position, and then to move the
         prior first rule to where the third rule originally was in the
@@ -139,11 +157,27 @@ class SubredditRules:
         """
         return SubredditRulesModeration(self)
 
-    def __call__(self) -> Iterator:
-        r"""Return a list of :class:`.Rule`\ s (Deprecated)."""
+    def __call__(self) -> List[Rule]:
+        r"""Return a list of :class:`.Rule`\ s (Deprecated).
+
+        :returns: A list of instances of :class:`.Rule`.
+
+        .. deprecated:: 7.1
+            Use the iterator by removing the call to :class:`.SubredditRules`.
+            For example, in order to use the iterator:
+
+            .. code-block:: python
+
+                for rule in reddit.subreddit("test").rules:
+                    print(rule)
+        """
         warn(
             "Calling SubredditRules to get a list of rules is deprecated. "
-            "Remove the parentheses to use the iterator.",
+            "Remove the parentheses to use the iterator. View the "
+            "PRAW documentation on how to change the code in order to use the"
+            "iterator (https://praw.readthedocs.io/en/latest/code_overview"
+            "/other/subredditrules.html#praw.models.reddit.rules."
+            "SubredditRules.__call__).",
             category=DeprecationWarning,
             stacklevel=2,
         )
@@ -207,7 +241,9 @@ class SubredditRules:
 
         :returns: An iterator containing all of the rules of a subreddit.
 
-        This method is used to discover all rules for a subreddit:
+        This method is used to discover all rules for a subreddit.
+
+        For example, to get the rules for the subreddit ``"NAME"``:
 
         .. code-block:: python
 
@@ -285,6 +321,7 @@ class RuleModeration:
             ``"link"``, ``"comment"``, or ``"all"``.
         :param short_name: The name of the rule.
         :param violation_reason: The reason that is shown on the report menu.
+        :returns: A Rule object containing the updated values.
 
         To update ``"No spam"`` from the subreddit ``"NAME"`` try:
 
@@ -321,9 +358,9 @@ class SubredditRulesModeration:
     .. code-block:: python
 
        reddit.subreddit("NAME").rules.mod.add(
-           "No spam",
-           "all",
-           description="Do not spam. Spam bad")
+            short_name = "No spam",
+            kind = "all",
+            description="Do not spam. Spam bad")
 
     To move the fourth rule to the first position, and then to move the prior
     first rule to where the third rule originally was in the subreddit
@@ -366,8 +403,8 @@ class SubredditRulesModeration:
         .. code-block:: python
 
            reddit.subreddit("NAME").rules.mod.add(
-               "No spam",
-               "all",
+               short_name = "No spam",
+               kind = "all",
                description="Do not spam. Spam bad")
 
         """
@@ -407,7 +444,7 @@ class SubredditRulesModeration:
 
         """
         order_string = quote(
-            ",".join([str(item) for item in rule_list]), safe=","
+            ",".join([rule.short_name for rule in rule_list]), safe=","
         )
         data = {
             "r": str(self.subreddit_rules.subreddit),

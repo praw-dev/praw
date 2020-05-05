@@ -411,6 +411,7 @@ class Subreddit(
         """Provide an instance of :class:`.SubredditRules`.
 
         Use this attribute for interacting with a subreddit's rules.
+
         For example, to list all the rules for a subreddit:
 
         .. code-block:: python
@@ -418,15 +419,15 @@ class Subreddit(
             for rule in reddit.subreddit("AskReddit").rules:
                 print(rule)
 
-        You can also add rules to the subreddit, if you are a moderator. For
-        example, to make a rule called ``"No spam"`` in the subreddit ``"NAME"``:
+        Moderators can also add rules to the subreddit. For example, to make
+        a rule called ``"No spam"`` in the subreddit ``"NAME"``:
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").rules.mod.add(
-               "No spam",
-               "all",
-               description="Do not spam. Spam bad")
+            reddit.subreddit("NAME").rules.mod.add(
+                short_name = "No spam",
+                kind = "all",
+                description="Do not spam. Spam bad")
 
         """
         return SubredditRules(self)
