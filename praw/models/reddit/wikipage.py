@@ -162,7 +162,7 @@ class WikiPage(RedditBase):
     def __init__(
         self,
         reddit: "Reddit",  # noqa: F821
-        subreddit: "Subreddit",
+        subreddit: "Subreddit",  # noqa: F821
         name: str,
         revision: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,

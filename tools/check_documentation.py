@@ -4,12 +4,12 @@ import os
 import re
 import sys
 
+# This line imports from the local PRAW rather than the global installed PRAW.
+sys.path.insert(0, os.path.abspath(os.path.join(__file__, "..", "..")))
+
 from praw.models.reddit.base import RedditBase  # noqa: E402
 from praw.models.reddit.modmail import ModmailObject  # noqa: E402
 from praw.util.cache import cachedproperty  # noqa: E402
-
-# This line imports from the local PRAW rather than the global installed PRAW.
-sys.path.insert(0, os.path.abspath(os.path.join(__file__, "..", "..")))
 
 
 class DocumentationChecker:

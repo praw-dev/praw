@@ -129,7 +129,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return self._replies
 
     @property
-    def submission(self) -> "Submission":
+    def submission(self) -> "Submission":  # noqa: F821
         """Return the Submission object this comment belongs to."""
         if not self._submission:  # Comment not from submission
             self._submission = self._reddit.submission(
@@ -138,7 +138,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return self._submission
 
     @submission.setter
-    def submission(self, submission: "Submission"):
+    def submission(self, submission: "Submission"):  # noqa: F821
         """Update the Submission associated with the Comment."""
         submission._comments_by_id[self.name] = self
         self._submission = submission

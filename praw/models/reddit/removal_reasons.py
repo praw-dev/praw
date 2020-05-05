@@ -41,7 +41,7 @@ class RemovalReason(RedditBase):
     def __init__(
         self,
         reddit: "Reddit",  # noqa: F821
-        subreddit: "Subreddit",
+        subreddit: "Subreddit",  # noqa: F821
         reason_id: str,
         _data: Optional[Dict[str, Any]] = None,
     ):
@@ -118,7 +118,7 @@ class SubredditRemovalReasons:
         """
         return RemovalReason(self.subreddit._reddit, self.subreddit, reason_id)
 
-    def __init__(self, subreddit: "Subreddit"):
+    def __init__(self, subreddit: "Subreddit"):  # noqa: F821
         """Create a SubredditRemovalReasons instance.
 
         :param subreddit: The subreddit whose removal reasons to work with.

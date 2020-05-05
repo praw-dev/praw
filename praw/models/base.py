@@ -7,7 +7,9 @@ class PRAWBase:
     """Superclass for all models in PRAW."""
 
     @staticmethod
-    def _safely_add_arguments(argument_dict, key, **new_arguments):
+    def _safely_add_arguments(
+        argument_dict: Dict[Any, Any], key: Any, **new_arguments: Any
+    ):
         """Replace argument_dict[key] with a deepcopy and update.
 
         This method is often called when new parameters need to be added to a
@@ -23,7 +25,7 @@ class PRAWBase:
     @classmethod
     def parse(
         cls, data: Dict[str, Any], reddit: "Reddit"  # noqa: F821
-    ) -> Any:
+    ) -> "PRAWBase":
         """Return an instance of ``cls`` from ``data``.
 
         :param data: The structured data.

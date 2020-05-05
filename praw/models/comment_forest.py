@@ -53,7 +53,7 @@ class CommentForest:
 
     def __init__(
         self,
-        submission: "Submission",
+        submission: "Submission",  # noqa: F821
         comments: Optional[List["Comment"]] = None,
     ):
         """Initialize a CommentForest instance.

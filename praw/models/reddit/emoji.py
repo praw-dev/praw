@@ -53,7 +53,7 @@ class Emoji(RedditBase):
     def __init__(
         self,
         reddit: "Reddit",  # noqa: F821
-        subreddit: "Subreddit",
+        subreddit: "Subreddit",  # noqa: F821
         name: str,
         _data: Optional[Dict[str, Any]] = None,
     ):
@@ -160,7 +160,7 @@ class SubredditEmoji:
         """
         return Emoji(self._reddit, self.subreddit, name)
 
-    def __init__(self, subreddit: "Subreddit"):
+    def __init__(self, subreddit: "Subreddit"):  # noqa: F821
         """Create a SubredditEmoji instance.
 
         :param subreddit: The subreddit whose emoji are affected.

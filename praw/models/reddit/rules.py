@@ -188,7 +188,7 @@ class SubredditRules:
             self._reddit, subreddit=self.subreddit, short_name=short_name
         )
 
-    def __init__(self, subreddit: "Subreddit"):
+    def __init__(self, subreddit: "Subreddit"):  # noqa: F821
         """Create a SubredditRules instance.
 
         :param subreddit: The subreddit whose rules to work with.

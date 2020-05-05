@@ -17,7 +17,7 @@ class CommentHelper(PRAWBase):
     def _path(self):
         return urljoin(self.subreddit._path, "comments/")
 
-    def __init__(self, subreddit: "Subreddit"):
+    def __init__(self, subreddit: "Subreddit"):  # noqa: F821
         """Initialize a CommentHelper instance."""
         super().__init__(subreddit._reddit, _data=None)
         self.subreddit = subreddit

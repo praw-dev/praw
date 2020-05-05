@@ -158,7 +158,7 @@ class Inbox(PRAWBase):
             self._reddit, API_PATH["mentions"], **generator_kwargs
         )
 
-    def message(self, message_id: str) -> "Message":
+    def message(self, message_id: str) -> "Message":  # noqa: F821
         """Return a Message corresponding to ``message_id``.
 
         :param message_id: The base36 id of a message.

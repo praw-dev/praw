@@ -77,7 +77,7 @@ class Redditor(
 
     @classmethod
     def from_data(
-        cls, reddit: "Reddit", data: Optional[Dict[str, Any]]
+        cls, reddit: "Reddit", data: Optional[Dict[str, Any]]  # noqa: F821
     ) -> Optional["Redditor"]:
         """Return an instance of Redditor, or None from ``data``."""
         if data == "[deleted]":

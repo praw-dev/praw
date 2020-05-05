@@ -6,7 +6,7 @@ class ModAction(PRAWBase):
     """Represent a moderator action."""
 
     @property
-    def mod(self) -> "Redditor":
+    def mod(self) -> "Redditor":  # noqa: F821
         """Return the Redditor who the action was issued by."""
         return self._reddit.redditor(self._mod)  # pylint: disable=no-member
 
