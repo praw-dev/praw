@@ -1,5 +1,5 @@
 """Provides the User class."""
-from typing import Dict, Generator, List, Optional, TypeVar, Union
+from typing import Dict, Iterator, List, Optional, TypeVar, Union
 
 from ..const import API_PATH
 from ..models import Preferences
@@ -25,7 +25,7 @@ class User(PRAWBase):
         .. code-block:: python
 
            preferences = reddit.user.preferences()
-           print(preferences['show_link_flair'])
+           print(preferences["show_link_flair"])
 
         Preferences can be updated via:
 
@@ -62,8 +62,10 @@ class User(PRAWBase):
 
     def contributor_subreddits(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
-        """Return a :class:`.ListingGenerator` of subreddits user is a contributor of.
+    ) -> Iterator[Subreddit]:
+        """Return a :class:`.ListingGenerator` of contributor subreddits.
+
+        These are subreddits that the user is a contributor of.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -73,12 +75,36 @@ class User(PRAWBase):
             self._reddit, API_PATH["my_contributor"], **generator_kwargs
         )
 
-    def friends(self) -> List[Redditor]:
-        """Return a RedditorList of friends."""
-        return self._reddit.get(API_PATH["friends"])
+    def friends(
+        self, user: Optional[Union[str, Redditor]] = None
+    ) -> Union[List[Redditor], Redditor]:
+        """Return a RedditorList of friends or a Redditor in the friends list.
 
-    def karma(self) -> Dict[Subreddit, int]:
-        """Return a dictionary mapping subreddits to their karma."""
+        :param user: Checks to see if you are friends with the Redditor. Either
+            an instance of :class:`.Redditor` or a string can be given.
+        :returns: A list of Redditors, or a Redditor if you are friends with
+            the given Redditor. The Redditor also has friend attributes.
+        :raises: An instance of :class:`.RedditAPIException` if you are
+            not friends with the specified Redditor.
+        """
+        endpoint = (
+            API_PATH["friends"]
+            if user is None
+            else API_PATH["friend_v1"].format(user=str(user))
+        )
+        return self._reddit.get(endpoint)
+
+    def karma(self) -> Dict[Subreddit, Dict[str, int]]:
+        """Return a dictionary mapping subreddits to their karma.
+
+        The returned dict contains subreddits as keys. Each subreddit key
+        contains a sub-dict that have keys for ``comment_karma`` and
+        ``link_karma``. The dict is sorted in descending karma order.
+
+        .. note:: Each key of the main dict is an instance of
+            :class:`~.Subreddit`. It is recommended to iterate over the dict in
+            order to retrieve the values, preferably through ``dict.items()``.
+        """
         karma_map = {}
         for row in self._reddit.get(API_PATH["karma"])["data"]:
             subreddit = Subreddit(self._reddit, row["sr"])
@@ -108,42 +134,13 @@ class User(PRAWBase):
             self._me = Redditor(self._reddit, _data=user_data)
         return self._me
 
-    def moderator_subreddits(
-        self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
-        """Return a :class:`.ListingGenerator` of moderated subreddits.
-
-        ..warning:: (Deprecated) This method will be removed in the next major
-                    version of PRAW. Please use :meth:`.Redditor.moderated`
-                    instead.
-
-        Additional keyword arguments are passed in the initialization of
-        :class:`.ListingGenerator`.
-
-        .. note:: This method will return a maximum of 100 moderated
-           subreddits, ordered by subscriber count. To retrieve more than
-           100 moderated subreddits, please see :meth:`.Redditor.moderated`.
-
-        Usage:
-
-        .. code-block:: python
-
-           for subreddit in reddit.user.moderator_subreddits():
-               print(subreddit.display_name)
-
-
-        """
-        return ListingGenerator(
-            self._reddit, API_PATH["my_moderator"], **generator_kwargs
-        )
-
     def multireddits(self) -> List[Multireddit]:
         """Return a list of multireddits belonging to the user."""
         return self._reddit.get(API_PATH["my_multireddits"])
 
     def subreddits(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
+    ) -> Iterator[Subreddit]:
         """Return a :class:`.ListingGenerator` of subreddits the user is subscribed to.
 
         Additional keyword arguments are passed in the initialization of

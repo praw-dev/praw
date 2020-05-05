@@ -22,11 +22,11 @@ class MoreComments(PRAWBase):
 
     def __eq__(self, other: Union[str, _MoreComments]) -> bool:
         """Return True if these MoreComments instances are the same."""
-        return (
-            isinstance(other, self.__class__)
-            and self.count == other.count
-            and self.children == other.children
-        )
+        if isinstance(other, self.__class__):
+            return (
+                self.count == other.count and self.children == other.children
+            )
+        return super().__eq__(other)
 
     def __lt__(self, other: _MoreComments) -> bool:
         """Provide a sort order on the MoreComments object."""
@@ -72,7 +72,7 @@ class MoreComments(PRAWBase):
     def comments(self, update: bool = True) -> List[Comment]:
         """Fetch and return the comments for a single MoreComments object."""
         if self._comments is None:
-            if self.count == 0:  # Handle 'continue this thread'
+            if self.count == 0:  # Handle "continue this thread"
                 return self._continue_comments(update)
             assert self.children, "Please file a bug report with PRAW."
             data = {

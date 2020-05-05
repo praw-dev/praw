@@ -5,7 +5,7 @@ from ....const import API_PATH
 class VotableMixin:
     """Interface for RedditBase classes that can be voted on."""
 
-    def _vote(self, direction):
+    def _vote(self, direction: int):
         self._reddit.post(
             API_PATH["vote"], data={"dir": str(direction), "id": self.fullname}
         )
@@ -23,10 +23,10 @@ class VotableMixin:
 
         .. code-block:: python
 
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.clear_vote()
 
-           comment = reddit.comment(id='dxolpyc')
+           comment = reddit.comment(id="dxolpyc")
            comment.clear_vote()
 
         """
@@ -45,13 +45,13 @@ class VotableMixin:
 
         .. code-block:: python
 
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.downvote()
 
-           comment = reddit.comment(id='dxolpyc')
+           comment = reddit.comment(id="dxolpyc")
            comment.downvote()
 
-        See also :meth:`~.upvote`
+        .. seealso:: :meth:`~.upvote`
 
         """
         self._vote(direction=-1)
@@ -69,13 +69,13 @@ class VotableMixin:
 
         .. code-block:: python
 
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.upvote()
 
-           comment = reddit.comment(id='dxolpyc')
+           comment = reddit.comment(id="dxolpyc")
            comment.upvote()
 
-        See also :meth:`~.downvote`
+        .. seealso:: :meth:`~.downvote`
 
         """
         self._vote(direction=1)

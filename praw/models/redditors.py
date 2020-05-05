@@ -1,5 +1,9 @@
 """Provide the Redditors class."""
-from typing import Dict, Generator, TypeVar, Union
+from itertools import islice
+from types import SimpleNamespace
+from typing import Dict, Iterable, Iterator, TypeVar, Union
+
+import prawcore
 
 from ..const import API_PATH
 from .base import PRAWBase
@@ -9,15 +13,19 @@ from .util import stream_generator
 Subreddit = TypeVar("Subreddit")
 
 
+class PartialRedditor(SimpleNamespace):
+    """A namespace object that provides a subset of Redditor attributes."""
+
+
 class Redditors(PRAWBase):
     """Redditors is a Listing class that provides various Redditor lists."""
 
     def new(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
+    ) -> Iterator[Subreddit]:
         """Return a :class:`.ListingGenerator` for new Redditors.
 
-        :returns Redditor profiles, which are a type of :class:`.Subreddit`.
+        :returns: Redditor profiles, which are a type of :class:`.Subreddit`.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -28,10 +36,10 @@ class Redditors(PRAWBase):
 
     def popular(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
+    ) -> Iterator[Subreddit]:
         """Return a :class:`.ListingGenerator` for popular Redditors.
 
-        :returns Redditor profiles, which are a type of :class:`.Subreddit`.
+        :returns: Redditor profiles, which are a type of :class:`.Subreddit`.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -42,12 +50,12 @@ class Redditors(PRAWBase):
 
     def search(
         self, query: str, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
+    ) -> Iterator[Subreddit]:
         r"""Return a :class:`.ListingGenerator` of Redditors for ``query``.
 
         :param query: The query string to filter Redditors by.
 
-        :returns :class:`.Redditor`\ s.
+        :returns: :class:`.Redditor`\ s.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -59,7 +67,7 @@ class Redditors(PRAWBase):
 
     def stream(
         self, **stream_options: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
+    ) -> Iterator[Subreddit]:
         """Yield new Redditors as they are created.
 
         Redditors are yielded oldest first. Up to 100 historical Redditors
@@ -67,6 +75,36 @@ class Redditors(PRAWBase):
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
-        :returns Redditor profiles, which are a type of :class:`.Subreddit`.
+        :returns: Redditor profiles, which are a type of :class:`.Subreddit`.
         """
         return stream_generator(self.new, **stream_options)
+
+    def partial_redditors(
+        self, ids: Iterable[str]
+    ) -> Iterator[PartialRedditor]:
+        """Get user summary data by redditor IDs.
+
+        :param ids: An iterable of redditor fullname IDs.
+        :returns: A iterator producing types.SimpleNamespace objects.
+
+        Each ID must be prefixed with ``t2_``.
+
+        Invalid IDs are ignored by the server.
+        """
+        iterable = iter(ids)
+        while True:
+            chunk = list(islice(iterable, 100))
+            if not chunk:
+                break
+
+            params = {"ids": ",".join(chunk)}
+            try:
+                results = self._reddit.get(
+                    API_PATH["user_by_fullname"], params=params
+                )
+            except prawcore.exceptions.NotFound:
+                # None of the given IDs matched any Redditor.
+                continue
+
+            for fullname, user_data in results.items():
+                yield PartialRedditor(fullname=fullname, **user_data)

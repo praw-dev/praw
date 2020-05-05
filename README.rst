@@ -47,7 +47,7 @@ To install the latest development version of PRAW run the following instead:
 
 For instructions on installing Python and pip see "The Hitchhiker's Guide to
 Python" `Installation Guides
-<http://docs.python-guide.org/en/latest/starting/installation/>`_.
+<https://docs.python-guide.org/en/latest/starting/installation/>`_.
 
 Quickstart
 ----------
@@ -58,34 +58,34 @@ can instantiate an instance of PRAW like so:
 .. code-block:: python
 
   import praw
-  reddit = praw.Reddit(client_id='CLIENT_ID', client_secret="CLIENT_SECRET",
-                       password='PASSWORD', user_agent='USERAGENT',
-                       username='USERNAME')
+  reddit = praw.Reddit(client_id="CLIENT_ID", client_secret="CLIENT_SECRET",
+                       password="PASSWORD", user_agent="USERAGENT",
+                       username="USERNAME")
 
 With the ``reddit`` instance you can then interact with Reddit:
 
 .. code-block:: python
 
   # Create a submission to r/test
-  reddit.subreddit('test').submit('Test Submission', url='https://reddit.com')
+  reddit.subreddit("test").submit("Test Submission", url="https://reddit.com")
 
   # Comment on a known submission
-  submission = reddit.submission(url='https://www.reddit.com/comments/5e1az9')
-  submission.reply('Super rad!')
+  submission = reddit.submission(url="https://www.reddit.com/comments/5e1az9")
+  submission.reply("Super rad!")
 
   # Reply to the first comment of a weekly top thread of a moderated community
-  submission = next(reddit.subreddit('mod').top('week'))
-  submission.comments[0].reply('An automated reply')
+  submission = next(reddit.subreddit("mod").top("week"))
+  submission.comments[0].reply("An automated reply")
 
   # Output score for the first 256 items on the frontpage
   for submission in reddit.front.hot(limit=256):
       print(submission.score)
 
   # Obtain the moderator listing for r/redditdev
-  for moderator in reddit.subreddit('redditdev').moderator:
+  for moderator in reddit.subreddit("redditdev").moderator():
       print(moderator)
 
-Please see PRAW's `documentation <http://praw.readthedocs.io/>`_ for
+Please see PRAW's `documentation <https://praw.readthedocs.io/>`_ for
 more examples of what you can do with PRAW.
 
 PRAW Discussion and Support
@@ -104,7 +104,7 @@ related discussion so please tag submissions with *[PRAW]*. Please perform a
 search on the subreddit first to see if anyone has similar questions.
 
 Real-time chat can be conducted via the `PRAW Slack Organization
-<https://join.slack.com/t/praw/shared_invite/enQtODk1NDM4NDk3MDE0LWYyYzM1NGE2YjI4MTAwM2IyZWExMTJiNTZiNTgwNTlmYzQ0NmNiZjg5Zjc0NTIwYWZkZmI5MTFlNWY0MmFjY2M>`_
+<https://join.slack.com/t/praw/shared_invite/enQtOTUwMDcxOTQ0NzY5LWVkMGQ3ZDk5YmQ5MDEwYTZmMmJkMTJkNjBkNTY3OTU0Y2E2NGRlY2ZhZTAzMWZmMWRiMTMwYjdjODkxOGYyZjY>`_
 (please create an issue if that invite link has expired).
 
 Please do not directly message any of the contributors via Reddit, email, or
@@ -124,7 +124,7 @@ information are certainly welcome.
 Documentation
 -------------
 
-PRAW's documentation is located at http://praw.readthedocs.io/.
+PRAW's documentation is located at https://praw.readthedocs.io/.
 
 History
 -------

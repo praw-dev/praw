@@ -25,9 +25,13 @@ class Emoji(RedditBase):
     ======================= ===================================================
     Attribute               Description
     ======================= ===================================================
+    ``mod_flair_only``      Whether the emoji is restricted for mod use only.
     ``name``                The name of the emoji.
+    ``post_flair_allowed``  Whether the emoji may appear in post flair.
     ``url``                 The URL of the emoji image.
+    ``user_flair_allowed``  Whether the emoji may appear in user flair.
     ======================= ===================================================
+
     """
 
     STR_FIELD = "name"
@@ -36,11 +40,11 @@ class Emoji(RedditBase):
         """Return whether the other instance equals the current."""
         if isinstance(other, str):
             return other == str(self)
-        return (
-            isinstance(other, self.__class__)
-            and str(self) == str(other)
-            and other.subreddit == self.subreddit
-        )
+        if isinstance(other, self.__class__):
+            return (
+                str(self) == str(other) and other.subreddit == self.subreddit
+            )
+        return super().__eq__(other)
 
     def __hash__(self) -> int:
         """Return the hash of the current instance."""
@@ -77,17 +81,69 @@ class Emoji(RedditBase):
     def delete(self):
         """Delete an emoji from this subreddit by Emoji.
 
-        To delete ``'test'`` as an emoji on the subreddit ``'praw_test'`` try:
+        To delete ``"test"`` as an emoji on the subreddit ``"praw_test"`` try:
 
         .. code-block:: python
 
-           reddit.subreddit('praw_test').emoji['test'].delete()
+           reddit.subreddit("praw_test").emoji["test"].delete()
 
         """
         url = API_PATH["emoji_delete"].format(
             emoji_name=self.name, subreddit=self.subreddit
         )
-        self._reddit.request("DELETE", url)
+        self._reddit.delete(url)
+
+    def update(
+        self,
+        mod_flair_only: Optional[bool] = None,
+        post_flair_allowed: Optional[bool] = None,
+        user_flair_allowed: Optional[bool] = None,
+    ):
+        """Update the permissions of an emoji in this subreddit.
+
+        :param mod_flair_only: (boolean) Indicate whether the emoji is
+            restricted to mod use only. Respects pre-existing settings if not
+            provided.
+        :param post_flair_allowed: (boolean) Indicate whether the emoji may
+            appear in post flair. Respects pre-existing settings if not
+            provided.
+        :param user_flair_allowed: (boolean) Indicate whether the emoji may
+            appear in user flair. Respects pre-existing settings if not
+            provided.
+
+        .. note:: In order to retain pre-existing values for those that are not
+           explicitly passed, a network request is issued. To  avoid that
+           network request, explicitly provide all values.
+
+        To restrict the emoji ``test`` in subreddit ``wowemoji`` to mod use
+        only, try:
+
+        .. code-block:: python
+
+           reddit.subreddit("wowemoji").emoji["test"].update(mod_flair_only=True)
+
+        """
+        locals_reference = locals()
+        mapping = {
+            attribute: locals_reference[attribute]
+            for attribute in (
+                "mod_flair_only",
+                "post_flair_allowed",
+                "user_flair_allowed",
+            )
+        }
+        if all(value is None for value in mapping.values()):
+            raise TypeError("At least one attribute must be provided")
+
+        data = {"name": self.name}
+        for attribute, value in mapping.items():
+            if value is None:
+                value = getattr(self, attribute)
+            data[attribute] = value
+        url = API_PATH["emoji_update"].format(subreddit=self.subreddit)
+        self._reddit.post(url, data=data)
+        for attribute, value in data.items():
+            setattr(self, attribute, value)
 
 
 class SubredditEmoji:
@@ -102,7 +158,7 @@ class SubredditEmoji:
 
         .. code-block:: python
 
-           emoji = reddit.subreddit('praw_test').emoji['test']
+           emoji = reddit.subreddit("praw_test").emoji["test"]
            print(emoji)
 
         """
@@ -124,32 +180,49 @@ class SubredditEmoji:
 
         .. code-block:: python
 
-           for emoji in reddit.subreddit('praw_test').emoji:
+           for emoji in reddit.subreddit("praw_test").emoji:
                print(emoji)
 
         """
-        response = self.subreddit._reddit.get(
+        response = self._reddit.get(
             API_PATH["emoji_list"].format(subreddit=self.subreddit)
         )
-        for emoji_name, emoji_data in response[
-            self.subreddit.fullname
-        ].items():
+        subreddit_keys = [
+            key
+            for key in response.keys()
+            if key.startswith(self._reddit.config.kinds["subreddit"])
+        ]
+        assert len(subreddit_keys) == 1
+        for emoji_name, emoji_data in response[subreddit_keys[0]].items():
             yield Emoji(
                 self._reddit, self.subreddit, emoji_name, _data=emoji_data
             )
 
-    def add(self, name: str, image_path: str):
+    def add(
+        self,
+        name: str,
+        image_path: str,
+        mod_flair_only: Optional[bool] = None,
+        post_flair_allowed: Optional[bool] = None,
+        user_flair_allowed: Optional[bool] = None,
+    ) -> Emoji:
         """Add an emoji to this subreddit.
 
         :param name: The name of the emoji
         :param image_path: A path to a jpeg or png image.
+        :param mod_flair_only: (boolean) When provided, indicate whether the
+            emoji is restricted to mod use only. (Default: ``None``)
+        :param post_flair_allowed: (boolean) When provided, indicate whether
+            the emoji may appear in post flair. (Default: ``None``)
+        :param user_flair_allowed: (boolean) When provided, indicate whether
+            the emoji may appear in user flair. (Default: ``None``)
         :returns: The Emoji added.
 
-        To add ``'test'`` to the subreddit ``'praw_test'`` try:
+        To add ``test`` to the subreddit ``praw_test`` try:
 
         .. code-block:: python
 
-           reddit.subreddit('praw_test').emoji.add('test','test.png')
+           reddit.subreddit("praw_test").emoji.add("test", "test.png")
 
         """
         data = {
@@ -173,8 +246,13 @@ class SubredditEmoji:
             )
         response.raise_for_status()
 
+        data = {
+            "mod_flair_only": mod_flair_only,
+            "name": name,
+            "post_flair_allowed": post_flair_allowed,
+            "s3_key": upload_data["key"],
+            "user_flair_allowed": user_flair_allowed,
+        }
         url = API_PATH["emoji_upload"].format(subreddit=self.subreddit)
-        self._reddit.post(
-            url, data={"name": name, "s3_key": upload_data["key"]}
-        )
+        self._reddit.post(url, data=data)
         return Emoji(self._reddit, self.subreddit, name)

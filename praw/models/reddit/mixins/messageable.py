@@ -1,11 +1,20 @@
 """Provide the MessageableMixin class."""
+from typing import Optional, TypeVar, Union
+
 from ....const import API_PATH
+
+Subreddit = TypeVar("Subreddit")
 
 
 class MessageableMixin:
     """Interface for classes that can be messaged."""
 
-    def message(self, subject, message, from_subreddit=None):
+    def message(
+        self,
+        subject: str,
+        message: str,
+        from_subreddit: Optional[Union[Subreddit, str]] = None,
+    ):
         """
         Send a message to a redditor or a subreddit's moderators (mod mail).
 
@@ -21,20 +30,20 @@ class MessageableMixin:
 
         .. code-block:: python
 
-           reddit.redditor('spez').message('TEST', 'test message from PRAW')
+           reddit.redditor("spez").message("TEST", "test message from PRAW")
 
         To send a message to ``u/spez`` from the moderators of ``r/test`` try:
 
         .. code-block:: python
 
-           reddit.redditor('spez').message('TEST', 'test message from r/test',
-                                           from_subreddit='test')
+           reddit.redditor("spez").message("TEST", "test message from r/test",
+                                           from_subreddit="test")
 
         To send a message to the moderators of ``r/test``, try:
 
         .. code-block:: python
 
-           reddit.subreddit('test').message('TEST', 'test PM from PRAW')
+           reddit.subreddit("test").message("TEST", "test PM from PRAW")
 
         """
         data = {

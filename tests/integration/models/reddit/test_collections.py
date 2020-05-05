@@ -1,6 +1,7 @@
 """Test classes from collections.py."""
 
-import mock
+from unittest import mock
+
 import pytest
 
 from praw.exceptions import ClientException

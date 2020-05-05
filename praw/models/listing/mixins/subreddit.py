@@ -1,5 +1,5 @@
 """Provide the SubredditListingMixin class."""
-from typing import Any, Dict, Generator, TypeVar, Union
+from typing import Any, Dict, Iterator, Optional, TypeVar, Union
 from urllib.parse import urljoin
 
 from ....util.cache import cachedproperty
@@ -28,7 +28,7 @@ class CommentHelper(PRAWBase):
 
     def __call__(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for the Subreddit's comments.
 
         Additional keyword arguments are passed in the initialization of
@@ -38,7 +38,7 @@ class CommentHelper(PRAWBase):
 
         .. code-block:: python
 
-           for comment in reddit.subreddit('redditdev').comments(limit=25):
+           for comment in reddit.subreddit("redditdev").comments(limit=25):
                print(comment.author)
 
         """
@@ -59,13 +59,13 @@ class SubredditListingMixin(
 
         .. code-block:: python
 
-           for comment in reddit.subreddit('redditdev').comments(limit=25):
+           for comment in reddit.subreddit("redditdev").comments(limit=25):
                print(comment.author)
 
         """
         return CommentHelper(self)
 
-    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
+    def __init__(self, reddit: Reddit, _data: Optional[Dict[str, Any]]):
         """Initialize a SubredditListingMixin instance.
 
         :param reddit: An instance of :class:`.Reddit`.

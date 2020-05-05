@@ -1,5 +1,5 @@
 """Provide the Subreddits class."""
-from typing import Dict, Generator, List, Optional, Union
+from typing import Dict, Iterator, List, Optional, Union
 
 from ..const import API_PATH
 from . import Subreddit
@@ -17,7 +17,7 @@ class Subreddits(PRAWBase):
 
     def default(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
+    ) -> Iterator[Subreddit]:
         """Return a :class:`.ListingGenerator` for default subreddits.
 
         Additional keyword arguments are passed in the initialization of
@@ -29,7 +29,7 @@ class Subreddits(PRAWBase):
 
     def gold(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
+    ) -> Iterator[Subreddit]:
         """Return a :class:`.ListingGenerator` for gold subreddits.
 
         Additional keyword arguments are passed in the initialization of
@@ -41,7 +41,7 @@ class Subreddits(PRAWBase):
 
     def new(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
+    ) -> Iterator[Subreddit]:
         """Return a :class:`.ListingGenerator` for new subreddits.
 
         Additional keyword arguments are passed in the initialization of
@@ -53,7 +53,7 @@ class Subreddits(PRAWBase):
 
     def popular(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
+    ) -> Iterator[Subreddit]:
         """Return a :class:`.ListingGenerator` for popular subreddits.
 
         Additional keyword arguments are passed in the initialization of
@@ -95,16 +95,18 @@ class Subreddits(PRAWBase):
 
     def search(
         self, query: str, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
+    ) -> Iterator[Subreddit]:
         """Return a :class:`.ListingGenerator` of subreddits matching ``query``.
 
-        Subreddits are searched by both their title and description. To search
-        names only see ``search_by_name``.
+        Subreddits are searched by both their title and description.
 
         :param query: The query string to filter subreddits by.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
+        .. seealso:: :meth:`~.search_by_name` to search by subreddit names
+
         """
         self._safely_add_arguments(generator_kwargs, "params", q=query)
         return ListingGenerator(
@@ -146,7 +148,7 @@ class Subreddits(PRAWBase):
 
     def stream(
         self, **stream_options: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
+    ) -> Iterator[Subreddit]:
         """Yield new subreddits as they are created.
 
         Subreddits are yielded oldest first. Up to 100 historical subreddits

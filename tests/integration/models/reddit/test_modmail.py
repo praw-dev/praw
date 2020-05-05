@@ -1,5 +1,6 @@
+from unittest import mock
+
 from praw.models import ModmailMessage
-import mock
 
 from ... import IntegrationTest
 

@@ -1,6 +1,8 @@
-from praw.models import Comment, Submission, Subreddit
-import mock
+from unittest import mock
+
 import pytest
+
+from praw.models import Comment, Submission, Subreddit
 
 from ... import IntegrationTest
 

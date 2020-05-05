@@ -18,7 +18,7 @@ class ModmailConversation(RedditBase):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -40,8 +40,8 @@ class ModmailConversation(RedditBase):
     ``num_messages``        The number of messages in the ModmailConversation.
     ``obj_ids``             Provides a list of dictionaries representing
                             mod actions on the ModmailConversation. Each dict
-                            contains attributes of 'key' and 'id'. The key can
-                            be either 'messages' or 'ModAction'. ModAction
+                            contains attributes of "key" and "id". The key can
+                            be either "messages" or "ModAction". ModAction
                             represents archiving/highlighting etc.
     ``owner``               Provides an instance of :class:`.Subreddit`. The
                             subreddit that the ModmailConversation belongs to.
@@ -176,7 +176,7 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit('redditdev').modmail('2gmz').archive()
+           reddit.subreddit("redditdev").modmail("2gmz").archive()
 
         """
         self._reddit.post(API_PATH["modmail_archive"].format(id=self.id))
@@ -188,7 +188,7 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit('redditdev').modmail('2gmz').highlight()
+           reddit.subreddit("redditdev").modmail("2gmz").highlight()
 
         """
         self._reddit.post(API_PATH["modmail_highlight"].format(id=self.id))
@@ -200,7 +200,7 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit('redditdev').modmail('2gmz').mute()
+           reddit.subreddit("redditdev").modmail("2gmz").mute()
 
         """
         self._reddit.request(
@@ -220,8 +220,8 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit('redditdev')
-           conversation = subreddit.modmail.conversation('2gmz')
+           subreddit = reddit.subreddit("redditdev")
+           conversation = subreddit.modmail.conversation("2gmz")
            conversation.read(
                             other_conversations=conversation.user.recent_convos)
 
@@ -250,14 +250,14 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-           conversation = reddit.subreddit('redditdev').modmail('2gmz')
-           conversation.reply('Message body', author_hidden=True)
+           conversation = reddit.subreddit("redditdev").modmail("2gmz")
+           conversation.reply("Message body", author_hidden=True)
 
         To create a private moderator note on the conversation:
 
         .. code-block:: python
 
-           conversation.reply('Message body', internal=True)
+           conversation.reply("Message body", internal=True)
 
         """
         data = {
@@ -279,7 +279,7 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit('redditdev').modmail('2gmz').unarchive()
+           reddit.subreddit("redditdev").modmail("2gmz").unarchive()
 
         """
         self._reddit.post(API_PATH["modmail_unarchive"].format(id=self.id))
@@ -291,12 +291,10 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit('redditdev').modmail('2gmz').unhighlight()
+           reddit.subreddit("redditdev").modmail("2gmz").unhighlight()
 
         """
-        self._reddit.request(
-            "DELETE", API_PATH["modmail_highlight"].format(id=self.id)
-        )
+        self._reddit.delete(API_PATH["modmail_highlight"].format(id=self.id))
 
     def unmute(self):
         """Unmute the non-mod user associated with the conversation.
@@ -305,7 +303,7 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit('redditdev').modmail('2gmz').unmute()
+           reddit.subreddit("redditdev").modmail("2gmz").unmute()
 
         """
         self._reddit.request(
@@ -325,8 +323,8 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit('redditdev')
-           conversation = subreddit.modmail.conversation('2gmz')
+           subreddit = reddit.subreddit("redditdev")
+           conversation = subreddit.modmail.conversation("2gmz")
            conversation.unread(\
 other_conversations=conversation.user.recent_convos)
 

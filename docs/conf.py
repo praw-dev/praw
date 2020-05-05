@@ -1,10 +1,12 @@
 import os
 import sys
 
+# Do not touch these. They use the local PRAW over the global PRAW.
 sys.path.insert(0, ".")
 sys.path.insert(1, "..")
 
 from praw import __version__
+
 
 copyright = "2020, Bryce Boe"
 exclude_patterns = ["_build"]

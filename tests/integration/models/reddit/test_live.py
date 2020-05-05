@@ -1,6 +1,10 @@
 """Test praw.models.LiveThread"""
+from unittest import mock
+
+import pytest
+
 from praw.const import API_PATH
-from praw.exceptions import APIException
+from praw.exceptions import RedditAPIException
 from praw.models import (
     LiveThread,
     LiveUpdate,
@@ -8,8 +12,6 @@ from praw.models import (
     RedditorList,
     Submission,
 )
-import mock
-import pytest
 
 from ... import IntegrationTest
 
@@ -98,9 +100,12 @@ class TestLiveContributorRelationship(IntegrationTest):
             "TestLiveContributorRelationship_test_invite__already_invited"
         ):
             thread.contributor.invite("nmtake")
-            with pytest.raises(APIException) as excinfo:
+            with pytest.raises(RedditAPIException) as excinfo:
                 thread.contributor.invite("nmtake")
-        assert excinfo.value.error_type == "LIVEUPDATE_ALREADY_CONTRIBUTOR"
+        assert (
+            excinfo.value.items[0].error_type
+            == "LIVEUPDATE_ALREADY_CONTRIBUTOR"
+        )
 
     def test_invite__empty_list(self):
         self.reddit.read_only = False

@@ -1,5 +1,5 @@
 """Provide the RisingListingMixin class."""
-from typing import Dict, Generator, TypeVar, Union
+from typing import Dict, Iterator, TypeVar, Union
 from urllib.parse import urljoin
 
 from ...base import PRAWBase
@@ -13,11 +13,18 @@ class RisingListingMixin(PRAWBase):
 
     def random_rising(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Submission, None, None]:
+    ) -> Iterator[Submission]:
         """Return a :class:`.ListingGenerator` for random rising submissions.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
+        For example, to get random rising submissions for subreddit ``r/test``:
+
+        .. code-block:: python
+
+            for submission in reddit.subreddit("test").random_rising():
+                print(submission.title)
 
         """
         return ListingGenerator(
@@ -28,11 +35,18 @@ class RisingListingMixin(PRAWBase):
 
     def rising(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Submission, None, None]:
+    ) -> Iterator[Submission]:
         """Return a :class:`.ListingGenerator` for rising submissions.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
+        For example, to get rising submissions for subreddit ``r/test``:
+
+        .. code-block:: python
+
+            for submission in reddit.subreddit("test").rising():
+                print(submission.title)
 
         """
         return ListingGenerator(

@@ -10,9 +10,9 @@ As always, you need to begin by creating an instance of :class:`.Reddit`:
 
    import praw
 
-   reddit = praw.Reddit(user_agent='Comment Extraction (by /u/USERNAME)',
-                        client_id='CLIENT_ID', client_secret="CLIENT_SECRET",
-                        username='USERNAME', password='PASSWORD')
+   reddit = praw.Reddit(user_agent="Comment Extraction (by /u/USERNAME)",
+                        client_id="CLIENT_ID", client_secret="CLIENT_SECRET",
+                        username="USERNAME", password="PASSWORD")
 
 .. note:: If you are only analyzing public comments, entering a username and
    password is optional.
@@ -35,13 +35,14 @@ entire URL:
 
 .. code-block:: python
 
-   submission = reddit.submission(url='https://www.reddit.com/r/funny/comments/3g1jfi/buttons/')
+   url = "https://www.reddit.com/r/funny/comments/3g1jfi/buttons/"
+   submission = reddit.submission(url=url)
 
 or with the submission's ID which comes after ``comments/`` in the URL:
 
 .. code-block:: python
 
-   submission = reddit.submission(id='3g1jfi')
+   submission = reddit.submission(id="3g1jfi")
 
 With a submission object we can then interact with its :class:`.CommentForest`
 through the submission's :attr:`~praw.models.Submission.comments` attribute. A

@@ -1,5 +1,5 @@
 """Provide the SubmissionListingMixin class."""
-from typing import Dict, Generator, TypeVar, Union
+from typing import Dict, Iterator, TypeVar, Union
 
 from ....const import API_PATH
 from ...base import PRAWBase
@@ -13,7 +13,7 @@ class SubmissionListingMixin(PRAWBase):
 
     def duplicates(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Submission, None, None]:
+    ) -> Iterator[Submission]:
         """Return a :class:`.ListingGenerator` for the submission's duplicates.
 
         Additional keyword arguments are passed in the initialization of
@@ -23,12 +23,12 @@ class SubmissionListingMixin(PRAWBase):
 
         .. code-block:: python
 
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
 
            for duplicate in submission.duplicates():
                # process each duplicate
 
-        See also :meth:`~.upvote`
+        .. seealso:: :meth:`~.upvote`
 
         """
         url = API_PATH["duplicates"].format(submission_id=self.id)

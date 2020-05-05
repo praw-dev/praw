@@ -1,5 +1,5 @@
 """Provide the RedditorListingMixin class."""
-from typing import Any, Dict, Generator, TypeVar, Union
+from typing import Any, Dict, Iterator, TypeVar, Union
 from urllib.parse import urljoin
 
 from ....util.cache import cachedproperty
@@ -39,8 +39,8 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
         .. code-block:: python
 
-           for comment in reddit.redditor('spez').comments.new(limit=None):
-               print(comment.body.split('\n', 1)[0][:79])
+           for comment in reddit.redditor("spez").comments.new(limit=None):
+               print(comment.body.split("\n", 1)[0][:79])
 
         """
         return SubListing(self._reddit, self._path, "comments")
@@ -54,7 +54,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
         .. code-block:: python
 
-           for submission in reddit.redditor('spez').submissions.top('all'):
+           for submission in reddit.redditor("spez").submissions.top("all"):
                print(submission.title)
 
         """
@@ -62,7 +62,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
     def downvoted(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for items the user has downvoted.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
@@ -73,6 +73,13 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
+        For example, to get all downvoted items of the authenticated user:
+
+        .. code-block:: python
+
+            for item in reddit.user.me().downvoted():
+                print(item.id)
+
         """
         return ListingGenerator(
             self._reddit, urljoin(self._path, "downvoted"), **generator_kwargs
@@ -80,7 +87,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
     def gildings(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for items the user has gilded.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
@@ -91,6 +98,13 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
+        For example, to get all gilded items of the authenticated user:
+
+        .. code-block:: python
+
+            for item in reddit.user.me().gildings():
+                print(item.id)
+
         """
         return ListingGenerator(
             self._reddit,
@@ -100,7 +114,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
     def hidden(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for items the user has hidden.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
@@ -111,6 +125,13 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
+        For example, to get all hidden items of the authenticated user:
+
+        .. code-block:: python
+
+            for item in reddit.user.me().hidden():
+                print(item.id)
+
         """
         return ListingGenerator(
             self._reddit, urljoin(self._path, "hidden"), **generator_kwargs
@@ -118,7 +139,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
     def saved(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for items the user has saved.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
@@ -129,6 +150,13 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
+        For example, to get all saved items of the authenticated user:
+
+        .. code-block:: python
+
+            for item in reddit.user.me().saved():
+                print(item.id)
+
         """
         return ListingGenerator(
             self._reddit, urljoin(self._path, "saved"), **generator_kwargs
@@ -136,7 +164,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
     def upvoted(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for items the user has upvoted.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
@@ -146,6 +174,13 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
+        For example, to get all upvoted items of the authenticated user:
+
+        .. code-block:: python
+
+            for item in reddit.user.me().upvoted():
+                print(item.id)
 
         """
         return ListingGenerator(

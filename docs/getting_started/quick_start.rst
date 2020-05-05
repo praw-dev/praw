@@ -8,9 +8,10 @@ easy. Let's get started.
 Prerequisites
 -------------
 
-:Python Knowledge: You need to know at least a little Python to use PRAW; it's a Python wrapper
-                   after all. PRAW supports `Python 3.5+`_. If you are stuck on a problem,
-                   `r/learnpython`_ is a great place to ask for help.
+:Python Knowledge: You need to know at least a little Python to use PRAW; it's
+                   a Python wrapper after all. PRAW supports `Python 3.5+`_. If
+                   you are stuck on a problem, `r/learnpython`_ is a great
+                   place to ask for help.
 
 :Reddit Knowledge: A basic understanding of how Reddit works is a
                    must. In the event you are not already familiar with Reddit
@@ -84,9 +85,9 @@ of providing this information). For example:
 
    import praw
 
-   reddit = praw.Reddit(client_id='my client id',
-                        client_secret='my client secret',
-                        user_agent='my user agent')
+   reddit = praw.Reddit(client_id="my client id",
+                        client_secret="my client secret",
+                        user_agent="my user agent")
 
 Just like that, you now have a read-only  :class:`.Reddit` instance.
 
@@ -94,14 +95,14 @@ Just like that, you now have a read-only  :class:`.Reddit` instance.
 
    print(reddit.read_only)  # Output: True
 
-With a read-only instance, you can do something like obtaining 10 'hot'
+With a read-only instance, you can do something like obtaining 10 "hot"
 submissions from ``r/learnpython``:
 
 .. code-block:: python
 
    # continued from code above
 
-   for submission in reddit.subreddit('learnpython').hot(limit=10):
+   for submission in reddit.subreddit("learnpython").hot(limit=10):
        print(submission.title)
 
    # Output: 10 submissions
@@ -135,11 +136,11 @@ like the following:
 
    import praw
 
-   reddit = praw.Reddit(client_id='my client id',
-                        client_secret='my client secret',
-                        user_agent='my user agent',
-                        username='my username',
-                        password='my password')
+   reddit = praw.Reddit(client_id="my client id",
+                        client_secret="my client secret",
+                        user_agent="my user agent",
+                        username="my username",
+                        password="my password")
 
    print(reddit.read_only)  # Output: False
 
@@ -164,7 +165,7 @@ calling ``subreddit`` on your :class:`.Reddit` instance. For example:
 .. code-block:: python
 
    # assume you have a Reddit instance bound to variable `reddit`
-   subreddit = reddit.subreddit('redditdev')
+   subreddit = reddit.subreddit("redditdev")
 
    print(subreddit.display_name)  # Output: redditdev
    print(subreddit.title)         # Output: reddit Development
@@ -209,7 +210,7 @@ You can create :class:`.Submission` instances in other ways too:
 .. code-block:: python
 
    # assume you have a Reddit instance bound to variable `reddit`
-   submission = reddit.submission(id='39zje0')
+   submission = reddit.submission(id="39zje0")
    print(submission.title)  # Output: reddit will soon only be available ...
 
    # or
@@ -235,7 +236,7 @@ For example:
    print(redditor1.name)  # Output: name of the redditor
 
   # assume you have a Reddit instance bound to variable `reddit`
-   redditor2 = reddit.redditor('bboe')
+   redditor2 = reddit.redditor("bboe")
    print(redditor2.link_karma)  # Output: u/bboe's karma
 
 Obtain :class:`.Comment` Instances
@@ -243,9 +244,9 @@ Obtain :class:`.Comment` Instances
 
 Submissions have a ``comments`` attribute that is a :class:`.CommentForest`
 instance. That instance is iterable and represents the top-level comments of
-the submission by the default comment sort (``best``). If you instead want to
-iterate over *all* comments as a flattened list you can call the :meth:`.list`
-method on a :class:`.CommentForest` instance. For example:
+the submission by the default comment sort (``confidence``). If you instead
+want to iterate over *all* comments as a flattened list you can call the
+:meth:`.list` method on a :class:`.CommentForest` instance. For example:
 
 .. code-block:: python
 
@@ -263,8 +264,8 @@ method on a :class:`.CommentForest` instance. For example:
           .. code-block:: python
 
              # assume you have a Reddit instance bound to variable `reddit`
-             submission = reddit.submission(id='39zje0')
-             submission.comment_sort = 'new'
+             submission = reddit.submission(id="39zje0")
+             submission.comment_sort = "new"
              top_level_comments = list(submission.comments)
 
 As you may be aware there will periodically be :class:`.MoreComments` instances
@@ -288,7 +289,7 @@ attributes are available along with their values, use the built-in
    import pprint
 
    # assume you have a Reddit instance bound to variable `reddit`
-   submission = reddit.submission(id='39zje0')
+   submission = reddit.submission(id="39zje0")
    print(submission.title) # to make it non-lazy
    pprint.pprint(vars(submission))
 

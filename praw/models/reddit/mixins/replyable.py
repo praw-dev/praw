@@ -5,7 +5,7 @@ from ....const import API_PATH
 class ReplyableMixin:
     """Interface for RedditBase classes that can be replied to."""
 
-    def reply(self, body):
+    def reply(self, body: str):
         """Reply to the object.
 
         :param body: The Markdown formatted content for a comment.
@@ -18,15 +18,19 @@ class ReplyableMixin:
         comment will be sucessfully created on Reddit and can be retried
         by drawing the comment from the user's comment history.
 
+        .. note:: Some items, such as locked submissions/comments or
+            non-replyable messages will throw ``prawcore.exceptions.Forbidden``
+            when attempting to reply to them.
+
         Example usage:
 
         .. code-block:: python
 
-           submission = reddit.submission(id='5or86n')
-           submission.reply('reply')
+           submission = reddit.submission(id="5or86n")
+           submission.reply("reply")
 
-           comment = reddit.comment(id='dxolpyc')
-           comment.reply('reply')
+           comment = reddit.comment(id="dxolpyc")
+           comment.reply("reply")
 
         """
         data = {"text": body, "thing_id": self.fullname}

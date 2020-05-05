@@ -137,5 +137,26 @@ class Config:
         ):
             setattr(self, attribute, self._fetch_or_not_set(attribute))
 
-        for required_attribute in ("oauth_url", "reddit_url"):
+        for required_attribute in (
+            "oauth_url",
+            "ratelimit_seconds",
+            "reddit_url",
+            "timeout",
+        ):
             setattr(self, required_attribute, self._fetch(required_attribute))
+
+        for attribute, conversion in {
+            "ratelimit_seconds": int,
+            "timeout": int,
+        }.items():
+            try:
+                setattr(self, attribute, conversion(getattr(self, attribute)))
+            except ValueError:
+                raise ValueError(
+                    "An incorrect config type was given for option {}. The "
+                    "expected type is {}, but the given value is {}.".format(
+                        attribute,
+                        conversion.__name__,
+                        getattr(self, attribute),
+                    )
+                )

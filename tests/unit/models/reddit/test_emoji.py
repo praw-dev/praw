@@ -1,6 +1,8 @@
 import pickle
 
-from praw.models import Subreddit, Emoji
+import pytest
+
+from praw.models import Emoji, Subreddit
 from praw.models.reddit.emoji import SubredditEmoji
 
 from ... import UnitTest
@@ -35,6 +37,7 @@ class TestEmoji(UnitTest):
         assert emoji1 == emoji4
         assert emoji1 != emoji5
         assert emoji1 != emoji6
+        assert emoji1 != 5
 
     def test__get(self):
         subreddit = self.reddit.subreddit("a")
@@ -88,6 +91,14 @@ class TestEmoji(UnitTest):
             self.reddit, subreddit=Subreddit(self.reddit, "a"), name="x"
         )
         assert str(emoji) == "x"
+
+    def test_update(self):
+        emoji = Emoji(
+            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="x"
+        )
+        with pytest.raises(TypeError) as excinfo:
+            emoji.update()
+        assert str(excinfo.value) == "At least one attribute must be provided"
 
 
 class TestSubredditEmoji(UnitTest):

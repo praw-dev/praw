@@ -1,8 +1,11 @@
 """Test praw.models.redditor."""
-from prawcore import BadRequest, Forbidden
-from praw.models import Comment, Submission
-import mock
+from unittest import mock
+
 import pytest
+from prawcore import Forbidden
+
+from praw.exceptions import RedditAPIException
+from praw.models import Comment, Submission
 
 from ... import IntegrationTest
 
@@ -28,9 +31,9 @@ class TestRedditor(IntegrationTest):
         with self.recorder.use_cassette(
             "TestRedditor.test_friend__with_note__no_gold"
         ):
-            with pytest.raises(BadRequest) as excinfo:
+            with pytest.raises(RedditAPIException) as excinfo:
                 self.reddit.redditor(self.FRIEND.lower()).friend(note="praw")
-            assert "GOLD_REQUIRED" == excinfo.value.response.json()["reason"]
+            assert "GOLD_REQUIRED" == excinfo.value.error_type
 
     @mock.patch("time.sleep", return_value=None)
     def test_friend_info(self, _):
@@ -52,10 +55,9 @@ class TestRedditor(IntegrationTest):
     def test_gild__no_creddits(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestRedditor.test_gild__no_creddits"):
-            with pytest.raises(BadRequest) as excinfo:
+            with pytest.raises(RedditAPIException) as excinfo:
                 self.reddit.redditor("subreddit_stats").gild()
-            reason = excinfo.value.response.json()["reason"]
-            assert "INSUFFICIENT_CREDDITS" == reason
+            assert "INSUFFICIENT_CREDDITS" == excinfo.value.error_type
 
     @mock.patch("time.sleep", return_value=None)
     def test_message(self, _):
@@ -125,10 +127,9 @@ class TestRedditor(IntegrationTest):
         with self.recorder.use_cassette(
             "TestRedditor.test_trophies__user_not_exist"
         ):
-            with pytest.raises(BadRequest) as excinfo:
+            with pytest.raises(RedditAPIException) as excinfo:
                 redditor.trophies()
-            response = excinfo.value.response
-            assert "USER_DOESNT_EXIST" == response.json()["reason"]
+            assert "USER_DOESNT_EXIST" == excinfo.value.error_type
 
     @mock.patch("time.sleep", return_value=None)
     def test_unblock(self, _):

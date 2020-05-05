@@ -25,7 +25,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    necessarily comprehensive.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -79,7 +79,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         .. code-block:: python
 
-           for comment in reddit.multireddit('spez', 'fun').stream.comments():
+           for comment in reddit.multireddit("spez", "fun").stream.comments():
                print(comment)
 
         Additionally, new submissions can be retrieved via the stream. In the
@@ -87,8 +87,8 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         .. code-block:: python
 
-           for submission in reddit.multireddit('bboe',
-                                                'games').stream.submissions():
+           for submission in reddit.multireddit("bboe",
+                                                "games").stream.submissions():
                print(submission)
 
         """
@@ -132,13 +132,18 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         :param subreddit: The subreddit to add to this multi.
 
+        For example, to add subreddit ``r/test`` to multireddit ``bboe/test``:
+
+        .. code-block:: python
+
+            subreddit=reddit.subreddit("test")
+            reddit.multireddit("bboe", "test").add(subreddit)
+
         """
         url = API_PATH["multireddit_update"].format(
             multi=self.name, user=self._author, subreddit=subreddit
         )
-        self._reddit.request(
-            "PUT", url, data={"model": dumps({"name": str(subreddit)})}
-        )
+        self._reddit.put(url, data={"model": dumps({"name": str(subreddit)})})
         self._reset_attributes("subreddits")
 
     def copy(self, display_name: Optional[str] = None) -> _Multireddit:
@@ -148,6 +153,12 @@ class Multireddit(SubredditListingMixin, RedditBase):
             multireddit. Reddit will generate the ``name`` field from this
             display name. When not provided the copy will use the same display
             name and name as this multireddit.
+
+        To copy the multireddit ``bboe/test`` with a name of ``testing``:
+
+        .. code-block:: python
+
+            reddit.multireddit("bboe", "test").copy("testing")
 
         """
         if display_name:
@@ -165,28 +176,48 @@ class Multireddit(SubredditListingMixin, RedditBase):
         return self._reddit.post(API_PATH["multireddit_copy"], data=data)
 
     def delete(self):
-        """Delete this multireddit."""
+        """Delete this multireddit.
+
+        For example, to delete multireddit``bboe/test``:
+
+        .. code-block:: python
+
+            reddit.multireddit("bboe", "test").delete()
+
+        """
         path = API_PATH["multireddit_api"].format(
             multi=self.name, user=self._author.name
         )
-        self._reddit.request("DELETE", path)
+        self._reddit.delete(path)
 
     def remove(self, subreddit: Subreddit):
         """Remove a subreddit from this multireddit.
 
         :param subreddit: The subreddit to remove from this multi.
 
+        For example, to remove subreddit ``r/test`` from multireddit
+        ``bboe/test``:
+
+        .. code-block:: python
+
+            subreddit=reddit.subreddit("test")
+            reddit.multireddit("bboe", "test").remove(subreddit)
+
+
         """
         url = API_PATH["multireddit_update"].format(
             multi=self.name, user=self._author, subreddit=subreddit
         )
-        self._reddit.request(
-            "DELETE", url, data={"model": dumps({"name": str(subreddit)})}
+        self._reddit.delete(
+            url, data={"model": dumps({"name": str(subreddit)})}
         )
         self._reset_attributes("subreddits")
 
     def update(
-        self, **updated_settings: Union[str, List[Union[str, Subreddit]]]
+        self,
+        **updated_settings: Union[
+            str, List[Union[str, Subreddit, Dict[str, str]]]
+        ]
     ):
         """Update this multireddit.
 
@@ -205,9 +236,15 @@ class Multireddit(SubredditListingMixin, RedditBase):
             ``models pinup``, ``music``, ``news``, ``philosophy``, ``pictures
             and gifs``, ``science``, ``shopping``, ``sports``, ``style``,
             ``tech``, ``travel``, ``unusual stories``, ``video``, or ``None``.
-        :param key_color: RGB hex color code of the form ``'#FFFFFF'``.
+        :param key_color: RGB hex color code of the form ``"#FFFFFF"``.
         :param visibility: Can be one of: ``hidden``, ``private``, ``public``.
         :param weighting_scheme: Can be one of: ``classic``, ``fresh``.
+
+        For example, to rename multireddit ``bboe/test`` to ``bboe/testing``:
+
+        .. code-block:: python
+
+            reddit.multireddit("bboe", "test").update(display_name="testing")
 
         """
         if "subreddits" in updated_settings:
@@ -217,8 +254,5 @@ class Multireddit(SubredditListingMixin, RedditBase):
         path = API_PATH["multireddit_api"].format(
             multi=self.name, user=self._author.name
         )
-        response = self._reddit.request(
-            "PUT", path, data={"model": dumps(updated_settings)}
-        )
-        new = Multireddit(self._reddit, response["data"])
+        new = self._reddit.put(path, data={"model": dumps(updated_settings)})
         self.__dict__.update(new.__dict__)

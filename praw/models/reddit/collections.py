@@ -21,13 +21,13 @@ class Collection(RedditBase):
 
     .. code-block:: python
 
-       collection = reddit.subreddit('SUBREDDIT').collections('some_uuid')
+       collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
 
     or
 
     .. code-block:: python
 
-       collection = reddit.subreddit('SUBREDDIT').collections(
+       collection = reddit.subreddit("SUBREDDIT").collections(
            permalink='https://reddit.com/r/SUBREDDIT/collection/some_uuid')
 
     **Typical Attributes**
@@ -75,15 +75,24 @@ class Collection(RedditBase):
 
         .. code-block:: python
 
-           collection = reddit.subreddit('SUBREDDIT').collections('some_uuid')
-           collection.mod.update_title('My new title!')
+           collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
+           collection.mod.update_title("My new title!")
 
         """
         return CollectionModeration(self._reddit, self.collection_id)
 
     @cachedproperty
     def subreddit(self) -> Subreddit:
-        """Get the subreddit that this collection belongs to."""
+        """Get the subreddit that this collection belongs to.
+
+        For example:
+
+        .. code-block:: python
+
+            collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
+            subreddit = collection.subreddit
+
+        """
         return next(self._reddit.info([self.subreddit_id]))
 
     def __init__(
@@ -126,7 +135,7 @@ class Collection(RedditBase):
 
         .. code-block:: python
 
-           collection = reddit.subreddit('SUBREDDIT').collections('some_uuid')
+           collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
            for submission in collection:
                print(submission.title, submission.permalink)
 
@@ -141,7 +150,7 @@ class Collection(RedditBase):
 
         .. code-block:: python
 
-           collection = reddit.subreddit('SUBREDDIT').collections('some_uuid')
+           collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
            print(len(collection))
 
         """
@@ -187,9 +196,9 @@ class Collection(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').collections('some_uuid').follow()
+           reddit.subreddit("SUBREDDIT").collections("some_uuid").follow()
 
-        See also :meth:`~.unfollow`.
+        .. seealso:: :meth:`~.unfollow`
         """
         self._reddit.post(
             API_PATH["collection_follow"],
@@ -203,9 +212,9 @@ class Collection(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').collections('some_uuid').unfollow()
+           reddit.subreddit("SUBREDDIT").collections("some_uuid").unfollow()
 
-        See also :meth:`~.follow`.
+        .. seealso:: :meth:`~.follow`
         """
         self._reddit.post(
             API_PATH["collection_follow"],
@@ -220,7 +229,7 @@ class CollectionModeration(PRAWBase):
 
     .. code-block:: python
 
-       reddit.subreddit('SUBREDDIT').collections('some_uuid').mod
+       reddit.subreddit("SUBREDDIT").collections("some_uuid").mod
     """
 
     def _post_fullname(self, post):
@@ -265,10 +274,10 @@ class CollectionModeration(PRAWBase):
 
         .. code-block:: python
 
-           collection = reddit.subreddit('SUBREDDIT').collections('some_uuid')
-           collection.mod.add_post('bgibu9')
+           collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
+           collection.mod.add_post("bgibu9")
 
-        See also :meth:`.remove_post`.
+        .. seealso:: :meth:`.remove_post`
 
         """
         link_fullname = self._post_fullname(submission)
@@ -288,9 +297,9 @@ class CollectionModeration(PRAWBase):
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').collections('some_uuid').mod.delete()
+           reddit.subreddit("SUBREDDIT").collections("some_uuid").mod.delete()
 
-        See also :meth:`~.SubredditCollectionsModeration.create`.
+        .. seealso:: :meth:`~.SubredditCollectionsModeration.create`
 
         """
         self._reddit.post(
@@ -309,10 +318,10 @@ class CollectionModeration(PRAWBase):
 
         .. code-block:: python
 
-           collection = reddit.subreddit('SUBREDDIT').collections('some_uuid')
-           collection.mod.remove_post('bgibu9')
+           collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
+           collection.mod.remove_post("bgibu9")
 
-        See also :meth:`.add_post`.
+        .. seealso:: :meth:`.add_post`
 
         """
         link_fullname = self._post_fullname(submission)
@@ -335,7 +344,7 @@ class CollectionModeration(PRAWBase):
 
         .. code-block:: python
 
-           collection = reddit.subreddit('SUBREDDIT').collections('some_uuid')
+           collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
            current_order = collection.link_ids
            new_order = reversed(current_order)
            collection.mod.reorder(new_order)
@@ -356,10 +365,10 @@ class CollectionModeration(PRAWBase):
 
         .. code-block:: python
 
-           collection = reddit.subreddit('SUBREDDIT').collections('some_uuid')
-           collection.mod.update_description('Please enjoy these links!')
+           collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
+           collection.mod.update_description("Please enjoy these links!")
 
-        See also :meth:`.update_title`.
+        .. seealso:: :meth:`.update_title`
 
         """
         self._reddit.post(
@@ -379,10 +388,10 @@ class CollectionModeration(PRAWBase):
 
         .. code-block:: python
 
-           collection = reddit.subreddit('SUBREDDIT').collections('some_uuid')
-           collection.mod.update_title('Titley McTitleface')
+           collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
+           collection.mod.update_title("Titley McTitleface")
 
-        See also :meth:`.update_description`.
+        .. seealso:: :meth:`.update_description`
 
         """
         self._reddit.post(
@@ -398,7 +407,7 @@ class SubredditCollections(PRAWBase):
 
     .. code-block:: python
 
-       reddit.subreddit('SUBREDDIT').collections
+       reddit.subreddit("SUBREDDIT").collections
 
     """
 
@@ -410,8 +419,8 @@ class SubredditCollections(PRAWBase):
 
         .. code-block:: python
 
-           my_sub = reddit.subreddit('SUBREDDIT')
-           new_collection = my_sub.collections.mod.create('Title', 'desc')
+           my_sub = reddit.subreddit("SUBREDDIT")
+           new_collection = my_sub.collections.mod.create("Title", "desc")
 
         """
         return SubredditCollectionsModeration(
@@ -435,9 +444,9 @@ class SubredditCollections(PRAWBase):
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit('SUBREDDIT')
+           subreddit = reddit.subreddit("SUBREDDIT")
 
-           uuid = '847e4548-a3b5-4ad7-afb4-edbfc2ed0a6b'
+           uuid = "847e4548-a3b5-4ad7-afb4-edbfc2ed0a6b"
            collection = subreddit.collections(uuid)
            print(collection.title)
            print(collection.description)
@@ -474,7 +483,7 @@ class SubredditCollections(PRAWBase):
 
         .. code-block:: python
 
-           for collection in reddit.subreddit('SUBREDDIT').collections:
+           for collection in reddit.subreddit("SUBREDDIT").collections:
                print(collection.permalink)
 
         """
@@ -493,7 +502,7 @@ class SubredditCollectionsModeration(PRAWBase):
 
     .. code-block:: python
 
-       reddit.subreddit('SUBREDDIT').collections.mod
+       reddit.subreddit("SUBREDDIT").collections.mod
 
     """
 
@@ -522,11 +531,11 @@ class SubredditCollectionsModeration(PRAWBase):
 
         .. code-block:: python
 
-           my_sub = reddit.subreddit('SUBREDDIT')
-           new_collection = my_sub.collections.mod.create('Title', 'desc')
-           new_collection.mod.add_post('bgibu9')
+           my_sub = reddit.subreddit("SUBREDDIT")
+           new_collection = my_sub.collections.mod.create("Title", "desc")
+           new_collection.mod.add_post("bgibu9")
 
-        See also :meth:`~CollectionModeration.delete`.
+        .. seealso:: :meth:`~CollectionModeration.delete`
 
         """
         return self._reddit.post(

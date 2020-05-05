@@ -1,6 +1,7 @@
 import pickle
 
 import pytest
+
 from praw.exceptions import ClientException
 from praw.models import Comment
 

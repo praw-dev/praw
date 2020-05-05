@@ -38,7 +38,9 @@ instances of them bound to an attribute of one of the PRAW models.
 
    other/commentmoderation
    other/submissionmoderation
+   other/rulemoderation
    other/subredditmoderation
+   other/subredditrulesmoderation
    other/subredditwidgetsmoderation
    other/thingmoderationmixin
    other/widgetmoderation
@@ -98,14 +100,17 @@ instances of them bound to an attribute of one of the PRAW models.
    other/modmail
    other/modmailmessage
    other/preferences
+   other/poll
    other/redditbase
    other/redditorlist
    other/removalreason
+   other/rule
    other/sublisting
    other/submenu
    other/subredditemoji
    other/subredditmessage
    other/subredditremovalreasons
+   other/subredditrules
    other/redditorstream
    other/trophy
    other/util

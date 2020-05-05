@@ -3,8 +3,8 @@
 import re
 from codecs import open
 from os import path
-from setuptools import find_packages, setup
 
+from setuptools import find_packages, setup
 
 PACKAGE_NAME = "praw"
 HERE = path.abspath(path.dirname(__file__))
@@ -16,12 +16,16 @@ with open(path.join(HERE, PACKAGE_NAME, "const.py"), encoding="utf-8") as fp:
 extras = {
     "ci": ["coveralls"],
     "dev": ["pre-commit"],
-    "lint": ["black", "flake8", "pydocstyle", "sphinx", "sphinx_rtd_theme"],
+    "lint": [
+        "black",
+        "flake8",
+        "pydocstyle",
+        "sphinx<3.0",
+        "sphinx_rtd_theme",
+    ],
     "test": [
         "betamax >=0.8, <0.9",
         "betamax-matchers >=0.3.0, <0.5",
-        "betamax-serializers >=0.2, <0.3",
-        "mock >=0.8",
         "pytest >=2.7.3",
     ],
 }
@@ -31,7 +35,7 @@ setup(
     name=PACKAGE_NAME,
     author="Bryce Boe",
     author_email="bbzbryce@gmail.com",
-    python_requires=">=3.5",
+    python_requires=">3.5.3",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
@@ -54,15 +58,18 @@ setup(
     ),
     extras_require=extras,
     install_requires=[
-        "prawcore >=1.0.1, <2.0",
-        "update_checker >=0.16",
+        "prawcore >=1.3.0, <2.0",
+        "update_checker >=0.17",
         "websocket-client >=0.54.0",
     ],
     keywords="reddit api wrapper",
     license="Simplified BSD License",
     long_description=README,
-    package_data={"": ["LICENSE.txt"], PACKAGE_NAME: ["*.ini"]},
-    packages=find_packages(exclude=["tests", "tests.*"]),
+    package_data={
+        "": ["LICENSE.txt"],
+        PACKAGE_NAME: ["*.ini", "images/*.jpg"],
+    },
+    packages=find_packages(exclude=["tests", "tests.*", "tools", "tools.*"]),
     url="https://praw.readthedocs.org/",
     version=VERSION,
 )

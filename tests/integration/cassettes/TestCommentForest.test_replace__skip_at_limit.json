@@ -64,7 +64,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.0.0a1 prawcore/0.0.8"
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/comments/3hahrw/?raw_json=1&sort=best&limit=2048"
+        "uri": "https://oauth.reddit.com/comments/3hahrw/?raw_json=1&sort=confidence&limit=2048"
       },
       "response": {
         "body": {
@@ -96,7 +96,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/comments/3hahrw/?raw_json=1&sort=best&limit=2048"
+        "url": "https://oauth.reddit.com/comments/3hahrw/?raw_json=1&sort=confidence&limit=2048"
       }
     },
     {
@@ -104,7 +104,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5pg2h&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5pg2h&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",

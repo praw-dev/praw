@@ -1,7 +1,8 @@
 """Test praw.models.auth."""
+import pytest
+
 from praw import Reddit
 from praw.exceptions import ClientException
-import pytest
 
 from .. import UnitTest
 

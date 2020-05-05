@@ -3,15 +3,25 @@
 # pylint: disable=too-many-lines
 import socket
 from copy import deepcopy
+from csv import writer
+from io import StringIO
 from json import dumps, loads
 from os.path import basename, dirname, join
+from typing import List
 from urllib.parse import urljoin
+from xml.etree.ElementTree import XML
 
 import websocket
 from prawcore import Redirect
 
 from ...const import API_PATH, JPEG_HEADER
-from ...exceptions import APIException, ClientException, WebSocketException
+from ...exceptions import (
+    ClientException,
+    InvalidFlairTemplateID,
+    RedditAPIException,
+    TooLargeMediaException,
+    WebSocketException,
+)
 from ...util.cache import cachedproperty
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
@@ -20,6 +30,7 @@ from .base import RedditBase
 from .emoji import SubredditEmoji
 from .mixins import FullnameMixin, MessageableMixin
 from .modmail import ModmailConversation
+from .rules import SubredditRules
 from .removal_reasons import SubredditRemovalReasons
 from .widgets import SubredditWidgets, WidgetEncoder
 from .wikipage import WikiPage
@@ -34,7 +45,7 @@ class Subreddit(
 
     .. code-block:: python
 
-       subreddit = reddit.subreddit('redditdev')
+       subreddit = reddit.subreddit("redditdev")
 
     While ``r/all`` is not a real subreddit, it can still be treated like
     one. The following outputs the titles of the 25 hottest submissions in
@@ -42,14 +53,14 @@ class Subreddit(
 
     .. code-block:: python
 
-       for submission in reddit.subreddit('all').hot(limit=25):
+       for submission in reddit.subreddit("all").hot(limit=25):
            print(submission.title)
 
     Multiple subreddits can be combined with a ``+`` like so:
 
     .. code-block:: python
 
-       for submission in reddit.subreddit('redditdev+learnpython').top('all'):
+       for submission in reddit.subreddit("redditdev+learnpython").top("all"):
            print(submission)
 
     Subreddits can be filtered from combined listings as follows. Note that
@@ -60,7 +71,7 @@ class Subreddit(
 
     .. code-block:: python
 
-       for submission in reddit.subreddit('all-redditdev').new():
+       for submission in reddit.subreddit("all-redditdev").new():
            print(submission)
 
     **Typical Attributes**
@@ -69,7 +80,7 @@ class Subreddit(
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ========================== ===============================================
     Attribute                  Description
@@ -94,6 +105,9 @@ class Subreddit(
     ``user_is_subscriber``     Whether the authenticated user is subscribed.
     ========================== ===============================================
 
+    .. note:: Trying to retrieve attributes of quarantined or private
+        subreddits will result in a 403 error. Trying to retrieve attributes of
+        a banned subreddit will result in a 404 error.
 
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
 
@@ -204,13 +218,13 @@ class Subreddit(
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').banned.add('NAME', ban_reason='...')
+           reddit.subreddit("SUBREDDIT").banned.add("NAME", ban_reason="...")
 
         To list the banned users along with any notes, try:
 
         .. code-block:: python
 
-           for ban in reddit.subreddit('SUBREDDIT').banned():
+           for ban in reddit.subreddit("SUBREDDIT").banned():
                print('{}: {}'.format(ban, ban.note))
 
         """
@@ -225,7 +239,7 @@ class Subreddit(
 
         .. code-block:: python
 
-           for collection in reddit.subreddit('SUBREDDIT').collections:
+           for collection in reddit.subreddit("SUBREDDIT").collections:
                print(collection.permalink)
 
         To get a specific :class:`.Collection` by its UUID or permalink,
@@ -233,8 +247,8 @@ class Subreddit(
 
         .. code-block:: python
 
-           collection = reddit.subreddit('SUBREDDIT').collections('some_uuid')
-           collection = reddit.subreddit('SUBREDDIT').collections(
+           collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
+           collection = reddit.subreddit("SUBREDDIT").collections(
                permalink='https://reddit.com/r/SUBREDDIT/collection/some_uuid')
 
         """
@@ -250,7 +264,7 @@ class Subreddit(
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').contributor.add('NAME')
+           reddit.subreddit("SUBREDDIT").contributor.add("NAME")
 
         """
         return ContributorRelationship(self, "contributor")
@@ -263,14 +277,14 @@ class Subreddit(
 
         .. code-block:: python
 
-           for emoji in reddit.subreddit('iama').emoji:
+           for emoji in reddit.subreddit("iama").emoji:
                print(emoji)
 
         A single emoji can be lazily retrieved via:
 
         .. code-block:: python
 
-           reddit.subreddit('blah').emoji['emoji_name']
+           reddit.subreddit("blah").emoji["emoji_name"]
 
         .. note:: Attempting to access attributes of an nonexistent emoji will
            result in a :class:`.ClientException`.
@@ -280,7 +294,15 @@ class Subreddit(
 
     @cachedproperty
     def filters(self):
-        """Provide an instance of :class:`.SubredditFilters`."""
+        """Provide an instance of :class:`.SubredditFilters`.
+
+        For example, to add a filter, run:
+
+        .. code-block:: python
+
+            reddit.subreddit("all").filters.add("subreddit_name")
+
+        """
         return SubredditFilters(self)
 
     @cachedproperty
@@ -293,14 +315,14 @@ class Subreddit(
 
         .. code-block:: python
 
-           for flair in reddit.subreddit('NAME').flair():
+           for flair in reddit.subreddit("NAME").flair():
                print(flair)
 
         Flair templates can be interacted with through this attribute via:
 
         .. code-block:: python
 
-           for template in reddit.subreddit('NAME').flair.templates:
+           for template in reddit.subreddit("NAME").flair.templates:
                print(template)
 
         """
@@ -308,7 +330,14 @@ class Subreddit(
 
     @cachedproperty
     def mod(self):
-        """Provide an instance of :class:`.SubredditModeration`."""
+        """Provide an instance of :class:`.SubredditModeration`.
+
+        For example, to accept a moderation invite from subreddit ``r/test``:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").mod.accept_invite()
+        """
         return SubredditModeration(self)
 
     @cachedproperty
@@ -319,13 +348,13 @@ class Subreddit(
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').moderator.add('NAME')
+           reddit.subreddit("SUBREDDIT").moderator.add("NAME")
 
         To list the moderators along with their permissions try:
 
         .. code-block:: python
 
-           for moderator in reddit.subreddit('SUBREDDIT').moderator():
+           for moderator in reddit.subreddit("SUBREDDIT").moderator():
                print('{}: {}'.format(moderator, moderator.mod_permissions))
 
         """
@@ -333,12 +362,31 @@ class Subreddit(
 
     @cachedproperty
     def modmail(self):
-        """Provide an instance of :class:`.Modmail`."""
+        """Provide an instance of :class:`.Modmail`.
+
+        For example, to send a new modmail from the subreddit ``r/test`` to
+        user ``u/spez`` with the subject ``test`` along with a message body of
+        ``hello``:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").modmail.create("test", "hello", "spez")
+
+        """
         return Modmail(self)
 
     @cachedproperty
     def muted(self):
-        """Provide an instance of :class:`.SubredditRelationship`."""
+        """Provide an instance of :class:`.SubredditRelationship`.
+
+        For example, muted users can be iterated through like so:
+
+        .. code-block:: python
+
+            for mute in reddit.subreddit("redditdev").muted():
+                print('{}: {}'.format(mute, mute.note))
+
+        """
         return SubredditRelationship(self, "muted")
 
     @cachedproperty
@@ -349,8 +397,40 @@ class Subreddit(
         Subreddit attribute returned by Reddit to indicate whether or not a
         Subreddit is quarantined.
 
+        To opt-in into a quarantined subreddit:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").quaran.opt_in()
+
         """
         return SubredditQuarantine(self)
+
+    @cachedproperty
+    def rules(self):
+        """Provide an instance of :class:`.SubredditRules`.
+
+        Use this attribute for interacting with a subreddit's rules.
+
+        For example, to list all the rules for a subreddit:
+
+        .. code-block:: python
+
+            for rule in reddit.subreddit("AskReddit").rules:
+                print(rule)
+
+        Moderators can also add rules to the subreddit. For example, to make
+        a rule called ``"No spam"`` in the subreddit ``"NAME"``:
+
+        .. code-block:: python
+
+            reddit.subreddit("NAME").rules.mod.add(
+                short_name="No spam",
+                kind="all",
+                description="Do not spam. Spam bad")
+
+        """
+        return SubredditRules(self)
 
     @cachedproperty
     def stream(self):
@@ -361,7 +441,7 @@ class Subreddit(
 
         .. code-block:: python
 
-           for comment in reddit.subreddit('iama').stream.comments():
+           for comment in reddit.subreddit("iama").stream.comments():
                print(comment)
 
         Additionally, new submissions can be retrieved via the stream. In the
@@ -370,7 +450,7 @@ class Subreddit(
 
         .. code-block:: python
 
-           for submission in reddit.subreddit('all').stream.submissions():
+           for submission in reddit.subreddit("all").stream.submissions():
                print(submission)
 
         """
@@ -378,7 +458,19 @@ class Subreddit(
 
     @cachedproperty
     def stylesheet(self):
-        """Provide an instance of :class:`.SubredditStylesheet`."""
+        """Provide an instance of :class:`.SubredditStylesheet`.
+
+        For example, to add the css data ``.test{color:blue}`` to the existing
+        stylesheet:
+
+        .. code-block:: python
+
+            subreddit = reddit.subreddit("SUBREDDIT")
+            stylesheet = subreddit.stylesheet()
+            stylesheet += ".test{color:blue}"
+            subreddit.stylesheet.update(stylesheet)
+
+        """
         return SubredditStylesheet(self)
 
     @cachedproperty
@@ -391,14 +483,14 @@ class Subreddit(
 
         .. code-block:: python
 
-           for widget in reddit.subreddit('redditdev').widgets.sidebar:
+           for widget in reddit.subreddit("redditdev").widgets.sidebar:
                print(widget)
 
         Get ID card widget:
 
         .. code-block:: python
 
-           print(reddit.subreddit('redditdev').widgets.id_card)
+           print(reddit.subreddit("redditdev").widgets.id_card)
 
         """
         return SubredditWidgets(self)
@@ -411,14 +503,14 @@ class Subreddit(
 
         .. code-block:: python
 
-           for wikipage in reddit.subreddit('iama').wiki:
+           for wikipage in reddit.subreddit("iama").wiki:
                print(wikipage)
 
         To fetch the content for a given wikipage try:
 
         .. code-block:: python
 
-           wikipage = reddit.subreddit('iama').wiki['proof']
+           wikipage = reddit.subreddit("iama").wiki["proof"]
            print(wikipage.content_md)
 
         """
@@ -431,7 +523,7 @@ class Subreddit(
         :param display_name: The name of the subreddit.
 
         .. note:: This class should not be initialized directly. Instead obtain
-           an instance via: ``reddit.subreddit('subreddit_name')``
+           an instance via: ``reddit.subreddit("subreddit_name")``
 
         """
         if bool(display_name) == bool(_data):
@@ -457,6 +549,18 @@ class Subreddit(
         other = type(self)(self._reddit, _data=data)
         self.__dict__.update(other.__dict__)
         self._fetched = True
+
+    def _parse_xml_response(self, response):
+        """Parse the XML from a response and raise any errors found."""
+        xml = response.text
+        root = XML(xml)
+        tags = [element.tag for element in root]
+        if tags[:4] == ["Code", "Message", "ProposedSize", "MaxSizeAllowed"]:
+            # Returned if image is too big
+            code, message, actual, maximum_size = [
+                element.text for element in root[:4]
+            ]
+            raise TooLargeMediaException(int(maximum_size), int(actual))
 
     def _submit_media(self, data, timeout, without_websockets):
         """Submit and return an `image`, `video`, or `videogif`.
@@ -558,15 +662,61 @@ class Subreddit(
             response = self._reddit._core._requestor._http.post(
                 upload_url, data=upload_data, files={"file": media}
             )
+        if not response.ok:
+            self._parse_xml_response(response)
         response.raise_for_status()
 
         return upload_url + "/" + upload_data["key"]
+
+    def post_requirements(self):
+        """Get the post requirements for a subreddit.
+
+        :returns: A dict with the various requirements.
+
+        The returned dict contains the following keys:
+
+        * ``domain_blacklist``
+        * ``body_restriction_policy``
+        * ``domain_whitelist``
+        * ``title_regexes``
+        * ``body_blacklisted_strings``
+        * ``body_required_strings``
+        * ``title_text_min_length``
+        * ``is_flair_required``
+        * ``title_text_max_length``
+        * ``body_regexes``
+        * ``link_repost_age``
+        * ``body_text_min_length``
+        * ``link_restriction_policy``
+        * ``body_text_max_length``
+        * ``title_required_strings``
+        * ``title_blacklisted_strings``
+        * ``guidelines_text``
+        * ``guidelines_display_policy``
+
+        For example, to fetch the post requirements for ``r/test``:
+
+        .. code-block:: python
+
+            print(reddit.subreddit("test").post_requirements)
+
+        """
+        return self._reddit.get(
+            API_PATH["post_requirements"].format(subreddit=str(self))
+        )
 
     def random(self):
         """Return a random Submission.
 
         Returns ``None`` on subreddits that do not support the random feature.
         One example, at the time of writing, is ``r/wallpapers``.
+
+        For example, to get a random submission off of ``r/AskReddit``:
+
+        .. code-block:: python
+
+            submission = reddit.subreddit("AskReddit").random()
+            print(submission.title)
         """
         url = API_PATH["subreddit_random"].format(subreddit=self)
         try:
@@ -579,18 +729,6 @@ class Subreddit(
             )
         except ClientException:
             return None
-
-    def rules(self):
-        """Return rules for the subreddit.
-
-        For example to show the rules of ``r/redditdev`` try:
-
-        .. code-block:: python
-
-           reddit.subreddit('redditdev').rules()
-
-        """
-        return self._reddit.get(API_PATH["rules"].format(subreddit=self))
 
     def search(
         self,
@@ -611,13 +749,13 @@ class Subreddit(
             (default: all).
 
         For more information on building a search query see:
-            https://www.reddit.com/wiki/search
+        https://www.reddit.com/wiki/search
 
         For example to search all subreddits for ``praw`` try:
 
         .. code-block:: python
 
-           for submission in reddit.subreddit('all').search('praw'):
+           for submission in reddit.subreddit("all").search("praw"):
                print(submission.title)
 
         """
@@ -643,6 +781,12 @@ class Subreddit(
 
         Raises ``prawcore.NotFound`` if the sticky does not exist.
 
+        For example, to get the stickied post on the subreddit ``r/test``:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").sticky()
+
         """
         url = API_PATH["about_sticky"].format(subreddit=self)
         try:
@@ -665,12 +809,13 @@ class Subreddit(
         nsfw=False,
         spoiler=False,
         collection_id=None,
+        discussion_type=None,
     ):
         """Add a submission to the subreddit.
 
         :param title: The title of the submission.
         :param selftext: The Markdown formatted content for a ``text``
-            submission. Use an empty string, ``''``, to make a title-only
+            submission. Use an empty string, ``""``, to make a title-only
             submission.
         :param url: The URL for a ``link`` submission.
         :param collection_id: The UUID of a :class:`.Collection` to add the
@@ -686,6 +831,8 @@ class Subreddit(
             (default: False).
         :param spoiler: Whether or not the submission should be marked as
             a spoiler (default: False).
+        :param discussion_type: Set to ``CHAT`` to enable live discussion
+            instead of traditional comments (default: None).
         :returns: A :class:`~.Submission` object for the newly created
             submission.
 
@@ -695,14 +842,15 @@ class Subreddit(
 
         .. code-block:: python
 
-           title = 'PRAW documentation'
+           title = "PRAW documentation"
            url = 'https://praw.readthedocs.io'
-           reddit.subreddit('reddit_api_test').submit(title, url=url)
+           reddit.subreddit("reddit_api_test").submit(title, url=url)
 
-        .. note ::
+        .. seealso ::
 
-           For submitting images, videos, and videogifs,
-           see :meth:`.submit_image` and :meth:`.submit_video`.
+           * :meth:`.submit_image` to submit images
+           * :meth:`.submit_video` to submit videos and videogifs
+           * :meth:`.submit_poll` to submit polls
 
         """
         if (bool(selftext) or selftext == "") == bool(url):
@@ -715,11 +863,13 @@ class Subreddit(
             "title": title,
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
+            "validate_on_submit": self._reddit.validate_on_submit,
         }
         for key, value in (
             ("flair_id", flair_id),
             ("flair_text", flair_text),
             ("collection_id", collection_id),
+            ("discussion_type", discussion_type),
         ):
             if value is not None:
                 data[key] = value
@@ -743,6 +893,7 @@ class Subreddit(
         timeout=10,
         collection_id=None,
         without_websockets=False,
+        discussion_type=None,
     ):
         """Add an image submission to the subreddit.
 
@@ -766,7 +917,8 @@ class Subreddit(
         :param without_websockets: Set to ``True`` to disable use of WebSockets
             (see note below for an explanation). If ``True``, this method
             doesn't return anything. (default: ``False``).
-
+        :param discussion_type: Set to ``CHAT`` to enable live discussion
+            instead of traditional comments (default: None).
         :returns: A :class:`.Submission` object for the newly created
             submission, unless ``without_websockets`` is ``True``.
 
@@ -792,9 +944,14 @@ class Subreddit(
 
         .. code-block:: python
 
-           title = 'My favorite picture'
-           image = '/path/to/image.png'
-           reddit.subreddit('reddit_api_test').submit_image(title, image)
+           title = "My favorite picture"
+           image = "/path/to/image.png"
+           reddit.subreddit("reddit_api_test").submit_image(title, image)
+
+        .. seealso ::
+
+           * :meth:`.submit` to submit url posts and selftexts
+           * :meth:`.submit_video`. to submit videos and videogifs
 
         """
         data = {
@@ -804,11 +961,13 @@ class Subreddit(
             "title": title,
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
+            "validate_on_submit": self._reddit.validate_on_submit,
         }
         for key, value in (
             ("flair_id", flair_id),
             ("flair_text", flair_text),
             ("collection_id", collection_id),
+            ("discussion_type", discussion_type),
         ):
             if value is not None:
                 data[key] = value
@@ -819,6 +978,83 @@ class Subreddit(
         return self._submit_media(
             data, timeout, without_websockets=without_websockets
         )
+
+    def submit_poll(
+        self,
+        title: str,
+        selftext: str,
+        options: List[str],
+        duration: int,
+        flair_id: str = None,
+        flair_text: str = None,
+        resubmit: bool = True,
+        send_replies: bool = True,
+        nsfw: bool = False,
+        spoiler: bool = False,
+        collection_id: str = None,
+        discussion_type: str = None,
+    ):
+        """Add a poll submission to the subreddit.
+
+        :param title: The title of the submission.
+        :param selftext: The Markdown formatted content for the
+            submission. Use an empty string, ``""``, to make a submission
+            with no text contents.
+        :param options: A ``list`` of two to six poll options as ``str``.
+        :param duration: The number of days the poll should accept votes,
+            as an ``int``. Valid values are between ``1`` and ``7``, inclusive.
+        :param collection_id: The UUID of a :class:`.Collection` to add the
+            newly-submitted post to.
+        :param flair_id: The flair template to select (default: None).
+        :param flair_text: If the template's ``flair_text_editable`` value is
+            True, this value will set a custom text (default: None).
+        :param resubmit: When False, an error will occur if the URL has already
+            been submitted (default: True).
+        :param send_replies: When True, messages will be sent to the submission
+            author when comments are made to the submission (default: True).
+        :param nsfw: Whether or not the submission should be marked NSFW
+            (default: False).
+        :param spoiler: Whether or not the submission should be marked as
+            a spoiler (default: False).
+        :param discussion_type: Set to ``CHAT`` to enable live discussion
+            instead of traditional comments (default: None).
+        :returns: A :class:`~.Submission` object for the newly created
+            submission.
+
+        For example to submit a poll to ``r/reddit_api_test`` do:
+
+        .. code-block:: python
+
+           title = "Do you like PRAW?"
+           reddit.subreddit("reddit_api_test").submit(
+               title,
+               selftext="",
+               options=["Yes", "No"],
+               duration=3
+           )
+        """
+        data = {
+            "sr": str(self),
+            "text": selftext,
+            "options": options,
+            "duration": duration,
+            "resubmit": bool(resubmit),
+            "sendreplies": bool(send_replies),
+            "title": title,
+            "nsfw": bool(nsfw),
+            "spoiler": bool(spoiler),
+            "validate_on_submit": self._reddit.validate_on_submit,
+        }
+        for key, value in (
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+            ("collection_id", collection_id),
+            ("discussion_type", discussion_type),
+        ):
+            if value is not None:
+                data[key] = value
+
+        return self._reddit.post(API_PATH["submit_poll_post"], json=data)
 
     def submit_video(
         self,
@@ -835,6 +1071,7 @@ class Subreddit(
         timeout=10,
         collection_id=None,
         without_websockets=False,
+        discussion_type=None,
     ):
         """Add a video or videogif submission to the subreddit.
 
@@ -865,7 +1102,8 @@ class Subreddit(
         :param without_websockets: Set to ``True`` to disable use of WebSockets
             (see note below for an explanation). If ``True``, this method
             doesn't return anything. (default: ``False``).
-
+        :param discussion_type: Set to ``CHAT`` to enable live discussion
+            instead of traditional comments (default: None).
         :returns: A :class:`.Submission` object for the newly created
             submission, unless ``without_websockets`` is ``True``.
 
@@ -891,9 +1129,14 @@ class Subreddit(
 
         .. code-block:: python
 
-           title = 'My favorite movie'
-           video = '/path/to/video.mp4'
-           reddit.subreddit('reddit_api_test').submit_video(title, video)
+           title = "My favorite movie"
+           video = "/path/to/video.mp4"
+           reddit.subreddit("reddit_api_test").submit_video(title, video)
+
+        .. seealso ::
+
+           * :meth:`.submit` to submit url posts and selftexts
+           * :meth:`.submit_image` to submit images
 
         """
         data = {
@@ -903,11 +1146,13 @@ class Subreddit(
             "title": title,
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
+            "validate_on_submit": self._reddit.validate_on_submit,
         }
         for key, value in (
             ("flair_id", flair_id),
             ("flair_text", flair_text),
             ("collection_id", collection_id),
+            ("discussion_type", discussion_type),
         ):
             if value is not None:
                 data[key] = value
@@ -927,6 +1172,12 @@ class Subreddit(
         :param other_subreddits: When provided, also subscribe to the provided
             list of subreddits.
 
+        For example, to subscribe to ``r/test``:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").subscribe()
+
         """
         data = {
             "action": "sub",
@@ -942,6 +1193,23 @@ class Subreddit(
         the authenticated user, that is, they are not public and the
         authenticated user is not a moderator of the subreddit.
 
+        The traffic method returns a dict with three keys. The keys are
+        ``day``, ``hour`` and ``month``. Each key contains a list of lists with
+        3 or 4 values. The first value is a timestamp indicating the start of
+        the category (start of the day for the ``day`` key, start of the hour
+        for the ``hour`` key, etc.). The second, third, and fourth values
+        indicate the unique pageviews, total pageviews, and subscribers,
+        respectively.
+
+        .. note:: The ``hour`` key does not contain subscribers, and therefore
+            each sub-list contains three values.
+
+        For example, to get the traffic stats for ``r/test``:
+
+        .. code-block:: python
+
+            stats=reddit.subreddit("test").traffic()
+
         """
         return self._reddit.get(
             API_PATH["about_traffic"].format(subreddit=self)
@@ -952,6 +1220,12 @@ class Subreddit(
 
         :param other_subreddits: When provided, also unsubscribe from
             the provided list of subreddits.
+
+        To unsubscribe from ``r/test``:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").unsubscribe()
 
         """
         data = {
@@ -968,11 +1242,11 @@ class SubredditFilters:
     """Provide functions to interact with the special Subreddit's filters.
 
     Members of this class should be utilized via ``Subreddit.filters``. For
-    example to add a filter run:
+    example, to add a filter, run:
 
     .. code-block:: python
 
-       reddit.subreddit('all').filters.add('subreddit_name')
+        reddit.subreddit("all").filters.add("subreddit_name")
 
     """
 
@@ -994,7 +1268,7 @@ class SubredditFilters:
 
         .. code-block:: python
 
-           for subreddit in reddit.subreddit('NAME').filters:
+           for subreddit in reddit.subreddit("NAME").filters:
                ...
 
         """
@@ -1019,7 +1293,7 @@ class SubredditFilters:
 
         .. code-block:: python
 
-           reddit.subreddit('all-redditdev-learnpython')
+           reddit.subreddit("all-redditdev-learnpython")
 
         Raises ``prawcore.NotFound`` when calling on a non-special subreddit.
 
@@ -1029,8 +1303,8 @@ class SubredditFilters:
             user=self.subreddit._reddit.user.me(),
             subreddit=subreddit,
         )
-        self.subreddit._reddit.request(
-            "PUT", url, data={"model": dumps({"name": str(subreddit)})}
+        self.subreddit._reddit.put(
+            url, data={"model": dumps({"name": str(subreddit)})}
         )
 
     def remove(self, subreddit):
@@ -1046,7 +1320,7 @@ class SubredditFilters:
             user=self.subreddit._reddit.user.me(),
             subreddit=str(subreddit),
         )
-        self.subreddit._reddit.request("DELETE", url, data={})
+        self.subreddit._reddit.delete(url)
 
 
 class SubredditFlair:
@@ -1062,7 +1336,7 @@ class SubredditFlair:
 
         .. code-block:: python
 
-           for template in reddit.subreddit('NAME').flair.link_templates:
+           for template in reddit.subreddit("NAME").flair.link_templates:
                print(template)
 
         """
@@ -1078,7 +1352,7 @@ class SubredditFlair:
 
         .. code-block:: python
 
-           for template in reddit.subreddit('NAME').flair.templates:
+           for template in reddit.subreddit("NAME").flair.templates:
                print(template)
 
         """
@@ -1097,7 +1371,7 @@ class SubredditFlair:
 
         .. code-block:: python
 
-           for flair in reddit.subreddit('NAME').flair(limit=None):
+           for flair in reddit.subreddit("NAME").flair(limit=None):
                print(flair)
 
         """
@@ -1155,11 +1429,13 @@ class SubredditFlair:
     def delete(self, redditor):
         """Delete flair for a Redditor.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``"spez"``) or
             :class:`~.Redditor` instance.
 
-        .. note:: To delete the flair of many Redditors at once, please see
-                  :meth:`~praw.models.reddit.subreddit.SubredditFlair.update`.
+        .. seealso::
+
+            :meth:`~praw.models.reddit.subreddit.SubredditFlair.update` to
+            delete the flair of many Redditors at once.
 
         """
         url = API_PATH["deleteflair"].format(subreddit=self.subreddit)
@@ -1177,7 +1453,7 @@ class SubredditFlair:
     def set(self, redditor, text="", css_class="", flair_template_id=None):
         """Set flair for a Redditor.
 
-        :param redditor: (Required) A redditor name (e.g., ``'spez'``) or
+        :param redditor: (Required) A redditor name (e.g., ``"spez"``) or
             :class:`~.Redditor` instance.
         :param text: The flair text to associate with the Redditor or
             Submission (default: '').
@@ -1193,10 +1469,10 @@ class SubredditFlair:
 
         .. code-block:: python
 
-           reddit.subreddit('redditdev').flair.set('bboe', 'PRAW author',
-                                                   css_class='mods')
-           template = '6bd28436-1aa7-11e9-9902-0e05ab0fad46'
-           reddit.subreddit('redditdev').flair.set('spez', 'Reddit CEO',
+           reddit.subreddit("redditdev").flair.set("bboe", "PRAW author",
+                                                   css_class="mods")
+           template = "6bd28436-1aa7-11e9-9902-0e05ab0fad46"
+           reddit.subreddit("redditdev").flair.set("spez", "Reddit CEO",
                                                    flair_template_id=template)
 
         """
@@ -1238,22 +1514,25 @@ class SubredditFlair:
 
         .. code-block:: python
 
-           subreddit.flair.update(['bboe', 'spez', 'spladug'],
-                                  css_class='praw')
+           subreddit.flair.update(["bboe", "spez", "spladug"],
+                                  css_class="praw")
 
         """
-        lines = []
+        templines = StringIO()
         for item in flair_list:
             if isinstance(item, dict):
-                fmt_data = (
-                    str(item["user"]),
-                    item.get("flair_text", text),
-                    item.get("flair_css_class", css_class),
+                writer(templines).writerow(
+                    [
+                        str(item["user"]),
+                        item.get("flair_text", text),
+                        item.get("flair_css_class", css_class),
+                    ]
                 )
             else:
-                fmt_data = (str(item), text, css_class)
-            lines.append('"{}","{}","{}"'.format(*fmt_data))
+                writer(templines).writerow([str(item), text, css_class])
 
+        lines = templines.getvalue().splitlines()
+        templines.close()
         response = []
         url = API_PATH["flaircsv"].format(subreddit=self.subreddit)
         while lines:
@@ -1278,11 +1557,15 @@ class SubredditFlairTemplates:
 
         .. note:: This class should not be initialized directly. Instead obtain
            an instance via:
-           ``reddit.subreddit('subreddit_name').flair.templates`` or
-           ``reddit.subreddit('subreddit_name').flair.link_templates``.
+           ``reddit.subreddit("subreddit_name").flair.templates`` or
+           ``reddit.subreddit("subreddit_name").flair.link_templates``.
 
         """
         self.subreddit = subreddit
+
+    def __iter__(self):
+        """Abstract method to return flair templates."""
+        raise NotImplementedError()
 
     def _add(
         self,
@@ -1324,7 +1607,7 @@ class SubredditFlairTemplates:
         .. code-block:: python
 
            template_info = list(subreddit.flair.templates)[0]
-           subreddit.flair.templates.delete(template_info['id'])
+           subreddit.flair.templates.delete(template_info["id"])
 
         """
         url = API_PATH["flairtemplatedelete"].format(subreddit=self.subreddit)
@@ -1335,19 +1618,20 @@ class SubredditFlairTemplates:
     def update(
         self,
         template_id,
-        text,
-        css_class="",
-        text_editable=False,
+        text=None,
+        css_class=None,
+        text_editable=None,
         background_color=None,
         text_color=None,
         mod_only=None,
         allowable_content=None,
         max_emojis=None,
+        fetch=True,
     ):
         """Update the flair template provided by ``template_id``.
 
         :param template_id: The flair template to update. If not valid then
-            a new flair template will be made.
+            an exception will be thrown.
         :param text: The flair template's new text (required).
         :param css_class: The flair template's new css_class (default: '').
         :param text_editable: (boolean) Indicate if the flair text can be
@@ -1355,15 +1639,21 @@ class SubredditFlairTemplates:
         :param background_color: The flair template's new background color,
             as a hex color.
         :param text_color: The flair template's new text color, either
-            ``'light'`` or ``'dark'``.
+            ``"light"`` or ``"dark"``.
         :param mod_only: (boolean) Indicate if the flair can only be used by
             moderators.
-        :param allowable_content: If specified, most be one of ``'all'``,
-            ``'emoji'``, or ``'text'`` to restrict content to that type.
-            If set to ``'emoji'`` then the ``'text'`` param must be a
-            valid emoji string, for example ``':snoo:'``.
+        :param allowable_content: If specified, most be one of ``"all"``,
+            ``"emoji"``, or ``"text"`` to restrict content to that type.
+            If set to ``"emoji"`` then the ``"text"`` param must be a
+            valid emoji string, for example ``":snoo:"``.
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
+        :param fetch: Whether or not PRAW will fetch existing information on
+            the existing flair before updating (Default: True).
+
+        .. warning:: If parameter ``fetch`` is set to ``False``, all parameters
+             not provided will be reset to default (``None`` or ``False``)
+             values.
 
         For example to make a user flair template text_editable, try:
 
@@ -1371,14 +1661,9 @@ class SubredditFlairTemplates:
 
            template_info = list(subreddit.flair.templates)[0]
            subreddit.flair.templates.update(
-               template_info['id'],
-               template_info['flair_text'],
+               template_info["id"],
+               template_info["flair_text"],
                text_editable=True)
-
-        .. note::
-
-           Any parameters not provided will be set to default values (usually
-           ``None`` or ``False``) on Reddit's end.
 
         """
         url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
@@ -1393,6 +1678,19 @@ class SubredditFlairTemplates:
             "text_color": text_color,
             "text_editable": text_editable,
         }
+        if fetch:
+            _existing_data = [
+                template
+                for template in iter(self)
+                if template["id"] == template_id
+            ]
+            if len(_existing_data) != 1:
+                raise InvalidFlairTemplateID(template_id)
+            else:
+                existing_data = _existing_data[0]
+                for key, value in existing_data.items():
+                    if data.get(key) is None:
+                        data[key] = value
         self.subreddit._reddit.post(url, data=data)
 
 
@@ -1406,7 +1704,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
 
         .. code-block:: python
 
-           for template in reddit.subreddit('NAME').flair.templates:
+           for template in reddit.subreddit("NAME").flair.templates:
                print(template)
 
 
@@ -1436,13 +1734,13 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         :param background_color: The flair template's new background color,
             as a hex color.
         :param text_color: The flair template's new text color, either
-            ``'light'`` or ``'dark'``.
+            ``"light"`` or ``"dark"``.
         :param mod_only: (boolean) Indicate if the flair can only be used by
             moderators.
-        :param allowable_content: If specified, most be one of ``'all'``,
-            ``'emoji'``, or ``'text'`` to restrict content to that type.
-            If set to ``'emoji'`` then the ``'text'`` param must be a
-            valid emoji string, for example ``':snoo:'``.
+        :param allowable_content: If specified, most be one of ``"all"``,
+            ``"emoji"``, or ``"text"`` to restrict content to that type.
+            If set to ``"emoji"`` then the ``"text"`` param must be a
+            valid emoji string, for example ``":snoo:"``.
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
 
@@ -1450,8 +1748,8 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
 
         .. code-block:: python
 
-           reddit.subreddit('NAME').flair.templates.add(
-               css_class='praw', text_editable=True)
+           reddit.subreddit("NAME").flair.templates.add(
+               css_class="praw", text_editable=True)
 
         """
         self._add(
@@ -1473,7 +1771,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
 
         .. code-block:: python
 
-           reddit.subreddit('NAME').flair.templates.clear()
+           reddit.subreddit("NAME").flair.templates.clear()
 
         """
         self._clear(is_link=False)
@@ -1489,9 +1787,8 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         .. code-block:: python
 
-           for template in reddit.subreddit('NAME').flair.link_templates:
+           for template in reddit.subreddit("NAME").flair.link_templates:
                print(template)
-
 
         """
         url = API_PATH["link_flair"].format(subreddit=self.subreddit)
@@ -1518,13 +1815,13 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         :param background_color: The flair template's new background color,
             as a hex color.
         :param text_color: The flair template's new text color, either
-            ``'light'`` or ``'dark'``.
+            ``"light"`` or ``"dark"``.
         :param mod_only: (boolean) Indicate if the flair can only be used by
             moderators.
-        :param allowable_content: If specified, most be one of ``'all'``,
-            ``'emoji'``, or ``'text'`` to restrict content to that type.
-            If set to ``'emoji'`` then the ``'text'`` param must be a
-            valid emoji string, for example ``':snoo:'``.
+        :param allowable_content: If specified, most be one of ``"all"``,
+            ``"emoji"``, or ``"text"`` to restrict content to that type.
+            If set to ``"emoji"`` then the ``"text"`` param must be a
+            valid emoji string, for example ``":snoo:"``.
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
 
@@ -1532,8 +1829,8 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         .. code-block:: python
 
-           reddit.subreddit('NAME').flair.link_templates.add(
-               css_class='praw', text_editable=True)
+           reddit.subreddit("NAME").flair.link_templates.add(
+               css_class="praw", text_editable=True)
 
         """
         self._add(
@@ -1555,14 +1852,22 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         .. code-block:: python
 
-           reddit.subreddit('NAME').flair.link_templates.clear()
+           reddit.subreddit("NAME").flair.link_templates.clear()
 
         """
         self._clear(is_link=True)
 
 
 class SubredditModeration:
-    """Provides a set of moderation functions to a Subreddit."""
+    """Provides a set of moderation functions to a Subreddit.
+
+    For example, to accept a moderation invite from subreddit ``r/test``:
+
+    .. code-block:: python
+
+        reddit.subreddit("test").mod.accept_invite()
+
+    """
 
     @staticmethod
     def _handle_only(only, generator_kwargs):
@@ -1590,7 +1895,7 @@ class SubredditModeration:
     def edited(self, only=None, **generator_kwargs):
         """Return a :class:`.ListingGenerator` for edited comments and submissions.
 
-        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+        :param only: If specified, one of ``"comments"``, or ``"submissions"``
             to yield only results of that type.
 
         Additional keyword arguments are passed in the initialization of
@@ -1600,7 +1905,7 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for item in reddit.subreddit('mod').mod.edited(limit=None):
+           for item in reddit.subreddit("mod").mod.edited(limit=None):
                print(item)
 
         """
@@ -1617,13 +1922,13 @@ class SubredditModeration:
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        See ``unread`` for unread moderator messages.
+        .. seealso:: :meth:`~.unread` for unread moderator messages.
 
         To print the last 5 moderator mail messages and their replies, try:
 
         .. code-block:: python
 
-           for message in reddit.subreddit('mod').mod.inbox(limit=5):
+           for message in reddit.subreddit("mod").mod.inbox(limit=5):
                print("From: {}, Body: {}".format(message.author, message.body))
                for reply in message.replies:
                    print("From: {}, Body: {}".format(reply.author, reply.body))
@@ -1650,7 +1955,7 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for log in reddit.subreddit('mod').mod.log(limit=5):
+           for log in reddit.subreddit("mod").mod.log(limit=5):
                print("Mod: {}, Subreddit: {}".format(log.mod, log.subreddit))
 
         """
@@ -1665,7 +1970,7 @@ class SubredditModeration:
     def modqueue(self, only=None, **generator_kwargs):
         """Return a :class:`.ListingGenerator` for modqueue items.
 
-        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+        :param only: If specified, one of ``"comments"``, or ``"submissions"``
             to yield only results of that type.
 
         Additional keyword arguments are passed in the initialization of
@@ -1675,7 +1980,7 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for item in reddit.subreddit('mod').mod.modqueue(limit=None):
+           for item in reddit.subreddit("mod").mod.modqueue(limit=None):
                print(item)
 
         """
@@ -1695,7 +2000,7 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for log in reddit.subreddit('mod').mod.stream.log():
+           for log in reddit.subreddit("mod").mod.stream.log():
                print("Mod: {}, Subreddit: {}".format(log.mod, log.subreddit))
 
         """
@@ -1713,14 +2018,14 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for removal_reason in reddit.subreddit('NAME').mod.removal_reasons:
+           for removal_reason in reddit.subreddit("NAME").mod.removal_reasons:
                print(removal_reason)
 
         A single removal reason can be lazily retrieved via:
 
         .. code-block:: python
 
-           reddit.subreddit('NAME').mod.removal_reasons['reason_id']
+           reddit.subreddit("NAME").mod.removal_reasons["reason_id"]
 
         .. note:: Attempting to access attributes of an nonexistent removal
            reason will result in a :class:`.ClientException`.
@@ -1731,7 +2036,7 @@ class SubredditModeration:
     def reports(self, only=None, **generator_kwargs):
         """Return a :class:`.ListingGenerator` for reported comments and submissions.
 
-        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+        :param only: If specified, one of ``"comments"``, or ``"submissions"``
             to yield only results of that type.
 
         Additional keyword arguments are passed in the initialization of
@@ -1741,7 +2046,7 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for reported_item in reddit.subreddit('mod').mod.reports():
+           for reported_item in reddit.subreddit("mod").mod.reports():
                print("User Reports: {}".format(reported_item.user_reports))
                print("Mod Reports: {}".format(reported_item.mod_reports))
 
@@ -1761,7 +2066,7 @@ class SubredditModeration:
     def spam(self, only=None, **generator_kwargs):
         """Return a :class:`.ListingGenerator` for spam comments and submissions.
 
-        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+        :param only: If specified, one of ``"comments"``, or ``"submissions"``
             to yield only results of that type.
 
         Additional keyword arguments are passed in the initialization of
@@ -1771,7 +2076,7 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for item in reddit.subreddit('mod').mod.spam():
+           for item in reddit.subreddit("mod").mod.spam():
                print(item)
 
         """
@@ -1792,7 +2097,7 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for item in reddit.subreddit('mod').mod.unmoderated():
+           for item in reddit.subreddit("mod").mod.unmoderated():
                print(item)
 
         """
@@ -1808,13 +2113,13 @@ class SubredditModeration:
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        See ``inbox`` for all messages.
+        .. seealso:: :meth:`inbox` for all messages.
 
         To print the mail in the unread modmail queue try:
 
         .. code-block:: python
 
-           for message in reddit.subreddit('mod').mod.unread():
+           for message in reddit.subreddit("mod").mod.unread():
                print("From: {}, To: {}".format(message.author, message.dest))
 
         """
@@ -1827,42 +2132,53 @@ class SubredditModeration:
     def update(self, **settings):
         """Update the subreddit's settings.
 
+        :param all_original_content: Mandate all submissions to be original
+            content only.
+        :param allow_chat_post_creation: Allow users to create chat
+            submissions.
         :param allow_images: Allow users to upload images using the native
-            image hosting. Only applies to link-only subreddits.
+            image hosting.
+        :param allow_polls: Allow users to post polls to the subreddit.
         :param allow_post_crossposts: Allow users to crosspost submissions from
             other subreddits.
         :param allow_top: Allow the subreddit to appear on ``r/all`` as well
             as the default and trending lists.
+        :param allow_videos: Allow users to upload videos using the native
+            image hosting.
         :param collapse_deleted_comments: Collapse deleted and removed comments
             on comments pages by default.
+        :param crowd_control_chat_level: Controls the crowd control level for
+            chat rooms. Goes from 0-3.
+        :param crowd_control_level: Controls the crowd control level for
+            submissions. Goes from 0-3.
+        :param crowd_control_mode: Enables/disables crowd control.
         :param comment_score_hide_mins: The number of minutes to hide comment
             scores.
         :param description: Shown in the sidebar of your subreddit.
         :param disable_contributor_requests: Specifies whether redditors may
             send automated modmail messages requesting approval as a submitter.
-        :type disable_contributor_requests: bool
-        :param domain: Domain name with a cname that points to
-            {subreddit}.reddit.com.
         :param exclude_banned_modqueue: Exclude posts by site-wide banned users
             from modqueue/unmoderated.
+        :param free_form_reports: Allow users to specify custom reasons in the
+            report menu.
         :param header_hover_text: The text seen when hovering over the snoo.
         :param hide_ads: Don't show ads within this subreddit. Only applies to
             Premium-user only subreddits.
-        :param key_color: A 6-digit rgb hex color (e.g. ``'#AABBCC'``), used as
+        :param key_color: A 6-digit rgb hex color (e.g. ``"#AABBCC"``), used as
             a thematic color for your subreddit on mobile.
         :param lang: A valid IETF language tag (underscore separated).
         :param link_type: The types of submissions users can make.
             One of ``any``, ``link``, ``self``.
+        :param original_content_tag_enabled: Enables the use of the
+            ``original content`` label for submissions.
         :param over_18: Viewers must be over 18 years old (i.e. NSFW).
         :param public_description: Public description blurb. Appears in search
             results and on the landing page for private subreddits.
         :param public_traffic: Make the traffic stats page public.
         :param restrict_commenting: Specifies whether approved users have the
             ability to comment.
-        :type restrict_commenting: bool
         :param restrict_posting: Specifies whether approved users have the
             ability to submit posts.
-        :type restrict_posting: bool
         :param show_media: Show thumbnails on submissions.
         :param show_media_preview: Expand media previews on comments pages.
         :param spam_comments: Spam filter strength for comments.
@@ -1872,8 +2188,6 @@ class SubredditModeration:
         :param spam_selfposts: Spam filter strength for selfposts.
             One of ``all``, ``low``, ``high``.
         :param spoilers_enabled: Enable marking posts as containing spoilers.
-        :param sr: The fullname of the subreddit whose settings will be
-            updated.
         :param submit_link_label: Custom label for submit link button
             (None for default).
         :param submit_text: Text to show on submission page.
@@ -1884,9 +2198,12 @@ class SubredditModeration:
             ``restricted``.
         :param suggested_comment_sort: All comment threads will use this
             sorting method by default. Leave None, or choose one of
-            ``confidence``, ``controversial``, ``new``, ``old``, ``qa``,
-            ``random``, ``top``.
+            ``confidence``, ``controversial``, ``live``, ``new``, ``old``,
+            ``qa``, ``random``, ``top``.
         :param title: The title of the subreddit.
+        :param welcome_message_enabled: Enables the subreddit welcome message.
+        :param welcome_message_text: The text to be used as a welcome message.
+            A welcome message is sent to all new subscribers by a Reddit bot.
         :param wiki_edit_age: Account age, in days, required to edit and create
             wiki pages.
         :param wiki_edit_karma: Subreddit karma required to edit and create
@@ -1900,28 +2217,10 @@ class SubredditModeration:
         call to :meth:`.SubredditModeration.update` should retain their current
         value. If they do not please file a bug.
 
-        .. warning:: Undocumented settings, or settings that were very recently
-                     documented, may not retain their current value when
-                     updating. This often occurs when Reddit adds a new setting
-                     but forgets to add that setting to the API endpoint that
-                     is used to fetch the current settings.
-
         """
-        current_settings = self.settings()
-        fullname = current_settings.pop("subreddit_id")
-
-        # These attributes come out using different names than they go in.
-        remap = {
-            "allow_top": "default_set",
-            "lang": "language",
-            "link_type": "content_options",
-        }
-        for (new, old) in remap.items():
-            current_settings[new] = current_settings.pop(old)
-
-        current_settings.update(settings)
-        return Subreddit._create_or_update(
-            _reddit=self.subreddit._reddit, sr=fullname, **current_settings
+        settings["sr"] = self.subreddit.fullname
+        return self.subreddit._reddit.patch(
+            API_PATH["update_settings"], json=settings
         )
 
 
@@ -1939,7 +2238,7 @@ class SubredditModerationStream:
     def edited(self, only=None, **stream_options):
         """Yield edited comments and submissions as they become available.
 
-        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+        :param only: If specified, one of ``"comments"``, or ``"submissions"``
             to yield only results of that type.
 
         Keyword arguments are passed to :func:`.stream_generator`.
@@ -1949,7 +2248,7 @@ class SubredditModerationStream:
 
         .. code-block:: python
 
-           for item in reddit.subreddit('mod').mod.stream.edited():
+           for item in reddit.subreddit("mod").mod.stream.edited():
                print(item)
 
         """
@@ -1970,7 +2269,7 @@ class SubredditModerationStream:
 
         .. code-block:: python
 
-           for log in reddit.subreddit('mod').mod.stream.log():
+           for log in reddit.subreddit("mod").mod.stream.log():
                print("Mod: {}, Subreddit: {}".format(log.mod, log.subreddit))
 
         """
@@ -2001,7 +2300,8 @@ class SubredditModerationStream:
 
         .. code-block:: python
 
-           for message in reddit.subreddit('all').mod.stream.modmail_conversations():
+           subreddit = reddit.subreddit("all")
+           for message in subreddit.mod.stream.modmail_conversations():
                print("From: {}, To: {}".format(message.owner, message.participant))
 
         """  # noqa: E501
@@ -2020,7 +2320,7 @@ class SubredditModerationStream:
     def modqueue(self, only=None, **stream_options):
         """Yield comments/submissions in the modqueue as they become available.
 
-        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+        :param only: If specified, one of ``"comments"``, or ``"submissions"``
             to yield only results of that type.
 
         Keyword arguments are passed to :func:`.stream_generator`.
@@ -2029,7 +2329,7 @@ class SubredditModerationStream:
 
         .. code-block:: python
 
-           for item in reddit.subreddit('mod').mod.stream.modqueue():
+           for item in reddit.subreddit("mod").mod.stream.modqueue():
                print(item)
 
         """
@@ -2040,7 +2340,7 @@ class SubredditModerationStream:
     def reports(self, only=None, **stream_options):
         """Yield reported comments and submissions as they become available.
 
-        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+        :param only: If specified, one of ``"comments"``, or ``"submissions"``
             to yield only results of that type.
 
         Keyword arguments are passed to :func:`.stream_generator`.
@@ -2049,7 +2349,7 @@ class SubredditModerationStream:
 
         .. code-block:: python
 
-           for item in reddit.subreddit('mod').mod.stream.reports():
+           for item in reddit.subreddit("mod").mod.stream.reports():
                print(item)
 
         """
@@ -2060,7 +2360,7 @@ class SubredditModerationStream:
     def spam(self, only=None, **stream_options):
         """Yield spam comments and submissions as they become available.
 
-        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+        :param only: If specified, one of ``"comments"``, or ``"submissions"``
             to yield only results of that type.
 
         Keyword arguments are passed to :func:`.stream_generator`.
@@ -2069,7 +2369,7 @@ class SubredditModerationStream:
 
         .. code-block:: python
 
-           for item in reddit.subreddit('mod').mod.stream.spam():
+           for item in reddit.subreddit("mod").mod.stream.spam():
                print(item)
 
         """
@@ -2086,7 +2386,7 @@ class SubredditModerationStream:
 
         .. code-block:: python
 
-           for item in reddit.subreddit('mod').mod.stream.unmoderated():
+           for item in reddit.subreddit("mod").mod.stream.unmoderated():
                print(item)
 
         """
@@ -2099,13 +2399,13 @@ class SubredditModerationStream:
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
-        See ``inbox`` for all messages.
+        .. seealso:: :meth:`~.inbox` for all messages.
 
         To print new mail in the unread modmail queue try:
 
         .. code-block:: python
 
-           for message in reddit.subreddit('mod').mod.stream.unread():
+           for message in reddit.subreddit("mod").mod.stream.unread():
                print("From: {}, To: {}".format(message.author, message.dest))
 
         """
@@ -2113,7 +2413,15 @@ class SubredditModerationStream:
 
 
 class SubredditQuarantine:
-    """Provides subreddit quarantine related methods."""
+    """Provides subreddit quarantine related methods.
+
+    To opt-in into a quarantined subreddit:
+
+    .. code-block:: python
+
+        reddit.subreddit("test").quaran.opt_in()
+
+    """
 
     def __init__(self, subreddit):
         """Create a SubredditQuarantine instance.
@@ -2130,7 +2438,7 @@ class SubredditQuarantine:
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit('QUESTIONABLE')
+           subreddit = reddit.subreddit("QUESTIONABLE")
            next(subreddit.hot())  # Raises prawcore.Forbidden
 
            subreddit.quaran.opt_in()
@@ -2152,7 +2460,7 @@ class SubredditQuarantine:
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit('QUESTIONABLE')
+           subreddit = reddit.subreddit("QUESTIONABLE")
            next(subreddit.hot())  # Returns Submission
 
            subreddit.quaran.opt_out()
@@ -2178,7 +2486,7 @@ class SubredditRelationship:
 
     .. code-block:: python
 
-       for ban in reddit.subreddit('redditdev').banned():
+       for ban in reddit.subreddit("redditdev").banned():
            print('{}: {}'.format(ban, ban.note))
 
     """
@@ -2218,7 +2526,7 @@ class SubredditRelationship:
     def add(self, redditor, **other_settings):
         """Add ``redditor`` to this relationship.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``"spez"``) or
             :class:`~.Redditor` instance.
 
         """
@@ -2230,7 +2538,7 @@ class SubredditRelationship:
     def remove(self, redditor):
         """Remove ``redditor`` from this relationship.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``"spez"``) or
             :class:`~.Redditor` instance.
 
         """
@@ -2248,7 +2556,7 @@ class ContributorRelationship(SubredditRelationship):
 
     .. code-block:: python
 
-       for contributor in reddit.subreddit('redditdev').contributor():
+       for contributor in reddit.subreddit("redditdev").contributor():
            print(contributor)
 
     """
@@ -2267,7 +2575,7 @@ class ModeratorRelationship(SubredditRelationship):
 
     .. code-block:: python
 
-       for moderator in reddit.subreddit('redditdev').moderator():
+       for moderator in reddit.subreddit("redditdev").moderator():
            print(moderator)
 
     """
@@ -2298,13 +2606,13 @@ class ModeratorRelationship(SubredditRelationship):
 
         .. code-block:: python
 
-           moderators = reddit.subreddit('nameofsub').moderator()
+           moderators = reddit.subreddit("nameofsub").moderator()
 
         For example, to list the moderators along with their permissions try:
 
         .. code-block:: python
 
-           for moderator in reddit.subreddit('SUBREDDIT').moderator():
+           for moderator in reddit.subreddit("SUBREDDIT").moderator():
                print('{}: {}'.format(moderator, moderator.mod_permissions))
 
 
@@ -2319,7 +2627,7 @@ class ModeratorRelationship(SubredditRelationship):
     def add(self, redditor, permissions=None, **other_settings):
         """Add or invite ``redditor`` to be a moderator of the subreddit.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``"spez"``) or
             :class:`~.Redditor` instance.
         :param permissions: When provided (not ``None``), permissions should be
             a list of strings specifying which subset of permissions to
@@ -2329,12 +2637,12 @@ class ModeratorRelationship(SubredditRelationship):
         An invite will be sent unless the user making this call is an admin
         user.
 
-        For example, to invite ``'spez'`` with ``'posts'`` and ``'mail'``
-            permissions to ``r/test``, try:
+        For example, to invite ``"spez"`` with ``"posts"`` and ``"mail"``
+        permissions to ``r/test``, try:
 
         .. code-block:: python
 
-           reddit.subreddit('test').moderator.add('spez', ['posts', 'mail'])
+           reddit.subreddit("test").moderator.add("spez", ["posts", "mail"])
 
         """
         other_settings = self._handle_permissions(permissions, other_settings)
@@ -2345,19 +2653,19 @@ class ModeratorRelationship(SubredditRelationship):
     def invite(self, redditor, permissions=None, **other_settings):
         """Invite ``redditor`` to be a moderator of the subreddit.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``"spez"``) or
             :class:`~.Redditor` instance.
         :param permissions: When provided (not ``None``), permissions should be
             a list of strings specifying which subset of permissions to
             grant. An empty list ``[]`` indicates no permissions, and when not
             provided ``None``, indicates full permissions.
 
-        For example, to invite ``'spez'`` with ``posts`` and ``mail``
+        For example, to invite ``"spez"`` with ``posts`` and ``mail``
             permissions to ``r/test``, try:
 
         .. code-block:: python
 
-           reddit.subreddit('test').moderator.invite('spez', ['posts', 'mail'])
+           reddit.subreddit("test").moderator.invite("spez", ["posts", "mail"])
 
         """
         data = self._handle_permissions(permissions, other_settings)
@@ -2372,7 +2680,7 @@ class ModeratorRelationship(SubredditRelationship):
 
         .. code-block:: python
 
-           reddit.subreddit('subredditname').moderator.leave()
+           reddit.subreddit("subredditname").moderator.leave()
 
         """
         self.remove(self.subreddit._reddit.config.username)
@@ -2380,14 +2688,14 @@ class ModeratorRelationship(SubredditRelationship):
     def remove_invite(self, redditor):
         """Remove the moderator invite for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``"spez"``) or
             :class:`~.Redditor` instance.
 
         For example:
 
         .. code-block:: python
 
-           reddit.subreddit('subredditname').moderator.remove_invite('spez')
+           reddit.subreddit("subredditname").moderator.remove_invite("spez")
 
         """
         data = {"name": str(redditor), "type": "moderator_invite"}
@@ -2397,7 +2705,7 @@ class ModeratorRelationship(SubredditRelationship):
     def update(self, redditor, permissions=None):
         """Update the moderator permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``"spez"``) or
             :class:`~.Redditor` instance.
         :param permissions: When provided (not ``None``), permissions should be
             a list of strings specifying which subset of permissions to
@@ -2408,13 +2716,13 @@ class ModeratorRelationship(SubredditRelationship):
 
         .. code-block:: python
 
-           subreddit.moderator.update('spez')
+           subreddit.moderator.update("spez")
 
         To remove all permissions from the moderator, try:
 
         .. code-block:: python
 
-           subreddit.moderator.update('spez', [])
+           subreddit.moderator.update("spez", [])
 
         """
         url = API_PATH["setpermissions"].format(subreddit=self.subreddit)
@@ -2426,7 +2734,7 @@ class ModeratorRelationship(SubredditRelationship):
     def update_invite(self, redditor, permissions=None):
         """Update the moderator invite permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``"spez"``) or
             :class:`~.Redditor` instance.
         :param permissions: When provided (not ``None``), permissions should be
             a list of strings specifying which subset of permissions to
@@ -2438,7 +2746,7 @@ class ModeratorRelationship(SubredditRelationship):
 
         .. code-block:: python
 
-           subreddit.moderator.update_invite('spez', ['flair', 'mail'])
+           subreddit.moderator.update_invite("spez", ["flair", "mail"])
 
         """
         url = API_PATH["setpermissions"].format(subreddit=self.subreddit)
@@ -2449,7 +2757,17 @@ class ModeratorRelationship(SubredditRelationship):
 
 
 class Modmail:
-    """Provides modmail functions for a subreddit."""
+    """Provides modmail functions for a subreddit.
+
+    For example, to send a new modmail from the subreddit ``r/test`` to user
+    ``u/spez`` with the subject ``test`` along with a message body of
+    ``hello``:
+
+    .. code-block:: python
+
+        reddit.subreddit("test").modmail.create("test", "hello", "spez")
+
+    """
 
     def __call__(self, id=None, mark_read=False):  # noqa: D207, D301
         """Return an individual conversation.
@@ -2462,13 +2780,13 @@ class Modmail:
 
         .. code-block:: python
 
-           reddit.subreddit('redditdev').modmail('2gmz', mark_read=True)
+           reddit.subreddit("redditdev").modmail("2gmz", mark_read=True)
 
         To print all messages from a conversation as Markdown source:
 
         .. code-block:: python
 
-           conversation = reddit.subreddit('redditdev').modmail('2gmz', \
+           conversation = reddit.subreddit("redditdev").modmail("2gmz", \
 mark_read=True)
            for message in conversation.messages:
                print(message.body_markdown)
@@ -2483,7 +2801,7 @@ mark_read=True)
 
         .. code-block:: python
 
-           conversation = reddit.subreddit('redditdev').modmail('2gmz', \
+           conversation = reddit.subreddit("redditdev").modmail("2gmz", \
 mark_read=True)
            print(conversation.user.ban_status)
 
@@ -2491,7 +2809,7 @@ mark_read=True)
 
         .. code-block:: python
 
-           conversation = reddit.subreddit('redditdev').modmail('2gmz', \
+           conversation = reddit.subreddit("redditdev").modmail("2gmz", \
 mark_read=True)
            print(conversation.user.recent_posts)
 
@@ -2513,7 +2831,7 @@ mark_read=True)
     def bulk_read(self, other_subreddits=None, state=None):
         """Mark conversations for subreddit(s) as read.
 
-        Due to server-side restrictions, 'all' is not a valid subreddit for
+        Due to server-side restrictions, "all" is not a valid subreddit for
         this method. Instead, use :meth:`~.Modmail.subreddits` to get a list of
         subreddits using the new modmail.
 
@@ -2529,8 +2847,8 @@ mark_read=True)
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit('redditdev')
-           subreddit.modmail.bulk_read(state='notifications')
+           subreddit = reddit.subreddit("redditdev")
+           subreddit.modmail.bulk_read(state="notifications")
 
         """
         params = {"entity": self._build_subreddit_list(other_subreddits)}
@@ -2572,8 +2890,8 @@ mark_read=True)
 
         .. code-block:: python
 
-            conversations = reddit.subreddit('all').modmail.conversations(\
-state='mod')
+            conversations = reddit.subreddit("all").modmail.conversations(\
+state="mod")
 
         """
         params = {}
@@ -2615,9 +2933,9 @@ state='mod')
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit('redditdev')
-           redditor = reddit.redditor('bboe')
-           subreddit.modmail.create('Subject', 'Body', redditor)
+           subreddit = reddit.subreddit("redditdev")
+           redditor = reddit.redditor("bboe")
+           subreddit.modmail.create("Subject", "Body", redditor)
 
         """
         data = {
@@ -2638,7 +2956,7 @@ state='mod')
 
         .. code-block:: python
 
-           subreddits = reddit.subreddit('all').modmail.subreddits()
+           subreddits = reddit.subreddit("all").modmail.subreddits()
 
         """
         response = self.subreddit._reddit.get(API_PATH["modmail_subreddits"])
@@ -2659,9 +2977,9 @@ state='mod')
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit('redditdev')
+           subreddit = reddit.subreddit("redditdev")
            unread_counts = subreddit.modmail.unread_count()
-           print(unread_counts['mod'])
+           print(unread_counts["mod"])
 
         """
         return self.subreddit._reddit.get(API_PATH["modmail_unread_count"])
@@ -2686,12 +3004,15 @@ class SubredditStream:
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
+        .. note:: While PRAW tries to catch all new comments, some high-volume
+            streams, especially the r/all stream, may drop some comments.
+
         For example, to retrieve all new comments made to the ``iama``
         subreddit, try:
 
         .. code-block:: python
 
-           for comment in reddit.subreddit('iama').stream.comments():
+           for comment in reddit.subreddit("iama").stream.comments():
                print(comment)
 
         To only retreive new submissions starting when the stream is
@@ -2699,7 +3020,7 @@ class SubredditStream:
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit('iama')
+           subreddit = reddit.subreddit("iama")
            for comment in subreddit.stream.comments(skip_existing=True):
                print(comment)
 
@@ -2714,11 +3035,15 @@ class SubredditStream:
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
+        .. note:: While PRAW tries to catch all new submissions, some
+            high-volume streams, especially the r/all stream, may drop some
+            submissions.
+
         For example to retrieve all new submissions made to all of Reddit, try:
 
         .. code-block:: python
 
-           for submission in reddit.subreddit('all').stream.submissions():
+           for submission in reddit.subreddit("all").stream.submissions():
                print(submission)
 
         """
@@ -2726,7 +3051,19 @@ class SubredditStream:
 
 
 class SubredditStylesheet:
-    """Provides a set of stylesheet functions to a Subreddit."""
+    """Provides a set of stylesheet functions to a Subreddit.
+
+    For example, to add the css data ``.test{color:blue}`` to the existing
+    stylesheet:
+
+    .. code-block:: python
+
+        subreddit = reddit.subreddit("SUBREDDIT")
+        stylesheet = subreddit.stylesheet()
+        stylesheet += ".test{color:blue}"
+        subreddit.stylesheet.update(stylesheet)
+
+    """
 
     def __call__(self):
         """Return the subreddit's stylesheet.
@@ -2735,7 +3072,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           stylesheet = reddit.subreddit('SUBREDDIT').stylesheet()
+           stylesheet = reddit.subreddit("SUBREDDIT").stylesheet()
 
         """
         url = API_PATH["about_stylesheet"].format(subreddit=self.subreddit)
@@ -2750,7 +3087,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet
+           reddit.subreddit("SUBREDDIT").stylesheet
 
         """
         self.subreddit = subreddit
@@ -2775,7 +3112,7 @@ class SubredditStylesheet:
                     "BAD_CSS_NAME",
                     "IMAGE_ERROR",
                 ], "Please file a bug with PRAW"
-                raise APIException(error_type, error_value, None)
+                raise RedditAPIException([[error_type, error_value, None]])
             return response
 
     def _upload_style_asset(self, image_path, image_type):
@@ -2810,7 +3147,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.delete_banner()
+           reddit.subreddit("SUBREDDIT").stylesheet.delete_banner()
 
         """
         data = {"bannerBackgroundImage": ""}
@@ -2826,7 +3163,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.delete_banner_additional_image()
+           reddit.subreddit("SUBREDDIT").stylesheet.delete_banner_additional_image()
 
         """
         data = {
@@ -2844,7 +3181,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.delete_banner_hover_image()
+           reddit.subreddit("SUBREDDIT").stylesheet.delete_banner_hover_image()
 
         """
         data = {"secondaryBannerPositionedImage": ""}
@@ -2859,7 +3196,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.delete_header()
+           reddit.subreddit("SUBREDDIT").stylesheet.delete_header()
 
         """
         url = API_PATH["delete_sr_header"].format(subreddit=self.subreddit)
@@ -2874,7 +3211,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.delete_image('smile')
+           reddit.subreddit("SUBREDDIT").stylesheet.delete_image("smile")
 
         """
         url = API_PATH["delete_sr_image"].format(subreddit=self.subreddit)
@@ -2889,7 +3226,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.delete_mobile_header()
+           reddit.subreddit("SUBREDDIT").stylesheet.delete_mobile_header()
 
         """
         url = API_PATH["delete_sr_header"].format(subreddit=self.subreddit)
@@ -2904,7 +3241,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.delete_mobile_icon()
+           reddit.subreddit("SUBREDDIT").stylesheet.delete_mobile_icon()
 
         """
         url = API_PATH["delete_sr_icon"].format(subreddit=self.subreddit)
@@ -2914,13 +3251,14 @@ class SubredditStylesheet:
         """Update the subreddit's stylesheet.
 
         :param stylesheet: The CSS for the new stylesheet.
+        :param reason: The reason for updating the stylesheet.
 
         For example:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.update(
-               'p { color: green; }', 'color text green')
+           reddit.subreddit("SUBREDDIT").stylesheet.update(
+               'p { color: green; }', "color text green")
 
         """
         data = {
@@ -2942,7 +3280,7 @@ class SubredditStylesheet:
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.APIException` if there are other issues with the
+        Raises :class:`.RedditAPIException` if there are other issues with the
         uploaded image. Unfortunately the exception info might not be very
         specific, so try through the website with the same image to see what
         the problem actually might be.
@@ -2951,7 +3289,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.upload('smile', 'img.png')
+           reddit.subreddit("SUBREDDIT").stylesheet.upload("smile", "img.png")
 
         """
         return self._upload_image(
@@ -2965,7 +3303,7 @@ class SubredditStylesheet:
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.APIException` if there are other issues with the
+        Raises :class:`.RedditAPIException` if there are other issues with the
         uploaded image. Unfortunately the exception info might not be very
         specific, so try through the website with the same image to see what
         the problem actually might be.
@@ -2974,7 +3312,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.upload_banner('banner.png')
+           reddit.subreddit("SUBREDDIT").stylesheet.upload_banner("banner.png")
 
         """
         image_type = "bannerBackgroundImage"
@@ -2990,7 +3328,7 @@ class SubredditStylesheet:
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.APIException` if there are other issues with the
+        Raises :class:`.RedditAPIException` if there are other issues with the
         uploaded image. Unfortunately the exception info might not be very
         specific, so try through the website with the same image to see what
         the problem actually might be.
@@ -2999,7 +3337,8 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.upload_banner_additional_image('banner.png')
+           subreddit = reddit.subreddit("SUBREDDIT")
+           subreddit.stylesheet.upload_banner_additional_image("banner.png")
 
         """
         alignment = {}
@@ -3027,7 +3366,7 @@ class SubredditStylesheet:
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.APIException` if there are other issues with the
+        Raises :class:`.RedditAPIException` if there are other issues with the
         uploaded image. Unfortunately the exception info might not be very
         specific, so try through the website with the same image to see what
         the problem actually might be.
@@ -3036,7 +3375,8 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.upload_banner_hover_image('banner.png')
+           subreddit = reddit.subreddit("SUBREDDIT")
+           subreddit.stylesheet.upload_banner_hover_image("banner.png")
 
         """
         image_type = "secondaryBannerPositionedImage"
@@ -3052,7 +3392,7 @@ class SubredditStylesheet:
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.APIException` if there are other issues with the
+        Raises :class:`.RedditAPIException` if there are other issues with the
         uploaded image. Unfortunately the exception info might not be very
         specific, so try through the website with the same image to see what
         the problem actually might be.
@@ -3061,7 +3401,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.upload_header('header.png')
+           reddit.subreddit("SUBREDDIT").stylesheet.upload_header("header.png")
 
         """
         return self._upload_image(image_path, {"upload_type": "header"})
@@ -3075,7 +3415,7 @@ class SubredditStylesheet:
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.APIException` if there are other issues with the
+        Raises :class:`.RedditAPIException` if there are other issues with the
         uploaded image. Unfortunately the exception info might not be very
         specific, so try through the website with the same image to see what
         the problem actually might be.
@@ -3084,8 +3424,8 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.upload_mobile_header(
-               'header.png')
+           reddit.subreddit("SUBREDDIT").stylesheet.upload_mobile_header(
+               "header.png")
 
         """
         return self._upload_image(image_path, {"upload_type": "banner"})
@@ -3099,7 +3439,7 @@ class SubredditStylesheet:
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.APIException` if there are other issues with the
+        Raises :class:`.RedditAPIException` if there are other issues with the
         uploaded image. Unfortunately the exception info might not be very
         specific, so try through the website with the same image to see what
         the problem actually might be.
@@ -3108,8 +3448,8 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.upload_mobile_icon(
-               'icon.png')
+           reddit.subreddit("SUBREDDIT").stylesheet.upload_mobile_icon(
+               "icon.png")
 
         """
         return self._upload_image(image_path, {"upload_type": "icon"})
@@ -3125,7 +3465,7 @@ class SubredditWiki:
 
         .. code-block:: python
 
-           wikipage = reddit.subreddit('iama').wiki['proof']
+           wikipage = reddit.subreddit("iama").wiki["proof"]
            print(wikipage.content_md)
 
         """
@@ -3150,7 +3490,7 @@ class SubredditWiki:
 
         .. code-block:: python
 
-           for wikipage in reddit.subreddit('iama').wiki:
+           for wikipage in reddit.subreddit("iama").wiki:
                print(wikipage)
 
         """
@@ -3174,8 +3514,8 @@ class SubredditWiki:
 
         .. code-block:: python
 
-           reddit.subreddit('test').wiki.create(
-               'praw_test', 'wiki body text', reason='PRAW Test Creation')
+           reddit.subreddit("test").wiki.create(
+               "praw_test", "wiki body text", reason="PRAW Test Creation")
 
         """
         name = name.replace(" ", "_").lower()
@@ -3189,11 +3529,11 @@ class SubredditWiki:
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        To view the wiki revisions for ``'praw_test'`` in ``r/test`` try:
+        To view the wiki revisions for ``"praw_test"`` in ``r/test`` try:
 
         .. code-block:: python
 
-           for item in reddit.subreddit('test').wiki['praw_test'].revisions():
+           for item in reddit.subreddit("test").wiki["praw_test"].revisions():
                print(item)
 
         """

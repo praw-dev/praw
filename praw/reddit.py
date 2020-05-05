@@ -1,8 +1,12 @@
 """Provide the Reddit class."""
 import configparser
 import os
+import re
+import time
 from itertools import islice
-from typing import IO, Any, Dict, Generator, Optional, Sequence, Type, Union
+from logging import getLogger
+from typing import IO, Any, Dict, Generator, Iterable, Optional, Type, Union
+from warnings import warn
 
 from prawcore import (
     Authorizer,
@@ -15,11 +19,16 @@ from prawcore import (
     UntrustedAuthenticator,
     session,
 )
+from prawcore.exceptions import BadRequest
 
 from . import models
 from .config import Config
 from .const import API_PATH, USER_AGENT_FORMAT, __version__
-from .exceptions import ClientException, MissingRequiredAttributeException
+from .exceptions import (
+    ClientException,
+    MissingRequiredAttributeException,
+    RedditAPIException,
+)
 from .objector import Objector
 
 try:
@@ -35,6 +44,8 @@ Redditor = models.Redditor
 Submission = models.Submission
 Subreddit = models.Subreddit
 
+logger = getLogger("praw")
+
 
 class Reddit:
     """The Reddit class provides convenient access to Reddit's API.
@@ -46,13 +57,14 @@ class Reddit:
     .. code-block:: python
 
        import praw
-       reddit = praw.Reddit(client_id='CLIENT_ID',
-                            client_secret="CLIENT_SECRET", password='PASSWORD',
-                            user_agent='USERAGENT', username='USERNAME')
+       reddit = praw.Reddit(client_id="CLIENT_ID",
+                            client_secret="CLIENT_SECRET", password="PASSWORD",
+                            user_agent="USERAGENT", username="USERNAME")
 
     """
 
     update_checked = False
+    _ratelimit_regex = re.compile(r"([0-9]{1,2}) (seconds?|minutes?)")
 
     @property
     def _next_unique(self):
@@ -69,7 +81,7 @@ class Reddit:
     def read_only(self, value: bool) -> None:
         """Set or unset the use of the ReadOnlyAuthorizer.
 
-        Raise :class:`ClientException` when attempting to unset ``read_only``
+        :raises: :class:`ClientException` when attempting to unset ``read_only``
         and only the ReadOnlyAuthorizer is available.
 
         """
@@ -82,6 +94,24 @@ class Reddit:
             )
         else:
             self._core = self._authorized_core
+
+    @property
+    def validate_on_submit(self) -> bool:
+        """Get validate_on_submit."""
+        value = self._validate_on_submit
+        if value is False:
+            warn(
+                "Reddit will check for validation on all posts around "
+                "May-June 2020. It is recommended to check for validation"
+                " by setting reddit.validate_on_submit to True.",
+                category=DeprecationWarning,
+                stacklevel=3,
+            )
+        return value
+
+    @validate_on_submit.setter
+    def validate_on_submit(self, val: bool):
+        self._validate_on_submit = val
 
     def __enter__(self):
         """Handle the context manager open."""
@@ -145,12 +175,13 @@ class Reddit:
 
            my_session = betamax.Betamax(requests.Session())
            reddit = Reddit(..., requestor_class=JSONDebugRequestor,
-                           requestor_kwargs={'session': my_session})
+                           requestor_kwargs={"session": my_session})
 
         """
         self._core = self._authorized_core = self._read_only_core = None
         self._objector = None
         self._unique_counter = 0
+        self._validate_on_submit = False
 
         try:
             config_section = site_name or os.getenv("praw_site") or "DEFAULT"
@@ -242,7 +273,7 @@ class Reddit:
 
         .. code-block:: python
 
-           reddit.live.create('title', 'description')
+           reddit.live.create("title", "description")
 
         """
 
@@ -255,7 +286,7 @@ class Reddit:
 
         .. code-block:: python
 
-           reddit.multireddit('samuraisam', 'programming')
+           reddit.multireddit("samuraisam", "programming")
 
         """
 
@@ -280,21 +311,21 @@ class Reddit:
 
         .. code-block:: python
 
-           reddit.subreddit.create('coolnewsubname')
+           reddit.subreddit.create("coolnewsubname")
 
         To obtain a lazy a :class:`.Subreddit` instance run:
 
         .. code-block:: python
 
-           reddit.subreddit('redditdev')
+           reddit.subreddit("redditdev")
 
         Note that multiple subreddits can be combined and filtered views of
         r/all can also be used just like a subreddit:
 
         .. code-block:: python
 
-           reddit.subreddit('redditdev+learnpython+botwatch')
-           reddit.subreddit('all-redditdev-learnpython')
+           reddit.subreddit("redditdev+learnpython+botwatch")
+           reddit.subreddit("all-redditdev-learnpython")
 
         """
 
@@ -364,6 +395,7 @@ class Reddit:
             "moderators": models.ModeratorsWidget,
             "more": models.MoreComments,
             "post-flair": models.PostFlairWidget,
+            "rule": models.Rule,
             "stylesheet": models.Stylesheet,
             "subreddit-rules": models.RulesWidget,
             "textarea": models.TextArea,
@@ -447,7 +479,9 @@ class Reddit:
         return models.DomainListing(self, domain)
 
     def get(
-        self, path: str, params: Optional[Union[str, Dict[str, str]]] = None
+        self,
+        path: str,
+        params: Optional[Union[str, Dict[str, Union[str, int]]]] = None,
     ):
         """Return parsed objects returned from a GET request to ``path``.
 
@@ -456,12 +490,11 @@ class Reddit:
             None).
 
         """
-        data = self.request("GET", path, params=params)
-        return self._objector.objectify(data)
+        return self._objectify_request(method="GET", params=params, path=path)
 
     def info(
         self,
-        fullnames: Optional[Sequence[str]] = None,
+        fullnames: Optional[Iterable[str]] = None,
         url: Optional[str] = None,
     ) -> Generator[Union[Subreddit, Comment, Submission], None, None]:
         """Fetch information about each item in ``fullnames`` or from ``url``.
@@ -485,7 +518,7 @@ class Reddit:
                   different set of submissions.
 
         """
-        none_count = [fullnames, url].count(None)
+        none_count = (fullnames, url).count(None)
         if none_count > 1:
             raise TypeError("Either `fullnames` or `url` must be provided.")
         if none_count < 1:
@@ -517,22 +550,102 @@ class Reddit:
 
         return generator(url)
 
+    def _objectify_request(
+        self,
+        data: Optional[
+            Union[Dict[str, Union[str, Any]], bytes, IO, str]
+        ] = None,
+        files: Optional[Dict[str, IO]] = None,
+        json=None,
+        method: str = "",
+        params: Optional[Union[str, Dict[str, str]]] = None,
+        path: str = "",
+    ) -> Any:
+        """Run a request through the ``Objector``.
+
+        :param data: Dictionary, bytes, or file-like object to send in the body
+            of the request (default: None).
+        :param files: Dictionary, filename to file (like) object mapping
+            (default: None).
+        :param json: JSON-serializable object to send in the body
+            of the request with a Content-Type header of application/json
+            (default: None). If ``json`` is provided, ``data`` should not be.
+        :param method: The HTTP method (e.g., GET, POST, PUT, DELETE).
+        :param params: The query parameters to add to the request (default:
+            None).
+        :param path: The path to fetch.
+
+        """
+        return self._objector.objectify(
+            self.request(
+                data=data,
+                files=files,
+                json=json,
+                method=method,
+                params=params,
+                path=path,
+            )
+        )
+
+    def _handle_rate_limit(
+        self, exception: RedditAPIException
+    ) -> Optional[Union[int, float]]:
+        for item in exception.items:
+            if item.error_type == "RATELIMIT":
+                amount_search = self._ratelimit_regex.search(item.message)
+                if not amount_search:
+                    break
+                seconds = int(amount_search.group(1))
+                if "minute" in amount_search.group(2):
+                    seconds *= 60
+                if seconds <= int(self.config.ratelimit_seconds):
+                    sleep_seconds = seconds + min(seconds / 10, 1)
+                    return sleep_seconds
+        return None
+
+    def delete(
+        self,
+        path: str,
+        data: Optional[
+            Union[Dict[str, Union[str, Any]], bytes, IO, str]
+        ] = None,
+        json=None,
+    ) -> Any:
+        """Return parsed objects returned from a DELETE request to ``path``.
+
+        :param path: The path to fetch.
+        :param data: Dictionary, bytes, or file-like object to send in the body
+            of the request (default: None).
+        :param json: JSON-serializable object to send in the body
+            of the request with a Content-Type header of application/json
+            (default: None). If ``json`` is provided, ``data`` should not be.
+
+        """
+        return self._objectify_request(
+            data=data, json=json, method="DELETE", path=path
+        )
+
     def patch(
         self,
         path: str,
         data: Optional[
             Union[Dict[str, Union[str, Any]], bytes, IO, str]
         ] = None,
+        json=None,
     ) -> Any:
         """Return parsed objects returned from a PATCH request to ``path``.
 
         :param path: The path to fetch.
         :param data: Dictionary, bytes, or file-like object to send in the body
             of the request (default: None).
+        :param json: JSON-serializable object to send in the body
+            of the request with a Content-Type header of application/json
+            (default: None). If ``json`` is provided, ``data`` should not be.
 
         """
-        data = self.request("PATCH", path, data=data)
-        return self._objector.objectify(data)
+        return self._objectify_request(
+            data=data, method="PATCH", path=path, json=json
+        )
 
     def post(
         self,
@@ -542,6 +655,7 @@ class Reddit:
         ] = None,
         files: Optional[Dict[str, IO]] = None,
         params: Optional[Union[str, Dict[str, str]]] = None,
+        json=None,
     ) -> Any:
         """Return parsed objects returned from a POST request to ``path``.
 
@@ -552,12 +666,39 @@ class Reddit:
             (default: None).
         :param params: The query parameters to add to the request (default:
             None).
+        :param json: JSON-serializable object to send in the body
+            of the request with a Content-Type header of application/json
+            (default: None). If ``json`` is provided, ``data`` should not be.
 
         """
-        data = self.request(
-            "POST", path, data=data or {}, files=files, params=params
-        )
-        return self._objector.objectify(data)
+        if json is None:
+            data = data or {}
+        try:
+            return self._objectify_request(
+                data=data,
+                files=files,
+                json=json,
+                method="POST",
+                params=params,
+                path=path,
+            )
+        except RedditAPIException as exception:
+            seconds = self._handle_rate_limit(exception=exception)
+            if seconds is not None:
+                logger.debug(
+                    "Rate limit hit, sleeping for {:.2f} seconds".format(
+                        seconds
+                    )
+                )
+                time.sleep(seconds)
+                return self._objectify_request(
+                    data=data,
+                    files=files,
+                    method="POST",
+                    params=params,
+                    path=path,
+                )
+            raise
 
     def put(
         self,
@@ -565,16 +706,21 @@ class Reddit:
         data: Optional[
             Union[Dict[str, Union[str, Any]], bytes, IO, str]
         ] = None,
+        json=None,
     ):
         """Return parsed objects returned from a PUT request to ``path``.
 
         :param path: The path to fetch.
         :param data: Dictionary, bytes, or file-like object to send in the body
             of the request (default: None).
+        :param json: JSON-serializable object to send in the body
+            of the request with a Content-Type header of application/json
+            (default: None). If ``json`` is provided, ``data`` should not be.
 
         """
-        data = self.request("PUT", path, data=data)
-        return self._objector.objectify(data)
+        return self._objectify_request(
+            data=data, json=json, method="PUT", path=path
+        )
 
     def random_subreddit(self, nsfw: bool = False) -> Subreddit:
         """Return a random lazy instance of :class:`~.Subreddit`.
@@ -615,6 +761,7 @@ class Reddit:
             Union[Dict[str, Union[str, Any]], bytes, IO, str]
         ] = None,
         files: Optional[Dict[str, IO]] = None,
+        json=None,
     ) -> Any:
         """Return the parsed JSON data returned from a request to URL.
 
@@ -626,11 +773,45 @@ class Reddit:
             of the request (default: None).
         :param files: Dictionary, filename to file (like) object mapping
             (default: None).
+        :param json: JSON-serializable object to send in the body
+            of the request with a Content-Type header of application/json
+            (default: None). If ``json`` is provided, ``data`` should not be.
 
         """
-        return self._core.request(
-            method, path, data=data, files=files, params=params
-        )
+        if data and json:
+            raise ClientException(
+                "At most one of `data` and `json` is supported."
+            )
+        try:
+            return self._core.request(
+                method,
+                path,
+                data=data,
+                files=files,
+                params=params,
+                timeout=self.config.timeout,
+                json=json,
+            )
+        except BadRequest as exception:
+            try:
+                data = exception.response.json()
+            except ValueError:
+                # TODO: Remove this exception after 2020-12-31 if no one has
+                # filed a bug against it.
+                raise Exception(
+                    "Unexpected BadRequest without json body. Please file a "
+                    "bug at https://github.com/praw-dev/praw/issues"
+                ) from exception
+            if set(data) == {"error", "message"}:
+                raise
+            if "fields" in data:
+                assert len(data["fields"]) == 1
+                field = data["fields"][0]
+            else:
+                field = None
+            raise RedditAPIException(
+                [data["reason"], data["explanation"], field]
+            ) from exception
 
     def submission(  # pylint: disable=invalid-name,redefined-builtin
         self, id: Optional[str] = None, url: Optional[str] = None

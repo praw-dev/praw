@@ -8,6 +8,7 @@ PRAW's configuration options are broken down into the following categories:
 * :ref:`basic_options`
 * :ref:`oauth_options`
 * :ref:`site_options`
+* :ref:`misc_options`
 * :ref:`custom_options`
 
 All of these options can be provided in any of the ways mentioned in
@@ -20,7 +21,7 @@ Basic Configuration Options
 
 :check_for_updates: When ``true``, check for new versions of PRAW. When a
                     newer version of PRAW is available a message is reported
-                    via standard out (default: ``true``).
+                    via standard error (default: ``true``).
 
 :user_agent: (Required) A unique description of your application. The following
              format is recommended according to `Reddit's API Rules
@@ -99,6 +100,27 @@ updated in order to successfully access a third-party Reddit site:
 :subreddit_kind: The type prefix for subreddits on the Reddit instance
                  (default: ``t5_``).
 
+.. _misc_options:
+
+Miscellaneous Configuration Options
+-----------------------------------
+
+These are options that do not belong in another category, but still play a part
+in PRAW.
+
+:ratelimit_seconds: Controls the maximum amount of seconds PRAW will capture
+                    ratelimits returned in JSON data. Because this can be as
+                    high as 10 minutes, only ratelimits of up to 5 seconds
+                    are captured and waited on by default. Should be a number
+                    representing the amount of seconds to sleep.
+
+                    .. note:: PRAW sleeps for the ratelimit plus either 1/10th
+                        of the ratelimit or 1 second, whichever is smallest.
+
+:timeout: Controls the amount of time PRAW will wait for a request from Reddit
+          to complete before throwing an exception. By default, PRAW waits
+          16 seconds before throwing an exception.
+
 .. _custom_options:
 
 Custom Configuration Options
@@ -113,7 +135,7 @@ from an instance of :class:`.Reddit` you can execute:
 
 .. code-block:: python
 
-   reddit.config.custom['app_debugging']
+   reddit.config.custom["app_debugging"]
 
 .. note:: Custom PRAW configuration environment variables are not
           supported. You can directly access environment variables via

@@ -10,6 +10,15 @@ PRAW follows :PEP:`8` and :PEP:`257`. The ``pre_push.py`` script can be used to
 test for compliance with these PEPs in addition to providing a few other
 checks. The following are PRAW-specific guidelines in addition to those PEP's.
 
+.. note:: Python 3.6+ is needed to run the script.
+
+.. note:: In order to install the dependencies needed to run the script, you can
+   install the ``[dev]`` package of praw, like so:
+   
+   .. code-block:: bash
+   
+      pip install praw[dev]
+
 Code
 ----
 
@@ -43,7 +52,7 @@ able to run the tests locally. The simplest way is via:
 
 .. code:: bash
 
-   python setup.py test
+   pytest
 
 Without any configuration or modification, all the tests should pass.
 
@@ -51,7 +60,7 @@ Adding and Updating Integration Tests
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PRAW's integration tests utilize `Betamax
-<http://betamax.readthedocs.io/en/latest/>`_ to record an interaction with
+<https://betamax.readthedocs.io/en/latest/>`_ to record an interaction with
 Reddit. The recorded interaction is then replayed for subsequent test runs.
 
 To safely record a cassette without leaking your account credentials, PRAW

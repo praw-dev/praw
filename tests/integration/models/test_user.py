@@ -1,6 +1,10 @@
 """Test praw.models.user."""
+from unittest import mock
+
+import pytest
+
+from praw.exceptions import RedditAPIException
 from praw.models import Multireddit, Redditor, Subreddit
-import mock
 
 from .. import IntegrationTest
 
@@ -31,6 +35,20 @@ class TestUser(IntegrationTest):
         assert len(friends) > 0
         assert all(isinstance(friend, Redditor) for friend in friends)
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_friend_exist(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestUser.test_friend_exist"):
+            friend = self.reddit.user.friends(user=self.reddit.user.me())
+            assert isinstance(friend, Redditor)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_friend_not_exist(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestUser.test_friend_not_exist"):
+            with pytest.raises(RedditAPIException):
+                self.reddit.user.friends(user="fake__user_user_user")
+
     def test_karma(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestUser.test_karma"):
@@ -58,15 +76,6 @@ class TestUser(IntegrationTest):
             assert not hasattr(
                 self.reddit.user.me(use_cache=False), "praw_is_cached"
             )
-
-    def test_moderator_subreddits(self):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette("TestUser.test_moderator_subreddits"):
-            count = 0
-            for subreddit in self.reddit.user.moderator_subreddits():
-                assert isinstance(subreddit, Subreddit)
-                count += 1
-            assert count > 0
 
     def test_multireddits(self):
         self.reddit.read_only = False

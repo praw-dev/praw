@@ -26,6 +26,7 @@ applications and **web** applications.
    getting_started/configuration
    getting_started/multiple_instances
    getting_started/logging
+   getting_started/faq
 
 .. _code_overview:
 .. toctree::
@@ -53,6 +54,8 @@ applications and **web** applications.
 
    package_info/change_log
    package_info/contributing
+   package_info/glossary
+   package_info/praw7_migration
    package_info/references
 
 .. toctree::

@@ -1,9 +1,10 @@
 """Test praw.models.comment_forest."""
-import mock
+from unittest import mock
+
 import pytest
 
-from praw.models import Comment, MoreComments, Submission
 from praw.exceptions import DuplicateReplaceException
+from praw.models import Comment, MoreComments, Submission
 
 from .. import IntegrationTest
 

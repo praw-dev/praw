@@ -46,6 +46,12 @@ def run_static():
             "--replace",
         ]
     )
+    success &= do_process(
+        [
+            sys.executable,
+            path.join(current_directory, "tools", "check_documentation.py"),
+        ]
+    )
     success &= do_process(["black ."], shell=True)
     success &= do_process(["flake8", "--exclude=.eggs,build,docs"])
     success &= do_process(["pydocstyle", "praw"])
@@ -53,7 +59,9 @@ def run_static():
 
     tmp_dir = mkdtemp()
     try:
-        success &= do_process(["sphinx-build", "-W", "docs", tmp_dir])
+        success &= do_process(
+            ["sphinx-build", "-W", "--keep-going", "docs", tmp_dir]
+        )
     finally:
         rmtree(tmp_dir)
 
@@ -66,9 +74,7 @@ def run_unit():
     Follows the behavior of the static tests,
     where any failed tests cause pre_push.py to fail.
     """
-    return do_process(
-        [sys.executable, path.join(current_directory, "setup.py"), "test"]
-    )
+    return do_process(["pytest"])
 
 
 def main():

@@ -19,7 +19,7 @@ class RemovalReason(RedditBase):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    necessarily comprehensive.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -69,17 +69,17 @@ class RemovalReason(RedditBase):
     def delete(self):
         """Delete a removal reason from this subreddit.
 
-        To delete ``'141vv5c16py7d'`` from the subreddit ``'NAME'`` try:
+        To delete ``"141vv5c16py7d"`` from the subreddit ``"NAME"`` try:
 
         .. code-block:: python
 
-           reddit.subreddit('NAME').removal_reasons['141vv5c16py7d'].mod.delete()
+           reddit.subreddit("NAME").removal_reasons["141vv5c16py7d"].mod.delete()
 
         """
         url = API_PATH["removal_reason"].format(
             subreddit=self.subreddit, id=self.id
         )
-        self.subreddit._reddit.request("DELETE", url)
+        self._reddit.delete(url)
 
     def update(self, message: str, title: str):
         """Update the removal reason from this subreddit.
@@ -87,13 +87,13 @@ class RemovalReason(RedditBase):
         :param message: The removal reason's new message (required).
         :param title: The removal reason's new title (required).
 
-        To update ``'141vv5c16py7d'`` from the subreddit ``'NAME'`` try:
+        To update ``"141vv5c16py7d"`` from the subreddit ``"NAME"`` try:
 
         .. code-block:: python
 
-           reddit.subreddit('NAME').removal_reasons['141vv5c16py7d'].mod.update(
-               message='New message',
-               title='New title')
+           reddit.subreddit("NAME").removal_reasons["141vv5c16py7d"].mod.update(
+               message="New message",
+               title="New title")
 
         """
         url = API_PATH["removal_reason"].format(
@@ -115,8 +115,8 @@ class SubredditRemovalReasons:
 
         .. code-block:: python
 
-           reason_id = '141vv5c16py7d'
-           reason = reddit.subreddit('NAME').mod.removal_reasons[reason_id]
+           reason_id = "141vv5c16py7d"
+           reason = reddit.subreddit("NAME").mod.removal_reasons[reason_id]
            print(reason)
 
         """
@@ -139,7 +139,7 @@ class SubredditRemovalReasons:
 
         .. code-block:: python
 
-           for removal_reason in reddit.subreddit('NAME').mod.removal_reasons:
+           for removal_reason in reddit.subreddit("NAME").mod.removal_reasons:
                print(removal_reason)
 
         """
@@ -160,13 +160,13 @@ class SubredditRemovalReasons:
 
         The message will be prepended with `Hi u/username,` automatically.
 
-        To add ``'Test'`` to the subreddit ``'NAME'`` try:
+        To add ``"Test"`` to the subreddit ``"NAME"`` try:
 
         .. code-block:: python
 
-           reddit.subreddit('NAME').removal_reasons.mod.add(
-               message='Foobar',
-               title='Test')
+           reddit.subreddit("NAME").removal_reasons.mod.add(
+               message="Foobar",
+               title="Test")
 
         """
         data = {"message": message, "title": title}

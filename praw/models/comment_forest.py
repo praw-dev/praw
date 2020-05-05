@@ -2,8 +2,8 @@
 from heapq import heappop, heappush
 from typing import List, Optional, TypeVar, Union
 
-from .reddit.more import MoreComments
 from ..exceptions import DuplicateReplaceException
+from .reddit.more import MoreComments
 
 Comment = TypeVar("Comment")
 Submission = TypeVar("Submission")
@@ -130,7 +130,7 @@ class CommentForest:
 
         .. code-block:: python
 
-           submission = reddit.submission('3hahrw')
+           submission = reddit.submission("3hahrw")
            submission.comments.replace_more()
 
         Alternatively, to replace :class:`.MoreComments` instances within the
@@ -138,7 +138,7 @@ class CommentForest:
 
         .. code-block:: python
 
-           comment = reddit.comment('d8r4im1')
+           comment = reddit.comment("d8r4im1")
            comment.refresh()
            comment.replies.replace_more()
 
@@ -155,8 +155,12 @@ class CommentForest:
                              submission.comments.replace_more()
                              break
                          except PossibleExceptions:
-                             print('Handling replace_more exception')
+                             print("Handling replace_more exception")
                              sleep(1)
+
+        .. warning:: If this method is called, and the comments are refreshed,
+            calling this method again will result in a
+            :class:`.DuplicateReplaceException`.
 
         """
         remaining = limit

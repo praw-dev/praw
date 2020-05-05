@@ -1,41 +1,103 @@
 # coding: utf-8
+import pytest
+
 from praw.exceptions import (
     APIException,
     ClientException,
     DuplicateReplaceException,
-    InvalidURL,
+    InvalidFlairTemplateID,
     InvalidImplicitAuth,
+    InvalidURL,
     MissingRequiredAttributeException,
     PRAWException,
+    RedditAPIException,
+    RedditErrorItem,
     WebSocketException,
 )
 
 
 class TestPRAWException:
     def test_inheritance(self):
-        assert isinstance(PRAWException(), Exception)
+        assert issubclass(PRAWException, Exception)
 
     def test_str(self):
         assert str(PRAWException()) == ""
         assert str(PRAWException("foo")) == "foo"
 
 
-class TestAPIException:
-    def test_inheritance(self):
-        assert isinstance(APIException(None, None, None), PRAWException)
+class TestRedditErrorItem:
+    def test_equality(self):
+        resp = ["BAD_SOMETHING", "invalid something", "some_field"]
+        error = RedditErrorItem(*resp)
+        error2 = RedditErrorItem(*resp)
+        assert error == error2
+        assert error != 0
 
-    def test_str(self):
-        exception = APIException(
+    def test_property(self):
+        error = RedditErrorItem(
             "BAD_SOMETHING", "invalid something", "some_field"
         )
-        assert str(exception) == (
-            "BAD_SOMETHING: 'invalid something' on field 'some_field'"
+        assert (
+            error.error_message
+            == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
         )
+
+    def test_str(self):
+        error = RedditErrorItem(
+            "BAD_SOMETHING", "invalid something", "some_field"
+        )
+        assert (
+            str(error)
+            == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
+        )
+
+    def test_repr(self):
+        error = RedditErrorItem(
+            "BAD_SOMETHING", "invalid something", "some_field"
+        )
+        assert (
+            repr(error)
+            == "RedditErrorItem(error_type='BAD_SOMETHING', message="
+            "'invalid something', field='some_field')"
+        )
+
+
+class TestAPIException:
+    def test_catch(self):
+        exc = RedditAPIException([["test", "testing", "test"]])
+        with pytest.raises(APIException):
+            raise exc
+
+
+class TestRedditAPIException:
+    def test_inheritance(self):
+        assert issubclass(RedditAPIException, PRAWException)
+
+    def test_items(self):
+        container = RedditAPIException(
+            [
+                ["BAD_SOMETHING", "invalid something", "some_field"],
+                RedditErrorItem(
+                    "BAD_SOMETHING", "invalid something", "some_field"
+                ),
+            ]
+        )
+        for exception in container.items:
+            assert isinstance(exception, RedditErrorItem)
+
+    @pytest.mark.filterwarnings("ignore", category=DeprecationWarning)
+    def test_apiexception_value(self):
+        exc = RedditAPIException("test", "testing", "test")
+        assert exc.error_type == "test"
+        exc2 = RedditAPIException(["test", "testing", "test"])
+        assert exc2.message == "testing"
+        exc3 = RedditAPIException([["test", "testing", "test"]])
+        assert exc3.field == "test"
 
 
 class TestClientException:
     def test_inheritance(self):
-        assert isinstance(ClientException(), PRAWException)
+        assert issubclass(ClientException, PRAWException)
 
     def test_str(self):
         assert str(ClientException()) == ""
@@ -44,7 +106,7 @@ class TestClientException:
 
 class TestDuplicateReplaceException:
     def test_inheritance(self):
-        assert isinstance(DuplicateReplaceException(), ClientException)
+        assert issubclass(DuplicateReplaceException, ClientException)
 
     def test_message(self):
         assert (
@@ -54,9 +116,21 @@ class TestDuplicateReplaceException:
         )
 
 
+class TestInvalidFlairTemplateID:
+    def test_inheritance(self):
+        assert issubclass(InvalidFlairTemplateID, ClientException)
+
+    def test_str(self):
+        assert (
+            str(InvalidFlairTemplateID("123"))
+            == "The flair template id ``123`` is invalid. If you are "
+            "trying to create a flair, please use the ``add`` method."
+        )
+
+
 class TestInvalidImplicitAuth:
     def test_inheritance(self):
-        assert isinstance(InvalidImplicitAuth(), ClientException)
+        assert issubclass(InvalidImplicitAuth, ClientException)
 
     def test_message(self):
         assert (
@@ -67,7 +141,7 @@ class TestInvalidImplicitAuth:
 
 class TestInvalidURL:
     def test_inheritance(self):
-        assert isinstance(InvalidURL(None), ClientException)
+        assert issubclass(InvalidURL, ClientException)
 
     def test_message(self):
         assert (
@@ -84,7 +158,7 @@ class TestInvalidURL:
 
 class TestMissingRequiredAttributeException:
     def test_inheritance(self):
-        assert isinstance(MissingRequiredAttributeException(), ClientException)
+        assert issubclass(MissingRequiredAttributeException, ClientException)
 
     def test_str(self):
         assert str(MissingRequiredAttributeException()) == ""
@@ -96,7 +170,7 @@ class TestMissingRequiredAttributeException:
 
 class TestWebSocketException:
     def test_inheritance(self):
-        assert isinstance(WebSocketException(None, None), ClientException)
+        assert issubclass(WebSocketException, ClientException)
 
     def test_str(self):
         assert str(WebSocketException("", None)) == ""

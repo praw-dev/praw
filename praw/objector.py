@@ -1,8 +1,9 @@
 """Provides the Objector class."""
 
+from json import loads
 from typing import Any, Dict, List, Optional, TypeVar, Union
 
-from .exceptions import APIException, ClientException
+from .exceptions import ClientException, RedditAPIException
 from .models.reddit.base import RedditBase
 from .util import snake_case_keys
 
@@ -15,11 +16,11 @@ class Objector:
     @classmethod
     def parse_error(
         cls, data: Union[List[Any], Dict[str, Dict[str, str]]]
-    ) -> Optional[APIException]:
+    ) -> Optional[RedditAPIException]:
         """Convert JSON response into an error object.
 
         :param data: The dict to be converted.
-        :returns: An instance of :class:`~.APIException`, or ``None`` if
+        :returns: An instance of :class:`~.RedditAPIException`, or ``None`` if
             ``data`` doesn't fit this model.
 
         """
@@ -35,12 +36,7 @@ class Objector:
         if len(errors) < 1:
             # See `Collection._fetch()`.
             raise ClientException("successful error response", data)
-        assert not len(errors) > 1, (  # Yet to be observed.
-            "multiple error descriptions in response",
-            data,
-        )
-
-        return APIException(*errors[0])
+        return RedditAPIException(errors)
 
     @classmethod
     def check_error(cls, data: Union[List[Any], Dict[str, Dict[str, str]]]):
@@ -77,6 +73,9 @@ class Objector:
             # Modmail message
             data = snake_case_keys(data)
             parser = self.parsers["ModmailMessage"]
+        elif {"kind", "short_name", "violation_reason"}.issubset(data):
+            # This is a Rule
+            parser = self.parsers["rule"]
         elif {"isAdmin", "isDeleted"}.issubset(data):
             # Modmail author
             data = snake_case_keys(data)
@@ -156,21 +155,30 @@ class Objector:
                 return data
             if "things" in data["json"]["data"]:  # Submission.reply
                 return self.objectify(data["json"]["data"]["things"])
+            if "rules" in data["json"]["data"]:
+                return self.objectify(loads(data["json"]["data"]["rules"]))
             if "url" in data["json"]["data"]:  # Subreddit.submit
                 # The URL is the URL to the submission, so it's removed.
                 del data["json"]["data"]["url"]
                 parser = self.parsers[self._reddit.config.kinds["submission"]]
+                if data["json"]["data"]["id"].startswith(
+                    self._reddit.config.kinds["submission"] + "_"
+                ):
+                    # With polls, Reddit returns a fullname but calls it an
+                    # "id". This fixes this by coercing the fullname into an
+                    # id.
+                    data["json"]["data"]["id"] = data["json"]["data"][
+                        "id"
+                    ].split("_", 1)[1]
             else:
                 parser = self.parsers["LiveUpdateEvent"]
             return parser.parse(data["json"]["data"], self._reddit)
+        if "rules" in data:
+            return self.objectify(data["rules"])
         if "json" in data and "errors" in data["json"]:
             errors = data["json"]["errors"]
-            if len(errors) == 1:
-                raise APIException(*errors[0])
-            assert not errors, (
-                "Errors did not get raised as an APIException",
-                errors,
-            )
+            if len(errors) > 0:
+                raise RedditAPIException(errors)
         elif isinstance(data, dict):
             return self._objectify_dict(data)
 

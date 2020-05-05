@@ -72,8 +72,8 @@ class Auth(PRAWBase):
         :param scope: A space-delimited string of Reddit OAuth2 scope names as
             returned from Reddit's callback.
 
-        Raise :class:`.InvalidImplicitAuth` if :class:`.Reddit` was initialized
-        for a non-installed application type.
+        :raises: :class:`.InvalidImplicitAuth` if :class:`.Reddit` was
+            initialized for a non-installed application type.
 
         """
         authenticator = self._reddit._read_only_core._authorizer._authenticator
@@ -87,7 +87,7 @@ class Auth(PRAWBase):
     def scopes(self) -> Set[str]:
         """Return a set of scopes included in the current authorization.
 
-        For read-only authorizations this should return ``{'*'}``.
+        For read-only authorizations this should return ``{"*"}``.
 
         """
         authorizer = self._reddit._core._authorizer

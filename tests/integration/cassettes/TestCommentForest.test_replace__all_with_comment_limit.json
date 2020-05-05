@@ -67,7 +67,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.8.0"
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/comments/3hahrw/?limit=10&sort=best&raw_json=1"
+        "uri": "https://oauth.reddit.com/comments/3hahrw/?limit=10&sort=confidence&raw_json=1"
       },
       "response": {
         "body": {
@@ -104,7 +104,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/comments/3hahrw/?limit=10&sort=best&raw_json=1"
+        "url": "https://oauth.reddit.com/comments/3hahrw/?limit=10&sort=confidence&raw_json=1"
       }
     },
     {
@@ -112,7 +112,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5u1vm%2Ccu5uca3%2Ccu5tx53%2Ccuqtc08%2Ccu737kd%2Ccu5vc4a%2Ccu64opo%2Ccu5tcm9%2Ccu5u7ft%2Ccu5q78q%2Ccu5v9rk%2Ccu5tzjl%2Ccu5tik2%2Ccu5vv3o%2Ccu5ulo5%2Ccu61po6%2Ccu64n5o%2Ccu64if1%2Ccu5tt8h%2Ccu5tohz%2Ccu5snd8%2Ccu5pco2%2Ccu68z7z%2Ccu5zia9%2Ccu5tkk4%2Ccu5swgs%2Ccu5twta%2Ccu5rrdt%2Ccu5wt45%2Ccu5vl9j%2Ccu5u5wq%2Ccu5srn0%2Ccu5wium%2Ccu60xnz%2Ccu67blf%2Ccu5vq0k%2Ccu5rxpy%2Ccu5ubuu%2Ccuau8wb%2Ccu5vqto%2Ccu61qj1%2Ccu5v5vy%2Ccu5u0sv%2Ccu5ubt8%2Ccu5oufs%2Ccu5u6qb%2Ccu5tead%2Ccu5wn87%2Ccu5v1jt%2Ccu5onj0%2Ccu5ye1s%2Ccu5pr4y%2Ccu5tjtv%2Ccu5ts0s%2Ccu6a3l7%2Ccu5uenh%2Ccu5wwq8%2Ccu6pfhw%2Ccu5v93f%2Ccu6e11e%2Ccu5payz%2Cczi61ft%2Ccu60csr%2Ccu6568d%2Ccu5wtzp%2Ccu5uhuf%2Ccu5unrv%2Ccu5udi4%2Ccu5tskf%2Ccu5tpet%2Ccu5wlpi%2Ccu5tln5%2Ccu67zs9%2Ccu5wo2z%2Ccu5ta0e%2Ccu5ujg2%2Ccu5pur9%2Ccu5usjd%2Ccu5wohm%2Ccu5owe3%2Ccu5pbdh%2Ccu5skqs%2Ccxxubk8%2Ccu6rlqv%2Ccu6eo0i%2Ccu61t06%2Ccu5xd08%2Ccu5unfj%2Ccu5voyp%2Ccu5v9yd%2Ccu5ubza%2Ccu5sqp4%2Ccu5tpek%2Ccu5xb47%2Ccu5sl6a%2Ccu5p1yt%2Ccu5t92s%2Ccu5vsjk%2Ccu5v77p%2Ccu5vvba%2Ccu5vrz5%2Ccu5twf5%2Ccu5v5l4%2Ccu6lknl%2Ccu68ke1%2Ccu5uq8q%2Ccu5x49x%2Ccu5vf4x%2Ccu5uj4y%2Ccu5vysm%2Ccu5w7za%2Ccu5uekc%2Ccu5u3qr%2Ccy6jjhy%2Ccu5x1ih%2Ccu69jlk%2Ccu5t2m2%2Ccu5wsjf%2Ccu5u64d%2Ccu5p9jb%2Ccu6a8w9%2Ccu6c6tm%2Ccu6jrez%2Ccu5v2x8%2Ccu5spl9%2Ccu5wqkv%2Ccu5u3rq%2Ccu5ynq2%2Ccu5wpss%2Ccu60ivx%2Ccu65sg6%2Ccu5wrs8%2Ccu5xl0c%2Ccu5t8kq%2Ccu5xcbx%2Ccu5zm42%2Ccu5si45%2Ccu5tj94%2Ccwtrkl1%2Ccu6iocg%2Ccu5ue9c%2Ccu5ucw9%2Ccu6hgi9%2Ccu64k2r%2Ccu5un6h%2Ccu5vryn%2Ccu5x4gu%2Ccu6kf6y%2Ccu5w3qk%2Ccu5tmun%2Ccu5tkvm%2Ccu6g16b%2Ccu5wttg%2Ccu5zw1h%2Ccu5t14q%2Ccu5va4c&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5u1vm%2Ccu5uca3%2Ccu5tx53%2Ccuqtc08%2Ccu737kd%2Ccu5vc4a%2Ccu64opo%2Ccu5tcm9%2Ccu5u7ft%2Ccu5q78q%2Ccu5v9rk%2Ccu5tzjl%2Ccu5tik2%2Ccu5vv3o%2Ccu5ulo5%2Ccu61po6%2Ccu64n5o%2Ccu64if1%2Ccu5tt8h%2Ccu5tohz%2Ccu5snd8%2Ccu5pco2%2Ccu68z7z%2Ccu5zia9%2Ccu5tkk4%2Ccu5swgs%2Ccu5twta%2Ccu5rrdt%2Ccu5wt45%2Ccu5vl9j%2Ccu5u5wq%2Ccu5srn0%2Ccu5wium%2Ccu60xnz%2Ccu67blf%2Ccu5vq0k%2Ccu5rxpy%2Ccu5ubuu%2Ccuau8wb%2Ccu5vqto%2Ccu61qj1%2Ccu5v5vy%2Ccu5u0sv%2Ccu5ubt8%2Ccu5oufs%2Ccu5u6qb%2Ccu5tead%2Ccu5wn87%2Ccu5v1jt%2Ccu5onj0%2Ccu5ye1s%2Ccu5pr4y%2Ccu5tjtv%2Ccu5ts0s%2Ccu6a3l7%2Ccu5uenh%2Ccu5wwq8%2Ccu6pfhw%2Ccu5v93f%2Ccu6e11e%2Ccu5payz%2Cczi61ft%2Ccu60csr%2Ccu6568d%2Ccu5wtzp%2Ccu5uhuf%2Ccu5unrv%2Ccu5udi4%2Ccu5tskf%2Ccu5tpet%2Ccu5wlpi%2Ccu5tln5%2Ccu67zs9%2Ccu5wo2z%2Ccu5ta0e%2Ccu5ujg2%2Ccu5pur9%2Ccu5usjd%2Ccu5wohm%2Ccu5owe3%2Ccu5pbdh%2Ccu5skqs%2Ccxxubk8%2Ccu6rlqv%2Ccu6eo0i%2Ccu61t06%2Ccu5xd08%2Ccu5unfj%2Ccu5voyp%2Ccu5v9yd%2Ccu5ubza%2Ccu5sqp4%2Ccu5tpek%2Ccu5xb47%2Ccu5sl6a%2Ccu5p1yt%2Ccu5t92s%2Ccu5vsjk%2Ccu5v77p%2Ccu5vvba%2Ccu5vrz5%2Ccu5twf5%2Ccu5v5l4%2Ccu6lknl%2Ccu68ke1%2Ccu5uq8q%2Ccu5x49x%2Ccu5vf4x%2Ccu5uj4y%2Ccu5vysm%2Ccu5w7za%2Ccu5uekc%2Ccu5u3qr%2Ccy6jjhy%2Ccu5x1ih%2Ccu69jlk%2Ccu5t2m2%2Ccu5wsjf%2Ccu5u64d%2Ccu5p9jb%2Ccu6a8w9%2Ccu6c6tm%2Ccu6jrez%2Ccu5v2x8%2Ccu5spl9%2Ccu5wqkv%2Ccu5u3rq%2Ccu5ynq2%2Ccu5wpss%2Ccu60ivx%2Ccu65sg6%2Ccu5wrs8%2Ccu5xl0c%2Ccu5t8kq%2Ccu5xcbx%2Ccu5zm42%2Ccu5si45%2Ccu5tj94%2Ccwtrkl1%2Ccu6iocg%2Ccu5ue9c%2Ccu5ucw9%2Ccu6hgi9%2Ccu64k2r%2Ccu5un6h%2Ccu5vryn%2Ccu5x4gu%2Ccu6kf6y%2Ccu5w3qk%2Ccu5tmun%2Ccu5tkvm%2Ccu6g16b%2Ccu5wttg%2Ccu5zw1h%2Ccu5t14q%2Ccu5va4c&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -167,7 +167,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5tx53%2Ccuqtc08%2Ccu737kd%2Ccu5onj0%2Ccu5ue9c%2Ccu5q78q%2Ccu5v9rk%2Ccu5vv3o%2Ccu5ulo5%2Ccu61po6%2Ccu5uekc%2Ccu64if1%2Ccu5tt8h%2Ccu5twf5%2Ccu68z7z%2Ccu5zia9%2Ccu5tkk4%2Ccu5vrz5%2Ccu5wt45%2Ccu5vl9j%2Ccu5wium%2Ccu60xnz%2Ccu67blf%2Ccu5vq0k%2Ccu5rxpy%2Ccu5ubuu%2Ccuau8wb%2Ccu5vqto%2Ccu61qj1%2Ccu5v5vy%2Ccu5xd08%2Ccu5tead%2Ccu5wn87%2Ccu5v1jt%2Ccu5ye1s%2Ccu64k2r%2Ccu6a3l7%2Ccu5wwq8%2Ccu6pfhw%2Ccu6e11e%2Ccu5v93f%2Cczi61ft%2Ccu60csr%2Ccu6568d%2Ccu5wtzp%2Ccu5payz%2Ccu5uhuf%2Ccu5unrv%2Ccu5tpek%2Ccu5x49x%2Ccu5wlpi%2Ccu6hgi9%2Ccu5x1ih%2Ccu5wo2z%2Ccu5ta0e%2Ccu5pur9%2Ccu5usjd%2Ccu5wohm%2Ccu5pbdh%2Ccu5v5l4%2Ccu6rlqv%2Ccu6eo0i%2Ccu61t06%2Ccu5oufs%2Ccu5unfj%2Ccu5voyp%2Ccu5v9yd%2Ccu5ubza%2Ccu5udi4%2Ccu5sl6a%2Ccu5p1yt%2Ccu68ke1%2Ccu5vsjk%2Ccu5vvba%2Ccu5uq8q%2Ccu5vf4x%2Ccu5vysm%2Ccu64n5o%2Ccu5w3qk%2Ccy6jjhy%2Ccu67zs9%2Ccu5wsjf%2Ccu5xb47%2Ccu6a8w9%2Ccu6c6tm%2Ccu6jrez%2Ccu5v2x8%2Ccu5wqkv%2Ccu5u3rq%2Ccu5ynq2%2Ccu5wpss%2Ccu60ivx%2Ccu5t92s%2Ccu65sg6%2Ccu5wrs8%2Ccu5xl0c%2Ccu5xcbx%2Ccu5zm42%2Ccu5zw1h%2Ccu6iocg%2Ccu6lknl%2Ccu5un6h%2Ccu5vryn%2Ccu5x4gu%2Ccu6kf6y%2Ccu5srn0%2Ccu6g16b%2Ccu5wttg%2Ccwtrkl1%2Ccu5va4c&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5tx53%2Ccuqtc08%2Ccu737kd%2Ccu5onj0%2Ccu5ue9c%2Ccu5q78q%2Ccu5v9rk%2Ccu5vv3o%2Ccu5ulo5%2Ccu61po6%2Ccu5uekc%2Ccu64if1%2Ccu5tt8h%2Ccu5twf5%2Ccu68z7z%2Ccu5zia9%2Ccu5tkk4%2Ccu5vrz5%2Ccu5wt45%2Ccu5vl9j%2Ccu5wium%2Ccu60xnz%2Ccu67blf%2Ccu5vq0k%2Ccu5rxpy%2Ccu5ubuu%2Ccuau8wb%2Ccu5vqto%2Ccu61qj1%2Ccu5v5vy%2Ccu5xd08%2Ccu5tead%2Ccu5wn87%2Ccu5v1jt%2Ccu5ye1s%2Ccu64k2r%2Ccu6a3l7%2Ccu5wwq8%2Ccu6pfhw%2Ccu6e11e%2Ccu5v93f%2Cczi61ft%2Ccu60csr%2Ccu6568d%2Ccu5wtzp%2Ccu5payz%2Ccu5uhuf%2Ccu5unrv%2Ccu5tpek%2Ccu5x49x%2Ccu5wlpi%2Ccu6hgi9%2Ccu5x1ih%2Ccu5wo2z%2Ccu5ta0e%2Ccu5pur9%2Ccu5usjd%2Ccu5wohm%2Ccu5pbdh%2Ccu5v5l4%2Ccu6rlqv%2Ccu6eo0i%2Ccu61t06%2Ccu5oufs%2Ccu5unfj%2Ccu5voyp%2Ccu5v9yd%2Ccu5ubza%2Ccu5udi4%2Ccu5sl6a%2Ccu5p1yt%2Ccu68ke1%2Ccu5vsjk%2Ccu5vvba%2Ccu5uq8q%2Ccu5vf4x%2Ccu5vysm%2Ccu64n5o%2Ccu5w3qk%2Ccy6jjhy%2Ccu67zs9%2Ccu5wsjf%2Ccu5xb47%2Ccu6a8w9%2Ccu6c6tm%2Ccu6jrez%2Ccu5v2x8%2Ccu5wqkv%2Ccu5u3rq%2Ccu5ynq2%2Ccu5wpss%2Ccu60ivx%2Ccu5t92s%2Ccu65sg6%2Ccu5wrs8%2Ccu5xl0c%2Ccu5xcbx%2Ccu5zm42%2Ccu5zw1h%2Ccu6iocg%2Ccu6lknl%2Ccu5un6h%2Ccu5vryn%2Ccu5x4gu%2Ccu6kf6y%2Ccu5srn0%2Ccu6g16b%2Ccu5wttg%2Ccwtrkl1%2Ccu5va4c&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -222,7 +222,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu638nc%2Ccu5tlz5%2Ccu5tzj5&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu638nc%2Ccu5tlz5%2Ccu5tzj5&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -277,7 +277,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5tazd%2Ccu5tb0y%2Ccu5tl6b%2Ccu5tbhx%2Ccu5tqpy&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5tazd%2Ccu5tb0y%2Ccu5tl6b%2Ccu5tbhx%2Ccu5tqpy&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -332,7 +332,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu6055x%2Ccu5w3uv%2Ccu5t0tk%2Ccu5u1oq%2Ccu5tkfk%2Ccu5u9uw%2Ccu5vyon%2Ccu5pg2h&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu6055x%2Ccu5w3uv%2Ccu5t0tk%2Ccu5u1oq%2Ccu5tkfk%2Ccu5u9uw%2Ccu5vyon%2Ccu5pg2h&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -387,7 +387,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5vrz5%2Ccu6jrez%2Ccu5tpek%2Ccu5v9yd%2Ccu5tx53%2Ccu5xl0c%2Ccu5payz%2Ccu5tt8h%2Ccu60xnz%2Ccu5t92s%2Ccu5pbdh%2Ccu5rxpy%2Ccu5twf5%2Ccu5oufs%2Ccu5tkk4%2Ccu5unrv%2Ccu5onj0%2Ccu6rlqv%2Ccu5tead&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5vrz5%2Ccu6jrez%2Ccu5tpek%2Ccu5v9yd%2Ccu5tx53%2Ccu5xl0c%2Ccu5payz%2Ccu5tt8h%2Ccu60xnz%2Ccu5t92s%2Ccu5pbdh%2Ccu5rxpy%2Ccu5twf5%2Ccu5oufs%2Ccu5tkk4%2Ccu5unrv%2Ccu5onj0%2Ccu6rlqv%2Ccu5tead&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -442,7 +442,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5wtvl%2Ccu5y5cz%2Ccu5u748%2Ccu5rnda%2Ccu5ub5c%2Ccu5ueic&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5wtvl%2Ccu5y5cz%2Ccu5u748%2Ccu5rnda%2Ccu5ub5c%2Ccu5ueic&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -497,7 +497,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5tp6z%2Ccu5v1f0%2Ccu5ufrj%2Ccu5tccw%2Ccu5tpa3%2Ccu5uwfx&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5tp6z%2Ccu5v1f0%2Ccu5ufrj%2Ccu5tccw%2Ccu5tpa3%2Ccu5uwfx&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -552,7 +552,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5zo4i%2Ccu5tyhz%2Ccu5udrw%2Ccu5udsa%2Ccu5v6cc%2Ccu5tc2n&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5zo4i%2Ccu5tyhz%2Ccu5udrw%2Ccu5udsa%2Ccu5v6cc%2Ccu5tc2n&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -607,7 +607,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu63tao%2Ccu5tmix%2Ccu5wwcs%2Ccu5u4od%2Ccu5w7hs%2Ccu5yroy%2Ccu5vr6e%2Ccu5um6y&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu63tao%2Ccu5tmix%2Ccu5wwcs%2Ccu5u4od%2Ccu5w7hs%2Ccu5yroy%2Ccu5vr6e%2Ccu5um6y&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -662,7 +662,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5txc4%2Ccu5tqy7&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5txc4%2Ccu5tqy7&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -717,7 +717,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5w5hz%2Ccu5x0hr%2Ccu5xkfj&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5w5hz%2Ccu5x0hr%2Ccu5xkfj&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -772,7 +772,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5uu41&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5uu41&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -827,7 +827,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5ukar%2Ccu5v16a%2Ccu6a2ar%2Ccu5tq8c%2Ccu5uhi6&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5ukar%2Ccu5v16a%2Ccu6a2ar%2Ccu5tq8c%2Ccu5uhi6&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -882,7 +882,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5tovd%2Ccu6dave%2Ccu5ujqr%2Ccu5tzum&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5tovd%2Ccu6dave%2Ccu5ujqr%2Ccu5tzum&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -937,7 +937,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5w67h%2Ccu5wczp&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5w67h%2Ccu5wczp&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -992,7 +992,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5tmeu&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5tmeu&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1047,7 +1047,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5v1pe&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5v1pe&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1102,7 +1102,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5w8g9%2Ccu5wwg7%2Ccu696sc%2Ccu68vnd&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5w8g9%2Ccu5wwg7%2Ccu696sc%2Ccu68vnd&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1157,7 +1157,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5wmwb%2Ccu62h2m&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5wmwb%2Ccu62h2m&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1212,7 +1212,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5t396%2Ccu5v80u%2Ccu5w0gv&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5t396%2Ccu5v80u%2Ccu5w0gv&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1267,7 +1267,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cvdz0ux%2Ccu5v6dh%2Ccu5w3f3&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cvdz0ux%2Ccu5v6dh%2Ccu5w3f3&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1322,7 +1322,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5u0wx%2Ccu5uztl&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5u0wx%2Ccu5uztl&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1377,7 +1377,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5x3nm&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5x3nm&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1432,7 +1432,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu61rpx&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu61rpx&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1487,7 +1487,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5t7wi&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5t7wi&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1542,7 +1542,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5w0qp&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5w0qp&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1597,7 +1597,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5wnt5%2Ccu61215&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5wnt5%2Ccu61215&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1652,7 +1652,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu65raf%2Ccu5wg0v&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu65raf%2Ccu5wg0v&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1707,7 +1707,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu63crv&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu63crv&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1762,7 +1762,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5x7xp&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5x7xp&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1817,7 +1817,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5x6r5&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5x6r5&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1872,7 +1872,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5ukr6&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5ukr6&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1927,7 +1927,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu6fea2&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu6fea2&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -1982,7 +1982,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5uc0p&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5uc0p&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -2037,7 +2037,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5uvp8&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5uvp8&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -2092,7 +2092,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5vcu1&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5vcu1&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -2147,7 +2147,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cz9hu6w&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cz9hu6w&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -2202,7 +2202,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5vbyu&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5vbyu&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -2257,7 +2257,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cyfte2v&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cyfte2v&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -2312,7 +2312,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu6ofeg&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu6ofeg&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -2367,7 +2367,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5ze1k&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5ze1k&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -2422,7 +2422,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu606xh&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu606xh&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -2477,7 +2477,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5v7cs&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5v7cs&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -2543,7 +2543,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.8.0"
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/comments/3hahrw/_/cu61zil?limit=10&sort=best&raw_json=1"
+        "uri": "https://oauth.reddit.com/comments/3hahrw/_/cu61zil?limit=10&sort=confidence&raw_json=1"
       },
       "response": {
         "body": {
@@ -2580,7 +2580,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/comments/3hahrw/_/cu61zil?limit=10&sort=best&raw_json=1"
+        "url": "https://oauth.reddit.com/comments/3hahrw/_/cu61zil?limit=10&sort=confidence&raw_json=1"
       }
     },
     {
@@ -2599,7 +2599,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.8.0"
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/comments/3hahrw/_/cu5v5h7?limit=10&sort=best&raw_json=1"
+        "uri": "https://oauth.reddit.com/comments/3hahrw/_/cu5v5h7?limit=10&sort=confidence&raw_json=1"
       },
       "response": {
         "body": {
@@ -2636,7 +2636,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/comments/3hahrw/_/cu5v5h7?limit=10&sort=best&raw_json=1"
+        "url": "https://oauth.reddit.com/comments/3hahrw/_/cu5v5h7?limit=10&sort=confidence&raw_json=1"
       }
     },
     {
@@ -2655,7 +2655,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.8.0"
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/comments/3hahrw/_/cu5uyz1?limit=10&sort=best&raw_json=1"
+        "uri": "https://oauth.reddit.com/comments/3hahrw/_/cu5uyz1?limit=10&sort=confidence&raw_json=1"
       },
       "response": {
         "body": {
@@ -2692,7 +2692,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/comments/3hahrw/_/cu5uyz1?limit=10&sort=best&raw_json=1"
+        "url": "https://oauth.reddit.com/comments/3hahrw/_/cu5uyz1?limit=10&sort=confidence&raw_json=1"
       }
     },
     {
@@ -2711,7 +2711,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.8.0"
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/comments/3hahrw/_/cu61tk1?limit=10&sort=best&raw_json=1"
+        "uri": "https://oauth.reddit.com/comments/3hahrw/_/cu61tk1?limit=10&sort=confidence&raw_json=1"
       },
       "response": {
         "body": {
@@ -2748,7 +2748,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/comments/3hahrw/_/cu61tk1?limit=10&sort=best&raw_json=1"
+        "url": "https://oauth.reddit.com/comments/3hahrw/_/cu61tk1?limit=10&sort=confidence&raw_json=1"
       }
     },
     {
@@ -2767,7 +2767,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.8.0"
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/comments/3hahrw/_/cu5x40j?limit=10&sort=best&raw_json=1"
+        "uri": "https://oauth.reddit.com/comments/3hahrw/_/cu5x40j?limit=10&sort=confidence&raw_json=1"
       },
       "response": {
         "body": {
@@ -2804,7 +2804,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/comments/3hahrw/_/cu5x40j?limit=10&sort=best&raw_json=1"
+        "url": "https://oauth.reddit.com/comments/3hahrw/_/cu5x40j?limit=10&sort=confidence&raw_json=1"
       }
     },
     {
@@ -2823,7 +2823,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.8.0"
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/comments/3hahrw/_/cu5w5nv?limit=10&sort=best&raw_json=1"
+        "uri": "https://oauth.reddit.com/comments/3hahrw/_/cu5w5nv?limit=10&sort=confidence&raw_json=1"
       },
       "response": {
         "body": {
@@ -2860,7 +2860,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/comments/3hahrw/_/cu5w5nv?limit=10&sort=best&raw_json=1"
+        "url": "https://oauth.reddit.com/comments/3hahrw/_/cu5w5nv?limit=10&sort=confidence&raw_json=1"
       }
     }
   ],

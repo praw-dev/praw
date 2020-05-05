@@ -1,5 +1,5 @@
 """Provide the BaseListingMixin class."""
-from typing import Any, Dict, Generator, Union
+from typing import Any, Dict, Iterator, Union
 from urllib.parse import urljoin
 
 from ...base import PRAWBase
@@ -33,13 +33,13 @@ class BaseListingMixin(PRAWBase):
         self,
         time_filter: str = "all",
         **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for controversial submissions.
 
         :param time_filter: Can be one of: all, day, hour, month, week, year
             (default: all).
 
-        Raise :py:class:`.ValueError` if ``time_filter`` is invalid.
+        :raises: :py:class:`.ValueError` if ``time_filter`` is invalid.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -48,12 +48,12 @@ class BaseListingMixin(PRAWBase):
 
         .. code-block:: python
 
-           reddit.domain('imgur.com').controversial('week')
-           reddit.multireddit('samuraisam', 'programming').controversial('day')
-           reddit.redditor('spez').controversial('month')
-           reddit.redditor('spez').comments.controversial('year')
-           reddit.redditor('spez').submissions.controversial('all')
-           reddit.subreddit('all').controversial('hour')
+           reddit.domain("imgur.com").controversial("week")
+           reddit.multireddit("samuraisam", "programming").controversial("day")
+           reddit.redditor("spez").controversial("month")
+           reddit.redditor("spez").comments.controversial("year")
+           reddit.redditor("spez").submissions.controversial("all")
+           reddit.subreddit("all").controversial("hour")
 
         """
         self._validate_time_filter(time_filter)
@@ -63,7 +63,7 @@ class BaseListingMixin(PRAWBase):
 
     def hot(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for hot items.
 
         Additional keyword arguments are passed in the initialization of
@@ -73,12 +73,12 @@ class BaseListingMixin(PRAWBase):
 
         .. code-block:: python
 
-           reddit.domain('imgur.com').hot()
-           reddit.multireddit('samuraisam', 'programming').hot()
-           reddit.redditor('spez').hot()
-           reddit.redditor('spez').comments.hot()
-           reddit.redditor('spez').submissions.hot()
-           reddit.subreddit('all').hot()
+           reddit.domain("imgur.com").hot()
+           reddit.multireddit("samuraisam", "programming").hot()
+           reddit.redditor("spez").hot()
+           reddit.redditor("spez").comments.hot()
+           reddit.redditor("spez").submissions.hot()
+           reddit.subreddit("all").hot()
 
         """
         generator_kwargs.setdefault("params", {})
@@ -87,7 +87,7 @@ class BaseListingMixin(PRAWBase):
 
     def new(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for new items.
 
         Additional keyword arguments are passed in the initialization of
@@ -97,12 +97,12 @@ class BaseListingMixin(PRAWBase):
 
         .. code-block:: python
 
-           reddit.domain('imgur.com').new()
-           reddit.multireddit('samuraisam', 'programming').new()
-           reddit.redditor('spez').new()
-           reddit.redditor('spez').comments.new()
-           reddit.redditor('spez').submissions.new()
-           reddit.subreddit('all').new()
+           reddit.domain("imgur.com").new()
+           reddit.multireddit("samuraisam", "programming").new()
+           reddit.redditor("spez").new()
+           reddit.redditor("spez").comments.new()
+           reddit.redditor("spez").submissions.new()
+           reddit.subreddit("all").new()
 
         """
         generator_kwargs.setdefault("params", {})
@@ -113,13 +113,13 @@ class BaseListingMixin(PRAWBase):
         self,
         time_filter: str = "all",
         **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for top submissions.
 
         :param time_filter: Can be one of: all, day, hour, month, week, year
             (default: all).
 
-        Raise :py:class:`.ValueError` if ``time_filter`` is invalid.
+        :raises: :py:class:`.ValueError` if ``time_filter`` is invalid.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -128,12 +128,12 @@ class BaseListingMixin(PRAWBase):
 
         .. code-block:: python
 
-           reddit.domain('imgur.com').top('week')
-           reddit.multireddit('samuraisam', 'programming').top('day')
-           reddit.redditor('spez').top('month')
-           reddit.redditor('spez').comments.top('year')
-           reddit.redditor('spez').submissions.top('all')
-           reddit.subreddit('all').top('hour')
+           reddit.domain("imgur.com").top("week")
+           reddit.multireddit("samuraisam", "programming").top("day")
+           reddit.redditor("spez").top("month")
+           reddit.redditor("spez").comments.top("year")
+           reddit.redditor("spez").submissions.top("all")
+           reddit.subreddit("all").top("hour")
 
         """
         self._validate_time_filter(time_filter)

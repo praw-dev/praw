@@ -1,11 +1,13 @@
 """Provide the SavableMixin class."""
+from typing import Optional
+
 from ....const import API_PATH
 
 
 class SavableMixin:
     """Interface for RedditBase classes that can be saved."""
 
-    def save(self, category=None):
+    def save(self, category: Optional[str] = None):
         """Save the object.
 
         :param category: (Premium) The category to save to. If your user does
@@ -16,13 +18,13 @@ class SavableMixin:
 
         .. code-block:: python
 
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.save(category="view later")
 
-           comment = reddit.comment(id='dxolpyc')
+           comment = reddit.comment(id="dxolpyc")
            comment.save()
 
-        See also :meth:`~.unsave`
+        .. seealso:: :meth:`~.unsave`
 
         """
         self._reddit.post(
@@ -36,13 +38,13 @@ class SavableMixin:
 
         .. code-block:: python
 
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.unsave()
 
-           comment = reddit.comment(id='dxolpyc')
+           comment = reddit.comment(id="dxolpyc")
            comment.unsave()
 
-        See also :meth:`~.save`
+        .. seealso:: :meth:`~.save`
 
         """
         self._reddit.post(API_PATH["unsave"], data={"id": self.fullname})

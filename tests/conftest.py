@@ -1,18 +1,17 @@
 """Prepare py.test."""
-from base64 import b64encode
-from functools import wraps
 import json
 import os
 import socket
 import sys
-from sys import platform
 import time
+from base64 import b64encode
+from functools import wraps
+from sys import platform
 
 import betamax
-from betamax.cassette.cassette import dispatch_hooks, Cassette
 import pytest
-from betamax_serializers import pretty_json
-
+from betamax.cassette.cassette import Cassette, dispatch_hooks
+from betamax.serializers import JSONSerializer
 
 # pylint: disable=import-error,no-name-in-module
 if sys.version_info.major == 2:
@@ -79,7 +78,22 @@ placeholders["basic_auth"] = b64_string(
 )
 
 
-betamax.Betamax.register_serializer(pretty_json.PrettyJSONSerializer)
+class PrettyJSONSerializer(JSONSerializer):
+    name = "prettyjson"
+
+    def serialize(self, cassette_data):
+        return (
+            json.dumps(
+                cassette_data,
+                sort_keys=True,
+                indent=2,
+                separators=(",", ": "),
+            )
+            + "\n"
+        )
+
+
+betamax.Betamax.register_serializer(PrettyJSONSerializer)
 with betamax.Betamax.configure() as config:
     config.cassette_library_dir = "tests/integration/cassettes"
     config.default_cassette_options["serialize_with"] = "prettyjson"

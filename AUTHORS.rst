@@ -3,7 +3,6 @@ Maintainers
 
 - Bryce Boe <bbzbryce@gmail.com> `@bboe <https://github.com/bboe>`_
 - Joe RH <jarhill0@gmail.com> `@jarhill0 <https://github.com/jarhill0>`_
-- Daniel P. <pyprohly@outlook.com> `@Pyprohly <https://github.com/Pyprohly>`_
 
 
 Documentation Contributors
@@ -16,6 +15,7 @@ Documentation Contributors
 - theonefoster `@theonefoster <https://github.com/theonefoster>`_
 - Eric Woolard `@ericwoolard <https://github.com/ericwoolard>`_
 - Marc `@PerhapsSomeone <https://github.com/PerhapsSomeone>`_
+- Richard Hoekstra `@RichardHoekstra <https://github.com/RichardHoekstra>`_
 <!-- - Add "Name <email (optional)> and github profile link" above this line. -->
 
 
@@ -48,12 +48,17 @@ Source Contributors
 - Declan Hoare <declanhoare@exemail.com.au> `@NetwideRogue <https://github.com/NetwideRogue>`_
 - Elaina Martineau `@CrackedP0t <https://github.com/CrackedP0t>`_
 - Rob Curtis <BourbonInExile@gmail.com> `@waab76 <https://github.com/waab76>`_
+- Pyprohly <pyprohly@outlook.com> `@Pyprohly <https://github.com/Pyprohly>`_
 - LilSpazJoekp `@LilSpazJoekp <https://github.com/LilSpazJoekp>`_
 - Timendum `@timendum <https://github.com/timendum>`_
 - vaclav-2012 `@vaclav-2012 <https://github.com/vaclav-2012>`_
+- Jon Meager `@H4CKY54CK <https://github.com/H4CKY54CK>`_
 - kungming2 `@kungming2 <https://github.com/kungming2>`_
 - Jack Steel `@jackodsteel <https://github.com/jackodsteel>`_
 - David Mirch `@fwump38 <https://github.com/fwump38>`_
 - PythonCoderAS `@PythonCoderAS <https://github.com/PythonCoderAS>`_
 - Michael Cetrulo <contact@michael-cetrulo.com> `@git2samus <https://github.com/git2samus>`_
+- George Schizas `@gschizas <https://github.com/gschizas>`_
+- Todd Roberts `@toddrob99 <https://github.com/toddrob99>`_
+- MaybeNetwork `@MaybeNetwork <https://github.com/MaybeNetwork>`_
 <!-- - Add "Name <email (optional)> and github profile link" above this line. -->

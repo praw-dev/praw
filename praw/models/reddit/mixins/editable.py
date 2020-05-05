@@ -12,16 +12,16 @@ class EditableMixin:
 
         .. code-block:: python
 
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
            comment.delete()
 
-           submission = reddit.submission('8dmv8z')
+           submission = reddit.submission("8dmv8z")
            submission.delete()
 
         """
         self._reddit.post(API_PATH["del"], {"id": self.fullname})
 
-    def edit(self, body):
+    def edit(self, body: str):
         """Replace the body of the object with ``body``.
 
         :param body: The Markdown formatted content for the updated object.
@@ -31,7 +31,7 @@ class EditableMixin:
 
         .. code-block:: python
 
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
 
            # construct the text of an edited comment
            # by appending to the old body:
@@ -39,7 +39,11 @@ class EditableMixin:
            comment.edit(edited_body)
 
         """
-        data = {"text": body, "thing_id": self.fullname}
+        data = {
+            "text": body,
+            "thing_id": self.fullname,
+            "validate_on_submit": self._reddit.validate_on_submit,
+        }
         updated = self._reddit.post(API_PATH["edit"], data=data)[0]
         for attribute in [
             "_fetched",

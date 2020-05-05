@@ -1,4 +1,5 @@
 from json import dumps
+
 from pytest import raises
 
 from praw.models import (
@@ -7,8 +8,8 @@ from praw.models import (
     Widget,
     WidgetModeration,
 )
-from praw.models.reddit.widgets import WidgetEncoder
 from praw.models.base import PRAWBase
+from praw.models.reddit.widgets import WidgetEncoder
 
 from ... import UnitTest
 

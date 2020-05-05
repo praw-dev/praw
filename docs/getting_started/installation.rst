@@ -15,7 +15,7 @@ PRAW supports Python 3.5+. The recommended way to install PRAW is via ``pip``.
 
 For instructions on installing Python and pip see "The Hitchhiker's Guide to
 Python" `Installation Guides
-<http://docs.python-guide.org/en/latest/starting/installation/>`_.
+<https://docs.python-guide.org/en/latest/starting/installation/>`_.
 
 Updating PRAW
 -------------
@@ -45,3 +45,9 @@ take advantage of? If so, you can install PRAW directly from GitHub like so:
 .. code-block:: bash
 
    pip install --upgrade https://github.com/praw-dev/praw/archive/master.zip
+
+You can also directly clone a copy of the repository using git, like so:
+
+.. code-block:: bash
+
+   pip install --upgrade git+https://github.com/praw-dev/praw.git

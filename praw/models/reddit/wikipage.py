@@ -13,7 +13,15 @@ Subreddit = TypeVar("Subreddit")
 
 
 class WikiPageModeration:
-    """Provides a set of moderation functions for a WikiPage."""
+    """Provides a set of moderation functions for a WikiPage.
+
+    For example, to add ``spez`` as an editor on the wikipage ``praw_test``
+    try:
+
+    .. code-block:: python
+
+        reddit.subreddit("test").wiki["praw_test"].mod.add("spez")
+    """
 
     def __init__(self, wikipage: _WikiPage):
         """Create a WikiPageModeration instance.
@@ -26,14 +34,14 @@ class WikiPageModeration:
     def add(self, redditor: Redditor):
         """Add an editor to this WikiPage.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``"spez"``) or
             :class:`~.Redditor` instance.
 
-        To add ``'spez'`` as an editor on the wikipage ``'praw_test'`` try:
+        To add ``"spez"`` as an editor on the wikipage ``"praw_test"`` try:
 
         .. code-block:: python
 
-           reddit.subreddit('test').wiki['praw_test'].mod.add('spez')
+           reddit.subreddit("test").wiki["praw_test"].mod.add("spez")
 
         """
         data = {"page": self.wikipage.name, "username": str(redditor)}
@@ -45,14 +53,14 @@ class WikiPageModeration:
     def remove(self, redditor: Redditor):
         """Remove an editor from this WikiPage.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``"spez"``) or
             :class:`~.Redditor` instance.
 
-        To remove ``'spez'`` as an editor on the wikipage ``'praw_test'`` try:
+        To remove ``"spez"`` as an editor on the wikipage ``"praw_test"`` try:
 
         .. code-block:: python
 
-           reddit.subreddit('test').wiki['praw_test'].mod.remove('spez')
+           reddit.subreddit("test").wiki["praw_test"].mod.remove("spez")
 
         """
         data = {"page": self.wikipage.name, "username": str(redditor)}
@@ -81,12 +89,12 @@ class WikiPageModeration:
         :param other_settings: Additional keyword arguments to pass.
         :returns: The updated WikiPage settings.
 
-        To set the wikipage ``'praw_test'`` in ``'/r/test'`` to mod only and
-          disable it from showing in the page list, try:
+        To set the wikipage ``praw_test`` in ``/r/test`` to mod only and
+        disable it from showing in the page list, try:
 
         .. code-block:: python
 
-           reddit.subreddit('test').wiki['praw_test'].mod.update(listed=False,
+           reddit.subreddit("test").wiki["praw_test"].mod.update(listed=False,
                                                                  permlevel=2)
 
         """
@@ -106,7 +114,7 @@ class WikiPage(RedditBase):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    necessarily comprehensive.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -143,15 +151,17 @@ class WikiPage(RedditBase):
 
     @cachedproperty
     def mod(self) -> WikiPageModeration:
-        """Provide an instance of :class:`.WikiPageModeration`."""
-        return WikiPageModeration(self)
+        """Provide an instance of :class:`.WikiPageModeration`.
 
-    def __eq__(self, other: _WikiPage):
-        """Return whether the other instance equals the current."""
-        return (
-            isinstance(other, self.__class__)
-            and str(self).lower() == str(other).lower()
-        )
+        For example, to add ``spez`` as an editor on the wikipage ``praw_test``
+        try:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").wiki["praw_test"].mod.add("spez")
+
+        """
+        return WikiPageModeration(self)
 
     def __init__(
         self,
@@ -213,6 +223,14 @@ class WikiPage(RedditBase):
         :param reason: (Optional) The reason for the revision.
         :param other_settings: Additional keyword arguments to pass.
 
+        For example, to replace the first wiki page of ``r/test`` with the
+        phrase ``test wiki page``:
+
+        .. code-block:: python
+
+            page = next(iter(reddit.subreddit("test").wiki))
+            page.edit(content="test wiki page")
+
         """
         other_settings.update(
             {"content": content, "page": self.name, "reason": reason}
@@ -225,11 +243,11 @@ class WikiPage(RedditBase):
     def revision(self, revision: str):
         """Return a specific version of this page by revision ID.
 
-        To view revision ``[ID]`` of ``'praw_test'`` in ``'/r/test'``:
+        To view revision ``[ID]`` of ``"praw_test"`` in ``/r/test``:
 
         .. code-block:: python
 
-           page = reddit.subreddit('test').wiki['praw_test'].revision('[ID]')
+           page = reddit.subreddit("test").wiki["praw_test"].revision("[ID]")
 
         """
         return WikiPage(
@@ -244,19 +262,19 @@ class WikiPage(RedditBase):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        To view the wiki revisions for ``'praw_test'`` in ``'/r/test'`` try:
+        To view the wiki revisions for ``"praw_test"`` in ``/r/test`` try:
 
         .. code-block:: python
 
-           for item in reddit.subreddit('test').wiki['praw_test'].revisions():
+           for item in reddit.subreddit("test").wiki["praw_test"].revisions():
                print(item)
 
         To get :class:`.WikiPage` objects for each revision:
 
         .. code-block:: python
 
-           for item in reddit.subreddit('test').wiki['praw_test'].revisions():
-               print(item['page'])
+           for item in reddit.subreddit("test").wiki["praw_test"].revisions():
+               print(item["page"])
 
         """
         url = API_PATH["wiki_page_revisions"].format(

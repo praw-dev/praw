@@ -30,7 +30,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -45,9 +45,9 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     ``is_submitter``        Whether or not the comment author is also the
                             author of the submission.
     ``link_id``             The submission ID that the comment belongs to.
-    ``parent_id``           The ID of the parent comment. If it is a top-level
-                            comment, this returns the submission ID instead
-                            (prefixed with 't3').
+    ``parent_id``           The ID of the parent comment (prefixed with ``t1_``).
+                            If it is a top-level comment, this returns the
+                            submission ID instead (prefixed with ``t3_``).
     ``permalink``           A permalink for the comment. Comment objects from
                             the inbox have a ``context`` attribute instead.
     ``replies``             Provides an instance of :class:`.CommentForest`.
@@ -96,7 +96,16 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
     @cachedproperty
     def mod(self) -> _CommentModeration:
-        """Provide an instance of :class:`.CommentModeration`."""
+        """Provide an instance of :class:`.CommentModeration`.
+
+        Example usage:
+
+        .. code-block:: python
+
+            comment = reddit.comment("dkk4qjd")
+            comment.mod.approve()
+
+        """
         return CommentModeration(self)
 
     @property
@@ -112,12 +121,13 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           comment.reply_sort = 'new'
+           comment.reply_sort = "new"
            comment.refresh()
            replies = comment.replies
 
-        .. note:: The appropriate values for ``reply_sort`` include ``best``,
-            ``top``, ``new``, ``controversial``, ``old`` and ``q&a``.
+        .. note:: The appropriate values for ``reply_sort`` include
+           ``confidence``, ``controversial``, ``new``, ``old``, ``q&a``,
+           and ``top``.
 
         """
         if isinstance(self._replies, list):
@@ -150,7 +160,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         _data: Optional[Dict[str, Any]] = None,
     ):
         """Construct an instance of the Comment object."""
-        if [id, url, _data].count(None) != 2:
+        if (id, url, _data).count(None) != 2:
             raise TypeError(
                 "Exactly one of `id`, `url`, or `_data` must be provided."
             )
@@ -220,7 +230,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         If this comment was obtained through a :class:`.Submission`, then its
         entire ancestry should be immediately available, requiring no extra
         network requests. However, if this comment was obtained through other
-        means, e.g., ``reddit.comment('COMMENT_ID')``, or
+        means, e.g., ``reddit.comment("COMMENT_ID")``, or
         ``reddit.inbox.comment_replies``, then the returned parent may be a
         lazy instance of either :class:`.Comment`, or :class:`.Submission`.
 
@@ -228,7 +238,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           comment = reddit.comment('cklhv0f')
+           comment = reddit.comment("cklhv0f")
            parent = comment.parent()
            # `replies` is empty until the comment is refreshed
            print(parent.replies)  # Output: []
@@ -247,7 +257,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
            ancestor = comment
            refresh_counter = 0
            while not ancestor.is_root:
@@ -285,7 +295,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
            comment.refresh()
 
         """
@@ -334,7 +344,7 @@ class CommentModeration(ThingModerationMixin):
 
     .. code-block:: python
 
-       comment = reddit.comment('dkk4qjd')
+       comment = reddit.comment("dkk4qjd")
        comment.mod.approve()
 
     """
@@ -348,3 +358,18 @@ class CommentModeration(ThingModerationMixin):
 
         """
         self.thing = comment
+
+    def show(self):
+        """Uncollapse a :class:`~.Comment` that has been collapsed by Crowd Control.
+
+        Example usage:
+
+        .. code-block:: python
+
+           # lock a comment:
+           comment = reddit.comment("dkk4qjd")
+           comment.mod.show()
+        """
+        url = API_PATH["show_comment"]
+
+        self.thing._reddit.post(url, data={"id": self.thing.fullname})

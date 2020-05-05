@@ -1,10 +1,29 @@
 """Test praw.models.subreddit."""
-from os.path import abspath, dirname, join
-from json import dumps
 import socket
 import sys
+from json import dumps
+from os.path import abspath, dirname, join
+from unittest import mock
 
-from praw.exceptions import APIException, ClientException, WebSocketException
+import pytest
+import requests
+import websocket
+from prawcore import (
+    BadRequest,
+    Forbidden,
+    NotFound,
+    RequestException,
+    TooLarge,
+)
+
+from praw.const import PNG_HEADER
+from praw.exceptions import (
+    ClientException,
+    InvalidFlairTemplateID,
+    RedditAPIException,
+    TooLargeMediaException,
+    WebSocketException,
+)
 from praw.models import (
     Comment,
     ModAction,
@@ -12,16 +31,12 @@ from praw.models import (
     ModmailConversation,
     ModmailMessage,
     Redditor,
+    Stylesheet,
     Submission,
     Subreddit,
     SubredditMessage,
-    Stylesheet,
     WikiPage,
 )
-from prawcore import Forbidden, NotFound, RequestException, TooLarge
-import mock
-import pytest
-import websocket
 
 from ... import IntegrationTest
 
@@ -79,11 +94,6 @@ class WebsocketMockException:
             )
 
 
-def raise_exception(exception):
-    """Raise the specified exception."""
-    raise exception
-
-
 class TestSubreddit(IntegrationTest):
     @staticmethod
     def image_path(name):
@@ -108,7 +118,7 @@ class TestSubreddit(IntegrationTest):
     def test_create__exists(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubreddit.test_create__exists"):
-            with pytest.raises(APIException) as excinfo:
+            with pytest.raises(RedditAPIException) as excinfo:
                 self.reddit.subreddit.create(
                     "redditdev",
                     title="redditdev",
@@ -116,14 +126,14 @@ class TestSubreddit(IntegrationTest):
                     subreddit_type="public",
                     wikimode="disabled",
                 )
-            assert excinfo.value.error_type == "SUBREDDIT_EXISTS"
+            assert excinfo.value.items[0].error_type == "SUBREDDIT_EXISTS"
 
     def test_create__invalid_parameter(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
             "TestSubreddit.test_create__invalid_parameter"
         ):
-            with pytest.raises(APIException) as excinfo:
+            with pytest.raises(RedditAPIException) as excinfo:
                 # Supplying invalid setting for link_type
                 self.reddit.subreddit.create(
                     name="PRAW_iavynavffv",
@@ -132,14 +142,14 @@ class TestSubreddit(IntegrationTest):
                     subreddit_type="public",
                     wikimode="disabled",
                 )
-            assert excinfo.value.error_type == "INVALID_OPTION"
+            assert excinfo.value.items[0].error_type == "INVALID_OPTION"
 
     def test_create__missing_parameter(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
             "TestSubreddit.test_create__missing_parameter"
         ):
-            with pytest.raises(APIException) as excinfo:
+            with pytest.raises(RedditAPIException) as excinfo:
                 # Not supplying required field title.
                 self.reddit.subreddit.create(
                     name="PRAW_iavynavffv",
@@ -148,7 +158,7 @@ class TestSubreddit(IntegrationTest):
                     subreddit_type="public",
                     wikimode="disabled",
                 )
-            assert excinfo.value.error_type == "NO_TEXT"
+            assert excinfo.value.items[0].error_type == "NO_TEXT"
 
     @mock.patch("time.sleep", return_value=None)
     def test_message(self, _):
@@ -158,6 +168,38 @@ class TestSubreddit(IntegrationTest):
                 pytest.placeholders.test_subreddit
             )
             subreddit.message("Test from PRAW", message="Test content")
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_post_requirements(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_post_requirements"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            data = subreddit.post_requirements()
+            tags = [
+                "domain_blacklist",
+                "body_restriction_policy",
+                "domain_whitelist",
+                "title_regexes",
+                "body_blacklisted_strings",
+                "body_required_strings",
+                "title_text_min_length",
+                "is_flair_required",
+                "title_text_max_length",
+                "body_regexes",
+                "link_repost_age",
+                "body_text_min_length",
+                "link_restriction_policy",
+                "body_text_max_length",
+                "title_required_strings",
+                "title_blacklisted_strings",
+                "guidelines_text",
+                "guidelines_display_policy",
+            ]
+            assert list(data) == tags
 
     def test_random(self):
         with self.recorder.use_cassette("TestSubreddit.test_random"):
@@ -178,13 +220,6 @@ class TestSubreddit(IntegrationTest):
         ):
             subreddit = self.reddit.subreddit("wallpapers")
             assert subreddit.random() is None
-
-    def test_rules(self):
-        with self.recorder.use_cassette("TestSubreddit.test_rules"):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
-            assert subreddit.rules()["rules"][0]["short_name"] == "Sample rule"
 
     def test_sticky(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -252,6 +287,18 @@ class TestSubreddit(IntegrationTest):
             assert submission.title == "Test Title"
 
     @mock.patch("time.sleep", return_value=None)
+    def test_submit_live_chat(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestSubreddit.test_submit_live_chat"):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            submission = subreddit.submit(
+                "Test Title", selftext="", discussion_type="CHAT"
+            )
+            assert submission.discussion_type == "CHAT"
+
+    @mock.patch("time.sleep", return_value=None)
     def test_submit__url(self, _):
         url = "https://praw.readthedocs.org/en/stable/"
         self.reddit.read_only = False
@@ -289,6 +336,89 @@ class TestSubreddit(IntegrationTest):
             assert submission.spoiler is True
 
     @mock.patch("time.sleep", return_value=None)
+    def test_submit__verify_invalid(self, _):
+        self.reddit.read_only = False
+        self.reddit.validate_on_submit = True
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit__verify_invalid"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            with pytest.raises(
+                (RedditAPIException, BadRequest)
+            ):  # waiting for prawcore fix
+                subreddit.submit("dfgfdgfdgdf", url="https://www.google.com")
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submit_poll(self, _):
+        options = ["Yes", "No", "3", "4", "5", "6"]
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestSubreddit.test_submit_poll"):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            submission = subreddit.submit_poll(
+                "Test Poll",
+                selftext="Test poll text.",
+                options=options,
+                duration=6,
+            )
+            assert submission.author == self.reddit.config.username
+            assert submission.selftext.startswith("Test poll text.")
+            assert submission.title == "Test Poll"
+            assert [
+                str(option) for option in submission.poll_data.options
+            ] == options
+            assert (
+                submission.poll_data.voting_end_timestamp
+                > submission.created_utc
+            )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submit_poll__flair(self, _):
+        flair_id = "9ac711a4-1ddf-11e9-aaaa-0e22784c70ce"
+        flair_text = "Test flair text"
+        flair_class = ""
+        options = ["Yes", "No"]
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_poll__flair"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            submission = subreddit.submit_poll(
+                "Test Poll",
+                selftext="Test poll text.",
+                flair_id=flair_id,
+                flair_text=flair_text,
+                options=options,
+                duration=6,
+            )
+            assert submission.link_flair_text == flair_text
+            assert submission.link_flair_css_class == flair_class
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submit_poll__live_chat(self, _):
+        options = ["Yes", "No"]
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_poll__live_chat"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            submission = subreddit.submit_poll(
+                "Test Poll",
+                selftext="",
+                discussion_type="CHAT",
+                options=options,
+                duration=2,
+            )
+            assert submission.discussion_type == "CHAT"
+
+    @mock.patch("time.sleep", return_value=None)
     @mock.patch(
         "websocket.create_connection",
         return_value=WebsocketMock(
@@ -310,6 +440,47 @@ class TestSubreddit(IntegrationTest):
                 assert submission.author == self.reddit.config.username
                 assert submission.is_reddit_media_domain
                 assert submission.title == "Test Title"
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submit_image__large(self, _, tmp_path):
+        reddit = self.reddit
+        reddit.read_only = False
+        mock_data = (
+            '<?xml version="1.0" encoding="UTF-8"?>'
+            "<Error>"
+            "<Code>EntityTooLarge</Code>"
+            "<Message>Your proposed upload exceeds the maximum "
+            "allowed size</Message>"
+            "<ProposedSize>20971528</ProposedSize>"
+            "<MaxSizeAllowed>20971520</MaxSizeAllowed>"
+            "<RequestId>23F056D6990D87E0</RequestId>"
+            "<HostId>iYEVOuRfbLiKwMgHt2ewqQRIm0NWL79uiC2rPLj9P0PwW55"
+            "4MhjY2/O8d9JdKTf1iwzLjwWMnGQ=</HostId>"
+            "</Error>"
+        )
+        _post = reddit._core._requestor._http.post
+
+        def patch_request(url, *args, **kwargs):
+            """Patch requests to return mock data on specific url."""
+            if (
+                "https://reddit-uploaded-media.s3-accelerate.amazonaws.com"
+                in url
+            ):
+                response = requests.Response()
+                response._content = mock_data.encode("utf-8")
+                response.status_code = 400
+                return response
+            return _post(url, *args, **kwargs)
+
+        reddit._core._requestor._http.post = patch_request
+        fake_png = PNG_HEADER + b"\x1a" * 10  # Normally 1024 ** 2 * 20 (20 MB)
+        with open(tmp_path.joinpath("fake_img.png"), "wb") as tempfile:
+            tempfile.write(fake_png)
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_image__large"
+        ):
+            with pytest.raises(TooLargeMediaException):
+                reddit.subreddit("test").submit_image("test", tempfile.name)
 
     @mock.patch("time.sleep", return_value=None)
     @mock.patch("websocket.create_connection", return_value=WebsocketMock())
@@ -360,6 +531,40 @@ class TestSubreddit(IntegrationTest):
             )
             assert submission.link_flair_css_class == flair_class
             assert submission.link_flair_text == flair_text
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch(
+        "websocket.create_connection", return_value=WebsocketMock("flo1ea")
+    )  # update with cassette
+    def test_submit_image_chat(self, _=None, __=None):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_image_chat"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            image = self.image_path("test.jpg")
+            submission = subreddit.submit_image(
+                "Test Title", image, discussion_type="CHAT"
+            )
+            assert submission.discussion_type == "CHAT"
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submit_image_verify_invalid(self, _):
+        self.reddit.read_only = False
+        self.reddit.validate_on_submit = True
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_image_verify_invalid"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            image = self.image_path("test.jpg")
+            with pytest.raises(
+                (RedditAPIException, BadRequest)
+            ):  # waiting for prawcore fix
+                subreddit.submit_image("gdfgfdgdgdgfgfdgdfgfdgfdg", image)
 
     @mock.patch("time.sleep", return_value=None)
     @mock.patch(
@@ -541,6 +746,40 @@ class TestSubreddit(IntegrationTest):
             )
             assert submission.link_flair_css_class == flair_class
             assert submission.link_flair_text == flair_text
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch(
+        "websocket.create_connection", return_value=WebsocketMock("flnyhf")
+    )  # update with cassette
+    def test_submit_video_chat(self, _=None, __=None):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_video_chat"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            image = self.image_path("test.mov")
+            submission = subreddit.submit_video(
+                "Test Title", image, discussion_type="CHAT"
+            )
+            assert submission.discussion_type == "CHAT"
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submit_video_verify_invalid(self, _):
+        self.reddit.read_only = False
+        self.reddit.validate_on_submit = True
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_video_verify_invalid"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            image = self.image_path("test.mov")
+            with pytest.raises(
+                (RedditAPIException, BadRequest)
+            ):  # waiting for prawcore fix
+                subreddit.submit_video("gdfgfdgdgdgfgfdgdfgfdgfdg", image)
 
     @mock.patch("time.sleep", return_value=None)
     @mock.patch(
@@ -950,7 +1189,21 @@ class TestSubredditFlair(IntegrationTest):
             response = self.subreddit.flair.update(
                 flair_list, css_class="default"
             )
-        assert all(x["ok"] for x in response)
+            assert all(x["ok"] for x in response)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_quotes(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditFlair.test_update_quotes"
+        ):
+            response = self.subreddit.flair.update(
+                [self.reddit.user.me()], text='"testing"', css_class="testing"
+            )
+            assert all(x["ok"] for x in response)
+            flair = next(self.subreddit.flair(self.reddit.user.me()))
+            assert flair["flair_text"] == '"testing"'
+            assert flair["flair_css_class"] == "testing"
 
 
 class TestSubredditFlairTemplates(IntegrationTest):
@@ -1008,6 +1261,120 @@ class TestSubredditFlairTemplates(IntegrationTest):
                 text_color="dark",
                 background_color="#00FFFF",
             )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_invalid(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditFlairTemplates.test_update_invalid"
+        ):
+            with pytest.raises(InvalidFlairTemplateID):
+                self.subreddit.flair.templates.update(
+                    "fake id",
+                    "PRAW updated",
+                    css_class="myCSS",
+                    text_color="dark",
+                    background_color="#00FFFF",
+                    fetch=True,
+                )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_fetch(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditFlairTemplates.test_update_fetch"
+        ):
+            template = list(self.subreddit.flair.templates)[0]
+            self.subreddit.flair.templates.update(
+                template["id"],
+                "PRAW updated",
+                css_class="myCSS",
+                text_color="dark",
+                background_color="#00FFFF",
+                fetch=True,
+            )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_fetch_no_css_class(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditFlairTemplates.test_update_fetch_no_css_class"
+        ):
+            template = list(self.subreddit.flair.templates)[0]
+            self.subreddit.flair.templates.update(
+                template["id"],
+                "PRAW updated",
+                text_color="dark",
+                background_color="#00FFFF",
+                fetch=True,
+            )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_fetch_no_text(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditFlairTemplates.test_update_fetch_no_text"
+        ):
+            template = list(self.subreddit.flair.templates)[0]
+            self.subreddit.flair.templates.update(
+                template["id"],
+                css_class="myCSS",
+                text_color="dark",
+                background_color="#00FFFF",
+                fetch=True,
+            )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_fetch_no_text_or_css_class(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditFlairTemplates.test_update_fetch_"
+            "no_text_or_css_class"
+        ):
+            template = list(self.subreddit.flair.templates)[0]
+            self.subreddit.flair.templates.update(
+                template["id"],
+                text_color="dark",
+                background_color="#00FFFF",
+                fetch=True,
+            )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_fetch_only(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditFlairTemplates.test_update_fetch_only"
+        ):
+            template = list(self.subreddit.flair.templates)[0]
+            self.subreddit.flair.templates.update(template["id"], fetch=True)
+            newtemplate = list(
+                filter(
+                    lambda _template: _template["id"] == template["id"],
+                    self.subreddit.flair.templates,
+                )
+            )[0]
+            assert newtemplate == template
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_false(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditFlairTemplates.test_update_false"
+        ):
+            template = list(self.subreddit.flair.templates)[0]
+            self.subreddit.flair.templates.update(
+                template["id"], text_editable=True, fetch=True
+            )
+            self.subreddit.flair.templates.update(
+                template["id"], text_editable=False, fetch=True
+            )
+            newtemplate = list(
+                filter(
+                    lambda _template: _template["id"] == template["id"],
+                    self.subreddit.flair.templates,
+                )
+            )[0]
+            assert newtemplate["text_editable"] is False
 
 
 class TestSubredditLinkFlairTemplates(IntegrationTest):
@@ -1109,9 +1476,9 @@ class TestSubredditModeration(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubredditModeration.test_accept_invite__no_invite"
         ):
-            with pytest.raises(APIException) as excinfo:
+            with pytest.raises(RedditAPIException) as excinfo:
                 self.subreddit.mod.accept_invite()
-            assert excinfo.value.error_type == "NO_INVITE_FOUND"
+            assert excinfo.value.items[0].error_type == "NO_INVITE_FOUND"
 
     def test_edited(self):
         self.reddit.read_only = False
@@ -1301,8 +1668,11 @@ class TestSubredditModeration(IntegrationTest):
         with self.recorder.use_cassette("TestSubredditModeration.test_update"):
             before_settings = self.subreddit.mod.settings()
             new_title = before_settings["title"] + "x"
-            if len(new_title) == 20:
-                new_title = "x"
+            new_title = (
+                "x"
+                if (len(new_title) >= 20 and "placeholder" not in new_title)
+                else new_title
+            )
             self.subreddit.mod.update(title=new_title)
             assert self.subreddit.title == new_title
             after_settings = self.subreddit.mod.settings()
@@ -1537,11 +1907,11 @@ class TestSubredditRelationships(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubredditRelationships.moderator_invite__invalid_perm"
         ):
-            with pytest.raises(APIException) as excinfo:
+            with pytest.raises(RedditAPIException) as excinfo:
                 self.subreddit.moderator.invite(
                     self.REDDITOR, permissions=["a"]
                 )
-            assert excinfo.value.error_type == "INVALID_PERMISSIONS"
+            assert excinfo.value.items[0].error_type == "INVALID_PERMISSIONS"
 
     @mock.patch("time.sleep", return_value=None)
     def test_moderator_invite__no_perms(self, _):
@@ -1877,22 +2247,22 @@ class TestSubredditStylesheet(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubredditStylesheet.test_upload__invalid"
         ):
-            with pytest.raises(APIException) as excinfo:
+            with pytest.raises(RedditAPIException) as excinfo:
                 self.subreddit.stylesheet.upload(
                     "praw", self.image_path("invalid.jpg")
                 )
-        assert excinfo.value.error_type == "IMAGE_ERROR"
+        assert excinfo.value.items[0].error_type == "IMAGE_ERROR"
 
     def test_upload__invalid_ext(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
             "TestSubredditStylesheet.test_upload__invalid_ext"
         ):
-            with pytest.raises(APIException) as excinfo:
+            with pytest.raises(RedditAPIException) as excinfo:
                 self.subreddit.stylesheet.upload(
                     "praw.png", self.image_path("white-square.png")
                 )
-        assert excinfo.value.error_type == "BAD_CSS_NAME"
+        assert excinfo.value.items[0].error_type == "BAD_CSS_NAME"
 
     def test_upload__too_large(self):
         self.reddit.read_only = False
@@ -2033,11 +2403,11 @@ class TestSubredditStylesheet(IntegrationTest):
                 "upload_mobile_header",
                 "upload_mobile_icon",
             ]:
-                with pytest.raises(APIException) as excinfo:
+                with pytest.raises(RedditAPIException) as excinfo:
                     getattr(self.subreddit.stylesheet, method)(
                         self.image_path("invalid.jpg")
                     )
-                assert excinfo.value.error_type == "IMAGE_ERROR"
+                assert excinfo.value.items[0].error_type == "IMAGE_ERROR"
 
     def test_upload__others_too_large(self):
         self.reddit.read_only = False

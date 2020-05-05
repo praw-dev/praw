@@ -1,8 +1,9 @@
 """Represent the Trophy class."""
-from typing import Any, Dict, TypeVar
+from typing import Any, Dict, TypeVar, Union
 
 from .base import PRAWBase
 
+_Trophy = TypeVar("_Trophy")
 Reddit = TypeVar("Reddit")
 
 
@@ -20,7 +21,7 @@ class Trophy(PRAWBase):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    necessarily comprehensive.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -39,12 +40,22 @@ class Trophy(PRAWBase):
 
         :param reddit: An instance of :class:`.Reddit`.
         :param _data: The structured data, assumed to be a dict
-            and key ``'name'`` must be provided.
+            and key ``"name"`` must be provided.
 
         """
         assert isinstance(_data, dict) and "name" in _data
         super().__init__(reddit, _data=_data)
 
+    def __eq__(self, other: Union[_Trophy, Any]) -> bool:
+        """Check if two Trophies are equal."""
+        if isinstance(other, self.__class__):
+            return self.name == other.name
+        return super().__eq__(other)
+
     def __str__(self) -> str:
         """Return a name of the trophy."""
         return self.name  # pylint: disable=no-member
+
+    def __repr__(self) -> str:
+        """Return the object's REPR status."""
+        return "{}(name={!r})".format(self.__class__.__name__, self.name)

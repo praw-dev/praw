@@ -1,7 +1,9 @@
+from unittest import mock
+
+import pytest
+
 from praw.exceptions import ClientException
 from praw.models import RemovalReason
-import mock
-import pytest
 
 from ... import IntegrationTest
 

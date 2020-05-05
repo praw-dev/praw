@@ -30,7 +30,13 @@ class Redditor(
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
+
+    .. note:: Shadowbanned accounts are treated the same as non-existent
+        accounts, meaning that they will not have any attributes.
+
+    .. note:: Suspended/banned accounts will only return the ``name`` and
+        ``is_suspended`` attributes.
 
     ==================================== ======================================
     Attribute                            Description
@@ -53,20 +59,22 @@ class Redditor(
                                          subreddits.
     ``is_gold``                          Whether or not the Redditor has active
                                          Reddit Premium status.
+    ``is_suspended``                     Whether or not the Redditor is
+                                         currently suspended.
     ``link_karma``                       The link karma for the Redditor.
     ``name``                             The Redditor's username.
     ``subreddit``                        If the Redditor has created a
                                          user-subreddit, provides a dictionary
                                          of additional attributes. See below.
-    ``subreddit['banner_img']``          The URL of the user-subreddit banner.
-    ``subreddit['name']``                The fullname of the user-subreddit.
-    ``subreddit['over_18']``             Whether or not the user-subreddit is
+    ``subreddit["banner_img"]``          The URL of the user-subreddit banner.
+    ``subreddit["name"]``                The fullname of the user-subreddit.
+    ``subreddit["over_18"]``             Whether or not the user-subreddit is
                                          NSFW.
-    ``subreddit['public_description']``  The public description of the user-
+    ``subreddit["public_description"]``  The public description of the user-
                                          subreddit.
-    ``subreddit['subscribers']``         The number of users subscribed to the
+    ``subreddit["subscribers"]``         The number of users subscribed to the
                                          user-subreddit.
-    ``subreddit['title']``               The title of the user-subreddit.
+    ``subreddit["title"]``               The title of the user-subreddit.
     ==================================== ======================================
 
 
@@ -92,7 +100,7 @@ class Redditor(
 
         .. code-block:: python
 
-           for comment in reddit.redditor('spez').stream.comments():
+           for comment in reddit.redditor("spez").stream.comments():
                print(comment)
 
         Additionally, new submissions can be retrieved via the stream. In the
@@ -101,7 +109,7 @@ class Redditor(
 
         .. code-block:: python
 
-           for submission in reddit.redditor('spez').stream.submissions():
+           for submission in reddit.redditor("spez").stream.submissions():
                print(submission)
 
         """
@@ -132,7 +140,7 @@ class Redditor(
         Exactly one of ``name``, ``fullname`` or ``_data`` must be provided.
 
         """
-        if [name, fullname, _data].count(None) != 2:
+        if (name, fullname, _data).count(None) != 2:
             raise TypeError(
                 "Exactly one of `name`, `fullname`, or `_data` must be "
                 "provided."
@@ -175,7 +183,15 @@ class Redditor(
         self._reddit.request(method, url, data=dumps(data))
 
     def block(self):
-        """Block the Redditor."""
+        """Block the Redditor.
+
+        For example, to block Redditor ``spez``:
+
+        .. code-block:: python
+
+            reddit.redditor("spez").block()
+
+        """
         self._reddit.post(
             API_PATH["block_user"], params={"account_id": self.fullname}
         )
@@ -188,6 +204,18 @@ class Redditor(
 
         Calling this method subsequent times will update the note.
 
+        For example, to friend Redditor ``spez``:
+
+        .. code-block:: python
+
+            reddit.redditor("spez").friend()
+
+        To add a note to the friendship (requires Reddit Premium):
+
+        .. code-block:: python
+
+            reddit.redditor("spez").friend(note="My favorite admin")
+
         """
         self._friend("PUT", data={"note": note} if note else {})
 
@@ -197,6 +225,13 @@ class Redditor(
         :returns: A :class:`.Redditor` instance with fields ``date``, ``id``,
             and possibly ``note`` if the authenticated user has Reddit Premium.
 
+        For example, to get the friendship information of Redditor ``spez``:
+
+        .. code-block:: python
+
+            info = reddit.redditor("spez").friend_info
+            friend_data = info.date
+
         """
         return self._reddit.get(API_PATH["friend_v1"].format(user=self))
 
@@ -205,6 +240,12 @@ class Redditor(
 
         :param months: Specifies the number of months to gild up to 36
             (default: 1).
+
+        For example, to gild Redditor ``spez`` for 1 month:
+
+        .. code-block:: python
+
+            reddit.redditor("spez").gild(months=1)
 
         """
         if months < 1 or months > 36:
@@ -228,7 +269,7 @@ class Redditor(
 
         .. code-block:: python
 
-            for subreddit in reddit.redditor('spez').moderated():
+            for subreddit in reddit.redditor("spez").moderated():
                 print(subreddit.display_name)
                 print(subreddit.title)
 
@@ -243,7 +284,16 @@ class Redditor(
             return subreddits
 
     def multireddits(self) -> List[Multireddit]:
-        """Return a list of the redditor's public multireddits."""
+        """Return a list of the redditor's public multireddits.
+
+        For example, to to get Redditor ``spez``'s multireddits:
+
+        .. code-block:: python
+
+            multireddits = reddit.redditor("spez").multireddits()
+
+
+        """
         return self._reddit.get(API_PATH["multireddit_user"].format(user=self))
 
     def trophies(self) -> List[Trophy]:
@@ -252,13 +302,13 @@ class Redditor(
         :returns: A ``list`` of :class:`~praw.models.Trophy` objects.
             Return ``[]`` if the redditor has no trophy.
 
-        Raise ``prawcore.exceptions.BadRequest`` if the redditor doesn't exist.
+        :raises: :class:`.RedditAPIException` if the redditor doesn't exist.
 
         Usage:
 
         .. code-block:: python
 
-            for trophy in reddit.redditor('spez').trophies():
+            for trophy in reddit.redditor("spez").trophies():
                 print(trophy.name)
                 print(trophy.description)
 
@@ -266,7 +316,15 @@ class Redditor(
         return list(self._reddit.get(API_PATH["trophies"].format(user=self)))
 
     def unblock(self):
-        """Unblock the Redditor."""
+        """Unblock the Redditor.
+
+        For example, to unblock Redditor ``spez``:
+
+        .. code-block:: python
+
+            reddit.redditor("spez").unblock()
+
+        """
         data = {
             "container": self._reddit.user.me().fullname,
             "name": str(self),
@@ -276,7 +334,15 @@ class Redditor(
         self._reddit.post(url, data=data)
 
     def unfriend(self):
-        """Unfriend the Redditor."""
+        """Unfriend the Redditor.
+
+        For example, to unfriend Redditor ``spez``:
+
+        .. code-block:: python
+
+            reddit.redditor("spez").unfriend()
+
+        """
         self._friend(method="DELETE", data={"id": str(self)})
 
 
@@ -306,7 +372,7 @@ class RedditorStream:
 
         .. code-block:: python
 
-           for comment in reddit.redditor('spez').stream.comments():
+           for comment in reddit.redditor("spez").stream.comments():
                print(comment)
 
         """
@@ -327,7 +393,7 @@ class RedditorStream:
 
         .. code-block:: python
 
-           for submission in reddit.redditor('spez').stream.submissions():
+           for submission in reddit.redditor("spez").stream.submissions():
                print(submission)
 
         """
