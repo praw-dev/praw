@@ -1,10 +1,11 @@
 """Provide the Preferences class."""
 from json import dumps
-from typing import Dict, TypeVar, Union
+from typing import TYPE_CHECKING, Dict, Union
 
 from ..const import API_PATH
 
-Reddit = TypeVar("Reddit")
+if TYPE_CHECKING:  # pragma: no cover
+    from .. import Reddit
 
 
 class Preferences:
@@ -30,7 +31,7 @@ class Preferences:
         """
         return self._reddit.get(API_PATH["preferences"])
 
-    def __init__(self, reddit: Reddit):
+    def __init__(self, reddit: "Reddit"):
         """Create a Preferences instance.
 
         :param reddit: The Reddit instance.
@@ -125,7 +126,7 @@ class Preferences:
         :param numsites: Number of links to display at once (int between ``1``
             and ``100``).
         :param organic: Show the spotlight box on the home feed (boolean).
-        :param other_theme: Subreddit theme to use (subreddit name).
+        :param other_theme: "Subreddit" theme to use (subreddit name).
         :param over_18: I am over eighteen years old and willing to view adult
             content (boolean).
         :param private_feeds: Enable private RSS feeds (boolean).

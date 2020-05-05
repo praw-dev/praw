@@ -1,9 +1,10 @@
 """Provide the BaseList class."""
-from typing import Any, Dict, Iterator, TypeVar
+from typing import TYPE_CHECKING, Any, Dict, Iterator
 
 from ..base import PRAWBase
 
-Reddit = TypeVar("Reddit")
+if TYPE_CHECKING:  # pragma: no cover
+    from ... import Reddit
 
 
 class BaseList(PRAWBase):
@@ -11,7 +12,7 @@ class BaseList(PRAWBase):
 
     CHILD_ATTRIBUTE = None
 
-    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
+    def __init__(self, reddit: "Reddit", _data: Dict[str, Any]):
         """Initialize a BaseList instance.
 
         :param reddit: An instance of :class:`~.Reddit`.

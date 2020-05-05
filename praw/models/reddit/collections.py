@@ -1,5 +1,5 @@
 """Provide Collections functionality."""
-from typing import Any, Dict, Generator, List, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Union
 
 from ...const import API_PATH
 from ...exceptions import ClientException
@@ -9,9 +9,8 @@ from .base import RedditBase
 from .submission import Submission
 from .subreddit import Subreddit
 
-Reddit = TypeVar("Reddit")
-_CollectionModeration = TypeVar("_CollectionModeration")
-_SubredditCollectionsModeration = TypeVar("_SubredditCollectionsModeration")
+if TYPE_CHECKING:  # pragma: no cover
+    from ... import Reddit
 
 
 class Collection(RedditBase):
@@ -62,7 +61,7 @@ class Collection(RedditBase):
     STR_FIELD = "collection_id"
 
     @cachedproperty
-    def mod(self) -> _CollectionModeration:
+    def mod(self) -> "CollectionModeration":
         """Get an instance of :class:`.CollectionModeration`.
 
         Provides access to various methods, including
@@ -97,7 +96,7 @@ class Collection(RedditBase):
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",
         _data: Dict[str, Any] = None,
         collection_id: Optional[str] = None,
         permalink: Optional[str] = None,
@@ -255,7 +254,7 @@ class CollectionModeration(PRAWBase):
         except ClientException:
             return self._reddit.submission(id=post).fullname
 
-    def __init__(self, reddit: Reddit, collection_id: str):
+    def __init__(self, reddit: "Reddit", collection_id: str):
         """Initialize an instance of CollectionModeration.
 
         :param collection_id: The ID of a collection.
@@ -263,7 +262,7 @@ class CollectionModeration(PRAWBase):
         super().__init__(reddit, _data=None)
         self.collection_id = collection_id
 
-    def add_post(self, submission: Submission):
+    def add_post(self, submission: "Submission"):
         """Add a post to the collection.
 
         :param submission: The post to add, a :class:`.Submission`, its
@@ -307,7 +306,7 @@ class CollectionModeration(PRAWBase):
             data={"collection_id": self.collection_id},
         )
 
-    def remove_post(self, submission: Submission):
+    def remove_post(self, submission: "Submission"):
         """Remove a post from the collection.
 
         :param submission: The post to remove, a :class:`.Submission`, its
@@ -412,7 +411,7 @@ class SubredditCollections(PRAWBase):
     """
 
     @cachedproperty
-    def mod(self) -> _SubredditCollectionsModeration:
+    def mod(self) -> "SubredditCollectionsModeration":
         """Get an instance of :class:`.SubredditCollectionsModeration`.
 
         Provides :meth:`~SubredditCollectionsModeration.create`:
@@ -468,8 +467,8 @@ class SubredditCollections(PRAWBase):
 
     def __init__(
         self,
-        reddit: Reddit,
-        subreddit: Subreddit,
+        reddit: "Reddit",
+        subreddit: "Subreddit",
         _data: Optional[Dict[str, Any]] = None,
     ):
         """Initialize an instance of SubredditCollections."""
@@ -508,7 +507,7 @@ class SubredditCollectionsModeration(PRAWBase):
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",
         sub_fullname: str,
         _data: Optional[Dict[str, Any]] = None,
     ):

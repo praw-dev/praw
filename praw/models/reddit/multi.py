@@ -1,7 +1,7 @@
 """Provide the Multireddit class."""
 import re
 from json import dumps
-from typing import Any, Dict, List, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
@@ -10,8 +10,8 @@ from .base import RedditBase
 from .redditor import Redditor
 from .subreddit import Subreddit, SubredditStream
 
-_Multireddit = TypeVar("_Multireddit")
-Reddit = TypeVar("Reddit")
+if TYPE_CHECKING:  # pragma: no cover
+    from ... import Reddit
 
 
 class Multireddit(SubredditListingMixin, RedditBase):
@@ -94,7 +94,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         """
         return SubredditStream(self)
 
-    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
+    def __init__(self, reddit: "Reddit", _data: Dict[str, Any]):
         """Construct an instance of the Multireddit object."""
         self.path = None
         super().__init__(reddit, _data=_data)
@@ -127,7 +127,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
-    def add(self, subreddit: Subreddit):
+    def add(self, subreddit: "Subreddit"):
         """Add a subreddit to this multireddit.
 
         :param subreddit: The subreddit to add to this multi.
@@ -146,7 +146,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         self._reddit.put(url, data={"model": dumps({"name": str(subreddit)})})
         self._reset_attributes("subreddits")
 
-    def copy(self, display_name: Optional[str] = None) -> _Multireddit:
+    def copy(self, display_name: Optional[str] = None) -> "Multireddit":
         """Copy this multireddit and return the new multireddit.
 
         :param display_name: (optional) The display name for the copied
@@ -190,7 +190,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         )
         self._reddit.delete(path)
 
-    def remove(self, subreddit: Subreddit):
+    def remove(self, subreddit: "Subreddit"):
         """Remove a subreddit from this multireddit.
 
         :param subreddit: The subreddit to remove from this multi.

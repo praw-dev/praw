@@ -1,5 +1,5 @@
 """Provide the Message class."""
-from typing import Any, Dict, TypeVar
+from typing import TYPE_CHECKING, Any, Dict
 
 from ...const import API_PATH
 from .base import RedditBase
@@ -7,7 +7,8 @@ from .mixins import FullnameMixin, InboxableMixin, ReplyableMixin
 from .redditor import Redditor
 from .subreddit import Subreddit
 
-Reddit = TypeVar("Reddit")
+if TYPE_CHECKING:  # pragma: no cover
+    from ... import Reddit
 
 
 class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
@@ -44,7 +45,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
     STR_FIELD = "id"
 
     @classmethod
-    def parse(cls, data: Dict[str, Any], reddit: Reddit):
+    def parse(cls, data: Dict[str, Any], reddit: "Reddit"):
         """Return an instance of Message or SubredditMessage from ``data``.
 
         :param data: The structured data.
@@ -78,7 +79,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
         """Return the class's kind."""
         return self._reddit.config.kinds["message"]
 
-    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
+    def __init__(self, reddit: "Reddit", _data: Dict[str, Any]):
         """Construct an instance of the Message object."""
         super().__init__(reddit, _data=_data)
         self._fetched = True
@@ -86,7 +87,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
     def delete(self):
         """Delete the message.
 
-        .. note:: Reddit does not return an indication of whether or not the
+        .. note:: "Reddit" does not return an indication of whether or not the
                   message was successfully deleted.
 
         For example, to delete the most recent message in your inbox:

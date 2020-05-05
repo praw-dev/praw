@@ -1,11 +1,12 @@
 """Provide the ListingGenerator class."""
 from copy import deepcopy
-from typing import Any, Dict, Iterator, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Iterator, Optional, Union
 
 from ..base import PRAWBase
 from .listing import FlairListing
 
-Reddit = TypeVar("Reddit")
+if TYPE_CHECKING:  # pragma: no cover
+    from ... import Reddit
 
 
 class ListingGenerator(PRAWBase, Iterator):
@@ -20,7 +21,7 @@ class ListingGenerator(PRAWBase, Iterator):
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",
         url: str,
         limit: int = 100,
         params: Optional[Dict[str, Union[str, int]]] = None,

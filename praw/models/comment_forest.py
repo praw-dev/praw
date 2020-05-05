@@ -1,12 +1,13 @@
 """Provide CommentForest for Submission comments."""
 from heapq import heappop, heappush
-from typing import List, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, List, Optional, Union
 
 from ..exceptions import DuplicateReplaceException
 from .reddit.more import MoreComments
 
-Comment = TypeVar("Comment")
-Submission = TypeVar("Submission")
+if TYPE_CHECKING:  # pragma: no cover
+    from .reddit.comment import Comment  # noqa: F401
+    from .reddit.submission import Submission
 
 
 class CommentForest:
@@ -55,7 +56,9 @@ class CommentForest:
         return self._comments[index]
 
     def __init__(
-        self, submission: Submission, comments: Optional[List[Comment]] = None
+        self,
+        submission: "Submission",
+        comments: Optional[List["Comment"]] = None,
     ):
         """Initialize a CommentForest instance.
 
@@ -91,7 +94,7 @@ class CommentForest:
         for comment in comments:
             comment.submission = self._submission
 
-    def list(self) -> Union[Comment, MoreComments]:
+    def list(self) -> Union["Comment", "MoreComments"]:
         """Return a flattened list of all Comments.
 
         This list may contain :class:`.MoreComments` instances if
@@ -109,7 +112,7 @@ class CommentForest:
 
     def replace_more(
         self, limit: int = 32, threshold: int = 0
-    ) -> List[MoreComments]:
+    ) -> List["MoreComments"]:
         """Update the comment forest by resolving instances of MoreComments.
 
         :param limit: The maximum number of :class:`.MoreComments` instances to

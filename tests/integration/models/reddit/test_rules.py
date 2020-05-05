@@ -1,7 +1,8 @@
 from unittest import mock
+
 import pytest
 
-from praw.exceptions import RedditAPIException, ClientException
+from praw.exceptions import ClientException, RedditAPIException
 from praw.models import Rule
 
 from ... import IntegrationTest
