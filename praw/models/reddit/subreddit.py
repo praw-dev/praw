@@ -219,7 +219,7 @@ class Subreddit(
         .. code-block:: python
 
            reddit.subreddit("SUBREDDIT").banned.add("NAME", ban_message="str", ban_reason="str", duration=days, note="str")
-           
+
         :param username: The name of the Redditor you want to ban.
         :param ban_message: The ban message which is sent to the user in raw markdown text.
         :param ban_reason: The ban reason seen only by moderators (≤100 chars).
