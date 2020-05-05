@@ -97,7 +97,14 @@ class Reddit:
 
     @property
     def validate_on_submit(self) -> bool:
-        """Get validate_on_submit."""
+        """Get validate_on_submit.
+
+        .. deprecated:: 7.0
+            If property :attr:`.validate_on_submit` is set to False, the
+            behavior is deprecated by Reddit. This attribute will be removed
+            around May-June 2020.
+
+        """
         value = self._validate_on_submit
         if value is False:
             warn(

@@ -4,6 +4,8 @@ Migrating to PRAW 7.X
 Exception Handling
 ------------------
 
+.. _exception_handling:
+
 Class :class:`.APIException` has also been renamed to
 :class:`.RedditAPIException`. Importing :class:`.APIException` will still work,
 but is deprecated, but will be removed in PRAW 8.0.
