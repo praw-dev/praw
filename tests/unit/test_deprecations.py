@@ -31,6 +31,11 @@ class TestDeprecation(UnitTest):
         with pytest.raises(DeprecationWarning) as excinfo:
             self.reddit.subreddit("test").rules()
         assert (
-            excinfo.value.args[0] == "Calling SubredditRules to get a list of "
-            "rules is deprecated. Remove the parentheses to use the iterator."
+            excinfo.value.args[0]
+            == "Calling SubredditRules to get a list of rules is deprecated. "
+            "Remove the parentheses to use the iterator. View the "
+            "PRAW documentation on how to change the code in order to use the"
+            "iterator (https://praw.readthedocs.io/en/latest/code_overview"
+            "/other/subredditrules.html#praw.models.reddit.rules."
+            "SubredditRules.__call__)."
         )
