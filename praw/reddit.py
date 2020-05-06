@@ -588,7 +588,7 @@ class Reddit:
         )
 
     def _handle_rate_limit(
-        self, exception: "RedditAPIException"
+        self, exception: RedditAPIException
     ) -> Optional[Union[int, float]]:
         for item in exception.items:
             if item.error_type == "RATELIMIT":
