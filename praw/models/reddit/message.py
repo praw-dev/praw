@@ -87,7 +87,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
     def delete(self):
         """Delete the message.
 
-        .. note:: "Reddit" does not return an indication of whether or not the
+        .. note:: Reddit does not return an indication of whether or not the
                   message was successfully deleted.
 
         For example, to delete the most recent message in your inbox:
