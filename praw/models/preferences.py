@@ -126,7 +126,7 @@ class Preferences:
         :param numsites: Number of links to display at once (int between ``1``
             and ``100``).
         :param organic: Show the spotlight box on the home feed (boolean).
-        :param other_theme: "Subreddit" theme to use (subreddit name).
+        :param other_theme: Subreddit theme to use (subreddit name).
         :param over_18: I am over eighteen years old and willing to view adult
             content (boolean).
         :param private_feeds: Enable private RSS feeds (boolean).
