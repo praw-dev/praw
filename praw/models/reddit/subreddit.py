@@ -2206,7 +2206,7 @@ class SubredditModeration:
             A welcome message is sent to all new subscribers by a Reddit bot.
         :param wiki_edit_age: Account age, in days, required to edit and create
             wiki pages.
-        :param wiki_edit_karma: "Subreddit" karma required to edit and create
+        :param wiki_edit_karma: Subreddit karma required to edit and create
             wiki pages.
         :param wikimode: One of  ``anyone``, ``disabled``, ``modonly``.
 
