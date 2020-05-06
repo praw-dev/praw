@@ -64,7 +64,12 @@ class RedditErrorItem:
 
 
 class APIException(PRAWException):
-    """Old class preserved for alias purposes."""
+    """Old class preserved for alias purposes.
+
+    .. deprecated:: 7.0
+        Class :class:`.APIException` has been deprecated in favor of
+        :class:`.RedditAPIException`. This class will be removed in PRAW 8.0.
+    """
 
     @staticmethod
     def parse_exception_list(
@@ -84,17 +89,47 @@ class APIException(PRAWException):
 
     @property
     def error_type(self) -> str:
-        """Get error_type."""
+        """Get error_type.
+
+        .. deprecated:: 7.0
+
+            Accessing attributes through instances of
+            :class:`.RedditAPIException` is deprecated. This behavior will be
+            removed in PRAW 8.0. Check out the
+            :ref:`PRAW 7 Migration tutorial <Exception_Handling>` on how to
+            migrate code from this behavior.
+
+        """
         return self._get_old_attr("error_type")
 
     @property
     def message(self) -> str:
-        """Get message."""
+        """Get message.
+
+        .. deprecated:: 7.0
+
+            Accessing attributes through instances of
+            :class:`.RedditAPIException` is deprecated. This behavior will be
+            removed in PRAW 8.0. Check out the
+            :ref:`PRAW 7 Migration tutorial <Exception_Handling>` on how to
+            migrate code from this behavior.
+
+        """
         return self._get_old_attr("message")
 
     @property
     def field(self) -> str:
-        """Get field."""
+        """Get field.
+
+        .. deprecated:: 7.0
+
+            Accessing attributes through instances of
+            :class:`.RedditAPIException` is deprecated. This behavior will be
+            removed in PRAW 8.0. Check out the
+            :ref:`PRAW 7 Migration tutorial <Exception_Handling>` on how to
+            migrate code from this behavior.
+
+        """
         return self._get_old_attr("field")
 
     def _get_old_attr(self, attrname):
