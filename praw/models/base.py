@@ -1,8 +1,9 @@
 """Provide the PRAWBase superclass."""
 from copy import deepcopy
-from typing import Any, Dict, Optional, TypeVar
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
-Reddit = TypeVar("Reddit")
+if TYPE_CHECKING:  # pragma: no cover
+    from .. import Reddit
 
 
 class PRAWBase:
@@ -23,7 +24,7 @@ class PRAWBase:
         argument_dict[key] = value
 
     @classmethod
-    def parse(cls, data: Dict[str, Any], reddit: Reddit) -> Any:
+    def parse(cls, data: Dict[str, Any], reddit: "Reddit") -> Any:
         """Return an instance of ``cls`` from ``data``.
 
         :param data: The structured data.
@@ -32,7 +33,7 @@ class PRAWBase:
         """
         return cls(reddit, _data=data)
 
-    def __init__(self, reddit: Reddit, _data: Optional[Dict[str, Any]]):
+    def __init__(self, reddit: "Reddit", _data: Optional[Dict[str, Any]]):
         """Initialize a PRAWModel instance.
 
         :param reddit: An instance of :class:`.Reddit`.

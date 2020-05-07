@@ -1,8 +1,8 @@
 """Provide poll-related classes."""
 from typing import Any, Optional
 
-from ..base import PRAWBase
 from ...util import cachedproperty
+from ..base import PRAWBase
 
 
 class PollOption(PRAWBase):

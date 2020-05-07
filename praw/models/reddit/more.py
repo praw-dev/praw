@@ -1,18 +1,18 @@
 """Provide the MoreComments class."""
-from typing import Any, Dict, List, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Union
 
 from ...const import API_PATH
 from ..base import PRAWBase
 
-_MoreComments = TypeVar("_MoreComments")
-Comment = TypeVar("Comment")
-Reddit = TypeVar("Reddit")
+if TYPE_CHECKING:  # pragma: no cover
+    from ... import Reddit
+    from .comment import Comment  # noqa: F401
 
 
 class MoreComments(PRAWBase):
     """A class indicating there are more comments."""
 
-    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
+    def __init__(self, reddit: "Reddit", _data: Dict[str, Any]):
         """Construct an instance of the MoreComments object."""
         self.count = self.parent_id = None
         self.children = []
@@ -20,7 +20,7 @@ class MoreComments(PRAWBase):
         self._comments = None
         self.submission = None
 
-    def __eq__(self, other: Union[str, _MoreComments]) -> bool:
+    def __eq__(self, other: Union[str, "MoreComments"]) -> bool:
         """Return True if these MoreComments instances are the same."""
         if isinstance(other, self.__class__):
             return (
@@ -28,7 +28,7 @@ class MoreComments(PRAWBase):
             )
         return super().__eq__(other)
 
-    def __lt__(self, other: _MoreComments) -> bool:
+    def __lt__(self, other: "MoreComments") -> bool:
         """Provide a sort order on the MoreComments object."""
         # To work with heapq a "smaller" item is the one with the most comments
         # We are intentionally making the biggest element the smallest element
@@ -69,7 +69,7 @@ class MoreComments(PRAWBase):
         ), "Please file a bug report with PRAW."
         return comments.children[0]
 
-    def comments(self, update: bool = True) -> List[Comment]:
+    def comments(self, update: bool = True) -> List["Comment"]:
         """Fetch and return the comments for a single MoreComments object."""
         if self._comments is None:
             if self.count == 0:  # Handle "continue this thread"

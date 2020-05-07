@@ -8,10 +8,8 @@ goes wrong on the client side. Both of these classes extend
 All other exceptions are subclassed from :class:`.ClientException`.
 
 """
-from typing import List, Optional, TypeVar, Union
+from typing import List, Optional, Union
 from warnings import warn
-
-_RedditErrorItem = TypeVar("_RedditErrorItem")
 
 
 class PRAWException(Exception):
@@ -42,7 +40,7 @@ class RedditErrorItem:
         self.message = message
         self.field = field
 
-    def __eq__(self, other: Union[_RedditErrorItem, List[str]]):
+    def __eq__(self, other: Union["RedditErrorItem", List[str]]):
         """Check for equality."""
         if isinstance(other, RedditErrorItem):
             return (self.error_type, self.message, self.field) == (

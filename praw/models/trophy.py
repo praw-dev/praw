@@ -1,10 +1,10 @@
 """Represent the Trophy class."""
-from typing import Any, Dict, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Union
 
 from .base import PRAWBase
 
-_Trophy = TypeVar("_Trophy")
-Reddit = TypeVar("Reddit")
+if TYPE_CHECKING:  # pragma: no cover
+    from .. import Reddit
 
 
 class Trophy(PRAWBase):
@@ -35,7 +35,7 @@ class Trophy(PRAWBase):
     ======================= ===================================================
     """
 
-    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
+    def __init__(self, reddit: "Reddit", _data: Dict[str, Any]):
         """Initialize a Trophy instance.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -46,7 +46,7 @@ class Trophy(PRAWBase):
         assert isinstance(_data, dict) and "name" in _data
         super().__init__(reddit, _data=_data)
 
-    def __eq__(self, other: Union[_Trophy, Any]) -> bool:
+    def __eq__(self, other: Union["Trophy", Any]) -> bool:
         """Check if two Trophies are equal."""
         if isinstance(other, self.__class__):
             return self.name == other.name

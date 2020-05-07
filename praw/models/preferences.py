@@ -1,10 +1,11 @@
 """Provide the Preferences class."""
 from json import dumps
-from typing import Dict, TypeVar, Union
+from typing import TYPE_CHECKING, Dict, Union
 
 from ..const import API_PATH
 
-Reddit = TypeVar("Reddit")
+if TYPE_CHECKING:  # pragma: no cover
+    from .. import Reddit
 
 
 class Preferences:
@@ -30,7 +31,7 @@ class Preferences:
         """
         return self._reddit.get(API_PATH["preferences"])
 
-    def __init__(self, reddit: Reddit):
+    def __init__(self, reddit: "Reddit"):
         """Create a Preferences instance.
 
         :param reddit: The Reddit instance.

@@ -1,5 +1,5 @@
 """Provides the User class."""
-from typing import Dict, Iterator, List, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Union
 
 from ..const import API_PATH
 from ..models import Preferences
@@ -9,8 +9,9 @@ from .listing.generator import ListingGenerator
 from .reddit.redditor import Redditor
 from .reddit.subreddit import Subreddit
 
-Multireddit = TypeVar("Multireddit")
-Reddit = TypeVar("Reddit")
+if TYPE_CHECKING:  # pragma: no cover
+    from .. import Reddit
+    from .reddit.multi import Multireddit  # noqa: F401
 
 
 class User(PRAWBase):
@@ -48,7 +49,7 @@ class User(PRAWBase):
         """
         return Preferences(self._reddit)
 
-    def __init__(self, reddit: Reddit):
+    def __init__(self, reddit: "Reddit"):
         """Initialize a User instance.
 
         This class is intended to be interfaced with through ``reddit.user``.
@@ -134,7 +135,7 @@ class User(PRAWBase):
             self._me = Redditor(self._reddit, _data=user_data)
         return self._me
 
-    def multireddits(self) -> List[Multireddit]:
+    def multireddits(self) -> List["Multireddit"]:
         """Return a list of multireddits belonging to the user."""
         return self._reddit.get(API_PATH["my_multireddits"])
 

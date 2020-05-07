@@ -1,5 +1,5 @@
 """Provide the LiveThread class."""
-from typing import Any, Dict, Iterator, List, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
@@ -9,12 +9,9 @@ from .base import RedditBase
 from .mixins import FullnameMixin
 from .redditor import Redditor
 
-_LiveThread = TypeVar("_LiveThread")
-_LiveThreadContribution = TypeVar("_LiveThreadContribution")
-_LiveUpdate = TypeVar("_LiveUpdate")
-_LiveUpdateContribution = TypeVar("_LiveUpdateContribution")
-Reddit = TypeVar("Reddit")
-Submission = TypeVar("Submission")
+if TYPE_CHECKING:  # pragma: no cover
+    from ... import Reddit
+    from .submission import Submission  # noqa: F401
 
 
 class LiveContributorRelationship:
@@ -44,7 +41,7 @@ class LiveContributorRelationship:
         temp = self.thread._reddit.get(url)
         return temp if isinstance(temp, RedditorList) else temp[0]
 
-    def __init__(self, thread: _LiveThread):
+    def __init__(self, thread: "LiveThread"):
         """Create a :class:`.LiveContributorRelationship` instance.
 
         :param thread: An instance of :class:`.LiveThread`.
@@ -290,7 +287,7 @@ class LiveThread(RedditBase):
     STR_FIELD = "id"
 
     @cachedproperty
-    def contrib(self) -> _LiveThreadContribution:
+    def contrib(self) -> "LiveThreadContribution":
         """Provide an instance of :class:`.LiveThreadContribution`.
 
         Usage:
@@ -322,7 +319,7 @@ class LiveThread(RedditBase):
         """
         return LiveContributorRelationship(self)
 
-    def __eq__(self, other: Union[str, _LiveThread]) -> bool:
+    def __eq__(self, other: Union[str, "LiveThread"]) -> bool:
         """Return whether the other instance equals the current.
 
         .. note:: This comparison is case sensitive.
@@ -331,7 +328,7 @@ class LiveThread(RedditBase):
             return other == str(self)
         return isinstance(other, self.__class__) and str(self) == str(other)
 
-    def __getitem__(self, update_id: str) -> _LiveUpdate:
+    def __getitem__(self, update_id: str) -> "LiveUpdate":
         """Return a lazy :class:`.LiveUpdate` instance.
 
         :param update_id: A live update ID, e.g.,
@@ -355,7 +352,7 @@ class LiveThread(RedditBase):
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",
         id: Optional[str] = None,
         _data: Optional[
             Dict[str, Any]
@@ -389,7 +386,7 @@ class LiveThread(RedditBase):
 
     def discussions(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator[Submission]:
+    ) -> Iterator["Submission"]:
         """Get submissions linking to the thread.
 
         :param generator_kwargs: keyword arguments passed to
@@ -432,7 +429,7 @@ class LiveThread(RedditBase):
 
     def updates(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator[_LiveUpdate]:
+    ) -> Iterator["LiveUpdate"]:
         """Return a :class:`.ListingGenerator` yields :class:`.LiveUpdate` s.
 
         :param generator_kwargs: keyword arguments passed to
@@ -602,7 +599,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
     _kind = "LiveUpdate"
 
     @cachedproperty
-    def contrib(self) -> _LiveUpdateContribution:
+    def contrib(self) -> "LiveUpdateContribution":
         """Provide an instance of :class:`.LiveUpdateContribution`.
 
         Usage:
@@ -623,7 +620,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",
         thread_id: Optional[str] = None,
         update_id: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,

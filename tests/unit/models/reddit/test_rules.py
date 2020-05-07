@@ -1,6 +1,7 @@
 import pytest
 
 from praw.models import Rule
+
 from ... import UnitTest
 
 

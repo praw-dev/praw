@@ -1,12 +1,12 @@
 """Provide models for new modmail."""
-from typing import Any, Dict, List, Optional, TypeVar
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from ...const import API_PATH
 from ...util import snake_case_keys
 from .base import RedditBase
 
-_ModmailConversation = TypeVar("_ModmailConversation")
-Reddit = TypeVar("Reddit")
+if TYPE_CHECKING:  # pragma: no cover
+    from ... import Reddit
 
 
 class ModmailConversation(RedditBase):
@@ -95,7 +95,10 @@ class ModmailConversation(RedditBase):
 
     @classmethod
     def parse(  # pylint: disable=arguments-differ
-        cls, data: Dict[str, Any], reddit: Reddit, convert_objects: bool = True
+        cls,
+        data: Dict[str, Any],
+        reddit: "Reddit",
+        convert_objects: bool = True,
     ):
         """Return an instance of ModmailConversation from ``data``.
 
@@ -130,7 +133,7 @@ class ModmailConversation(RedditBase):
 
     def __init__(
         self,
-        reddit: Reddit,
+        reddit: "Reddit",
         id: Optional[str] = None,  # pylint: disable=redefined-builtin
         mark_read: bool = False,
         _data: Optional[Dict[str, Any]] = None,
@@ -208,7 +211,7 @@ class ModmailConversation(RedditBase):
         )
 
     def read(
-        self, other_conversations: Optional[List[_ModmailConversation]] = None
+        self, other_conversations: Optional[List["ModmailConversation"]] = None
     ):  # noqa: D207, D301
         """Mark the conversation(s) as read.
 
@@ -311,7 +314,7 @@ class ModmailConversation(RedditBase):
         )
 
     def unread(
-        self, other_conversations: Optional[List[_ModmailConversation]] = None
+        self, other_conversations: Optional[List["ModmailConversation"]] = None
     ):  # noqa: D207, D301
         """Mark the conversation(s) as unread.
 
