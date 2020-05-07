@@ -299,7 +299,7 @@ class Redditor(
         """Return a list of the redditor's trophies.
 
         :returns: A ``list`` of :class:`~praw.models.Trophy` objects.
-            Return ``[]`` if the redditor has no trophy.
+            Return an empty list (``[]``) if the redditor has no trophies.
 
         :raises: :class:`.RedditAPIException` if the redditor doesn't exist.
 
