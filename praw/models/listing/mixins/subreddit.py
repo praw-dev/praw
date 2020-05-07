@@ -39,8 +39,8 @@ class CommentHelper(PRAWBase):
 
         .. code-block:: python
 
-           for comment in reddit.subreddit("redditdev").comments(limit=25):
-               print(comment.author)
+            for comment in reddit.subreddit("redditdev").comments(limit=25):
+                print(comment.author)
 
         """
         return ListingGenerator(self._reddit, self._path, **generator_kwargs)
@@ -60,8 +60,8 @@ class SubredditListingMixin(
 
         .. code-block:: python
 
-           for comment in reddit.subreddit("redditdev").comments(limit=25):
-               print(comment.author)
+            for comment in reddit.subreddit("redditdev").comments(limit=25):
+                print(comment.author)
 
         """
         return CommentHelper(self)

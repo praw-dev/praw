@@ -12,11 +12,11 @@ class EditableMixin:
 
         .. code-block:: python
 
-           comment = reddit.comment("dkk4qjd")
-           comment.delete()
+            comment = reddit.comment("dkk4qjd")
+            comment.delete()
 
-           submission = reddit.submission("8dmv8z")
-           submission.delete()
+            submission = reddit.submission("8dmv8z")
+            submission.delete()
 
         """
         self._reddit.post(API_PATH["del"], {"id": self.fullname})
@@ -31,12 +31,12 @@ class EditableMixin:
 
         .. code-block:: python
 
-           comment = reddit.comment("dkk4qjd")
+            comment = reddit.comment("dkk4qjd")
 
-           # construct the text of an edited comment
-           # by appending to the old body:
-           edited_body = comment.body + "Edit: thanks for the gold!"
-           comment.edit(edited_body)
+            # construct the text of an edited comment
+            # by appending to the old body:
+            edited_body = comment.body + "Edit: thanks for the gold!"
+            comment.edit(edited_body)
 
         """
         data = {

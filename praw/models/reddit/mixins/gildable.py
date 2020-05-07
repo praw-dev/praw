@@ -15,11 +15,11 @@ class GildableMixin:
 
         .. code-block:: python
 
-           comment = reddit.comment("dkk4qjd")
-           comment.gild()
+            comment = reddit.comment("dkk4qjd")
+            comment.gild()
 
-           submission = reddit.submission("8dmv8z")
-           submission.gild()
+            submission = reddit.submission("8dmv8z")
+            submission.gild()
 
         """
         self._reddit.post(

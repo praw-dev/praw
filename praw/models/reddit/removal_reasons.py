@@ -110,7 +110,7 @@ class RemovalReason(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").mod.removal_reasons["141vv5c16py7d"].delete()
+            reddit.subreddit("NAME").mod.removal_reasons["141vv5c16py7d"].delete()
 
         """
         url = API_PATH["removal_reason"].format(
@@ -132,9 +132,9 @@ class RemovalReason(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").mod.removal_reasons["141vv5c16py7d"].update(
-               message="New message",
-               title="New title")
+            reddit.subreddit("NAME").mod.removal_reasons["141vv5c16py7d"].update(
+                message="New message",
+                title="New title")
 
         """
         url = API_PATH["removal_reason"].format(
@@ -163,9 +163,9 @@ class SubredditRemovalReasons:
 
         .. code-block:: python
 
-           reason_id = "141vv5c16py7d"
-           reason = reddit.subreddit("NAME").mod.removal_reasons[reason_id]
-           print(reason)
+            reason_id = "141vv5c16py7d"
+            reason = reddit.subreddit("NAME").mod.removal_reasons[reason_id]
+            print(reason)
 
         You can also use indices to get a numbered rule. Since Python
         uses 0-indexing, the first rule is index 0, and so on.
@@ -213,8 +213,8 @@ class SubredditRemovalReasons:
 
         .. code-block:: python
 
-           for removal_reason in reddit.subreddit("NAME").mod.removal_reasons:
-               print(removal_reason)
+            for removal_reason in reddit.subreddit("NAME").mod.removal_reasons:
+                print(removal_reason)
 
         """
         return iter(self._removal_reason_list)
@@ -246,9 +246,9 @@ class SubredditRemovalReasons:
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").mod.removal_reasons.add(
-               message="Foobar",
-               title="Test")
+            reddit.subreddit("NAME").mod.removal_reasons.add(
+                message="Foobar",
+                title="Test")
 
         """
         data = {"message": message, "title": title}

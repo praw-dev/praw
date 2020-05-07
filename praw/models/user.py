@@ -25,14 +25,14 @@ class User(PRAWBase):
 
         .. code-block:: python
 
-           preferences = reddit.user.preferences()
-           print(preferences["show_link_flair"])
+            preferences = reddit.user.preferences()
+            print(preferences["show_link_flair"])
 
         Preferences can be updated via:
 
         .. code-block:: python
 
-           reddit.user.preferences.update(show_link_flair=True)
+            reddit.user.preferences.update(show_link_flair=True)
 
         The :meth:`.Preferences.update` method returns the new state of the
         preferences as a ``dict``, which can be used to check whether a
@@ -41,9 +41,9 @@ class User(PRAWBase):
 
         .. code-block:: python
 
-           original_preferences = reddit.user.preferences()
-           new_preferences = reddit.user.preferences.update(invalid_param=123)
-           print(original_preferences == new_preferences)  # True, no change
+            original_preferences = reddit.user.preferences()
+            new_preferences = reddit.user.preferences.update(invalid_param=123)
+            print(original_preferences == new_preferences)  # True, no change
 
 
         """
@@ -124,8 +124,8 @@ class User(PRAWBase):
             called, returned the cached version (default: True).
 
         .. note:: If you change the Reddit instance's authorization, you might
-           want to refresh the cached value. Prefer using separate Reddit
-           instances, however, for distinct authorizations.
+            want to refresh the cached value. Prefer using separate Reddit
+            instances, however, for distinct authorizations.
 
         """
         if self._reddit.read_only:

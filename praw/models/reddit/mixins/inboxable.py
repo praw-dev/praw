@@ -16,12 +16,12 @@ class InboxableMixin:
 
         .. code-block:: python
 
-           comment = reddit.comment("dkk4qjd")
-           comment.block()
+            comment = reddit.comment("dkk4qjd")
+            comment.block()
 
-           # or, identically:
+            # or, identically:
 
-           comment.author.block()
+            comment.author.block()
 
         """
         self._reddit.post(API_PATH["block"], data={"id": self.fullname})
@@ -36,11 +36,11 @@ class InboxableMixin:
 
         .. code-block:: python
 
-           inbox = reddit.inbox()
+            inbox = reddit.inbox()
 
-           # select first inbox item and collapse it
-           message = next(inbox)
-           message.collapse()
+            # select first inbox item and collapse it
+            message = next(inbox)
+            message.collapse()
 
         .. seealso:: :meth:`~.uncollapse`
 
@@ -57,10 +57,10 @@ class InboxableMixin:
 
         .. code-block:: python
 
-           inbox = reddit.inbox.unread()
+            inbox = reddit.inbox.unread()
 
-           for message in inbox:
-               # process unread messages
+            for message in inbox:
+                # process unread messages
 
         .. seealso:: :meth:`~.mark_unread`
 
@@ -80,10 +80,10 @@ class InboxableMixin:
 
         .. code-block:: python
 
-           inbox = reddit.inbox(limit=10)
+            inbox = reddit.inbox(limit=10)
 
-           for message in inbox:
-               # process messages
+            for message in inbox:
+                # process messages
 
         .. seealso:: :meth:`~.mark_read`
 
@@ -100,11 +100,11 @@ class InboxableMixin:
 
         .. code-block:: python
 
-           inbox = reddit.inbox()
+            inbox = reddit.inbox()
 
-           # select first inbox item and uncollapse it
-           message = next(inbox)
-           message.uncollapse()
+            # select first inbox item and uncollapse it
+            message = next(inbox)
+            message.uncollapse()
 
         .. seealso:: :meth:`~.collapse`
 

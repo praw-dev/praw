@@ -3,6 +3,7 @@
 import os
 import re
 import sys
+import traceback
 
 from typing import Any, Callable, List, Set, Type, Union
 
@@ -202,6 +203,7 @@ class DocumentationChecker:
                             codeblocknum=blocknum,
                         )
                     )
+                    traceback.print_exc(file=sys.stdout)
                     status = False
                 except Exception:
                     pass

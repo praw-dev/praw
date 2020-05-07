@@ -58,14 +58,14 @@ def permissions_string(
     """Return a comma separated string of permission changes.
 
     :param permissions: A list of strings, or ``None``. These strings can
-       exclusively contain ``+`` or ``-`` prefixes, or contain no prefixes at
-       all. When prefixed, the resulting string will simply be the joining of
-       these inputs. When not prefixed, all permissions are considered to be
-       additions, and all permissions in the ``known_permissions`` set that
-       aren't provided are considered to be removals. When None, the result is
-       ``+all``.
+        exclusively contain ``+`` or ``-`` prefixes, or contain no prefixes at
+        all. When prefixed, the resulting string will simply be the joining of
+        these inputs. When not prefixed, all permissions are considered to be
+        additions, and all permissions in the ``known_permissions`` set that
+        aren't provided are considered to be removals. When None, the result is
+        ``+all``.
     :param known_permissions: A set of strings representing the available
-       permissions.
+        permissions.
 
     """
     to_set = []
@@ -90,7 +90,7 @@ def stream_generator(
     """Yield new items from ListingGenerators and ``None`` when paused.
 
     :param function: A callable that returns a ListingGenerator, e.g.
-       ``subreddit.comments`` or ``subreddit.new``.
+        ``subreddit.comments`` or ``subreddit.new``.
 
     :param pause_after: An integer representing the number of requests that
         result in no new items before this function yields ``None``,
@@ -112,46 +112,46 @@ def stream_generator(
     Additional keyword arguments will be passed to ``function``.
 
     .. note:: This function internally uses an exponential delay with jitter
-       between subsequent responses that contain no new results, up to a
-       maximum delay of just over a 16 seconds. In practice that means that the
-       time before pause for ``pause_after=N+1`` is approximately twice the
-       time before pause for ``pause_after=N``.
+        between subsequent responses that contain no new results, up to a
+        maximum delay of just over a 16 seconds. In practice that means that the
+        time before pause for ``pause_after=N+1`` is approximately twice the
+        time before pause for ``pause_after=N``.
 
     For example, to create a stream of comment replies, try:
 
     .. code-block:: python
 
-       reply_function = reddit.inbox.comment_replies
-       for reply in praw.models.util.stream_generator(reply_function):
-           print(reply)
+        reply_function = reddit.inbox.comment_replies
+        for reply in praw.models.util.stream_generator(reply_function):
+            print(reply)
 
     To pause a comment stream after six responses with no new
     comments, try:
 
     .. code-block:: python
 
-       subreddit = reddit.subreddit("redditdev")
-       for comment in subreddit.stream.comments(pause_after=6):
-           if comment is None:
-               break
-           print(comment)
+        subreddit = reddit.subreddit("redditdev")
+        for comment in subreddit.stream.comments(pause_after=6):
+            if comment is None:
+                break
+            print(comment)
 
     To resume fetching comments after a pause, try:
 
     .. code-block:: python
 
-       subreddit = reddit.subreddit("help")
-       comment_stream = subreddit.stream.comments(pause_after=5)
+        subreddit = reddit.subreddit("help")
+        comment_stream = subreddit.stream.comments(pause_after=5)
 
-       for comment in comment_stream:
-           if comment is None:
-               break
-           print(comment)
-       # Do any other processing, then try to fetch more data
-       for comment in comment_stream:
-           if comment is None:
-               break
-           print(comment)
+        for comment in comment_stream:
+            if comment is None:
+                break
+            print(comment)
+        # Do any other processing, then try to fetch more data
+        for comment in comment_stream:
+            if comment is None:
+                break
+            print(comment)
 
     To bypass the internal exponential backoff, try the following. This
     approach is useful if you are monitoring a subreddit with infrequent
@@ -161,11 +161,11 @@ def stream_generator(
 
     .. code-block:: python
 
-       subreddit = reddit.subreddit("help")
-       for comment in subreddit.stream.comments(pause_after=0):
-           if comment is None:
-               continue
-           print(comment)
+        subreddit = reddit.subreddit("help")
+        for comment in subreddit.stream.comments(pause_after=0):
+            if comment is None:
+                continue
+            print(comment)
 
     """
     before_attribute = None

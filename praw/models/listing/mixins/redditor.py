@@ -40,8 +40,8 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
         .. code-block:: python
 
-           for comment in reddit.redditor("spez").comments.new(limit=None):
-               print(comment.body.split("\n", 1)[0][:79])
+            for comment in reddit.redditor("spez").comments.new(limit=None):
+                print(comment.body.split("\n", 1)[0][:79])
 
         """
         return SubListing(self._reddit, self._path, "comments")
@@ -55,8 +55,8 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
         .. code-block:: python
 
-           for submission in reddit.redditor("spez").submissions.top("all"):
-               print(submission.title)
+            for submission in reddit.redditor("spez").submissions.top("all"):
+                print(submission.title)
 
         """
         return SubListing(self._reddit, self._path, "submitted")

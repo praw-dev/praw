@@ -24,10 +24,10 @@ class SubmissionListingMixin(PRAWBase):
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
+            submission = reddit.submission(id="5or86n")
 
-           for duplicate in submission.duplicates():
-               # process each duplicate
+            for duplicate in submission.duplicates():
+                # process each duplicate
 
         .. seealso:: :meth:`~.upvote`
 

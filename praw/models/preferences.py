@@ -23,8 +23,8 @@ class Preferences:
 
         .. code-block:: python
 
-           preferences = reddit.user.preferences()
-           print(preferences["show_link_flair"])
+            preferences = reddit.user.preferences()
+            print(preferences["show_link_flair"])
 
         See https://www.reddit.com/dev/api#GET_api_v1_me_prefs for the list
         of possible values.
@@ -164,7 +164,7 @@ class Preferences:
 
         .. code-block:: python
 
-           reddit.user.preferences.update(show_link_flair=True)
+            reddit.user.preferences.update(show_link_flair=True)
 
         This method returns the new state of the
         preferences as a ``dict``, which can be used to check whether a
@@ -172,9 +172,9 @@ class Preferences:
 
         .. code-block:: python
 
-           original_preferences = reddit.user.preferences()
-           new_preferences = reddit.user.preferences.update(invalid_param=123)
-           print(original_preferences == new_preferences)  # True, no change
+            original_preferences = reddit.user.preferences()
+            new_preferences = reddit.user.preferences.update(invalid_param=123)
+            print(original_preferences == new_preferences)  # True, no change
 
         .. warning:: Passing an unknown parameter name or an illegal value
                      (such as an int when a boolean is expected) does not
@@ -190,7 +190,7 @@ class Preferences:
 
         .. code-block:: python
 
-           reddit.user.preferences.update(
+            reddit.user.preferences.update(
                 **{"3rd_party_data_personalized_ads": False})
 
         """

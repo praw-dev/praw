@@ -26,11 +26,11 @@ class ReplyableMixin:
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
-           submission.reply("reply")
+            submission = reddit.submission(id="5or86n")
+            submission.reply("reply")
 
-           comment = reddit.comment(id="dxolpyc")
-           comment.reply("reply")
+            comment = reddit.comment(id="dxolpyc")
+            comment.reply("reply")
 
         """
         data = {"text": body, "thing_id": self.fullname}

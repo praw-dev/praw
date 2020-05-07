@@ -85,7 +85,7 @@ class Emoji(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit("praw_test").emoji["test"].delete()
+            reddit.subreddit("praw_test").emoji["test"].delete()
 
         """
         url = API_PATH["emoji_delete"].format(
@@ -112,15 +112,15 @@ class Emoji(RedditBase):
             provided.
 
         .. note:: In order to retain pre-existing values for those that are not
-           explicitly passed, a network request is issued. To  avoid that
-           network request, explicitly provide all values.
+            explicitly passed, a network request is issued. To  avoid that
+            network request, explicitly provide all values.
 
         To restrict the emoji ``test`` in subreddit ``wowemoji`` to mod use
         only, try:
 
         .. code-block:: python
 
-           reddit.subreddit("wowemoji").emoji["test"].update(mod_flair_only=True)
+            reddit.subreddit("wowemoji").emoji["test"].update(mod_flair_only=True)
 
         """
         locals_reference = locals()
@@ -158,8 +158,8 @@ class SubredditEmoji:
 
         .. code-block:: python
 
-           emoji = reddit.subreddit("praw_test").emoji["test"]
-           print(emoji)
+            emoji = reddit.subreddit("praw_test").emoji["test"]
+            print(emoji)
 
         """
         return Emoji(self._reddit, self.subreddit, name)
@@ -180,8 +180,8 @@ class SubredditEmoji:
 
         .. code-block:: python
 
-           for emoji in reddit.subreddit("praw_test").emoji:
-               print(emoji)
+            for emoji in reddit.subreddit("praw_test").emoji:
+                print(emoji)
 
         """
         response = self._reddit.get(
@@ -222,7 +222,7 @@ class SubredditEmoji:
 
         .. code-block:: python
 
-           reddit.subreddit("praw_test").emoji.add("test", "test.png")
+            reddit.subreddit("praw_test").emoji.add("test", "test.png")
 
         """
         data = {

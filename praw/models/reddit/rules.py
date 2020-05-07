@@ -136,7 +136,7 @@ class SubredditRules:
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").rules.mod.add(
+            reddit.subreddit("NAME").rules.mod.add(
                 short_name="No spam",
                 kind="all",
                 description="Do not spam. Spam bad")
@@ -246,8 +246,8 @@ class SubredditRules:
 
         .. code-block:: python
 
-           for rule in reddit.subreddit("NAME").rules:
-               print(rule)
+            for rule in reddit.subreddit("NAME").rules:
+                print(rule)
 
         """
         return iter(self._rule_list)
@@ -356,7 +356,7 @@ class SubredditRulesModeration:
 
     .. code-block:: python
 
-       reddit.subreddit("NAME").rules.mod.add(
+        reddit.subreddit("NAME").rules.mod.add(
             short_name="No spam",
             kind="all",
             description="Do not spam. Spam bad")
@@ -401,10 +401,10 @@ class SubredditRulesModeration:
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").rules.mod.add(
-               short_name="No spam",
-               kind="all",
-               description="Do not spam. Spam bad")
+            reddit.subreddit("NAME").rules.mod.add(
+                short_name="No spam",
+                kind="all",
+                description="Do not spam. Spam bad")
 
         """
         data = {

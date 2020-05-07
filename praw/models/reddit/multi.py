@@ -79,17 +79,17 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         .. code-block:: python
 
-           for comment in reddit.multireddit("spez", "fun").stream.comments():
-               print(comment)
+            for comment in reddit.multireddit("spez", "fun").stream.comments():
+                print(comment)
 
         Additionally, new submissions can be retrieved via the stream. In the
         following example all new submissions to the multireddit are fetched:
 
         .. code-block:: python
 
-           for submission in reddit.multireddit("bboe",
+            for submission in reddit.multireddit("bboe",
                                                 "games").stream.submissions():
-               print(submission)
+                print(submission)
 
         """
         return SubredditStream(self)

@@ -26,8 +26,8 @@ class Inbox(PRAWBase):
 
         .. code-block:: python
 
-           for item in reddit.inbox.all(limit=None):
-               print(repr(item))
+            for item in reddit.inbox.all(limit=None):
+                print(repr(item))
 
         """
         return ListingGenerator(
@@ -54,7 +54,7 @@ class Inbox(PRAWBase):
 
         .. seealso::
 
-           :meth:`.Message.uncollapse`
+            :meth:`.Message.uncollapse`
 
         """
         while items:
@@ -74,8 +74,8 @@ class Inbox(PRAWBase):
 
         .. code-block:: python
 
-           for reply in reddit.inbox.comment_replies():
-               print(reply.author)
+            for reply in reddit.inbox.comment_replies():
+                print(reply.author)
 
         """
         return ListingGenerator(
@@ -104,7 +104,7 @@ class Inbox(PRAWBase):
 
         .. seealso::
 
-           :meth:`.Comment.mark_read` and :meth:`.Message.mark_read`
+            :meth:`.Comment.mark_read` and :meth:`.Message.mark_read`
 
         """
         while items:
@@ -130,7 +130,7 @@ class Inbox(PRAWBase):
 
         .. seealso::
 
-           :meth:`.Comment.mark_unread` and :meth:`.Message.mark_unread`
+            :meth:`.Comment.mark_unread` and :meth:`.Message.mark_unread`
 
         """
         while items:
@@ -154,8 +154,8 @@ class Inbox(PRAWBase):
 
         .. code-block:: python
 
-           for mention in reddit.inbox.mentions(limit=25):
-               print("{}\n{}\n".format(mention.author, mention.body))
+            for mention in reddit.inbox.mentions(limit=25):
+                print("{}\n{}\n".format(mention.author, mention.body))
 
         """
         return ListingGenerator(
@@ -171,7 +171,7 @@ class Inbox(PRAWBase):
 
         .. code-block:: python
 
-           message = reddit.inbox.message("7bnlgu")
+            message = reddit.inbox.message("7bnlgu")
 
         """
         listing = self._reddit.get(API_PATH["message"].format(id=message_id))
@@ -193,8 +193,8 @@ class Inbox(PRAWBase):
 
         .. code-block:: python
 
-           for message in reddit.inbox.messages(limit=5):
-               print(message.subject)
+            for message in reddit.inbox.messages(limit=5):
+                print(message.subject)
 
         """
         return ListingGenerator(
@@ -214,8 +214,8 @@ class Inbox(PRAWBase):
 
         .. code-block:: python
 
-           for message in reddit.inbox.sent(limit=15):
-               print(message.dest)
+            for message in reddit.inbox.sent(limit=15):
+                print(message.dest)
 
         """
         return ListingGenerator(
@@ -236,8 +236,8 @@ class Inbox(PRAWBase):
 
         .. code-block:: python
 
-           for item in reddit.inbox.stream():
-               print(item)
+            for item in reddit.inbox.stream():
+                print(item)
 
         """
         return stream_generator(self.unread, **stream_options)
@@ -254,8 +254,8 @@ class Inbox(PRAWBase):
 
         .. code-block:: python
 
-           for reply in reddit.inbox.submission_replies():
-               print(reply.author)
+            for reply in reddit.inbox.submission_replies():
+                print(reply.author)
 
         """
         return ListingGenerator(
@@ -282,7 +282,7 @@ class Inbox(PRAWBase):
 
         .. seealso::
 
-           :meth:`.Message.collapse`
+            :meth:`.Message.collapse`
 
         """
         while items:
@@ -309,10 +309,10 @@ class Inbox(PRAWBase):
 
         .. code-block:: python
 
-           from praw.models import Comment
-           for item in reddit.inbox.unread(limit=None):
-               if isinstance(item, Comment):
-                   print(item.author)
+            from praw.models import Comment
+            for item in reddit.inbox.unread(limit=None):
+                if isinstance(item, Comment):
+                    print(item.author)
 
         """
         self._safely_add_arguments(generator_kwargs, "params", mark=mark_read)

@@ -42,15 +42,15 @@ class CommentForest:
 
         .. code-block:: python
 
-           first_comment = submission.comments[0]
+            first_comment = submission.comments[0]
 
         Alternatively, the presence of this method enables one to iterate over
         all top_level comments, like so:
 
         .. code-block:: python
 
-           for comment in submission.comments:
-               print(comment.body)
+            for comment in submission.comments:
+                print(comment.body)
 
         """
         return self._comments[index]
@@ -133,17 +133,17 @@ class CommentForest:
 
         .. code-block:: python
 
-           submission = reddit.submission("3hahrw")
-           submission.comments.replace_more()
+            submission = reddit.submission("3hahrw")
+            submission.comments.replace_more()
 
         Alternatively, to replace :class:`.MoreComments` instances within the
         replies of a single comment try:
 
         .. code-block:: python
 
-           comment = reddit.comment("d8r4im1")
-           comment.refresh()
-           comment.replies.replace_more()
+            comment = reddit.comment("d8r4im1")
+            comment.refresh()
+            comment.replies.replace_more()
 
         .. note:: This method can take a long time as each replacement will
                   discover at most 20 new :class:`.Comment` or

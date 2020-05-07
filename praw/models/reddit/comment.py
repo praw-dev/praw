@@ -120,13 +120,13 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           comment.reply_sort = "new"
-           comment.refresh()
-           replies = comment.replies
+            comment.reply_sort = "new"
+            comment.refresh()
+            replies = comment.replies
 
         .. note:: The appropriate values for ``reply_sort`` include
-           ``confidence``, ``controversial``, ``new``, ``old``, ``q&a``,
-           and ``top``.
+            ``confidence``, ``controversial``, ``new``, ``old``, ``q&a``,
+            and ``top``.
 
         """
         if isinstance(self._replies, list):
@@ -235,17 +235,17 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           comment = reddit.comment("cklhv0f")
-           parent = comment.parent()
-           # `replies` is empty until the comment is refreshed
-           print(parent.replies)  # Output: []
-           parent.refresh()
-           print(parent.replies)  # Output is at least: [Comment(id='cklhv0f')]
+            comment = reddit.comment("cklhv0f")
+            parent = comment.parent()
+            # `replies` is empty until the comment is refreshed
+            print(parent.replies)  # Output: []
+            parent.refresh()
+            print(parent.replies)  # Output is at least: [Comment(id='cklhv0f')]
 
         .. warning:: Successive calls to :meth:`.parent()` may result in a
-           network request per call when the comment is not obtained through a
-           :class:`.Submission`. See below for an example of how to minimize
-           requests.
+            network request per call when the comment is not obtained through a
+            :class:`.Submission`. See below for an example of how to minimize
+            requests.
 
         If you have a deeply nested comment and wish to most efficiently
         discover its top-most :class:`.Comment` ancestor you can chain
@@ -254,15 +254,15 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           comment = reddit.comment("dkk4qjd")
-           ancestor = comment
-           refresh_counter = 0
-           while not ancestor.is_root:
-               ancestor = ancestor.parent()
-               if refresh_counter % 9 == 0:
-                   ancestor.refresh()
-               refresh_counter += 1
-           print('Top-most Ancestor: {}'.format(ancestor))
+            comment = reddit.comment("dkk4qjd")
+            ancestor = comment
+            refresh_counter = 0
+            while not ancestor.is_root:
+                ancestor = ancestor.parent()
+                if refresh_counter % 9 == 0:
+                    ancestor.refresh()
+                refresh_counter += 1
+            print('Top-most Ancestor: {}'.format(ancestor))
 
         The above code should result in 5 network requests to Reddit. Without
         the calls to :meth:`.refresh()` it would make at least 31 network
@@ -292,8 +292,8 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           comment = reddit.comment("dkk4qjd")
-           comment.refresh()
+            comment = reddit.comment("dkk4qjd")
+            comment.refresh()
 
         """
         if "context" in self.__dict__:  # Using hasattr triggers a fetch
@@ -341,8 +341,8 @@ class CommentModeration(ThingModerationMixin):
 
     .. code-block:: python
 
-       comment = reddit.comment("dkk4qjd")
-       comment.mod.approve()
+        comment = reddit.comment("dkk4qjd")
+        comment.mod.approve()
 
     """
 
@@ -363,9 +363,9 @@ class CommentModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           # lock a comment:
-           comment = reddit.comment("dkk4qjd")
-           comment.mod.show()
+            # lock a comment:
+            comment = reddit.comment("dkk4qjd")
+            comment.mod.show()
         """
         url = API_PATH["show_comment"]
 

@@ -114,12 +114,12 @@ class StaticChecker:
 
         * Full file checks:
 
-           * :meth:`.check_for_code_statement`
-           * :meth:`.check_for_double_syntax`
+            * :meth:`.check_for_code_statement`
+            * :meth:`.check_for_double_syntax`
 
         * Line checks
 
-           * :meth:`.check_for_noreturn`
+            * :meth:`.check_for_noreturn`
         """
         status = True
         directory = os.path.abspath(os.path.join(__file__, "..", "..", "praw"))

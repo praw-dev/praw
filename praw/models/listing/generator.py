@@ -13,9 +13,9 @@ class ListingGenerator(PRAWBase, Iterator):
     """Instances of this class generate :class:`.RedditBase` instances.
 
     .. warning:: This class should not be directly utilized. Instead you will
-       find a number of methods that return instances of the class:
+        find a number of methods that return instances of the class:
 
-       http://praw.readthedocs.io/en/latest/search.html?q=ListingGenerator
+        http://praw.readthedocs.io/en/latest/search.html?q=ListingGenerator
 
     """
 

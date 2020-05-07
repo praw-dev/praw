@@ -13,13 +13,13 @@ class PollOption(PRAWBase):
 
     .. code-block:: python
 
-       poll_data = submission.poll_data
+        poll_data = submission.poll_data
 
-       # By index -- print the first option
-       print(poll_data.options[0])
+        # By index -- print the first option
+        print(poll_data.options[0])
 
-       # By ID -- print the option with ID "576797"
-       print(poll_data.option("576797"))
+        # By ID -- print the option with ID "576797"
+        print(poll_data.option("576797"))
 
     **Typical Attributes**
 
@@ -55,12 +55,12 @@ class PollData(PRAWBase):
 
     .. code-block:: python
 
-       poll_data = submission.poll_data
-       print("There are {} votes total.".format(poll_data.total_vote_count))
-       print("The options are:")
-       for option in poll_data.options:
-           print("{} ({} votes)".format(option, option.vote_count))
-       print("I voted for {}.".format(poll_data.user_selection))
+        poll_data = submission.poll_data
+        print("There are {} votes total.".format(poll_data.total_vote_count))
+        print("The options are:")
+        for option in poll_data.options:
+            print("{} ({} votes)".format(option, option.vote_count))
+        print("I voted for {}.".format(poll_data.user_selection))
 
     **Typical Attributes**
 
