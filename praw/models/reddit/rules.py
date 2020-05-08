@@ -285,7 +285,7 @@ class RuleModeration:
     """
 
     def __init__(self, rule: Rule):
-        """Instantize the RuleModeration class."""
+        """Instantiate the RuleModeration class."""
         self.rule = rule
 
     def delete(self):
@@ -376,7 +376,7 @@ class SubredditRulesModeration:
     """
 
     def __init__(self, subreddit_rules: SubredditRules):
-        """Instantize the SubredditRulesModeration class."""
+        """Instantiate the SubredditRulesModeration class."""
         self.subreddit_rules = subreddit_rules
 
     def add(

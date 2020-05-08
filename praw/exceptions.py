@@ -65,8 +65,10 @@ class APIException(PRAWException):
     """Old class preserved for alias purposes.
 
     .. deprecated:: 7.0
+
         Class :class:`.APIException` has been deprecated in favor of
         :class:`.RedditAPIException`. This class will be removed in PRAW 8.0.
+
     """
 
     @staticmethod
@@ -154,6 +156,7 @@ class APIException(PRAWException):
             or a list containing lists of unformed errors.
         :param optional_args: Takes the second and third arguments that
             :class:`.APIException` used to take.
+
         """
         if isinstance(items, str):
             items = [[items, *optional_args]]
@@ -186,7 +189,11 @@ class InvalidFlairTemplateID(ClientException):
     """Indicate exceptions where an invalid flair template id is given."""
 
     def __init__(self, template_id: str):
-        """Initialize the class."""
+        """Initialize the class.
+
+        :param template_id: The template id of the invalid flair.
+
+        """
         super().__init__(
             "The flair template id ``{template_id}`` is invalid. If you are "
             "trying to create a flair, please use the ``add`` method.".format(
@@ -199,7 +206,7 @@ class InvalidImplicitAuth(ClientException):
     """Indicate exceptions where an implicit auth type is used incorrectly."""
 
     def __init__(self):
-        """Instantize the class."""
+        """Instantiate the class."""
         super().__init__(
             "Implicit authorization can only be used with installed apps."
         )
@@ -214,6 +221,7 @@ class InvalidURL(ClientException):
         :param url: The invalid URL.
         :param message: The message to display. Must contain a format
             identifier (``{}`` or ``{0}``). (default: ``"Invalid URL: {}"``)
+
         """
         super().__init__(message.format(url))
 
@@ -230,6 +238,7 @@ class TooLargeMediaException(ClientException):
 
         :param maximum_size: The maximum_size size of the uploaded media.
         :param actual: The actual size of the uploaded media.
+
         """
         self.maximum_size = maximum_size
         self.actual = actual
@@ -249,6 +258,7 @@ class WebSocketException(ClientException):
 
         :param message: The exception message.
         :param exception: The exception thrown by the websocket library.
+
         """
         super().__init__(message)
         self.original_exception = exception
