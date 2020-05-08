@@ -1,28 +1,30 @@
 """Provides the Objector class."""
 
 from json import loads
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, Union
 
 from .exceptions import ClientException, RedditAPIException
 from .models.reddit.base import RedditBase
 from .util import snake_case_keys
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .. import Reddit
+    from . import Reddit
 
 
 class Objector:
-    """The objector builds :class:`.RedditBase` objects."""
+    """The objector builds :class:`.RedditBase` objects from JSON data."""
 
-    @classmethod
+    @staticmethod
     def parse_error(
-        cls, data: Union[List[Any], Dict[str, Dict[str, str]]]
+        data: Union[List[Any], Dict[str, Dict[str, str]]]
     ) -> Optional[RedditAPIException]:
         """Convert JSON response into an error object.
 
         :param data: The dict to be converted.
         :returns: An instance of :class:`~.RedditAPIException`, or ``None`` if
             ``data`` doesn't fit this model.
+        :raises: An instance of :class:`.ClientException if there are no errors
+            present in the data.
 
         """
         if isinstance(data, list):
@@ -41,23 +43,33 @@ class Objector:
 
     @classmethod
     def check_error(cls, data: Union[List[Any], Dict[str, Dict[str, str]]]):
-        """Raise an error if the argument resolves to an error object."""
+        """Raise an error if the argument resolves to an error object.
+
+        :param data: The dict to be checked.
+        :raises: :class:`.RedditAPIException` if the data contained an error.
+        """
         error = cls.parse_error(data)
         if error:
             raise error
 
     def __init__(
-        self, reddit: "Reddit", parsers: Optional[Dict[str, Any]] = None
+        self,
+        reddit: "Reddit",
+        parsers: Optional[Dict[str, Type[RedditBase]]] = None,
     ):
         """Initialize an Objector instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
+        :param parsers: A dictionary mapping string values to subclassess of
+            :class:`.RedditBase`.
 
         """
         self.parsers = {} if parsers is None else parsers
         self._reddit = reddit
 
-    def _objectify_dict(self, data):
+    def _objectify_dict(
+        self, data: Dict[str, Any]
+    ) -> Union[RedditBase, Dict[str, Any]]:
         """Create RedditBase objects from dicts.
 
         :param data: The structured data, assumed to be a dict.
@@ -128,13 +140,22 @@ class Objector:
         return parser.parse(data, self._reddit)
 
     def objectify(
-        self, data: Optional[Union[Dict[str, Any], List[Any]]]
-    ) -> Optional[Union[RedditBase, Dict[str, Any], List[Any]]]:
-        """Create RedditBase objects from data.
+        self,
+        data: Optional[
+            Union[Dict[str, Any], List[Union[Dict[str, Any], Any]]]
+        ],
+    ) -> Optional[
+        Union[RedditBase, Dict[str, Any], List[Union[RedditBase, Any]]]
+    ]:
+        """Create :class:`.RedditBase` objects from JSON data.
 
         :param data: The structured data.
-        :returns: An instance of :class:`~.RedditBase`, or ``None`` if
-            given ``data`` is ``None``.
+        :raises: :class:`.RedditAPIException` if the data contained any errors.
+        :returns: One of the following:
+
+            * An instance of :class:`.RedditBase` constructed from the data
+            * A list containing instances of :class:`.RedditBase`
+            * The provided data without any changes.
 
         """
         # pylint: disable=too-many-return-statements
