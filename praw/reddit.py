@@ -5,7 +5,7 @@ import re
 import time
 from itertools import islice
 from logging import getLogger
-from typing import IO, Any, Dict, Generator, Iterable, Optional, Type, Union
+from typing import IO, Any, Dict, Generator, List, Optional, Type, Union
 from warnings import warn
 
 from prawcore import (
@@ -30,6 +30,7 @@ from .exceptions import (
     RedditAPIException,
 )
 from .objector import Objector
+from .models.reddit.base import RedditBase
 
 try:
     from update_checker import update_check
@@ -37,12 +38,6 @@ try:
     UPDATE_CHECKER_MISSING = False
 except ImportError:  # pragma: no cover
     UPDATE_CHECKER_MISSING = True
-
-
-Comment = models.Comment
-Redditor = models.Redditor
-Submission = models.Submission
-Subreddit = models.Subreddit
 
 logger = getLogger("praw")
 
@@ -53,13 +48,14 @@ class Reddit:
     Instances of this class are the gateway to interacting with Reddit's API
     through PRAW. The canonical way to obtain an instance of this class is via:
 
-
     .. code-block:: python
 
-       import praw
-       reddit = praw.Reddit(client_id="CLIENT_ID",
-                            client_secret="CLIENT_SECRET", password="PASSWORD",
-                            user_agent="USERAGENT", username="USERNAME")
+        import praw
+        reddit = praw.Reddit(username="USERNAME",
+                            password="PASSWORD",
+                            client_id="CLIENT_ID",
+                            client_secret="CLIENT_SECRET",
+                            user_agent="USERAGENT")
 
     """
 
@@ -78,11 +74,14 @@ class Reddit:
         return self._core == self._read_only_core
 
     @read_only.setter
-    def read_only(self, value: bool) -> None:
+    def read_only(self, value: bool):
         """Set or unset the use of the ReadOnlyAuthorizer.
 
-        :raises: :class:`ClientException` when attempting to unset ``read_only``
-        and only the ReadOnlyAuthorizer is available.
+        :param value: A boolean representing the new state of the ``read_only``
+            attribute.
+        :raises: :class:`.ClientException` when attempting to unset
+            ``read_only`` and the ReadOnlyAuthorizer is the only available
+            aithorizer.
 
         """
         if value:
@@ -97,9 +96,10 @@ class Reddit:
 
     @property
     def validate_on_submit(self) -> bool:
-        """Get validate_on_submit.
+        """Get the status of validate_on_submit.
 
         .. deprecated:: 7.0
+
             If property :attr:`.validate_on_submit` is set to False, the
             behavior is deprecated by Reddit. This attribute will be removed
             around May-June 2020.
@@ -118,6 +118,11 @@ class Reddit:
 
     @validate_on_submit.setter
     def validate_on_submit(self, val: bool):
+        """Set the value of the validate_on_submit property.
+
+        :param val: The new value of the property.
+
+        """
         self._validate_on_submit = val
 
     def __enter__(self):
@@ -129,10 +134,10 @@ class Reddit:
 
     def __init__(
         self,
-        site_name: str = None,
+        site_name: Optional[str] = None,
         config_interpolation: Optional[str] = None,
         requestor_class: Optional[Type[Requestor]] = None,
-        requestor_kwargs: Dict[str, Any] = None,
+        requestor_kwargs: Optional[Dict[str, Any]] = None,
         **config_settings: str
     ):  # noqa: D207, D301
         """Initialize a Reddit instance.
@@ -143,8 +148,8 @@ class Reddit:
             to easily save credentials for different applications, or
             communicate with other servers running Reddit. If ``site_name`` is
             ``None``, then the site name will be looked for in the environment
-            variable praw_site. If it is not found there, the DEFAULT site will
-            be used.
+            variable ``praw_site``. If it is not found there, the ``DEFAULT``
+            site will be used.
         :param requestor_class: A class that will be used to create a
             requestor. If not set, use ``prawcore.Requestor`` (default: None).
         :param requestor_kwargs: Dictionary with additional keyword arguments
@@ -240,7 +245,7 @@ class Reddit:
         """An instance of :class:`.Auth`.
 
         Provides the interface for interacting with installed and web
-        applications. See :ref:`auth_url`
+        applications. See :ref:`auth_url`.
 
         """
 
@@ -276,11 +281,17 @@ class Reddit:
         """An instance of :class:`.LiveHelper`.
 
         Provides the interface for working with :class:`.LiveThread`
-        instances. At present only new LiveThreads can be created.
+        instances. To create a new live thread:
 
         .. code-block:: python
 
            reddit.live.create("title", "description")
+           
+        To fetch an existing live thread:
+        
+        .. code-block:: python
+
+            thread = reddit.live("ukaeu1ik4sw5")
 
         """
 
@@ -352,9 +363,8 @@ class Reddit:
         self.user = models.User(self)
         """An instance of :class:`.User`.
 
-        Provides the interface to the currently authorized
-        :class:`.Redditor`. For example to get the name of the current user
-        run:
+        Provides the interface to the currently authorized :class:`.Redditor`.
+        For example to get the name of the current user run:
 
         .. code-block:: python
 
@@ -463,66 +473,98 @@ class Reddit:
         self,  # pylint: disable=invalid-name
         id: Optional[str] = None,  # pylint: disable=redefined-builtin
         url: Optional[str] = None,
-    ):
+    ) -> models.Comment:
         """Return a lazy instance of :class:`~.Comment` for ``id``.
 
         :param id: The ID of the comment.
-
         :param url: A permalink pointing to the comment.
+        :raises: :py:class:`TypeError` if either both or no arguments are
+            provided.
+        :returns: A lazy instance of :class:`.Comment`.
 
         .. note:: If you want to obtain the comment's replies, you will need to
-                  call :meth:`~.Comment.refresh` on the returned
-                  :class:`.Comment`.
+            call :meth:`~.Comment.refresh` on the returned :class:`.Comment`.
 
         """
         return models.Comment(self, id=id, url=url)
 
-    def domain(self, domain: str):
+    def domain(self, domain: str) -> models.DomainListing:
         """Return an instance of :class:`.DomainListing`.
 
         :param domain: The domain to obtain submission listings for.
+        :returns: An instance of :class:`.DomainListing`.
 
         """
         return models.DomainListing(self, domain)
+
+    def delete(
+        self,
+        path: str,
+        data: Optional[
+            Union[Dict[str, Union[str, Any]], bytes, IO, str]
+        ] = None,
+        json: Optional[Dict[str, Any]] = None,
+    ) -> Optional[Union[Dict[str, Any], RedditBase]]:
+        """Return parsed objects returned from a DELETE request to ``path``.
+
+        :param path: The path to fetch.
+        :param data: Dictionary, bytes, or file-like object to send in the body
+            of the request (default: None).
+        :param json: JSON-serializable object to send in the body
+            of the request with a Content-Type header of application/json
+            (default: None). If ``json`` is provided, ``data`` should not be.
+        :raises: :class:`.RedditAPIException` if the returned data contained
+            aby errors.
+        :returns: The response passed through the :class:`.Objector`.
+
+        """
+        return self._objectify_request(
+            data=data, json=json, method="DELETE", path=path
+        )
 
     def get(
         self,
         path: str,
         params: Optional[Union[str, Dict[str, Union[str, int]]]] = None,
-    ):
+    ) -> Optional[Union[Dict[str, Any], RedditBase]]:
         """Return parsed objects returned from a GET request to ``path``.
 
         :param path: The path to fetch.
         :param params: The query parameters to add to the request (default:
             None).
+        :raises: :class:`.RedditAPIException` if the returned data contained
+            aby errors.
+        :returns: The response passed through the :class:`.Objector`.
 
         """
         return self._objectify_request(method="GET", params=params, path=path)
 
     def info(
-        self,
-        fullnames: Optional[Iterable[str]] = None,
-        url: Optional[str] = None,
-    ) -> Generator[Union[Subreddit, Comment, Submission], None, None]:
+        self, fullnames: Optional[List[str]] = None, url: Optional[str] = None,
+    ) -> Generator[
+        Union[models.Subreddit, models.Comment, models.Submission], None, None
+    ]:
         """Fetch information about each item in ``fullnames`` or from ``url``.
 
         :param fullnames: A list of fullnames for comments, submissions, and/or
             subreddits.
         :param url: A url (as a string) to retrieve lists of link submissions
             from.
+        :raises: :py:class:`TypeError` if either parameter is not provided or
+            the provided value for ``fullnames`` is a string.
         :returns: A generator that yields found items in their relative order.
 
         Items that cannot be matched will not be generated. Requests will be
         issued in batches for each 100 fullnames.
 
         .. note:: For comments that are retrieved via this method, if you want
-                  to obtain its replies, you will need to call
-                  :meth:`~.Comment.refresh` on the yielded :class:`.Comment`.
+            to obtain its replies, you will need to call
+            :meth:`~.Comment.refresh` on the yielded :class:`.Comment`.
 
         .. note:: When using the URL option, it is important to be aware that
-                  URLs are treated literally by Reddit's API. As such, the URLs
-                  "youtube.com" and "https://www.youtube.com" will provide a
-                  different set of submissions.
+            URLs are treated literally by Reddit's API. As such, the URLs
+            "youtube.com" and "https://www.youtube.com" will provide a
+            different set of submissions.
 
         """
         none_count = (fullnames, url).count(None)
@@ -537,8 +579,8 @@ class Reddit:
             if isinstance(fullnames, str):
                 raise TypeError("`fullnames` must be a non-str iterable.")
 
-            def generator(fullnames):
-                iterable = iter(fullnames)
+            def generator(fullname_list):
+                iterable = iter(fullname_list)
                 while True:
                     chunk = list(islice(iterable, 100))
                     if not chunk:
@@ -550,8 +592,8 @@ class Reddit:
 
             return generator(fullnames)
 
-        def generator(url):
-            params = {"url": url}
+        def generator(link):
+            params = {"url": link}
             for result in self.get(API_PATH["info"], params=params):
                 yield result
 
@@ -563,11 +605,11 @@ class Reddit:
             Union[Dict[str, Union[str, Any]], bytes, IO, str]
         ] = None,
         files: Optional[Dict[str, IO]] = None,
-        json=None,
+        json: Optional[Dict[str, Any]] = None,
         method: str = "",
         params: Optional[Union[str, Dict[str, str]]] = None,
         path: str = "",
-    ) -> Any:
+    ) -> Optional[Union[Dict[str, Any], RedditBase]]:
         """Run a request through the ``Objector``.
 
         :param data: Dictionary, bytes, or file-like object to send in the body
@@ -581,6 +623,9 @@ class Reddit:
         :param params: The query parameters to add to the request (default:
             None).
         :param path: The path to fetch.
+        :raises: :class:`.RedditAPIException` if the returned data contained
+            aby errors.
+        :returns: The response passed through the :class:`.Objector`.
 
         """
         return self._objector.objectify(
@@ -597,6 +642,11 @@ class Reddit:
     def _handle_rate_limit(
         self, exception: RedditAPIException
     ) -> Optional[Union[int, float]]:
+        """Handles a rate limit inside of an :class:`.RedditAPIException`.
+
+        :param exception: The instance of :class:`.RedditAPIException`.
+        :return: The amount of time to sleep or None.
+        """
         for item in exception.items:
             if item.error_type == "RATELIMIT":
                 amount_search = self._ratelimit_regex.search(item.message)
@@ -610,36 +660,14 @@ class Reddit:
                     return sleep_seconds
         return None
 
-    def delete(
-        self,
-        path: str,
-        data: Optional[
-            Union[Dict[str, Union[str, Any]], bytes, IO, str]
-        ] = None,
-        json=None,
-    ) -> Any:
-        """Return parsed objects returned from a DELETE request to ``path``.
-
-        :param path: The path to fetch.
-        :param data: Dictionary, bytes, or file-like object to send in the body
-            of the request (default: None).
-        :param json: JSON-serializable object to send in the body
-            of the request with a Content-Type header of application/json
-            (default: None). If ``json`` is provided, ``data`` should not be.
-
-        """
-        return self._objectify_request(
-            data=data, json=json, method="DELETE", path=path
-        )
-
     def patch(
         self,
         path: str,
         data: Optional[
             Union[Dict[str, Union[str, Any]], bytes, IO, str]
         ] = None,
-        json=None,
-    ) -> Any:
+        json: Optional[Dict[str, Any]] = None,
+    ) -> Optional[Union[Dict[str, Any], RedditBase]]:
         """Return parsed objects returned from a PATCH request to ``path``.
 
         :param path: The path to fetch.
@@ -648,6 +676,9 @@ class Reddit:
         :param json: JSON-serializable object to send in the body
             of the request with a Content-Type header of application/json
             (default: None). If ``json`` is provided, ``data`` should not be.
+        :raises: :class:`.RedditAPIException` if the returned data contained
+            aby errors.
+        :returns: The response passed through the :class:`.Objector`.
 
         """
         return self._objectify_request(
@@ -662,8 +693,8 @@ class Reddit:
         ] = None,
         files: Optional[Dict[str, IO]] = None,
         params: Optional[Union[str, Dict[str, str]]] = None,
-        json=None,
-    ) -> Any:
+        json: Optional[Dict[str, Any]] = None,
+    ) -> Optional[Union[Dict[str, Any], RedditBase]]:
         """Return parsed objects returned from a POST request to ``path``.
 
         :param path: The path to fetch.
@@ -676,6 +707,9 @@ class Reddit:
         :param json: JSON-serializable object to send in the body
             of the request with a Content-Type header of application/json
             (default: None). If ``json`` is provided, ``data`` should not be.
+        :raises: :class:`.RedditAPIException` if the returned data contained
+            aby errors.
+        :returns: The response passed through the :class:`.Objector`.
 
         """
         if json is None:
@@ -713,8 +747,8 @@ class Reddit:
         data: Optional[
             Union[Dict[str, Union[str, Any]], bytes, IO, str]
         ] = None,
-        json=None,
-    ):
+        json: Optional[Dict[str, Any]] = None,
+    ) -> Optional[Union[Dict[str, Any], RedditBase]]:
         """Return parsed objects returned from a PUT request to ``path``.
 
         :param path: The path to fetch.
@@ -723,17 +757,21 @@ class Reddit:
         :param json: JSON-serializable object to send in the body
             of the request with a Content-Type header of application/json
             (default: None). If ``json`` is provided, ``data`` should not be.
+        :raises: :class:`.RedditAPIException` if the returned data contained
+            aby errors.
+        :returns: The response passed through the :class:`.Objector`.
 
         """
         return self._objectify_request(
             data=data, json=json, method="PUT", path=path
         )
 
-    def random_subreddit(self, nsfw: bool = False) -> Subreddit:
+    def random_subreddit(self, nsfw: bool = False) -> models.Subreddit:
         """Return a random lazy instance of :class:`~.Subreddit`.
 
         :param nsfw: Return a random NSFW (not safe for work) subreddit
             (default: False).
+        :returns: An instance of :class:`.Subreddit`.
 
         """
         url = API_PATH["subreddit"].format(
@@ -748,13 +786,17 @@ class Reddit:
 
     def redditor(
         self, name: Optional[str] = None, fullname: Optional[str] = None
-    ) -> Redditor:
+    ) -> models.Redditor:
         """Return a lazy instance of :class:`~.Redditor`.
 
         :param name: The name of the redditor.
         :param fullname: The fullname of the redditor, starting with ``t2_``.
 
         Either ``name`` or ``fullname`` can be provided, but not both.
+
+        :raises: :py:class:`TypeError` if either both or no arguments are
+            provided.
+        :returns: A lazy instance of :class:`.Redditor`.
 
         """
         return models.Redditor(self, name=name, fullname=fullname)
@@ -768,9 +810,9 @@ class Reddit:
             Union[Dict[str, Union[str, Any]], bytes, IO, str]
         ] = None,
         files: Optional[Dict[str, IO]] = None,
-        json=None,
-    ) -> Any:
-        """Return the parsed JSON data returned from a request to URL.
+        json: Optional[Dict[str, Any]] = None,
+    ) -> Optional[Union[Dict[str, Any], Any]]:
+        """Return the JSON data returned from a request to URL.
 
         :param method: The HTTP method (e.g., GET, POST, PUT, DELETE).
         :param path: The path to fetch.
@@ -783,6 +825,9 @@ class Reddit:
         :param json: JSON-serializable object to send in the body
             of the request with a Content-Type header of application/json
             (default: None). If ``json`` is provided, ``data`` should not be.
+        :raises: :class:`.RedditAPIException` if the returned data contained a
+            ``BadRequest``.
+        :returns: The response data.
 
         """
         if data and json:
@@ -822,12 +867,15 @@ class Reddit:
 
     def submission(  # pylint: disable=invalid-name,redefined-builtin
         self, id: Optional[str] = None, url: Optional[str] = None
-    ) -> Submission:
+    ) -> models.Submission:
         """Return a lazy instance of :class:`~.Submission`.
 
         :param id: A Reddit base36 submission ID, e.g., ``2gmzqe``.
         :param url: A URL supported by
             :meth:`~praw.models.Submission.id_from_url`.`.
+        :raises: :py:class:`TypeError` if either both or no arguments are
+            provided.
+        :returns: A lazy instance of :class:`.Submission`.
 
         Either ``id`` or ``url`` can be provided, but not both.
 
