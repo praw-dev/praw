@@ -101,6 +101,7 @@ instances of them bound to an attribute of one of the PRAW models.
    other/menulink
    other/modmail
    other/modmailmessage
+   other/objector
    other/preferences
    other/poll
    other/redditbase

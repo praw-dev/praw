@@ -286,9 +286,9 @@ class Reddit:
         .. code-block:: python
 
            reddit.live.create("title", "description")
-           
+
         To fetch an existing live thread:
-        
+
         .. code-block:: python
 
             thread = reddit.live("ukaeu1ik4sw5")

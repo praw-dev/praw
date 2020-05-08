@@ -23,8 +23,8 @@ class Objector:
         :param data: The dict to be converted.
         :returns: An instance of :class:`~.RedditAPIException`, or ``None`` if
             ``data`` doesn't fit this model.
-        :raises: An instance of :class:`.ClientException if there are no errors
-            present in the data.
+        :raises: An instance of :class:`.ClientException` if there are no
+            errors present in the data.
 
         """
         if isinstance(data, list):
