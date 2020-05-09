@@ -21,6 +21,22 @@ class TestRemovalReason(IntegrationTest):
             assert reason.title.startswith("Be Kind")
 
     @mock.patch("time.sleep", return_value=None)
+    def test__fetch_int(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestRemovalReason.test__fetch"):
+            reason = self.subreddit.mod.removal_reasons[0]
+            assert isinstance(reason, RemovalReason)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test__fetch_slice(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestRemovalReason.test__fetch"):
+            reasons = self.subreddit.mod.removal_reasons[-3:]
+            assert len(reasons) == 3
+            for reason in reasons:
+                assert isinstance(reason, RemovalReason)
+
+    @mock.patch("time.sleep", return_value=None)
     def test__fetch__invalid_reason(self, _):
         self.reddit.read_only = False
         reason = self.subreddit.mod.removal_reasons["invalid"]
@@ -30,7 +46,7 @@ class TestRemovalReason(IntegrationTest):
             with pytest.raises(ClientException) as excinfo:
                 reason.title
             assert str(excinfo.value) == (
-                "r/{} does not have the removal reason {}".format(
+                "Subreddit {} does not have the removal reason {}".format(
                     self.subreddit, "invalid"
                 )
             )
@@ -43,6 +59,15 @@ class TestRemovalReason(IntegrationTest):
         ):
             reason = self.subreddit.mod.removal_reasons["110nhk2cgmaxy"]
             reason.update(message="New Message", title="New Title")
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_empty(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditRemovalReasons.test_update_empty"
+        ):
+            reason = self.subreddit.mod.removal_reasons[0]
+            reason.update()
 
     @mock.patch("time.sleep", return_value=None)
     def test_delete(self, _):
