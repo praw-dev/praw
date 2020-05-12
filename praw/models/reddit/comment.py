@@ -205,9 +205,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         if not data["children"]:
             raise ClientException(
-                "No data returned for comment {}".format(
-                    self.__class__.__name__, self.fullname
-                )
+                "No data returned for comment {}".format(self.fullname)
             )
 
         comment_data = data["children"][0]["data"]
