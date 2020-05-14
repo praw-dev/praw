@@ -44,14 +44,14 @@ user defined ``praw.ini`` files in a few other locations:
       
       .. code-block:: powershell
       
-         Write-Output "$env:<variable>"
+         $Env:<variable>
          
       You can also view environment variables in Python:
       
       .. code-block:: python
       
          import os
-         print(os.environ.get("<variable>", ""))
+         print(os.getenv("<variable>", ""))
 
 Format of praw.ini
 ------------------
