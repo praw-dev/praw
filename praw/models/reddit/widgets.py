@@ -2,7 +2,7 @@
 
 import os.path
 from json import JSONEncoder, dumps
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
@@ -13,11 +13,27 @@ from ..list.base import BaseList
 class WidgetBase(PRAWBase):
     """A PRAWBase that converts string RGB values into integers."""
 
+    @staticmethod
+    def _convert_rgb_string_to_int(string: str) -> Union[str, int]:
+        """Convert a string RGB hex (#XXXXXX) to the integer representation.
+        
+        If the string is not an RGB code, returns the original string.
+
+        :param string: The string to convert
+        :returns: The converted value
+        """
+        if string.startswith("#") and len(string) == 7:
+            return int(string[1:], 16)
+        return string
+
+    def __repr__(self) -> str:
+        """Return a string representation of the Widget."""
+        return "<{} widget>".format(self.__class__.__name__)
+
     def __setattr__(self, name: str, value: Union[str, Any]):
         """Convert RGB values (#XXXXXX) to int."""
         if isinstance(value, str):
-            if value.startswith("#") and len(value) == 7:
-                value = int(value[1:], 16)
+            value = self._convert_rgb_string_to_int()
         super().__setattr__(name, value)
 
 
@@ -196,7 +212,7 @@ class Submenu(BaseList):
     CHILD_ATTRIBUTE = "children"
 
 
-class SubredditWidgets(WidgetBase):
+class SubredditWidgets(PRAWBase):
     """Class to represent a subreddit's widgets.
 
     Create an instance like so:
@@ -414,7 +430,11 @@ class SubredditWidgetsModeration:
     def _convert_color_list_to_RGB(
         cls, data: List[Union[Dict[str, Union[int, Any]]]]
     ) -> List[Union[Dict[str, Union[str, Any]]]]:
-        """Iterate through a list, running dictionaries through the other method."""
+        """Iterate through a list, converting any lists and dicitonaries.
+
+        :param data: The data to convert
+        :returns: A list with the converted values
+        """
         converted = []
         for item in data:
             if isinstance(item, dict):
@@ -431,27 +451,24 @@ class SubredditWidgetsModeration:
     ) -> Dict[str, Union[str, Any]]:
         """Iterate through a dictionary, converting color keys to RGB strings.
 
+        :param data: The data to convert
+        :returns: A dictionary with the converted values
+
         For example, given the dict below:
 
         .. code-block:: python
 
-            data = {"buttons": [{"color": 16777215, # OxFFFFFF = 16777215
-                 "text": "Hello World!"},
-                {"color": 0, # Ox000000 = 0
-                 "url": "https://www.google.com"}],
-            "backgroundColor": 65280 # 0x00FF00 = 65280
-            }
+            data = {"buttons": [{"color": 16777215, "text": "Hello World!"},
+                    {"color": 0, "url": "https://www.google.com"}],
+                "backgroundColor": 65280}
 
         When run through the converter, results in:
 
         .. code-block:: python
 
-            data = {"buttons": [{"color": "#FFFFFF", # OxFFFFFF = 16777215
-                 "text": "Hello World!"},
-                {"color": , # Ox000000 = 0
-                 "url": "https://www.google.com"}],
-            "backgroundColor": 65280 # 0x00FF00 = 65280
-            }
+            data = {"buttons": [{"color": "#FFFFFF", "text": "Hello World!"},
+                    {"color": "#000000", "url": "https://www.google.com"}],
+                "backgroundColor": "#00FF00"}
 
         """
         converted = {}
@@ -603,6 +620,14 @@ class SubredditWidgetsModeration:
            new_widget = widget_moderation.add_button_widget(
                "Things to click", "Click some of these *cool* links!",
                buttons, styles)
+
+        An alternate method of providing a list of buttons is to generate and
+        provide instances of :class:`.Button`, :class:`.Hover`, and
+        :class:`.Style`.
+
+        .. code-block:: python
+
+
 
         """
         button_widget = {
@@ -966,6 +991,62 @@ class SubredditWidgetsModeration:
         }
         text_area.update(other_settings)
         return self._create_widget(text_area)
+
+    def generate_button(
+        self,
+        kind: str,
+        text: str,
+        url: str,
+        color: Optional[Union[str, int]] = None,
+        fillColor: Optional[Union[str, int]] = None,
+        height: Optional[int] = None,
+        hoverState: Optional[Union[Dict[str, Union[str, int]], Hover]] = None,
+        linkUrl: Optional[str] = None,
+        textColor: Optional[Union[str, int]] = None,
+        width: Optional[int] = None,
+    ) -> Button:
+        """Generate an instance of :class:`.Button`.
+
+        This object should be used with :meth:`.add_button_widget` to create
+        a button widget.
+
+        :param kind: The type of button (``image`` or ``text``)
+        :param text: The button text.
+        :param url: The url of the button. On image buttons, ``url`` should be
+            a link to the image obtained from :meth:`.upload_image`.
+        :param color: The color of the button. Should either be given as a
+            7-character RGB code (``"#FFFFFF"``) or the integer representation
+            (``0xFFFFFF``). Optional.
+        :param fillColor: The background color of the button. Should either be
+            given as a 7-character RGB code (``"#FFFFFF"``) or the integer
+            representation (``0xFFFFFF``). Optional.
+        :param height: The height of the image, if the button is an image
+            button.
+        :param hoverState: A dictionary or an instance of :class:`.Hover`
+            containing the hover data for the button. An instance of
+            :class:`.Hover` can be obtained from :meth:`.generate_hover`.
+            Optional.
+        :param linkUrl: If the button is an image button, represents the link
+            that the user will visit when the image is clicked on. Optional.
+        :param textColor: The color of the button text. Should either be given
+            as a 7-character RGB code (``"#FFFFFF"``) or the integer
+            representation (``0xFFFFFF``). Optional.
+        :param width: The width of the image, if the button is an image button.
+        :returns: An instance of :class:`.Button`.
+        """
+        data = {"kind": kind, "text": text, "url": url}
+        for name, value in {
+            "color": color,
+            "fillColor": fillColor,
+            "height": height,
+            "hoverState": hoverState,
+            "linkUrl": linkUrl,
+            "textColor": textColor,
+            "width": width,
+        }:
+            if value is not None:
+                data[name] = value
+        return Button(self._reddit, data)
 
     def reorder(self, new_order, section="sidebar"):
         """Reorder the widgets.
