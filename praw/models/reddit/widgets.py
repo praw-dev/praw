@@ -2,12 +2,15 @@
 
 import os.path
 from json import JSONEncoder, dumps
-from typing import Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
 from ..base import PRAWBase
 from ..list.base import BaseList
+
+if TYPE_CHECKING:  # pragma: no cover
+    from ... import Reddit
 
 
 class WidgetBase(PRAWBase):
@@ -32,8 +35,8 @@ class WidgetBase(PRAWBase):
 
     def __setattr__(self, name: str, value: Union[str, Any]):
         """Convert RGB values (#XXXXXX) to int."""
-        if isinstance(value, str):
-            value = self._convert_rgb_string_to_int()
+        if isinstance(value, str) and self._reddit.config.widgets_beta:
+            value = self._convert_rgb_string_to_int(value)
         super().__setattr__(name, value)
 
 
@@ -69,6 +72,12 @@ class Button(WidgetBase):
     ``width``               Image width. Only present on image buttons.
     ======================= ===================================================
     """
+
+    @classmethod
+    def parse(cls, data: Dict[str, Any], reddit: "Reddit") -> "Button":
+        if "hoverState" in data and reddit.config.widgets_beta:
+            data["hoverState"] = Hover(reddit, data["hoverState"])
+        return cls(reddit, _data=data)
 
 
 class Hover(WidgetBase):
@@ -491,7 +500,12 @@ class SubredditWidgetsModeration:
     def _create_widget(self, payload):
         path = API_PATH["widget_create"].format(subreddit=self._subreddit)
         widget = self._reddit.post(
-            path, data={"json": dumps(payload, cls=WidgetEncoder)}
+            path,
+            data={
+                "json": dumps(
+                    self._convert_color_to_RGB(payload), cls=WidgetEncoder
+                )
+            },
         )
         widget.subreddit = self._subreddit
         return widget
@@ -728,9 +742,7 @@ class SubredditWidgetsModeration:
            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
            subreddits = ["learnpython", reddit.subreddit("redditdev")]
            new_widget = widget_moderation.add_community_list("My fav subs",
-                                                             subreddits,
-                                                             styles,
-                                                             "description")
+                subreddits, styles, "description")
 
         """
         community_list = {
@@ -1047,6 +1059,74 @@ class SubredditWidgetsModeration:
             if value is not None:
                 data[name] = value
         return Button(self._reddit, data)
+
+    def generate_hover(
+        self,
+        kind: str,
+        color: Optional[Union[str, int]] = None,
+        fillColor: Optional[Union[str, int]] = None,
+        height: Optional[int] = None,
+        text: Optional[str] = None,
+        textColor: Optional[Union[str, int]] = None,
+        url: Optional[str] = None,
+        width: Optional[int] = None,
+    ) -> Hover:
+        """Generate an instance of :class:`.Hover`.
+
+        .. note:: You can use hover states that do not correspond with the
+            given button type, such as an ``image`` hover state for a ``text``
+            button.
+
+        :param kind: The type of hover state (``image`` or ``text``)
+        :param text: The hover state text. Optional.
+        :param url: The link to an uploaded image obtained from
+            :meth:`.upload_image`. Can only be used on ``image`` hover states.
+        :param color: The color of the hover state. Should either be given as a
+            7-character RGB code (``"#FFFFFF"``) or the integer representation
+            (``0xFFFFFF``). Optional.
+        :param fillColor: The background color of the hover state. Should
+            either be given as a 7-character RGB code (``"#FFFFFF"``) or the
+            integer representation (``0xFFFFFF``). Optional.
+        :param height: The height of the image, if the hover state is an image
+            hover state.
+        :param textColor: The color of the hover state text. Should either be
+            given as a 7-character RGB code (``"#FFFFFF"``) or the integer
+            representation (``0xFFFFFF``). Optional.
+        :param width: The width of the image, if the hover state is an image
+            hover state.
+        :returns: An instance of :class:`.Hover`.
+        """
+        data = {"kind": kind}
+        for name, value in {
+            "color": color,
+            "fillColor": fillColor,
+            "height": height,
+            "text": text,
+            "textColor": textColor,
+            "url": url,
+            "width": width,
+        }:
+            if value is not None:
+                data[name] = value
+        return Hover(self._reddit, data)
+
+    def generate_styles(
+        self, backgroundColor: Union[str, int], headerColor: Union[str, int]
+    ) -> Style:
+        """Generate an instance of :class:`.Style`.
+
+        :param backgroundColor: The background color of a widget. Should either
+             be given as a 7-character RGB code (``"#FFFFFF"``) or the integer
+            representation (``0xFFFFFF``).
+        :param headerColor: The color of the widget header. Should either be
+            given as a 7-character RGB code (``"#FFFFFF"``) or the integer
+            representation (``0xFFFFFF``).
+        :returns: An instance of :class:`.Style`.
+        """
+        return Style(
+            self._reddit,
+            {"backgroundColor": backgroundColor, "headerColor": headerColor},
+        )
 
     def reorder(self, new_order, section="sidebar"):
         """Reorder the widgets.

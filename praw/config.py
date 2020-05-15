@@ -84,6 +84,7 @@ class Config:
         self.client_id = self.client_secret = self.oauth_url = None
         self.reddit_url = self.refresh_token = self.redirect_uri = None
         self.password = self.user_agent = self.username = None
+        self.ratelimit_seconds = self.timeout = self.widgets_beta = None
 
         self._initialize_attributes()
 
@@ -134,6 +135,7 @@ class Config:
             "password",
             "user_agent",
             "username",
+            "widgets_beta",
         ):
             setattr(self, attribute, self._fetch_or_not_set(attribute))
 
