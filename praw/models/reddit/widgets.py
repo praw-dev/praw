@@ -2,15 +2,12 @@
 
 import os.path
 from json import JSONEncoder, dumps
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
 from ..base import PRAWBase
 from ..list.base import BaseList
-
-if TYPE_CHECKING:  # pragma: no cover
-    from ... import Reddit
 
 
 class WidgetBase(PRAWBase):
@@ -33,10 +30,12 @@ class WidgetBase(PRAWBase):
         """Return a string representation of the Widget."""
         return "<{} widget>".format(self.__class__.__name__)
 
-    def __setattr__(self, name: str, value: Union[str, Any]):
-        """Convert RGB values (#XXXXXX) to int."""
+    def __setattr__(self, name: str, value: Union[str, Dict[str, str]]):
+        """Convert RGB values (#XXXXXX) to int and objectify styles."""
         if isinstance(value, str) and self._reddit.config.widgets_beta:
             value = self._convert_rgb_string_to_int(value)
+        if name == "styles" and self._reddit.config.widgets_beta:
+            value = Style(self._reddit, value)
         super().__setattr__(name, value)
 
 
@@ -73,11 +72,35 @@ class Button(WidgetBase):
     ======================= ===================================================
     """
 
-    @classmethod
-    def parse(cls, data: Dict[str, Any], reddit: "Reddit") -> "Button":
-        if "hoverState" in data and reddit.config.widgets_beta:
-            data["hoverState"] = Hover(reddit, data["hoverState"])
-        return cls(reddit, _data=data)
+    def __setattr__(self, name: str, value: Union[str, Dict[str, str]]):
+        """Objectify ``hoverState``."""
+        if name == "hoverState" and self._reddit.config.widgets_beta:
+            value = Hover(self._reddit, value)
+        super().__setattr__(name, value)
+
+
+class CalendarConfiguration(WidgetBase):
+    """Class to represent the configuration of a :class:`.CalendarWidget`.
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    necessarily complete.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``numEvents``           The numver of events to display on the calendar.
+    ``showDate``            Whether or not to show the dates of events.
+    ``showDescription``     Whether or not to show the descriptions of events.
+    ``showLocation``        Whether or not to show the locations of events.
+    ``showTime``            Whether or not to show the times of events.
+    ``showTitle``           Whether or not to show the titles of events.
+    ======================= ===================================================
+    """
 
 
 class Hover(WidgetBase):
@@ -511,7 +534,12 @@ class SubredditWidgetsModeration:
         return widget
 
     def add_button_widget(
-        self, short_name, description, buttons, styles, **other_settings
+        self,
+        short_name: str,
+        description: str,
+        buttons: List[Union[Button, Dict[str, Union[str, Dict[str, str]]]]],
+        styles: Union[Style, Dict[str, str]],
+        **other_settings: str
     ):
         r"""Add and return a :class:`.ButtonWidget`.
 
@@ -656,32 +684,33 @@ class SubredditWidgetsModeration:
 
     def add_calendar(
         self,
-        short_name,
-        google_calendar_id,
-        requires_sync,
-        configuration,
-        styles,
-        **other_settings
+        short_name: str,
+        google_calendar_id: str,
+        requires_sync: bool,
+        configuration: Union[
+            CalendarConfiguration, Dict[str, Union[int, bool]]
+        ],
+        styles: Union[Style, Dict[str, str]],
+        **other_settings: str
     ):
         """Add and return a :class:`.Calendar` widget.
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param google_calendar_id: An email-style calendar ID. To share a
-                                   Google Calendar, make it public,
-                                   then find the "Calendar ID."
-        :param requires_sync: A ``bool``.
+            Google Calendar, make it public, then find the "Calendar ID."
+        :param requires_sync: A ``bool`` representing whether or not the
+            calender needs to be synced.
         :param configuration: A ``dict`` as specified in `Reddit docs`_.
+            For example:
 
-                              For example:
+            .. code-block:: python
 
-                              .. code-block:: python
-
-                                 {"numEvents": 10,
-                                  "showDate": True,
-                                  "showDescription": False,
-                                  "showLocation": False,
-                                  "showTime": True,
-                                  "showTitle": True}
+             {"numEvents": 10,
+              "showDate": True,
+              "showDescription": False,
+              "showLocation": False,
+              "showTime": True,
+              "showTitle": True}
         :param styles: A ``dict`` with keys ``backgroundColor`` and
                        ``headerColor``, and values of hex colors. For example,
                        ``{"backgroundColor": "#FFFF66", "headerColor":
@@ -1400,10 +1429,18 @@ class Calendar(Widget):
     ``shortName``           The short name of the widget.
     ``styles``              A ``dict`` with the keys ``"backgroundColor"`` and
                             ``"headerColor"``.
-    ``subreddit``           The :class:`.Subreddit` the button widget belongs
+    ``subreddit``           The :class:`.Subreddit` the calendar widget belongs
                             to.
     ======================= ===================================================
     """
+
+    def __setattr__(
+        self, name: str, value: Union[str, Dict[str, Union[int, bool]]]
+    ):
+        """Objectify ``configuration``."""
+        if name == "configuration" and self._reddit.config.widgets_beta:
+            value = CalendarConfiguration(self._reddit, value)
+        super().__setattr__(name, value)
 
 
 class CommunityList(Widget, BaseList):
