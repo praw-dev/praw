@@ -32,16 +32,12 @@ class WidgetBase(PRAWBase):
             return int(string[1:], 16)
         return string
 
-    def __repr__(self) -> str:
-        """Return a string representation of the Widget."""
-        return "<{} widget>".format(self.__class__.__name__)
-
     def __setattr__(self, name: str, value: Union[str, Dict[str, str]]):
         """Convert RGB values (#XXXXXX) to int and objectify styles."""
         if isinstance(value, str) and self._reddit.config.widgets_beta:
             value = self._convert_rgb_string_to_int(value)
         if name == "styles" and self._reddit.config.widgets_beta:
-            value = Style(self._reddit, value)
+            value = Styles(self._reddit, value)
         super().__setattr__(name, value)
 
 
@@ -99,7 +95,7 @@ class CalendarConfiguration(WidgetBase):
     ======================= ===================================================
     Attribute               Description
     ======================= ===================================================
-    ``numEvents``           The numver of events to display on the calendar.
+    ``numEvents``           The number of events to display on the calendar.
     ``showDate``            Whether or not to show the dates of events.
     ``showDescription``     Whether or not to show the descriptions of events.
     ``showLocation``        Whether or not to show the locations of events.
@@ -203,7 +199,7 @@ class MenuLink(WidgetBase):
     """
 
 
-class Style(WidgetBase):
+class Styles(WidgetBase):
     """Class to represent the style information of a widget.
 
     **Typical Attributes**
@@ -218,9 +214,9 @@ class Style(WidgetBase):
     Attribute               Description
     ======================= ===================================================
     ``backgroundColor``     The background color of a widget, given as a
-                            hexadecimal
+                            hexadecimal (0x######)
     ``headerColor``         The header color of a widget, given as a
-                            hexadecimal
+                            hexadecimal (0x######)
 
     """
 
@@ -555,139 +551,43 @@ class SubredditWidgetsModeration:
         short_name: str,
         description: str,
         buttons: List[Union[Button, Dict[str, Union[str, Dict[str, str]]]]],
-        styles: Union[Style, Dict[str, str]],
+        styles: Union[Styles, Dict[str, str]],
         **other_settings: str
     ) -> "ButtonWidget":
         r"""Add and return a :class:`.ButtonWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param description: Markdown text to describe the widget.
-        :param buttons: A ``list`` of ``dict``\ s describing buttons, as
-            specified in `Reddit docs`_. As of this writing, the format is:
-
-            Each button is either a text button or an image button. A text
-            button looks like this:
-
-            .. code-block:: none
-
-               {
-                 "kind": "text",
-                 "text": a string no longer than 30 characters,
-                 "url": a valid URL,
-                 "color": a 6-digit rgb hex color, e.g. `#AABBCC`,
-                 "textColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
-                 "fillColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
-                 "hoverState": {...}
-               }
-
-            An image button looks like this:
-
-            .. code-block:: none
-
-               {
-                 "kind": "image",
-                 "text": a string no longer than 30 characters,
-                 "linkUrl": a valid URL,
-                 "url": a valid URL of a reddit-hosted image,
-                 "height": an integer,
-                 "width": an integer,
-                 "hoverState": {...}
-               }
-
-            Both types of buttons have the field ``hoverState``. The field does
-            not have to be included (it is optional). If it is included, it can
-            be one of two types: text or image. A text ``hoverState`` looks
-            like this:
-
-            .. code-block:: none
-
-               {
-                 "kind": "text",
-                 "text": a string no longer than 30 characters,
-                 "color": a 6-digit rgb hex color, e.g. `#AABBCC`,
-                 "textColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
-                 "fillColor": a 6-digit rgb hex color, e.g. `#AABBCC`
-               }
-
-            An image ``hoverState`` looks like this:
-
-            .. code-block:: none
-
-               {
-                 "kind": "image",
-                 "url": a valid URL of a reddit-hosted image,
-                 "height": an integer,
-                 "width": an integer
-               }
-
-
-            .. note::
-
-               The method :meth:`.upload_image` can be used to upload images to
-               Reddit for a ``url`` field that holds a Reddit-hosted image.
-
-            .. note::
-
-               An image ``hoverState`` may be paired with a text widget, and a
-               text ``hoverState`` may be paired with an image widget.
-
-        :param styles: A ``dict`` with keys ``backgroundColor`` and
-                       ``headerColor``, and values of hex colors. For example,
-                       ``{"backgroundColor": "#FFFF66", "headerColor":
-                       "#3333EE"}``.
-
-        .. _Reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+        :param buttons: A ``list`` of instances of :class:`.Button`, generated
+            with :meth:`.generate_button`.
+        :param styles: An instance of :class:`.Styles`, generated with
+            :meth:`.generate_styles`.
 
         Example usage:
 
         .. code-block:: python
 
-           widget_moderation = reddit.subreddit("mysub").widgets.mod
-           my_image = widget_moderation.upload_image("/path/to/pic.jpg")
-           buttons = [
-               {
-                   "kind": "text",
-                   "text": "View source",
-                   "url": 'https://github.com/praw-dev/praw',
-                   "color": "#FF0000",
-                   "textColor": "#00FF00",
-                   "fillColor": "#0000FF",
-                   "hoverState": {
-                       "kind": "text",
-                       "text": "ecruos weiV",
-                       "color": "#FFFFFF",
-                       "textColor": "#000000",
-                       "fillColor": "#0000FF"
-                   }
-               },
-               {
-                   "kind": "image",
-                   "text": "View documentation",
-                   "linkUrl": 'https://praw.readthedocs.io',
-                   "url": my_image,
-                   "height": 200,
-                   "width": 200,
-                   "hoverState": {
-                       "kind": "image",
-                       "url": my_image,
-                       "height": 200,
-                       "width": 200
-                   }
-               }
-           ]
-           styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-           new_widget = widget_moderation.add_button_widget(
-               "Things to click", "Click some of these *cool* links!",
-               buttons, styles)
-
-        An alternate method of providing a list of buttons is to generate and
-        provide instances of :class:`.Button`, :class:`.Hover`, and
-        :class:`.Style`.
-
-        .. code-block:: python
-
-
-
+            widget_moderation = reddit.subreddit("mysub").widgets.mod
+            my_image = widget_moderation.upload_image("/path/to/pic.jpg")
+            buttons = [
+                widget_moderation.generate_button("text", "View source",
+                    "https://github.com/praw-dev/praw", color=0xFF0000,
+                    textColor=0x00FF00, fillColor=0x0000FF,
+                    hover=widget_moderation.generate_hover("text",
+                        text="ecruos weiV", color=0xFFFFFF, textColor=0x000000,
+                        fillColor=0x0000FF)),
+                widget_moderation.generate_button("image",
+                    "View documentation", my_image,
+                    linkUrl="https://praw.readthedocs.io", height=200,
+                    width=200,
+                    hover=widget_moderation.generate_hover("image",
+                        url=my_image, height=200, width=200)
+                    )
+            ]
+            styles = widget_moderation.generate_styles(0xFFFF66, 0x3333EE)
+            new_widget = widget_moderation.add_button_widget(
+                "Things to click", "Click some of these *cool* links!",
+                buttons, styles)
         """
         button_widget = {
             "buttons": buttons,
@@ -707,7 +607,7 @@ class SubredditWidgetsModeration:
         configuration: Union[
             CalendarConfiguration, Dict[str, Union[int, bool]]
         ],
-        styles: Union[Style, Dict[str, str]],
+        styles: Union[Styles, Dict[str, str]],
         **other_settings: str
     ) -> "Calendar":
         """Add and return a :class:`.Calendar` widget.
@@ -766,7 +666,7 @@ class SubredditWidgetsModeration:
         self,
         short_name: str,
         data: List[Union[str, "Subreddit"]],
-        styles: Union[Style, Dict[str, str]],
+        styles: Union[Styles, Dict[str, str]],
         description: str = "",
         **other_settings: str
     ) -> "CommunityList":
@@ -808,7 +708,7 @@ class SubredditWidgetsModeration:
         css: str,
         height: int,
         image_data: List[Union[ImageData, Dict[str, Union[str, int]]]],
-        styles: Union[Style, Dict[str, str]],
+        styles: Union[Styles, Dict[str, str]],
         **other_settings: str
     ) -> "CustomWidget":
         r"""Add and return a :class:`.CustomWidget`.
@@ -878,7 +778,7 @@ class SubredditWidgetsModeration:
         self,
         short_name: str,
         data: Union[Image, Dict[str, str]],
-        styles: Union[Style, Dict[str, str]],
+        styles: Union[Styles, Dict[str, str]],
         **other_settings: str
     ) -> "ImageWidget":
         r"""Add and return an :class:`.ImageWidget`.
@@ -1000,7 +900,7 @@ class SubredditWidgetsModeration:
         short_name: str,
         display: str,
         order: List[str],
-        styles: Union[Style, Dict[str, str]],
+        styles: Union[Styles, Dict[str, str]],
         **other_settings: str
     ) -> "PostFlairWidget":
         """Add and return a :class:`.PostFlairWidget`.
@@ -1046,7 +946,7 @@ class SubredditWidgetsModeration:
         self,
         short_name: str,
         text: str,
-        styles: Union[Style, Dict[str, str]],
+        styles: Union[Styles, Dict[str, str]],
         **other_settings: str
     ) -> "TextArea":
         """Add and return a :class:`.TextArea` widget.
@@ -1096,7 +996,7 @@ class SubredditWidgetsModeration:
         This object should be used with :meth:`.add_button_widget` to create
         a button widget.
 
-        :param kind: The type of button (``image`` or ``text``)
+        :param kind: The type of button (``"image"`` or ``"text"``)
         :param text: The button text.
         :param url: The url of the button. On image buttons, ``url`` should be
             a link to the image obtained from :meth:`.upload_image`.
@@ -1119,6 +1019,56 @@ class SubredditWidgetsModeration:
             representation (``0xFFFFFF``). Optional.
         :param width: The width of the image, if the button is an image button.
         :returns: An instance of :class:`.Button`.
+
+        For example, to generate a text button:
+
+        .. code-block:: python
+
+            widget_mod = reddit.subreddit("test").widgets.mod
+            hover = widget_mod.generate_hover("text", color=0xFF0000,
+                fillColor=0x000000, text="Don't click me", textColor=0xFFFFFF,
+                url="https://www.reddit.com")
+            button = widget_mod.generate_button("text", "Click me!",
+                "https://www.google.com", color=0x00FF00, fillColor=0xFFFFFF,
+                hover=hover, textColor=0x000000)
+
+        To generate an image button:
+
+        .. code-block:: python
+
+            widget_mod = reddit.subreddit("test").widgets.mod
+            image_1 = widget_mod.upload_image("image.png")
+            image_2 = widget_mod.upload_image("image2.png")
+            hover = widget_mod.generate_hover("image",
+                linkUrl = "https://www.reddit.com", height=400
+                text="Don't click me", url=image_2, width=200)
+            button = widget_mod.generate_button("image", "Click me!", image_1,
+                height = 200, hover=hover, linkUrl = "https://www.google.com",
+                width=200)
+
+        The hover states do not have to correspond to the given button types.
+
+        .. code-block:: python
+
+            widget_mod = reddit.subreddit("test").widgets.mod
+            image_1 = widget_mod.upload_image("image.png")
+            hover = widget_mod.generate_hover("text", color=0xFF0000,
+                fillColor=0x000000, text="Don't click me", textColor=0xFFFFFF,
+                url="https://www.reddit.com")
+            button = widget_mod.generate_button("image", "Click me!", image_1,
+                height = 200, hover=hover, linkUrl = "https://www.google.com",
+                width=200)
+
+        .. code-block:: python
+
+            widget_mod = reddit.subreddit("test").widgets.mod
+            image = widget_mod.upload_image("image.png")
+            hover = widget_mod.generate_hover("image",
+                linkUrl = "https://www.reddit.com", height=400
+                text="Don't click me", url=image, width=200)
+            button = widget_mod.generate_button("text", "Click me!",
+                "https://www.google.com", color=0x00FF00, fillColor=0xFFFFFF,
+                hover=hover, textColor=0x000000)
         """
         data = {"kind": kind, "text": text, "url": url}
         for name, value in {
@@ -1270,8 +1220,8 @@ class SubredditWidgetsModeration:
 
     def generate_styles(
         self, backgroundColor: Union[str, int], headerColor: Union[str, int]
-    ) -> Style:
-        """Generate an instance of :class:`.Style`.
+    ) -> Styles:
+        """Generate an instance of :class:`.Styles`.
 
         :param backgroundColor: The background color of a widget. Should either
              be given as a 7-character RGB code (``"#FFFFFF"``) or the integer
@@ -1279,9 +1229,9 @@ class SubredditWidgetsModeration:
         :param headerColor: The color of the widget header. Should either be
             given as a 7-character RGB code (``"#FFFFFF"``) or the integer
             representation (``0xFFFFFF``).
-        :returns: An instance of :class:`.Style`.
+        :returns: An instance of :class:`.Styles`.
         """
-        return Style(
+        return Styles(
             self._reddit,
             {"backgroundColor": backgroundColor, "headerColor": headerColor},
         )
@@ -1394,6 +1344,10 @@ class Widget(WidgetBase):
         if isinstance(other, Widget):
             return self.id.lower() == other.id.lower()
         return str(other).lower() == self.id.lower()
+
+    def __repr__(self) -> str:
+        """Return a string representation of the Widget."""
+        return "<{} widget>".format(self.__class__.__name__)
 
     # pylint: disable=invalid-name
     def __init__(self, reddit: "Reddit", _data: Optional[Dict[str, Any]]):
