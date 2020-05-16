@@ -2,7 +2,7 @@
 
 import os.path
 from json import JSONEncoder, dumps
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, TypeVar, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
@@ -11,6 +11,9 @@ from ..list.base import BaseList
 
 if TYPE_CHECKING:
     from .subreddit import Subreddit
+    from ... import Reddit
+
+_T = TypeVar("_T")
 
 
 class WidgetBase(PRAWBase):
@@ -518,7 +521,7 @@ class SubredditWidgetsModeration:
                 converted[key] = value
         return converted
 
-    def __init__(self, subreddit, reddit):
+    def __init__(self, subreddit: "Subreddit", reddit: "Reddit"):
         """Initialize the class."""
         self._subreddit = subreddit
         self._reddit = reddit
@@ -1374,8 +1377,8 @@ class SubredditWidgetsModeration:
 class Widget(WidgetBase):
     """Base class to represent a Widget."""
 
-    @property
-    def mod(self):
+    @cachedproperty
+    def mod(self) -> "WidgetModeration":
         """Get an instance of :class:`.WidgetModeration` for this widget.
 
         .. note::
@@ -1384,23 +1387,24 @@ class Widget(WidgetBase):
            widget belongs to. To remedy this, call
            :meth:`~.SubredditWidgets.refresh`.
         """
-        if self._mod is None:
-            self._mod = WidgetModeration(self, self.subreddit, self._reddit)
-        return self._mod
+        return WidgetModeration(self, self.subreddit, self._reddit)
 
-    def __eq__(self, other):
+    def __eq__(self: _T, other: _T) -> bool:
         """Check equality against another object."""
         if isinstance(other, Widget):
             return self.id.lower() == other.id.lower()
         return str(other).lower() == self.id.lower()
 
     # pylint: disable=invalid-name
-    def __init__(self, reddit, _data):
+    def __init__(self, reddit: "Reddit", _data: Optional[Dict[str, Any]]):
         """Initialize an instance of the class."""
         self.subreddit = ""  # in case it isn't in _data
         self.id = ""  # in case it isn't in _data
         super().__init__(reddit, _data=_data)
-        self._mod = None
+        # Deal with cases where subclass's CHILD_ATTRIBUTE values are missing
+        if hasattr(self, "CHILD_ATTRIBUTE"):
+            if getattr(self, self.CHILD_ATTRIBUTE, None) is None:
+                setattr(self, self.CHILD_ATTRIBUTE, [])
 
 
 class ButtonWidget(Widget, BaseList):
@@ -1723,12 +1727,15 @@ class CustomWidget(Widget):
     ======================= ===================================================
     """
 
-    def __init__(self, reddit, _data):
-        """Initialize the class."""
-        _data["imageData"] = [
-            ImageData(reddit, data) for data in _data.pop("imageData")
-        ]
-        super().__init__(reddit, _data=_data)
+    def __setattr__(
+        self,
+        name: str,
+        value: Union[str, Dict[str, Union[str, Dict[str, Union[str, int]]]]],
+    ):
+        """Objectify ``imageData``."""
+        if name == "imageData":
+            value = [ImageData(self._reddit, item) for item in value]
+        super().__setattr__(name, value)
 
 
 class IDCard(Widget):
@@ -1968,13 +1975,6 @@ class ModeratorsWidget(Widget, BaseList):
 
     CHILD_ATTRIBUTE = "mods"
 
-    def __init__(self, reddit, _data):
-        """Initialize the moderators widget."""
-        if self.CHILD_ATTRIBUTE not in _data:
-            # .mod.update() sometimes returns payload without "mods" field
-            _data[self.CHILD_ATTRIBUTE] = []
-        super().__init__(reddit, _data=_data)
-
 
 class PostFlairWidget(Widget, BaseList):
     r"""Class to represent a post flair widget.
@@ -2103,13 +2103,6 @@ class RulesWidget(Widget, BaseList):
 
     CHILD_ATTRIBUTE = "data"
 
-    def __init__(self, reddit, _data):
-        """Initialize the rules widget."""
-        if self.CHILD_ATTRIBUTE not in _data:
-            # .mod.update() sometimes returns payload without "data" field
-            _data[self.CHILD_ATTRIBUTE] = []
-        super().__init__(reddit, _data=_data)
-
 
 class TextArea(Widget):
     """Class to represent a text area widget.
@@ -2179,7 +2172,9 @@ class TextArea(Widget):
 class WidgetEncoder(JSONEncoder):
     """Class to encode widget-related objects."""
 
-    def default(self, o):  # pylint: disable=E0202
+    def default(
+        self, o: Union["Subreddit", PRAWBase, Any]
+    ) -> Union[str, Dict[str, Any]]:  # pylint: disable=E0202
         """Serialize ``PRAWBase`` objects."""
         if isinstance(o, self._subreddit_class):
             return str(o)
