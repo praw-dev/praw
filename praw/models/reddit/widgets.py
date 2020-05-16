@@ -711,10 +711,9 @@ class SubredditWidgetsModeration:
               "showLocation": False,
               "showTime": True,
               "showTitle": True}
-        :param styles: A ``dict`` with keys ``backgroundColor`` and
-                       ``headerColor``, and values of hex colors. For example,
-                       ``{"backgroundColor": "#FFFF66", "headerColor":
-                       "#3333EE"}``.
+        :param styles: A ``dict`` with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
 
         .. _Reddit docs: https://www.reddit.com/dev/api#POST_api_widget
 
@@ -1088,6 +1087,40 @@ class SubredditWidgetsModeration:
             if value is not None:
                 data[name] = value
         return Button(self._reddit, data)
+
+    def generate_calendar_configuration(
+        self,
+        numEvents: int,
+        showDate: bool,
+        showDescription: bool,
+        showLocation: bool,
+        showTime: bool,
+        showTitle: bool,
+    ) -> CalendarConfiguration:
+        """Generate an instance of :class:`.CalendarConfiguration`.
+
+        This method should be used to generate an object for the
+        ``configuration`` parameter of :meth:`.add_calendar`.
+
+        :param numEvents: The number of events to show on the calendar.
+        :param showDate: Show the date of events.
+        :param showDescription: Show the description of events.
+        :param showLocation: Show the location of events.
+        :param showTime: Show the time of events.
+        :param showTitle: Show the title of events.
+        :returns: An instance of :class:`.CalendarConfiguation`
+        """
+        return CalendarConfiguration(
+            self._reddit,
+            {
+                "numEvents": numEvents,
+                "showDate": showDate,
+                "showDescription": showDescription,
+                "showLocation": showLocation,
+                "showTime": showTime,
+                "showTitle": showTitle,
+            },
+        )
 
     def generate_hover(
         self,
