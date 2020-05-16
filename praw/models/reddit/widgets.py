@@ -554,7 +554,7 @@ class SubredditWidgetsModeration:
         styles: Union[Styles, Dict[str, str]],
         **other_settings: str
     ) -> "ButtonWidget":
-        r"""Add and return a :class:`.ButtonWidget`.
+        """Add and return a :class:`.ButtonWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param description: Markdown text to describe the widget.
@@ -617,39 +617,22 @@ class SubredditWidgetsModeration:
             Google Calendar, make it public, then find the "Calendar ID."
         :param requires_sync: A ``bool`` representing whether or not the
             calender needs to be synced.
-        :param configuration: A ``dict`` as specified in `Reddit docs`_.
-            For example:
-
-            .. code-block:: python
-
-             {"numEvents": 10,
-              "showDate": True,
-              "showDescription": False,
-              "showLocation": False,
-              "showTime": True,
-              "showTitle": True}
-        :param styles: A ``dict`` with keys ``"backgroundColor"`` and
-            ``"headerColor"``, and values of hex colors. For example,
-            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
-
-        .. _Reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+        :param configuration: An instance of :class:`.CalendarConfiguration`.
+        :param styles: An instance of :class:`.Styles`, generated with
+            :meth:`.generate_styles`.
 
         Example usage:
 
         .. code-block:: python
 
-           widget_moderation = reddit.subreddit("mysub").widgets.mod
-           styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-           config = {"numEvents": 10,
-                     "showDate": True,
-                     "showDescription": False,
-                     "showLocation": False,
-                     "showTime": True,
-                     "showTitle": True}
-           cal_id = "y6nm89jy427drk8l71w75w9wjn@group.calendar.google.com"
-           new_widget = widget_moderation.add_calendar("Upcoming Events",
-                                                       cal_id, True,
-                                                       config, styles)
+            widget_moderation = reddit.subreddit("mysub").widgets.mod
+            styles = widget_moderation.generate_styles(0xFFFF66, 0x3333EE)
+            config = widget_moderation.generate_calendar_configuration(
+                numEvents=10, showDate=True, showDescription=False,
+                showLocation=False, showTime=True, showTitle=True)
+            cal_id = "y6nm89jy427drk8l71w75w9wjn@group.calendar.google.com"
+            new_widget = widget_moderation.add_calendar("Upcoming Events",
+                cal_id, True, config, styles)
         """
         calendar = {
             "shortName": short_name,
@@ -675,9 +658,8 @@ class SubredditWidgetsModeration:
         :param short_name: A name for the widget, no longer than 30 characters.
         :param data: A ``list`` of subreddits. Subreddits can be represented as
             strings or instances of :class:`.Subreddit`.
-        :param styles: A ``dict`` with keys ``backgroundColor`` and
-            ``headerColor``, and values of hex colors. For example,
-            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
+        :param styles: An instance of :class:`.Styles`, generated with
+            :meth:`.generate_styles`.
         :param description: A string containing Markdown (default: ``""``).
 
         Example usage:
@@ -685,10 +667,10 @@ class SubredditWidgetsModeration:
         .. code-block:: python
 
             widget_moderation = reddit.subreddit("mysub").widgets.mod
-            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
+            styles = widget_moderation.generate_styles(0xFFFF66, 0x3333EE)
             subreddits = ["learnpython", reddit.subreddit("redditdev")]
             new_widget = widget_moderation.add_community_list("My fav subs",
-            subreddits, styles, "description")
+                subreddits, styles, "description")
 
         """
         community_list = {
@@ -711,7 +693,7 @@ class SubredditWidgetsModeration:
         styles: Union[Styles, Dict[str, str]],
         **other_settings: str
     ) -> "CustomWidget":
-        r"""Add and return a :class:`.CustomWidget`.
+        """Add and return a :class:`.CustomWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param text: The Markdown text displayed in the widget.
@@ -722,44 +704,25 @@ class SubredditWidgetsModeration:
                 ``"/**/"`` (an empty comment) as your CSS.
 
         :param height: The height of the widget, between 50 and 500.
-        :param image_data: A ``list`` of ``dict``\ s as specified in
-            `Reddit docs`_. Each ``dict`` represents an image and has the
-            key ``"url"`` which maps to the URL of an image hosted on
-            Reddit's servers. Images should be uploaded using
-            :meth:`.upload_image`.
-
-            For example:
-
-            .. code-block:: python
-
-               [{"url": 'https://some.link',  # from upload_image()
-                 "width": 600, "height": 450,
-                 "name": "logo"},
-                {"url": 'https://other.link',  # from upload_image()
-                 "width": 450, "height": 600,
-                 "name": "icon"}]
-
-        :param styles: A ``dict`` with keys ``backgroundColor`` and
-            ``headerColor``, and values of hex colors. For example,
-            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
-
-        .. _Reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+        :param image_data: A ``list`` of instances of :class:`.ImageData`.
+        :param styles: An instance of :class:`.Styles`, generated with
+            :meth:`.generate_styles`.
 
         Example usage:
 
         .. code-block:: python
 
-             widget_moderation = reddit.subreddit("mysub").widgets.mod
-             image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
-             image_urls = [widget_moderation.upload_image(img_path)
-                           for img_path in image_paths]
-             image_dicts = [{"width": 600, "height": 450, "name": "logo",
-                           "url": image_urls[0]},
-                          {"width": 450, "height": 600, "name": "icon",
-                           "url": image_urls[1]}]
-             styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-             new_widget = widget_moderation.add_custom_widget("My widget",
-                "# Hello world!", "/**/", 200, image_dicts, styles)
+            widget_moderation = reddit.subreddit("mysub").widgets.mod
+            image_url1 = widget_moderation.upload_image("/path/to/image1.jpg")
+            image_url2 = widget_moderation.upload_image("/path/to/image2.jpg")
+            image1 = widget_moderation.generate_image_data(image_url1, 600,
+                450, "logo")
+            image2 = widget_moderation.generate_image_data(image_url2, 450,
+                600, "icon")
+            images = [image1, image2]
+            styles = widget_moderation.generate_styles(0xFFFF66, 0x3333EE)
+            new_widget = widget_moderation.add_custom_widget("My widget",
+                "# Hello world!", "/**/", 200, images, styles)
 
         """
         custom_widget = {
@@ -784,40 +747,22 @@ class SubredditWidgetsModeration:
         r"""Add and return an :class:`.ImageWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
-        :param data: A ``list`` of ``dict``\ s as specified in `Reddit docs`_.
-            Each ``dict`` has the key ``"url"`` which maps to the URL
-            of an image hosted on Reddit's servers. Images should
-            be uploaded using :meth:`.upload_image`.
-
-            For example:
-
-            .. code-block:: python
-
-               [{"url": 'https://some.link',  # from upload_image()
-                 "width": 600, "height": 450,
-                 "linkUrl": 'https://github.com/praw-dev/praw'},
-                {"url": 'https://other.link',  # from upload_image()
-                 "width": 450, "height": 600,
-                 "linkUrl": 'https://praw.readthedocs.io'}]
-
-        :param styles: A ``dict`` with keys ``backgroundColor`` and
-            ``headerColor``, and values of hex colors. For example,
-            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
-
-        .. _Reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+        :param data: A ``list`` of instances of :class:`.Image`.
+        :param styles: An instance of :class:`.Styles`, generated with
+            :meth:`.generate_styles`.
 
         Example usage:
 
         .. code-block:: python
 
-           widget_moderation = reddit.subreddit("mysub").widgets.mod
-           image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
-           image_dicts = [{"width": 600, "height": 450, "linkUrl": '',
-                           "url": widget_moderation.upload_image(img_path)}
-                          for img_path in image_paths]
-           styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-           new_widget = widget_moderation.add_image_widget("My cool pictures",
-                                                           image_dicts, styles)
+            widget_moderation = reddit.subreddit("mysub").widgets.mod
+            image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
+            images = [widget_moderation.generate_image(
+                widget_moderation.upload_image(img_path), 600, 450)
+                for img_path in image_paths]
+            styles = widget_moderation.generate_styles(0xFFFF66, 0x3333EE)
+            new_widget = widget_moderation.add_image_widget("My cool pictures",
+                images, styles)
 
         """
         image_widget = {
@@ -832,63 +777,42 @@ class SubredditWidgetsModeration:
     def add_menu(
         self,
         data: List[
-            Dict[
-                str,
-                Union[
-                    MenuLink,
-                    Dict[str, str],
-                    Submenu,
-                    List[Union[MenuLink, Dict[str, str]]],
-                ],
-            ]
+            MenuLink,
+            Dict[str, str],
+            Submenu,
+            List[Union[MenuLink, Dict[str, str]]],
         ],
         **other_settings: str
     ) -> "Menu":
         r"""Add and return a :class:`.Menu` widget.
 
-        :param data: A ``list`` of ``dict``\ s describing menu contents, as
-            specified in `Reddit docs`_. As of this writing, the format is:
-
-            .. code-block:: none
-
-               [
-                 {
-                   "text": a string no longer than 20 characters,
-                   "url": a valid URL
-                 },
-
-                 OR
-
-                 {
-                   "children": [
-                     {
-                        "text": a string no longer than 20 characters,
-                        "url": a valid URL,
-                     },
-                     ...
-                    ],
-                   "text": a string no longer than 20 characters,
-                 },
-                 ...
-               ]
-
-        .. _Reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+        :param data: A ``list`` of instances of :class:`.MenuLink` and/or
+            :class:`.Submenu`.
 
         Example usage:
 
         .. code-block:: python
 
-           widget_moderation = reddit.subreddit("mysub").widgets.mod
-           menu_contents = [
-               {"text": "My homepage", "url": 'https://example.com'},
-               {"text": "Python packages",
-                "children": [
-                    {"text": "PRAW", "url": 'https://praw.readthedocs.io/'},
-                    {"text": "requests", "url": 'http://python-requests.org'}
-                ]},
-               {"text": "Reddit homepage", "url": 'https://reddit.com'}
-           ]
-           new_widget = widget_moderation.add_menu(menu_contents)
+            widget_moderation = reddit.subreddit("mysub").widgets.mod
+            menu_contents = [
+                widget_moderation.generate_menu_link(
+                    "Reddit Homepage", "https://www.reddit.com"
+                ),
+                widget_moderation.generate_submenu(
+                    [
+                        widget_moderation.generate_menu_link(
+                            "PRAW", "https://praw.readthedocs.io/"
+                        ),
+                        widget_moderation.generate_menu_link(
+                            "requests", "https://requests.readthedocs.io/"
+                        ),
+                    ],
+                    "Python packages",
+                ),
+                widget_moderation.generate_menu_link(
+                    "Reddit Homepage", "https://www.reddit.com"
+                )]
+            new_widget = widget_moderation.add_menu(menu_contents)
 
         """
         menu = {"data": data, "kind": "menu"}
@@ -914,22 +838,18 @@ class SubredditWidgetsModeration:
 
                flairs = [f["id"] for f in subreddit.flair.link_templates]
 
-        :param styles: A ``dict`` with keys ``backgroundColor`` and
-                       ``headerColor``, and values of hex colors. For example,
-                       ``{"backgroundColor": "#FFFF66", "headerColor":
-                       "#3333EE"}``.
+        :param styles: An instance of :class:`.Styles`, generated with
+            :meth:`.generate_styles`.
 
         Example usage:
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit("mysub")
-           widget_moderation = subreddit.widgets.mod
-           flairs = [f["id"] for f in subreddit.flair.link_templates]
-           styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-           new_widget = widget_moderation.add_post_flair_widget("Some flairs",
-                                                                "list",
-                                                                flairs, styles)
+            widget_moderation = reddit.subreddit("mysub").widgets.mod
+            flairs = [f["id"] for f in subreddit.flair.link_templates]
+            styles = widget_moderation.generate_styles(0xFFFF66, 0x3333EE)
+            new_widget = widget_moderation.add_post_flair_widget("Some flairs",
+                "list", flairs, styles)
 
         """
         post_flair = {
@@ -953,20 +873,17 @@ class SubredditWidgetsModeration:
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param text: The Markdown text displayed in the widget.
-        :param styles: A ``dict`` with keys ``backgroundColor`` and
-                       ``headerColor``, and values of hex colors. For example,
-                       ``{"backgroundColor": "#FFFF66", "headerColor":
-                       "#3333EE"}``.
+        :param styles: An instance of :class:`.Styles`, generated with
+            :meth:`.generate_styles`.
 
         Example usage:
 
         .. code-block:: python
 
-           widget_moderation = reddit.subreddit("mysub").widgets.mod
-           styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-           new_widget = widget_moderation.add_text_area("My cool title",
-                                                        "*Hello* **world**!",
-                                                        styles)
+            widget_moderation = reddit.subreddit("mysub").widgets.mod
+            styles = widget_moderation.generate_styles(0xFFFF66, 0x3333EE)
+            new_widget = widget_moderation.add_text_area("My cool title",
+                "*Hello* **world**!", styles)
 
         """
         text_area = {
@@ -1105,6 +1022,15 @@ class SubredditWidgetsModeration:
         :param showTime: Show the time of events.
         :param showTitle: Show the title of events.
         :returns: An instance of :class:`.CalendarConfiguation`
+
+        Example usage:
+
+        .. code-block:: python
+
+            widget_moderation = reddit.subreddit("mysub").widgets.mod
+            config = widget_moderation.generate_calendar_configuration(
+                numEvents=10, showDate=True, showDescription=False,
+                showLocation=False, showTime=True, showTitle=True)
         """
         return CalendarConfiguration(
             self._reddit,
@@ -1169,7 +1095,7 @@ class SubredditWidgetsModeration:
         return Hover(self._reddit, data)
 
     def generate_image(
-        self, url: str, width: int, height: int, linkUrl: str
+        self, url: str, width: int, height: int, linkUrl: str = ""
     ) -> Image:
         """Generate an instance of :class:`.Image`.
 
@@ -1180,6 +1106,7 @@ class SubredditWidgetsModeration:
         :param width: The width of the image.
         :param height: The height of the image.
         :param linkUrl: The URL that clicking on the image will go to.
+            Optional.
         :returns: An instance of :class:`.Image`.
         """
         return Image(
@@ -1215,6 +1142,13 @@ class SubredditWidgetsModeration:
         :param text: The text of the menu link.
         :param url: The url that the menu link points to.
         :returns: An instance of :class:`.MenuLink`.
+
+        Example usage:
+
+        .. code-block:: python
+
+            menu_link = widget_moderation.generate_menu_link("Reddit Homepage",
+                "https://www.reddit.com")
         """
         return MenuLink(self._reddit, {"text": text, "url": url})
 
@@ -1244,6 +1178,22 @@ class SubredditWidgetsModeration:
         :param children: A list of instances of :class:`.MenuLink`.
         :param text: The text for the submenu.
         :returns: An instance of :class:`.Submenu`.
+
+        Example usage:
+
+        .. code-block:: python
+
+            submenu = widget_moderation.generate_submenu(
+                [
+                    widget_moderation.generate_menu_link(
+                        "PRAW", "https://praw.readthedocs.io/"
+                    ),
+                    widget_moderation.generate_menu_link(
+                        "requests", "https://requests.readthedocs.io/"
+                    ),
+                ],
+                "Python packages",
+            )
         """
         return Submenu(self._reddit, {"children": children, "text": text})
 
