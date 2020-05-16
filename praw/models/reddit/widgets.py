@@ -2,12 +2,15 @@
 
 import os.path
 from json import JSONEncoder, dumps
-from typing import Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
 from ..base import PRAWBase
 from ..list.base import BaseList
+
+if TYPE_CHECKING:
+    from .subreddit import Subreddit
 
 
 class WidgetBase(PRAWBase):
@@ -520,7 +523,18 @@ class SubredditWidgetsModeration:
         self._subreddit = subreddit
         self._reddit = reddit
 
-    def _create_widget(self, payload):
+    def _create_widget(
+        self, payload: Dict[str, Union[str, Any]]
+    ) -> Union[
+        "ButtonWidget",
+        "Calendar",
+        "CommunityList",
+        "CustomWidget",
+        "ImageWidget",
+        "Menu",
+        "PostFlairWidget",
+        "TextArea",
+    ]:
         path = API_PATH["widget_create"].format(subreddit=self._subreddit)
         widget = self._reddit.post(
             path,
@@ -540,7 +554,7 @@ class SubredditWidgetsModeration:
         buttons: List[Union[Button, Dict[str, Union[str, Dict[str, str]]]]],
         styles: Union[Style, Dict[str, str]],
         **other_settings: str
-    ):
+    ) -> "ButtonWidget":
         r"""Add and return a :class:`.ButtonWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
@@ -692,7 +706,7 @@ class SubredditWidgetsModeration:
         ],
         styles: Union[Style, Dict[str, str]],
         **other_settings: str
-    ):
+    ) -> "Calendar":
         """Add and return a :class:`.Calendar` widget.
 
         :param short_name: A name for the widget, no longer than 30 characters.
@@ -746,31 +760,32 @@ class SubredditWidgetsModeration:
         return self._create_widget(calendar)
 
     def add_community_list(
-        self, short_name, data, styles, description="", **other_settings
-    ):
+        self,
+        short_name: str,
+        data: List[Union[str, "Subreddit"]],
+        styles: Union[Style, Dict[str, str]],
+        description: str = "",
+        **other_settings: str
+    ) -> "CommunityList":
         """Add and return a :class:`.CommunityList` widget.
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param data: A ``list`` of subreddits. Subreddits can be represented as
-                     ``str`` (e.g. the string ``"redditdev"``) or as
-                     :class:`.Subreddit` (e.g.
-                     ``reddit.subreddit("redditdev")``). These types may be
-                     mixed within the list.
+            strings or instances of :class:`.Subreddit`.
         :param styles: A ``dict`` with keys ``backgroundColor`` and
-                       ``headerColor``, and values of hex colors. For example,
-                       ``{"backgroundColor": "#FFFF66", "headerColor":
-                       "#3333EE"}``.
-        :param description: A ``str`` containing Markdown (default: ``""``).
+            ``headerColor``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
+        :param description: A string containing Markdown (default: ``""``).
 
         Example usage:
 
         .. code-block:: python
 
-           widget_moderation = reddit.subreddit("mysub").widgets.mod
-           styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-           subreddits = ["learnpython", reddit.subreddit("redditdev")]
-           new_widget = widget_moderation.add_community_list("My fav subs",
-                subreddits, styles, "description")
+            widget_moderation = reddit.subreddit("mysub").widgets.mod
+            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
+            subreddits = ["learnpython", reddit.subreddit("redditdev")]
+            new_widget = widget_moderation.add_community_list("My fav subs",
+            subreddits, styles, "description")
 
         """
         community_list = {
@@ -785,23 +800,22 @@ class SubredditWidgetsModeration:
 
     def add_custom_widget(
         self,
-        short_name,
-        text,
-        css,
-        height,
-        image_data,
-        styles,
-        **other_settings
-    ):
+        short_name: str,
+        text: str,
+        css: str,
+        height: int,
+        image_data: List[Union[ImageData, Dict[str, Union[str, int]]]],
+        styles: Union[Style, Dict[str, str]],
+        **other_settings: str
+    ) -> "CustomWidget":
         r"""Add and return a :class:`.CustomWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param text: The Markdown text displayed in the widget.
         :param css: The CSS for the widget, no longer than 100000 characters.
 
-            .. note::
-                As of this writing, Reddit will not accept empty CSS. If you
-                wish to create a custom widget without CSS, consider using
+            .. note:: As of this writing, Reddit will not accept empty CSS. If
+                you wish to create a custom widget without CSS, consider using
                 ``"/**/"`` (an empty comment) as your CSS.
 
         :param height: The height of the widget, between 50 and 500.
@@ -832,19 +846,17 @@ class SubredditWidgetsModeration:
 
         .. code-block:: python
 
-           widget_moderation = reddit.subreddit("mysub").widgets.mod
-           image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
-           image_urls = [widget_moderation.upload_image(img_path)
-                         for img_path in image_paths]
-           image_dicts = [{"width": 600, "height": 450, "name": "logo",
+             widget_moderation = reddit.subreddit("mysub").widgets.mod
+             image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
+             image_urls = [widget_moderation.upload_image(img_path)
+                           for img_path in image_paths]
+             image_dicts = [{"width": 600, "height": 450, "name": "logo",
                            "url": image_urls[0]},
                           {"width": 450, "height": 600, "name": "icon",
                            "url": image_urls[1]}]
-           styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-           new_widget = widget_moderation.add_custom_widget("My widget",
-                                                           "# Hello world!",
-                                                           "/**/", 200,
-                                                           image_dicts, styles)
+             styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
+             new_widget = widget_moderation.add_custom_widget("My widget",
+                "# Hello world!", "/**/", 200, image_dicts, styles)
 
         """
         custom_widget = {
@@ -859,7 +871,13 @@ class SubredditWidgetsModeration:
         custom_widget.update(other_settings)
         return self._create_widget(custom_widget)
 
-    def add_image_widget(self, short_name, data, styles, **other_settings):
+    def add_image_widget(
+        self,
+        short_name: str,
+        data: Union[Image, Dict[str, str]],
+        styles: Union[Style, Dict[str, str]],
+        **other_settings: str
+    ) -> "ImageWidget":
         r"""Add and return an :class:`.ImageWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
@@ -908,7 +926,21 @@ class SubredditWidgetsModeration:
         image_widget.update(other_settings)
         return self._create_widget(image_widget)
 
-    def add_menu(self, data, **other_settings):
+    def add_menu(
+        self,
+        data: List[
+            Dict[
+                str,
+                Union[
+                    MenuLink,
+                    Dict[str, str],
+                    Submenu,
+                    List[Union[MenuLink, Dict[str, str]]],
+                ],
+            ]
+        ],
+        **other_settings: str
+    ) -> "Menu":
         r"""Add and return a :class:`.Menu` widget.
 
         :param data: A ``list`` of ``dict``\ s describing menu contents, as
@@ -961,8 +993,13 @@ class SubredditWidgetsModeration:
         return self._create_widget(menu)
 
     def add_post_flair_widget(
-        self, short_name, display, order, styles, **other_settings
-    ):
+        self,
+        short_name: str,
+        display: str,
+        order: List[str],
+        styles: Union[Style, Dict[str, str]],
+        **other_settings: str
+    ) -> "PostFlairWidget":
         """Add and return a :class:`.PostFlairWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
@@ -1002,7 +1039,13 @@ class SubredditWidgetsModeration:
         post_flair.update(other_settings)
         return self._create_widget(post_flair)
 
-    def add_text_area(self, short_name, text, styles, **other_settings):
+    def add_text_area(
+        self,
+        short_name: str,
+        text: str,
+        styles: Union[Style, Dict[str, str]],
+        **other_settings: str
+    ) -> "TextArea":
         """Add and return a :class:`.TextArea` widget.
 
         :param short_name: A name for the widget, no longer than 30 characters.
@@ -1172,6 +1215,56 @@ class SubredditWidgetsModeration:
                 data[name] = value
         return Hover(self._reddit, data)
 
+    def generate_image(
+        self, url: str, width: int, height: int, linkUrl: str
+    ) -> Image:
+        """Generate an instance of :class:`.Image`.
+
+        This method should be used along with :meth:`.add_image_widget`.
+
+        :param url: The url for the image, as returned from
+            :meth:`.upload_image`.
+        :param width: The width of the image.
+        :param height: The height of the image.
+        :param linkUrl: The URL that clicking on the image will go to.
+        :returns: An instance of :class:`.Image`.
+        """
+        return Image(
+            self._reddit,
+            {"url": url, "width": width, "height": height, "linkUrl": linkUrl},
+        )
+
+    def generate_image_data(
+        self, url: str, width: int, height: int, name: int
+    ) -> ImageData:
+        """Generate an instance of :class:`.ImageData`.
+
+        This method should be used along with :meth:`.add_custom_widget`.
+
+        :param url: The url for the image, as returned from
+            :meth:`.upload_image`.
+        :param width: The width of the image.
+        :param height: The height of the image.
+        :param name: The name of the image.
+        :returns: An instance of :class:`.ImageData`.
+        """
+        return ImageData(
+            self._reddit,
+            {"url": url, "width": width, "height": height, "name": name},
+        )
+
+    def generate_menu_link(self, text: str, url: str) -> MenuLink:
+        """Generate an instance of :class:`.MenuLink`.
+
+        This method should be used along with :meth:`.add_menu` and
+        :meth:`.generate_submenu`.
+
+        :param text: The text of the menu link.
+        :param url: The url that the menu link points to.
+        :returns: An instance of :class:`.MenuLink`.
+        """
+        return MenuLink(self._reddit, {"text": text, "url": url})
+
     def generate_styles(
         self, backgroundColor: Union[str, int], headerColor: Union[str, int]
     ) -> Style:
@@ -1190,7 +1283,20 @@ class SubredditWidgetsModeration:
             {"backgroundColor": backgroundColor, "headerColor": headerColor},
         )
 
-    def reorder(self, new_order, section="sidebar"):
+    def generate_submenu(
+        self, children: List[Union[MenuLink, Dict[str, str]]], text: str
+    ) -> Submenu:
+        """Generate an instance of :class:`.Submenu`.
+
+        :param children: A list of instances of :class:`.MenuLink`.
+        :param text: The text for the submenu.
+        :returns: An instance of :class:`.Submenu`.
+        """
+        return Submenu(self._reddit, {"children": children, "text": text})
+
+    def reorder(
+        self, new_order: List[Union[str, "Widget"]], section: str = "sidebar"
+    ):
         """Reorder the widgets.
 
         :param new_order: A list of widgets. Represented as a ``list`` that
@@ -1219,7 +1325,7 @@ class SubredditWidgetsModeration:
             path, data={"json": dumps(order), "section": section}
         )
 
-    def upload_image(self, file_path):
+    def upload_image(self, file_path: str) -> str:
         """Upload an image to Reddit and get the URL.
 
         :param file_path: The path to the local file.
