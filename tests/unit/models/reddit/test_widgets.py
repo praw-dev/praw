@@ -4,6 +4,7 @@ from pytest import raises
 
 from praw.models import (
     Button,
+    Styles,
     SubredditWidgets,
     SubredditWidgetsModeration,
     Widget,
@@ -13,6 +14,47 @@ from praw.models.base import PRAWBase
 from praw.models.reddit.widgets import WidgetEncoder
 
 from ... import UnitTest
+
+
+class TestStyles(UnitTest):
+    def test_convert_rgb_int_to_string(self):
+        assert (
+            Styles.convert_rgb_int_to_string(0xFFFFFF).lower()
+            == "#FFFFFF".lower()
+        )
+        assert (
+            Styles.convert_rgb_int_to_string(0xAABBCC).lower()
+            == "#AABBCC".lower()
+        )
+
+    def test_convert_rgb_int_to_string_invalid(self):
+        with raises(ValueError) as excinfo:
+            Styles.convert_rgb_int_to_string(-1)
+        assert (
+            excinfo.value.args[0]
+            == "The given integer (-1) is greater than 16777215 or less than "
+            "0."
+        )
+        with raises(ValueError) as excinfo:
+            Styles.convert_rgb_int_to_string(0xFFFFFF + 1)
+        assert (
+            excinfo.value.args[0]
+            == "The given integer (16777216) is greater than 16777215 or less"
+            " than 0."
+        )
+
+    def test_convert_rgb_string_to_int(self):
+        assert Styles.convert_rgb_string_to_int("#FFFFFF") == 0xFFFFFF
+        assert Styles.convert_rgb_string_to_int("#AABBCC") == 0xAABBCC
+
+    def test_convert_rgb_string_to_int_invalid(self):
+        with raises(ValueError) as excinfo:
+            Styles.convert_rgb_string_to_int("Test")
+        assert (
+            excinfo.value.args[0]
+            == "An hxadecimal string ``#XXXXXX`` was not specified, instead "
+            "'Test' was specified"
+        )
 
 
 class TestWidgetEncoder(UnitTest):

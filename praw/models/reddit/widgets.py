@@ -3,6 +3,7 @@
 import os.path
 from json import JSONEncoder, dumps
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, TypeVar, Union
+from warnings import warn
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
@@ -90,6 +91,17 @@ class Button(WidgetBase):
     ``width``               Image width. Only present on image buttons.
     ======================= ===================================================
     """
+
+    def __setattr__(self, name: str, value: Union[str, Dict[str, str]]):
+        """Objectify ``hoverState``."""
+        if hasattr(self, "_reddit"):
+            if (
+                name == "hoverState"
+                and isinstance(value, dict)
+                and self._reddit.config.widgets_beta
+            ):
+                value = Hover(self._reddit, value)
+        super().__setattr__(name, value)
 
 
 class CalendarConfiguration(WidgetBase):
@@ -225,11 +237,57 @@ class Styles(WidgetBase):
     Attribute               Description
     ======================= ===================================================
     ``backgroundColor``     The background color of a widget, given as a
-                            hexadecimal (0x######)
+                            hexadecimal (``0x######``).
     ``headerColor``         The header color of a widget, given as a
-                            hexadecimal (0x######)
+                            hexadecimal (``0x######``).
     ======================= ===================================================
+
+    **Working with Hexes**
+
+    All color values are converted to the integer representation, so the string
+    ``"#FFFFFF"`` is converted to ``0xFFFFFF``, which results in the integer
+    ``16777215``. :class:`.Styles` provides two methods,
+    :meth:`.convert_rgb_int_to_string` and :meth:`.convert_rgb_string_to_int`,
+    for converting between the integer and the string representations.
     """
+
+    @staticmethod
+    def convert_rgb_int_to_string(integer: int) -> str:
+        """Convert an integer representation of an RGB code to a string.
+        
+        :param integer: The integer to convert. Must be greater than or equal
+            to ``0`` and less than or equal to ``16777215`` (``0xFFFFFF``).
+        :raises: :py:class:`ValueError` if the integer is out of bounds.
+        :returns: The string version of the integer.
+        
+        .. seealso:: :meth:`.convert_rgb_string_to_int`
+        """
+        if not (0x000000 <= integer <= 0xFFFFFF):
+            raise ValueError(
+                "The given integer ({}) is greater than 16777215 or less than "
+                "0.".format(integer)
+            )
+        return "#{}".format(hex(integer)[2:])
+
+    @classmethod
+    def convert_rgb_string_to_int(cls, string: str) -> int:
+        """Convert the string representation of an RGB code to an integer.
+        
+        :param string: The string to convert to an integer.
+        :raises: :py:class:`.ValueError` if the string is not provided in the
+            appropriate format (``"#XXXXXX"`` where ``X`` represents a
+            character).
+        :returns: The integer representation of the string.
+        
+        .. seealso:: :meth:`.convert_rgb_int_to_string`
+        """
+        value = cls._convert_rgb_string_to_int(string)
+        if isinstance(value, str):
+            raise ValueError(
+                "An hxadecimal string ``#XXXXXX`` was not specified, instead "
+                "{!r} was specified".format(string)
+            )
+        return value
 
 
 class Submenu(BaseList):
@@ -459,9 +517,10 @@ class SubredditWidgetsModeration:
 
     .. code-block:: python
 
+       styles =
        styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
        reddit.subreddit("learnpython").widgets.mod.add_text_area(
-           "My title", "**bold text**", styles)
+           "My title", "**bold text**", )
 
     .. note::
 
@@ -495,7 +554,7 @@ class SubredditWidgetsModeration:
 
     @classmethod
     def _convert_color_to_RGB(
-        cls, data: Dict[str, Union[int, List[Any]]]
+        cls, data: Dict[str, Union[int, List[Any], Dict[str, Any], Any]]
     ) -> Dict[str, Union[str, Any]]:
         """Iterate through a dictionary, converting color keys to RGB strings.
 
@@ -526,7 +585,10 @@ class SubredditWidgetsModeration:
             elif isinstance(value, list):
                 converted[key] = cls._convert_color_list_to_RGB(value)
             elif "color" in key.lower() and isinstance(value, int):
-                converted[key] = "#{}".format(hex(value)[2:])
+                val = "#{}".format(hex(value)[2:])
+                while len(val) < 7:
+                    val = "#0" + val[1:]
+                converted[key] = val
             else:
                 converted[key] = value
         return converted
@@ -549,14 +611,10 @@ class SubredditWidgetsModeration:
         "TextArea",
     ]:
         path = API_PATH["widget_create"].format(subreddit=self._subreddit)
-        widget = self._reddit.post(
-            path,
-            data={
-                "json": dumps(
-                    self._convert_color_to_RGB(payload), cls=WidgetEncoder
-                )
-            },
+        data = self._convert_color_to_RGB(
+            {"json": dumps(payload, cls=WidgetEncoder)}
         )
+        widget = self._reddit.post(path, data=data,)
         widget.subreddit = self._subreddit
         return widget
 
@@ -564,8 +622,8 @@ class SubredditWidgetsModeration:
         self,
         short_name: str,
         description: str,
-        buttons: List[Union[Button, Dict[str, Union[str, Dict[str, str]]]]],
-        styles: Union[Styles, Dict[str, str]],
+        buttons: List[Button],
+        styles: Styles,
         **other_settings: str
     ) -> "ButtonWidget":
         """Add and return a :class:`.ButtonWidget`.
@@ -602,7 +660,144 @@ class SubredditWidgetsModeration:
             new_widget = widget_moderation.add_button_widget(
                 "Things to click", "Click some of these *cool* links!",
                 buttons, styles)
+
+        .. note:: Porting code is relatively simple. Dictionary keys can become
+            function keywords by putting ``**`` before the variable holding
+            the dictionary. For example, the list below:
+
+            .. code-block:: python
+
+                button_1 = {
+                    "kind": "text",
+                    "text": "View source",
+                    "url": 'https://github.com/praw-dev/praw',
+                    "color": "#FF0000",
+                    "textColor": "#00FF00",
+                    "fillColor": "#0000FF",
+                    "hoverState": {
+                        "kind": "text",
+                        "text": "ecruos weiV",
+                        "color": "#FFFFFF",
+                        "textColor": "#000000",
+                        "fillColor": "#0000FF"
+                    }
+                }
+                button_2 = {
+                    "kind": "image",
+                    "text": "View documentation",
+                    "linkUrl": 'https://praw.readthedocs.io',
+                    "url": my_image,
+                    "height": 200,
+                    "width": 200,
+                    "hoverState": {
+                        "kind": "image",
+                        "url": my_image,
+                        "height": 200,
+                        "width": 200
+                    }
+                }
+                buttons = [button_1, button_2]
+
+            For each button, it is possible to replace the ``hoverState`` key
+            with an instance of :class:`.Hover` using ``**``, like so:
+
+            .. code-block:: python
+
+                widget_mod = reddit.subreddit("test").widgets.mod
+                button_1 = {
+                    "kind": "text",
+                    "text": "View source",
+                    "url": 'https://github.com/praw-dev/praw',
+                    "color": "#FF0000",
+                    "textColor": "#00FF00",
+                    "fillColor": "#0000FF",
+                    "hoverState": widget_mod.generate_hover(**{
+                        "kind": "text",
+                        "text": "ecruos weiV",
+                        "color": "#FFFFFF",
+                        "textColor": "#000000",
+                        "fillColor": "#0000FF"
+                    })
+                }
+                button_2 = {
+                    "kind": "image",
+                    "text": "View documentation",
+                    "linkUrl": 'https://praw.readthedocs.io',
+                    "url": my_image,
+                    "height": 200,
+                    "width": 200,
+                    "hoverState": widget_mod.generate_hover(**{
+                        "kind": "image",
+                        "url": my_image,
+                        "height": 200,
+                        "width": 200
+                    })
+                }
+
+            Once all of the hover states have been converted, we can do the
+            same with the buttons themselves, like so:
+
+            .. code-block:: python
+
+                widget_mod = reddit.subreddit("test").widgets.mod
+                button_1 = {
+                    "kind": "text",
+                    "text": "View source",
+                    "url": 'https://github.com/praw-dev/praw',
+                    "color": "#FF0000",
+                    "textColor": "#00FF00",
+                    "fillColor": "#0000FF",
+                    "hoverState": widget_mod.generate_hover(**{
+                        "kind": "text",
+                        "text": "ecruos weiV",
+                        "color": "#FFFFFF",
+                        "textColor": "#000000",
+                        "fillColor": "#0000FF"
+                    })
+                }
+                button_2 = {
+                    "kind": "image",
+                    "text": "View documentation",
+                    "linkUrl": 'https://praw.readthedocs.io',
+                    "url": my_image,
+                    "height": 200,
+                    "width": 200,
+                    "hoverState": widget_mod.generate_hover(**{
+                        "kind": "image",
+                        "url": my_image,
+                        "height": 200,
+                        "width": 200
+                    })
+                }
+                buttons = [widget_mod.generate_button(**button_1),
+                    widget_mod.generate_button(**button_2)
+                ]
         """
+        for button in buttons:
+            if isinstance(button, dict):
+                warn(
+                    "Providing a list of dictionaries for the ``buttons`` "
+                    "parameter is deprecated. Please replace the dictionary "
+                    "with a call to widgets.mod.generate_button. See the "
+                    "documentation for the add_button_widget method at "
+                    "https://praw.readthedocs.io/en/latest/code_overview/other"
+                    "/subredditwidgetsmoderation.html#praw.models.SubredditWid"
+                    "getsModeration.add_button_widget on how to port code.",
+                    category=DeprecationWarning,
+                    stacklevel=2,
+                )
+        if isinstance(styles, dict):
+            warn(
+                "Providing a dictionary for the ``styles`` parameter is "
+                "deprecated. Please replace the dictionary with a call to "
+                "widgets.mod.generate_styles. See the documentation for the "
+                "generate_styles method at https://praw.readthedocs.io/en/"
+                "latest/code_overview/other/subredditwidgetsmoderation.html"
+                "#praw.models.SubredditWidgetsModeration.generate_styles on "
+                "how to port code.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
         button_widget = {
             "buttons": buttons,
             "description": description,
@@ -618,10 +813,8 @@ class SubredditWidgetsModeration:
         short_name: str,
         google_calendar_id: str,
         requires_sync: bool,
-        configuration: Union[
-            CalendarConfiguration, Dict[str, Union[int, bool]]
-        ],
-        styles: Union[Styles, Dict[str, str]],
+        configuration: CalendarConfiguration,
+        styles: Styles,
         **other_settings: str
     ) -> "Calendar":
         """Add and return a :class:`.Calendar` widget.
@@ -647,7 +840,59 @@ class SubredditWidgetsModeration:
             cal_id = "y6nm89jy427drk8l71w75w9wjn@group.calendar.google.com"
             new_widget = widget_moderation.add_calendar("Upcoming Events",
                 cal_id, True, config, styles)
+
+        .. note:: Porting code is relatively simple with the ``**`` dictionary
+            keyword argument. For example, given the dict below:
+
+            .. code-block:: python
+
+                config = {"numEvents": 10,
+                    "showDate": True,
+                    "showDescription": False,
+                    "showLocation": False,
+                    "showTime": True,
+                    "showTitle": True
+                }
+
+            Using the ``**`` parameter, the dict can be converted to an
+            instance of :class:`.CalendarConfiguration`, like so:
+
+            .. code-block:: python
+
+                widget_mod = reddit.subreddit("test").widgets.mod
+                config = widget_mod.generate_calendar_configuration(**{
+                    "numEvents": 10,
+                    "showDate": True,
+                    "showDescription": False,
+                    "showLocation": False,
+                    "showTime": True,
+                    "showTitle": True
+                })
         """
+        if isinstance(configuration, dict):
+            warn(
+                "Providing a dictionary for the ``configuration`` parameter is"
+                " deprecated. Please replace the dictionary with a call to "
+                "widgets.mod.generate_calendar_configuration. See the "
+                "documentation for the add_calendar method at https://praw."
+                "readthedocs.io/en/latest/code_overview/other/subredditwidget"
+                "smoderation.html#praw.models.SubredditWidgetsModeration.add"
+                "_calendar on how to port code.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
+        if isinstance(styles, dict):
+            warn(
+                "Providing a dictionary for the ``styles`` parameter is "
+                "deprecated. Please replace the dictionary with a call to "
+                "widgets.mod.generate_styles. See the documentation for the "
+                "generate_styles method at https://praw.readthedocs.io/en/"
+                "latest/code_overview/other/subredditwidgetsmoderation.html"
+                "#praw.models.SubredditWidgetsModeration.generate_styles on "
+                "how to port code.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
         calendar = {
             "shortName": short_name,
             "googleCalendarId": google_calendar_id,
@@ -663,7 +908,7 @@ class SubredditWidgetsModeration:
         self,
         short_name: str,
         data: List[Union[str, "Subreddit"]],
-        styles: Union[Styles, Dict[str, str]],
+        styles: Styles,
         description: str = "",
         **other_settings: str
     ) -> "CommunityList":
@@ -687,6 +932,18 @@ class SubredditWidgetsModeration:
                 subreddits, styles, "description")
 
         """
+        if isinstance(styles, dict):
+            warn(
+                "Providing a dictionary for the ``styles`` parameter is "
+                "deprecated. Please replace the dictionary with a call to "
+                "widgets.mod.generate_styles. See the documentation for the "
+                "generate_styles method at https://praw.readthedocs.io/en/"
+                "latest/code_overview/other/subredditwidgetsmoderation.html"
+                "#praw.models.SubredditWidgetsModeration.generate_styles on "
+                "how to port code.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
         community_list = {
             "data": data,
             "kind": "community-list",
@@ -703,8 +960,8 @@ class SubredditWidgetsModeration:
         text: str,
         css: str,
         height: int,
-        image_data: List[Union[ImageData, Dict[str, Union[str, int]]]],
-        styles: Union[Styles, Dict[str, str]],
+        image_data: List[ImageData],
+        styles: Styles,
         **other_settings: str
     ) -> "CustomWidget":
         """Add and return a :class:`.CustomWidget`.
@@ -738,7 +995,65 @@ class SubredditWidgetsModeration:
             new_widget = widget_moderation.add_custom_widget("My widget",
                 "# Hello world!", "/**/", 200, images, styles)
 
+        .. note:: Porting code is relatively simple with the ``**`` dictionary
+            keyword argument. For example, given the list of dicts below:
+
+            .. code-block:: python
+
+                image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
+                image_urls = [widget_moderation.upload_image(img_path)
+                    for img_path in image_paths]
+                image_dicts = [
+                    {"width": 600, "height": 450, "name": "logo",
+                    "url": image_urls[0]},
+                    {"width": 450, "height": 600, "name": "icon",
+                    "url": image_urls[1]}
+                ]
+
+            Using the ``**`` argument, the dictionaries can be converted to
+            instances of :class:`.ImageData`, like so:
+
+            .. code-block:: python
+
+                widget_mod = reddit.subreddit("test").widgets.mod
+                image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
+                image_urls = [widget_mod.upload_image(img_path)
+                    for img_path in image_paths]
+                image_dicts = [
+                    widget_mod.generate_image_data(**{
+                    "width": 600, "height": 450, "name": "logo",
+                    "url": image_urls[0]}),
+                    widget_mod.generate_image_data(**{
+                    "width": 450, "height": 600, "name": "icon",
+                    "url": image_urls[1]})
+                ]
         """
+        for item in image_data:
+            if isinstance(item, dict):
+                warn(
+                    "Providing a list of dictionaries for the ``image_data`` "
+                    "parameter is deprecated. Please replace the dictionaries "
+                    "with calls to widgets.mod.generate_image_data. See the "
+                    "documentation for the add_custom_widget method at "
+                    "https://praw.readthedocs.io/en/latest/code_overview"
+                    "/other/subredditwidgetsmoderation.html#praw.models"
+                    ".SubredditWidgetsModeration.add_custom_widget on how to "
+                    "port code.",
+                    category=DeprecationWarning,
+                    stacklevel=2,
+                )
+        if isinstance(styles, dict):
+            warn(
+                "Providing a dictionary for the ``styles`` parameter is "
+                "deprecated. Please replace the dictionary with a call to "
+                "widgets.mod.generate_styles. See the documentation for the "
+                "generate_styles method at https://praw.readthedocs.io/en/"
+                "latest/code_overview/other/subredditwidgetsmoderation.html"
+                "#praw.models.SubredditWidgetsModeration.generate_styles on "
+                "how to port code.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
         custom_widget = {
             "css": css,
             "height": height,
@@ -754,8 +1069,8 @@ class SubredditWidgetsModeration:
     def add_image_widget(
         self,
         short_name: str,
-        data: Union[Image, Dict[str, str]],
-        styles: Union[Styles, Dict[str, str]],
+        data: List[Image],
+        styles: Styles,
         **other_settings: str
     ) -> "ImageWidget":
         r"""Add and return an :class:`.ImageWidget`.
@@ -778,7 +1093,61 @@ class SubredditWidgetsModeration:
             new_widget = widget_moderation.add_image_widget("My cool pictures",
                 images, styles)
 
+        .. note:: Porting code is relatively simple with the ``**`` dictionary
+            keyword argument. For example, given the list of dicts below:
+            
+            .. code-block:: python
+
+                data = [{"url": 'https://some.link',  # from upload_image()
+                 "width": 600, "height": 450,
+                 "linkUrl": 'https://github.com/praw-dev/praw'},
+                {"url": 'https://other.link',  # from upload_image()
+                 "width": 450, "height": 600,
+                 "linkUrl": 'https://praw.readthedocs.io'}]
+
+            Using the ``**`` argument, the dictionaries can be converted to
+            instances of :class:`.Image`, like so:
+
+            .. code-block:: python
+
+                widget_mod = reddit.subreddit("test").widgets.mod
+                data = [
+                widget_mod.generate_image(**{
+                    "url": 'https://some.link',  # from upload_image()
+                    "width": 600, "height": 450,
+                    "linkUrl": 'https://github.com/praw-dev/praw'}),
+                widget_mod.generate_image(**{
+                    "url": 'https://other.link',  # from upload_image()
+                    "width": 450, "height": 600,
+                    "linkUrl": 'https://praw.readthedocs.io'})
+                ]
         """
+        for item in data:
+            if isinstance(item, dict):
+                warn(
+                    "Providing a list of dictionaries for the ``data`` "
+                    "parameter is deprecated. Please replace the dictionaries "
+                    "with calls to widgets.mod.generate_image. See the "
+                    "documentation for the add_image_widget method at "
+                    "https://praw.readthedocs.io/en/latest/code_overview"
+                    "/other/subredditwidgetsmoderation.html#praw.models"
+                    ".SubredditWidgetsModeration.add_image_widget on how to "
+                    "port code.",
+                    category=DeprecationWarning,
+                    stacklevel=2,
+                )
+        if isinstance(styles, dict):
+            warn(
+                "Providing a dictionary for the ``styles`` parameter is "
+                "deprecated. Please replace the dictionary with a call to "
+                "widgets.mod.generate_styles. See the documentation for the "
+                "generate_styles method at https://praw.readthedocs.io/en/"
+                "latest/code_overview/other/subredditwidgetsmoderation.html"
+                "#praw.models.SubredditWidgetsModeration.generate_styles on "
+                "how to port code.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
         image_widget = {
             "data": data,
             "kind": "image",
@@ -789,16 +1158,7 @@ class SubredditWidgetsModeration:
         return self._create_widget(image_widget)
 
     def add_menu(
-        self,
-        data: List[
-            Union[
-                MenuLink,
-                Dict[str, str],
-                Submenu,
-                List[Union[MenuLink, Dict[str, str]]],
-            ]
-        ],
-        **other_settings: str
+        self, data: List[Union[MenuLink, Submenu]], **other_settings: str
     ) -> "Menu":
         r"""Add and return a :class:`.Menu` widget.
 
@@ -830,7 +1190,63 @@ class SubredditWidgetsModeration:
                 )]
             new_widget = widget_moderation.add_menu(menu_contents)
 
+        .. note:: Porting code is relatively simple with the ``**`` dictionary
+            keyword argument. For example, given the list of dicts below:
+
+            .. code-block:: python
+
+                menu_contents = [
+                    {"text": "My homepage", "url": 'https://example.com'},
+                    {"text": "Python packages",
+                    "children": [
+                        {"text": "PRAW",
+                        "url": 'https://praw.readthedocs.io/'},
+                        {"text": "requests",
+                        "url": 'http://python-requests.org'}
+                    ]},
+                    {"text": "Reddit homepage", "url": 'https://reddit.com'}
+                ]
+
+            Using the ``**`` argument, the dictionaries can be converted to
+            instances of :class:`.MenuLink` and :class:`.Submenu`, like so:
+
+            .. code-block:: python
+
+                widget_mod = reddit.subreddit("test").widgets.mod
+                menu_contents = [
+                    widget_mod.generate_menu_link(**{
+                        "text": "My homepage", "url": 'https://example.com'}),
+                    widget_mod.generate_submenu(**{
+                        "text": "Python packages",
+                        "children": [
+                            widget_mod.generate_menu_link(**{
+                                "text": "PRAW",
+                                "url": 'https://praw.readthedocs.io/'}),
+                            widget_mod.generate_menu_link(**{
+                                "text": "requests",
+                                "url": 'http://python-requests.org'})
+                        ]}),
+                    widget_mod.generate_menu_link(**{
+                        "text": "Reddit homepage",
+                        "url": 'https://reddit.com'})
+                ]
         """
+        for item in data:
+            if isinstance(item, dict):
+                warn(
+                    "Providing a list of dictionaries for the ``data`` "
+                    "parameter is deprecated. Please replace the "
+                    "dictionaries with calls to "
+                    "widgets.mod.generate_menu_link and "
+                    "widgets.mod.generate_submenu. See the documentation for "
+                    "the add_menu method at "
+                    "https://praw.readthedocs.io/en/latest/code_overview"
+                    "/other/subredditwidgetsmoderation.html#praw.models"
+                    ".SubredditWidgetsModeration.add_menu on how to port "
+                    "code.",
+                    category=DeprecationWarning,
+                    stacklevel=2,
+                )
         menu = {"data": data, "kind": "menu"}
         menu.update(other_settings)
         return self._create_widget(menu)
@@ -840,7 +1256,7 @@ class SubredditWidgetsModeration:
         short_name: str,
         display: str,
         order: List[str],
-        styles: Union[Styles, Dict[str, str]],
+        styles: Styles,
         **other_settings: str
     ) -> "PostFlairWidget":
         """Add and return a :class:`.PostFlairWidget`.
@@ -868,6 +1284,18 @@ class SubredditWidgetsModeration:
                 "list", flairs, styles)
 
         """
+        if isinstance(styles, dict):
+            warn(
+                "Providing a dictionary for the ``styles`` parameter is "
+                "deprecated. Please replace the dictionary with a call to "
+                "widgets.mod.generate_styles. See the documentation for the "
+                "generate_styles method at https://praw.readthedocs.io/en/"
+                "latest/code_overview/other/subredditwidgetsmoderation.html"
+                "#praw.models.SubredditWidgetsModeration.generate_styles on "
+                "how to port code.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
         post_flair = {
             "kind": "post-flair",
             "display": display,
@@ -879,11 +1307,7 @@ class SubredditWidgetsModeration:
         return self._create_widget(post_flair)
 
     def add_text_area(
-        self,
-        short_name: str,
-        text: str,
-        styles: Union[Styles, Dict[str, str]],
-        **other_settings: str
+        self, short_name: str, text: str, styles: Styles, **other_settings: str
     ) -> "TextArea":
         """Add and return a :class:`.TextArea` widget.
 
@@ -902,6 +1326,18 @@ class SubredditWidgetsModeration:
                 "*Hello* **world**!", styles)
 
         """
+        if isinstance(styles, dict):
+            warn(
+                "Providing a dictionary for the ``styles`` parameter is "
+                "deprecated. Please replace the dictionary with a call to "
+                "widgets.mod.generate_styles. See the documentation for the "
+                "generate_styles method at https://praw.readthedocs.io/en/"
+                "latest/code_overview/other/subredditwidgetsmoderation.html"
+                "#praw.models.SubredditWidgetsModeration.generate_styles on "
+                "how to port code.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
         text_area = {
             "shortName": short_name,
             "text": text,
@@ -919,7 +1355,7 @@ class SubredditWidgetsModeration:
         color: Optional[Union[str, int]] = None,
         fillColor: Optional[Union[str, int]] = None,
         height: Optional[int] = None,
-        hoverState: Optional[Union[Dict[str, Union[str, int]], Hover]] = None,
+        hoverState: Optional[Hover] = None,
         linkUrl: Optional[str] = None,
         textColor: Optional[Union[str, int]] = None,
         width: Optional[int] = None,
@@ -935,21 +1371,20 @@ class SubredditWidgetsModeration:
             a link to the image obtained from :meth:`.upload_image`.
         :param color: The color of the button. Should either be given as a
             7-character RGB code (``"#FFFFFF"``) or the integer representation
-            (``0xFFFFFF``). Optional.
+            (``0xFFFFFF``).
         :param fillColor: The background color of the button. Should either be
             given as a 7-character RGB code (``"#FFFFFF"``) or the integer
-            representation (``0xFFFFFF``). Optional.
+            representation (``0xFFFFFF``).
         :param height: The height of the image, if the button is an image
             button.
-        :param hoverState: A dictionary or an instance of :class:`.Hover`
-            containing the hover data for the button. An instance of
-            :class:`.Hover` can be obtained from :meth:`.generate_hover`.
-            Optional.
+        :param hoverState: An instance of :class:`.Hover` containing the hover 
+            data for the button. An instance of :class:`.Hover` can be obtained
+            from :meth:`.generate_hover`. Optional.
         :param linkUrl: If the button is an image button, represents the link
             that the user will visit when the image is clicked on. Optional.
         :param textColor: The color of the button text. Should either be given
             as a 7-character RGB code (``"#FFFFFF"``) or the integer
-            representation (``0xFFFFFF``). Optional.
+            representation (``0xFFFFFF``).
         :param width: The width of the image, if the button is an image button.
         :returns: An instance of :class:`.Button`.
 
@@ -963,7 +1398,7 @@ class SubredditWidgetsModeration:
                 url="https://www.reddit.com")
             button = widget_mod.generate_button("text", "Click me!",
                 "https://www.google.com", color=0x00FF00, fillColor=0xFFFFFF,
-                hover=hover, textColor=0x000000)
+                hoverState=hover, textColor=0x000000)
 
         To generate an image button:
 
@@ -976,8 +1411,8 @@ class SubredditWidgetsModeration:
                 linkUrl = "https://www.reddit.com", height=400
                 text="Don't click me", url=image_2, width=200)
             button = widget_mod.generate_button("image", "Click me!", image_1,
-                height = 200, hover=hover, linkUrl = "https://www.google.com",
-                width=200)
+                height = 200, hoverState = hover,
+                linkUrl = "https://www.google.com", width=200)
 
         The hover states do not have to correspond to the given button types.
 
@@ -989,8 +1424,8 @@ class SubredditWidgetsModeration:
                 fillColor=0x000000, text="Don't click me", textColor=0xFFFFFF,
                 url="https://www.reddit.com")
             button = widget_mod.generate_button("image", "Click me!", image_1,
-                height = 200, hover=hover, linkUrl = "https://www.google.com",
-                width=200)
+                height = 200, hoverState=hover,
+                linkUrl = "https://www.google.com", width=200)
 
         .. code-block:: python
 
@@ -1001,7 +1436,7 @@ class SubredditWidgetsModeration:
                 text="Don't click me", url=image, width=200)
             button = widget_mod.generate_button("text", "Click me!",
                 "https://www.google.com", color=0x00FF00, fillColor=0xFFFFFF,
-                hover=hover, textColor=0x000000)
+                hoverState=hover, textColor=0x000000)
         """
         data = {"kind": kind, "text": text, "url": url}
         for name, value in {
@@ -1015,6 +1450,19 @@ class SubredditWidgetsModeration:
         }.items():
             if value is not None:
                 data[name] = value
+            if name == "hoverState" and isinstance(hoverState, dict):
+                warn(
+                    "Providing a dictionary for parameter ``hoverState`` is "
+                    "deprecated. Please provide an instance of the Hover "
+                    "class, which can be generated by the generate_hover"
+                    " method. See the documentation for the add_button_widget "
+                    "method at https://praw.readthedocs.io/en/latest/"
+                    "code_overview/other/subredditwidgetsmoderation.html#praw"
+                    ".models.SubredditWidgetsModeration.add_button_widget on "
+                    "how to port code.",
+                    category=DeprecationWarning,
+                    stacklevel=2,
+                )
         return Button(self._reddit, data)
 
     def generate_calendar_configuration(
@@ -1078,20 +1526,20 @@ class SubredditWidgetsModeration:
             button.
 
         :param kind: The type of hover state (``image`` or ``text``)
-        :param text: The hover state text. Optional.
+        :param text: The hover state text.
         :param url: The link to an uploaded image obtained from
             :meth:`.upload_image`. Can only be used on ``image`` hover states.
         :param color: The color of the hover state. Should either be given as a
             7-character RGB code (``"#FFFFFF"``) or the integer representation
-            (``0xFFFFFF``). Optional.
+            (``0xFFFFFF``).
         :param fillColor: The background color of the hover state. Should
             either be given as a 7-character RGB code (``"#FFFFFF"``) or the
-            integer representation (``0xFFFFFF``). Optional.
+            integer representation (``0xFFFFFF``).
         :param height: The height of the image, if the hover state is an image
             hover state.
         :param textColor: The color of the hover state text. Should either be
             given as a 7-character RGB code (``"#FFFFFF"``) or the integer
-            representation (``0xFFFFFF``). Optional.
+            representation (``0xFFFFFF``).
         :param width: The width of the image, if the hover state is an image
             hover state.
         :returns: An instance of :class:`.Hover`.
@@ -1180,6 +1628,26 @@ class SubredditWidgetsModeration:
             given as a 7-character RGB code (``"#FFFFFF"``) or the integer
             representation (``0xFFFFFF``).
         :returns: An instance of :class:`.Styles`.
+
+        .. note:: Porting code is relatively simple using the ``**`` dictionary
+            keyword argument. For example, given the dict:
+
+            .. code-block:: python
+
+                styles = {
+                    "backgroundColor": "#FFFF66","headerColor": "#3333EE"
+                }
+
+            By adding ``**``, it can easily be converted to an instance of
+            :class:`.Styles`, like so:
+
+            .. code-block:: python
+
+                widget_mod = reddit.subreddit("test").widgets.mod
+                styles = widget_mod.generate_styles(**{
+                    "backgroundColor": "#FFFF66","headerColor": "#3333EE"
+                })
+
         """
         return Styles(
             self._reddit,
@@ -2098,11 +2566,13 @@ class WidgetEncoder(JSONEncoder):
         if isinstance(o, self._subreddit_class):
             return str(o)
         elif isinstance(o, PRAWBase):
-            return {
-                key: val
-                for key, val in vars(o).items()
-                if not key.startswith("_")
-            }
+            return SubredditWidgetsModeration._convert_color_to_RGB(
+                {
+                    key: val
+                    for key, val in vars(o).items()
+                    if not key.startswith("_")
+                }
+            )
         return super().default(o)
 
 

@@ -8,6 +8,7 @@ from praw.models import (
     Button,
     ButtonWidget,
     Calendar,
+    CalendarConfiguration,
     CommunityList,
     CustomWidget,
     IDCard,
@@ -135,8 +136,8 @@ class TestButtonWidget(IntegrationTest):
 
             assert widget[1].text == "View documentation"
             assert widget[1].linkUrl == "https://praw.readthedocs.io"
-            assert widget[1].hoverState["kind"] == "image"
-            assert widget[1].hoverState["height"] == 200
+            assert widget[1].hoverState.kind == "image"
+            assert widget[1].hoverState.height == 200
 
             widgets.refresh()  # the links are initially invalid
             for new_widget in widgets.sidebar:
@@ -160,8 +161,8 @@ class TestButtonWidget(IntegrationTest):
 
             assert widget[1].text == "View documentation"
             assert widget[1].linkUrl == "https://praw.readthedocs.io"
-            assert widget[1].hoverState["kind"] == "image"
-            assert widget[1].hoverState["height"] == 200
+            assert widget[1].hoverState.kind == "image"
+            assert widget[1].hoverState.height == 200
 
             buttons.reverse()
             widget = widget.mod.update(buttons=buttons)
@@ -180,8 +181,8 @@ class TestButtonWidget(IntegrationTest):
 
             assert widget[1].text == "View documentation"
             assert widget[1].linkUrl == "https://praw.readthedocs.io"
-            assert widget[1].hoverState["kind"] == "image"
-            assert widget[1].hoverState["height"] == 200
+            assert widget[1].hoverState.kind == "image"
+            assert widget[1].hoverState.height == 200
 
             widget.mod.delete()
 
@@ -235,6 +236,7 @@ class TestCalendar(IntegrationTest):
             )
 
             assert isinstance(widget, Calendar)
+            assert isinstance(widget.configuration, CalendarConfiguration)
             assert widget.shortName == "Upcoming Events"
             assert (
                 widget.googleCalendarId == "ccahu0rstno2jrvioq4ccffn78@"
