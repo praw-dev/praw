@@ -1,7 +1,6 @@
 """This file should be updated as files/classes/functions are deprecated."""
 
 import pytest
-from unittest import mock
 
 from praw.exceptions import APIException
 

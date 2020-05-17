@@ -254,12 +254,12 @@ class Styles(WidgetBase):
     @staticmethod
     def convert_rgb_int_to_string(integer: int) -> str:
         """Convert an integer representation of an RGB code to a string.
-        
+
         :param integer: The integer to convert. Must be greater than or equal
             to ``0`` and less than or equal to ``16777215`` (``0xFFFFFF``).
         :raises: :py:class:`ValueError` if the integer is out of bounds.
         :returns: The string version of the integer.
-        
+
         .. seealso:: :meth:`.convert_rgb_string_to_int`
         """
         if not (0x000000 <= integer <= 0xFFFFFF):
@@ -272,13 +272,13 @@ class Styles(WidgetBase):
     @classmethod
     def convert_rgb_string_to_int(cls, string: str) -> int:
         """Convert the string representation of an RGB code to an integer.
-        
+
         :param string: The string to convert to an integer.
         :raises: :py:class:`.ValueError` if the string is not provided in the
             appropriate format (``"#XXXXXX"`` where ``X`` represents a
             character).
         :returns: The integer representation of the string.
-        
+
         .. seealso:: :meth:`.convert_rgb_int_to_string`
         """
         value = cls._convert_rgb_string_to_int(string)
@@ -1095,7 +1095,7 @@ class SubredditWidgetsModeration:
 
         .. note:: Porting code is relatively simple with the ``**`` dictionary
             keyword argument. For example, given the list of dicts below:
-            
+
             .. code-block:: python
 
                 data = [{"url": 'https://some.link',  # from upload_image()
@@ -1377,7 +1377,7 @@ class SubredditWidgetsModeration:
             representation (``0xFFFFFF``).
         :param height: The height of the image, if the button is an image
             button.
-        :param hoverState: An instance of :class:`.Hover` containing the hover 
+        :param hoverState: An instance of :class:`.Hover` containing the hover
             data for the button. An instance of :class:`.Hover` can be obtained
             from :meth:`.generate_hover`. Optional.
         :param linkUrl: If the button is an image button, represents the link
