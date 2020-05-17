@@ -22,7 +22,7 @@ class WidgetBase(PRAWBase):
     @staticmethod
     def _convert_rgb_string_to_int(string: str) -> Union[str, int]:
         """Convert a string RGB hex (#XXXXXX) to the integer representation.
-        
+
         If the string is not an RGB code, returns the original string.
 
         :param string: The string to convert
@@ -33,7 +33,7 @@ class WidgetBase(PRAWBase):
         return string
 
     def __eq__(self: _T, other: _T) -> bool:
-        """Compares another WidgetBase for equality."""
+        """Compare another WidgetBase for equality."""
         if isinstance(other, type(self)):
             self_data = {
                 name: value
@@ -93,7 +93,7 @@ class Button(WidgetBase):
 
 
 class CalendarConfiguration(WidgetBase):
-    """Class to represent the configuration of a :class:`.CalendarWidget`.
+    """Class to represent the configuration of a :class:`.Calendar`.
 
     **Typical Attributes**
 
@@ -228,7 +228,7 @@ class Styles(WidgetBase):
                             hexadecimal (0x######)
     ``headerColor``         The header color of a widget, given as a
                             hexadecimal (0x######)
-
+    ======================= ===================================================
     """
 
 
@@ -1037,7 +1037,7 @@ class SubredditWidgetsModeration:
         :param showLocation: Show the location of events.
         :param showTime: Show the time of events.
         :param showTitle: Show the title of events.
-        :returns: An instance of :class:`.CalendarConfiguation`
+        :returns: An instance of :class:`.CalendarConfiguration`
 
         Example usage:
 
@@ -1174,7 +1174,7 @@ class SubredditWidgetsModeration:
         """Generate an instance of :class:`.Styles`.
 
         :param backgroundColor: The background color of a widget. Should either
-             be given as a 7-character RGB code (``"#FFFFFF"``) or the integer
+            be given as a 7-character RGB code (``"#FFFFFF"``) or the integer
             representation (``0xFFFFFF``).
         :param headerColor: The color of the widget header. Should either be
             given as a 7-character RGB code (``"#FFFFFF"``) or the integer
