@@ -14,6 +14,87 @@ Unreleased
   on poll submissions.
 * Add method :meth:`~.Reddit.delete` to :class:`.Reddit` class to support HTTP
   DELETE requests.
+* Added :class:`.CalendarConfiguration` to represent the configuration of a
+  :class:`.Calendar` widget.
+* Added :class:`.Hover` to represent the hover state of a :class:`.Button`.
+* Added :class:`.Styles` to represent widget styling information.
+* :meth:`.generate_button` to generate :class:`.Button` instances.
+* :meth:`.generate_calendar_configuration` to generate
+  :class:`.CalendarConfiguration` instances.
+* :meth:`.generate_hover` to generate :class:`.Hover` instances.
+* :meth:`.generate_image` to generate :class:`.Image` instances.
+* :meth:`.generate_image_data` to genrerate :class:`.ImageData` instances.
+* :meth:`.generate_menu_link` to generate :class:`.MenuLink` instances.
+* :meth:`.generate_styles` to generate :class:`.Styles` instances.
+* :meth:`.generate_submenu` to generate :class:`.Submenu` instances.
+
+**Deprecated**
+
+* :meth:`.add_button_widget`\ :
+
+  * For parameter ``buttons``, supplying a list of ``dict``\ s is deprecated.
+    Please supply a list of instances of :class:`.Button` generated from
+    :meth:`.generate_button`.
+
+    .. note:: For parameter ``hoverState`` of :meth:`.generate_button`,
+        supplying a ``dict`` is deprecated. Please supply an instance of
+        :class:`.Hover` generated from :meth:`.generate_hover`.
+
+  * For parameter ``styles``, supplying a ``dict`` is deprecated. Please supply
+    an instance of :class:`.Styles` generated from :meth:`.generate_styles`.
+
+* :meth:`.add_calendar`\ :
+
+  * For parameter ``configuration``, supplying a ``dict`` is deprecated. Please
+    supply an instance of :class:`.CalendarConfiguration` generated from
+    :meth:`.generate_calendar_configuration`.
+  * For parameter ``styles``, supplying a ``dict`` is deprecated. Please supply
+    an instance of :class:`.Styles` generated from :meth:`.generate_styles`.
+
+* :meth:`.add_community_list`\ :
+
+  * For parameter ``styles``, supplying a ``dict`` is deprecated. Please supply
+    an instance of :class:`.Styles` generated from :meth:`.generate_styles`.
+
+* :meth:`.add_custom_widget`\ :
+
+  * For parameter ``image_data``, supplying a list of ``dict``\ s is
+    deprecated. Please supply instances of :class:`.ImageData` generated from
+    :meth:`.generate_image_data`.
+  * For parameter ``styles``, supplying a ``dict`` is deprecated. Please supply
+    an instance of :class:`.Styles` generated from :meth:`.generate_styles`.
+
+* :meth:`.add_image_widget`\ :
+
+  * For parameter ``data``, supplying a list of ``dict``\ s is deprecated.
+    Please supply instances of :class:`.Image` generated from
+    :meth:`.generate_image`.
+  * For parameter ``styles``, supplying a ``dict`` is deprecated. Please supply
+    an instance of :class:`.Styles` generated from :meth:`.generate_styles`.
+
+* :meth:`.add_menu`\ :
+
+  * For parameter ``data``, supplying a list of ``dict``\ s is deprecated.
+    Please supply instances of :class:`.MenuLink` generated from
+    :meth:`.generate_menu_link` and :class:`.Submenu` generated from
+    :meth:`.generate_submenu`.
+
+    .. note:: Supplying a list of ``dict``\ s to :meth:`.generate_submenu` is
+        also deprecated. Please supply a list of instances of
+        :class:`.MenuLink` generated from :meth:`.generate_menu_link`.
+
+  * For parameter ``styles``, supplying a ``dict`` is deprecated. Please supply
+    an instance of :class:`.Styles` generated from :meth:`.generate_styles`.
+
+* :meth:`.add_post_flair_widget`\ :
+
+  * For parameter ``styles``, supplying a ``dict`` is deprecated. Please supply
+    an instance of :class:`.Styles` generated from :meth:`.generate_styles`.
+
+* :meth:`.add_text_area`\ :
+
+  * For parameter ``styles``, supplying a ``dict`` is deprecated. Please supply
+    an instance of :class:`.Styles` generated from :meth:`.generate_styles`.
 
 **Changed**
 
