@@ -32,12 +32,29 @@ class WidgetBase(PRAWBase):
             return int(string[1:], 16)
         return string
 
+    def __eq__(self: _T, other: _T) -> bool:
+        """Compares another WidgetBase for equality."""
+        if isinstance(other, type(self)):
+            self_data = {
+                name: value
+                for name, value in vars(self).items()
+                if not name.startswith("_")
+            }
+            other_data = {
+                name: value
+                for name, value in vars(other).items()
+                if not name.startswith("_")
+            }
+            return self_data == other_data
+        return super().__eq__(other)
+
     def __setattr__(self, name: str, value: Union[str, Dict[str, str]]):
         """Convert RGB values (#XXXXXX) to int and objectify styles."""
-        if isinstance(value, str) and self._reddit.config.widgets_beta:
-            value = self._convert_rgb_string_to_int(value)
-        if name == "styles" and self._reddit.config.widgets_beta:
-            value = Styles(self._reddit, value)
+        if hasattr(self, "_reddit"):
+            if isinstance(value, str) and self._reddit.config.widgets_beta:
+                value = self._convert_rgb_string_to_int(value)
+            if name == "styles" and self._reddit.config.widgets_beta:
+                value = Styles(self._reddit, value)
         super().__setattr__(name, value)
 
 
@@ -73,12 +90,6 @@ class Button(WidgetBase):
     ``width``               Image width. Only present on image buttons.
     ======================= ===================================================
     """
-
-    def __setattr__(self, name: str, value: Union[str, Dict[str, str]]):
-        """Objectify ``hoverState``."""
-        if name == "hoverState" and self._reddit.config.widgets_beta:
-            value = Hover(self._reddit, value)
-        super().__setattr__(name, value)
 
 
 class CalendarConfiguration(WidgetBase):
@@ -325,12 +336,12 @@ class SubredditWidgets(PRAWBase):
     """
 
     @cachedproperty
-    def id_card(self):
+    def id_card(self) -> "IDCard":
         """Get this subreddit's :class:`.IDCard` widget."""
         return self.items[self.layout["idCardWidget"]]
 
     @cachedproperty
-    def items(self):
+    def items(self) -> Dict[str, "Widget"]:
         """Get this subreddit's widgets as a dict from ID to widget."""
         items = {}
         for item_name, data in self._raw_items.items():
@@ -339,7 +350,7 @@ class SubredditWidgets(PRAWBase):
         return items
 
     @cachedproperty
-    def mod(self):
+    def mod(self) -> "SubredditWidgetsModeration":
         """Get an instance of :class:`.SubredditWidgetsModeration`.
 
         .. note::
@@ -351,12 +362,12 @@ class SubredditWidgets(PRAWBase):
         return SubredditWidgetsModeration(self.subreddit, self._reddit)
 
     @cachedproperty
-    def moderators_widget(self):
+    def moderators_widget(self) -> "ModeratorsWidget":
         """Get this subreddit's :class:`.ModeratorsWidget`."""
         return self.items[self.layout["moderatorWidget"]]
 
     @cachedproperty
-    def sidebar(self):
+    def sidebar(self) -> List["Widget"]:
         """Get a list of Widgets that make up the sidebar."""
         return [
             self.items[widget_name]
@@ -364,7 +375,7 @@ class SubredditWidgets(PRAWBase):
         ]
 
     @cachedproperty
-    def topbar(self):
+    def topbar(self) -> List["Widget"]:
         """Get a list of Widgets that make up the top bar."""
         return [
             self.items[widget_name]
@@ -388,7 +399,7 @@ class SubredditWidgets(PRAWBase):
         """
         self._fetch()
 
-    def __getattr__(self, attr):
+    def __getattr__(self, attr: str) -> Any:
         """Return the value of `attr`."""
         if not attr.startswith("_") and not self._fetched:
             self._fetch()
@@ -399,7 +410,7 @@ class SubredditWidgets(PRAWBase):
             )
         )
 
-    def __init__(self, subreddit):
+    def __init__(self, subreddit: "Subreddit"):
         """Initialize the class.
 
         :param subreddit: The :class:`.Subreddit` the widgets belong to.
@@ -410,13 +421,11 @@ class SubredditWidgets(PRAWBase):
         self.subreddit = subreddit
         self.progressive_images = False
 
-        super().__init__(subreddit._reddit, {})
+        super().__init__(subreddit._reddit, None)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return an object initialization representation of the object."""
-        return "SubredditWidgets(subreddit={subreddit!r})".format(
-            subreddit=self.subreddit
-        )
+        return "SubredditWidgets(subreddit={!r})".format(self.subreddit)
 
     def _fetch(self):
         data = self._reddit.get(
@@ -777,10 +786,12 @@ class SubredditWidgetsModeration:
     def add_menu(
         self,
         data: List[
-            MenuLink,
-            Dict[str, str],
-            Submenu,
-            List[Union[MenuLink, Dict[str, str]]],
+            Union[
+                MenuLink,
+                Dict[str, str],
+                Submenu,
+                List[Union[MenuLink, Dict[str, str]]],
+            ]
         ],
         **other_settings: str
     ) -> "Menu":
@@ -996,7 +1007,7 @@ class SubredditWidgetsModeration:
             "linkUrl": linkUrl,
             "textColor": textColor,
             "width": width,
-        }:
+        }.items():
             if value is not None:
                 data[name] = value
         return Button(self._reddit, data)
@@ -1089,7 +1100,7 @@ class SubredditWidgetsModeration:
             "textColor": textColor,
             "url": url,
             "width": width,
-        }:
+        }.items():
             if value is not None:
                 data[name] = value
         return Hover(self._reddit, data)
@@ -1307,11 +1318,11 @@ class Widget(WidgetBase):
         super().__init__(reddit, _data=_data)
         # Deal with cases where subclass's CHILD_ATTRIBUTE values are missing
         if hasattr(self, "CHILD_ATTRIBUTE"):
-            if getattr(self, self.CHILD_ATTRIBUTE, None) is None:
+            if getattr(self, self.CHILD_ATTRIBUTE, object) == object:
                 setattr(self, self.CHILD_ATTRIBUTE, [])
 
 
-class ButtonWidget(Widget, BaseList):
+class ButtonWidget(BaseList, Widget):
     r"""Class to represent a widget containing one or more buttons.
 
     Find an existing one:
@@ -1490,7 +1501,7 @@ class Calendar(Widget):
         super().__setattr__(name, value)
 
 
-class CommunityList(Widget, BaseList):
+class CommunityList(BaseList, Widget):
     r"""Class to represent a Related Communities widget.
 
     Find an existing one:
@@ -1686,7 +1697,7 @@ class IDCard(Widget):
     """
 
 
-class ImageWidget(Widget, BaseList):
+class ImageWidget(BaseList, Widget):
     r"""Class to represent an image widget.
 
     Find an existing one:
@@ -1760,7 +1771,7 @@ class ImageWidget(Widget, BaseList):
     CHILD_ATTRIBUTE = "data"
 
 
-class Menu(Widget, BaseList):
+class Menu(BaseList, Widget):
     r"""Class to represent the top menu widget of a subreddit.
 
     Menus can generally be found as the first item in a subreddit's top bar.
@@ -1837,7 +1848,7 @@ class Menu(Widget, BaseList):
     CHILD_ATTRIBUTE = "data"
 
 
-class ModeratorsWidget(Widget, BaseList):
+class ModeratorsWidget(BaseList, Widget):
     r"""Class to represent a moderators widget.
 
     .. code-block:: python
@@ -1880,7 +1891,7 @@ class ModeratorsWidget(Widget, BaseList):
     CHILD_ATTRIBUTE = "mods"
 
 
-class PostFlairWidget(Widget, BaseList):
+class PostFlairWidget(BaseList, Widget):
     r"""Class to represent a post flair widget.
 
     Find an existing one:
@@ -1957,7 +1968,7 @@ class PostFlairWidget(Widget, BaseList):
     CHILD_ATTRIBUTE = "order"
 
 
-class RulesWidget(Widget, BaseList):
+class RulesWidget(BaseList, Widget):
     """Class to represent a rules widget.
 
     .. code-block:: python
@@ -2103,7 +2114,9 @@ class WidgetModeration:
        widget.mod.delete()
     """
 
-    def __init__(self, widget, subreddit, reddit):
+    def __init__(
+        self, widget: Widget, subreddit: "Subreddit", reddit: "Reddit"
+    ):
         """Initialize the widget moderation object."""
         self.widget = widget
         self._reddit = reddit
@@ -2123,7 +2136,7 @@ class WidgetModeration:
         )
         self._reddit.delete(path)
 
-    def update(self, **kwargs):
+    def update(self, **kwargs: Any) -> Widget:
         """Update the widget. Returns the updated widget.
 
         Parameters differ based on the type of widget. See
@@ -2150,6 +2163,7 @@ class WidgetModeration:
             if not key.startswith("_")
         }
         del payload["subreddit"]  # not JSON serializable
+        del payload["mod"]
         payload.update(kwargs)
         widget = self._reddit.put(
             path, data={"json": dumps(payload, cls=WidgetEncoder)}

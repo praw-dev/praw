@@ -25,6 +25,7 @@ from praw.models import (
     TextArea,
     Widget,
 )
+from praw.models.reddit.widgets import SubredditWidgetsModeration
 
 from ... import IntegrationTest
 
@@ -65,55 +66,54 @@ class TestButtonWidget(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_create_and_update_and_delete(self, _):
         self.reddit.read_only = False
+        self.reddit.config.widgets_beta = True
 
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
+        widget_mod = widgets.mod
 
         with self.recorder.use_cassette(
             "TestButtonWidget.test_create_and_update_and_delete"
         ):
-            styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
-            my_image = widgets.mod.upload_image(self.image_path("test.png"))
+            styles = widget_mod.generate_styles(0xBB0E00, 0x123456)
+            my_image = widget_mod.upload_image(self.image_path("test.png"))
             buttons = [
-                {
-                    "kind": "text",
-                    "text": "View source",
-                    "url": "https://github.com/praw-dev/praw",
-                    "color": "#FF0000",
-                    "textColor": "#00FF00",
-                    "fillColor": "#0000FF",
-                    "hoverState": {
-                        "kind": "text",
-                        "text": "VIEW SOURCE!",
-                        "color": "#FFFFFF",
-                        "textColor": "#000000",
-                        "fillColor": "#0000FF",
-                    },
-                },
-                {
-                    "kind": "image",
-                    "text": "View documentation",
-                    "linkUrl": "https://praw.readthedocs.io",
-                    "url": my_image,
-                    "height": 200,
-                    "width": 200,
-                    "hoverState": {
-                        "kind": "image",
-                        "url": my_image,
-                        "height": 200,
-                        "width": 200,
-                    },
-                },
-                {
-                    "kind": "text",
-                    "text": "/r/redditdev",
-                    "url": "https://reddit.com/r/redditdev",
-                    "color": "#000000",
-                    "textColor": "#FF00FF",
-                    "fillColor": "#005500",
-                },
+                widget_mod.generate_button(
+                    kind="text",
+                    text="View source",
+                    url="https://github.com/praw-dev/praw",
+                    color=0xFF0000,
+                    textColor=0x00FF00,
+                    fillColor=0x0000FF,
+                    hoverState=widget_mod.generate_hover(
+                        kind="text",
+                        text="VIEW SOURCE!",
+                        color=0xFFFFFF,
+                        textColor=0x000000,
+                        fillColor=0x0000FF,
+                    ),
+                ),
+                widget_mod.generate_button(
+                    kind="image",
+                    text="View documentation",
+                    linkUrl="https://praw.readthedocs.io",
+                    url=my_image,
+                    height=200,
+                    width=200,
+                    hoverState=widget_mod.generate_hover(
+                        kind="image", url=my_image, height=200, width=200
+                    ),
+                ),
+                widget_mod.generate_button(
+                    kind="text",
+                    text="/r/redditdev",
+                    url="https://reddit.com/r/redditdev",
+                    color="#000000",
+                    textColor="#FF00FF",
+                    fillColor="#005500",
+                ),
             ]
-            widget = widgets.mod.add_button_widget(
+            widget = widget_mod.add_button_widget(
                 "Things to click",
                 "Click some of these *cool* links!",
                 buttons,
