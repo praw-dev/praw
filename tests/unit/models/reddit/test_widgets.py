@@ -3,6 +3,7 @@ from json import dumps
 from pytest import raises
 
 from praw.models import (
+    Button,
     SubredditWidgets,
     SubredditWidgetsModeration,
     Widget,
@@ -45,3 +46,24 @@ class TestWidgets(UnitTest):
         w = Widget(self.reddit, {})
         assert isinstance(w.mod, WidgetModeration)
         assert w.mod.widget == w
+
+    def test_equality(self):
+        b = Button(self.reddit, {})
+        w = Widget(self.reddit, {})
+        assert not (b == w)
+
+    def test_repr(self):
+        w = Widget(self.reddit, {})
+        assert repr(w) == "<Widget widget>"
+
+    def test_conversion(self):
+        example = [
+            {"test": {"testColor": 16777215}},
+            [{"testColor": 16777215}],
+        ]
+        conversion_method = (
+            SubredditWidgetsModeration._convert_color_list_to_RGB
+        )
+        converted = conversion_method(example)
+        assert isinstance(converted[0]["test"]["testColor"], str)
+        assert isinstance(converted[1][0]["testColor"], str)

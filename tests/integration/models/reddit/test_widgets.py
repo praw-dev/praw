@@ -25,7 +25,6 @@ from praw.models import (
     TextArea,
     Widget,
 )
-from praw.models.reddit.widgets import SubredditWidgetsModeration
 
 from ... import IntegrationTest
 
@@ -75,7 +74,9 @@ class TestButtonWidget(IntegrationTest):
         with self.recorder.use_cassette(
             "TestButtonWidget.test_create_and_update_and_delete"
         ):
-            styles = widget_mod.generate_styles(0xBB0E00, 0x123456)
+            styles = widget_mod.generate_styles(
+                backgroundColor=0xBB0E00, headerColor=0x123456
+            )
             my_image = widget_mod.upload_image(self.image_path("test.png"))
             buttons = [
                 widget_mod.generate_button(
@@ -208,24 +209,28 @@ class TestCalendar(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_create_and_update_and_delete(self, _):
         self.reddit.read_only = False
+        self.reddit.config.widgets_beta = True
 
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
+        widget_mod = widgets.mod
 
         with self.recorder.use_cassette(
             "TestCalendar.test_create_and_update_and_delete"
         ):
-            styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
-            config = {
-                "numEvents": 10,
-                "showDate": True,
-                "showDescription": False,
-                "showLocation": False,
-                "showTime": True,
-                "showTitle": True,
-            }
+            styles = widget_mod.generate_styles(
+                backgroundColor=0xBB0E00, headerColor=0x123456
+            )
+            config = widget_mod.generate_calendar_configuration(
+                numEvents=10,
+                showDate=True,
+                showDescription=False,
+                showLocation=False,
+                showTime=True,
+                showTitle=True,
+            )
             cal_id = "ccahu0rstno2jrvioq4ccffn78@group.calendar.google.com"
-            widget = widgets.mod.add_calendar(
+            widget = widget_mod.add_calendar(
                 "Upcoming Events", cal_id, True, config, styles
             )
 
@@ -279,16 +284,20 @@ class TestCommunityList(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_create_and_update_and_delete(self, _):
         self.reddit.read_only = False
+        self.reddit.config.widgets_beta = True
 
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
+        widget_mod = widgets.mod
 
         with self.recorder.use_cassette(
             "TestCommunityList.test_create_and_update_and_delete"
         ):
-            styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
+            styles = widget_mod.generate_styles(
+                backgroundColor=0xBB0E00, headerColor=0x123456
+            )
             subreddits = ["learnpython", self.reddit.subreddit("redditdev")]
-            widget = widgets.mod.add_community_list(
+            widget = widget_mod.add_community_list(
                 "My fav subs", subreddits, styles, "My description"
             )
 
@@ -323,26 +332,28 @@ class TestCustomWidget(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_create_and_update_and_delete(self, _):
         self.reddit.read_only = False
+        self.reddit.config.widgets_beta = True
 
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
+        widget_mod = widgets.mod
 
         with self.recorder.use_cassette(
             "TestCustomWidget.test_create_and_update_and_delete"
         ):
             image_dicts = [
-                {
-                    "width": 0,
-                    "height": 0,
-                    "name": "a",
-                    "url": widgets.mod.upload_image(
-                        self.image_path("test.png")
-                    ),
-                }
+                widget_mod.generate_image_data(
+                    width=0,
+                    height=0,
+                    name="a",
+                    url=widget_mod.upload_image(self.image_path("test.png")),
+                )
             ]
 
-            styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
-            widget = widgets.mod.add_custom_widget(
+            styles = widget_mod.generate_styles(
+                backgroundColor=0xBB0E00, headerColor=0x123456
+            )
+            widget = widget_mod.add_custom_widget(
                 "My widget", "# Hello world!", "/**/", 200, image_dicts, styles
             )
 
@@ -451,9 +462,11 @@ class TestImageWidget(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_create_and_update_and_delete(self, _):
         self.reddit.read_only = False
+        self.reddit.config.widgets_beta = True
 
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
+        widget_mod = widgets.mod
 
         with self.recorder.use_cassette(
             "TestImageWidget.test_create_and_update_and_delete"
@@ -462,17 +475,19 @@ class TestImageWidget(IntegrationTest):
                 self.image_path(name) for name in ("test.jpg", "test.png")
             )
             image_dicts = [
-                {
-                    "width": 0,
-                    "height": 0,
-                    "linkUrl": "",
-                    "url": widgets.mod.upload_image(img_path),
-                }
+                widget_mod.generate_image(
+                    width=0,
+                    height=0,
+                    linkUrl="",
+                    url=widget_mod.upload_image(img_path),
+                )
                 for img_path in image_paths
             ]
 
-            styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
-            widget = widgets.mod.add_image_widget(
+            styles = widget_mod.generate_styles(
+                backgroundColor=0xBB0E00, headerColor=0x123456
+            )
+            widget = widget_mod.add_image_widget(
                 short_name="My new pics!", data=image_dicts, styles=styles
             )
 
@@ -520,26 +535,36 @@ class TestMenu(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_create_and_update_and_delete(self, _):
         self.reddit.read_only = False
+        self.reddit.config.widgets_beta = True
 
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
+        widget_mod = widgets.mod
 
         menu_contents = [
-            {"text": "My homepage", "url": "https://example.com"},
-            {
-                "text": "Python packages",
-                "children": [
-                    {"text": "PRAW", "url": "https://praw.readthedocs.io/"},
-                    {"text": "requests", "url": "http://python-requests.org"},
+            widget_mod.generate_menu_link(
+                "Reddit Homepage", "https://www.reddit.com"
+            ),
+            widget_mod.generate_submenu(
+                [
+                    widget_mod.generate_menu_link(
+                        "PRAW", "https://praw.readthedocs.io/"
+                    ),
+                    widget_mod.generate_menu_link(
+                        "requests", "https://requests.readthedocs.io/"
+                    ),
                 ],
-            },
-            {"text": "Reddit homepage", "url": "https://reddit.com"},
+                "Python packages",
+            ),
+            widget_mod.generate_menu_link(
+                "Reddit Homepage", "https://www.reddit.com"
+            ),
         ]
 
         with self.recorder.use_cassette(
             "TestMenu.test_create_and_update_and_delete"
         ):
-            widget = widgets.mod.add_menu(menu_contents)
+            widget = widget_mod.add_menu(menu_contents)
 
             assert isinstance(widget, Menu)
             assert len(widget) == 3
@@ -640,10 +665,11 @@ class TestModeratorsWidget(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_update(self, _):
         self.reddit.read_only = False
+        self.reddit.config.widgets_beta = True
 
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        new_styles = {"backgroundColor": "#bababa", "headerColor": "#407bee"}
+        new_styles = widgets.mod.generate_styles(0xBABABA, 0x407BEE)
         with self.recorder.use_cassette("TestModeratorsWidget.test_update"):
             assert widgets.moderators_widget.styles != new_styles
 
@@ -657,17 +683,21 @@ class TestPostFlairWidget(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_create_and_update_and_delete(self, _):
         self.reddit.read_only = False
+        self.reddit.config.widgets_beta = True
 
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
+        widget_mod = widgets.mod
 
         with self.recorder.use_cassette(
             "TestPostFlairWidget.test_create_and_update_and_delete"
         ):
             flairs = [f["id"] for f in subreddit.flair.link_templates][:30]
 
-            styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
-            widget = widgets.mod.add_post_flair_widget(
+            styles = widget_mod.generate_styles(
+                backgroundColor=0xBB0E00, headerColor=0x123456
+            )
+            widget = widget_mod.add_post_flair_widget(
                 "Some flairs", "list", flairs, styles
             )
 
@@ -746,10 +776,12 @@ class TestRulesWidget(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_update(self, _):
         self.reddit.read_only = False
+        self.reddit.config.widgets_beta = True
 
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        new_styles = {"backgroundColor": "#fedcba", "headerColor": "#012345"}
+        widget_mod = widgets.mod
+        new_styles = widget_mod.generate_styles(0xFEDCBA, 0x012345)
         with self.recorder.use_cassette("TestRulesWidget.test_update"):
             rules = None
             for widget in widgets.sidebar:
@@ -875,6 +907,7 @@ class TestSubredditWidgetsModeration(IntegrationTest):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
+        widget_mod = widgets.mod
 
         with self.recorder.use_cassette(
             "TestSubredditWidgetsModeration.test_reorder"
@@ -882,11 +915,11 @@ class TestSubredditWidgetsModeration(IntegrationTest):
             old_order = list(widgets.sidebar)
             new_order = list(reversed(old_order))
 
-            widgets.mod.reorder(new_order)
+            widget_mod.reorder(new_order)
             widgets.refresh()
             assert list(widgets.sidebar) == new_order
 
-            widgets.mod.reorder(old_order)
+            widget_mod.reorder(old_order)
             widgets.refresh()
             assert list(widgets.sidebar) == old_order
 
@@ -898,7 +931,7 @@ class TestSubredditWidgetsModeration(IntegrationTest):
             assert any(isinstance(thing, basestring) for thing in mixed_types)
             assert any(isinstance(thing, Widget) for thing in mixed_types)
 
-            widgets.mod.reorder(mixed_types)
+            widget_mod.reorder(mixed_types)
             widgets.refresh()
             assert list(widgets.sidebar) == new_order
 
@@ -907,12 +940,13 @@ class TestSubredditWidgetsModeration(IntegrationTest):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
+        widget_mod = widgets.mod
 
         with self.recorder.use_cassette(
             "TestSubredditWidgetsModeration.test_upload_image"
         ):
             for image in ("test.jpg", "test.png"):
-                image_url = widgets.mod.upload_image(self.image_path(image))
+                image_url = widget_mod.upload_image(self.image_path(image))
                 assert image_url
 
 
@@ -920,15 +954,19 @@ class TestTextArea(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_create_and_update_and_delete(self, _):
         self.reddit.read_only = False
+        self.reddit.config.widgets_beta = True
 
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
+        widget_mod = widgets.mod
 
         with self.recorder.use_cassette(
             "TestTextArea.test_create_and_update_and_delete"
         ):
-            styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
-            widget = widgets.mod.add_text_area(
+            styles = widget_mod.generate_styles(
+                backgroundColor=0xBB0E00, headerColor=0x123456
+            )
+            widget = widget_mod.add_text_area(
                 short_name="My new widget!", text="Hello world!", styles=styles
             )
 

@@ -9,7 +9,7 @@ from ...util.cache import cachedproperty
 from ..base import PRAWBase
 from ..list.base import BaseList
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .subreddit import Subreddit
     from ... import Reddit
 
@@ -471,8 +471,13 @@ class SubredditWidgetsModeration:
 
     @classmethod
     def _convert_color_list_to_RGB(
-        cls, data: List[Union[Dict[str, Union[int, Any]]]]
-    ) -> List[Union[Dict[str, Union[str, Any]]]]:
+        cls,
+        data: List[
+            Union[Dict[str, Union[int, Dict[str, int]]], List[Dict[str, int]]]
+        ],
+    ) -> List[
+        Union[Dict[str, Union[str, Dict[str, str]]], List[Dict[str, str]]]
+    ]:
         """Iterate through a list, converting any lists and dicitonaries.
 
         :param data: The data to convert
@@ -482,7 +487,7 @@ class SubredditWidgetsModeration:
         for item in data:
             if isinstance(item, dict):
                 converted.append(cls._convert_color_to_RGB(item))
-            if isinstance(item, list):
+            elif isinstance(item, list):
                 converted.append(cls._convert_color_list_to_RGB(item))
             else:
                 converted.append(item)
@@ -1310,7 +1315,6 @@ class Widget(WidgetBase):
         """Return a string representation of the Widget."""
         return "<{} widget>".format(self.__class__.__name__)
 
-    # pylint: disable=invalid-name
     def __init__(self, reddit: "Reddit", _data: Optional[Dict[str, Any]]):
         """Initialize an instance of the class."""
         self.subreddit = ""  # in case it isn't in _data
