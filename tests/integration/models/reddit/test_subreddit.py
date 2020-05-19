@@ -2024,6 +2024,20 @@ class TestSubredditStylesheet(IntegrationTest):
             assert len(stylesheet.images) > 0
             assert stylesheet.stylesheet != ""
 
+    def test_call(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestSubredditStylesheet.test_attrs"):
+            stylesheet = self.subreddit.stylesheet()
+            assert len(stylesheet.images) > 0
+            assert stylesheet.stylesheet != ""
+
+    def test_contents(self):
+        self.reddit.read_only = False
+        stylesheet = self.subreddit.stylesheet
+        with self.recorder.use_cassette("TestSubredditStylesheet.test_attrs"):
+            contents = stylesheet.contents
+            assert contents == stylesheet.stylesheet
+
     def test_delete_banner(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubredditStylesheet.test_delete_banner"):

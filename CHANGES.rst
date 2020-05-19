@@ -80,6 +80,11 @@ Unreleased
   when Reddit fails to post an image or video post.
 
 
+**Removed**
+
+* Class ``Stylesheet`` no longer exists. It has been merged with
+  :class:`.SubredditStylesheet`.
+
 7.0.0 (2020/04/24)
 ------------------
 
@@ -176,8 +181,6 @@ Unreleased
   using an invalid template id, but instead throw a :class:`.InvalidFlairTemplateID`.
 * Method ``reddit.user.moderator_subreddits`` has been removed. Please use
   :meth:`.Redditor.moderated` instead.
-* Class ``Stylesheet`` no longer exists. It has been merged with
-  :class:`.SubredditStylesheet`.
 
 6.5.1 (2020/01/07)
 ------------------

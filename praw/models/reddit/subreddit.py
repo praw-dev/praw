@@ -3222,7 +3222,7 @@ class SubredditStylesheet(RedditBase):
     .. code-block:: python
 
         subreddit = reddit.subreddit("SUBREDDIT")
-        stylesheet = subreddit.stylesheet.stylesheet
+        stylesheet = subreddit.stylesheet.contents
         stylesheet += ".test{color:blue}"
         subreddit.stylesheet.update(stylesheet)
 
@@ -3230,16 +3230,19 @@ class SubredditStylesheet(RedditBase):
 
     STR_FIELD = "subreddit_id"
 
+    @property
+    def contents(self) -> str:
+        """Obtain the contents of the subreddit's stylesheet."""
+        return self.stylesheet
+
     def __call__(self):
         """Return the subreddit's stylesheet (Deprecated).
 
-        .. note:: As of PRAW 7.0, the model containing the stylesheet data and
-            the class holding the methods have been combined into one. The
-            new class is a lazy class, meaning that attributes have to be
-            called for if wanted. The __call__ method will return itself.
+        .. note:: As of PRAW 7.1, the model containing the stylesheet data and
+            the class holding the methods have been combined into one.
 
-        .. warning:: This method is slated for removal in the next major PRAW
-            release (8.0).
+        .. deprecated:: 7.1
+            This method will be removed in the next major release of PRAW (8.0)
 
         To be used as:
 
@@ -3251,7 +3254,7 @@ class SubredditStylesheet(RedditBase):
         warn(
             "This method is deprecated and will be removed in PRAW 8.0. "
             "Removing the call will still result in the same functionality. "
-            "To do so, remove the ``()`` before the stylesheet attribute.",
+            "To do so, change `subreddit.stylesheet()` to `subreddit.stylesheet`.",
             category=DeprecationWarning,
             stacklevel=2,
         )
@@ -3274,7 +3277,7 @@ class SubredditStylesheet(RedditBase):
 
     def _fetch(self):
         url = API_PATH["about_stylesheet"].format(subreddit=self.subreddit)
-        data = self.subreddit._reddit.get(url)
+        data = self._reddit.get(url)
         data = data["data"]
         self.__dict__.update(data)
 
