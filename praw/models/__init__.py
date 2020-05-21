@@ -28,6 +28,7 @@ from .reddit.widgets import (
     Button,
     ButtonWidget,
     Calendar,
+    CalendarConfiguration,
     CommunityList,
     CustomWidget,
     IDCard,

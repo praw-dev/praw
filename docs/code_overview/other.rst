@@ -88,6 +88,7 @@ instances of them bound to an attribute of one of the PRAW models.
 
    other/auth
    other/button
+   other/calendarconfiguration
    other/commentforest
    other/commenthelper
    other/config

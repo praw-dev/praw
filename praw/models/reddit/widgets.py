@@ -41,8 +41,31 @@ class Button(PRAWBase):
     ======================= ===================================================
     """
 
-                            If the button is an image button, the URL of a
-                            Reddit-hosted image.
+
+class CalendarConfiguration(PRAWBase):
+    """Class to represent the configuration of a :class:`.Calendar`.
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    necessarily complete.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``numEvents``           The number of events to display on the calendar.
+    ``showDate``            Whether or not to show the dates of events.
+    ``showDescription``     Whether or not to show the descriptions of events.
+    ``showLocation``        Whether or not to show the locations of events.
+    ``showTime``            Whether or not to show the times of events.
+    ``showTitle``           Whether or not to show the titles of events.
+    ======================= ===================================================
+    """
+
+
     ``width``               Image width. Only present on image buttons.
     ======================= ===================================================
     """
