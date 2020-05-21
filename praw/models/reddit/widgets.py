@@ -162,6 +162,28 @@ class MenuLink(PRAWBase):
     """
 
 
+class Styles(PRAWBase):
+    """Class to represent the style information of a widget.
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    comprehensive in any way.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``backgroundColor``     The background color of a widget, given as a
+                            hexadecimal (``0x######``).
+    ``headerColor``         The header color of a widget, given as a
+                            hexadecimal (``0x######``).
+    ======================= ===================================================
+    """
+
+
 class Submenu(BaseList):
     r"""Class to represent a submenu of links inside a menu.
 

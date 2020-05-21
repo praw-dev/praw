@@ -41,6 +41,7 @@ from .reddit.widgets import (
     ModeratorsWidget,
     PostFlairWidget,
     RulesWidget,
+    Styles,
     Submenu,
     SubredditWidgets,
     SubredditWidgetsModeration,

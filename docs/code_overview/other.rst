@@ -107,6 +107,7 @@ instances of them bound to an attribute of one of the PRAW models.
    other/redditorlist
    other/removalreason
    other/rule
+   other/styles
    other/sublisting
    other/submenu
    other/subredditemoji
