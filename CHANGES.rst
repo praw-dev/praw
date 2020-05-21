@@ -18,6 +18,7 @@ Unreleased
   :class:`.Calendar` widget.
 * Added :class:`.Hover` to represent the hover state of a :class:`.Button`.
 * Added :class:`.Styles` to represent widget styling information.
+* Added :meth:`.Redditor.report` to report a user to Reddit admins.
 
 **Changed**
 
