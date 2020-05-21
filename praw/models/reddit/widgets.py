@@ -24,6 +24,7 @@ class Button(PRAWBase):
     Attribute               Description
     ======================= ===================================================
     ``color``               The hex color used to outline the button.
+    ``fillColor``           The hex color for the background of the button.
     ``height``              Image height. Only present on image buttons.
     ``hoverState``          A ``dict`` describing the state of the button when
                             hovered over. Optional.
@@ -31,8 +32,14 @@ class Button(PRAWBase):
     ``linkUrl``             A link that can be visited by clicking the button.
                             Only present on image buttons.
     ``text``                The text displayed on the button.
-    ``url``                 If the button is a text button, a link that can be
-                            visited by clicking the button.
+    ``textColor``           The hex color for the text of the button.
+    ``url``                 * If the button is a text button, a link that can
+                              be visited by clicking the button.
+                            * If the button is an image button, the URL of a
+                              Reddit-hosted image.
+    ``width``               Image width. Only present on image buttons.
+    ======================= ===================================================
+    """
 
                             If the button is an image button, the URL of a
                             Reddit-hosted image.
