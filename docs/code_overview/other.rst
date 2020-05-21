@@ -94,6 +94,7 @@ instances of them bound to an attribute of one of the PRAW models.
    other/config
    other/domainlisting
    other/emoji
+   other/hover
    other/listinggenerator
    other/image
    other/imagedata

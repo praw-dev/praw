@@ -66,6 +66,33 @@ class CalendarConfiguration(PRAWBase):
     """
 
 
+class Hover(PRAWBase):
+    """Class to represent the hover data for a :class:`.ButtonWidget`.
+
+    These values will take effect when the button is hovered over (the user
+    moves their cursor so it's on top of the button).
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    comprehensive in any way.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``color``               The hex color used to outline the button.
+    ``fillColor``           The hex color for the background of the button.
+    ``textColor``           The hex color for the text of the button.
+    ``height``              Image height. Only present on image buttons.
+    ``kind``                Either ``text`` or ``image``.
+    ``text``                The text displayed on the button.
+    ``url``                 * If the button is a text button, a link that can
+                              be visited by clicking the button.
+                            * If the button is an image button, the URL of a
+                              Reddit-hosted image.
     ``width``               Image width. Only present on image buttons.
     ======================= ===================================================
     """

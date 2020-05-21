@@ -16,6 +16,7 @@ Unreleased
   DELETE requests.
 * Added :class:`.CalendarConfiguration` to represent the configuration of a
   :class:`.Calendar` widget.
+* Added :class:`.Hover` to represent the hover state of a :class:`.Button`.
 
 **Changed**
 

@@ -31,6 +31,7 @@ from .reddit.widgets import (
     CalendarConfiguration,
     CommunityList,
     CustomWidget,
+    Hover,
     IDCard,
     Image,
     ImageData,
