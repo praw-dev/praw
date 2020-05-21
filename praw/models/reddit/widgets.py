@@ -24,6 +24,7 @@ class Button(PRAWBase):
     Attribute               Description
     ======================= ===================================================
     ``color``               The hex color used to outline the button.
+    ``fillColor``           The hex color for the background of the button.
     ``height``              Image height. Only present on image buttons.
     ``hoverState``          A ``dict`` describing the state of the button when
                             hovered over. Optional.
@@ -31,11 +32,67 @@ class Button(PRAWBase):
     ``linkUrl``             A link that can be visited by clicking the button.
                             Only present on image buttons.
     ``text``                The text displayed on the button.
-    ``url``                 If the button is a text button, a link that can be
-                            visited by clicking the button.
+    ``textColor``           The hex color for the text of the button.
+    ``url``                 * If the button is a text button, a link that can
+                              be visited by clicking the button.
+                            * If the button is an image button, the URL of a
+                              Reddit-hosted image.
+    ``width``               Image width. Only present on image buttons.
+    ======================= ===================================================
+    """
 
-                            If the button is an image button, the URL of a
-                            Reddit-hosted image.
+
+class CalendarConfiguration(PRAWBase):
+    """Class to represent the configuration of a :class:`.Calendar`.
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    necessarily complete.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``numEvents``           The number of events to display on the calendar.
+    ``showDate``            Whether or not to show the dates of events.
+    ``showDescription``     Whether or not to show the descriptions of events.
+    ``showLocation``        Whether or not to show the locations of events.
+    ``showTime``            Whether or not to show the times of events.
+    ``showTitle``           Whether or not to show the titles of events.
+    ======================= ===================================================
+    """
+
+
+class Hover(PRAWBase):
+    """Class to represent the hover data for a :class:`.ButtonWidget`.
+
+    These values will take effect when the button is hovered over (the user
+    moves their cursor so it's on top of the button).
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    comprehensive in any way.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``color``               The hex color used to outline the button.
+    ``fillColor``           The hex color for the background of the button.
+    ``textColor``           The hex color for the text of the button.
+    ``height``              Image height. Only present on image buttons.
+    ``kind``                Either ``text`` or ``image``.
+    ``text``                The text displayed on the button.
+    ``url``                 * If the button is a text button, a link that can
+                              be visited by clicking the button.
+                            * If the button is an image button, the URL of a
+                              Reddit-hosted image.
     ``width``               Image width. Only present on image buttons.
     ======================= ===================================================
     """
@@ -101,6 +158,28 @@ class MenuLink(PRAWBase):
     ======================= ===================================================
     ``text``                The text of the menu link.
     ``url``                 The URL that the menu item links to.
+    ======================= ===================================================
+    """
+
+
+class Styles(PRAWBase):
+    """Class to represent the style information of a widget.
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    comprehensive in any way.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``backgroundColor``     The background color of a widget, given as a
+                            hexadecimal (``0x######``).
+    ``headerColor``         The header color of a widget, given as a
+                            hexadecimal (``0x######``).
     ======================= ===================================================
     """
 

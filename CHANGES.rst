@@ -14,6 +14,10 @@ Unreleased
   on poll submissions.
 * Add method :meth:`~.Reddit.delete` to :class:`.Reddit` class to support HTTP
   DELETE requests.
+* Added :class:`.CalendarConfiguration` to represent the configuration of a
+  :class:`.Calendar` widget.
+* Added :class:`.Hover` to represent the hover state of a :class:`.Button`.
+* Added :class:`.Styles` to represent widget styling information.
 
 **Changed**
 

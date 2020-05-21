@@ -88,11 +88,13 @@ instances of them bound to an attribute of one of the PRAW models.
 
    other/auth
    other/button
+   other/calendarconfiguration
    other/commentforest
    other/commenthelper
    other/config
    other/domainlisting
    other/emoji
+   other/hover
    other/listinggenerator
    other/image
    other/imagedata
@@ -105,6 +107,7 @@ instances of them bound to an attribute of one of the PRAW models.
    other/redditorlist
    other/removalreason
    other/rule
+   other/styles
    other/sublisting
    other/submenu
    other/subredditemoji
