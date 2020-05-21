@@ -1991,7 +1991,7 @@ class SubredditModeration:
             **generator_kwargs
         )
 
-    @property
+    @cachedproperty
     def stream(self):
         """Provide an instance of :class:`.SubredditModerationStream`.
 
@@ -2004,9 +2004,7 @@ class SubredditModeration:
                print("Mod: {}, Subreddit: {}".format(log.mod, log.subreddit))
 
         """
-        if self._stream is None:
-            self._stream = SubredditModerationStream(self.subreddit)
-        return self._stream
+        return SubredditModerationStream(self.subreddit)
 
     @cachedproperty
     def removal_reasons(self):
