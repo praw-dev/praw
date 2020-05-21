@@ -81,6 +81,19 @@ class TestLiveThread(IntegrationTest):
         assert update.body.startswith("Small change:")
 
 
+class TestLiveThreadStream(IntegrationTest):
+    @property
+    def live_thread(self):
+        return self.reddit.live("ta535s1hq2je")
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_updates(self, _):
+        with self.recorder.use_cassette("TestLiveThreadStream.test_updates"):
+            generator = self.live_thread.stream.updates()
+            for i in range(101):
+                assert isinstance(next(generator), LiveUpdate)
+
+
 class TestLiveContributorRelationship(IntegrationTest):
     def test_accept_invite(self):
         self.reddit.read_only = False
