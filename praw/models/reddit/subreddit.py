@@ -3015,8 +3015,8 @@ class SubredditStream:
            for comment in reddit.subreddit("iama").stream.comments():
                print(comment)
 
-        To only retreive new submissions starting when the stream is
-        created, pass `skip_existing=True`:
+        To only retrieve new submissions starting when the stream is
+        created, pass ``skip_existing=True``:
 
         .. code-block:: python
 
