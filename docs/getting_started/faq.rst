@@ -56,5 +56,15 @@ Q2: I keep on getting this exception: ``prawcore.exceptions.Redirect: Redirect t
 
 A: Reddit redirects URL searches to the submit page of the URL. To search for
 the URL, prefix ``url:`` to the url and surround the url in quotation marks.
-For example, the search ``https://www.google.com`` will become
-``url:"https://www.google.com"``.
+
+For example, the code block:
+
+.. code-block:: python
+
+    reddit.subreddit('all').search('https://google.com')
+
+Will become this code block:
+
+.. code-block:: python
+
+    reddit.subreddit('all').search('url:"https://google.com"')
