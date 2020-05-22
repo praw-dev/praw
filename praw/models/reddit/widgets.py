@@ -2,6 +2,7 @@
 
 import os.path
 from json import JSONEncoder, dumps
+from typing import Dict, List, Optional, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty

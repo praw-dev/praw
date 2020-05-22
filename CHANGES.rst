@@ -18,6 +18,15 @@ Unreleased
   :class:`.Calendar` widget.
 * Added :class:`.Hover` to represent the hover state of a :class:`.Button`.
 * Added :class:`.Styles` to represent widget styling information.
+* :meth:`.generate_button` to generate :class:`.Button` instances.
+* :meth:`.generate_calendar_configuration` to generate
+  :class:`.CalendarConfiguration` instances.
+* :meth:`.generate_hover` to generate :class:`.Hover` instances.
+* :meth:`.generate_image` to generate :class:`.Image` instances.
+* :meth:`.generate_image_data` to genrerate :class:`.ImageData` instances.
+* :meth:`.generate_menu_link` to generate :class:`.MenuLink` instances.
+* :meth:`.generate_styles` to generate :class:`.Styles` instances.
+* :meth:`.generate_submenu` to generate :class:`.Submenu` instances.
 
 **Changed**
 
