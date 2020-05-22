@@ -1306,6 +1306,37 @@ class SubredditWidgetsModeration:
             {"backgroundColor": backgroundColor, "headerColor": headerColor},
         )
 
+    def generate_submenu(
+        self, children: List[Union[MenuLink, Dict[str, str]]], text: str
+    ) -> Submenu:
+        """Generate an instance of :class:`.Submenu`.
+
+        :param children: A list of instances of :class:`.MenuLink`.
+        :param text: The text for the submenu.
+        :returns: An instance of :class:`.Submenu`.
+
+        Example usage:
+
+        .. code-block:: python
+
+            widget_moderation = reddit.subreddit("test").widgets.mod
+            submenu = widget_moderation.generate_submenu(
+                [
+                    widget_moderation.generate_menu_link(
+                        "PRAW", "https://praw.readthedocs.io/"
+                    ),
+                    widget_moderation.generate_menu_link(
+                        "requests", "https://requests.readthedocs.io/"
+                    ),
+                ],
+                "Python packages",
+            )
+        """
+        return Submenu(self._reddit, {"children": children, "text": text})
+
+    def reorder(
+        self, new_order: List[Union[str, "Widget"]], section: str = "sidebar"
+    ):
         """Reorder the widgets.
 
         :param new_order: A list of widgets. Represented as a ``list`` that
