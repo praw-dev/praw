@@ -1200,6 +1200,36 @@ class SubredditWidgetsModeration:
                 data[name] = value
         return Hover(self._reddit, data)
 
+    def generate_image(
+        self, url: str, width: int, height: int, linkUrl: str = ""
+    ) -> Image:
+        """Generate an instance of :class:`.Image`.
+
+        This method should be used along with :meth:`.add_image_widget`.
+
+        :param url: The url for the image, as returned from
+            :meth:`.upload_image`.
+        :param width: The width of the image.
+        :param height: The height of the image.
+        :param linkUrl: The URL that clicking on the image will go to.
+            Optional.
+        :returns: An instance of :class:`.Image`.
+
+        Example usage:
+
+        .. code-block:: python
+
+            widget_moderation = reddit.subreddit("mysub").widgets.mod
+            image_path = "/path/to/image.jpg"
+            image = widget_moderation.generate_image(
+                widget_moderation.upload_image(image_path), 600, 450
+            )
+        """
+        return Image(
+            self._reddit,
+            {"url": url, "width": width, "height": height, "linkUrl": linkUrl},
+        )
+
         """Reorder the widgets.
 
         :param new_order: A list of widgets. Represented as a ``list`` that
