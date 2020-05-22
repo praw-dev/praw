@@ -1002,7 +1002,7 @@ class SubredditWidgetsModeration:
 class Widget(PRAWBase):
     """Base class to represent a Widget."""
 
-    @property
+    @cachedproperty
     def mod(self):
         """Get an instance of :class:`.WidgetModeration` for this widget.
 
