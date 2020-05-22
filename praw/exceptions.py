@@ -20,7 +20,7 @@ class RedditErrorItem:
     """Represents a single error returned from Reddit's API."""
 
     @property
-    def error_message(self):
+    def error_message(self) -> str:
         """Get the completed error message string."""
         error_str = "{}: {!r}".format(self.error_type, self.message)
         if self.field:

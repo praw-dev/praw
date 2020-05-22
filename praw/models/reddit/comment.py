@@ -83,7 +83,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return parts[-1]
 
     @property
-    def _kind(self):
+    def _kind(self) -> str:
         """Return the class's kind."""
         return self._reddit.config.kinds["comment"]
 

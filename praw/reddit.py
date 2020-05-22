@@ -67,7 +67,7 @@ class Reddit:
     _ratelimit_regex = re.compile(r"([0-9]{1,2}) (seconds?|minutes?)")
 
     @property
-    def _next_unique(self):
+    def _next_unique(self) -> int:
         value = self._unique_counter
         self._unique_counter += 1
         return value

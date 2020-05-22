@@ -115,12 +115,12 @@ class Redditor(
         return RedditorStream(self)
 
     @property
-    def _kind(self):
+    def _kind(self) -> str:
         """Return the class's kind."""
         return self._reddit.config.kinds["redditor"]
 
     @property
-    def _path(self):
+    def _path(self) -> str:
         return API_PATH["user"].format(user=self)
 
     def __init__(
