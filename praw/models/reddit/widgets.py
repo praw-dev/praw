@@ -924,7 +924,110 @@ class SubredditWidgetsModeration:
         text_area.update(other_settings)
         return self._create_widget(text_area)
 
-    def reorder(self, new_order, section="sidebar"):
+    def generate_button(
+        self,
+        kind: str,
+        text: str,
+        url: str,
+        color: Optional[Union[str, int]] = None,
+        fillColor: Optional[Union[str, int]] = None,
+        height: Optional[int] = None,
+        hoverState: Optional[Hover] = None,
+        linkUrl: Optional[str] = None,
+        textColor: Optional[Union[str, int]] = None,
+        width: Optional[int] = None,
+    ) -> Button:
+        """Generate an instance of :class:`.Button`.
+
+        This object should be used with :meth:`.add_button_widget` to create
+        a button widget.
+
+        :param kind: The type of button (``"image"`` or ``"text"``)
+        :param text: The button text.
+        :param url: The url of the button. On image buttons, ``url`` should be
+            a link to the image obtained from :meth:`.upload_image`.
+        :param color: The color of the button. Should either be given as a
+            7-character RGB code (``"#FFFFFF"``) or the integer representation
+            (``0xFFFFFF``).
+        :param fillColor: The background color of the button. Should either be
+            given as a 7-character RGB code (``"#FFFFFF"``) or the integer
+            representation (``0xFFFFFF``).
+        :param height: The height of the image, if the button is an image
+            button.
+        :param hoverState: An instance of :class:`.Hover` containing the hover
+            data for the button. An instance of :class:`.Hover` can be obtained
+            from :meth:`.generate_hover`. Optional.
+        :param linkUrl: If the button is an image button, represents the link
+            that the user will visit when the image is clicked on. Optional.
+        :param textColor: The color of the button text. Should either be given
+            as a 7-character RGB code (``"#FFFFFF"``) or the integer
+            representation (``0xFFFFFF``).
+        :param width: The width of the image, if the button is an image button.
+        :returns: An instance of :class:`.Button`.
+
+        For example, to generate a text button:
+
+        .. code-block:: python
+
+            widget_mod = reddit.subreddit("test").widgets.mod
+            hover = widget_mod.generate_hover("text", color=0xFF0000,
+                fillColor=0x000000, text="Don't click me", textColor=0xFFFFFF,
+                url="https://www.reddit.com")
+            button = widget_mod.generate_button("text", "Click me!",
+                "https://www.google.com", color=0x00FF00, fillColor=0xFFFFFF,
+                hoverState=hover, textColor=0x000000)
+
+        To generate an image button:
+
+        .. code-block:: python
+
+            widget_mod = reddit.subreddit("test").widgets.mod
+            image_1 = widget_mod.upload_image("image.png")
+            image_2 = widget_mod.upload_image("image2.png")
+            hover = widget_mod.generate_hover("image",
+                linkUrl = "https://www.reddit.com", height=400
+                text="Don't click me", url=image_2, width=200)
+            button = widget_mod.generate_button("image", "Click me!", image_1,
+                height = 200, hoverState = hover,
+                linkUrl = "https://www.google.com", width=200)
+
+        The hover states do not have to correspond to the given button types.
+
+        .. code-block:: python
+
+            widget_mod = reddit.subreddit("test").widgets.mod
+            image_1 = widget_mod.upload_image("image.png")
+            hover = widget_mod.generate_hover("text", color=0xFF0000,
+                fillColor=0x000000, text="Don't click me", textColor=0xFFFFFF,
+                url="https://www.reddit.com")
+            button = widget_mod.generate_button("image", "Click me!", image_1,
+                height = 200, hoverState=hover,
+                linkUrl = "https://www.google.com", width=200)
+
+        .. code-block:: python
+
+            widget_mod = reddit.subreddit("test").widgets.mod
+            image = widget_mod.upload_image("image.png")
+            hover = widget_mod.generate_hover("image",
+                linkUrl = "https://www.reddit.com", height=400
+                text="Don't click me", url=image, width=200)
+            button = widget_mod.generate_button("text", "Click me!",
+                "https://www.google.com", color=0x00FF00, fillColor=0xFFFFFF,
+                hoverState=hover, textColor=0x000000)
+        """
+        data = {"kind": kind, "text": text, "url": url}
+        for name, value in {
+            "color": color,
+            "fillColor": fillColor,
+            "height": height,
+            "hoverState": hoverState,
+            "linkUrl": linkUrl,
+            "textColor": textColor,
+            "width": width,
+        }.items():
+            if value is not None:
+                data[name] = value
+        return Button(self._reddit, data)
         """Reorder the widgets.
 
         :param new_order: A list of widgets. Represented as a ``list`` that
