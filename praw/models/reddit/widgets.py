@@ -1072,6 +1072,56 @@ class SubredditWidgetsModeration:
             },
         )
 
+    def generate_hover(
+        self,
+        kind: str,
+        color: Optional[Union[str, int]] = None,
+        fillColor: Optional[Union[str, int]] = None,
+        height: Optional[int] = None,
+        text: Optional[str] = None,
+        textColor: Optional[Union[str, int]] = None,
+        url: Optional[str] = None,
+        width: Optional[int] = None,
+    ) -> Hover:
+        """Generate an instance of :class:`.Hover`.
+
+        .. note:: You can use hover states that do not correspond with the
+            given button type, such as an ``image`` hover state for a ``text``
+            button.
+
+        :param kind: The type of hover state (``image`` or ``text``)
+        :param text: The hover state text.
+        :param url: The link to an uploaded image obtained from
+            :meth:`.upload_image`. Can only be used on ``image`` hover states.
+        :param color: The color of the hover state. Should either be given as a
+            7-character RGB code (``"#FFFFFF"``) or the integer representation
+            (``0xFFFFFF``).
+        :param fillColor: The background color of the hover state. Should
+            either be given as a 7-character RGB code (``"#FFFFFF"``) or the
+            integer representation (``0xFFFFFF``).
+        :param height: The height of the image, if the hover state is an image
+            hover state.
+        :param textColor: The color of the hover state text. Should either be
+            given as a 7-character RGB code (``"#FFFFFF"``) or the integer
+            representation (``0xFFFFFF``).
+        :param width: The width of the image, if the hover state is an image
+            hover state.
+        :returns: An instance of :class:`.Hover`.
+        """
+        data = {"kind": kind}
+        for name, value in {
+            "color": color,
+            "fillColor": fillColor,
+            "height": height,
+            "text": text,
+            "textColor": textColor,
+            "url": url,
+            "width": width,
+        }.items():
+            if value is not None:
+                data[name] = value
+        return Hover(self._reddit, data)
+
         """Reorder the widgets.
 
         :param new_order: A list of widgets. Represented as a ``list`` that
