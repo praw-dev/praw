@@ -1259,6 +1259,28 @@ class SubredditWidgetsModeration:
             {"url": url, "width": width, "height": height, "name": name},
         )
 
+    def generate_menu_link(self, text: str, url: str) -> MenuLink:
+        """Generate an instance of :class:`.MenuLink`.
+
+        This method should be used along with :meth:`.add_menu` and
+        :meth:`.generate_submenu`.
+
+        :param text: The text of the menu link. Should be less than or equal to
+            20 characters.
+        :param url: The url that the menu link points to.
+        :returns: An instance of :class:`.MenuLink`.
+
+        Example usage:
+
+        .. code-block:: python
+
+            widget_moderation = reddit.subreddit("mysub").widgets.mod
+            menu_link = widget_moderation.generate_menu_link(
+                "Reddit Homepage", "https://www.reddit.com"
+            )
+        """
+        return MenuLink(self._reddit, {"text": text, "url": url})
+
         """Reorder the widgets.
 
         :param new_order: A list of widgets. Represented as a ``list`` that
