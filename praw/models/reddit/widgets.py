@@ -1101,8 +1101,13 @@ class SubredditWidgetsModeration:
 
             widget_moderation = reddit.subreddit("mysub").widgets.mod
             config = widget_moderation.generate_calendar_configuration(
-                numEvents=10, showDate=True, showDescription=False,
-                showLocation=False, showTime=True, showTitle=True)
+                numEvents=10,
+                showDate=True,
+                showDescription=False,
+                showLocation=False,
+                showTime=True,
+                showTitle=True,
+            )
         """
         return CalendarConfiguration(
             self._reddit,
