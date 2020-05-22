@@ -1281,6 +1281,31 @@ class SubredditWidgetsModeration:
         """
         return MenuLink(self._reddit, {"text": text, "url": url})
 
+    def generate_styles(
+        self, backgroundColor: Union[str, int], headerColor: Union[str, int]
+    ) -> Styles:
+        """Generate an instance of :class:`.Styles`.
+
+        :param backgroundColor: The background color of a widget. Should either
+            be given as a 7-character RGB code (``"#FFFFFF"``) or the integer
+            representation (``0xFFFFFF``).
+        :param headerColor: The color of the widget header. Should either be
+            given as a 7-character RGB code (``"#FFFFFF"``) or the integer
+            representation (``0xFFFFFF``).
+        :returns: An instance of :class:`.Styles`.
+
+        .. code-block:: python
+
+            widget_moderation = reddit.subreddit("test").widgets.mod
+            styles = widget_moderation.generate_styles(
+                backgroundColor="#FFFF66", headerColor="#3333EE"
+            )
+        """
+        return Styles(
+            self._reddit,
+            {"backgroundColor": backgroundColor, "headerColor": headerColor},
+        )
+
         """Reorder the widgets.
 
         :param new_order: A list of widgets. Represented as a ``list`` that
