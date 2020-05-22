@@ -1028,6 +1028,50 @@ class SubredditWidgetsModeration:
             if value is not None:
                 data[name] = value
         return Button(self._reddit, data)
+
+    def generate_calendar_configuration(
+        self,
+        numEvents: int,
+        showDate: bool,
+        showDescription: bool,
+        showLocation: bool,
+        showTime: bool,
+        showTitle: bool,
+    ) -> CalendarConfiguration:
+        """Generate an instance of :class:`.CalendarConfiguration`.
+
+        This method should be used to generate an object for the
+        ``configuration`` parameter of :meth:`.add_calendar`.
+
+        :param numEvents: The number of events to show on the calendar.
+        :param showDate: Show the date of events.
+        :param showDescription: Show the description of events.
+        :param showLocation: Show the location of events.
+        :param showTime: Show the time of events.
+        :param showTitle: Show the title of events.
+        :returns: An instance of :class:`.CalendarConfiguration`
+
+        Example usage:
+
+        .. code-block:: python
+
+            widget_moderation = reddit.subreddit("mysub").widgets.mod
+            config = widget_moderation.generate_calendar_configuration(
+                numEvents=10, showDate=True, showDescription=False,
+                showLocation=False, showTime=True, showTitle=True)
+        """
+        return CalendarConfiguration(
+            self._reddit,
+            {
+                "numEvents": numEvents,
+                "showDate": showDate,
+                "showDescription": showDescription,
+                "showLocation": showLocation,
+                "showTime": showTime,
+                "showTitle": showTitle,
+            },
+        )
+
         """Reorder the widgets.
 
         :param new_order: A list of widgets. Represented as a ``list`` that
