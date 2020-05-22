@@ -25,7 +25,8 @@ class BaseList(PRAWBase):
 
         child_list = getattr(self, self.CHILD_ATTRIBUTE)
         for index, item in enumerate(child_list):
-            child_list[index] = reddit._objector.objectify(item)
+            if not isinstance(item, PRAWBase):
+                child_list[index] = reddit._objector.objectify(item)
 
     def __contains__(self, item: Any) -> bool:
         """Test if item exists in the list."""

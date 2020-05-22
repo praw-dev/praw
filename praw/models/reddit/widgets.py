@@ -1128,6 +1128,7 @@ class SubredditWidgetsModeration:
         color: Optional[Union[str, int]] = None,
         fillColor: Optional[Union[str, int]] = None,
         height: Optional[int] = None,
+        linkUrl: Optional[str] = None,
         text: Optional[str] = None,
         textColor: Optional[Union[str, int]] = None,
         url: Optional[str] = None,
@@ -1151,6 +1152,8 @@ class SubredditWidgetsModeration:
             integer representation (``0xFFFFFF``).
         :param height: The height of the image, if the hover state is an image
             hover state.
+        :param linkUrl: If the button is an image button, represents the link
+            that the user will visit when the image is clicked on. Optional.
         :param textColor: The color of the hover state text. Should either be
             given as a 7-character RGB code (``"#FFFFFF"``) or the integer
             representation (``0xFFFFFF``).
@@ -1192,6 +1195,7 @@ class SubredditWidgetsModeration:
             "color": color,
             "fillColor": fillColor,
             "height": height,
+            "linkUrl": linkUrl,
             "text": text,
             "textColor": textColor,
             "url": url,
