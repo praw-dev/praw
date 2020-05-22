@@ -1230,6 +1230,35 @@ class SubredditWidgetsModeration:
             {"url": url, "width": width, "height": height, "linkUrl": linkUrl},
         )
 
+    def generate_image_data(
+        self, url: str, width: int, height: int, name: str
+    ) -> ImageData:
+        """Generate an instance of :class:`.ImageData`.
+
+        This method should be used along with :meth:`.add_custom_widget`.
+
+        :param url: The url for the image, as returned from
+            :meth:`.upload_image`.
+        :param width: The width of the image.
+        :param height: The height of the image.
+        :param name: The name of the image.
+        :returns: An instance of :class:`.ImageData`.
+
+        Example usage:
+
+        .. code-block:: python
+
+            widget_moderation = reddit.subreddit("mysub").widgets.mod
+            image_url = widget_moderation.upload_image("/path/to/image.jpg")
+            image = widget_moderation.generate_image_data(
+                image_url, 600, 450, "logo"
+            )
+        """
+        return ImageData(
+            self._reddit,
+            {"url": url, "width": width, "height": height, "name": name},
+        )
+
         """Reorder the widgets.
 
         :param new_order: A list of widgets. Represented as a ``list`` that
