@@ -122,14 +122,18 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install .[test]
-        pip install https://github.com/bboe/coveralls-python/archive/github_actions.zip
+        pip install https://github.com/bboe/coveralls-python/archive/master.zip
     - name: Test with pytest
       run: coverage run --source praw --module pytest
     - env:
         COVERALLS_PARALLEL: true
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       name: Submit to coveralls
-      run: coveralls
+      run: |
+        if [ "$GITHUB_REPOSITORY" = 'praw-dev/praw' \
+          -a "$GITHUB_EVENT_NAME" = 'push' ]; then
+            coveralls
+        fi
     - name: Check coverage
       run: coverage report -m --fail-under=100
     strategy:
