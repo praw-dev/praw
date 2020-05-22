@@ -37,9 +37,34 @@ of your choosing.
 
 Q: Help, I keep on getting redirected to ``/r/subreddit/login/``!
 
-Q2: I keep on getting this exception: ``prawcore.exceptions.Redirect: Redirect to /r/subreddit/login/ (You may be trying to perform a non-read-only action via a read-only instance.)``
+Q2: I keep on getting this exception:
+
+.. code-block:: none
+
+    prawcore.exceptions.Redirect: Redirect to /r/subreddit/login/ (You may be trying to perform a non-read-only action via a read-only instance.)
 
 A: PRAW is most likely in read-only mode. This normally occurs when PRAW is
 authenticated without a username and password or a refresh token. In order to perform
 this action, the Reddit instance needs to be authenticated. See :ref:`oauth_options` to
 see the available authentication methods.
+
+.. _faq5:
+
+Q: Help, searching for URLs keeps on redirecting me to ``/submit``!
+
+Q2: I keep on getting this exception: ``prawcore.exceptions.Redirect: Redirect to /submit``
+
+A: Reddit redirects URL searches to the submit page of the URL. To search for
+the URL, prefix ``url:`` to the url and surround the url in quotation marks.
+
+For example, the code block:
+
+.. code-block:: python
+
+    reddit.subreddit('all').search('https://google.com')
+
+Will become this code block:
+
+.. code-block:: python
+
+    reddit.subreddit('all').search('url:"https://google.com"')
