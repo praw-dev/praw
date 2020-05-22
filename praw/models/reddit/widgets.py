@@ -1151,6 +1151,35 @@ class SubredditWidgetsModeration:
         :param width: The width of the image, if the hover state is an image
             hover state.
         :returns: An instance of :class:`.Hover`.
+
+        For example, to generate a text Hover:
+
+        .. code-block:: python
+
+            widget_mod = reddit.subreddit("test").widgets.mod
+            hover = widget_mod.generate_hover(
+                "text",
+                color=0xFF0000,
+                fillColor=0x000000,
+                text="Don't click me",
+                textColor=0xFFFFFF,
+                url="https://www.reddit.com",
+            )
+
+        To generate an image Hover:
+
+        .. code-block:: python
+
+            widget_mod = reddit.subreddit("test").widgets.mod
+            image = widget_mod.upload_image("image.png")
+            hover = widget_mod.generate_hover(
+                "image",
+                linkUrl="https://www.reddit.com",
+                height=400,
+                text="Don't click me",
+                url=image,
+                width=200,
+            )
         """
         data = {"kind": kind}
         for name, value in {
