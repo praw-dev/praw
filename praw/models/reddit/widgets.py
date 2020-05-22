@@ -970,12 +970,23 @@ class SubredditWidgetsModeration:
         .. code-block:: python
 
             widget_mod = reddit.subreddit("test").widgets.mod
-            hover = widget_mod.generate_hover("text", color=0xFF0000,
-                fillColor=0x000000, text="Don't click me", textColor=0xFFFFFF,
-                url="https://www.reddit.com")
-            button = widget_mod.generate_button("text", "Click me!",
-                "https://www.google.com", color=0x00FF00, fillColor=0xFFFFFF,
-                hoverState=hover, textColor=0x000000)
+            hover = widget_mod.generate_hover(
+                "text",
+                color=0xFF0000,
+                fillColor=0x000000,
+                text="Don't click me",
+                textColor=0xFFFFFF,
+                url="https://www.reddit.com",
+            )
+            button = widget_mod.generate_button(
+                "text",
+                "Click me!",
+                "https://www.google.com",
+                color=0x00FF00,
+                fillColor=0xFFFFFF,
+                hoverState=hover,
+                textColor=0x000000,
+            )
 
         To generate an image button:
 
@@ -984,12 +995,23 @@ class SubredditWidgetsModeration:
             widget_mod = reddit.subreddit("test").widgets.mod
             image_1 = widget_mod.upload_image("image.png")
             image_2 = widget_mod.upload_image("image2.png")
-            hover = widget_mod.generate_hover("image",
-                linkUrl = "https://www.reddit.com", height=400
-                text="Don't click me", url=image_2, width=200)
-            button = widget_mod.generate_button("image", "Click me!", image_1,
-                height = 200, hoverState = hover,
-                linkUrl = "https://www.google.com", width=200)
+            hover = widget_mod.generate_hover(
+                "image",
+                linkUrl="https://www.reddit.com",
+                height=400,
+                text="Don't click me",
+                url=image_2,
+                width=200,
+            )
+            button = widget_mod.generate_button(
+                "image",
+                "Click me!",
+                image_1,
+                height=200,
+                hoverState=hover,
+                linkUrl="https://www.google.com",
+                width=200,
+            )
 
         The hover states do not have to correspond to the given button types.
 
@@ -997,23 +1019,45 @@ class SubredditWidgetsModeration:
 
             widget_mod = reddit.subreddit("test").widgets.mod
             image_1 = widget_mod.upload_image("image.png")
-            hover = widget_mod.generate_hover("text", color=0xFF0000,
-                fillColor=0x000000, text="Don't click me", textColor=0xFFFFFF,
-                url="https://www.reddit.com")
-            button = widget_mod.generate_button("image", "Click me!", image_1,
-                height = 200, hoverState=hover,
-                linkUrl = "https://www.google.com", width=200)
+            hover = widget_mod.generate_hover(
+                "text",
+                color=0xFF0000,
+                fillColor=0x000000,
+                text="Don't click me",
+                textColor=0xFFFFFF,
+                url="https://www.reddit.com",
+            )
+            button = widget_mod.generate_button(
+                "image",
+                "Click me!",
+                image_1,
+                height=200,
+                hoverState=hover,
+                linkUrl="https://www.google.com",
+                width=200,
+            )
 
         .. code-block:: python
 
             widget_mod = reddit.subreddit("test").widgets.mod
             image = widget_mod.upload_image("image.png")
-            hover = widget_mod.generate_hover("image",
-                linkUrl = "https://www.reddit.com", height=400
-                text="Don't click me", url=image, width=200)
-            button = widget_mod.generate_button("text", "Click me!",
-                "https://www.google.com", color=0x00FF00, fillColor=0xFFFFFF,
-                hoverState=hover, textColor=0x000000)
+            hover = widget_mod.generate_hover(
+                "image",
+                linkUrl="https://www.reddit.com",
+                height=400,
+                text="Don't click me",
+                url=image,
+                width=200,
+            )
+            button = widget_mod.generate_button(
+                "text",
+                "Click me!",
+                "https://www.google.com",
+                color=0x00FF00,
+                fillColor=0xFFFFFF,
+                hoverState=hover,
+                textColor=0x000000,
+            )
         """
         data = {"kind": kind, "text": text, "url": url}
         for name, value in {
