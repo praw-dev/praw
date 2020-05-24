@@ -1871,6 +1871,8 @@ class WidgetModeration:
             if not key.startswith("_")
         }
         del payload["subreddit"]  # not JSON serializable
+        if "mod" in payload:
+            del payload["mod"]
         payload.update(kwargs)
         widget = self._reddit.put(
             path, data={"json": dumps(payload, cls=WidgetEncoder)}
