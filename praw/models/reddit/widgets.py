@@ -1012,9 +1012,7 @@ class Widget(PRAWBase):
            widget belongs to. To remedy this, call
            :meth:`~.SubredditWidgets.refresh`.
         """
-        if self._mod is None:
-            self._mod = WidgetModeration(self, self.subreddit, self._reddit)
-        return self._mod
+        return WidgetModeration(self, self.subreddit, self._reddit)
 
     def __eq__(self, other):
         """Check equality against another object."""
