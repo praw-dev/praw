@@ -28,9 +28,7 @@ class TestRedditor(IntegrationTest):
 
     def test_friend__with_note__no_gold(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestRedditor.test_friend__with_note__no_gold"
-        ):
+        with self.recorder.use_cassette("TestRedditor.test_friend__with_note__no_gold"):
             with pytest.raises(RedditAPIException) as excinfo:
                 self.reddit.redditor(self.FRIEND.lower()).friend(note="praw")
             assert "GOLD_REQUIRED" == excinfo.value.error_type
@@ -69,9 +67,7 @@ class TestRedditor(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_message_from_subreddit(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestRedditor.test_message_from_subreddit"
-        ):
+        with self.recorder.use_cassette("TestRedditor.test_message_from_subreddit"):
             redditor = self.reddit.redditor("subreddit_stats")
             redditor.message(
                 "PRAW test",
@@ -109,9 +105,7 @@ class TestRedditor(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_stream__submissions(self, _):
         generator = self.reddit.redditor("AutoModerator").stream.submissions()
-        with self.recorder.use_cassette(
-            "TestRedditor.test_stream__submissions"
-        ):
+        with self.recorder.use_cassette("TestRedditor.test_stream__submissions"):
             for i in range(101):
                 assert isinstance(next(generator), Submission)
 
@@ -124,9 +118,7 @@ class TestRedditor(IntegrationTest):
 
     def test_trophies__user_not_exist(self):
         redditor = self.reddit.redditor("thisusershouldnotexist")
-        with self.recorder.use_cassette(
-            "TestRedditor.test_trophies__user_not_exist"
-        ):
+        with self.recorder.use_cassette("TestRedditor.test_trophies__user_not_exist"):
             with pytest.raises(RedditAPIException) as excinfo:
                 redditor.trophies()
             assert "USER_DOESNT_EXIST" == excinfo.value.error_type
@@ -156,33 +148,25 @@ class TestRedditorListings(IntegrationTest):
         assert len(comments) == 100
 
     def test_comments__hot(self):
-        with self.recorder.use_cassette(
-            "TestRedditorListings.test_comments__hot"
-        ):
+        with self.recorder.use_cassette("TestRedditorListings.test_comments__hot"):
             redditor = self.reddit.redditor("spez")
             comments = list(redditor.comments.hot())
         assert len(comments) == 100
 
     def test_comments__new(self):
-        with self.recorder.use_cassette(
-            "TestRedditorListings.test_comments__new"
-        ):
+        with self.recorder.use_cassette("TestRedditorListings.test_comments__new"):
             redditor = self.reddit.redditor("spez")
             comments = list(redditor.comments.new())
         assert len(comments) == 100
 
     def test_comments__top(self):
-        with self.recorder.use_cassette(
-            "TestRedditorListings.test_comments__top"
-        ):
+        with self.recorder.use_cassette("TestRedditorListings.test_comments__top"):
             redditor = self.reddit.redditor("spez")
             comments = list(redditor.comments.top())
         assert len(comments) == 100
 
     def test_controversial(self):
-        with self.recorder.use_cassette(
-            "TestRedditorListings.test_controversial"
-        ):
+        with self.recorder.use_cassette("TestRedditorListings.test_controversial"):
             redditor = self.reddit.redditor("spez")
             items = list(redditor.controversial())
         assert len(items) == 100
@@ -258,9 +242,7 @@ class TestRedditorListings(IntegrationTest):
 
     def test_hidden__other_user(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestRedditorListings.test_hidden__other_user"
-        ):
+        with self.recorder.use_cassette("TestRedditorListings.test_hidden__other_user"):
             redditor = self.reddit.redditor("spez")
             with pytest.raises(Forbidden):
                 list(redditor.hidden())
@@ -294,9 +276,7 @@ class TestRedditorListings(IntegrationTest):
 
     def test_saved__other_user(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestRedditorListings.test_saved__other_user"
-        ):
+        with self.recorder.use_cassette("TestRedditorListings.test_saved__other_user"):
             redditor = self.reddit.redditor("spez")
             with pytest.raises(Forbidden):
                 list(redditor.saved())
@@ -310,25 +290,19 @@ class TestRedditorListings(IntegrationTest):
         assert len(submissions) == 100
 
     def test_submissions__hot(self):
-        with self.recorder.use_cassette(
-            "TestRedditorListings.test_submissions__hot"
-        ):
+        with self.recorder.use_cassette("TestRedditorListings.test_submissions__hot"):
             redditor = self.reddit.redditor("spez")
             submissions = list(redditor.submissions.hot())
         assert len(submissions) == 100
 
     def test_submissions__new(self):
-        with self.recorder.use_cassette(
-            "TestRedditorListings.test_submissions__new"
-        ):
+        with self.recorder.use_cassette("TestRedditorListings.test_submissions__new"):
             redditor = self.reddit.redditor("spez")
             submissions = list(redditor.submissions.new())
         assert len(submissions) == 100
 
     def test_submissions__top(self):
-        with self.recorder.use_cassette(
-            "TestRedditorListings.test_submissions__top"
-        ):
+        with self.recorder.use_cassette("TestRedditorListings.test_submissions__top"):
             redditor = self.reddit.redditor("spladug")
             submissions = list(redditor.submissions.top())
         assert len(submissions) == 100

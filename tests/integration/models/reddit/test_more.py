@@ -28,8 +28,7 @@ class TestMore(IntegrationTest):
             ],
         }
         with self.recorder.use_cassette(
-            "TestMore.test_comments",
-            match_requests_on=["uri", "method", "body"],
+            "TestMore.test_comments", match_requests_on=["uri", "method", "body"],
         ):
             more = MoreComments(self.reddit, data)
             more.submission = self.reddit.submission("3hahrw")

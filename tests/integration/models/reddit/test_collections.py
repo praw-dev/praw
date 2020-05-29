@@ -28,9 +28,7 @@ class TestCollection(IntegrationTest):
         uuid = self.NONEMPTY_REAL_UUID
         with self.recorder.use_cassette("TestCollection.test_init"):
             collection1 = self.subreddit.collections(uuid)
-            collection2 = self.subreddit.collections(
-                permalink=collection1.permalink
-            )
+            collection2 = self.subreddit.collections(permalink=collection1.permalink)
             assert collection1 == collection2
 
     def test_iter(self):
@@ -75,9 +73,7 @@ class TestCollectionModeration(IntegrationTest):
     def test_add_post(self, _):
         self.reddit.read_only = False
         uuid = self.NONEMPTY_REAL_UUID
-        with self.recorder.use_cassette(
-            "TestCollectionModeration.test_add_post"
-        ):
+        with self.recorder.use_cassette("TestCollectionModeration.test_add_post"):
             collection = self.subreddit.collections(uuid)
             posts = [
                 self.subreddit.submit("Post #{}".format(i), selftext="")
@@ -91,9 +87,7 @@ class TestCollectionModeration(IntegrationTest):
             collection.mod.add_post(posts[3].id)  # id
 
             posts.append(
-                self.subreddit.submit(
-                    "Post #4", selftext="", collection_id=uuid
-                )
+                self.subreddit.submit("Post #4", selftext="", collection_id=uuid)
             )
 
             with pytest.raises(TypeError):
@@ -108,9 +102,7 @@ class TestCollectionModeration(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_delete(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestCollectionModeration.test_delete"
-        ):
+        with self.recorder.use_cassette("TestCollectionModeration.test_delete"):
             collection = self.subreddit.collections.mod.create("Title", "")
             collection.mod.delete()
 
@@ -118,21 +110,15 @@ class TestCollectionModeration(IntegrationTest):
     def test_remove_post(self, _):
         self.reddit.read_only = False
         uuid = self.NONEMPTY_REAL_UUID
-        with self.recorder.use_cassette(
-            "TestCollectionModeration.test_remove_post"
-        ):
-            post = self.subreddit.submit(
-                "The title", selftext="", collection_id=uuid
-            )
+        with self.recorder.use_cassette("TestCollectionModeration.test_remove_post"):
+            post = self.subreddit.submit("The title", selftext="", collection_id=uuid)
             collection = self.subreddit.collections(uuid)
             collection.mod.remove_post(post)
 
     @mock.patch("time.sleep", return_value=None)
     def test_reorder(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestCollectionModeration.test_reorder"
-        ):
+        with self.recorder.use_cassette("TestCollectionModeration.test_reorder"):
             collection = self.subreddit.collections(self.NONEMPTY_REAL_UUID)
             original_order = collection.link_ids
             new_order = (
@@ -162,9 +148,7 @@ class TestCollectionModeration(IntegrationTest):
         self.reddit.read_only = False
         uuid = self.NONEMPTY_REAL_UUID
         new_title = "a" * 100
-        with self.recorder.use_cassette(
-            "TestCollectionModeration.test_update_title"
-        ):
+        with self.recorder.use_cassette("TestCollectionModeration.test_update_title"):
             collection = self.subreddit.collections(uuid)
             collection.mod.update_title(new_title)
             assert new_title == collection.title
@@ -179,9 +163,7 @@ class TestSubredditCollections(IntegrationTest):
     def test_call(self, _):
         with self.recorder.use_cassette("TestSubredditCollections.test_call"):
             collection = next(iter(self.subreddit.collections))
-            assert collection == self.subreddit.collections(
-                collection.collection_id
-            )
+            assert collection == self.subreddit.collections(collection.collection_id)
             assert collection == self.subreddit.collections(
                 permalink=collection.permalink
             )
@@ -211,9 +193,7 @@ class TestSubredditCollectionsModeration(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubredditCollectionsModeration.test_create"
         ):
-            collection = self.subreddit.collections.mod.create(
-                title, description
-            )
+            collection = self.subreddit.collections.mod.create(title, description)
             assert collection.title == title
             assert collection.description == description
             assert len(collection) == 0

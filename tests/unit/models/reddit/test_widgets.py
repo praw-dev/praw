@@ -19,9 +19,7 @@ class TestWidgetEncoder(UnitTest):
         data = [
             1,
             "two",
-            SubredditWidgetsModeration(
-                self.reddit.subreddit("subreddit"), self.reddit
-            ),
+            SubredditWidgetsModeration(self.reddit.subreddit("subreddit"), self.reddit),
         ]
         with raises(TypeError):
             dumps(data, cls=WidgetEncoder)  # should throw TypeError

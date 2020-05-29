@@ -55,10 +55,7 @@ class TestRule(IntegrationTest):
     @pytest.mark.filterwarnings("ignore", category=DeprecationWarning)
     def test_iter_call(self):
         with self.recorder.use_cassette("TestRule.test_call"):
-            assert (
-                self.subreddit.rules()["rules"][0]["short_name"]
-                == "Test post 12"
-            )
+            assert self.subreddit.rules()["rules"][0]["short_name"] == "Test post 12"
 
     def test_iter_rule_string(self):
         with self.recorder.use_cassette("TestRule.test_iter_rules"):
@@ -124,9 +121,7 @@ class TestRule(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_reorder_rules_no_reorder(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestRule.test_reorder_rules_no_reorder"
-        ):
+        with self.recorder.use_cassette("TestRule.test_reorder_rules_no_reorder"):
             rule_list = list(self.subreddit.rules)
             assert self.subreddit.rules.mod.reorder(rule_list) == rule_list
 
@@ -144,9 +139,7 @@ class TestRule(IntegrationTest):
         with self.recorder.use_cassette("TestRule.test_update_rule"):
             rule = self.subreddit.rules[0]
             rule2 = rule.mod.update(
-                description="Updated rule",
-                kind="link",
-                violation_reason="PUpdate",
+                description="Updated rule", kind="link", violation_reason="PUpdate",
             )
             assert rule.description != rule2.description
             assert rule2.description == "Updated rule"
@@ -158,9 +151,7 @@ class TestRule(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_update_rule_short_name(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestRule.test_update_rule_short_name"
-        ):
+        with self.recorder.use_cassette("TestRule.test_update_rule_short_name"):
             rule = self.subreddit.rules[1]
             rule2 = rule.mod.update(
                 short_name="PRAW Update",

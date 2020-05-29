@@ -23,9 +23,7 @@ class TestEmoji(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         emoji = subreddit.emoji["invalid"]
         emoji2 = subreddit.emoji["Test_png"]
-        with self.recorder.use_cassette(
-            "TestEmoji.test__fetch__invalid_emoji"
-        ):
+        with self.recorder.use_cassette("TestEmoji.test__fetch__invalid_emoji"):
             with pytest.raises(ClientException) as excinfo:
                 emoji.url
             assert str(excinfo.value) == (
@@ -34,9 +32,7 @@ class TestEmoji(IntegrationTest):
             with pytest.raises(ClientException) as excinfo2:
                 emoji2.url
             assert str(excinfo2.value) == (
-                "/r/{} does not have the emoji {}".format(
-                    subreddit, "Test_png"
-                )
+                "/r/{} does not have the emoji {}".format(subreddit, "Test_png")
             )
 
     def test_delete(self):
@@ -51,9 +47,7 @@ class TestEmoji(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         with self.recorder.use_cassette("TestEmoji.test_update"):
             subreddit.emoji["test_png"].update(
-                mod_flair_only=False,
-                post_flair_allowed=True,
-                user_flair_allowed=True,
+                mod_flair_only=False, post_flair_allowed=True, user_flair_allowed=True,
             )
 
     @mock.patch("time.sleep", return_value=None)
@@ -94,9 +88,7 @@ class TestSubredditEmoji(IntegrationTest):
     def test_add_with_perms(self, _):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-        with self.recorder.use_cassette(
-            "TestSubredditEmoji.test_add_with_perms"
-        ):
+        with self.recorder.use_cassette("TestSubredditEmoji.test_add_with_perms"):
             for extension in ["jpg", "png"]:
                 emoji = subreddit.emoji.add(
                     "test_{}".format(extension),

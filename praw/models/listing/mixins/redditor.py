@@ -108,9 +108,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
         """
         return ListingGenerator(
-            self._reddit,
-            urljoin(self._path, "gilded/given"),
-            **generator_kwargs
+            self._reddit, urljoin(self._path, "gilded/given"), **generator_kwargs
         )
 
     def hidden(

@@ -121,9 +121,7 @@ class TestReddit(IntegrationTest):
         assert thread.id == "z2f981agq7ky"
 
     def test_live_now__no_featured(self):
-        with self.recorder.use_cassette(
-            "TestReddit.test_live_now__no_featured"
-        ):
+        with self.recorder.use_cassette("TestReddit.test_live_now__no_featured"):
             assert self.reddit.live.now() is None
 
     def test_random_subreddit(self):
@@ -134,28 +132,20 @@ class TestReddit(IntegrationTest):
         assert len(names) == 3
 
     def test_subreddit_with_randnsfw(self):
-        with self.recorder.use_cassette(
-            "TestReddit.test_subreddit_with_randnsfw"
-        ):
+        with self.recorder.use_cassette("TestReddit.test_subreddit_with_randnsfw"):
             subreddit = self.reddit.subreddit("randnsfw")
             assert subreddit.display_name != "randnsfw"
             assert subreddit.over18
 
     def test_subreddit_with_random(self):
-        with self.recorder.use_cassette(
-            "TestReddit.test_subreddit_with_random"
-        ):
+        with self.recorder.use_cassette("TestReddit.test_subreddit_with_random"):
             assert self.reddit.subreddit("random").display_name != "random"
 
 
 class TestDomainListing(IntegrationTest):
     def test_controversial(self):
-        with self.recorder.use_cassette(
-            "TestDomainListing.test_controversial"
-        ):
-            submissions = list(
-                self.reddit.domain("youtube.com").controversial()
-            )
+        with self.recorder.use_cassette("TestDomainListing.test_controversial"):
+            submissions = list(self.reddit.domain("youtube.com").controversial())
         assert len(submissions) == 100
 
     def test_hot(self):
@@ -169,12 +159,8 @@ class TestDomainListing(IntegrationTest):
         assert len(submissions) == 100
 
     def test_random_rising(self):
-        with self.recorder.use_cassette(
-            "TestDomainListing.test_random_rising"
-        ):
-            submissions = list(
-                self.reddit.domain("youtube.com").random_rising()
-            )
+        with self.recorder.use_cassette("TestDomainListing.test_random_rising"):
+            submissions = list(self.reddit.domain("youtube.com").random_rising())
         assert len(submissions) == 100
 
     def test_rising(self):

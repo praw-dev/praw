@@ -16,13 +16,7 @@ with open(path.join(HERE, PACKAGE_NAME, "const.py"), encoding="utf-8") as fp:
 extras = {
     "ci": ["coveralls"],
     "dev": ["pre-commit"],
-    "lint": [
-        "black",
-        "flake8",
-        "pydocstyle",
-        "sphinx<3.0",
-        "sphinx_rtd_theme",
-    ],
+    "lint": ["black", "flake8", "pydocstyle", "sphinx<3.0", "sphinx_rtd_theme",],
     "test": [
         "betamax >=0.8, <0.9",
         "betamax-matchers >=0.3.0, <0.5",
@@ -65,10 +59,7 @@ setup(
     keywords="reddit api wrapper",
     license="Simplified BSD License",
     long_description=README,
-    package_data={
-        "": ["LICENSE.txt"],
-        PACKAGE_NAME: ["*.ini", "images/*.jpg"],
-    },
+    package_data={"": ["LICENSE.txt"], PACKAGE_NAME: ["*.ini", "images/*.jpg"],},
     packages=find_packages(exclude=["tests", "tests.*", "tools", "tools.*"]),
     url="https://praw.readthedocs.org/",
     version=VERSION,

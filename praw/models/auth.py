@@ -122,15 +122,10 @@ class Auth(PRAWBase):
         """
         authenticator = self._reddit._read_only_core._authorizer._authenticator
         if authenticator.redirect_uri is self._reddit.config.CONFIG_NOT_SET:
-            raise MissingRequiredAttributeException(
-                "redirect_uri must be provided"
-            )
+            raise MissingRequiredAttributeException("redirect_uri must be provided")
         if isinstance(authenticator, UntrustedAuthenticator):
             return authenticator.authorize_url(
-                "temporary" if implicit else duration,
-                scopes,
-                state,
-                implicit=implicit,
+                "temporary" if implicit else duration, scopes, state, implicit=implicit,
             )
         if implicit:
             raise InvalidImplicitAuth

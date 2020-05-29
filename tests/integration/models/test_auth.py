@@ -54,8 +54,6 @@ class TestAuthImplicit(IntegrationTest):
                 self.reddit.user.me()
 
     def test_scopes__read_only(self):
-        with self.recorder.use_cassette(
-            "TestAuthImplicit.test_scopes__read_only"
-        ):
+        with self.recorder.use_cassette("TestAuthImplicit.test_scopes__read_only"):
             assert self.reddit.read_only is True
             assert self.reddit.auth.scopes() == {"*"}

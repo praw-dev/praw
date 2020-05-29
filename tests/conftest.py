@@ -35,19 +35,14 @@ def b64_string(input_string):
 
 def env_default(key):
     """Return environment variable or placeholder string."""
-    return os.environ.get(
-        "prawtest_{}".format(key), "placeholder_{}".format(key)
-    )
+    return os.environ.get("prawtest_{}".format(key), "placeholder_{}".format(key))
 
 
 def filter_access_token(interaction, current_cassette):
     """Add Betamax placeholder to filter access token."""
     request_uri = interaction.data["request"]["uri"]
     response = interaction.data["response"]
-    if (
-        "api/v1/access_token" not in request_uri
-        or response["status"]["code"] != 200
-    ):
+    if "api/v1/access_token" not in request_uri or response["status"]["code"] != 200:
         return
     body = response["body"]["string"]
     try:
@@ -83,12 +78,7 @@ class PrettyJSONSerializer(JSONSerializer):
 
     def serialize(self, cassette_data):
         return (
-            json.dumps(
-                cassette_data,
-                sort_keys=True,
-                indent=2,
-                separators=(",", ": "),
-            )
+            json.dumps(cassette_data, sort_keys=True, indent=2, separators=(",", ": "),)
             + "\n"
         )
 

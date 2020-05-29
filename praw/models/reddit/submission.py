@@ -43,9 +43,7 @@ class SubmissionFlair:
            choices = submission.flair.choices()
 
         """
-        url = API_PATH["flairselector"].format(
-            subreddit=self.submission.subreddit
-        )
+        url = API_PATH["flairselector"].format(subreddit=self.submission.subreddit)
         return self.submission._reddit.post(
             url, data={"link": self.submission.fullname}
         )["choices"]
@@ -75,9 +73,7 @@ class SubmissionFlair:
             "link": self.submission.fullname,
             "text": text,
         }
-        url = API_PATH["select_flair"].format(
-            subreddit=self.submission.subreddit
-        )
+        url = API_PATH["select_flair"].format(subreddit=self.submission.subreddit)
         self.submission._reddit.post(url, data=data)
 
 
@@ -126,8 +122,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         """
         self.thing._reddit.post(
-            API_PATH["contest_mode"],
-            data={"id": self.thing.fullname, "state": state},
+            API_PATH["contest_mode"], data={"id": self.thing.fullname, "state": state},
         )
 
     def flair(
@@ -164,9 +159,7 @@ class SubmissionModeration(ThingModerationMixin):
         url = API_PATH["flair"].format(subreddit=self.thing.subreddit)
         if flair_template_id is not None:
             data["flair_template_id"] = flair_template_id
-            url = API_PATH["select_flair"].format(
-                subreddit=self.thing.subreddit
-            )
+            url = API_PATH["select_flair"].format(subreddit=self.thing.subreddit)
         self.thing._reddit.post(url, data=data)
 
     def nsfw(self):
@@ -186,9 +179,7 @@ class SubmissionModeration(ThingModerationMixin):
         .. seealso:: :meth:`~.sfw`
 
         """
-        self.thing._reddit.post(
-            API_PATH["marknsfw"], data={"id": self.thing.fullname}
-        )
+        self.thing._reddit.post(API_PATH["marknsfw"], data={"id": self.thing.fullname})
 
     def set_original_content(self):
         """Mark as original content.
@@ -254,9 +245,7 @@ class SubmissionModeration(ThingModerationMixin):
         .. seealso:: :meth:`~.unspoiler`
 
         """
-        self.thing._reddit.post(
-            API_PATH["spoiler"], data={"id": self.thing.fullname}
-        )
+        self.thing._reddit.post(API_PATH["spoiler"], data={"id": self.thing.fullname})
 
     def sticky(self, state: bool = True, bottom: bool = True):
         """Set the submission's sticky state in its subreddit.
@@ -286,9 +275,7 @@ class SubmissionModeration(ThingModerationMixin):
         if not bottom:
             data["num"] = 1
         try:
-            return self.thing._reddit.post(
-                API_PATH["sticky_submission"], data=data
-            )
+            return self.thing._reddit.post(API_PATH["sticky_submission"], data=data)
         except Conflict:
             pass
 
@@ -300,8 +287,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         """
         self.thing._reddit.post(
-            API_PATH["suggested_sort"],
-            data={"id": self.thing.fullname, "sort": sort},
+            API_PATH["suggested_sort"], data={"id": self.thing.fullname, "sort": sort},
         )
 
     def unset_original_content(self):
@@ -349,14 +335,10 @@ class SubmissionModeration(ThingModerationMixin):
         .. seealso:: :meth:`~.spoiler`
 
         """
-        self.thing._reddit.post(
-            API_PATH["unspoiler"], data={"id": self.thing.fullname}
-        )
+        self.thing._reddit.post(API_PATH["unspoiler"], data={"id": self.thing.fullname})
 
 
-class Submission(
-    SubmissionListingMixin, UserContentMixin, FullnameMixin, RedditBase
-):
+class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, RedditBase):
     """A class for submissions to reddit.
 
     **Typical Attributes**
@@ -545,9 +527,7 @@ class Submission(
 
         """
         if (id, url, _data).count(None) != 2:
-            raise TypeError(
-                "Exactly one of `id`, `url`, or `_data` must be provided."
-            )
+            raise TypeError("Exactly one of `id`, `url`, or `_data` must be provided.")
         super().__init__(reddit, _data=_data)
         self.comment_limit = 2048
 

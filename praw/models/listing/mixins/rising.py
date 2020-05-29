@@ -29,9 +29,7 @@ class RisingListingMixin(PRAWBase):
 
         """
         return ListingGenerator(
-            self._reddit,
-            urljoin(self._path, "randomrising"),
-            **generator_kwargs
+            self._reddit, urljoin(self._path, "randomrising"), **generator_kwargs
         )
 
     def rising(

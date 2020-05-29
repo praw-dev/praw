@@ -42,9 +42,7 @@ class TestUtil(UnitTest):
     PERMISSIONS = {"a", "b", "c"}
 
     def test_permissions_string__all_explicit(self):
-        assert "-all,+b,+a,+c" == permissions_string(
-            ["b", "a", "c"], self.PERMISSIONS
-        )
+        assert "-all,+b,+a,+c" == permissions_string(["b", "a", "c"], self.PERMISSIONS)
 
     def test_permissions_string__empty_list(self):
         assert "-all" == permissions_string([], set())
@@ -56,6 +54,4 @@ class TestUtil(UnitTest):
 
     def test_permissions_string__with_additional_permissions(self):
         assert "-all,+d" == permissions_string(["d"], set())
-        assert "-all,-a,-b,-c,+d" == permissions_string(
-            ["d"], self.PERMISSIONS
-        )
+        assert "-all,-a,-b,-c,+d" == permissions_string(["d"], self.PERMISSIONS)

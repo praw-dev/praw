@@ -32,18 +32,14 @@ class ThingModerationMixin:
 
         """
         if not reason_id and not mod_note:
-            raise ValueError(
-                "mod_note cannot be blank if reason_id is not specified"
-            )
+            raise ValueError("mod_note cannot be blank if reason_id is not specified")
         # Only the first element of the item_id list is used.
         data = {
             "item_ids": [self.thing.fullname],
             "mod_note": mod_note,
             "reason_id": reason_id,
         }
-        self.thing._reddit.post(
-            API_PATH["removal_reasons"], data={"json": dumps(data)}
-        )
+        self.thing._reddit.post(API_PATH["removal_reasons"], data={"json": dumps(data)})
 
     def approve(self):
         """Approve a :class:`~.Comment` or :class:`~.Submission`.
@@ -65,9 +61,7 @@ class ThingModerationMixin:
            submission.mod.approve()
 
         """
-        self.thing._reddit.post(
-            API_PATH["approve"], data={"id": self.thing.fullname}
-        )
+        self.thing._reddit.post(API_PATH["approve"], data={"id": self.thing.fullname})
 
     def distinguish(self, how="yes", sticky=False):
         """Distinguish a :class:`~.Comment` or :class:`~.Submission`.
@@ -141,9 +135,7 @@ class ThingModerationMixin:
         .. seealso:: :meth:`~.unlock`
 
         """
-        self.thing._reddit.post(
-            API_PATH["lock"], data={"id": self.thing.fullname}
-        )
+        self.thing._reddit.post(API_PATH["lock"], data={"id": self.thing.fullname})
 
     def remove(self, spam=False, mod_note="", reason_id=None):
         """Remove a :class:`~.Comment` or :class:`~.Submission`.
@@ -282,9 +274,7 @@ class ThingModerationMixin:
         .. seealso:: :meth:`~.lock`
 
         """
-        self.thing._reddit.post(
-            API_PATH["unlock"], data={"id": self.thing.fullname}
-        )
+        self.thing._reddit.post(API_PATH["unlock"], data={"id": self.thing.fullname})
 
 
 class UserContentMixin(

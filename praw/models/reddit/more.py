@@ -23,9 +23,7 @@ class MoreComments(PRAWBase):
     def __eq__(self, other: Union[str, "MoreComments"]) -> bool:
         """Return True if these MoreComments instances are the same."""
         if isinstance(other, self.__class__):
-            return (
-                self.count == other.count and self.children == other.children
-            )
+            return self.count == other.count and self.children == other.children
         return super().__eq__(other)
 
     def __lt__(self, other: "MoreComments") -> bool:
@@ -64,9 +62,7 @@ class MoreComments(PRAWBase):
                 "sort": self.submission.comment_sort,
             },
         )
-        assert (
-            len(comments.children) == 1
-        ), "Please file a bug report with PRAW."
+        assert len(comments.children) == 1, "Please file a bug report with PRAW."
         return comments.children[0]
 
     def comments(self, update: bool = True) -> List["Comment"]:
@@ -80,9 +76,7 @@ class MoreComments(PRAWBase):
                 "link_id": self.submission.fullname,
                 "sort": self.submission.comment_sort,
             }
-            self._comments = self._reddit.post(
-                API_PATH["morechildren"], data=data
-            )
+            self._comments = self._reddit.post(API_PATH["morechildren"], data=data)
             if update:
                 for comment in self._comments:
                     comment.submission = self.submission

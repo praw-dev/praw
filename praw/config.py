@@ -39,9 +39,7 @@ class Config:
     def _load_config(cls, config_interpolation: Optional[str] = None):
         """Attempt to load settings from various praw.ini files."""
         if config_interpolation is not None:
-            interpolator_class = cls.INTERPOLATION_LEVEL[
-                config_interpolation
-            ]()
+            interpolator_class = cls.INTERPOLATION_LEVEL[config_interpolation]()
         else:
             interpolator_class = None
         config = configparser.ConfigParser(interpolation=interpolator_class)
@@ -108,9 +106,7 @@ class Config:
         return env_value or ini_value or self.CONFIG_NOT_SET
 
     def _initialize_attributes(self):
-        self._short_url = (
-            self._fetch_default("short_url") or self.CONFIG_NOT_SET
-        )
+        self._short_url = self._fetch_default("short_url") or self.CONFIG_NOT_SET
         self.check_for_updates = self._config_boolean(
             self._fetch_or_not_set("check_for_updates")
         )
@@ -155,8 +151,6 @@ class Config:
                 raise ValueError(
                     "An incorrect config type was given for option {}. The "
                     "expected type is {}, but the given value is {}.".format(
-                        attribute,
-                        conversion.__name__,
-                        getattr(self, attribute),
+                        attribute, conversion.__name__, getattr(self, attribute),
                     )
                 )

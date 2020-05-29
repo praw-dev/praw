@@ -13,9 +13,7 @@ class TestSubreddits(IntegrationTest):
         assert 0 < len(subreddits) < 100
 
     def test_gold__without_gold(self):
-        with self.recorder.use_cassette(
-            "TestSubreddits.test_gold__without_gold"
-        ):
+        with self.recorder.use_cassette("TestSubreddits.test_gold__without_gold"):
             subreddits = list(self.reddit.subreddits.gold())
         assert len(subreddits) == 0
 
@@ -43,8 +41,7 @@ class TestSubreddits(IntegrationTest):
             "TestSubreddits.test_recommended__with_multiple"
         ):
             subreddits = self.reddit.subreddits.recommended(
-                ["cityporn", "earthporn"],
-                omit_subreddits=["skyporn", "winterporn"],
+                ["cityporn", "earthporn"], omit_subreddits=["skyporn", "winterporn"],
             )
         assert len(subreddits) > 1
         for subreddit in subreddits:

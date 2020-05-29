@@ -50,9 +50,7 @@ class MessageableMixin:
         data = {
             "subject": subject,
             "text": message,
-            "to": "{}{}".format(
-                getattr(self.__class__, "MESSAGE_PREFIX", ""), self
-            ),
+            "to": "{}{}".format(getattr(self.__class__, "MESSAGE_PREFIX", ""), self),
         }
         if from_subreddit:
             data["from_sr"] = str(from_subreddit)

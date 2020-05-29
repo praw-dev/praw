@@ -33,9 +33,7 @@ class TestSubmission(IntegrationTest):
     def test_disable_inbox_replies(self):
         self.reddit.read_only = False
         submission = Submission(self.reddit, "6ckfdz")
-        with self.recorder.use_cassette(
-            "TestSubmission.test_disable_inbox_replies"
-        ):
+        with self.recorder.use_cassette("TestSubmission.test_disable_inbox_replies"):
             submission.disable_inbox_replies()
 
     def test_downvote(self):
@@ -68,16 +66,12 @@ class TestSubmission(IntegrationTest):
     def test_enable_inbox_replies(self):
         self.reddit.read_only = False
         submission = Submission(self.reddit, "6ckfdz")
-        with self.recorder.use_cassette(
-            "TestSubmission.test_enable_inbox_replies"
-        ):
+        with self.recorder.use_cassette("TestSubmission.test_enable_inbox_replies"):
             submission.enable_inbox_replies()
 
     def test_gild__no_creddits(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmission.test_gild__no_creddits"
-        ):
+        with self.recorder.use_cassette("TestSubmission.test_gild__no_creddits"):
             with pytest.raises(RedditAPIException) as excinfo:
                 Submission(self.reddit, "4b1tfm").gild()
             exception = excinfo.value
@@ -112,9 +106,7 @@ class TestSubmission(IntegrationTest):
             submissions[0].hide(submissions[1:])
 
     def test_invalid_attribute(self):
-        with self.recorder.use_cassette(
-            "TestSubmission.test_invalid_attribute"
-        ):
+        with self.recorder.use_cassette("TestSubmission.test_invalid_attribute"):
             submission = Submission(self.reddit, "2gmzqe")
             with pytest.raises(AttributeError) as excinfo:
                 submission.invalid_attribute
@@ -164,9 +156,7 @@ class TestSubmission(IntegrationTest):
             Submission(self.reddit, "fewoh"),
             Submission(self.reddit, "c625v"),
         ]
-        with self.recorder.use_cassette(
-            "TestSubmission.test_unhide__multiple"
-        ):
+        with self.recorder.use_cassette("TestSubmission.test_unhide__multiple"):
             Submission(self.reddit, "1eipl7").unhide(submissions)
 
     @mock.patch("time.sleep", return_value=None)
@@ -207,9 +197,7 @@ class TestSubmission(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubmission.test_crosspost__subreddit_object"
         ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             crosspost_parent = self.reddit.submission(id="6vx01b")
 
             submission = crosspost_parent.crosspost(subreddit)
@@ -220,12 +208,8 @@ class TestSubmission(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_crosspost__custom_title(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmission.test_crosspost__custom_title"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubmission.test_crosspost__custom_title"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             crosspost_parent = self.reddit.submission(id="6vx01b")
 
             submission = crosspost_parent.crosspost(subreddit, "my title")
@@ -239,9 +223,7 @@ class TestSubmission(IntegrationTest):
         flair_text = "Test flair text"
         flair_class = "test-flair-class"
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmission.test_crosspost__flair"
-        ):
+        with self.recorder.use_cassette("TestSubmission.test_crosspost__flair"):
             subreddit = pytest.placeholders.test_subreddit
             crosspost_parent = self.reddit.submission(id="6vx01b")
 
@@ -266,9 +248,7 @@ class TestSubmission(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_crosspost__spoiler(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmission.test_crosspost__spoiler"
-        ):
+        with self.recorder.use_cassette("TestSubmission.test_crosspost__spoiler"):
             subreddit = pytest.placeholders.test_subreddit
             crosspost_parent = self.reddit.submission(id="6vx01b")
 
@@ -312,16 +292,12 @@ class TestSubmissionFlair(IntegrationTest):
 class TestSubmissionModeration(IntegrationTest):
     def test_approve(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmissionModeration.test_approve"
-        ):
+        with self.recorder.use_cassette("TestSubmissionModeration.test_approve"):
             self.reddit.submission("4b536h").mod.approve()
 
     def test_contest_mode(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmissionModeration.test_contest_mode"
-        ):
+        with self.recorder.use_cassette("TestSubmissionModeration.test_contest_mode"):
             submission = Submission(self.reddit, "4s2idz")
             submission.mod.contest_mode()
 
@@ -371,9 +347,7 @@ class TestSubmissionModeration(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_flair_all(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmissionModeration.test_flair_all"
-        ):
+        with self.recorder.use_cassette("TestSubmissionModeration.test_flair_all"):
             self.reddit.submission("eh9xy1").mod.flair(
                 "submission flair",
                 css_class="submission flair",
@@ -396,22 +370,16 @@ class TestSubmissionModeration(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubmissionModeration.test_flair_just_css_class"
         ):
-            self.reddit.submission("eh9xy1").mod.flair(
-                css_class="submission flair"
-            )
+            self.reddit.submission("eh9xy1").mod.flair(css_class="submission flair")
 
     def test_distinguish(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmissionModeration.test_distinguish"
-        ):
+        with self.recorder.use_cassette("TestSubmissionModeration.test_distinguish"):
             self.reddit.submission("4b536h").mod.distinguish()
 
     def test_ignore_reports(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmissionModeration.test_ignore_reports"
-        ):
+        with self.recorder.use_cassette("TestSubmissionModeration.test_ignore_reports"):
             self.reddit.submission("31ybt2").mod.ignore_reports()
 
     def test_nsfw(self):
@@ -426,9 +394,7 @@ class TestSubmissionModeration(IntegrationTest):
 
     def test_remove(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmissionModeration.test_remove"
-        ):
+        with self.recorder.use_cassette("TestSubmissionModeration.test_remove"):
             self.reddit.submission("4b536h").mod.remove(spam=True)
 
     @mock.patch("time.sleep", return_value=None)
@@ -437,9 +403,7 @@ class TestSubmissionModeration(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubmissionModeration.test_remove_with_reason_id"
         ):
-            self.reddit.submission("e3op46").mod.remove(
-                reason_id="110nhral8vygf"
-            )
+            self.reddit.submission("e3op46").mod.remove(reason_id="110nhral8vygf")
 
     @mock.patch("time.sleep", return_value=None)
     def test_add_removal_reason(self, _):
@@ -515,30 +479,22 @@ class TestSubmissionModeration(IntegrationTest):
 
     def test_spoiler(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmissionModeration.test_spoiler"
-        ):
+        with self.recorder.use_cassette("TestSubmissionModeration.test_spoiler"):
             Submission(self.reddit, "5ouli3").mod.spoiler()
 
     def test_sticky(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmissionModeration.test_sticky"
-        ):
+        with self.recorder.use_cassette("TestSubmissionModeration.test_sticky"):
             Submission(self.reddit, "4s2idz").mod.sticky()
 
     def test_sticky__remove(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmissionModeration.test_sticky__remove"
-        ):
+        with self.recorder.use_cassette("TestSubmissionModeration.test_sticky__remove"):
             Submission(self.reddit, "4s2idz").mod.sticky(state=False)
 
     def test_sticky__top(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmissionModeration.test_sticky__top"
-        ):
+        with self.recorder.use_cassette("TestSubmissionModeration.test_sticky__top"):
             Submission(self.reddit, "4s2idz").mod.sticky(bottom=False)
 
     @mock.patch("time.sleep", return_value=None)
@@ -552,9 +508,7 @@ class TestSubmissionModeration(IntegrationTest):
 
     def test_suggested_sort(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmissionModeration.test_suggested_sort"
-        ):
+        with self.recorder.use_cassette("TestSubmissionModeration.test_suggested_sort"):
             Submission(self.reddit, "4s2idz").mod.suggested_sort(sort="random")
 
     def test_suggested_sort__clear(self):
@@ -566,9 +520,7 @@ class TestSubmissionModeration(IntegrationTest):
 
     def test_undistinguish(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmissionModeration.test_undistinguish"
-        ):
+        with self.recorder.use_cassette("TestSubmissionModeration.test_undistinguish"):
             self.reddit.submission("4b536h").mod.undistinguish()
 
     def test_unignore_reports(self):
@@ -580,9 +532,7 @@ class TestSubmissionModeration(IntegrationTest):
 
     def test_unlock(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmissionModeration.test_unlock"
-        ):
+        with self.recorder.use_cassette("TestSubmissionModeration.test_unlock"):
             Submission(self.reddit, "4s2idz").mod.unlock()
 
     @mock.patch("time.sleep", return_value=None)
@@ -599,7 +549,5 @@ class TestSubmissionModeration(IntegrationTest):
 
     def test_unspoiler(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmissionModeration.test_unspoiler"
-        ):
+        with self.recorder.use_cassette("TestSubmissionModeration.test_unspoiler"):
             Submission(self.reddit, "5ouli3").mod.unspoiler()

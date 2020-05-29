@@ -31,18 +31,14 @@ class TestInbox(IntegrationTest):
             count = 0
             for item in self.reddit.inbox.comment_replies(limit=64):
                 assert isinstance(item, Comment)
-                assert item.parent_id.startswith(
-                    self.reddit.config.kinds["comment"]
-                )
+                assert item.parent_id.startswith(self.reddit.config.kinds["comment"])
                 count += 1
             assert count == 64
 
     @mock.patch("time.sleep", return_value=None)
     def test_comment_reply__refresh(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestInbox.test_comment_reply__refresh"
-        ):
+        with self.recorder.use_cassette("TestInbox.test_comment_reply__refresh"):
             comment = next(self.reddit.inbox.comment_replies())
             saved_id = comment.id
             assert isinstance(comment, Comment)
@@ -53,8 +49,7 @@ class TestInbox(IntegrationTest):
     def test_mark_read(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-            "TestInbox.test_mark_read",
-            match_requests_on=["uri", "method", "body"],
+            "TestInbox.test_mark_read", match_requests_on=["uri", "method", "body"],
         ):
             self.reddit.inbox.mark_read(list(self.reddit.inbox.unread()))
 
@@ -62,8 +57,7 @@ class TestInbox(IntegrationTest):
     def test_mark_unread(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-            "TestInbox.test_mark_unread",
-            match_requests_on=["uri", "method", "body"],
+            "TestInbox.test_mark_unread", match_requests_on=["uri", "method", "body"],
         ):
             self.reddit.inbox.mark_unread(list(self.reddit.inbox.all()))
 
@@ -97,9 +91,7 @@ class TestInbox(IntegrationTest):
 
     def test_message__unauthorized(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestInbox.test_message__unauthorized"
-        ):
+        with self.recorder.use_cassette("TestInbox.test_message__unauthorized"):
             with pytest.raises(Forbidden):
                 self.reddit.inbox.message("6i8om7")
 
@@ -153,9 +145,7 @@ class TestInbox(IntegrationTest):
             count = 0
             for item in self.reddit.inbox.submission_replies(limit=64):
                 assert isinstance(item, Comment)
-                assert item.parent_id.startswith(
-                    self.reddit.config.kinds["submission"]
-                )
+                assert item.parent_id.startswith(self.reddit.config.kinds["submission"])
                 count += 1
             assert count == 64
 

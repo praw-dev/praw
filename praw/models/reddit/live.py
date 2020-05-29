@@ -68,9 +68,7 @@ class LiveContributorRelationship:
         self.thread._reddit.post(url)
 
     def invite(
-        self,
-        redditor: Union[str, Redditor],
-        permissions: Optional[List[str]] = None,
+        self, redditor: Union[str, Redditor], permissions: Optional[List[str]] = None,
     ):
         """Invite a redditor to be a contributor of the live thread.
 
@@ -170,9 +168,7 @@ class LiveContributorRelationship:
         self.thread._reddit.post(url, data=data)
 
     def update(
-        self,
-        redditor: Union[str, Redditor],
-        permissions: Optional[List[str]] = None,
+        self, redditor: Union[str, Redditor], permissions: Optional[List[str]] = None,
     ):
         """Update the contributor permissions for ``redditor``.
 
@@ -214,9 +210,7 @@ class LiveContributorRelationship:
         self.thread._reddit.post(url, data=data)
 
     def update_invite(
-        self,
-        redditor: Union[str, Redditor],
-        permissions: Optional[List[str]] = None,
+        self, redditor: Union[str, Redditor], permissions: Optional[List[str]] = None,
     ):
         """Update the contributor invite permissions for ``redditor``.
 
@@ -354,9 +348,7 @@ class LiveThread(RedditBase):
         self,
         reddit: "Reddit",
         id: Optional[str] = None,
-        _data: Optional[
-            Dict[str, Any]
-        ] = None,  # pylint: disable=redefined-builtin
+        _data: Optional[Dict[str, Any]] = None,  # pylint: disable=redefined-builtin
     ):
         """Initialize a lazy :class:`.LiveThread` instance.
 
@@ -657,8 +649,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
             self.id = update_id
         else:
             raise TypeError(
-                "Either `thread_id` and `update_id`, or "
-                "`_data` must be provided."
+                "Either `thread_id` and `update_id`, or " "`_data` must be provided."
             )
 
     def __setattr__(self, attribute: str, value: Any):
@@ -668,9 +659,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
         super().__setattr__(attribute, value)
 
     def _fetch(self):
-        url = API_PATH["live_focus"].format(
-            thread_id=self.thread.id, update_id=self.id
-        )
+        url = API_PATH["live_focus"].format(thread_id=self.thread.id, update_id=self.id)
         other = self._reddit.get(url)[0]
         self.__dict__.update(other.__dict__)
         self._fetched = True

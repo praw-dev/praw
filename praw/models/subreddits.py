@@ -79,15 +79,11 @@ class Subreddits(PRAWBase):
         """
         if not isinstance(subreddits, list):
             raise TypeError("subreddits must be a list")
-        if omit_subreddits is not None and not isinstance(
-            omit_subreddits, list
-        ):
+        if omit_subreddits is not None and not isinstance(omit_subreddits, list):
             raise TypeError("omit_subreddits must be a list or None")
 
         params = {"omit": self._to_list(omit_subreddits or [])}
-        url = API_PATH["sub_recommended"].format(
-            subreddits=self._to_list(subreddits)
-        )
+        url = API_PATH["sub_recommended"].format(subreddits=self._to_list(subreddits))
         return [
             Subreddit(self._reddit, sub["sr_name"])
             for sub in self._reddit.get(url, params=params)
@@ -125,11 +121,7 @@ class Subreddits(PRAWBase):
         """
         result = self._reddit.post(
             API_PATH["subreddits_name_search"],
-            data={
-                "include_over_18": include_nsfw,
-                "exact": exact,
-                "query": query,
-            },
+            data={"include_over_18": include_nsfw, "exact": exact, "query": query,},
         )
         return [self._reddit.subreddit(x) for x in result["names"]]
 
@@ -142,9 +134,7 @@ class Subreddits(PRAWBase):
         result = self._reddit.get(
             API_PATH["subreddits_by_topic"], params={"query": query}
         )
-        return [
-            self._reddit.subreddit(x["name"]) for x in result if x.get("name")
-        ]
+        return [self._reddit.subreddit(x["name"]) for x in result if x.get("name")]
 
     def stream(
         self, **stream_options: Union[str, int, Dict[str, str]]

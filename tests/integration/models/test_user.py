@@ -19,9 +19,7 @@ class TestUser(IntegrationTest):
 
     def test_contributor_subreddits(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestUser.test_contributor_subreddits"
-        ):
+        with self.recorder.use_cassette("TestUser.test_contributor_subreddits"):
             count = 0
             for subreddit in self.reddit.user.contributor_subreddits():
                 assert isinstance(subreddit, Subreddit)
@@ -73,9 +71,7 @@ class TestUser(IntegrationTest):
         with self.recorder.use_cassette("TestUser.test_me__bypass_cache"):
             me = self.reddit.user.me()
             me.praw_is_cached = True
-            assert not hasattr(
-                self.reddit.user.me(use_cache=False), "praw_is_cached"
-            )
+            assert not hasattr(self.reddit.user.me(use_cache=False), "praw_is_cached")
 
     def test_multireddits(self):
         self.reddit.read_only = False

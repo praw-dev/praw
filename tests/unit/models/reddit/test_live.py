@@ -105,9 +105,7 @@ class TestLiveUpdate(UnitTest):
         update_id = "dummy_update_id"
         data = {"id": update_id}
 
-        update = LiveUpdate(
-            self.reddit, thread_id=thread_id, update_id=update_id
-        )
+        update = LiveUpdate(self.reddit, thread_id=thread_id, update_id=update_id)
         assert isinstance(update, LiveUpdate)
         assert update.id == update_id
         assert isinstance(update.thread, LiveThread)
@@ -125,10 +123,7 @@ class TestLiveUpdate(UnitTest):
         assert update._fetched
 
     def test_construct_failure(self):
-        message = (
-            "Either `thread_id` and `update_id`, or "
-            "`_data` must be provided."
-        )
+        message = "Either `thread_id` and `update_id`, or " "`_data` must be provided."
         thread_id = "dummy_thread_id"
         update_id = "dummy_update_id"
 
@@ -163,8 +158,6 @@ class TestLiveUpdate(UnitTest):
         thread_id = "dummy_thread_id"
         update_id = "dummy_update_id"
 
-        update = LiveUpdate(
-            self.reddit, thread_id=thread_id, update_id=update_id
-        )
+        update = LiveUpdate(self.reddit, thread_id=thread_id, update_id=update_id)
         assert isinstance(update.thread, LiveThread)
         assert update.thread.id == thread_id

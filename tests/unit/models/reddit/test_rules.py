@@ -13,18 +13,12 @@ class TestRules(UnitTest):
     def test_no_data(self):
         with pytest.raises(ValueError) as excinfo:
             Rule(self.reddit, self.subreddit)
-        assert (
-            excinfo.value.args[0]
-            == "Either short_name or _data needs to be given."
-        )
+        assert excinfo.value.args[0] == "Either short_name or _data needs to be given."
 
     def test_both_data(self):
         with pytest.raises(ValueError) as excinfo:
             Rule(self.reddit, self.subreddit, short_name="test", _data={})
-        assert (
-            excinfo.value.args[0]
-            == "Either short_name or _data needs to be given."
-        )
+        assert excinfo.value.args[0] == "Either short_name or _data needs to be given."
 
     def test_no_subreddit(self):
         rule = Rule(self.reddit, short_name="test")

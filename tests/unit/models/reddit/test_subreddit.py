@@ -10,15 +10,9 @@ from ... import UnitTest
 
 class TestSubreddit(UnitTest):
     def test_equality(self):
-        subreddit1 = Subreddit(
-            self.reddit, _data={"display_name": "dummy1", "n": 1}
-        )
-        subreddit2 = Subreddit(
-            self.reddit, _data={"display_name": "Dummy1", "n": 2}
-        )
-        subreddit3 = Subreddit(
-            self.reddit, _data={"display_name": "dummy3", "n": 2}
-        )
+        subreddit1 = Subreddit(self.reddit, _data={"display_name": "dummy1", "n": 1})
+        subreddit2 = Subreddit(self.reddit, _data={"display_name": "Dummy1", "n": 2})
+        subreddit3 = Subreddit(self.reddit, _data={"display_name": "dummy3", "n": 2})
         assert subreddit1 == subreddit1
         assert subreddit2 == subreddit2
         assert subreddit3 == subreddit3
@@ -45,15 +39,9 @@ class TestSubreddit(UnitTest):
         assert subreddit.fullname == "t5_dummy"
 
     def test_hash(self):
-        subreddit1 = Subreddit(
-            self.reddit, _data={"display_name": "dummy1", "n": 1}
-        )
-        subreddit2 = Subreddit(
-            self.reddit, _data={"display_name": "Dummy1", "n": 2}
-        )
-        subreddit3 = Subreddit(
-            self.reddit, _data={"display_name": "dummy3", "n": 2}
-        )
+        subreddit1 = Subreddit(self.reddit, _data={"display_name": "dummy1", "n": 1})
+        subreddit2 = Subreddit(self.reddit, _data={"display_name": "Dummy1", "n": 2})
+        subreddit3 = Subreddit(self.reddit, _data={"display_name": "dummy3", "n": 2})
         assert hash(subreddit1) == hash(subreddit1)
         assert hash(subreddit2) == hash(subreddit2)
         assert hash(subreddit3) == hash(subreddit3)

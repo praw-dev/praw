@@ -46,9 +46,7 @@ class CommentHelper(PRAWBase):
         return ListingGenerator(self._reddit, self._path, **generator_kwargs)
 
 
-class SubredditListingMixin(
-    BaseListingMixin, GildedListingMixin, RisingListingMixin
-):
+class SubredditListingMixin(BaseListingMixin, GildedListingMixin, RisingListingMixin):
     """Adds additional methods pertaining to Subreddit-like instances."""
 
     @cachedproperty

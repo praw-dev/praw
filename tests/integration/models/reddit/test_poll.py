@@ -16,9 +16,7 @@ class TestPollData(IntegrationTest):
             poll_data = submission.poll_data
             assert isinstance(poll_data, PollData)
             assert isinstance(poll_data.options, list)
-            assert all(
-                isinstance(option, PollOption) for option in poll_data.options
-            )
+            assert all(isinstance(option, PollOption) for option in poll_data.options)
             assert poll_data.user_selection is None  # not logged in
 
             with pytest.raises(KeyError):
@@ -27,9 +25,7 @@ class TestPollData(IntegrationTest):
     def test_get_user_selection(self,):
         poll_id = "g9zfex"
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestPollData.test_get_user_selection"
-        ):
+        with self.recorder.use_cassette("TestPollData.test_get_user_selection"):
             submission = self.reddit.submission(poll_id)
             poll_data = submission.poll_data
             # For this test to pass, the authenticated user should have
