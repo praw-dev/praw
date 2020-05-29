@@ -122,7 +122,7 @@ A **code flow** application is useful for two primary purposes:
 * You have an application and want to be able to access Reddit from your users'
   accounts.
 * You have a personal-use script application and you either want to
-   
+
    * limit the access one of your PRAW-based programs has to Reddit
    * avoid the hassle of 2FA (described above)
    * not pass your username and password to PRAW (and thus not keep it in memory)

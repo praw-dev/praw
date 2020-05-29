@@ -120,7 +120,7 @@ Unreleased
 
 * :meth:`.SubredditFlair.update` will not error out when the flair text 
   contains quote marks.
-  
+
 **Removed**
 
 * Converting :class:`.APIException` to string will no longer escape unicode
