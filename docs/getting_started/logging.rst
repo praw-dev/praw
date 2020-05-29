@@ -1,8 +1,8 @@
 Logging in PRAW
 ===============
 
-It is occasionally useful to observe the HTTP requests that PRAW is issuing. To
-do so you have to configure and enable logging.
+It is occasionally useful to observe the HTTP requests that PRAW is issuing. To do so
+you have to configure and enable logging.
 
 Add the following to your code to log everything available:
 
