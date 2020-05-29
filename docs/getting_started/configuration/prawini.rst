@@ -25,7 +25,7 @@ user defined ``praw.ini`` files in a few other locations:
       
    .. note:: To check the values of the environment variables, you can
       open up a terminal (Terminal/Terminal.app/Command Prompt/Powershell)
-      and echo the variables (replacing <variable> with the name of the 
+      and echo the variables (replacing <variable> with the name of the
       variable):
       
       **MacOS/Linux**: 
@@ -66,10 +66,9 @@ Reddit. The contents of the package's ``praw.ini`` file are:
 .. literalinclude:: ../../../praw/praw.ini
    :language: ini
 
-.. warning:: Avoid modifying the package's ``praw.ini`` file. Prefer instead to
-             override its values in your own ``praw.ini`` file. You can even
-             override settings of the ``DEFAULT`` site in user defined
-             ``praw.ini`` files.
+.. warning:: Avoid modifying the package's ``praw.ini`` file. Prefer instead
+   to override its values in your own ``praw.ini`` file. You can even override
+   settings of the ``DEFAULT`` site in user defined ``praw.ini`` files.
 
 Defining Additional Sites
 -------------------------
@@ -115,7 +114,7 @@ example, to use the settings defined for ``bot2`` as shown above, initialize
    reddit = praw.Reddit("bot2", user_agent="bot2 user agent")
 
 .. note:: In the above example you can obviate passing ``user_agent`` if you
-          add the setting ``user_agent=...`` in the ``[bot2]`` site definition.
+   add the setting ``user_agent=...`` in the ``[bot2]`` site definition.
 
 A site can also be selected via a ``praw_site`` environment variable. This
 approach has precedence over the ``site_name`` parameter described above.
@@ -153,6 +152,6 @@ See `Interpolation of values
 <https://docs.python.org/3/library/configparser.html#interpolation-of-values>`_
 for details.
 
-.. warning:: The ConfigParser instance is cached internally at the class level,
-             it is shared across all instances of :class:`.Reddit` and once set
-             it's not overridden by future invocations.
+.. warning:: The ConfigParser instance is cached internally at the class
+   level, it is shared across all instances of :class:`.Reddit` and once set
+   it's not overridden by future invocations.
