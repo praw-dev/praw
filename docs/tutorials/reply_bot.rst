@@ -12,8 +12,8 @@ are powered by PRAW.
 
 This tutorial will show you how to build a bot that monitors a particular
 subreddit, `/r/AskReddit <https://www.reddit.com/r/AskReddit/>`_, for new
-submissions containing simple questions and replies with an appropriate link to
-lmgtfy_ (Let Me Google That For You).
+submissions containing simple questions and replies with an appropriate link
+to lmgtfy_ (Let Me Google That For You).
 
 There are three key components we will address to perform this task:
 
@@ -38,8 +38,7 @@ Two examples of such questions are:
 2. "How many feet are in a yard?"
 
 Once we identify these questions, the LMGTFY Bot will reply to the submission
-with an appropriate lmgtfy_ link. For the example
-questions those links are:
+with an appropriate lmgtfy_ link. For the example questions those links are:
 
 1. https://lmgtfy.com/?q=What+is+the+capital+of+Canada%3F
 
@@ -148,10 +147,10 @@ representation so that a question like "What is the capital of Canada?" is
 transformed into the link
 ``https://lmgtfy.com/?q=What+is+the+capital+of+Canada%3F)``.
 
-There are a number of ways we could accomplish this task. For starters we could
-write a function to replace spaces with pluses, ``+``, and question marks with
-``%3F``. However, there is even an easier way; using an existing built-in
-function to do so.
+There are a number of ways we could accomplish this task. For starters we
+could write a function to replace spaces with pluses, ``+``, and question
+marks with ``%3F``. However, there is even an easier way; using an existing
+built-in function to do so.
 
 Add the following code where the "do something with a matched submission"
 comment is located:
@@ -211,9 +210,9 @@ Observe that we added some comments and a ``print`` call. The ``print``
 addition informs us every time we are about to reply to a submission, which is
 useful to ensure the script is running.
 
-Next, it is a good practice to not have any top-level executable code in
-case you want to turn your Python script into a Python module, i.e., import it
-from another Python script or module. A common way to do that is to move the
+Next, it is a good practice to not have any top-level executable code in case
+you want to turn your Python script into a Python module, i.e., import it from
+another Python script or module. A common way to do that is to move the
 top-level code to a ``main`` function:
 
 .. include:: ../examples/lmgtfy_bot.py
