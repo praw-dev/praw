@@ -53,12 +53,12 @@ Common Tasks
 Obtain a :class:`.Reddit` Instance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. warning:: For the sake of brevity, the following examples pass authentication
-             information via arguments to :py:func:`praw.Reddit`. If you do
-             this, you need to be careful not to reveal this information to the
-             outside world if you share your code. It is recommended to use a
-             :ref:`praw.ini file <praw.ini>` in order to keep your
-             authentication information separate from your code.
+.. warning:: For the sake of brevity, the following examples pass
+   authentication information via arguments to :py:func:`praw.Reddit`. If you
+   do this, you need to be careful not to reveal this information to the
+   outside world if you share your code. It is recommended to use a
+   :ref:`praw.ini file <praw.ini>` in order to keep your authentication
+   information separate from your code.
 
 You need an instance of the :class:`.Reddit` class to do *anything* with
 PRAW. There are two distinct states a :class:`.Reddit` instance can be in:
@@ -111,10 +111,9 @@ If you want to do more than retrieve public information from Reddit, then you
 need an authorized :class:`.Reddit` instance.
 
 .. note:: In the above example we are limiting the results to 10. Without the
-          ``limit`` parameter PRAW should yield as many results as it can with
-          a single request. For most endpoints this results in 100 items per
-          request. If you want to retrieve as many as possible pass in
-          ``limit=None``.
+   ``limit`` parameter PRAW should yield as many results as it can with a
+   single request. For most endpoints this results in 100 items per request.
+   If you want to retrieve as many as possible pass in ``limit=None``.
 
 .. _authorized:
 
@@ -153,8 +152,8 @@ switch back to read-only mode whenever you want:
    reddit.read_only = True
 
 .. note:: If you are uncomfortable hard-coding your credentials into your
-          program, there are some options available to you. Please see:
-          :ref:`configuration`.
+   program, there are some options available to you. Please see:
+   :ref:`configuration`.
 
 Obtain a :class:`.Subreddit`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -201,9 +200,9 @@ submissions based on the ``hot`` sort for a given subreddit try:
        print(submission.url)    # Output: the URL the submission points to
                                 # or the submission's URL if it's a self post
 
-.. note:: The act of calling a method that returns a :class:`.ListingGenerator`
-          does not result in any network requests until you begin to iterate
-          through the :class:`.ListingGenerator`.
+.. note:: The act of calling a method that returns a
+   :class:`.ListingGenerator` does not result in any network requests until
+   you begin to iterate through the :class:`.ListingGenerator`.
 
 You can create :class:`.Submission` instances in other ways too:
 
@@ -255,24 +254,24 @@ want to iterate over *all* comments as a flattened list you can call the
    all_comments = submission.comments.list()
 
 .. note:: The comment sort order can be changed by updating the value of
-          ``comment_sort`` on the :class:`.Submission` instance prior to
-          accessing ``comments`` (see: `/api/set_suggested_sort
-          <https://www.reddit.com/dev/api#POST_api_set_suggested_sort>`_ for
-          possible values). For example to have comments sorted by ``new`` try
-          something like:
+   ``comment_sort`` on the :class:`.Submission` instance prior to accessing
+   ``comments`` (see: `/api/set_suggested_sort
+   <https://www.reddit.com/dev/api#POST_api_set_suggested_sort>`_ for possible
+   values). For example to have comments sorted by ``new`` try something like:
 
-          .. code-block:: python
+    .. code-block:: python
 
-             # assume you have a Reddit instance bound to variable `reddit`
-             submission = reddit.submission(id="39zje0")
-             submission.comment_sort = "new"
-             top_level_comments = list(submission.comments)
+       # assume you have a Reddit instance bound to variable `reddit`
+       submission = reddit.submission(id="39zje0")
+       submission.comment_sort = "new"
+       top_level_comments = list(submission.comments)
 
-As you may be aware there will periodically be :class:`.MoreComments` instances
-scattered throughout the forest. Replace those :class:`.MoreComments` instances
-at any time by calling :meth:`.replace_more` on a :class:`.CommentForest`
-instance. Calling :meth:`.replace_more` access ``comments``, and so must be done
-after ``comment_sort`` is updated. See :ref:`extracting_comments` for an example.
+As you may be aware there will periodically be :class:`.MoreComments`
+instances scattered throughout the forest. Replace those
+:class:`.MoreComments` instances at any time by calling :meth:`.replace_more`
+on a :class:`.CommentForest` instance. Calling :meth:`.replace_more` access
+``comments``, and so must be done after ``comment_sort`` is updated. See
+:ref:`extracting_comments` for an example.
 
 .. _determine-available-attributes-of-an-object:
 
