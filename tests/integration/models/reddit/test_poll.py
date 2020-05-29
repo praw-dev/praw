@@ -9,7 +9,7 @@ from ... import IntegrationTest
 
 
 class TestPollData(IntegrationTest):
-    def test_get_attrs(self,):
+    def test_get_attrs(self):
         poll_id = "fo7p5b"
         with self.recorder.use_cassette("TestPollData.test_get_attrs"):
             submission = self.reddit.submission(poll_id)
@@ -22,7 +22,7 @@ class TestPollData(IntegrationTest):
             with pytest.raises(KeyError):
                 poll_data.option("badID")
 
-    def test_get_user_selection(self,):
+    def test_get_user_selection(self):
         poll_id = "g9zfex"
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestPollData.test_get_user_selection"):

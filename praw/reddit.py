@@ -217,7 +217,7 @@ class Reddit:
             "constructor, or as an environment variable."
         )
         for attribute in ("client_id", "user_agent"):
-            if getattr(self.config, attribute) in (self.config.CONFIG_NOT_SET, None,):
+            if getattr(self.config, attribute) in (self.config.CONFIG_NOT_SET, None):
                 raise MissingRequiredAttributeException(
                     required_message.format(attribute)
                 )

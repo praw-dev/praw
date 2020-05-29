@@ -278,7 +278,7 @@ class CollectionModeration(PRAWBase):
 
         self._reddit.post(
             API_PATH["collection_add_post"],
-            data={"collection_id": self.collection_id, "link_fullname": link_fullname,},
+            data={"collection_id": self.collection_id, "link_fullname": link_fullname},
         )
 
     def delete(self):
@@ -318,7 +318,7 @@ class CollectionModeration(PRAWBase):
 
         self._reddit.post(
             API_PATH["collection_remove_post"],
-            data={"collection_id": self.collection_id, "link_fullname": link_fullname,},
+            data={"collection_id": self.collection_id, "link_fullname": link_fullname},
         )
 
     def reorder(self, links: List[Union[str, Submission]]):
@@ -360,7 +360,7 @@ class CollectionModeration(PRAWBase):
         """
         self._reddit.post(
             API_PATH["collection_desc"],
-            data={"collection_id": self.collection_id, "description": description,},
+            data={"collection_id": self.collection_id, "description": description},
         )
 
     def update_title(self, title: str):

@@ -78,7 +78,7 @@ class PrettyJSONSerializer(JSONSerializer):
 
     def serialize(self, cassette_data):
         return (
-            json.dumps(cassette_data, sort_keys=True, indent=2, separators=(",", ": "),)
+            json.dumps(cassette_data, sort_keys=True, indent=2, separators=(",", ": "))
             + "\n"
         )
 
