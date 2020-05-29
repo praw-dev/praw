@@ -115,7 +115,7 @@ in PRAW.
                     representing the amount of seconds to sleep.
 
                     .. note:: PRAW sleeps for the ratelimit plus either 1/10th
-                        of the ratelimit or 1 second, whichever is smallest.
+                       of the ratelimit or 1 second, whichever is smallest.
 
 :timeout: Controls the amount of time PRAW will wait for a request from Reddit
           to complete before throwing an exception. By default, PRAW waits
@@ -137,6 +137,5 @@ from an instance of :class:`.Reddit` you can execute:
 
    reddit.config.custom["app_debugging"]
 
-.. note:: Custom PRAW configuration environment variables are not
-          supported. You can directly access environment variables via
-          ``os.getenv``.
+.. note:: Custom PRAW configuration environment variables are not supported.
+   You can directly access environment variables via ``os.getenv``.
