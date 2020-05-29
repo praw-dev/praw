@@ -45,7 +45,7 @@ or with the submission's ID which comes after ``comments/`` in the URL:
    submission = reddit.submission(id="3g1jfi")
 
 With a submission object we can then interact with its :class:`.CommentForest`
-through the submission's :attr:`~praw.models.Submission.comments` attribute. A
+through the submission's :attr:`~.praw.models.Submission.comments` attribute. A
 :class:`.CommentForest` is a list of top-level comments each of which contains
 a :class:`.CommentForest` of replies.
 
@@ -75,10 +75,10 @@ thread" links encountered on the website. While we could ignore
 The ``replace_more`` method
 ---------------------------
 
-In the previous snippet, we used ``isinstance`` to check whether the item
-in the comment list was a :class:`.MoreComments` so that we could ignore it.
-But there is a better way: the :class:`.CommentForest` object has a method
-called :meth:`.replace_more`, which replaces or removes :class:`.MoreComments`
+In the previous snippet, we used ``isinstance`` to check whether the item in
+the comment list was a :class:`.MoreComments` so that we could ignore it. But
+there is a better way: the :class:`.CommentForest` object has a method called
+:meth:`.replace_more`, which replaces or removes :class:`.MoreComments`
 objects from the forest.
 
 Each replacement requires one network request, and its response may yield
@@ -148,8 +148,8 @@ order as the code above. Thus the above can be rewritten as:
    for comment in submission.comments.list():
        print(comment.body)
 
-You can now properly extract and parse all (or most) of the comments
-belonging to a single submission. Combine this with :ref:`submission iteration
+You can now properly extract and parse all (or most) of the comments belonging
+to a single submission. Combine this with :ref:`submission iteration
 <submission-iteration>` and you can build some really cool stuff.
 
 Finally, note that the value of ``submission.num_comments`` may not match up
