@@ -8,10 +8,10 @@ PRAW supports Python 3.5+. The recommended way to install PRAW is via ``pip``.
    pip install praw
 
 .. note:: Depending on your system, you may need to use ``pip3`` to install
-          packages for Python 3.
+   packages for Python 3.
 
 .. warning:: Avoid using ``sudo`` to install packages. Do you `really` trust
-             this package?
+   this package?
 
 For instructions on installing Python and pip see "The Hitchhiker's Guide to
 Python" `Installation Guides
