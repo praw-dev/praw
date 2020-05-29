@@ -41,16 +41,13 @@ def send_message(client, message):
 def main():
     """Provide the program's entry point when directly executed."""
     print(
-        "Go here while logged into the account you want to create a "
-        "token for: https://www.reddit.com/prefs/apps/"
-    )
-    print(
-        "Click the create an app button. Put something in the name "
-        "field and select the script radio button."
-    )
-    print(
-        "Put http://localhost:8080 in the redirect uri field and "
-        "click create app"
+        "Go here while logged into the account you want to create a token "
+        "for: https://www.reddit.com/prefs/apps/",
+        "Click the create an app button. Put something in the name field and "
+        "select the script radio button.",
+        "Put http://localhost:8080 in the redirect uri field and click "
+        "create app.",
+        sep="\n",
     )
     client_id = input(
         "Enter the client ID, it's the line just under Personal use script "
