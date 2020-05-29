@@ -14,7 +14,8 @@ Before you can use any one of these with PRAW, you must first `register
 <https://www.reddit.com/prefs/apps/>`_ an application of the appropriate type
 on Reddit.
 
-If your app does not require a user context, it is :ref:`read-only <read_only_application>`.
+If your app does not require a user context, it is :ref:`read-only
+<read_only_application>`.
 
 PRAW supports the flows that each of these applications can use. The
 following table defines which tables can use which flows:
@@ -64,11 +65,13 @@ is as simple as:
 
 .. code-block:: python
 
-   reddit = praw.Reddit(client_id="SI8pN3DSbt0zor",
-                        client_secret="xaxkj7HNh8kwg8e5t4m6KvSrbTI",
-                        password="1guiwevlfo00esyy",
-                        user_agent="testscript by /u/fakebot3",
-                        username="fakebot3")
+   reddit = praw.Reddit(
+       client_id="SI8pN3DSbt0zor",
+       client_secret="xaxkj7HNh8kwg8e5t4m6KvSrbTI",
+       password="1guiwevlfo00esyy",
+       user_agent="testscript by /u/fakebot3",
+       username="fakebot3",
+   )
 
 To verify that you are authenticated as the correct user run:
 
@@ -78,13 +81,10 @@ To verify that you are authenticated as the correct user run:
 
 The output should contain the same name as you entered for ``username``.
 
-.. note:: If the following exception is raised, double-check your credentials,
-          and ensure that that the username and password you are using are for
-          the same user with which the application is associated:
-
-          .. code::
-
-             OAuthException: invalid_grant error processing request
+.. note:: If the exception ``OAuthException: invalid_grant error processing
+   request`` is raised, double-check your credentials, and ensure that that
+   the username and password you are using are for the same user with which
+   the application is associated.
 
 .. _2FA:
 
@@ -95,11 +95,13 @@ A 2FA token can be used by joining it to the password with a colon:
 
 .. code-block:: python
 
-   reddit = praw.Reddit(client_id="SI8pN3DSbt0zor",
-                        client_secret="xaxkj7HNh8kwg8e5t4m6KvSrbTI",
-                        password='1guiwevlfo00esyy:955413',
-                        user_agent="testscript by /u/fakebot3",
-                        username="fakebot3")
+   reddit = praw.Reddit(
+       client_id="SI8pN3DSbt0zor",
+       client_secret="xaxkj7HNh8kwg8e5t4m6KvSrbTI",
+       password="1guiwevlfo00esyy:955413",
+       user_agent="testscript by /u/fakebot3",
+       username="fakebot3",
+   )
 
 However, for such an app there is little benefit to using 2FA. The token
 must be refreshed after one hour; therefore, the 2FA secret would have to be
@@ -146,10 +148,12 @@ URL. You can do that as follows:
 
 .. code-block:: python
 
-   reddit = praw.Reddit(client_id="SI8pN3DSbt0zor",
-                        client_secret="xaxkj7HNh8kwg8e5t4m6KvSrbTI",
-                        redirect_uri="http://localhost:8080",
-                        user_agent="testscript by /u/fakebot3")
+   reddit = praw.Reddit(
+       client_id="SI8pN3DSbt0zor",
+       client_secret="xaxkj7HNh8kwg8e5t4m6KvSrbTI",
+       redirect_uri="http://localhost:8080",
+       user_agent="testscript by /u/fakebot3",
+   )
    print(reddit.auth.url(["identity"], "...", "permanent"))
 
 The above will output an authorization URL for a permanent token that has only
@@ -164,8 +168,8 @@ token via:
 
 .. code-block:: python
 
-    print(reddit.auth.authorize(code))
-    print(reddit.user.me())
+   print(reddit.auth.authorize(code))
+   print(reddit.user.me())
 
 The first line of output is the ``refresh_token``. You can save this for later
 use (see :ref:`using_refresh_token`).
@@ -230,9 +234,10 @@ The following flows are the **read-only mode** flows for Reddit applications
 Application-Only (Client Credentials)
 +++++++++++++++++++++++++++++++++++++
 
-This is the default flow for **read-only mode** in script and web applications.
-The idea behind this is that Reddit *can* trust these applications as coming from
-a given developer, however the application requires no logged-in user context.
+This is the default flow for **read-only mode** in script and web
+applications. The idea behind this is that Reddit *can* trust these
+applications as coming from a given developer, however the application
+requires no logged-in user context.
 
 An installed application *cannot* use this flow, because Reddit requires a
 ``client_secret`` to be given it this flow is being used. In other words,
@@ -243,19 +248,19 @@ installed applications are not considered confidential clients.
 Application-Only (Installed Client)
 +++++++++++++++++++++++++++++++++++
 
-This is the default flow for **read-only mode** in installed applications.
-The idea behind this is that Reddit *might not be able* to trust these
+This is the default flow for **read-only mode** in installed applications. The
+idea behind this is that Reddit *might not be able* to trust these
 applications as coming from a given developer. This would be able to happen if
-someone other than the developer can potentially replicate the client information
-and then pretend to be the application, such as in installed applications where
-the end user could retrieve the ``client_id``.
+someone other than the developer can potentially replicate the client
+information and then pretend to be the application, such as in installed
+applications where the end user could retrieve the ``client_id``.
 
-.. note:: No benefit is really gained from this in script or web apps.
- The one exception is for when a script or web app has multiple end users, this
- will allow you to give Reddit the information needed in order to distinguish
- different users of your app from each other (as the supplied device id *should*
- be a unique string per both device (in the case of a web app, server) and user
- (in the case of a web app, browser session).
+.. note:: No benefit is really gained from this in script or web apps. The one
+   exception is for when a script or web app has multiple end users, this will
+   allow you to give Reddit the information needed in order to distinguish
+   different users of your app from each other (as the supplied device id
+   *should* be a unique string per both device (in the case of a web app,
+   server) and user (in the case of a web app, browser session).
 
 .. _using_refresh_token:
 
@@ -267,14 +272,16 @@ of :class:`.Reddit` like so:
 
 .. code-block:: python
 
-   reddit = praw.Reddit(client_id="SI8pN3DSbt0zor",
-                        client_secret="xaxkj7HNh8kwg8e5t4m6KvSrbTI",
-                        refresh_token="WeheY7PwgeCZj4S3QgUcLhKE5S2s4eAYdxM",
-                        user_agent="testscript by u/fakebot3")
+   reddit = praw.Reddit(
+       client_id="SI8pN3DSbt0zor",
+       client_secret="xaxkj7HNh8kwg8e5t4m6KvSrbTI",
+       refresh_token="WeheY7PwgeCZj4S3QgUcLhKE5S2s4eAYdxM",
+       user_agent="testscript by u/fakebot3",
+   )
    print(reddit.auth.scopes())
 
 The output from the above code displays which scopes are available on the
 :class:`.Reddit` instance.
 
 .. note:: Observe that ``redirect_uri`` does not need to be provided in such
-          cases. It is only needed when :meth:`.url` is used.
+   cases. It is only needed when :meth:`.url` is used.
