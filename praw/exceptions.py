@@ -1,12 +1,12 @@
 """PRAW exception classes.
 
-Includes two main exceptions: :class:`.RedditAPIException` for when something
-goes wrong on the server side, and :class:`.ClientException` when something
-goes wrong on the client side. Both of these classes extend
-:class:`.PRAWException`.
+Includes two main exceptions:
 
-All other exceptions are subclassed from :class:`.ClientException`.
+* :class:`.RedditAPIException` for when something goes wrong on the server side
+* :class:`.ClientException` when something goes wrong on the client side.
 
+Both of these classes extend :class:`.PRAWException`. All other exceptions are
+subclassed from :class:`.ClientException`.
 """
 from typing import List, Optional, Union
 from warnings import warn
@@ -62,9 +62,8 @@ class RedditErrorItem:
 class APIException(PRAWException):
     """Old class preserved for alias purposes.
 
-    .. deprecated:: 7.0
-        Class :class:`.APIException` has been deprecated in favor of
-        :class:`.RedditAPIException`. This class will be removed in PRAW 8.0.
+    .. deprecated:: 7.0 Class :class:`.APIException` has been deprecated in favor of
+       :class:`.RedditAPIException`. This class will be removed in PRAW 8.0.
     """
 
     @staticmethod
@@ -142,8 +141,8 @@ class APIException(PRAWException):
     ):
         """Initialize an instance of RedditAPIException.
 
-        :param items: Either a list of instances of :class:`.RedditErrorItem`
-            or a list containing lists of unformed errors.
+        :param items: Either a list of instances of :class:`.RedditErrorItem` or a list
+            containing lists of unformed errors.
         :param optional_args: Takes the second and third arguments that
             :class:`.APIException` used to take.
         """
@@ -202,8 +201,8 @@ class InvalidURL(ClientException):
         """Initialize the class.
 
         :param url: The invalid URL.
-        :param message: The message to display. Must contain a format
-            identifier (``{}`` or ``{0}``). (default: ``"Invalid URL: {}"``)
+        :param message: The message to display. Must contain a format identifier
+            (``{}`` or ``{0}``). (default: ``"Invalid URL: {}"``)
         """
         super().__init__(message.format(url))
 
