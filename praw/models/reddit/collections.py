@@ -112,7 +112,7 @@ class Collection(RedditBase):
 
         if (_data, collection_id, permalink).count(None) != 2:
             raise TypeError(
-                "Exactly one of _data, collection_id, " "or permalink must be provided."
+                "Exactly one of _data, collection_id, or permalink must be provided."
             )
 
         if permalink is not None:
@@ -439,7 +439,7 @@ class SubredditCollections(PRAWBase):
         """
         if (collection_id is None) == (permalink is None):
             raise TypeError(
-                "Exactly one of collection_id or permalink must " "be provided."
+                "Exactly one of collection_id or permalink must be provided."
             )
         return Collection(
             self._reddit, collection_id=collection_id, permalink=permalink

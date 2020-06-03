@@ -95,7 +95,7 @@ class TestReddit(UnitTest):
                     "errors": [
                         [
                             "RATELIMIT",
-                            "You are doing that too much. Try again in 5 " "seconds.",
+                            "You are doing that too much. Try again in 5 seconds.",
                             "ratelimit",
                         ]
                     ]
@@ -106,7 +106,7 @@ class TestReddit(UnitTest):
                     "errors": [
                         [
                             "RATELIMIT",
-                            "You are doing that too much. Try again in 5 " "seconds.",
+                            "You are doing that too much. Try again in 5 seconds.",
                             "ratelimit",
                         ]
                     ]
@@ -117,7 +117,7 @@ class TestReddit(UnitTest):
                     "errors": [
                         [
                             "RATELIMIT",
-                            "You are doing that too much. Try again in 10 " "minutes.",
+                            "You are doing that too much. Try again in 10 minutes.",
                             "ratelimit",
                         ]
                     ]
@@ -221,7 +221,7 @@ class TestReddit(UnitTest):
                 settings[setting] = Config.CONFIG_NOT_SET
                 Reddit(**settings)
             assert str(excinfo.value).startswith(
-                "Required configuration " "setting '{}' missing.".format(setting)
+                "Required configuration setting '{}' missing.".format(setting)
             )
             if setting == "client_secret":
                 assert "set to None" in str(excinfo.value)
@@ -235,7 +235,7 @@ class TestReddit(UnitTest):
                 settings[setting] = None
                 Reddit(**settings)
             assert str(excinfo.value).startswith(
-                "Required configuration " "setting '{}' missing.".format(setting)
+                "Required configuration setting '{}' missing.".format(setting)
             )
 
     def test_reddit__site_name_no_section(self):

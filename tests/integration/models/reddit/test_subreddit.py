@@ -1145,7 +1145,7 @@ class TestSubredditFlairTemplates(IntegrationTest):
     def test_update_fetch_no_text_or_css_class(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-            "TestSubredditFlairTemplates.test_update_fetch_" "no_text_or_css_class"
+            "TestSubredditFlairTemplates.test_update_fetch_no_text_or_css_class"
         ):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
@@ -2039,7 +2039,7 @@ class TestSubredditStylesheet(IntegrationTest):
     def test_upload_banner_additional_image__align(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-            "TestSubredditStylesheet." "test_upload_banner_additional_image__align"
+            "TestSubredditStylesheet.test_upload_banner_additional_image__align"
         ):
             for alignment in ("left", "centered", "right"):
                 self.subreddit.stylesheet.upload_banner_additional_image(

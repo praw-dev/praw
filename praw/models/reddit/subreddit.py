@@ -3279,7 +3279,7 @@ class SubredditStylesheet:
         if align is not None:
             if align not in {"left", "centered", "right"}:
                 raise ValueError(
-                    "align argument must be either " "`left`, `centered`, or `right`"
+                    "align argument must be either `left`, `centered`, or `right`"
                 )
             alignment["bannerPositionedImagePosition"] = align
 

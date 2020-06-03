@@ -649,7 +649,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
             self.id = update_id
         else:
             raise TypeError(
-                "Either `thread_id` and `update_id`, or " "`_data` must be provided."
+                "Either `thread_id` and `update_id`, or `_data` must be provided."
             )
 
     def __setattr__(self, attribute: str, value: Any):
