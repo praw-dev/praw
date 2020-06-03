@@ -24,9 +24,7 @@ class TestLiveUpdate(IntegrationTest):
         with self.recorder.use_cassette("TestLiveUpdate_test_attributes"):
             assert isinstance(update.author, Redditor)
             assert update.author == "umbrae"
-            assert update.name == (
-                "LiveUpdate_7827987a-c998-11e4-a0b9-22000b6a88d2"
-            )
+            assert update.name == ("LiveUpdate_7827987a-c998-11e4-a0b9-22000b6a88d2")
             assert update.body.startswith("Small change")
 
 
@@ -102,10 +100,7 @@ class TestLiveContributorRelationship(IntegrationTest):
             thread.contributor.invite("nmtake")
             with pytest.raises(RedditAPIException) as excinfo:
                 thread.contributor.invite("nmtake")
-        assert (
-            excinfo.value.items[0].error_type
-            == "LIVEUPDATE_ALREADY_CONTRIBUTOR"
-        )
+        assert excinfo.value.items[0].error_type == "LIVEUPDATE_ALREADY_CONTRIBUTOR"
 
     def test_invite__empty_list(self):
         self.reddit.read_only = False
@@ -134,9 +129,7 @@ class TestLiveContributorRelationship(IntegrationTest):
     def test_invite__redditor(self):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, "xyu8kmjvfrww")
-        redditor = Redditor(
-            self.reddit, _data={"name": "nmtake", "id": "ll32z"}
-        )
+        redditor = Redditor(self.reddit, _data={"name": "nmtake", "id": "ll32z"})
         with self.recorder.use_cassette(
             "TestLiveContributorRelationship_test_invite__redditor"
         ):
@@ -145,9 +138,7 @@ class TestLiveContributorRelationship(IntegrationTest):
     def test_leave(self):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, "xyu8kmjvfrww")
-        with self.recorder.use_cassette(
-            "TestLiveContributorRelationship_test_leave"
-        ):
+        with self.recorder.use_cassette("TestLiveContributorRelationship_test_leave"):
             thread.contributor.leave()
 
     def test_remove__fullname(self):
@@ -161,9 +152,7 @@ class TestLiveContributorRelationship(IntegrationTest):
     def test_remove__redditor(self):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, "xyu8kmjvfrww")
-        redditor = Redditor(
-            self.reddit, _data={"name": "nmtake", "id": "ll32z"}
-        )
+        redditor = Redditor(self.reddit, _data={"name": "nmtake", "id": "ll32z"})
         with self.recorder.use_cassette(
             "TestLiveContributorRelationship_test_remove__redditor"
         ):
@@ -180,9 +169,7 @@ class TestLiveContributorRelationship(IntegrationTest):
     def test_remove_invite__redditor(self):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, "xyu8kmjvfrww")
-        redditor = Redditor(
-            self.reddit, _data={"name": "nmtake", "id": "ll32z"}
-        )
+        redditor = Redditor(self.reddit, _data={"name": "nmtake", "id": "ll32z"})
         with self.recorder.use_cassette(
             "TestLiveContributorRelationship_test_remove_invite__redditor"
         ):

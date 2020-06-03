@@ -46,9 +46,7 @@ class Objector:
         if error:
             raise error
 
-    def __init__(
-        self, reddit: "Reddit", parsers: Optional[Dict[str, Any]] = None
-    ):
+    def __init__(self, reddit: "Reddit", parsers: Optional[Dict[str, Any]] = None):
         """Initialize an Objector instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
@@ -121,9 +119,7 @@ class Objector:
         else:
             if "user" in data:
                 parser = self.parsers[self._reddit.config.kinds["redditor"]]
-                data["user"] = parser.parse(
-                    {"name": data["user"]}, self._reddit
-                )
+                data["user"] = parser.parse({"name": data["user"]}, self._reddit)
             return data
         return parser.parse(data, self._reddit)
 
@@ -168,9 +164,9 @@ class Objector:
                     # With polls, Reddit returns a fullname but calls it an
                     # "id". This fixes this by coercing the fullname into an
                     # id.
-                    data["json"]["data"]["id"] = data["json"]["data"][
-                        "id"
-                    ].split("_", 1)[1]
+                    data["json"]["data"]["id"] = data["json"]["data"]["id"].split(
+                        "_", 1
+                    )[1]
             else:
                 parser = self.parsers["LiveUpdateEvent"]
             return parser.parse(data["json"]["data"], self._reddit)

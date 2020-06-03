@@ -10,9 +10,7 @@ class TestModmailConversation(IntegrationTest):
     def test_archive(self, _):
         self.reddit.read_only = False
         conversation = self.reddit.subreddit("all").modmail("ik72")
-        with self.recorder.use_cassette(
-            "TestModmailConversation.test_archive"
-        ):
+        with self.recorder.use_cassette("TestModmailConversation.test_archive"):
             conversation.archive()
             conversation = self.reddit.subreddit("all").modmail("ik72")
             assert conversation.state == 2
@@ -21,9 +19,7 @@ class TestModmailConversation(IntegrationTest):
     def test_highlight(self, _):
         self.reddit.read_only = False
         conversation = self.reddit.subreddit("all").modmail("ik72")
-        with self.recorder.use_cassette(
-            "TestModmailConversation.test_highlight"
-        ):
+        with self.recorder.use_cassette("TestModmailConversation.test_highlight"):
             conversation.highlight()
             conversation = self.reddit.subreddit("all").modmail("ik72")
             assert conversation.is_highlighted
@@ -65,9 +61,7 @@ class TestModmailConversation(IntegrationTest):
     def test_unarchive(self, _):
         self.reddit.read_only = False
         conversation = self.reddit.subreddit("all").modmail("ik72")
-        with self.recorder.use_cassette(
-            "TestModmailConversation.test_unarchive"
-        ):
+        with self.recorder.use_cassette("TestModmailConversation.test_unarchive"):
             conversation.unarchive()
             conversation = self.reddit.subreddit("all").modmail("ik72")
             assert conversation.state == 1
@@ -76,9 +70,7 @@ class TestModmailConversation(IntegrationTest):
     def test_unhighlight(self, _):
         self.reddit.read_only = False
         conversation = self.reddit.subreddit("all").modmail("ik72")
-        with self.recorder.use_cassette(
-            "TestModmailConversation.test_unhighlight"
-        ):
+        with self.recorder.use_cassette("TestModmailConversation.test_unhighlight"):
             conversation.unhighlight()
             conversation = self.reddit.subreddit("all").modmail("ik72")
             assert not conversation.is_highlighted

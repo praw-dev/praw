@@ -31,9 +31,7 @@ class Redditors(PRAWBase):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
         """
-        return ListingGenerator(
-            self._reddit, API_PATH["users_new"], **generator_kwargs
-        )
+        return ListingGenerator(self._reddit, API_PATH["users_new"], **generator_kwargs)
 
     def popular(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
@@ -80,9 +78,7 @@ class Redditors(PRAWBase):
         """
         return stream_generator(self.new, **stream_options)
 
-    def partial_redditors(
-        self, ids: Iterable[str]
-    ) -> Iterator[PartialRedditor]:
+    def partial_redditors(self, ids: Iterable[str]) -> Iterator[PartialRedditor]:
         """Get user summary data by redditor IDs.
 
         :param ids: An iterable of redditor fullname IDs.
@@ -100,9 +96,7 @@ class Redditors(PRAWBase):
 
             params = {"ids": ",".join(chunk)}
             try:
-                results = self._reddit.get(
-                    API_PATH["user_by_fullname"], params=params
-                )
+                results = self._reddit.get(API_PATH["user_by_fullname"], params=params)
             except prawcore.exceptions.NotFound:
                 # None of the given IDs matched any Redditor.
                 continue

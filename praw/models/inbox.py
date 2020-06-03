@@ -30,9 +30,7 @@ class Inbox(PRAWBase):
                print(repr(item))
 
         """
-        return ListingGenerator(
-            self._reddit, API_PATH["inbox"], **generator_kwargs
-        )
+        return ListingGenerator(self._reddit, API_PATH["inbox"], **generator_kwargs)
 
     def collapse(self, items: List["Message"]):
         """Mark an inbox message as collapsed.
@@ -158,9 +156,7 @@ class Inbox(PRAWBase):
                print("{}\n{}\n".format(mention.author, mention.body))
 
         """
-        return ListingGenerator(
-            self._reddit, API_PATH["mentions"], **generator_kwargs
-        )
+        return ListingGenerator(self._reddit, API_PATH["mentions"], **generator_kwargs)
 
     def message(self, message_id: str) -> "Message":
         """Return a Message corresponding to ``message_id``.
@@ -197,9 +193,7 @@ class Inbox(PRAWBase):
                print(message.subject)
 
         """
-        return ListingGenerator(
-            self._reddit, API_PATH["messages"], **generator_kwargs
-        )
+        return ListingGenerator(self._reddit, API_PATH["messages"], **generator_kwargs)
 
     def sent(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
@@ -218,9 +212,7 @@ class Inbox(PRAWBase):
                print(message.dest)
 
         """
-        return ListingGenerator(
-            self._reddit, API_PATH["sent"], **generator_kwargs
-        )
+        return ListingGenerator(self._reddit, API_PATH["sent"], **generator_kwargs)
 
     def stream(
         self, **stream_options: Union[str, int, Dict[str, str]]
@@ -316,6 +308,4 @@ class Inbox(PRAWBase):
 
         """
         self._safely_add_arguments(generator_kwargs, "params", mark=mark_read)
-        return ListingGenerator(
-            self._reddit, API_PATH["unread"], **generator_kwargs
-        )
+        return ListingGenerator(self._reddit, API_PATH["unread"], **generator_kwargs)

@@ -322,16 +322,14 @@ class SubredditWidgets(PRAWBase):
     def sidebar(self):
         """Get a list of Widgets that make up the sidebar."""
         return [
-            self.items[widget_name]
-            for widget_name in self.layout["sidebar"]["order"]
+            self.items[widget_name] for widget_name in self.layout["sidebar"]["order"]
         ]
 
     @cachedproperty
     def topbar(self):
         """Get a list of Widgets that make up the top bar."""
         return [
-            self.items[widget_name]
-            for widget_name in self.layout["topbar"]["order"]
+            self.items[widget_name] for widget_name in self.layout["topbar"]["order"]
         ]
 
     def refresh(self):
@@ -357,9 +355,7 @@ class SubredditWidgets(PRAWBase):
             self._fetch()
             return getattr(self, attr)
         raise AttributeError(
-            "{!r} object has no attribute {!r}".format(
-                self.__class__.__name__, attr
-            )
+            "{!r} object has no attribute {!r}".format(self.__class__.__name__, attr)
         )
 
     def __init__(self, subreddit):
@@ -676,14 +672,7 @@ class SubredditWidgetsModeration:
         return self._create_widget(community_list)
 
     def add_custom_widget(
-        self,
-        short_name,
-        text,
-        css,
-        height,
-        image_data,
-        styles,
-        **other_settings
+        self, short_name, text, css, height, image_data, styles, **other_settings
     ):
         r"""Add and return a :class:`.CustomWidget`.
 
@@ -943,15 +932,12 @@ class SubredditWidgetsModeration:
 
         """
         order = [
-            thing.id if isinstance(thing, Widget) else str(thing)
-            for thing in new_order
+            thing.id if isinstance(thing, Widget) else str(thing) for thing in new_order
         ]
         path = API_PATH["widget_order"].format(
             subreddit=self._subreddit, section=section
         )
-        self._reddit.patch(
-            path, data={"json": dumps(order), "section": section}
-        )
+        self._reddit.patch(path, data={"json": dumps(order), "section": section})
 
     def upload_image(self, file_path):
         """Upload an image to Reddit and get the URL.
@@ -985,9 +971,7 @@ class SubredditWidgetsModeration:
         url = API_PATH["widget_lease"].format(subreddit=self._subreddit)
         # until we learn otherwise, assume this request always succeeds
         upload_lease = self._reddit.post(url, data=img_data)["s3UploadLease"]
-        upload_data = {
-            item["name"]: item["value"] for item in upload_lease["fields"]
-        }
+        upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
         upload_url = "https:{}".format(upload_lease["action"])
 
         with open(file_path, "rb") as image:
@@ -1804,11 +1788,7 @@ class WidgetEncoder(JSONEncoder):
         if isinstance(o, self._subreddit_class):
             return str(o)
         elif isinstance(o, PRAWBase):
-            return {
-                key: val
-                for key, val in vars(o).items()
-                if not key.startswith("_")
-            }
+            return {key: val for key, val in vars(o).items() if not key.startswith("_")}
         return JSONEncoder.default(self, o)
 
 

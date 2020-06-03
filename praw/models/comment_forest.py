@@ -56,9 +56,7 @@ class CommentForest:
         return self._comments[index]
 
     def __init__(
-        self,
-        submission: "Submission",
-        comments: Optional[List["Comment"]] = None,
+        self, submission: "Submission", comments: Optional[List["Comment"]] = None,
     ):
         """Initialize a CommentForest instance.
 
@@ -110,9 +108,7 @@ class CommentForest:
                 queue.extend(comment.replies)
         return comments
 
-    def replace_more(
-        self, limit: int = 32, threshold: int = 0
-    ) -> List["MoreComments"]:
+    def replace_more(self, limit: int = 32, threshold: int = 0) -> List["MoreComments"]:
         """Update the comment forest by resolving instances of MoreComments.
 
         :param limit: The maximum number of :class:`.MoreComments` instances to
@@ -173,11 +169,7 @@ class CommentForest:
         # Fetch largest more_comments until reaching the limit or the threshold
         while more_comments:
             item = heappop(more_comments)
-            if (
-                remaining is not None
-                and remaining <= 0
-                or item.count < threshold
-            ):
+            if remaining is not None and remaining <= 0 or item.count < threshold:
                 skipped.append(item)
                 item._remove_from.remove(item)
                 continue
@@ -187,9 +179,7 @@ class CommentForest:
                 remaining -= 1
 
             # Add new MoreComment objects to the heap of more_comments
-            for more in self._gather_more_comments(
-                new_comments, self._comments
-            ):
+            for more in self._gather_more_comments(new_comments, self._comments):
                 more.submission = self._submission
                 heappush(more_comments, more)
             # Insert all items into the tree

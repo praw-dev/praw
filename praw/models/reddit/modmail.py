@@ -71,13 +71,9 @@ class ModmailConversation(RedditBase):
     def _convert_user_summary(data, reddit):
         """Convert dictionaries of recent user history to PRAW objects."""
         parsers = {
-            "recentComments": reddit._objector.parsers[
-                reddit.config.kinds["comment"]
-            ],
+            "recentComments": reddit._objector.parsers[reddit.config.kinds["comment"]],
             "recentConvos": ModmailConversation,
-            "recentPosts": reddit._objector.parsers[
-                reddit.config.kinds["submission"]
-            ],
+            "recentPosts": reddit._objector.parsers[reddit.config.kinds["submission"]],
         }
         for kind, parser in parsers.items():
             objects = []
@@ -89,16 +85,11 @@ class ModmailConversation(RedditBase):
                     setattr(thing, key, value)
                 objects.append(thing)
             # Sort by id, oldest to newest
-            data[kind] = sorted(
-                objects, key=lambda x: int(x.id, base=36), reverse=True
-            )
+            data[kind] = sorted(objects, key=lambda x: int(x.id, base=36), reverse=True)
 
     @classmethod
     def parse(  # pylint: disable=arguments-differ
-        cls,
-        data: Dict[str, Any],
-        reddit: "Reddit",
-        convert_objects: bool = True,
+        cls, data: Dict[str, Any], reddit: "Reddit", convert_objects: bool = True,
     ):
         """Return an instance of ModmailConversation from ``data``.
 
@@ -111,21 +102,16 @@ class ModmailConversation(RedditBase):
         conversation = data["conversation"]
 
         conversation["authors"] = [
-            reddit._objector.objectify(author)
-            for author in conversation["authors"]
+            reddit._objector.objectify(author) for author in conversation["authors"]
         ]
         for entity in "owner", "participant":
-            conversation[entity] = reddit._objector.objectify(
-                conversation[entity]
-            )
+            conversation[entity] = reddit._objector.objectify(conversation[entity])
 
         if data.get("user"):
             cls._convert_user_summary(data["user"], reddit)
             conversation["user"] = reddit._objector.objectify(data["user"])
         if convert_objects:
-            conversation.update(
-                cls._convert_conversation_objects(data, reddit)
-            )
+            conversation.update(cls._convert_conversation_objects(data, reddit))
 
         conversation = snake_case_keys(conversation)
 
@@ -206,9 +192,7 @@ class ModmailConversation(RedditBase):
            reddit.subreddit("redditdev").modmail("2gmz").mute()
 
         """
-        self._reddit.request(
-            "POST", API_PATH["modmail_mute"].format(id=self.id)
-        )
+        self._reddit.request("POST", API_PATH["modmail_mute"].format(id=self.id))
 
     def read(
         self, other_conversations: Optional[List["ModmailConversation"]] = None
@@ -229,16 +213,10 @@ class ModmailConversation(RedditBase):
                             other_conversations=conversation.user.recent_convos)
 
         """
-        data = {
-            "conversationIds": self._build_conversation_list(
-                other_conversations
-            )
-        }
+        data = {"conversationIds": self._build_conversation_list(other_conversations)}
         self._reddit.post(API_PATH["modmail_read"], data=data)
 
-    def reply(
-        self, body: str, author_hidden: bool = False, internal: bool = False
-    ):
+    def reply(self, body: str, author_hidden: bool = False, internal: bool = False):
         """Reply to the conversation.
 
         :param body: The Markdown formatted content for a message.
@@ -309,9 +287,7 @@ class ModmailConversation(RedditBase):
            reddit.subreddit("redditdev").modmail("2gmz").unmute()
 
         """
-        self._reddit.request(
-            "POST", API_PATH["modmail_unmute"].format(id=self.id)
-        )
+        self._reddit.request("POST", API_PATH["modmail_unmute"].format(id=self.id))
 
     def unread(
         self, other_conversations: Optional[List["ModmailConversation"]] = None
@@ -332,11 +308,7 @@ class ModmailConversation(RedditBase):
 other_conversations=conversation.user.recent_convos)
 
         """
-        data = {
-            "conversationIds": self._build_conversation_list(
-                other_conversations
-            )
-        }
+        data = {"conversationIds": self._build_conversation_list(other_conversations)}
         self._reddit.post(API_PATH["modmail_unread"], data=data)
 
 

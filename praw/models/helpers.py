@@ -114,9 +114,7 @@ class LiveHelper(PRAWBase):
 class MultiredditHelper(PRAWBase):
     """Provide a set of functions to interact with Multireddits."""
 
-    def __call__(
-        self, redditor: Union[str, Redditor], name: str
-    ) -> Multireddit:
+    def __call__(self, redditor: Union[str, Redditor], name: str) -> Multireddit:
         """Return a lazy instance of :class:`~.Multireddit`.
 
         :param redditor: A redditor name (e.g., ``"spez"``) or

@@ -46,10 +46,7 @@ class IntegrationTest:
 
     def set_up_record(self):
         if not self._overrode_reddit_setup:
-            if (
-                pytest.placeholders.refresh_token
-                != "placeholder_refresh_token"
-            ):
+            if pytest.placeholders.refresh_token != "placeholder_refresh_token":
                 self.reddit = Reddit(
                     requestor_kwargs={"session": self._session},
                     client_id=pytest.placeholders.client_id,

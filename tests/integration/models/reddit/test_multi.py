@@ -31,9 +31,7 @@ class TestMultireddit(IntegrationTest):
         self.reddit.read_only = False
         multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
         name = "A--B\n" * 10
-        with self.recorder.use_cassette(
-            "TestMultireddit.test_copy__with_display_name"
-        ):
+        with self.recorder.use_cassette("TestMultireddit.test_copy__with_display_name"):
             new = multi.copy(display_name=name)
         assert new.name == "a_b_a_b_a_b_a_b_a_b"
         assert new.display_name == name
@@ -77,9 +75,7 @@ class TestMultireddit(IntegrationTest):
         with self.recorder.use_cassette("TestMultireddit.test_update"):
             multi = self.reddit.user.multireddits()[0]
             prev_path = multi.path
-            multi.update(
-                display_name="Updated display name", subreddits=subreddits
-            )
+            multi.update(display_name="Updated display name", subreddits=subreddits)
         assert multi.display_name == "Updated display name"
         assert multi.path == prev_path
         assert multi.subreddits == subreddits
@@ -88,17 +84,13 @@ class TestMultireddit(IntegrationTest):
 class TestMultiredditListings(IntegrationTest):
     def test_comments(self):
         multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
-        with self.recorder.use_cassette(
-            "TestMultiredditListings.test_comments"
-        ):
+        with self.recorder.use_cassette("TestMultiredditListings.test_comments"):
             comments = list(multi.comments())
         assert len(comments) == 100
 
     def test_controversial(self):
         multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
-        with self.recorder.use_cassette(
-            "TestMultiredditListings.test_controversial"
-        ):
+        with self.recorder.use_cassette("TestMultiredditListings.test_controversial"):
             submissions = list(multi.controversial())
         assert len(submissions) == 100
 
@@ -123,18 +115,14 @@ class TestMultiredditListings(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_new__self_multi(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestMultiredditListings.test_new__self_multi"
-        ):
+        with self.recorder.use_cassette("TestMultiredditListings.test_new__self_multi"):
             multi = self.reddit.user.multireddits()[0]
             submissions = list(multi.new())
         assert len(submissions) == 100
 
     def test_random_rising(self):
         multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
-        with self.recorder.use_cassette(
-            "TestMultiredditListings.test_random_rising"
-        ):
+        with self.recorder.use_cassette("TestMultiredditListings.test_random_rising"):
             submissions = list(multi.random_rising())
         assert len(submissions) > 0
 
@@ -163,9 +151,7 @@ class TestMultiredditStreams(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_comments__with_pause(self, _):
         multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
-        with self.recorder.use_cassette(
-            "TestMultiredditStreams.comments__with_pause"
-        ):
+        with self.recorder.use_cassette("TestMultiredditStreams.comments__with_pause"):
             comment_stream = multi.stream.comments(pause_after=0)
             comment_count = 1
             pause_count = 1

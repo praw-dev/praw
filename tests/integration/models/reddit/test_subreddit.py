@@ -130,9 +130,7 @@ class TestSubreddit(IntegrationTest):
 
     def test_create__invalid_parameter(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_create__invalid_parameter"
-        ):
+        with self.recorder.use_cassette("TestSubreddit.test_create__invalid_parameter"):
             with pytest.raises(RedditAPIException) as excinfo:
                 # Supplying invalid setting for link_type
                 self.reddit.subreddit.create(
@@ -146,9 +144,7 @@ class TestSubreddit(IntegrationTest):
 
     def test_create__missing_parameter(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_create__missing_parameter"
-        ):
+        with self.recorder.use_cassette("TestSubreddit.test_create__missing_parameter"):
             with pytest.raises(RedditAPIException) as excinfo:
                 # Not supplying required field title.
                 self.reddit.subreddit.create(
@@ -164,20 +160,14 @@ class TestSubreddit(IntegrationTest):
     def test_message(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubreddit.test_message"):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             subreddit.message("Test from PRAW", message="Test content")
 
     @mock.patch("time.sleep", return_value=None)
     def test_post_requirements(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_post_requirements"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_post_requirements"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             data = subreddit.post_requirements()
             tags = [
                 "domain_blacklist",
@@ -203,9 +193,7 @@ class TestSubreddit(IntegrationTest):
 
     def test_random(self):
         with self.recorder.use_cassette("TestSubreddit.test_random"):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submissions = [
                 subreddit.random(),
                 subreddit.random(),
@@ -215,9 +203,7 @@ class TestSubreddit(IntegrationTest):
         assert len(submissions) == len(set(submissions))
 
     def test_random__returns_none(self):
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_random__returns_none"
-        ):
+        with self.recorder.use_cassette("TestSubreddit.test_random__returns_none"):
             subreddit = self.reddit.subreddit("wallpapers")
             assert subreddit.random() is None
 
@@ -248,9 +234,7 @@ class TestSubreddit(IntegrationTest):
         flair_class = "test-flair-class"
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubreddit.test_submit__flair"):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit(
                 "Test Title",
                 selftext="Test text.",
@@ -264,9 +248,7 @@ class TestSubreddit(IntegrationTest):
     def test_submit__selftext(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubreddit.test_submit__selftext"):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit("Test Title", selftext="Test text.")
             assert submission.author == self.reddit.config.username
             assert submission.selftext == "Test text."
@@ -275,12 +257,8 @@ class TestSubreddit(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_submit__selftext_blank(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit__selftext_blank"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit__selftext_blank"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit("Test Title", selftext="")
             assert submission.author == self.reddit.config.username
             assert submission.selftext == ""
@@ -290,9 +268,7 @@ class TestSubreddit(IntegrationTest):
     def test_submit_live_chat(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubreddit.test_submit_live_chat"):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit(
                 "Test Title", selftext="", discussion_type="CHAT"
             )
@@ -303,9 +279,7 @@ class TestSubreddit(IntegrationTest):
         url = "https://praw.readthedocs.org/en/stable/"
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubreddit.test_submit__url"):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit("Test Title", url=url)
             assert submission.author == self.reddit.config.username
             assert submission.url == url
@@ -339,12 +313,8 @@ class TestSubreddit(IntegrationTest):
     def test_submit__verify_invalid(self, _):
         self.reddit.read_only = False
         self.reddit.validate_on_submit = True
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit__verify_invalid"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit__verify_invalid"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             with pytest.raises(
                 (RedditAPIException, BadRequest)
             ):  # waiting for prawcore fix
@@ -355,25 +325,15 @@ class TestSubreddit(IntegrationTest):
         options = ["Yes", "No", "3", "4", "5", "6"]
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubreddit.test_submit_poll"):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit_poll(
-                "Test Poll",
-                selftext="Test poll text.",
-                options=options,
-                duration=6,
+                "Test Poll", selftext="Test poll text.", options=options, duration=6,
             )
             assert submission.author == self.reddit.config.username
             assert submission.selftext.startswith("Test poll text.")
             assert submission.title == "Test Poll"
-            assert [
-                str(option) for option in submission.poll_data.options
-            ] == options
-            assert (
-                submission.poll_data.voting_end_timestamp
-                > submission.created_utc
-            )
+            assert [str(option) for option in submission.poll_data.options] == options
+            assert submission.poll_data.voting_end_timestamp > submission.created_utc
 
     @mock.patch("time.sleep", return_value=None)
     def test_submit_poll__flair(self, _):
@@ -382,12 +342,8 @@ class TestSubreddit(IntegrationTest):
         flair_class = ""
         options = ["Yes", "No"]
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_poll__flair"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_poll__flair"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit_poll(
                 "Test Poll",
                 selftext="Test poll text.",
@@ -403,12 +359,8 @@ class TestSubreddit(IntegrationTest):
     def test_submit_poll__live_chat(self, _):
         options = ["Yes", "No"]
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_poll__live_chat"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_poll__live_chat"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit_poll(
                 "Test Poll",
                 selftext="",
@@ -430,9 +382,7 @@ class TestSubreddit(IntegrationTest):
     def test_submit_image(self, _, __):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubreddit.test_submit_image"):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             for file_name in ("test.png", "test.jpg", "test.gif"):
                 image = self.image_path(file_name)
 
@@ -462,10 +412,7 @@ class TestSubreddit(IntegrationTest):
 
         def patch_request(url, *args, **kwargs):
             """Patch requests to return mock data on specific url."""
-            if (
-                "https://reddit-uploaded-media.s3-accelerate.amazonaws.com"
-                in url
-            ):
+            if "https://reddit-uploaded-media.s3-accelerate.amazonaws.com" in url:
                 response = requests.Response()
                 response._content = mock_data.encode("utf-8")
                 response.status_code = 400
@@ -476,9 +423,7 @@ class TestSubreddit(IntegrationTest):
         fake_png = PNG_HEADER + b"\x1a" * 10  # Normally 1024 ** 2 * 20 (20 MB)
         with open(tmp_path.joinpath("fake_img.png"), "wb") as tempfile:
             tempfile.write(fake_png)
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_image__large"
-        ):
+        with self.recorder.use_cassette("TestSubreddit.test_submit_image__large"):
             with pytest.raises(TooLargeMediaException):
                 reddit.subreddit("test").submit_image("test", tempfile.name)
 
@@ -487,9 +432,7 @@ class TestSubreddit(IntegrationTest):
     def test_submit_image__bad_websocket(self, _, __):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubreddit.test_submit_image"):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             for file_name in ("test.png", "test.jpg"):
                 image = self.image_path(file_name)
 
@@ -502,9 +445,7 @@ class TestSubreddit(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubreddit.test_submit_image__bad_filetype"
         ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             for file_name in ("test.mov", "test.mp4"):
                 image = self.image_path(file_name)
                 with pytest.raises(ClientException):
@@ -519,12 +460,8 @@ class TestSubreddit(IntegrationTest):
         flair_text = "Test flair text"
         flair_class = "test-flair-class"
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_image__flair"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_image__flair"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             image = self.image_path("test.jpg")
             submission = subreddit.submit_image(
                 "Test Title", image, flair_id=flair_id, flair_text=flair_text
@@ -538,12 +475,8 @@ class TestSubreddit(IntegrationTest):
     )  # update with cassette
     def test_submit_image_chat(self, _=None, __=None):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_image_chat"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_image_chat"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             image = self.image_path("test.jpg")
             submission = subreddit.submit_image(
                 "Test Title", image, discussion_type="CHAT"
@@ -557,9 +490,7 @@ class TestSubreddit(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubreddit.test_submit_image_verify_invalid"
         ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             image = self.image_path("test.jpg")
             with pytest.raises(
                 (RedditAPIException, BadRequest)
@@ -573,12 +504,8 @@ class TestSubreddit(IntegrationTest):
     def test_submit_image__timeout_1(self, _, __):
 
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_image__timeout"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_image__timeout"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             image = self.image_path("test.jpg")
             with pytest.raises(WebSocketException):
                 subreddit.submit_image("Test Title", image)
@@ -592,12 +519,8 @@ class TestSubreddit(IntegrationTest):
     def test_submit_image__timeout_2(self, _, __):
 
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_image__timeout"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_image__timeout"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             image = self.image_path("test.jpg")
             with pytest.raises(WebSocketException):
                 subreddit.submit_image("Test Title", image)
@@ -612,12 +535,8 @@ class TestSubreddit(IntegrationTest):
     def test_submit_image__timeout_3(self, _, __):
 
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_image__timeout"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_image__timeout"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             image = self.image_path("test.jpg")
             with pytest.raises(WebSocketException):
                 subreddit.submit_image("Test Title", image)
@@ -632,12 +551,8 @@ class TestSubreddit(IntegrationTest):
     def test_submit_image__timeout_4(self, _, __):
 
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_image__timeout"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_image__timeout"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             image = self.image_path("test.jpg")
             with pytest.raises(WebSocketException):
                 subreddit.submit_image("Test Title", image)
@@ -651,12 +566,8 @@ class TestSubreddit(IntegrationTest):
     )
     def test_submit_image__timeout_5(self, _, __):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_image__timeout"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_image__timeout"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             image = self.image_path("test.jpg")
             with pytest.raises(WebSocketException):
                 subreddit.submit_image("Test Title", image)
@@ -667,9 +578,7 @@ class TestSubreddit(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubreddit.test_submit_image__without_websocket"
         ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             for file_name in ("test.png", "test.jpg", "test.gif"):
                 image = self.image_path(file_name)
 
@@ -686,9 +595,7 @@ class TestSubreddit(IntegrationTest):
     def test_submit_video(self, _, __):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubreddit.test_submit_video"):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             for file_name in ("test.mov", "test.mp4"):
                 video = self.image_path(file_name)
 
@@ -703,9 +610,7 @@ class TestSubreddit(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubreddit.test_submit_video__bad_filetype"
         ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             for file_name in ("test.jpg", "test.png", "test.gif"):
                 video = self.image_path(file_name)
                 with pytest.raises(ClientException):
@@ -716,9 +621,7 @@ class TestSubreddit(IntegrationTest):
     def test_submit_video__bad_websocket(self, _, __):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubreddit.test_submit_video"):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             for file_name in ("test.mov", "test.mp4"):
                 video = self.image_path(file_name)
 
@@ -734,12 +637,8 @@ class TestSubreddit(IntegrationTest):
         flair_text = "Test flair text"
         flair_class = "test-flair-class"
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_video__flair"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_video__flair"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             image = self.image_path("test.mov")
             submission = subreddit.submit_video(
                 "Test Title", image, flair_id=flair_id, flair_text=flair_text
@@ -753,12 +652,8 @@ class TestSubreddit(IntegrationTest):
     )  # update with cassette
     def test_submit_video_chat(self, _=None, __=None):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_video_chat"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_video_chat"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             image = self.image_path("test.mov")
             submission = subreddit.submit_video(
                 "Test Title", image, discussion_type="CHAT"
@@ -772,9 +667,7 @@ class TestSubreddit(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubreddit.test_submit_video_verify_invalid"
         ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             image = self.image_path("test.mov")
             with pytest.raises(
                 (RedditAPIException, BadRequest)
@@ -788,12 +681,8 @@ class TestSubreddit(IntegrationTest):
     )  # update with cassette
     def test_submit_video__thumbnail(self, _, __):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_video__thumbnail"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_video__thumbnail"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             for video_name, thumb_name in (
                 ("test.mov", "test.jpg"),
                 ("test.mp4", "test.png"),
@@ -815,12 +704,8 @@ class TestSubreddit(IntegrationTest):
     def test_submit_video__timeout_1(self, _, __):
 
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_video__timeout"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_video__timeout"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             video = self.image_path("test.mov")
             with pytest.raises(WebSocketException):
                 subreddit.submit_video("Test Title", video)
@@ -834,12 +719,8 @@ class TestSubreddit(IntegrationTest):
     def test_submit_video__timeout_2(self, _, __):
 
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_video__timeout"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_video__timeout"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             video = self.image_path("test.mov")
             with pytest.raises(WebSocketException):
                 subreddit.submit_video("Test Title", video)
@@ -854,12 +735,8 @@ class TestSubreddit(IntegrationTest):
     def test_submit_video__timeout_3(self, _, __):
 
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_video__timeout"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_video__timeout"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             video = self.image_path("test.mov")
             with pytest.raises(WebSocketException):
                 subreddit.submit_video("Test Title", video)
@@ -874,12 +751,8 @@ class TestSubreddit(IntegrationTest):
     def test_submit_video__timeout_4(self, _, __):
 
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_video__timeout"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_video__timeout"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             video = self.image_path("test.mov")
             with pytest.raises(WebSocketException):
                 subreddit.submit_video("Test Title", video)
@@ -893,12 +766,8 @@ class TestSubreddit(IntegrationTest):
     )
     def test_submit_video__timeout_5(self, _, __):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_video__timeout"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_video__timeout"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             video = self.image_path("test.mov")
             with pytest.raises(WebSocketException):
                 subreddit.submit_video("Test Title", video)
@@ -910,18 +779,12 @@ class TestSubreddit(IntegrationTest):
     )  # update with cassette
     def test_submit_video__videogif(self, _, __):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_submit_video__videogif"
-        ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+        with self.recorder.use_cassette("TestSubreddit.test_submit_video__videogif"):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             for file_name in ("test.mov", "test.mp4"):
                 video = self.image_path(file_name)
 
-                submission = subreddit.submit_video(
-                    "Test Title", video, videogif=True
-                )
+                submission = subreddit.submit_video("Test Title", video, videogif=True)
                 assert submission.author == self.reddit.config.username
                 assert submission.is_video
                 assert submission.title == "Test Title"
@@ -932,9 +795,7 @@ class TestSubreddit(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubreddit.test_submit_video__without_websockets"
         ):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit
-            )
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             for file_name in ("test.mov", "test.mp4"):
                 video = self.image_path(file_name)
 
@@ -952,9 +813,7 @@ class TestSubreddit(IntegrationTest):
     def test_subscribe__multiple(self):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_subscribe__multiple"
-        ):
+        with self.recorder.use_cassette("TestSubreddit.test_subscribe__multiple"):
             subreddit.subscribe(["redditdev", self.reddit.subreddit("iama")])
 
     def test_traffic(self):
@@ -965,9 +824,7 @@ class TestSubreddit(IntegrationTest):
 
     def test_traffic__not_public(self):
         subreddit = self.reddit.subreddit("announcements")
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_traffic__not_public"
-        ):
+        with self.recorder.use_cassette("TestSubreddit.test_traffic__not_public"):
             with pytest.raises(NotFound):
                 subreddit.traffic()
 
@@ -980,9 +837,7 @@ class TestSubreddit(IntegrationTest):
     def test_unsubscribe__multiple(self):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-        with self.recorder.use_cassette(
-            "TestSubreddit.test_unsubscribe__multiple"
-        ):
+        with self.recorder.use_cassette("TestSubreddit.test_unsubscribe__multiple"):
             subreddit.unsubscribe(["redditdev", self.reddit.subreddit("iama")])
 
 
@@ -990,9 +845,7 @@ class TestSubredditFilters(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test__iter__all(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFilters.test__iter__all"
-        ):
+        with self.recorder.use_cassette("TestSubredditFilters.test__iter__all"):
             filters = list(self.reddit.subreddit("all").filters)
         assert len(filters) > 0
         assert all(isinstance(x, Subreddit) for x in filters)
@@ -1000,9 +853,7 @@ class TestSubredditFilters(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test__iter__mod(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFilters.test__iter__mod"
-        ):
+        with self.recorder.use_cassette("TestSubredditFilters.test__iter__mod"):
             filters = list(self.reddit.subreddit("mod").filters)
         assert len(filters) > 0
         assert all(isinstance(x, Subreddit) for x in filters)
@@ -1017,16 +868,12 @@ class TestSubredditFilters(IntegrationTest):
     def test_add__subreddit_model(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubredditFilters.test_add"):
-            self.reddit.subreddit("all").filters.add(
-                self.reddit.subreddit("redditdev")
-            )
+            self.reddit.subreddit("all").filters.add(self.reddit.subreddit("redditdev"))
 
     @mock.patch("time.sleep", return_value=None)
     def test_add__non_special(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFilters.test_add__non_special"
-        ):
+        with self.recorder.use_cassette("TestSubredditFilters.test_add__non_special"):
             with pytest.raises(NotFound):
                 self.reddit.subreddit("redditdev").filters.add("redditdev")
 
@@ -1070,9 +917,7 @@ class TestSubredditFlair(IntegrationTest):
 
     def test__call__user_filter(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlair.test__call_user_filter"
-        ):
+        with self.recorder.use_cassette("TestSubredditFlair.test__call_user_filter"):
             mapping = self.subreddit.flair(redditor=self.REDDITOR)
             assert len(list(mapping)) == 1
 
@@ -1088,9 +933,7 @@ class TestSubredditFlair(IntegrationTest):
 
     def test_configure__defaults(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlair.test_configure__defaults"
-        ):
+        with self.recorder.use_cassette("TestSubredditFlair.test_configure__defaults"):
             self.subreddit.flair.configure()
 
     def test_delete(self):
@@ -1108,9 +951,7 @@ class TestSubredditFlair(IntegrationTest):
 
     def test_set__flair_id(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlair.test_set__flair_id"
-        ):
+        with self.recorder.use_cassette("TestSubredditFlair.test_set__flair_id"):
             redditor = self.reddit.redditor(self.reddit.config.username)
             flair = "11c32eee-1482-11e9-bfc0-0efc81a5e8e8"
             self.subreddit.flair.set(
@@ -1128,12 +969,8 @@ class TestSubredditFlair(IntegrationTest):
 
     def test_set__redditor(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlair.test_set__redditor"
-        ):
-            redditor = self.subreddit._reddit.redditor(
-                self.reddit.config.username
-            )
+        with self.recorder.use_cassette("TestSubredditFlair.test_set__redditor"):
+            redditor = self.subreddit._reddit.redditor(self.reddit.config.username)
             self.subreddit.flair.set(redditor, "redditor flair")
 
     def test_set__redditor_css_only(self):
@@ -1147,9 +984,7 @@ class TestSubredditFlair(IntegrationTest):
 
     def test_set__redditor_string(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlair.test_set__redditor_string"
-        ):
+        with self.recorder.use_cassette("TestSubredditFlair.test_set__redditor_string"):
             self.subreddit.flair.set(
                 self.reddit.config.username, "new flair", "some class"
             )
@@ -1164,17 +999,13 @@ class TestSubredditFlair(IntegrationTest):
             {"user": "spladug", "flair_text": "", "flair_css_class": ""},
         ]
         with self.recorder.use_cassette("TestSubredditFlair.test_update"):
-            response = self.subreddit.flair.update(
-                flair_list, css_class="default"
-            )
+            response = self.subreddit.flair.update(flair_list, css_class="default")
         assert all(x["ok"] for x in response)
         assert not any(x["errors"] for x in response)
         assert not any(x["warnings"] for x in response)
         assert len([x for x in response if "added" in x["status"]]) == 3
         assert len([x for x in response if "removed" in x["status"]]) == 1
-        for i, name in enumerate(
-            [str(redditor), "spez", "bsimpson", "spladug"]
-        ):
+        for i, name in enumerate([str(redditor), "spez", "bsimpson", "spladug"]):
             assert name in response[i]["status"]
 
     def test_update__comma_in_text(self):
@@ -1186,17 +1017,13 @@ class TestSubredditFlair(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubredditFlair.test_update__comma_in_text"
         ):
-            response = self.subreddit.flair.update(
-                flair_list, css_class="default"
-            )
+            response = self.subreddit.flair.update(flair_list, css_class="default")
             assert all(x["ok"] for x in response)
 
     @mock.patch("time.sleep", return_value=None)
     def test_update_quotes(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlair.test_update_quotes"
-        ):
+        with self.recorder.use_cassette("TestSubredditFlair.test_update_quotes"):
             response = self.subreddit.flair.update(
                 [self.reddit.user.me()], text='"testing"', css_class="testing"
             )
@@ -1213,9 +1040,7 @@ class TestSubredditFlairTemplates(IntegrationTest):
 
     def test__iter(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlairTemplates.test__iter"
-        ):
+        with self.recorder.use_cassette("TestSubredditFlairTemplates.test__iter"):
             templates = list(self.subreddit.flair.templates)
         assert len(templates) > 100
 
@@ -1224,35 +1049,27 @@ class TestSubredditFlairTemplates(IntegrationTest):
 
     def test_add(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlairTemplates.test_add"
-        ):
+        with self.recorder.use_cassette("TestSubredditFlairTemplates.test_add"):
             self.subreddit.flair.templates.add(
                 "PRAW", css_class="myCSS", background_color="#ABCDEF"
             )
 
     def test_clear(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlairTemplates.test_clear"
-        ):
+        with self.recorder.use_cassette("TestSubredditFlairTemplates.test_clear"):
             self.subreddit.flair.templates.clear()
 
     @mock.patch("time.sleep", return_value=None)
     def test_delete(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlairTemplates.test_delete"
-        ):
+        with self.recorder.use_cassette("TestSubredditFlairTemplates.test_delete"):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.delete(template["id"])
 
     @mock.patch("time.sleep", return_value=None)
     def test_update(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlairTemplates.test_update"
-        ):
+        with self.recorder.use_cassette("TestSubredditFlairTemplates.test_update"):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
                 template["id"],
@@ -1328,8 +1145,7 @@ class TestSubredditFlairTemplates(IntegrationTest):
     def test_update_fetch_no_text_or_css_class(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-            "TestSubredditFlairTemplates.test_update_fetch_"
-            "no_text_or_css_class"
+            "TestSubredditFlairTemplates.test_update_fetch_no_text_or_css_class"
         ):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
@@ -1384,9 +1200,7 @@ class TestSubredditLinkFlairTemplates(IntegrationTest):
 
     def test__iter(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditLinkFlairTemplates.test__iter"
-        ):
+        with self.recorder.use_cassette("TestSubredditLinkFlairTemplates.test__iter"):
             templates = list(self.subreddit.flair.link_templates)
         assert len(templates) > 100
 
@@ -1397,18 +1211,14 @@ class TestSubredditLinkFlairTemplates(IntegrationTest):
 
     def test_add(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditLinkFlairTemplates.test_add"
-        ):
+        with self.recorder.use_cassette("TestSubredditLinkFlairTemplates.test_add"):
             self.subreddit.flair.link_templates.add(
                 "PRAW", css_class="myCSS", text_color="light"
             )
 
     def test_clear(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditLinkFlairTemplates.test_clear"
-        ):
+        with self.recorder.use_cassette("TestSubredditLinkFlairTemplates.test_clear"):
             self.subreddit.flair.link_templates.clear()
 
 
@@ -1420,9 +1230,7 @@ class TestSubredditListings(IntegrationTest):
         assert len(comments) == 100
 
     def test_controversial(self):
-        with self.recorder.use_cassette(
-            "TestSubredditListings.test_controversial"
-        ):
+        with self.recorder.use_cassette("TestSubredditListings.test_controversial"):
             subreddit = self.reddit.subreddit("askreddit")
             submissions = list(subreddit.controversial())
         assert len(submissions) == 100
@@ -1446,9 +1254,7 @@ class TestSubredditListings(IntegrationTest):
         assert len(submissions) == 100
 
     def test_random_rising(self):
-        with self.recorder.use_cassette(
-            "TestSubredditListings.test_random_rising"
-        ):
+        with self.recorder.use_cassette("TestSubredditListings.test_random_rising"):
             subreddit = self.reddit.subreddit("askreddit")
             submissions = list(subreddit.random_rising())
         assert len(submissions) == 100
@@ -1531,9 +1337,7 @@ class TestSubredditModeration(IntegrationTest):
 
     def test_log__filters(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditModeration.test_log__filters"
-        ):
+        with self.recorder.use_cassette("TestSubredditModeration.test_log__filters"):
             count = 0
             for item in self.reddit.subreddit("mod").mod.log(
                 action="invitemoderator", mod=self.reddit.redditor("bboe_dev")
@@ -1547,9 +1351,7 @@ class TestSubredditModeration(IntegrationTest):
 
     def test_modqueue(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditModeration.test_modqueue"
-        ):
+        with self.recorder.use_cassette("TestSubredditModeration.test_modqueue"):
             count = 0
             for item in self.subreddit.mod.modqueue():
                 assert isinstance(item, (Comment, Submission))
@@ -1580,9 +1382,7 @@ class TestSubredditModeration(IntegrationTest):
 
     def test_reports(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditModeration.test_reports"
-        ):
+        with self.recorder.use_cassette("TestSubredditModeration.test_reports"):
             count = 0
             for item in self.subreddit.mod.reports():
                 assert isinstance(item, (Comment, Submission))
@@ -1644,9 +1444,7 @@ class TestSubredditModeration(IntegrationTest):
 
     def test_unmoderated(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditModeration.test_unmoderated"
-        ):
+        with self.recorder.use_cassette("TestSubredditModeration.test_unmoderated"):
             count = 0
             for item in self.subreddit.mod.unmoderated():
                 assert isinstance(item, (Comment, Submission))
@@ -1702,9 +1500,7 @@ class TestSubredditModmail(IntegrationTest):
         self.reddit.read_only = False
         conversation_id = "ik72"
         with self.recorder.use_cassette("TestSubredditModmail.test_call"):
-            conversation = self.reddit.subreddit("all").modmail(
-                conversation_id
-            )
+            conversation = self.reddit.subreddit("all").modmail(conversation_id)
             assert isinstance(conversation.user, Redditor)
             for message in conversation.messages:
                 assert isinstance(message, ModmailMessage)
@@ -1715,12 +1511,8 @@ class TestSubredditModmail(IntegrationTest):
     def test_call__internal(self, _):
         self.reddit.read_only = False
         conversation_id = "nbhy"
-        with self.recorder.use_cassette(
-            "TestSubredditModmail.test_call__internal"
-        ):
-            conversation = self.reddit.subreddit("all").modmail(
-                conversation_id
-            )
+        with self.recorder.use_cassette("TestSubredditModmail.test_call__internal"):
+            conversation = self.reddit.subreddit("all").modmail(conversation_id)
             for message in conversation.messages:
                 assert isinstance(message, ModmailMessage)
             for action in conversation.mod_actions:
@@ -1729,21 +1521,15 @@ class TestSubredditModmail(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_call__mark_read(self, _):
         self.reddit.read_only = False
-        conversation = self.reddit.subreddit("all").modmail(
-            "o7wz", mark_read=True
-        )
-        with self.recorder.use_cassette(
-            "TestSubredditModmail.test_call__mark_read"
-        ):
+        conversation = self.reddit.subreddit("all").modmail("o7wz", mark_read=True)
+        with self.recorder.use_cassette("TestSubredditModmail.test_call__mark_read"):
             assert conversation.last_unread is None
 
     @mock.patch("time.sleep", return_value=None)
     def test_conversations(self, _):
         self.reddit.read_only = False
         conversations = self.reddit.subreddit("all").modmail.conversations()
-        with self.recorder.use_cassette(
-            "TestSubredditModmail.test_conversations"
-        ):
+        with self.recorder.use_cassette("TestSubredditModmail.test_conversations"):
             for conversation in conversations:
                 assert isinstance(conversation, ModmailConversation)
                 assert isinstance(conversation.authors[0], Redditor)
@@ -1751,9 +1537,7 @@ class TestSubredditModmail(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_conversations__params(self, _):
         self.reddit.read_only = False
-        conversations = self.reddit.subreddit("all").modmail.conversations(
-            state="mod"
-        )
+        conversations = self.reddit.subreddit("all").modmail.conversations(state="mod")
         with self.recorder.use_cassette(
             "TestSubredditModmail.test_conversations__params"
         ):
@@ -1770,10 +1554,7 @@ class TestSubredditModmail(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubredditModmail.test_conversations__other_subreddits"
         ):
-            assert (
-                len(set(conversation.owner for conversation in conversations))
-                > 1
-            )
+            assert len(set(conversation.owner for conversation in conversations)) > 1
 
     @mock.patch("time.sleep", return_value=None)
     def test_create(self, _):
@@ -1786,17 +1567,13 @@ class TestSubredditModmail(IntegrationTest):
 
     def test_subreddits(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditModmail.test_subreddits"
-        ):
+        with self.recorder.use_cassette("TestSubredditModmail.test_subreddits"):
             for subreddit in self.subreddit.modmail.subreddits():
                 assert isinstance(subreddit, Subreddit)
 
     def test_unread_count(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditModmail.test_unread_count"
-        ):
+        with self.recorder.use_cassette("TestSubredditModmail.test_unread_count"):
             assert isinstance(self.subreddit.modmail.unread_count(), dict)
 
 
@@ -1855,9 +1632,7 @@ class TestSubredditRelationships(IntegrationTest):
 
     def test_contributor(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditRelationships.contributor"
-        ):
+        with self.recorder.use_cassette("TestSubredditRelationships.contributor"):
             self.add_remove(self.subreddit, self.REDDITOR, "contributor")
 
     @mock.patch("time.sleep", return_value=None)
@@ -1879,9 +1654,7 @@ class TestSubredditRelationships(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_moderator(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditRelationships.moderator"
-        ):
+        with self.recorder.use_cassette("TestSubredditRelationships.moderator"):
             # Moderators can only be invited.
             # As of 2016-03-18 there is no API endpoint to get the moderator
             # invite list.
@@ -1897,9 +1670,7 @@ class TestSubredditRelationships(IntegrationTest):
             # Moderators can only be invited.
             # As of 2016-03-18 there is no API endpoint to get the moderator
             # invite list.
-            self.subreddit.moderator.add(
-                self.REDDITOR, permissions=["access", "wiki"]
-            )
+            self.subreddit.moderator.add(self.REDDITOR, permissions=["access", "wiki"])
             assert self.REDDITOR not in self.subreddit.moderator()
 
     def test_moderator_invite__invalid_perm(self):
@@ -1908,9 +1679,7 @@ class TestSubredditRelationships(IntegrationTest):
             "TestSubredditRelationships.moderator_invite__invalid_perm"
         ):
             with pytest.raises(RedditAPIException) as excinfo:
-                self.subreddit.moderator.invite(
-                    self.REDDITOR, permissions=["a"]
-                )
+                self.subreddit.moderator.invite(self.REDDITOR, permissions=["a"])
             assert excinfo.value.items[0].error_type == "INVALID_PERMISSIONS"
 
     @mock.patch("time.sleep", return_value=None)
@@ -1928,28 +1697,20 @@ class TestSubredditRelationships(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_modeator_leave(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditRelationships.moderator_leave"
-        ):
+        with self.recorder.use_cassette("TestSubredditRelationships.moderator_leave"):
             self.subreddit.moderator.leave()
 
     def test_moderator_update(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditRelationships.moderator_update"
-        ):
-            self.subreddit.moderator.update(
-                self.REDDITOR, permissions=["config"]
-            )
+        with self.recorder.use_cassette("TestSubredditRelationships.moderator_update"):
+            self.subreddit.moderator.update(self.REDDITOR, permissions=["config"])
 
     def test_moderator_update_invite(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
             "TestSubredditRelationships.moderator_update_invite"
         ):
-            self.subreddit.moderator.update_invite(
-                self.REDDITOR, permissions=["mail"]
-            )
+            self.subreddit.moderator.update_invite(self.REDDITOR, permissions=["mail"])
 
     def test_moderator__user_filter(self):
         self.reddit.read_only = False
@@ -1974,16 +1735,12 @@ class TestSubredditRelationships(IntegrationTest):
 
     def test_wiki_banned(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditRelationships.wiki_banned"
-        ):
+        with self.recorder.use_cassette("TestSubredditRelationships.wiki_banned"):
             self.add_remove(self.subreddit.wiki, self.REDDITOR, "banned")
 
     def test_wiki_contributor(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditRelationships.wiki_contributor"
-        ):
+        with self.recorder.use_cassette("TestSubredditRelationships.wiki_contributor"):
             self.add_remove(self.subreddit.wiki, self.REDDITOR, "contributor")
 
 
@@ -1997,9 +1754,7 @@ class TestSubredditStreams(IntegrationTest):
 
     @mock.patch("time.sleep", return_value=None)
     def test_comments__with_pause(self, _):
-        with self.recorder.use_cassette(
-            "TestSubredditStreams.comments__with_pause"
-        ):
+        with self.recorder.use_cassette("TestSubredditStreams.comments__with_pause"):
             comment_stream = self.reddit.subreddit("kakapo").stream.comments(
                 pause_after=0
             )
@@ -2018,9 +1773,7 @@ class TestSubredditStreams(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_comments__with_skip_existing(self, _):
         with self.recorder.use_cassette("TestSubredditStreams.comments"):
-            generator = self.reddit.subreddit("all").stream.comments(
-                skip_existing=True
-            )
+            generator = self.reddit.subreddit("all").stream.comments(skip_existing=True)
             count = 0
             try:
                 for comment in generator:
@@ -2040,9 +1793,7 @@ class TestSubredditStreams(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_submissions__with_pause(self, _):
         with self.recorder.use_cassette("TestSubredditStreams.submissions"):
-            generator = self.reddit.subreddit("all").stream.submissions(
-                pause_after=-1
-            )
+            generator = self.reddit.subreddit("all").stream.submissions(pause_after=-1)
             submission = next(generator)
             submission_count = 0
             while submission is not None:
@@ -2074,9 +1825,7 @@ class TestSubredditModerationStreams(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_edited(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditModerationStreams.test_edited"
-        ):
+        with self.recorder.use_cassette("TestSubredditModerationStreams.test_edited"):
             generator = self.subreddit.mod.stream.edited()
             for i in range(10):
                 assert isinstance(next(generator), (Comment, Submission))
@@ -2084,9 +1833,7 @@ class TestSubredditModerationStreams(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_log(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditModerationStreams.test_log"
-        ):
+        with self.recorder.use_cassette("TestSubredditModerationStreams.test_log"):
             generator = self.subreddit.mod.stream.log()
             for i in range(101):
                 assert isinstance(next(generator), ModAction)
@@ -2097,18 +1844,14 @@ class TestSubredditModerationStreams(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubredditModerationStreams.test_modmail_conversations"
         ):
-            generator = self.reddit.subreddit(
-                "mod"
-            ).mod.stream.modmail_conversations()
+            generator = self.reddit.subreddit("mod").mod.stream.modmail_conversations()
             for i in range(10):
                 assert isinstance(next(generator), ModmailConversation)
 
     @mock.patch("time.sleep", return_value=None)
     def test_modqueue(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditModerationStreams.test_modqueue"
-        ):
+        with self.recorder.use_cassette("TestSubredditModerationStreams.test_modqueue"):
             generator = self.subreddit.mod.stream.modqueue()
             for i in range(10):
                 assert isinstance(next(generator), (Comment, Submission))
@@ -2116,9 +1859,7 @@ class TestSubredditModerationStreams(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_spam(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditModerationStreams.test_spam"
-        ):
+        with self.recorder.use_cassette("TestSubredditModerationStreams.test_spam"):
             generator = self.subreddit.mod.stream.spam()
             for i in range(10):
                 assert isinstance(next(generator), (Comment, Submission))
@@ -2126,9 +1867,7 @@ class TestSubredditModerationStreams(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_reports(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditModerationStreams.test_reports"
-        ):
+        with self.recorder.use_cassette("TestSubredditModerationStreams.test_reports"):
             generator = self.subreddit.mod.stream.reports()
             for i in range(10):
                 assert isinstance(next(generator), (Comment, Submission))
@@ -2146,9 +1885,7 @@ class TestSubredditModerationStreams(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_unread(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditModerationStreams.test_unread"
-        ):
+        with self.recorder.use_cassette("TestSubredditModerationStreams.test_unread"):
             generator = self.reddit.subreddit("mod").mod.stream.unread()
             for i in range(2):
                 assert isinstance(next(generator), SubredditMessage)
@@ -2173,9 +1910,7 @@ class TestSubredditStylesheet(IntegrationTest):
 
     def test_delete_banner(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditStylesheet.test_delete_banner"
-        ):
+        with self.recorder.use_cassette("TestSubredditStylesheet.test_delete_banner"):
             self.subreddit.stylesheet.delete_banner()
 
     def test_delete_banner_additional_image(self):
@@ -2194,16 +1929,12 @@ class TestSubredditStylesheet(IntegrationTest):
 
     def test_delete_header(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditStylesheet.test_delete_header"
-        ):
+        with self.recorder.use_cassette("TestSubredditStylesheet.test_delete_header"):
             self.subreddit.stylesheet.delete_header()
 
     def test_delete_image(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditStylesheet.test_delete_image"
-        ):
+        with self.recorder.use_cassette("TestSubredditStylesheet.test_delete_image"):
             self.subreddit.stylesheet.delete_image("praw")
 
     def test_delete_mobile_header(self):
@@ -2230,9 +1961,7 @@ class TestSubredditStylesheet(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubredditStylesheet.test_update__with_reason"
         ):
-            self.subreddit.stylesheet.update(
-                "div { color: red; }", reason="use div"
-            )
+            self.subreddit.stylesheet.update("div { color: red; }", reason="use div")
 
     def test_upload(self):
         self.reddit.read_only = False
@@ -2244,13 +1973,9 @@ class TestSubredditStylesheet(IntegrationTest):
 
     def test_upload__invalid(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditStylesheet.test_upload__invalid"
-        ):
+        with self.recorder.use_cassette("TestSubredditStylesheet.test_upload__invalid"):
             with pytest.raises(RedditAPIException) as excinfo:
-                self.subreddit.stylesheet.upload(
-                    "praw", self.image_path("invalid.jpg")
-                )
+                self.subreddit.stylesheet.upload("praw", self.image_path("invalid.jpg"))
         assert excinfo.value.items[0].error_type == "IMAGE_ERROR"
 
     def test_upload__invalid_ext(self):
@@ -2280,9 +2005,7 @@ class TestSubredditStylesheet(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubredditStylesheet.test_upload_banner__jpg"
         ):
-            self.subreddit.stylesheet.upload_banner(
-                self.image_path("white-square.jpg")
-            )
+            self.subreddit.stylesheet.upload_banner(self.image_path("white-square.jpg"))
 
     @mock.patch("time.sleep", return_value=None)
     def test_upload_banner__png(self, _):
@@ -2290,9 +2013,7 @@ class TestSubredditStylesheet(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubredditStylesheet.test_upload_banner__png"
         ):
-            self.subreddit.stylesheet.upload_banner(
-                self.image_path("white-square.png")
-            )
+            self.subreddit.stylesheet.upload_banner(self.image_path("white-square.png"))
 
     @mock.patch("time.sleep", return_value=None)
     def test_upload_banner_additional_image__jpg(self, _):
@@ -2318,8 +2039,7 @@ class TestSubredditStylesheet(IntegrationTest):
     def test_upload_banner_additional_image__align(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-            "TestSubredditStylesheet."
-            "test_upload_banner_additional_image__align"
+            "TestSubredditStylesheet.test_upload_banner_additional_image__align"
         ):
             for alignment in ("left", "centered", "right"):
                 self.subreddit.stylesheet.upload_banner_additional_image(

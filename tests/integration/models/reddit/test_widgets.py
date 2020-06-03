@@ -49,9 +49,7 @@ class TestButtonWidget(IntegrationTest):
                     break
             assert isinstance(button_widget, ButtonWidget)
             assert len(button_widget) >= 1
-            assert all(
-                isinstance(button, Button) for button in button_widget.buttons
-            )
+            assert all(isinstance(button, Button) for button in button_widget.buttons)
             assert button_widget == button_widget
             assert button_widget.id == button_widget
             assert button_widget in widgets.sidebar
@@ -114,10 +112,7 @@ class TestButtonWidget(IntegrationTest):
                 },
             ]
             widget = widgets.mod.add_button_widget(
-                "Things to click",
-                "Click some of these *cool* links!",
-                buttons,
-                styles,
+                "Things to click", "Click some of these *cool* links!", buttons, styles,
             )
 
             assert isinstance(widget, ButtonWidget)
@@ -264,9 +259,7 @@ class TestCommunityList(IntegrationTest):
                     break
             assert isinstance(comm_list, CommunityList)
             assert len(comm_list) >= 1
-            assert all(
-                isinstance(subreddit, Subreddit) for subreddit in comm_list
-            )
+            assert all(isinstance(subreddit, Subreddit) for subreddit in comm_list)
             assert comm_list == comm_list
             assert comm_list.id == comm_list
             assert comm_list in widgets.sidebar
@@ -335,9 +328,7 @@ class TestCustomWidget(IntegrationTest):
                     "width": 0,
                     "height": 0,
                     "name": "a",
-                    "url": widgets.mod.upload_image(
-                        self.image_path("test.png")
-                    ),
+                    "url": widgets.mod.upload_image(self.image_path("test.png")),
                 }
             ]
 
@@ -387,10 +378,7 @@ class TestCustomWidget(IntegrationTest):
                     break
             assert isinstance(custom, CustomWidget)
             assert len(custom.imageData) > 0
-            assert all(
-                isinstance(img_data, ImageData)
-                for img_data in custom.imageData
-            )
+            assert all(isinstance(img_data, ImageData) for img_data in custom.imageData)
             assert custom == custom
             assert custom.id == custom
             assert custom in widgets.sidebar
@@ -458,9 +446,7 @@ class TestImageWidget(IntegrationTest):
         with self.recorder.use_cassette(
             "TestImageWidget.test_create_and_update_and_delete"
         ):
-            image_paths = (
-                self.image_path(name) for name in ("test.jpg", "test.png")
-            )
+            image_paths = (self.image_path(name) for name in ("test.jpg", "test.png"))
             image_dicts = [
                 {
                     "width": 0,
@@ -482,9 +468,7 @@ class TestImageWidget(IntegrationTest):
             assert len(widget) == 2
             assert all(isinstance(img, Image) for img in widget)
 
-            widget = widget.mod.update(
-                shortName="My old pics :(", data=image_dicts[:1]
-            )
+            widget = widget.mod.update(shortName="My old pics :(", data=image_dicts[:1])
 
             assert isinstance(widget, ImageWidget)
             assert widget.shortName == "My old pics :("
@@ -536,16 +520,12 @@ class TestMenu(IntegrationTest):
             {"text": "Reddit homepage", "url": "https://reddit.com"},
         ]
 
-        with self.recorder.use_cassette(
-            "TestMenu.test_create_and_update_and_delete"
-        ):
+        with self.recorder.use_cassette("TestMenu.test_create_and_update_and_delete"):
             widget = widgets.mod.add_menu(menu_contents)
 
             assert isinstance(widget, Menu)
             assert len(widget) == 3
-            assert all(
-                isinstance(item, (Submenu, MenuLink)) for item in widget
-            )
+            assert all(isinstance(item, (Submenu, MenuLink)) for item in widget)
             assert all(
                 all(isinstance(item, MenuLink) for item in subm)
                 for subm in widget
@@ -568,9 +548,7 @@ class TestMenu(IntegrationTest):
 
             assert isinstance(widget, Menu)
             assert len(widget) == 3
-            assert all(
-                isinstance(item, (Submenu, MenuLink)) for item in widget
-            )
+            assert all(isinstance(item, (Submenu, MenuLink)) for item in widget)
             assert all(
                 all(isinstance(item, MenuLink) for item in subm)
                 for subm in widget
@@ -762,9 +740,7 @@ class TestRulesWidget(IntegrationTest):
             assert rules.styles != new_styles
 
             rules = rules.mod.update(
-                display="compact",
-                shortName="Our regulations",
-                styles=new_styles,
+                display="compact", shortName="Our regulations", styles=new_styles,
             )
 
             assert rules.display == "compact"
@@ -806,9 +782,7 @@ class TestSubredditWidgets(IntegrationTest):
 
             return False
 
-        with self.recorder.use_cassette(
-            "TestSubredditWidgets.test_progressive_images"
-        ):
+        with self.recorder.use_cassette("TestSubredditWidgets.test_progressive_images"):
             widgets.progressive_images = True
             assert has_progressive(widgets)
             widgets.progressive_images = False
@@ -830,9 +804,9 @@ class TestSubredditWidgets(IntegrationTest):
     def test_repr(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        assert (
-            "SubredditWidgets(subreddit=Subreddit(display_name='{}'))"
-        ).format(pytest.placeholders.test_subreddit) == repr(widgets)
+        assert ("SubredditWidgets(subreddit=Subreddit(display_name='{}'))").format(
+            pytest.placeholders.test_subreddit
+        ) == repr(widgets)
 
     def test_sidebar(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -876,9 +850,7 @@ class TestSubredditWidgetsModeration(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.recorder.use_cassette(
-            "TestSubredditWidgetsModeration.test_reorder"
-        ):
+        with self.recorder.use_cassette("TestSubredditWidgetsModeration.test_reorder"):
             old_order = list(widgets.sidebar)
             new_order = list(reversed(old_order))
 
@@ -891,8 +863,7 @@ class TestSubredditWidgetsModeration(IntegrationTest):
             assert list(widgets.sidebar) == old_order
 
             mixed_types = [
-                thing if i % 2 == 0 else thing.id
-                for i, thing in enumerate(new_order)
+                thing if i % 2 == 0 else thing.id for i, thing in enumerate(new_order)
             ]
             # mixed_types has some str and some Widget.
             assert any(isinstance(thing, basestring) for thing in mixed_types)
@@ -937,9 +908,7 @@ class TestTextArea(IntegrationTest):
             assert widget.styles == styles
             assert widget.text == "Hello world!"
 
-            widget = widget.mod.update(
-                shortName="My old widget :(", text="Feed me"
-            )
+            widget = widget.mod.update(shortName="My old widget :(", text="Feed me")
 
             assert isinstance(widget, TextArea)
             assert widget.shortName == "My old widget :("

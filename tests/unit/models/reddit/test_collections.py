@@ -37,7 +37,7 @@ class TestCollection(UnitTest):
                 None,
                 _data={"collection_id": "fake_uuid"},
                 collection_id="fake_uuid",
-                permalink="https://reddit.com/r/sub/collection" "/fake_uuid",
+                permalink="https://reddit.com/r/sub/collection/fake_uuid",
             )
 
     def test_repr(self):

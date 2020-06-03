@@ -222,9 +222,7 @@ class SubredditRules:
         """
         if not isinstance(short_name, str):
             return self._rule_list[short_name]
-        return Rule(
-            self._reddit, subreddit=self.subreddit, short_name=short_name
-        )
+        return Rule(self._reddit, subreddit=self.subreddit, short_name=short_name)
 
     def __init__(self, subreddit: "Subreddit"):
         """Create a SubredditRules instance.
@@ -258,9 +256,7 @@ class SubredditRules:
 
         :returns: A list of instances of :class:`.Rule`.
         """
-        rule_list = self._reddit.get(
-            API_PATH["rules"].format(subreddit=self.subreddit)
-        )
+        rule_list = self._reddit.get(API_PATH["rules"].format(subreddit=self.subreddit))
         for rule in rule_list:
             rule.subreddit = self.subreddit
         return rule_list

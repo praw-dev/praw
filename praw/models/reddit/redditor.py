@@ -18,9 +18,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from .subreddit import Subreddit  # noqa: F401
 
 
-class Redditor(
-    MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
-):
+class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase):
     """A class representing the users of reddit.
 
     **Typical Attributes**
@@ -141,8 +139,7 @@ class Redditor(
         """
         if (name, fullname, _data).count(None) != 2:
             raise TypeError(
-                "Exactly one of `name`, `fullname`, or `_data` must be "
-                "provided."
+                "Exactly one of `name`, `fullname`, or `_data` must be provided."
             )
         if _data:
             assert (
@@ -156,9 +153,9 @@ class Redditor(
             self._fullname = fullname
 
     def _fetch_username(self, fullname):
-        return self._reddit.get(
-            API_PATH["user_by_fullname"], params={"ids": fullname}
-        )[fullname]["name"]
+        return self._reddit.get(API_PATH["user_by_fullname"], params={"ids": fullname})[
+            fullname
+        ]["name"]
 
     def _fetch_info(self):
         if hasattr(self, "_fullname"):
@@ -191,9 +188,7 @@ class Redditor(
             reddit.redditor("spez").block()
 
         """
-        self._reddit.post(
-            API_PATH["block_user"], params={"account_id": self.fullname}
-        )
+        self._reddit.post(API_PATH["block_user"], params={"account_id": self.fullname})
 
     def friend(self, note: str = None):
         """Friend the Redditor.
@@ -250,8 +245,7 @@ class Redditor(
         if months < 1 or months > 36:
             raise TypeError("months must be between 1 and 36")
         self._reddit.post(
-            API_PATH["gild_user"].format(username=self),
-            data={"months": months},
+            API_PATH["gild_user"].format(username=self), data={"months": months},
         )
 
     def moderated(self) -> List["Subreddit"]:
@@ -277,9 +271,7 @@ class Redditor(
         if "data" not in modded_data:
             return []
         else:
-            subreddits = [
-                self._reddit.subreddit(x["sr"]) for x in modded_data["data"]
-            ]
+            subreddits = [self._reddit.subreddit(x["sr"]) for x in modded_data["data"]]
             return subreddits
 
     def multireddits(self) -> List["Multireddit"]:
@@ -396,6 +388,4 @@ class RedditorStream:
                print(submission)
 
         """
-        return stream_generator(
-            self.redditor.submissions.new, **stream_options
-        )
+        return stream_generator(self.redditor.submissions.new, **stream_options)

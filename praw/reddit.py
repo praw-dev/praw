@@ -217,10 +217,7 @@ class Reddit:
             "constructor, or as an environment variable."
         )
         for attribute in ("client_id", "user_agent"):
-            if getattr(self.config, attribute) in (
-                self.config.CONFIG_NOT_SET,
-                None,
-            ):
+            if getattr(self.config, attribute) in (self.config.CONFIG_NOT_SET, None):
                 raise MissingRequiredAttributeException(
                     required_message.format(attribute)
                 )
@@ -500,9 +497,7 @@ class Reddit:
         return self._objectify_request(method="GET", params=params, path=path)
 
     def info(
-        self,
-        fullnames: Optional[Iterable[str]] = None,
-        url: Optional[str] = None,
+        self, fullnames: Optional[Iterable[str]] = None, url: Optional[str] = None,
     ) -> Generator[Union[Subreddit, Comment, Submission], None, None]:
         """Fetch information about each item in ``fullnames`` or from ``url``.
 
@@ -529,9 +524,7 @@ class Reddit:
         if none_count > 1:
             raise TypeError("Either `fullnames` or `url` must be provided.")
         if none_count < 1:
-            raise TypeError(
-                "Mutually exclusive parameters: `fullnames`, `url`"
-            )
+            raise TypeError("Mutually exclusive parameters: `fullnames`, `url`")
 
         if fullnames is not None:
             if isinstance(fullnames, str):
@@ -559,9 +552,7 @@ class Reddit:
 
     def _objectify_request(
         self,
-        data: Optional[
-            Union[Dict[str, Union[str, Any]], bytes, IO, str]
-        ] = None,
+        data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
         files: Optional[Dict[str, IO]] = None,
         json=None,
         method: str = "",
@@ -613,9 +604,7 @@ class Reddit:
     def delete(
         self,
         path: str,
-        data: Optional[
-            Union[Dict[str, Union[str, Any]], bytes, IO, str]
-        ] = None,
+        data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
         json=None,
     ) -> Any:
         """Return parsed objects returned from a DELETE request to ``path``.
@@ -628,16 +617,12 @@ class Reddit:
             (default: None). If ``json`` is provided, ``data`` should not be.
 
         """
-        return self._objectify_request(
-            data=data, json=json, method="DELETE", path=path
-        )
+        return self._objectify_request(data=data, json=json, method="DELETE", path=path)
 
     def patch(
         self,
         path: str,
-        data: Optional[
-            Union[Dict[str, Union[str, Any]], bytes, IO, str]
-        ] = None,
+        data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
         json=None,
     ) -> Any:
         """Return parsed objects returned from a PATCH request to ``path``.
@@ -650,16 +635,12 @@ class Reddit:
             (default: None). If ``json`` is provided, ``data`` should not be.
 
         """
-        return self._objectify_request(
-            data=data, method="PATCH", path=path, json=json
-        )
+        return self._objectify_request(data=data, method="PATCH", path=path, json=json)
 
     def post(
         self,
         path: str,
-        data: Optional[
-            Union[Dict[str, Union[str, Any]], bytes, IO, str]
-        ] = None,
+        data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
         files: Optional[Dict[str, IO]] = None,
         params: Optional[Union[str, Dict[str, str]]] = None,
         json=None,
@@ -693,26 +674,18 @@ class Reddit:
             seconds = self._handle_rate_limit(exception=exception)
             if seconds is not None:
                 logger.debug(
-                    "Rate limit hit, sleeping for {:.2f} seconds".format(
-                        seconds
-                    )
+                    "Rate limit hit, sleeping for {:.2f} seconds".format(seconds)
                 )
                 time.sleep(seconds)
                 return self._objectify_request(
-                    data=data,
-                    files=files,
-                    method="POST",
-                    params=params,
-                    path=path,
+                    data=data, files=files, method="POST", params=params, path=path,
                 )
             raise
 
     def put(
         self,
         path: str,
-        data: Optional[
-            Union[Dict[str, Union[str, Any]], bytes, IO, str]
-        ] = None,
+        data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
         json=None,
     ):
         """Return parsed objects returned from a PUT request to ``path``.
@@ -725,9 +698,7 @@ class Reddit:
             (default: None). If ``json`` is provided, ``data`` should not be.
 
         """
-        return self._objectify_request(
-            data=data, json=json, method="PUT", path=path
-        )
+        return self._objectify_request(data=data, json=json, method="PUT", path=path)
 
     def random_subreddit(self, nsfw: bool = False) -> Subreddit:
         """Return a random lazy instance of :class:`~.Subreddit`.
@@ -736,9 +707,7 @@ class Reddit:
             (default: False).
 
         """
-        url = API_PATH["subreddit"].format(
-            subreddit="randnsfw" if nsfw else "random"
-        )
+        url = API_PATH["subreddit"].format(subreddit="randnsfw" if nsfw else "random")
         path = None
         try:
             self.get(url, params={"unique": self._next_unique})
@@ -764,9 +733,7 @@ class Reddit:
         method: str,
         path: str,
         params: Optional[Union[str, Dict[str, str]]] = None,
-        data: Optional[
-            Union[Dict[str, Union[str, Any]], bytes, IO, str]
-        ] = None,
+        data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
         files: Optional[Dict[str, IO]] = None,
         json=None,
     ) -> Any:
@@ -786,9 +753,7 @@ class Reddit:
 
         """
         if data and json:
-            raise ClientException(
-                "At most one of `data` and `json` is supported."
-            )
+            raise ClientException("At most one of `data` and `json` is supported.")
         try:
             return self._core.request(
                 method,

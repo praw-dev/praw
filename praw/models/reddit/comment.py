@@ -64,9 +64,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
     """
 
-    MISSING_COMMENT_MESSAGE = (
-        "This comment does not appear to be in the comment tree"
-    )
+    MISSING_COMMENT_MESSAGE = "This comment does not appear to be in the comment tree"
     STR_FIELD = "id"
 
     @staticmethod
@@ -137,9 +135,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     def submission(self) -> "Submission":
         """Return the Submission object this comment belongs to."""
         if not self._submission:  # Comment not from submission
-            self._submission = self._reddit.submission(
-                self._extract_submission_id()
-            )
+            self._submission = self._reddit.submission(self._extract_submission_id())
         return self._submission
 
     @submission.setter
@@ -160,9 +156,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     ):
         """Construct an instance of the Comment object."""
         if (id, url, _data).count(None) != 2:
-            raise TypeError(
-                "Exactly one of `id`, `url`, or `_data` must be provided."
-            )
+            raise TypeError("Exactly one of `id`, `url`, or `_data` must be provided.")
         self._replies = []
         self._submission = None
         super().__init__(reddit, _data=_data)
@@ -308,9 +302,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             params["limit"] = self.reply_limit
         if "reply_sort" in self.__dict__:
             params["sort"] = self.reply_sort
-        comment_list = self._reddit.get(comment_path, params=params)[
-            1
-        ].children
+        comment_list = self._reddit.get(comment_path, params=params)[1].children
         if not comment_list:
             raise ClientException(self.MISSING_COMMENT_MESSAGE)
 

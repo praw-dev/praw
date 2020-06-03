@@ -34,30 +34,20 @@ class TestRedditErrorItem:
         assert error != 0
 
     def test_property(self):
-        error = RedditErrorItem(
-            "BAD_SOMETHING", "invalid something", "some_field"
-        )
+        error = RedditErrorItem("BAD_SOMETHING", "invalid something", "some_field")
         assert (
             error.error_message
             == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
         )
 
     def test_str(self):
-        error = RedditErrorItem(
-            "BAD_SOMETHING", "invalid something", "some_field"
-        )
-        assert (
-            str(error)
-            == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
-        )
+        error = RedditErrorItem("BAD_SOMETHING", "invalid something", "some_field")
+        assert str(error) == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
 
     def test_repr(self):
-        error = RedditErrorItem(
-            "BAD_SOMETHING", "invalid something", "some_field"
-        )
+        error = RedditErrorItem("BAD_SOMETHING", "invalid something", "some_field")
         assert (
-            repr(error)
-            == "RedditErrorItem(error_type='BAD_SOMETHING', message="
+            repr(error) == "RedditErrorItem(error_type='BAD_SOMETHING', message="
             "'invalid something', field='some_field')"
         )
 
@@ -77,9 +67,7 @@ class TestRedditAPIException:
         container = RedditAPIException(
             [
                 ["BAD_SOMETHING", "invalid something", "some_field"],
-                RedditErrorItem(
-                    "BAD_SOMETHING", "invalid something", "some_field"
-                ),
+                RedditErrorItem("BAD_SOMETHING", "invalid something", "some_field"),
             ]
         )
         for exception in container.items:
@@ -163,8 +151,7 @@ class TestMissingRequiredAttributeException:
     def test_str(self):
         assert str(MissingRequiredAttributeException()) == ""
         assert (
-            str(MissingRequiredAttributeException("error message"))
-            == "error message"
+            str(MissingRequiredAttributeException("error message")) == "error message"
         )
 
 
@@ -174,9 +161,7 @@ class TestWebSocketException:
 
     def test_str(self):
         assert str(WebSocketException("", None)) == ""
-        assert (
-            str(WebSocketException("error message", None)) == "error message"
-        )
+        assert str(WebSocketException("error message", None)) == "error message"
 
     def test_exception_attr(self):
         assert WebSocketException(None, None).original_exception is None

@@ -27,9 +27,7 @@ class cachedproperty:
             doc = func.__doc__
         self.__doc__ = doc
 
-    def __get__(
-        self, obj: Optional[Any], objtype: Optional[Any] = None
-    ) -> Any:
+    def __get__(self, obj: Optional[Any], objtype: Optional[Any] = None) -> Any:
         """Implement descriptor getter.
 
         Calculate the property's value and then store it in the

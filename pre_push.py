@@ -59,9 +59,7 @@ def run_static():
 
     tmp_dir = mkdtemp()
     try:
-        success &= do_process(
-            ["sphinx-build", "-W", "--keep-going", "docs", tmp_dir]
-        )
+        success &= do_process(["sphinx-build", "-W", "--keep-going", "docs", tmp_dir])
     finally:
         rmtree(tmp_dir)
 
@@ -84,9 +82,7 @@ def main():
 
     Run static and/or unit-tests
     """
-    parser = argparse.ArgumentParser(
-        description="Run static and/or unit-tests"
-    )
+    parser = argparse.ArgumentParser(description="Run static and/or unit-tests")
     parser.add_argument(
         "-n",
         "--unstatic",
@@ -124,7 +120,5 @@ def main():
 
 if __name__ == "__main__":
     exit_code = main()
-    print(
-        "\npre_push.py: Success!" if not exit_code else "\npre_push.py: Fail"
-    )
+    print("\npre_push.py: Success!" if not exit_code else "\npre_push.py: Fail")
     sys.exit(exit_code)

@@ -15,9 +15,7 @@ class TestListingGenerator(IntegrationTest):
         assert len(submissions) > 100
 
     def test_exhaust_items(self):
-        with self.recorder.use_cassette(
-            "TestListingGenerator.test_exhaust_items"
-        ):
+        with self.recorder.use_cassette("TestListingGenerator.test_exhaust_items"):
             submissions = list(self.reddit.redditor("spez").top(limit=None))
         assert len(submissions) > 100
 

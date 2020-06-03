@@ -112,8 +112,7 @@ class Collection(RedditBase):
 
         if (_data, collection_id, permalink).count(None) != 2:
             raise TypeError(
-                "Exactly one of _data, collection_id, "
-                "or permalink must be provided."
+                "Exactly one of _data, collection_id, or permalink must be provided."
             )
 
         if permalink is not None:
@@ -241,13 +240,9 @@ class CollectionModeration(PRAWBase):
             return post.fullname
         elif not isinstance(post, str):
             raise TypeError(
-                "Cannot get fullname from object of type {}.".format(
-                    type(post)
-                )
+                "Cannot get fullname from object of type {}.".format(type(post))
             )
-        if post.startswith(
-            "{}_".format(self._reddit.config.kinds["submission"])
-        ):
+        if post.startswith("{}_".format(self._reddit.config.kinds["submission"])):
             return post
         try:
             return self._reddit.submission(url=post).fullname
@@ -283,10 +278,7 @@ class CollectionModeration(PRAWBase):
 
         self._reddit.post(
             API_PATH["collection_add_post"],
-            data={
-                "collection_id": self.collection_id,
-                "link_fullname": link_fullname,
-            },
+            data={"collection_id": self.collection_id, "link_fullname": link_fullname},
         )
 
     def delete(self):
@@ -302,8 +294,7 @@ class CollectionModeration(PRAWBase):
 
         """
         self._reddit.post(
-            API_PATH["collection_delete"],
-            data={"collection_id": self.collection_id},
+            API_PATH["collection_delete"], data={"collection_id": self.collection_id},
         )
 
     def remove_post(self, submission: "Submission"):
@@ -327,10 +318,7 @@ class CollectionModeration(PRAWBase):
 
         self._reddit.post(
             API_PATH["collection_remove_post"],
-            data={
-                "collection_id": self.collection_id,
-                "link_fullname": link_fullname,
-            },
+            data={"collection_id": self.collection_id, "link_fullname": link_fullname},
         )
 
     def reorder(self, links: List[Union[str, Submission]]):
@@ -372,10 +360,7 @@ class CollectionModeration(PRAWBase):
         """
         self._reddit.post(
             API_PATH["collection_desc"],
-            data={
-                "collection_id": self.collection_id,
-                "description": description,
-            },
+            data={"collection_id": self.collection_id, "description": description},
         )
 
     def update_title(self, title: str):
@@ -422,14 +407,10 @@ class SubredditCollections(PRAWBase):
            new_collection = my_sub.collections.mod.create("Title", "desc")
 
         """
-        return SubredditCollectionsModeration(
-            self._reddit, self.subreddit.fullname
-        )
+        return SubredditCollectionsModeration(self._reddit, self.subreddit.fullname)
 
     def __call__(
-        self,
-        collection_id: Optional[str] = None,
-        permalink: Optional[str] = None,
+        self, collection_id: Optional[str] = None, permalink: Optional[str] = None,
     ):
         """Return the :class:`.Collection` with the specified ID.
 
@@ -458,8 +439,7 @@ class SubredditCollections(PRAWBase):
         """
         if (collection_id is None) == (permalink is None):
             raise TypeError(
-                "Exactly one of collection_id or permalink must "
-                "be provided."
+                "Exactly one of collection_id or permalink must be provided."
             )
         return Collection(
             self._reddit, collection_id=collection_id, permalink=permalink

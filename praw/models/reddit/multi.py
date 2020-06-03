@@ -99,14 +99,10 @@ class Multireddit(SubredditListingMixin, RedditBase):
         self.path = None
         super().__init__(reddit, _data=_data)
         self._author = Redditor(reddit, self.path.split("/", 3)[2])
-        self._path = API_PATH["multireddit"].format(
-            multi=self.name, user=self._author
-        )
+        self._path = API_PATH["multireddit"].format(multi=self.name, user=self._author)
         self.path = "/" + self._path[:-1]  # Prevent requests for path
         if "subreddits" in self.__dict__:
-            self.subreddits = [
-                Subreddit(reddit, x["name"]) for x in self.subreddits
-            ]
+            self.subreddits = [Subreddit(reddit, x["name"]) for x in self.subreddits]
 
     def _fetch_info(self):
         return (
@@ -208,16 +204,12 @@ class Multireddit(SubredditListingMixin, RedditBase):
         url = API_PATH["multireddit_update"].format(
             multi=self.name, user=self._author, subreddit=subreddit
         )
-        self._reddit.delete(
-            url, data={"model": dumps({"name": str(subreddit)})}
-        )
+        self._reddit.delete(url, data={"model": dumps({"name": str(subreddit)})})
         self._reset_attributes("subreddits")
 
     def update(
         self,
-        **updated_settings: Union[
-            str, List[Union[str, Subreddit, Dict[str, str]]]
-        ]
+        **updated_settings: Union[str, List[Union[str, Subreddit, Dict[str, str]]]]
     ):
         """Update this multireddit.
 

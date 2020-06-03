@@ -41,18 +41,12 @@ class Emoji(RedditBase):
         if isinstance(other, str):
             return other == str(self)
         if isinstance(other, self.__class__):
-            return (
-                str(self) == str(other) and other.subreddit == self.subreddit
-            )
+            return str(self) == str(other) and other.subreddit == self.subreddit
         return super().__eq__(other)
 
     def __hash__(self) -> int:
         """Return the hash of the current instance."""
-        return (
-            hash(self.__class__.__name__)
-            ^ hash(str(self))
-            ^ hash(self.subreddit)
-        )
+        return hash(self.__class__.__name__) ^ hash(str(self)) ^ hash(self.subreddit)
 
     def __init__(
         self,
@@ -73,9 +67,7 @@ class Emoji(RedditBase):
                 self._fetched = True
                 return
         raise ClientException(
-            "/r/{} does not have the emoji {}".format(
-                self.subreddit, self.name
-            )
+            "/r/{} does not have the emoji {}".format(self.subreddit, self.name)
         )
 
     def delete(self):
@@ -194,9 +186,7 @@ class SubredditEmoji:
         ]
         assert len(subreddit_keys) == 1
         for emoji_name, emoji_data in response[subreddit_keys[0]].items():
-            yield Emoji(
-                self._reddit, self.subreddit, emoji_name, _data=emoji_data
-            )
+            yield Emoji(self._reddit, self.subreddit, emoji_name, _data=emoji_data)
 
     def add(
         self,
@@ -235,9 +225,7 @@ class SubredditEmoji:
 
         # until we learn otherwise, assume this request always succeeds
         upload_lease = self._reddit.post(url, data=data)["s3UploadLease"]
-        upload_data = {
-            item["name"]: item["value"] for item in upload_lease["fields"]
-        }
+        upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
         upload_url = "https:{}".format(upload_lease["action"])
 
         with open(image_path, "rb") as image:

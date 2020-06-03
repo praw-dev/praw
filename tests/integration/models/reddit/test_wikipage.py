@@ -40,9 +40,7 @@ class TestWikiPage(IntegrationTest):
             "index",
             revision="2f38e910-b109-11e2-ba44-12313b0d4e76",
         )
-        with self.recorder.use_cassette(
-            "TestWikiPage.test_init__with_revision"
-        ):
+        with self.recorder.use_cassette("TestWikiPage.test_init__with_revision"):
             assert isinstance(page.revision_by, Redditor)
             assert page.revision_date == 1367295177
 
@@ -97,9 +95,7 @@ class TestWikiPage(IntegrationTest):
     def test_revisions__author_deleted(self, _):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
 
-        with self.recorder.use_cassette(
-            "TestWikiPage.test_revisions__author_deleted"
-        ):
+        with self.recorder.use_cassette("TestWikiPage.test_revisions__author_deleted"):
             revisions = subreddit.wiki["index"].revisions(limit=10)
             assert any(revision["author"] is None for revision in revisions)
 
@@ -126,9 +122,7 @@ class TestWikiPageModeration(IntegrationTest):
         page = WikiPage(self.reddit, subreddit, "test")
 
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestWikiPageModeration.test_settings"
-        ):
+        with self.recorder.use_cassette("TestWikiPageModeration.test_settings"):
             settings = page.mod.settings()
         assert {"editors": [], "listed": True, "permlevel": 0} == settings
 

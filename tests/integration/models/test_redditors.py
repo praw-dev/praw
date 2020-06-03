@@ -37,12 +37,8 @@ class TestRedditors(IntegrationTest):
                 assert isinstance(next(generator), Subreddit)
 
     def test_partial_redditors(self):
-        with self.recorder.use_cassette(
-            "TestRedditors.test_partial_redditors"
-        ):
-            gen = self.reddit.redditors.partial_redditors(
-                ["t2_1w72", "t2_4x25quk"]
-            )
+        with self.recorder.use_cassette("TestRedditors.test_partial_redditors"):
+            gen = self.reddit.redditors.partial_redditors(["t2_1w72", "t2_4x25quk"])
             user_data = list(gen)
 
         fullnames = [user.fullname for user in user_data]

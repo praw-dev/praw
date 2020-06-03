@@ -54,10 +54,7 @@ class StaticChecker:
         :param content: The content of the file
         :returns: A boolean with the status of the check
         """
-        if (
-            os.path.join("praw", "const.py")  # fails due to bytes blocks
-            in filename
-        ):
+        if os.path.join("praw", "const.py") in filename:  # fails due to bytes blocks
             return True
         newcontent = re.sub(r"(^|\s)/(u|r)/", r"\1\2/", content)
         # will only replace if the character behind a /r/ is a
@@ -79,9 +76,7 @@ class StaticChecker:
         )
         return False
 
-    def check_for_noreturn(
-        self, filename: str, line_number: int, content: str
-    ) -> bool:
+    def check_for_noreturn(self, filename: str, line_number: int, content: str) -> bool:
         """Checks a line for ``NoReturn`` statements.
 
         :param filename: The name of the file to check & replace.

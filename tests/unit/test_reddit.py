@@ -64,8 +64,7 @@ class TestReddit(UnitTest):
         with pytest.raises(ValueError) as excinfo:
             Reddit(ratelimit_seconds="test", **self.REQUIRED_DUMMY_SETTINGS)
         assert (
-            excinfo.value.args[0]
-            == "An incorrect config type was given for option "
+            excinfo.value.args[0] == "An incorrect config type was given for option "
             "ratelimit_seconds. The expected type is int, but the given value "
             "is test."
         )
@@ -96,8 +95,7 @@ class TestReddit(UnitTest):
                     "errors": [
                         [
                             "RATELIMIT",
-                            "You are doing that too much. Try again in 5 "
-                            "seconds.",
+                            "You are doing that too much. Try again in 5 seconds.",
                             "ratelimit",
                         ]
                     ]
@@ -108,8 +106,7 @@ class TestReddit(UnitTest):
                     "errors": [
                         [
                             "RATELIMIT",
-                            "You are doing that too much. Try again in 5 "
-                            "seconds.",
+                            "You are doing that too much. Try again in 5 seconds.",
                             "ratelimit",
                         ]
                     ]
@@ -120,8 +117,7 @@ class TestReddit(UnitTest):
                     "errors": [
                         [
                             "RATELIMIT",
-                            "You are doing that too much. Try again in 10 "
-                            "minutes.",
+                            "You are doing that too much. Try again in 10 minutes.",
                             "ratelimit",
                         ]
                     ]
@@ -146,8 +142,7 @@ class TestReddit(UnitTest):
         with pytest.raises(RedditAPIException) as exc:
             self.reddit.post("test")
         assert (
-            exc.value.message
-            == "You are doing that too much. Try again in 5 seconds."
+            exc.value.message == "You are doing that too much. Try again in 5 seconds."
         )
         with pytest.raises(RedditAPIException) as exc2:
             self.reddit.post("test")
@@ -211,9 +206,7 @@ class TestReddit(UnitTest):
     def test_read_only__without_untrusted_authenticated_core(self):
         required_settings = self.REQUIRED_DUMMY_SETTINGS.copy()
         required_settings["client_secret"] = None
-        with Reddit(
-            password=None, username=None, **required_settings
-        ) as reddit:
+        with Reddit(password=None, username=None, **required_settings) as reddit:
             assert reddit.read_only
             with pytest.raises(ClientException):
                 reddit.read_only = False
@@ -228,8 +221,7 @@ class TestReddit(UnitTest):
                 settings[setting] = Config.CONFIG_NOT_SET
                 Reddit(**settings)
             assert str(excinfo.value).startswith(
-                "Required configuration "
-                "setting '{}' missing.".format(setting)
+                "Required configuration setting '{}' missing.".format(setting)
             )
             if setting == "client_secret":
                 assert "set to None" in str(excinfo.value)
@@ -243,8 +235,7 @@ class TestReddit(UnitTest):
                 settings[setting] = None
                 Reddit(**settings)
             assert str(excinfo.value).startswith(
-                "Required configuration "
-                "setting '{}' missing.".format(setting)
+                "Required configuration setting '{}' missing.".format(setting)
             )
 
     def test_reddit__site_name_no_section(self):
@@ -260,25 +251,16 @@ class TestReddit(UnitTest):
             side_effect=BadRequest(response=response)
         )
 
-        reddit = Reddit(
-            client_id="dummy", client_secret="dummy", user_agent="dummy"
-        )
+        reddit = Reddit(client_id="dummy", client_secret="dummy", user_agent="dummy")
         with pytest.raises(Exception) as excinfo:
             reddit.request("POST", "/")
-        assert str(excinfo.value).startswith(
-            "Unexpected BadRequest without json body."
-        )
+        assert str(excinfo.value).startswith("Unexpected BadRequest without json body.")
 
     def test_request__json_and_body(self):
-        reddit = Reddit(
-            client_id="dummy", client_secret="dummy", user_agent="dummy"
-        )
+        reddit = Reddit(client_id="dummy", client_secret="dummy", user_agent="dummy")
         with pytest.raises(ClientException) as excinfo:
             reddit.request(
-                method="POST",
-                path="/",
-                data={"key": "value"},
-                json={"key": "value"},
+                method="POST", path="/", data={"key": "value"}, json={"key": "value"},
             )
         assert str(excinfo.value).startswith(
             "At most one of `data` and `json` is supported."

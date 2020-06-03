@@ -54,9 +54,7 @@ class TestRemovalReason(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_update(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditRemovalReasons.test_update"
-        ):
+        with self.recorder.use_cassette("TestSubredditRemovalReasons.test_update"):
             reason = self.subreddit.mod.removal_reasons["110nhk2cgmaxy"]
             reason.update(message="New Message", title="New Title")
 
@@ -72,9 +70,7 @@ class TestRemovalReason(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_delete(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditRemovalReasons.test_delete"
-        ):
+        with self.recorder.use_cassette("TestSubredditRemovalReasons.test_delete"):
             reason = self.subreddit.mod.removal_reasons["110nhyk34m01d"]
             reason.delete()
 
@@ -87,9 +83,7 @@ class TestSubredditRemovalReasons(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test__iter(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditRemovalReasons.test__iter"
-        ):
+        with self.recorder.use_cassette("TestSubredditRemovalReasons.test__iter"):
             count = 0
             for reason in self.subreddit.mod.removal_reasons:
                 assert isinstance(reason, RemovalReason)
@@ -99,8 +93,6 @@ class TestSubredditRemovalReasons(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_add(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditRemovalReasons.test_add"
-        ):
+        with self.recorder.use_cassette("TestSubredditRemovalReasons.test_add"):
             reason = self.subreddit.mod.removal_reasons.add("test", "Test")
             assert isinstance(reason, RemovalReason)

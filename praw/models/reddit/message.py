@@ -62,9 +62,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
 
         if data["replies"]:
             replies = data["replies"]
-            data["replies"] = reddit._objector.objectify(
-                replies["data"]["children"]
-            )
+            data["replies"] = reddit._objector.objectify(replies["data"]["children"])
         else:
             data["replies"] = []
 
@@ -97,9 +95,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
             next(reddit.inbox.all()).delete()
 
         """
-        self._reddit.post(
-            API_PATH["delete_message"], data={"id": self.fullname}
-        )
+        self._reddit.post(API_PATH["delete_message"], data={"id": self.fullname})
 
 
 class SubredditMessage(Message):
@@ -162,6 +158,4 @@ class SubredditMessage(Message):
                         if isinstance(message, SubredditMessage)
             msg.unmute()
         """
-        self._reddit.post(
-            API_PATH["unmute_sender"], data={"id": self.fullname}
-        )
+        self._reddit.post(API_PATH["unmute_sender"], data={"id": self.fullname})

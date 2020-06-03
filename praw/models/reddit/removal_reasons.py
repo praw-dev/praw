@@ -35,9 +35,7 @@ class RemovalReason(RedditBase):
     STR_FIELD = "id"
 
     @staticmethod
-    def _warn_reason_id(
-        reason_id_value: Optional[str], id_value: Optional[str]
-    ):
+    def _warn_reason_id(reason_id_value: Optional[str], id_value: Optional[str]):
         """Reason id param is deprecated. Warns if it's used.
 
         :param reason_id_value: The value passed as parameter ``reason_id``.
@@ -113,14 +111,10 @@ class RemovalReason(RedditBase):
            reddit.subreddit("NAME").mod.removal_reasons["141vv5c16py7d"].delete()
 
         """
-        url = API_PATH["removal_reason"].format(
-            subreddit=self.subreddit, id=self.id
-        )
+        url = API_PATH["removal_reason"].format(subreddit=self.subreddit, id=self.id)
         self._reddit.delete(url)
 
-    def update(
-        self, message: Optional[str] = None, title: Optional[str] = None
-    ):
+    def update(self, message: Optional[str] = None, title: Optional[str] = None):
         """Update the removal reason from this subreddit.
 
         .. note:: Existing values will be used for any unspecified arguments.
@@ -137,9 +131,7 @@ class RemovalReason(RedditBase):
                title="New title")
 
         """
-        url = API_PATH["removal_reason"].format(
-            subreddit=self.subreddit, id=self.id
-        )
+        url = API_PATH["removal_reason"].format(subreddit=self.subreddit, id=self.id)
         data = {
             name: getattr(self, name) if value is None else value
             for name, value in {"message": message, "title": title}.items()

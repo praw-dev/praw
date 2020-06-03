@@ -27,9 +27,7 @@ class RedditErrorItem:
             error_str += " on field {!r}".format(self.field)
         return error_str
 
-    def __init__(
-        self, error_type: str, message: str, field: Optional[str] = None
-    ):
+    def __init__(self, error_type: str, message: str, field: Optional[str] = None):
         """Instantiate an error item.
 
         :param error_type: The error type set on Reddit's end.
@@ -70,17 +68,13 @@ class APIException(PRAWException):
     """
 
     @staticmethod
-    def parse_exception_list(
-        exceptions: List[Union[RedditErrorItem, List[str]]]
-    ):
+    def parse_exception_list(exceptions: List[Union[RedditErrorItem, List[str]]]):
         """Covert an exception list into a :class:`.RedditErrorItem` list."""
         return [
             exception
             if isinstance(exception, RedditErrorItem)
             else RedditErrorItem(
-                exception[0],
-                exception[1],
-                exception[2] if bool(exception[2]) else "",
+                exception[0], exception[1], exception[2] if bool(exception[2]) else "",
             )
             for exception in exceptions
         ]
@@ -135,9 +129,7 @@ class APIException(PRAWException):
             "Accessing attribute ``{}`` through APIException is deprecated. "
             "This behavior will be removed in PRAW 8.0. Check out "
             "https://praw.readthedocs.io/en/latest/package_info/"
-            "praw7_migration.html to learn how to migrate your code.".format(
-                attrname
-            ),
+            "praw7_migration.html to learn how to migrate your code.".format(attrname),
             category=DeprecationWarning,
             stacklevel=3,
         )
@@ -200,9 +192,7 @@ class InvalidImplicitAuth(ClientException):
 
     def __init__(self):
         """Instantize the class."""
-        super().__init__(
-            "Implicit authorization can only be used with installed apps."
-        )
+        super().__init__("Implicit authorization can only be used with installed apps.")
 
 
 class InvalidURL(ClientException):

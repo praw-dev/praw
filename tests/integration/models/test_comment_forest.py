@@ -24,12 +24,8 @@ class TestCommentForest(IntegrationTest):
             before_count = len(submission.comments.list())
             skipped = submission.comments.replace_more(None, threshold=0)
             assert len(skipped) == 0
-            assert all(
-                isinstance(x, Comment) for x in submission.comments.list()
-            )
-            assert all(
-                x.submission == submission for x in submission.comments.list()
-            )
+            assert all(isinstance(x, Comment) for x in submission.comments.list())
+            assert all(x.submission == submission for x in submission.comments.list())
             assert before_count < len(submission.comments.list())
 
     def test_replace__all_large(self):
@@ -40,13 +36,9 @@ class TestCommentForest(IntegrationTest):
             submission = Submission(self.reddit, "n49rw")
             skipped = submission.comments.replace_more(None, threshold=0)
             assert len(skipped) == 0
-            assert all(
-                isinstance(x, Comment) for x in submission.comments.list()
-            )
+            assert all(isinstance(x, Comment) for x in submission.comments.list())
             assert len(submission.comments.list()) > 1000
-            assert len(submission.comments.list()) == len(
-                submission._comments_by_id
-            )
+            assert len(submission.comments.list()) == len(submission._comments_by_id)
 
     def test_replace__all_with_comment_limit(self):
         with self.recorder.use_cassette(
@@ -126,9 +118,7 @@ class TestCommentForest(IntegrationTest):
         ):
             comment = self.reddit.comment("d8r4im1")
             comment.refresh()
-            assert any(
-                isinstance(x, MoreComments) for x in comment.replies.list()
-            )
+            assert any(isinstance(x, MoreComments) for x in comment.replies.list())
             comment.replies.replace_more()
             assert all(isinstance(x, Comment) for x in comment.replies.list())
 

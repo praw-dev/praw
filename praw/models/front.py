@@ -18,9 +18,7 @@ class Front(SubredditListingMixin):
         super().__init__(reddit, _data=None)
         self._path = "/"
 
-    def best(
-        self, **generator_kwargs: Union[str, int]
-    ) -> Iterator[Submission]:
+    def best(self, **generator_kwargs: Union[str, int]) -> Iterator[Submission]:
         """Return a :class:`.ListingGenerator` for best items.
 
         Additional keyword arguments are passed in the initialization of

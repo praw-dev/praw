@@ -137,9 +137,7 @@ class WikiPage(RedditBase):
 
     @staticmethod
     def _revision_generator(subreddit, url, generator_kwargs):
-        for revision in ListingGenerator(
-            subreddit._reddit, url, **generator_kwargs
-        ):
+        for revision in ListingGenerator(subreddit._reddit, url, **generator_kwargs):
             if revision["author"] is not None:
                 revision["author"] = Redditor(
                     subreddit._reddit, _data=revision["author"]["data"]
@@ -214,9 +212,7 @@ class WikiPage(RedditBase):
         self.__dict__.update(data)
         self._fetched = True
 
-    def edit(
-        self, content: str, reason: Optional[str] = None, **other_settings: Any
-    ):
+    def edit(self, content: str, reason: Optional[str] = None, **other_settings: Any):
         """Edit this WikiPage's contents.
 
         :param content: The updated Markdown content of the page.
@@ -232,12 +228,9 @@ class WikiPage(RedditBase):
             page.edit(content="test wiki page")
 
         """
-        other_settings.update(
-            {"content": content, "page": self.name, "reason": reason}
-        )
+        other_settings.update({"content": content, "page": self.name, "reason": reason})
         self._reddit.post(
-            API_PATH["wiki_edit"].format(subreddit=self.subreddit),
-            data=other_settings,
+            API_PATH["wiki_edit"].format(subreddit=self.subreddit), data=other_settings,
         )
 
     def revision(self, revision: str):
@@ -250,9 +243,7 @@ class WikiPage(RedditBase):
            page = reddit.subreddit("test").wiki["praw_test"].revision("[ID]")
 
         """
-        return WikiPage(
-            self.subreddit._reddit, self.subreddit, self.name, revision
-        )
+        return WikiPage(self.subreddit._reddit, self.subreddit, self.name, revision)
 
     def revisions(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
