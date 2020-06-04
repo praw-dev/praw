@@ -1,4 +1,4 @@
-"""Provide the Comment class."""
+""Provide the Comment class."""
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from ...const import API_PATH
@@ -141,7 +141,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     @submission.setter
     def submission(self, submission: "Submission"):
         """Update the Submission associated with the Comment."""
-        submission._comments_by_id[self.name] = self
+        submission._comments_by_id[self.fullname] = self
         self._submission = submission
         # pylint: disable=not-an-iterable
         for reply in getattr(self, "replies", []):
