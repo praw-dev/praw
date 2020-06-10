@@ -141,7 +141,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     @submission.setter
     def submission(self, submission: "Submission"):
         """Update the Submission associated with the Comment."""
-        submission._comments_by_id[self.name] = self
+        submission._comments_by_id[self.fullname] = self
         self._submission = submission
         # pylint: disable=not-an-iterable
         for reply in getattr(self, "replies", []):
