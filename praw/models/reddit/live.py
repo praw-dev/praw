@@ -5,6 +5,7 @@ from ...const import API_PATH
 from ...util.cache import cachedproperty
 from ..list.redditor import RedditorList
 from ..listing.generator import ListingGenerator
+from ..util import stream_generator
 from .base import RedditBase
 from .mixins import FullnameMixin
 from .redditor import Redditor
@@ -68,7 +69,7 @@ class LiveContributorRelationship:
         self.thread._reddit.post(url)
 
     def invite(
-        self, redditor: Union[str, Redditor], permissions: Optional[List[str]] = None,
+        self, redditor: Union[str, Redditor], permissions: Optional[List[str]] = None
     ):
         """Invite a redditor to be a contributor of the live thread.
 
@@ -168,7 +169,7 @@ class LiveContributorRelationship:
         self.thread._reddit.post(url, data=data)
 
     def update(
-        self, redditor: Union[str, Redditor], permissions: Optional[List[str]] = None,
+        self, redditor: Union[str, Redditor], permissions: Optional[List[str]] = None
     ):
         """Update the contributor permissions for ``redditor``.
 
@@ -210,7 +211,7 @@ class LiveContributorRelationship:
         self.thread._reddit.post(url, data=data)
 
     def update_invite(
-        self, redditor: Union[str, Redditor], permissions: Optional[List[str]] = None,
+        self, redditor: Union[str, Redditor], permissions: Optional[List[str]] = None
     ):
         """Update the contributor invite permissions for ``redditor``.
 
@@ -312,6 +313,32 @@ class LiveThread(RedditBase):
 
         """
         return LiveContributorRelationship(self)
+
+    @cachedproperty
+    def stream(self) -> "LiveThreadStream":
+        """Provide an instance of :class:`.LiveThreadStream`.
+
+        Streams are used to indefinitely retrieve new updates made to a
+        live thread, like:
+
+        .. code-block:: python
+
+            for live_update in reddit.live("ta535s1hq2je").stream.updates():
+                print(live_update.body)
+
+        Updates are yielded oldest first as :class:`.LiveUpdate`. Up to 100
+        historical updates will initially be returned.
+        To only retrieve new updates starting from when the stream is
+        created, pass ``skip_existing=True``:
+
+        .. code-block:: python
+
+            live_thread = reddit.live("ta535s1hq2je")
+            for live_update in live_thread.stream.updates(skip_existing=True):
+                print(live_update.author)
+
+        """
+        return LiveThreadStream(self)
 
     def __eq__(self, other: Union[str, "LiveThread"]) -> bool:
         """Return whether the other instance equals the current.
@@ -560,6 +587,60 @@ class LiveThreadContribution:
         # prawcore (0.7.0) Session.request() modifies `data` kwarg
         self.thread._reddit.post(url, data=data.copy())
         self.thread._reset_attributes(*data.keys())
+
+
+class LiveThreadStream:
+    """Provides a :class:`.LiveThread` stream.
+
+    Usually used via:
+
+    .. code-block:: python
+
+        for live_update in reddit.live("ta535s1hq2je").stream.updates():
+            print(live_update.body)
+
+    """
+
+    def __init__(self, live_thread: LiveThread):
+        """Create a LiveThreadStream instance.
+
+        :param live_thread: The live thread associated with the stream.
+        """
+        self.live_thread = live_thread
+
+    def updates(self, **stream_options: Dict[str, Any]) -> Iterator["LiveUpdate"]:
+        """Yield new updates to the live thread as they become available.
+
+        :param skip_existing: Set to ``True`` to only fetch items created
+            after the stream (default: ``False``).
+
+        As with :meth:`.LiveThread.updates()`, updates are yielded as
+        :class:`.LiveUpdate`.
+
+        Updates are yielded oldest first. Up to 100 historical updates will
+        initially be returned.
+
+        Keyword arguments are passed to :func:`.stream_generator`.
+
+        For example, to retrieve all new updates made to the
+        ``"ta535s1hq2je"`` live thread, try:
+
+        .. code-block:: python
+
+            for live_update in reddit.live("ta535s1hq2je").stream.updates():
+                print(live_update.body)
+
+        To only retrieve new updates starting from when the stream is
+        created, pass ``skip_existing=True``:
+
+        .. code-block:: python
+
+            live_thread = reddit.live("ta535s1hq2je")
+            for live_update in live_thread.stream.updates(skip_existing=True):
+                print(live_update.author)
+
+        """
+        return stream_generator(self.live_thread.updates, **stream_options)
 
 
 class LiveUpdate(FullnameMixin, RedditBase):
