@@ -202,7 +202,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return str(subreddit)
 
     @property
-    def _kind(self):
+    def _kind(self) -> str:
         """Return the class's kind."""
         return self._reddit.config.kinds["subreddit"]
 

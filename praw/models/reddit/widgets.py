@@ -986,7 +986,7 @@ class SubredditWidgetsModeration:
 class Widget(PRAWBase):
     """Base class to represent a Widget."""
 
-    @property
+    @cachedproperty
     def mod(self):
         """Get an instance of :class:`.WidgetModeration` for this widget.
 
@@ -996,9 +996,7 @@ class Widget(PRAWBase):
            widget belongs to. To remedy this, call
            :meth:`~.SubredditWidgets.refresh`.
         """
-        if self._mod is None:
-            self._mod = WidgetModeration(self, self.subreddit, self._reddit)
-        return self._mod
+        return WidgetModeration(self, self.subreddit, self._reddit)
 
     def __eq__(self, other):
         """Check equality against another object."""
@@ -1851,6 +1849,8 @@ class WidgetModeration:
             if not key.startswith("_")
         }
         del payload["subreddit"]  # not JSON serializable
+        if "mod" in payload:
+            del payload["mod"]
         payload.update(kwargs)
         widget = self._reddit.put(
             path, data={"json": dumps(payload, cls=WidgetEncoder)}

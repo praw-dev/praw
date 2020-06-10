@@ -428,7 +428,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         return submission_id
 
     @property
-    def _kind(self):
+    def _kind(self) -> str:
         """Return the class's kind."""
         return self._reddit.config.kinds["submission"]
 
