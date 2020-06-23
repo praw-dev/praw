@@ -8,6 +8,7 @@ from praw.exceptions import (
     InvalidFlairTemplateID,
     InvalidImplicitAuth,
     InvalidURL,
+    MediaPostFailed,
     MissingRequiredAttributeException,
     PRAWException,
     RedditAPIException,
@@ -163,10 +164,29 @@ class TestWebSocketException:
         assert str(WebSocketException("", None)) == ""
         assert str(WebSocketException("error message", None)) == "error message"
 
+    @pytest.mark.filterwarnings("ignore", category=DeprecationWarning)
     def test_exception_attr(self):
-        assert WebSocketException(None, None).original_exception is None
+        exc = WebSocketException(None, None)
+        assert exc.original_exception is None
         assert isinstance(WebSocketException(None, Exception()), Exception)
         assert (
             str(WebSocketException(None, Exception("test")).original_exception)
             == "test"
+        )
+        exc.original_exception = Exception()
+        assert isinstance(exc.original_exception, Exception)
+        del exc.original_exception
+        assert "_original_exception" not in vars(exc)
+
+
+class TestMediaPostFailed:
+    def test_inheritance(self):
+        assert issubclass(MediaPostFailed, WebSocketException)
+
+    def test_message(self):
+        assert (
+            str(MediaPostFailed())
+            == "The attempted media upload action has failed. Possible causes"
+            " include the corruption of media files. Check that the media "
+            "file can be opened on your local machine."
         )

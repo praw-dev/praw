@@ -27,6 +27,10 @@ Unreleased
 * :meth:`.SubredditRemovalReasons.__getitem__` now takes integers and slices to
   get removal reasons from the list of reasons as returned by Reddit.
 
+**Deprecated**
+
+* :attr:`.WebSocketException.original_exception` is deprecated and slated for removal in PRAW 8.0.
+
 **Fixed**
 
 * An issue where certain subreddit settings could not be set through
@@ -36,6 +40,9 @@ Unreleased
   update request.
 * Instances of ``BadRequest``\ s captured by PRAW that do not contain any
   detailed JSON data are re-raised as the original ``BadRequest``.
+* :meth:`.submit_image` and :meth:`.submit_video` will throw
+  :class:`.MediaPostFailed` when Reddit fails to post an image or video post.
+
 
 7.0.0 (2020/04/24)
 ------------------

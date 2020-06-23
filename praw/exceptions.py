@@ -234,11 +234,47 @@ class TooLargeMediaException(ClientException):
 class WebSocketException(ClientException):
     """Indicate exceptions caused by use of WebSockets."""
 
-    def __init__(self, message: str, exception: Exception):
+    @property
+    def original_exception(self) -> Exception:
+        """Access the original_exception attribute (now deprecated)."""
+        warn(
+            "Accessing the attribute original_exception is deprecated. Please"
+            " rewrite your code in such a way that this attribute does not"
+            " need to be used. It will be removed in PRAW 8.0.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        return self._original_exception
+
+    @original_exception.setter
+    def original_exception(self, value: Exception):
+        self._original_exception = value
+
+    @original_exception.deleter
+    def original_exception(self):
+        del self._original_exception
+
+    def __init__(self, message: str, exception: Optional[Exception]):
         """Initialize a WebSocketException.
 
         :param message: The exception message.
         :param exception: The exception thrown by the websocket library.
+
+            .. note:: This parameter is deprecated. It will be removed in PRAW
+                8.0.
         """
         super().__init__(message)
-        self.original_exception = exception
+        self._original_exception = exception
+
+
+class MediaPostFailed(WebSocketException):
+    """Indicate exceptions where media uploads failed.."""
+
+    def __init__(self):
+        """Instantiate MediaPostFailed."""
+        super().__init__(
+            "The attempted media upload action has failed. Possible causes"
+            " include the corruption of media files. Check that the media "
+            "file can be opened on your local machine.",
+            None,
+        )

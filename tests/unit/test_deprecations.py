@@ -2,7 +2,7 @@
 
 import pytest
 
-from praw.exceptions import APIException
+from praw.exceptions import APIException, WebSocketException
 
 from . import UnitTest
 
@@ -38,4 +38,15 @@ class TestDeprecation(UnitTest):
             "iterator (https://praw.readthedocs.io/en/latest/code_overview"
             "/other/subredditrules.html#praw.models.reddit.rules."
             "SubredditRules.__call__)."
+        )
+
+    def test_web_socket_exception_attribute(self):
+        exc = WebSocketException("Test", Exception("Test"))
+        with pytest.raises(DeprecationWarning) as excinfo:
+            _ = exc.original_exception
+        assert (
+            excinfo.value.args[0]
+            == "Accessing the attribute original_exception is deprecated."
+            " Please rewrite your code in such a way that this attribute does "
+            "not need to be used. It will be removed in PRAW 8.0."
         )
