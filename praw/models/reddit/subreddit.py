@@ -1764,7 +1764,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
 
         .. code-block:: python
 
-           template_ids = [t['Id'] for t in reddit.subreddit("NAME").flair.templates]
+           template_ids = [t['id'] for t in reddit.subreddit("NAME").flair.templates]
            new_order = template_id[::-1] # reverse order
            reddit.subreddit("NAME").flair.templates.order(new_order)
 
@@ -1861,7 +1861,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         .. code-block:: python
 
-           template_ids = [t['Id'] for t in reddit.subreddit("NAME").flair.link_templates]
+           template_ids = [t['id'] for t in reddit.subreddit("NAME").flair.link_templates]
            new_order = template_id[::-1] # reverse order
            reddit.subreddit("NAME").flair.link_templates.order(new_order)
 
