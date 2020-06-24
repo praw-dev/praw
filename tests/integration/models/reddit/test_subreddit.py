@@ -1059,7 +1059,8 @@ class TestSubredditFlairTemplates(IntegrationTest):
         with self.recorder.use_cassette("TestSubredditFlairTemplates.test_clear"):
             self.subreddit.flair.templates.clear()
 
-    def test_order(self):
+    @mock.patch("time.sleep", return_value=None)
+    def test_order(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubredditFlairTemplates.test_order"):
             template_ids = [flair_template["id"] for flair_template in self.subreddit.flair.templates]
@@ -1229,7 +1230,8 @@ class TestSubredditLinkFlairTemplates(IntegrationTest):
         with self.recorder.use_cassette("TestSubredditLinkFlairTemplates.test_clear"):
             self.subreddit.flair.link_templates.clear()
 
-    def test_order(self):
+    @mock.patch("time.sleep", return_value=None)
+    def test_order(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubredditLinkFlairTemplates.test_order"):
             link_template_ids = [flair_template["id"] for flair_template in self.subreddit.flair.link_templates]
