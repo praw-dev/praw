@@ -1579,7 +1579,9 @@ class SubredditFlairTemplates:
         self.subreddit._reddit.post(url, data={"flair_type": self.flair_type(is_link)})
 
     def _order(self, is_link=None, template_ids=None):
-        url = API_PATH["flair_template_order"].format(subreddit=self.subreddit, flair_type=self.flair_type(is_link))
+        url = API_PATH["flair_template_order"].format(
+            subreddit=self.subreddit, flair_type=self.flair_type(is_link)
+        )
         self.subreddit._reddit.patch(url, json=template_ids)
 
     def delete(self, template_id):
