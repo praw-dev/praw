@@ -1063,9 +1063,15 @@ class TestSubredditFlairTemplates(IntegrationTest):
     def test_order(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubredditFlairTemplates.test_order"):
-            template_ids = [flair_template["id"] for flair_template in self.subreddit.flair.templates]
+            template_ids = [
+                flair_template["id"]
+                for flair_template in self.subreddit.flair.templates
+            ]
             self.subreddit.flair.templates.order(template_ids[::-1])
-            new_template_ids = [flair_template["id"] for flair_template in self.subreddit.flair.templates]
+            new_template_ids = [
+                flair_template["id"]
+                for flair_template in self.subreddit.flair.templates
+            ]
             assert new_template_ids[::-1] == template_ids
 
     @mock.patch("time.sleep", return_value=None)
@@ -1234,9 +1240,15 @@ class TestSubredditLinkFlairTemplates(IntegrationTest):
     def test_order(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubredditLinkFlairTemplates.test_order"):
-            link_template_ids = [flair_template["id"] for flair_template in self.subreddit.flair.link_templates]
+            link_template_ids = [
+                flair_template["id"]
+                for flair_template in self.subreddit.flair.link_templates
+            ]
             self.subreddit.flair.link_templates.order(link_template_ids[::-1])
-            new_link_template_ids = [flair_template["id"] for flair_template in self.subreddit.flair.link_templates]
+            new_link_template_ids = [
+                flair_template["id"]
+                for flair_template in self.subreddit.flair.link_templates
+            ]
             assert new_link_template_ids[::-1] == link_template_ids
 
 
