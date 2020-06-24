@@ -1,0 +1,449 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2020-06-24T23:16:31",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "Content-Length": [
+            "73"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.1.1.dev0 prawcore/1.4.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"device_id\": \"None\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "Content-Length": [
+            "133"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 24 Jun 2020 23:16:31 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=CjZjEN5EiTn6FL4vBt; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lcy19252-LCY"
+          ],
+          "X-Timer": [
+            "S1593040591.420335,VS0,VE130"
+          ],
+          "cache-control": [
+            "no-cache"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2020-06-24T23:16:31",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=CjZjEN5EiTn6FL4vBt"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.1.1.dev0 prawcore/1.4.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=0&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"allowable_content\": \"all\", \"text\": \"AMA\", \"text_color\": \"light\", \"mod_only\": true, \"background_color\": \"#005ba1\", \"id\": \"03eeafba-9713-11e8-89c7-0e9892d34946\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"AMA\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"Mod Issued Flair\", \"text_color\": \"light\", \"mod_only\": true, \"background_color\": \"#005ba1\", \"id\": \"c96e8118-996e-11e8-9b96-0eb421d41ae8\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"Mod Issued Flair\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"Custom Flair\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"e6cb5c46-996d-11e8-9055-0e4a74f6fb58\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"Custom Flair\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_eu: Europe\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"ebc088a4-996b-11e8-a330-0e8cd38fa87a\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_eu:\", \"u\": \"https://emoji.redditmedia.com/9xaxv87fjol01_t5_38i7a/flag_eu\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Europe\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_ad: Andorra\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"dd959502-996c-11e8-90f4-0ec5687b06c0\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_ad:\", \"u\": \"https://emoji.redditmedia.com/f56dv3n1jol01_t5_38i7a/flag_ad\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Andorra\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_al: Albania\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"e67b888e-996c-11e8-b089-0e6bf6e7a2e6\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_al:\", \"u\": \"https://emoji.redditmedia.com/6lm473m2jol01_t5_38i7a/flag_al\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Albania\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_am: Armenia\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"ec4070b8-996c-11e8-870b-0eb66faa91fc\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_am:\", \"u\": \"https://emoji.redditmedia.com/pzayuqs2jol01_t5_38i7a/flag_am\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Armenia\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_at: Austria\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"942a6ee2-996c-11e8-95bd-0effd4cd946c\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_at:\", \"u\": \"https://emoji.redditmedia.com/81pd61r3jol01_t5_38i7a/flag_at\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Austria\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_be: Belgium\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"edcc89a0-9712-11e8-8c70-0eb329a59280\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_be:\", \"u\": \"https://emoji.redditmedia.com/t847hbd5jol01_t5_38i7a/flag_be\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Belgium\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_bg: Bulgaria\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"9ea444ec-996c-11e8-8efe-0e8b6d6522e0\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_bg:\", \"u\": \"https://emoji.redditmedia.com/b96gj2s5jol01_t5_38i7a/flag_bg\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Bulgaria\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_hr: Croatia\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"03899dd8-996f-11e8-a315-0e2fe6aaf746\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_hr:\", \"u\": \"https://emoji.redditmedia.com/22cl5wbkjol01_t5_38i7a/flag_hr\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Croatia\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_cz: Czechia\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"326dc7ac-996d-11e8-aaf5-0efcf9385608\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_cz:\", \"u\": \"https://emoji.redditmedia.com/xztf4fccjol01_t5_38i7a/flag_cz\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Czechia\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_dk: Denmark\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"1ce2be34-996c-11e8-a326-0e4fc9554d00\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_dk:\", \"u\": \"https://emoji.redditmedia.com/txp5q04djol01_t5_38i7a/flag_dk\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Denmark\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_fi: Finland\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"2ccbe460-996c-11e8-bb6b-0e1ea72d2cc8\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_fi:\", \"u\": \"https://emoji.redditmedia.com/i5jo5fdfjol01_t5_38i7a/flag_fi\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Finland\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_fr: France\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"b3ce98ae-996c-11e8-91d5-0e320648cc5a\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_fr:\", \"u\": \"https://emoji.redditmedia.com/8sy2zq8gjol01_t5_38i7a/flag_fr\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" France\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_de: Germany\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"91e6733e-996b-11e8-ab58-0e6ce43db4d4\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_de:\", \"u\": \"https://emoji.redditmedia.com/mncqvuicjol01_t5_38i7a/flag_de\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Germany\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_gr: Greece\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"3f91a4c6-4fe9-11e8-8235-0eefe8746ac4\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_gr:\", \"u\": \"https://emoji.redditmedia.com/m0i8iztijol01_t5_38i7a/flag_gr\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Greece\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_it: Italy\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"c59bb75c-996b-11e8-9625-0e872c498ec4\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_it:\", \"u\": \"https://emoji.redditmedia.com/9t7nmfjmjol01_t5_38i7a/flag_it\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Italy\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_ie: Ireland\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"beeaf3d6-996c-11e8-92d1-0e9892d34946\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_ie:\", \"u\": \"https://emoji.redditmedia.com/9vecb1dljol01_t5_38i7a/flag_ie\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Ireland\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_nl: The Netherlands\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"f89e043e-996b-11e8-95bd-0effd4cd946c\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_nl:\", \"u\": \"https://emoji.redditmedia.com/kwv31zevjol01_t5_38i7a/flag_nl\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" The Netherlands\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_no: Norway\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"073e2e9c-996c-11e8-97aa-0eaaeec76950\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_no:\", \"u\": \"https://emoji.redditmedia.com/pj02apjvjol01_t5_38i7a/flag_no\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Norway\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_pl: Poland\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"b8a2c81a-996b-11e8-a0e7-0e8308e8d618\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_pl:\", \"u\": \"https://emoji.redditmedia.com/o15goubxjol01_t5_38i7a/flag_pl\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Poland\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_pt: Portugal\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"d96ba152-996b-11e8-81dc-0e16df86972e\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_pt:\", \"u\": \"https://emoji.redditmedia.com/iyn5tnxxjol01_t5_38i7a/flag_pt\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Portugal\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_ro: Romania\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"51db90c4-996d-11e8-bca8-0e6ce43db4d4\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_ro:\", \"u\": \"https://emoji.redditmedia.com/403glrjyjol01_t5_38i7a/flag_ro\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Romania\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_es: Spain\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"e32b7bc2-996b-11e8-9298-0e6712d9e6fc\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_es:\", \"u\": \"https://emoji.redditmedia.com/9rkncuuejol01_t5_38i7a/flag_es\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Spain\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_se: Sweden\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"0e45f0b2-996c-11e8-b54c-0e6bf6e7a2e6\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_se:\", \"u\": \"https://emoji.redditmedia.com/s85oywlzjol01_t5_38i7a/flag_se\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Sweden\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_ch: Switzerland\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"12955274-996d-11e8-a65f-0e4a4bf8f796\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_ch:\", \"u\": \"https://emoji.redditmedia.com/lf1h4sr9jol01_t5_38i7a/flag_ch\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Switzerland\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_gb: United Kingdom\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"9c506910-996b-11e8-a55f-0e6712d9e6fc\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_gb:\", \"u\": \"https://emoji.redditmedia.com/9uqlo4lgjol01_t5_38i7a/flag_gb\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" United Kingdom\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_au: Australia\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"fd7122d8-996c-11e8-a7d4-0eefc6af2fda\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_au:\", \"u\": \"https://emoji.redditmedia.com/vonl2wx3jol01_t5_38i7a/flag_au\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Australia\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_br: Brazil\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"072f4912-996d-11e8-8190-0e3cef7d2fda\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_br:\", \"u\": \"https://emoji.redditmedia.com/51r8gag7jol01_t5_38i7a/flag_br\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Brazil\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_ca: Canada\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"1cff0fc0-996d-11e8-9b18-0e1bc8da3394\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_ca:\", \"u\": \"https://emoji.redditmedia.com/80wyqyr8jol01_t5_38i7a/flag_ca\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Canada\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_cn: China\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"24e55a82-996d-11e8-8a65-0ef4bebb9b6c\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_cn:\", \"u\": \"https://emoji.redditmedia.com/o9m8vtnajol01_t5_38i7a/flag_cn\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" China\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_il: Israel\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"2608b506-996f-11e8-aab9-0e3febd798c2\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_il:\", \"u\": \"https://emoji.redditmedia.com/4azyrtdljol01_t5_38i7a/flag_il\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Israel\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_jp: Japan\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"39f61164-996d-11e8-a508-0e270a900436\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_jp:\", \"u\": \"https://emoji.redditmedia.com/okho207njol01_t5_38i7a/flag_jp\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Japan\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_ma: Morocco\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"39bd5bec-996f-11e8-89c4-0eb66faa91fc\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_ma:\", \"u\": \"https://emoji.redditmedia.com/54egm6yqjol01_t5_38i7a/flag_ma\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Morocco\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_ng: Nigeria\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"67e919ae-996d-11e8-96bb-0e3febd798c2\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_ng:\", \"u\": \"https://emoji.redditmedia.com/df9vi13vjol01_t5_38i7a/flag_ng\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Nigeria\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_za: South Africa\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"15ba2306-996f-11e8-9dee-0e43b445d10c\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_za:\", \"u\": \"https://emoji.redditmedia.com/ln95nee8kol01_t5_38i7a/flag_za\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" South Africa\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_us: United States\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"aa24ef84-996b-11e8-9790-0e7ec57aa1f8\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_us:\", \"u\": \"https://emoji.redditmedia.com/q64a39m4kol01_t5_38i7a/flag_us\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" United States\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"80725418-4133-11e9-97ca-0e8b5363076a\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"test\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag-eu: :flag-eu: Europe\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"569dbefe-4bf9-11e9-8489-0e4e53a8c476\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \":flag-eu: :flag-eu: Europe\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"Luebeck :lb:\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"97a769c6-c832-11e9-8c9e-0e0ab89af262\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"Luebeck \"}, {\"a\": \":lb:\", \"u\": \"https://emoji.redditmedia.com/zg21914jaui31_t5_38i7a/lb\", \"e\": \"emoji\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "17018"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 24 Jun 2020 23:16:32 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "session_tracker=ombdprikcbmincphdp.0.1593040591820.Z0FBQUFBQmU4OTdRd0FsSm1tem5yUUtqaWV0THVfbVE2NmFYV1F6SEJaX1JBWmpRZWtYbWVkcHpiSUlKdHBqRTZlNDRCN0pZZVlhV2hTM3BYb25YYm5fQ1QwU01fbm9HRjlKWjhPUjRPR1REZUJCWWZ5Y3ZOcTNpcmUxd3h1U1ZfaEhBRHRiNUtNR0U; Domain=reddit.com; Max-Age=7199; Path=/; expires=Thu, 25-Jun-2020 01:16:32 GMT; secure; SameSite=None; Secure",
+            "csv=1; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lcy19233-LCY"
+          ],
+          "X-Timer": [
+            "S1593040592.747013,VS0,VE635"
+          ],
+          "cache-control": [
+            "no-cache"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "208.0"
+          ],
+          "x-ratelimit-reset": [
+            "209"
+          ],
+          "x-ratelimit-used": [
+            "392"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=0&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2020-06-24T23:16:32",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "[\"97a769c6-c832-11e9-8c9e-0e0ab89af262\", \"569dbefe-4bf9-11e9-8489-0e4e53a8c476\", \"80725418-4133-11e9-97ca-0e8b5363076a\", \"aa24ef84-996b-11e8-9790-0e7ec57aa1f8\", \"15ba2306-996f-11e8-9dee-0e43b445d10c\", \"67e919ae-996d-11e8-96bb-0e3febd798c2\", \"39bd5bec-996f-11e8-89c4-0eb66faa91fc\", \"39f61164-996d-11e8-a508-0e270a900436\", \"2608b506-996f-11e8-aab9-0e3febd798c2\", \"24e55a82-996d-11e8-8a65-0ef4bebb9b6c\", \"1cff0fc0-996d-11e8-9b18-0e1bc8da3394\", \"072f4912-996d-11e8-8190-0e3cef7d2fda\", \"fd7122d8-996c-11e8-a7d4-0eefc6af2fda\", \"9c506910-996b-11e8-a55f-0e6712d9e6fc\", \"12955274-996d-11e8-a65f-0e4a4bf8f796\", \"0e45f0b2-996c-11e8-b54c-0e6bf6e7a2e6\", \"e32b7bc2-996b-11e8-9298-0e6712d9e6fc\", \"51db90c4-996d-11e8-bca8-0e6ce43db4d4\", \"d96ba152-996b-11e8-81dc-0e16df86972e\", \"b8a2c81a-996b-11e8-a0e7-0e8308e8d618\", \"073e2e9c-996c-11e8-97aa-0eaaeec76950\", \"f89e043e-996b-11e8-95bd-0effd4cd946c\", \"beeaf3d6-996c-11e8-92d1-0e9892d34946\", \"c59bb75c-996b-11e8-9625-0e872c498ec4\", \"3f91a4c6-4fe9-11e8-8235-0eefe8746ac4\", \"91e6733e-996b-11e8-ab58-0e6ce43db4d4\", \"b3ce98ae-996c-11e8-91d5-0e320648cc5a\", \"2ccbe460-996c-11e8-bb6b-0e1ea72d2cc8\", \"1ce2be34-996c-11e8-a326-0e4fc9554d00\", \"326dc7ac-996d-11e8-aaf5-0efcf9385608\", \"03899dd8-996f-11e8-a315-0e2fe6aaf746\", \"9ea444ec-996c-11e8-8efe-0e8b6d6522e0\", \"edcc89a0-9712-11e8-8c70-0eb329a59280\", \"942a6ee2-996c-11e8-95bd-0effd4cd946c\", \"ec4070b8-996c-11e8-870b-0eb66faa91fc\", \"e67b888e-996c-11e8-b089-0e6bf6e7a2e6\", \"dd959502-996c-11e8-90f4-0ec5687b06c0\", \"ebc088a4-996b-11e8-a330-0e8cd38fa87a\", \"e6cb5c46-996d-11e8-9055-0e4a74f6fb58\", \"c96e8118-996e-11e8-9b96-0eb421d41ae8\", \"03eeafba-9713-11e8-89c7-0e9892d34946\"]"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "1640"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "Cookie": [
+            "csv=1; edgebucket=CjZjEN5EiTn6FL4vBt; session_tracker=ombdprikcbmincphdp.0.1593040591820.Z0FBQUFBQmU4OTdRd0FsSm1tem5yUUtqaWV0THVfbVE2NmFYV1F6SEJaX1JBWmpRZWtYbWVkcHpiSUlKdHBqRTZlNDRCN0pZZVlhV2hTM3BYb25YYm5fQ1QwU01fbm9HRjlKWjhPUjRPR1REZUJCWWZ5Y3ZOcTNpcmUxd3h1U1ZfaEhBRHRiNUtNR0U"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.1.1.dev0 prawcore/1.4.0"
+          ]
+        },
+        "method": "PATCH",
+        "uri": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/flair_template_order/USER_FLAIR?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "0"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 24 Jun 2020 23:16:32 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lcy19233-LCY"
+          ],
+          "X-Timer": [
+            "S1593040592.496494,VS0,VE150"
+          ],
+          "cache-control": [
+            "no-cache"
+          ],
+          "set-cookie": [
+            "session_tracker=ombdprikcbmincphdp.0.1593040592574.Z0FBQUFBQmU4OTdRbDVhczFsVnpzWEpWWFlJa1BXZUVtU1U4cmRPbTNFWkp2T0Z6UFFoLWVBQXUzMjhENTVhTVRhXzZaTHpHbC01UTlBR1BtVVRtZ2pjTDE2TzhmUXpQYkpXZzV2MVNaRk5JR0RkVTc2TS13TkVfamhBUThnZERqdko1SGFIX0tzRGc; Domain=reddit.com; Max-Age=7199; Path=/; expires=Thu, 25-Jun-2020 01:16:32 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "206.0"
+          ],
+          "x-ratelimit-reset": [
+            "208"
+          ],
+          "x-ratelimit-used": [
+            "394"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/flair_template_order/USER_FLAIR?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2020-06-24T23:16:32",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "csv=1; edgebucket=CjZjEN5EiTn6FL4vBt; session_tracker=ombdprikcbmincphdp.0.1593040592574.Z0FBQUFBQmU4OTdRbDVhczFsVnpzWEpWWFlJa1BXZUVtU1U4cmRPbTNFWkp2T0Z6UFFoLWVBQXUzMjhENTVhTVRhXzZaTHpHbC01UTlBR1BtVVRtZ2pjTDE2TzhmUXpQYkpXZzV2MVNaRk5JR0RkVTc2TS13TkVfamhBUThnZERqdko1SGFIX0tzRGc"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.1.1.dev0 prawcore/1.4.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=1&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"allowable_content\": \"all\", \"text\": \"Luebeck :lb:\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"97a769c6-c832-11e9-8c9e-0e0ab89af262\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"Luebeck \"}, {\"a\": \":lb:\", \"u\": \"https://emoji.redditmedia.com/zg21914jaui31_t5_38i7a/lb\", \"e\": \"emoji\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag-eu: :flag-eu: Europe\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"569dbefe-4bf9-11e9-8489-0e4e53a8c476\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \":flag-eu: :flag-eu: Europe\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"80725418-4133-11e9-97ca-0e8b5363076a\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"test\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_us: United States\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"aa24ef84-996b-11e8-9790-0e7ec57aa1f8\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_us:\", \"u\": \"https://emoji.redditmedia.com/q64a39m4kol01_t5_38i7a/flag_us\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" United States\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_za: South Africa\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"15ba2306-996f-11e8-9dee-0e43b445d10c\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_za:\", \"u\": \"https://emoji.redditmedia.com/ln95nee8kol01_t5_38i7a/flag_za\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" South Africa\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_ng: Nigeria\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"67e919ae-996d-11e8-96bb-0e3febd798c2\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_ng:\", \"u\": \"https://emoji.redditmedia.com/df9vi13vjol01_t5_38i7a/flag_ng\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Nigeria\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_ma: Morocco\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"39bd5bec-996f-11e8-89c4-0eb66faa91fc\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_ma:\", \"u\": \"https://emoji.redditmedia.com/54egm6yqjol01_t5_38i7a/flag_ma\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Morocco\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_jp: Japan\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"39f61164-996d-11e8-a508-0e270a900436\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_jp:\", \"u\": \"https://emoji.redditmedia.com/okho207njol01_t5_38i7a/flag_jp\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Japan\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_il: Israel\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"2608b506-996f-11e8-aab9-0e3febd798c2\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_il:\", \"u\": \"https://emoji.redditmedia.com/4azyrtdljol01_t5_38i7a/flag_il\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Israel\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_cn: China\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"24e55a82-996d-11e8-8a65-0ef4bebb9b6c\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_cn:\", \"u\": \"https://emoji.redditmedia.com/o9m8vtnajol01_t5_38i7a/flag_cn\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" China\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_ca: Canada\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"1cff0fc0-996d-11e8-9b18-0e1bc8da3394\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_ca:\", \"u\": \"https://emoji.redditmedia.com/80wyqyr8jol01_t5_38i7a/flag_ca\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Canada\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_br: Brazil\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"072f4912-996d-11e8-8190-0e3cef7d2fda\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_br:\", \"u\": \"https://emoji.redditmedia.com/51r8gag7jol01_t5_38i7a/flag_br\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Brazil\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_au: Australia\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"fd7122d8-996c-11e8-a7d4-0eefc6af2fda\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_au:\", \"u\": \"https://emoji.redditmedia.com/vonl2wx3jol01_t5_38i7a/flag_au\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Australia\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_gb: United Kingdom\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"9c506910-996b-11e8-a55f-0e6712d9e6fc\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_gb:\", \"u\": \"https://emoji.redditmedia.com/9uqlo4lgjol01_t5_38i7a/flag_gb\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" United Kingdom\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_ch: Switzerland\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"12955274-996d-11e8-a65f-0e4a4bf8f796\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_ch:\", \"u\": \"https://emoji.redditmedia.com/lf1h4sr9jol01_t5_38i7a/flag_ch\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Switzerland\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_se: Sweden\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"0e45f0b2-996c-11e8-b54c-0e6bf6e7a2e6\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_se:\", \"u\": \"https://emoji.redditmedia.com/s85oywlzjol01_t5_38i7a/flag_se\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Sweden\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_es: Spain\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"e32b7bc2-996b-11e8-9298-0e6712d9e6fc\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_es:\", \"u\": \"https://emoji.redditmedia.com/9rkncuuejol01_t5_38i7a/flag_es\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Spain\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_ro: Romania\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"51db90c4-996d-11e8-bca8-0e6ce43db4d4\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_ro:\", \"u\": \"https://emoji.redditmedia.com/403glrjyjol01_t5_38i7a/flag_ro\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Romania\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_pt: Portugal\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"d96ba152-996b-11e8-81dc-0e16df86972e\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_pt:\", \"u\": \"https://emoji.redditmedia.com/iyn5tnxxjol01_t5_38i7a/flag_pt\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Portugal\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_pl: Poland\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"b8a2c81a-996b-11e8-a0e7-0e8308e8d618\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_pl:\", \"u\": \"https://emoji.redditmedia.com/o15goubxjol01_t5_38i7a/flag_pl\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Poland\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_no: Norway\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"073e2e9c-996c-11e8-97aa-0eaaeec76950\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_no:\", \"u\": \"https://emoji.redditmedia.com/pj02apjvjol01_t5_38i7a/flag_no\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Norway\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_nl: The Netherlands\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"f89e043e-996b-11e8-95bd-0effd4cd946c\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_nl:\", \"u\": \"https://emoji.redditmedia.com/kwv31zevjol01_t5_38i7a/flag_nl\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" The Netherlands\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_ie: Ireland\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"beeaf3d6-996c-11e8-92d1-0e9892d34946\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_ie:\", \"u\": \"https://emoji.redditmedia.com/9vecb1dljol01_t5_38i7a/flag_ie\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Ireland\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_it: Italy\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"c59bb75c-996b-11e8-9625-0e872c498ec4\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_it:\", \"u\": \"https://emoji.redditmedia.com/9t7nmfjmjol01_t5_38i7a/flag_it\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Italy\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_gr: Greece\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"3f91a4c6-4fe9-11e8-8235-0eefe8746ac4\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_gr:\", \"u\": \"https://emoji.redditmedia.com/m0i8iztijol01_t5_38i7a/flag_gr\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Greece\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_de: Germany\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"91e6733e-996b-11e8-ab58-0e6ce43db4d4\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_de:\", \"u\": \"https://emoji.redditmedia.com/mncqvuicjol01_t5_38i7a/flag_de\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Germany\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_fr: France\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"b3ce98ae-996c-11e8-91d5-0e320648cc5a\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_fr:\", \"u\": \"https://emoji.redditmedia.com/8sy2zq8gjol01_t5_38i7a/flag_fr\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" France\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_fi: Finland\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"2ccbe460-996c-11e8-bb6b-0e1ea72d2cc8\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_fi:\", \"u\": \"https://emoji.redditmedia.com/i5jo5fdfjol01_t5_38i7a/flag_fi\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Finland\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_dk: Denmark\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"1ce2be34-996c-11e8-a326-0e4fc9554d00\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_dk:\", \"u\": \"https://emoji.redditmedia.com/txp5q04djol01_t5_38i7a/flag_dk\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Denmark\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_cz: Czechia\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"326dc7ac-996d-11e8-aaf5-0efcf9385608\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_cz:\", \"u\": \"https://emoji.redditmedia.com/xztf4fccjol01_t5_38i7a/flag_cz\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Czechia\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_hr: Croatia\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"03899dd8-996f-11e8-a315-0e2fe6aaf746\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_hr:\", \"u\": \"https://emoji.redditmedia.com/22cl5wbkjol01_t5_38i7a/flag_hr\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Croatia\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_bg: Bulgaria\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"9ea444ec-996c-11e8-8efe-0e8b6d6522e0\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_bg:\", \"u\": \"https://emoji.redditmedia.com/b96gj2s5jol01_t5_38i7a/flag_bg\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Bulgaria\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_be: Belgium\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"edcc89a0-9712-11e8-8c70-0eb329a59280\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_be:\", \"u\": \"https://emoji.redditmedia.com/t847hbd5jol01_t5_38i7a/flag_be\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Belgium\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_at: Austria\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"942a6ee2-996c-11e8-95bd-0effd4cd946c\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_at:\", \"u\": \"https://emoji.redditmedia.com/81pd61r3jol01_t5_38i7a/flag_at\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Austria\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_am: Armenia\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"ec4070b8-996c-11e8-870b-0eb66faa91fc\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_am:\", \"u\": \"https://emoji.redditmedia.com/pzayuqs2jol01_t5_38i7a/flag_am\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Armenia\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_al: Albania\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"e67b888e-996c-11e8-b089-0e6bf6e7a2e6\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_al:\", \"u\": \"https://emoji.redditmedia.com/6lm473m2jol01_t5_38i7a/flag_al\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Albania\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_ad: Andorra\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"dd959502-996c-11e8-90f4-0ec5687b06c0\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_ad:\", \"u\": \"https://emoji.redditmedia.com/f56dv3n1jol01_t5_38i7a/flag_ad\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Andorra\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \":flag_eu: Europe\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"ebc088a4-996b-11e8-a330-0e8cd38fa87a\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"a\": \":flag_eu:\", \"u\": \"https://emoji.redditmedia.com/9xaxv87fjol01_t5_38i7a/flag_eu\", \"e\": \"emoji\"}, {\"e\": \"text\", \"t\": \" Europe\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"Custom Flair\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#dadada\", \"id\": \"e6cb5c46-996d-11e8-9055-0e4a74f6fb58\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"Custom Flair\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"Mod Issued Flair\", \"text_color\": \"light\", \"mod_only\": true, \"background_color\": \"#005ba1\", \"id\": \"c96e8118-996e-11e8-9b96-0eb421d41ae8\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"Mod Issued Flair\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"AMA\", \"text_color\": \"light\", \"mod_only\": true, \"background_color\": \"#005ba1\", \"id\": \"03eeafba-9713-11e8-89c7-0e9892d34946\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"AMA\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "17018"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 24 Jun 2020 23:16:32 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "session_tracker=ombdprikcbmincphdp.0.1593040592780.Z0FBQUFBQmU4OTdRSTdZS2w3RGVpV2o1aDRDMlRZQUx2anhWenhwakNtRXBMT2NKekJZRmprRlo5Zk9SMVVLbTRZdnIyNXBEZzJwZm5CWlNiaE8yOTZJZzVDbldtRWtwRjI0TGI0anlVelpSdVpGWmJxbEVqUmczLVVuLUNISWtCNHRfWmVvZDJyS2g; Domain=reddit.com; Max-Age=7199; Path=/; expires=Thu, 25-Jun-2020 01:16:32 GMT; secure; SameSite=None; Secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lcy19233-LCY"
+          ],
+          "X-Timer": [
+            "S1593040593.708442,VS0,VE273"
+          ],
+          "cache-control": [
+            "no-cache"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "205.0"
+          ],
+          "x-ratelimit-reset": [
+            "208"
+          ],
+          "x-ratelimit-used": [
+            "395"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=1&raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}
