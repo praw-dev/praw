@@ -1233,7 +1233,7 @@ class TestSubredditLinkFlairTemplates(IntegrationTest):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubredditLinkFlairTemplates.test_order"):
             link_template_ids = [flair_template["id"] for flair_template in self.subreddit.flair.link_templates]
-            self.subreddit.flair.templates.order(link_template_ids[::-1])
+            self.subreddit.flair.link_templates.order(link_template_ids[::-1])
             new_link_template_ids = [flair_template["id"] for flair_template in self.subreddit.flair.link_templates]
             assert new_link_template_ids[::-1] == link_template_ids
 
