@@ -1578,7 +1578,7 @@ class SubredditFlairTemplates:
         url = API_PATH["flairtemplateclear"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data={"flair_type": self.flair_type(is_link)})
 
-    def _order(self, is_link=None, template_ids=None):
+    def _order(self, is_link, template_ids):
         url = API_PATH["flair_template_order"].format(
             subreddit=self.subreddit, flair_type=self.flair_type(is_link)
         )
@@ -1758,17 +1758,21 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         self._clear(is_link=False)
 
     def order(self, flair_template_ids):
-        """Reorder user flair templates
+        """Reorder user flair templates.
 
-        :param flair_template_ids: The list of template ids, in the final order
+        :param flair_template_ids: The list of template ids, ordered from top to bottom,
+            where the first item in the list will represent the top-most flair template.
+
+        .. warning:: Omitting a flair template ID will result in its removal.
 
         For example:
 
         .. code-block:: python
 
-           template_ids = [t['id'] for t in reddit.subreddit("NAME").flair.templates]
-           new_order = template_id[::-1] # reverse order
-           reddit.subreddit("NAME").flair.templates.order(new_order)
+           subreddit = reddit.subreddit("NAME")
+           template_ids = [t['id'] for t in subreddit.flair.templates]
+           new_order = template_ids[::-1] # creates a new reversed list
+           subreddit.flair.templates.order(new_order)
 
         """
         self._order(is_link=False, template_ids=flair_template_ids)
@@ -1855,17 +1859,21 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         self._clear(is_link=True)
 
     def order(self, flair_template_ids):
-        """Reorder link flair templates
+        """Reorder link flair templates.
 
-        :param flair_template_ids: The list of template ids, in the final order
+        :param flair_template_ids: The list of template ids, ordered from top to bottom,
+            where the first item in the list will represent the top-most flair template.
+
+        .. warning:: Omitting a flair template ID will result in its removal.
 
         For example:
 
         .. code-block:: python
 
-           template_ids = [t['id'] for t in reddit.subreddit("NAME").flair.link_templates]
-           new_order = template_id[::-1] # reverse order
-           reddit.subreddit("NAME").flair.link_templates.order(new_order)
+           subreddit = reddit.subreddit("NAME")
+           template_ids = [t['id'] for t in subreddit.flair.link_templates]
+           new_order = template_ids[::-1] # creates a new reversed list
+           subreddit.flair.link_templates.order(new_order)
 
         """
         self._order(is_link=True, template_ids=flair_template_ids)
