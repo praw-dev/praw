@@ -57,7 +57,7 @@ API_PATH = {
     "flairtemplate_v2":        "r/{subreddit}/api/flairtemplate_v2",
     "flairtemplateclear":      "r/{subreddit}/api/clearflairtemplates/",
     "flairtemplatedelete":     "r/{subreddit}/api/deleteflairtemplate/",
-    "flair_template_order":    "r/{subreddit}/api/flair_template_order/{flair_type}",
+    "flair_template_order":    "api/v1/{subreddit}/flair_template_order/{flair_type}",
     "friend":                  "r/{subreddit}/api/friend/",
     "friend_v1":               "api/v1/me/friends/{user}",
     "friends":                 "api/v1/me/friends/",
