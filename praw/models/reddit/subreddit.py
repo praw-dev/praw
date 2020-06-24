@@ -1578,6 +1578,10 @@ class SubredditFlairTemplates:
         url = API_PATH["flairtemplateclear"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data={"flair_type": self.flair_type(is_link)})
 
+    def _order(self, is_link=None, template_ids=None):
+        url = API_PATH["flair_template_order"].format(subreddit=self.subreddit, flair_type=self.flair_type(is_link))
+        self.subreddit._reddit.patch(url, json=template_ids)
+
     def delete(self, template_id):
         """Remove a flair template provided by ``template_id``.
 
@@ -1751,6 +1755,22 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         """
         self._clear(is_link=False)
 
+    def order(self, flair_template_ids):
+        """Reorder user flair templates
+
+        :param flair_template_ids: The list of template ids, in the final order
+
+        For example:
+
+        .. code-block:: python
+
+           template_ids = [t['Id'] for t in reddit.subreddit("NAME").flair.templates]
+           new_order = template_id[::-1] # reverse order
+           reddit.subreddit("NAME").flair.templates.order(new_order)
+
+        """
+        self._order(is_link=False, template_ids=flair_template_ids)
+
 
 class SubredditLinkFlairTemplates(SubredditFlairTemplates):
     """Provide functions to interact with link flair templates."""
@@ -1831,6 +1851,22 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         """
         self._clear(is_link=True)
+
+    def order(self, flair_template_ids):
+        """Reorder link flair templates
+
+        :param flair_template_ids: The list of template ids, in the final order
+
+        For example:
+
+        .. code-block:: python
+
+           template_ids = [t['Id'] for t in reddit.subreddit("NAME").flair.link_templates]
+           new_order = template_id[::-1] # reverse order
+           reddit.subreddit("NAME").flair.link_templates.order(new_order)
+
+        """
+        self._order(is_link=True, template_ids=flair_template_ids)
 
 
 class SubredditModeration:
