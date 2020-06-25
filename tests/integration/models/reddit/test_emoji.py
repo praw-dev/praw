@@ -14,7 +14,7 @@ class TestEmoji(IntegrationTest):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         emoji = subreddit.emoji["test_png"]
-        with self.use_cassette("TestEmoji.test__fetch"):
+        with self.use_cassette():
             assert emoji.created_by.startswith("t2_")
 
     @mock.patch("time.sleep", return_value=None)
@@ -23,7 +23,7 @@ class TestEmoji(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         emoji = subreddit.emoji["invalid"]
         emoji2 = subreddit.emoji["Test_png"]
-        with self.use_cassette("TestEmoji.test__fetch__invalid_emoji"):
+        with self.use_cassette():
             with pytest.raises(ClientException) as excinfo:
                 emoji.url
             assert str(excinfo.value) == (
@@ -38,14 +38,14 @@ class TestEmoji(IntegrationTest):
     def test_delete(self):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-        with self.use_cassette("TestEmoji.test_delete"):
+        with self.use_cassette():
             subreddit.emoji["test_png"].delete()
 
     @mock.patch("time.sleep", return_value=None)
     def test_update(self, _):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-        with self.use_cassette("TestEmoji.test_update"):
+        with self.use_cassette():
             subreddit.emoji["test_png"].update(
                 mod_flair_only=False,
                 post_flair_allowed=True,
@@ -56,7 +56,7 @@ class TestEmoji(IntegrationTest):
     def test_update__with_preexisting_values(self, _):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-        with self.use_cassette("TestEmoji.test_update__with_preexisting_values"):
+        with self.use_cassette():
             subreddit.emoji["test_png"].update(mod_flair_only=True)
 
 
@@ -65,7 +65,7 @@ class TestSubredditEmoji(IntegrationTest):
     def test__iter(self, _):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-        with self.use_cassette("TestSubredditEmoji.test__iter"):
+        with self.use_cassette():
             count = 0
             for emoji in subreddit.emoji:
                 assert isinstance(emoji, Emoji)
@@ -76,7 +76,7 @@ class TestSubredditEmoji(IntegrationTest):
     def test_add(self, _):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-        with self.use_cassette("TestSubredditEmoji.test_add"):
+        with self.use_cassette():
             for extension in ["jpg", "png"]:
                 emoji = subreddit.emoji.add(
                     f"test_{extension}",
@@ -88,7 +88,7 @@ class TestSubredditEmoji(IntegrationTest):
     def test_add_with_perms(self, _):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-        with self.use_cassette("TestSubredditEmoji.test_add_with_perms"):
+        with self.use_cassette():
             for extension in ["jpg", "png"]:
                 emoji = subreddit.emoji.add(
                     f"test_{extension}",

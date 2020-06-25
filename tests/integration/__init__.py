@@ -75,9 +75,9 @@ class IntegrationTest:
                 "name was provided: {}".format(dynamic_name, cassette_name)
             )
             if cassette_name != dynamic_name:
-                if os.environ.get("PRAWTEST_MOVE_CASSETTES"):
+                if os.environ.get("PRAWTEST_MOVE_CASSETTES", None):
                     cassettes_dir = os.path.abspath(
-                        os.path.join(__file__, "..", "cassttes")
+                        os.path.join(__file__, "..", "cassettes")
                     )
                     os.rename(
                         os.path.join(cassettes_dir, cassette_name + ".json"),

@@ -23,7 +23,7 @@ class TestReddit(IntegrationTest):
             "show_error_list": True,
         }
         self.reddit.read_only = False
-        with self.use_cassette("TestReddit.test_bare_badrequest"):
+        with self.use_cassette():
             with pytest.raises(BadRequest):
                 self.reddit.post("/api/validate_submission_field", data=data)
 
@@ -35,14 +35,14 @@ class TestReddit(IntegrationTest):
                 items.append(f"{base}{i:02d}")
 
         item_generator = self.reddit.info(items)
-        with self.use_cassette("TestReddit.test_info"):
+        with self.use_cassette():
             results = list(item_generator)
         assert len(results) > 100
         for item in results:
             assert isinstance(item, RedditBase)
 
     def test_info_url(self):
-        with self.use_cassette("TestReddit.test_info_url"):
+        with self.use_cassette():
             results = list(self.reddit.info(url="youtube.com"))
         assert len(results) > 0
         for item in results:
@@ -61,13 +61,13 @@ class TestReddit(IntegrationTest):
     def test_live_call(self, _):
         thread_id = "ukaeu1ik4sw5"
         thread = self.reddit.live(thread_id)
-        with self.use_cassette("TestReddit.test_live_call"):
+        with self.use_cassette():
             assert thread.title == "reddit updates"
 
     @mock.patch("time.sleep", return_value=None)
     def test_live_create(self, _):
         self.reddit.read_only = False
-        with self.use_cassette("TestReddit.test_live_create"):
+        with self.use_cassette():
             live = self.reddit.live.create("PRAW Create Test")
             assert isinstance(live, LiveThread)
             assert live.title == "PRAW Create Test"
@@ -79,7 +79,7 @@ class TestReddit(IntegrationTest):
             "t8jnufucss07",
         ]  # NBA
         gen = self.reddit.live.info(ids)
-        with self.use_cassette("TestReddit.test_live_info__contain_invalid_id"):
+        with self.use_cassette():
             threads = list(gen)
         assert len(threads) == 2
 
@@ -113,7 +113,7 @@ class TestReddit(IntegrationTest):
         ta72azs1l4u9 ta74r3dp2pt5 ta7pfcqdx9cl ta8zxbt2sk6z ta94nde51q4i
         """.split()
         gen = self.reddit.live.info(ids)
-        with self.use_cassette("TestReddit.test_live_info"):
+        with self.use_cassette():
             threads = list(gen)
         assert len(threads) > 100
         assert all(isinstance(thread, LiveThread) for thread in threads)
@@ -123,59 +123,59 @@ class TestReddit(IntegrationTest):
         assert sorted(thread_ids) == ids
 
     def test_live_now__featured(self):
-        with self.use_cassette("TestReddit.test_live_now__featured"):
+        with self.use_cassette():
             thread = self.reddit.live.now()
         assert isinstance(thread, LiveThread)
         assert thread.id == "z2f981agq7ky"
 
     def test_live_now__no_featured(self):
-        with self.use_cassette("TestReddit.test_live_now__no_featured"):
+        with self.use_cassette():
             assert self.reddit.live.now() is None
 
     def test_random_subreddit(self):
         names = set()
-        with self.use_cassette("TestReddit.test_random_subreddit"):
+        with self.use_cassette():
             for i in range(3):
                 names.add(self.reddit.random_subreddit().display_name)
         assert len(names) == 3
 
     def test_subreddit_with_randnsfw(self):
-        with self.use_cassette("TestReddit.test_subreddit_with_randnsfw"):
+        with self.use_cassette():
             subreddit = self.reddit.subreddit("randnsfw")
             assert subreddit.display_name != "randnsfw"
             assert subreddit.over18
 
     def test_subreddit_with_random(self):
-        with self.use_cassette("TestReddit.test_subreddit_with_random"):
+        with self.use_cassette():
             assert self.reddit.subreddit("random").display_name != "random"
 
 
 class TestDomainListing(IntegrationTest):
     def test_controversial(self):
-        with self.use_cassette("TestDomainListing.test_controversial"):
+        with self.use_cassette():
             submissions = list(self.reddit.domain("youtube.com").controversial())
         assert len(submissions) == 100
 
     def test_hot(self):
-        with self.use_cassette("TestDomainListing.test_hot"):
+        with self.use_cassette():
             submissions = list(self.reddit.domain("youtube.com").hot())
         assert len(submissions) == 100
 
     def test_new(self):
-        with self.use_cassette("TestDomainListing.test_new"):
+        with self.use_cassette():
             submissions = list(self.reddit.domain("youtube.com").new())
         assert len(submissions) == 100
 
     def test_random_rising(self):
-        with self.use_cassette("TestDomainListing.test_random_rising"):
+        with self.use_cassette():
             submissions = list(self.reddit.domain("youtube.com").random_rising())
         assert len(submissions) == 100
 
     def test_rising(self):
-        with self.use_cassette("TestDomainListing.test_rising"):
+        with self.use_cassette():
             list(self.reddit.domain("youtube.com").rising())
 
     def test_top(self):
-        with self.use_cassette("TestDomainListing.test_top"):
+        with self.use_cassette():
             submissions = list(self.reddit.domain("youtube.com").top())
         assert len(submissions) == 100

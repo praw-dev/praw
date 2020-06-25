@@ -23,7 +23,7 @@ class TestPreferences(IntegrationTest):
         }
 
         self.reddit.read_only = False
-        with self.use_cassette("TestPreferences.test_view"):
+        with self.use_cassette():
             prefs_dict = self.reddit.user.preferences()
         assert isinstance(prefs_dict, dict)
         assert some_known_keys.issubset(prefs_dict)
@@ -95,7 +95,7 @@ class TestPreferences(IntegrationTest):
         self.reddit.read_only = False
         preferences = self.reddit.user.preferences
 
-        with self.use_cassette("TestPreferences.test_update"):
+        with self.use_cassette():
 
             # test an empty update
             preferences.update()

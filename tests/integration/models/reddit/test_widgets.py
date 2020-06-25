@@ -67,7 +67,7 @@ class TestButtonWidget(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.use_cassette("TestButtonWidget.test_create_and_update_and_delete"):
+        with self.use_cassette():
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
             my_image = widgets.mod.upload_image(self.image_path("test.png"))
             buttons = [
@@ -208,7 +208,7 @@ class TestCalendar(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.use_cassette("TestCalendar.test_create_and_update_and_delete"):
+        with self.use_cassette():
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
             config = {
                 "numEvents": 10,
@@ -275,7 +275,7 @@ class TestCommunityList(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.use_cassette("TestCommunityList.test_create_and_update_and_delete"):
+        with self.use_cassette():
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
             subreddits = ["learnpython", self.reddit.subreddit("redditdev")]
             widget = widgets.mod.add_community_list(
@@ -317,7 +317,7 @@ class TestCustomWidget(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.use_cassette("TestCustomWidget.test_create_and_update_and_delete"):
+        with self.use_cassette():
             image_dicts = [
                 {
                     "width": 0,
@@ -408,7 +408,7 @@ class TestIDCard(IntegrationTest):
 
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.use_cassette("TestIDCard.test_update"):
+        with self.use_cassette():
             assert widgets.id_card.currentlyViewingText != "Users here NOW!"
             assert widgets.id_card.subscribersText != "Loyal readers"
 
@@ -438,7 +438,7 @@ class TestImageWidget(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.use_cassette("TestImageWidget.test_create_and_update_and_delete"):
+        with self.use_cassette():
             image_paths = (self.image_path(name) for name in ("test.jpg", "test.png"))
             image_dicts = [
                 {
@@ -513,7 +513,7 @@ class TestMenu(IntegrationTest):
             {"text": "Reddit homepage", "url": "https://reddit.com"},
         ]
 
-        with self.use_cassette("TestMenu.test_create_and_update_and_delete"):
+        with self.use_cassette():
             widget = widgets.mod.add_menu(menu_contents)
 
             assert isinstance(widget, Menu)
@@ -615,7 +615,7 @@ class TestModeratorsWidget(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
         new_styles = {"backgroundColor": "#bababa", "headerColor": "#407bee"}
-        with self.use_cassette("TestModeratorsWidget.test_update"):
+        with self.use_cassette():
             assert widgets.moderators_widget.styles != new_styles
 
             widgets.moderators_widget.mod.update(styles=new_styles)
@@ -632,7 +632,7 @@ class TestPostFlairWidget(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.use_cassette("TestPostFlairWidget.test_create_and_update_and_delete"):
+        with self.use_cassette():
             flairs = [f["id"] for f in subreddit.flair.link_templates][:30]
 
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
@@ -719,7 +719,7 @@ class TestRulesWidget(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
         new_styles = {"backgroundColor": "#fedcba", "headerColor": "#012345"}
-        with self.use_cassette("TestRulesWidget.test_update"):
+        with self.use_cassette():
             rules = None
             for widget in widgets.sidebar:
                 if isinstance(widget, RulesWidget):
@@ -775,7 +775,7 @@ class TestSubredditWidgets(IntegrationTest):
 
             return False
 
-        with self.use_cassette("TestSubredditWidgets.test_progressive_images"):
+        with self.use_cassette():
             widgets.progressive_images = True
             assert has_progressive(widgets)
             widgets.progressive_images = False
@@ -788,7 +788,7 @@ class TestSubredditWidgets(IntegrationTest):
     def test_refresh(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.use_cassette("TestSubredditWidgets.test_refresh"):
+        with self.use_cassette():
             assert widgets.sidebar  # to fetch
             old_sidebar = widgets.sidebar  # reference, not value
             widgets.refresh()
@@ -844,7 +844,7 @@ class TestSubredditWidgetsModeration(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.use_cassette("TestSubredditWidgetsModeration.test_reorder"):
+        with self.use_cassette():
             old_order = list(widgets.sidebar)
             new_order = list(reversed(old_order))
 
@@ -873,7 +873,7 @@ class TestSubredditWidgetsModeration(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.use_cassette("TestSubredditWidgetsModeration.test_upload_image"):
+        with self.use_cassette():
             for image in ("test.jpg", "test.png"):
                 image_url = widgets.mod.upload_image(self.image_path(image))
                 assert image_url
@@ -887,7 +887,7 @@ class TestTextArea(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.use_cassette("TestTextArea.test_create_and_update_and_delete"):
+        with self.use_cassette():
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
             widget = widgets.mod.add_text_area(
                 short_name="My new widget!", text="Hello world!", styles=styles
