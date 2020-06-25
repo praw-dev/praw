@@ -1,7 +1,6 @@
 """PRAW Integration test suite."""
 import inspect
 import logging
-import os
 
 import pytest
 import requests
@@ -75,27 +74,12 @@ class IntegrationTest:
                 "name was provided: {}".format(dynamic_name, cassette_name)
             )
             if cassette_name != dynamic_name:
-                if os.environ.get("PRAWTEST_MOVE_CASSETTES", None):
-                    cassettes_dir = os.path.abspath(
-                        os.path.join(__file__, "..", "cassettes")
+                self.logger.warning(
+                    "Dynamic cassette name for function {} does not "
+                    "match the provided cassette name: {}".format(
+                        dynamic_name, cassette_name
                     )
-                    os.rename(
-                        os.path.join(cassettes_dir, cassette_name + ".json"),
-                        os.path.join(cassettes_dir, dynamic_name + ".json"),
-                    )
-                    self.logger.warning(
-                        "Cassette {} has been moved to {}".format(
-                            cassette_name, dynamic_name
-                        )
-                    )
-                    cassette_name = None
-                else:
-                    self.logger.warning(
-                        "Dynamic cassette name for function {} does not "
-                        "match the provided cassette name: {}".format(
-                            dynamic_name, cassette_name
-                        )
-                    )
+                )
         return self.recorder.use_cassette(cassette_name or dynamic_name, **kwargs)
 
     def get_cassette_name(self) -> str:
