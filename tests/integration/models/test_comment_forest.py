@@ -16,7 +16,7 @@ class TestCommentForest(IntegrationTest):
         self.reddit._core._requestor._http.headers["Accept-Encoding"] = "gzip"
 
     def test_replace__all(self):
-        with self.recorder.use_cassette(
+        with self.use_cassette(
             "TestCommentForest.test_replace__all",
             match_requests_on=["uri", "method", "body"],
         ):
@@ -29,7 +29,7 @@ class TestCommentForest(IntegrationTest):
             assert before_count < len(submission.comments.list())
 
     def test_replace__all_large(self):
-        with self.recorder.use_cassette(
+        with self.use_cassette(
             "TestCommentForest.test_replace__all_large",
             match_requests_on=["uri", "method", "body"],
         ):
@@ -41,7 +41,7 @@ class TestCommentForest(IntegrationTest):
             assert len(submission.comments.list()) == len(submission._comments_by_id)
 
     def test_replace__all_with_comment_limit(self):
-        with self.recorder.use_cassette(
+        with self.use_cassette(
             "TestCommentForest.test_replace__all_with_comment_limit",
             match_requests_on=["uri", "method", "body"],
         ):
@@ -52,7 +52,7 @@ class TestCommentForest(IntegrationTest):
             assert len(submission.comments.list()) >= 500
 
     def test_replace__all_with_comment_sort(self):
-        with self.recorder.use_cassette(
+        with self.use_cassette(
             "TestCommentForest.test_replace__all_with_comment_sort",
             match_requests_on=["uri", "method", "body"],
         ):
@@ -63,7 +63,7 @@ class TestCommentForest(IntegrationTest):
             assert len(submission.comments.list()) >= 500
 
     def test_replace__skip_at_limit(self):
-        with self.recorder.use_cassette(
+        with self.use_cassette(
             "TestCommentForest.test_replace__skip_at_limit",
             match_requests_on=["uri", "method", "body"],
         ):
@@ -72,7 +72,7 @@ class TestCommentForest(IntegrationTest):
             assert len(skipped) == 17
 
     def test_replace__skip_below_threshold(self):
-        with self.recorder.use_cassette(
+        with self.use_cassette(
             "TestCommentForest.test_replace__skip_below_threshold",
             match_requests_on=["uri", "method", "body"],
         ):
@@ -85,7 +85,7 @@ class TestCommentForest(IntegrationTest):
             assert before_count < len(submission.comments.list())
 
     def test_replace__skip_all(self):
-        with self.recorder.use_cassette(
+        with self.use_cassette(
             "TestCommentForest.test_replace__skip_all",
             match_requests_on=["uri", "method", "body"],
         ):
@@ -98,7 +98,7 @@ class TestCommentForest(IntegrationTest):
             assert before_count == after_count + len(skipped)
 
     def test_replace__on_comment_from_submission(self):
-        with self.recorder.use_cassette(
+        with self.use_cassette(
             "TestCommentForest.test_replace__on_comment_from_submission",
             match_requests_on=["uri", "method", "body"],
         ):
@@ -112,7 +112,7 @@ class TestCommentForest(IntegrationTest):
             assert types.count(MoreComments) == 11
 
     def test_replace__on_direct_comment(self):
-        with self.recorder.use_cassette(
+        with self.use_cassette(
             "TestCommentForest.test_replace__on_direct_comment",
             match_requests_on=["uri", "method", "body"],
         ):
@@ -125,7 +125,7 @@ class TestCommentForest(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_comment_forest_refresh_error(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
+        with self.use_cassette(
             "TestCommentForest.test_DuplicateReplaceException",
             match_requests_on=["uri", "method", "body"],
         ):

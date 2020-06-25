@@ -27,7 +27,7 @@ class TestMore(IntegrationTest):
                 "cu5pbdh",
             ],
         }
-        with self.recorder.use_cassette(
+        with self.use_cassette(
             "TestMore.test_comments",
             match_requests_on=["uri", "method", "body"],
         ):
@@ -43,7 +43,7 @@ class TestMore(IntegrationTest):
             "parent_id": "t1_cu5v5h7",
             "children": [],
         }
-        with self.recorder.use_cassette(
+        with self.use_cassette(
             "TestMore.test_comments__continue_thread_type",
             match_requests_on=["uri", "method", "body"],
         ):

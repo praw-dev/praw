@@ -41,7 +41,7 @@ class TestButtonWidget(IntegrationTest):
     def test_button_widget(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.fetch_widgets"):
+        with self.use_cassette("TestSubredditWidgets.fetch_widgets"):
             button_widget = None
             for widget in widgets.sidebar:
                 if isinstance(widget, ButtonWidget):
@@ -67,9 +67,7 @@ class TestButtonWidget(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.recorder.use_cassette(
-            "TestButtonWidget.test_create_and_update_and_delete"
-        ):
+        with self.use_cassette("TestButtonWidget.test_create_and_update_and_delete"):
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
             my_image = widgets.mod.upload_image(self.image_path("test.png"))
             buttons = [
@@ -187,7 +185,7 @@ class TestCalendar(IntegrationTest):
     def test_calendar(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.fetch_widgets"):
+        with self.use_cassette("TestSubredditWidgets.fetch_widgets"):
             calendar = None
             for widget in widgets.sidebar:
                 if isinstance(widget, Calendar):
@@ -210,9 +208,7 @@ class TestCalendar(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.recorder.use_cassette(
-            "TestCalendar.test_create_and_update_and_delete"
-        ):
+        with self.use_cassette("TestCalendar.test_create_and_update_and_delete"):
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
             config = {
                 "numEvents": 10,
@@ -254,7 +250,7 @@ class TestCommunityList(IntegrationTest):
     def test_community_list(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.fetch_widgets"):
+        with self.use_cassette("TestSubredditWidgets.fetch_widgets"):
             comm_list = None
             for widget in widgets.sidebar:
                 if isinstance(widget, CommunityList):
@@ -279,9 +275,7 @@ class TestCommunityList(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.recorder.use_cassette(
-            "TestCommunityList.test_create_and_update_and_delete"
-        ):
+        with self.use_cassette("TestCommunityList.test_create_and_update_and_delete"):
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
             subreddits = ["learnpython", self.reddit.subreddit("redditdev")]
             widget = widgets.mod.add_community_list(
@@ -323,9 +317,7 @@ class TestCustomWidget(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.recorder.use_cassette(
-            "TestCustomWidget.test_create_and_update_and_delete"
-        ):
+        with self.use_cassette("TestCustomWidget.test_create_and_update_and_delete"):
             image_dicts = [
                 {
                     "width": 0,
@@ -373,7 +365,7 @@ class TestCustomWidget(IntegrationTest):
     def test_custom_widget(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.fetch_widgets"):
+        with self.use_cassette("TestSubredditWidgets.fetch_widgets"):
             custom = None
             for widget in widgets.sidebar:
                 if isinstance(widget, CustomWidget):
@@ -398,7 +390,7 @@ class TestIDCard(IntegrationTest):
     def test_id_card(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.fetch_widgets"):
+        with self.use_cassette("TestSubredditWidgets.fetch_widgets"):
             card = widgets.id_card
             assert isinstance(card, IDCard)
             assert card == card
@@ -416,7 +408,7 @@ class TestIDCard(IntegrationTest):
 
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestIDCard.test_update"):
+        with self.use_cassette("TestIDCard.test_update"):
             assert widgets.id_card.currentlyViewingText != "Users here NOW!"
             assert widgets.id_card.subscribersText != "Loyal readers"
 
@@ -446,9 +438,7 @@ class TestImageWidget(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.recorder.use_cassette(
-            "TestImageWidget.test_create_and_update_and_delete"
-        ):
+        with self.use_cassette("TestImageWidget.test_create_and_update_and_delete"):
             image_paths = (self.image_path(name) for name in ("test.jpg", "test.png"))
             image_dicts = [
                 {
@@ -484,7 +474,7 @@ class TestImageWidget(IntegrationTest):
     def test_image_widget(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.fetch_widgets"):
+        with self.use_cassette("TestSubredditWidgets.fetch_widgets"):
             img_widget = None
             for widget in widgets.sidebar:
                 if isinstance(widget, ImageWidget):
@@ -523,7 +513,7 @@ class TestMenu(IntegrationTest):
             {"text": "Reddit homepage", "url": "https://reddit.com"},
         ]
 
-        with self.recorder.use_cassette("TestMenu.test_create_and_update_and_delete"):
+        with self.use_cassette("TestMenu.test_create_and_update_and_delete"):
             widget = widgets.mod.add_menu(menu_contents)
 
             assert isinstance(widget, Menu)
@@ -574,7 +564,7 @@ class TestMenu(IntegrationTest):
     def test_menu(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.fetch_widgets"):
+        with self.use_cassette("TestSubredditWidgets.fetch_widgets"):
             menu = None
             for widget in widgets.topbar:
                 if isinstance(widget, Menu):
@@ -606,7 +596,7 @@ class TestModeratorsWidget(IntegrationTest):
     def test_moderators_widget(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.fetch_widgets"):
+        with self.use_cassette("TestSubredditWidgets.fetch_widgets"):
             mods = widgets.moderators_widget
             assert isinstance(mods, ModeratorsWidget)
             assert all(isinstance(mod, Redditor) for mod in mods)
@@ -625,7 +615,7 @@ class TestModeratorsWidget(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
         new_styles = {"backgroundColor": "#bababa", "headerColor": "#407bee"}
-        with self.recorder.use_cassette("TestModeratorsWidget.test_update"):
+        with self.use_cassette("TestModeratorsWidget.test_update"):
             assert widgets.moderators_widget.styles != new_styles
 
             widgets.moderators_widget.mod.update(styles=new_styles)
@@ -642,9 +632,7 @@ class TestPostFlairWidget(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.recorder.use_cassette(
-            "TestPostFlairWidget.test_create_and_update_and_delete"
-        ):
+        with self.use_cassette("TestPostFlairWidget.test_create_and_update_and_delete"):
             flairs = [f["id"] for f in subreddit.flair.link_templates][:30]
 
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
@@ -685,7 +673,7 @@ class TestPostFlairWidget(IntegrationTest):
     def test_post_flair_widget(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.fetch_widgets"):
+        with self.use_cassette("TestSubredditWidgets.fetch_widgets"):
             pf_widget = None
             for widget in widgets.sidebar:
                 if isinstance(widget, PostFlairWidget):
@@ -709,7 +697,7 @@ class TestRulesWidget(IntegrationTest):
 
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.fetch_widgets"):
+        with self.use_cassette("TestSubredditWidgets.fetch_widgets"):
             rules = None
             for widget in widgets.sidebar:
                 if isinstance(widget, RulesWidget):
@@ -731,7 +719,7 @@ class TestRulesWidget(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
         new_styles = {"backgroundColor": "#fedcba", "headerColor": "#012345"}
-        with self.recorder.use_cassette("TestRulesWidget.test_update"):
+        with self.use_cassette("TestRulesWidget.test_update"):
             rules = None
             for widget in widgets.sidebar:
                 if isinstance(widget, RulesWidget):
@@ -757,14 +745,14 @@ class TestSubredditWidgets(IntegrationTest):
     def test_bad_attribute(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.fetch_widgets"):
+        with self.use_cassette("TestSubredditWidgets.fetch_widgets"):
             with pytest.raises(AttributeError):
                 widgets.nonexistant_attribute
 
     def test_items(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.fetch_widgets"):
+        with self.use_cassette("TestSubredditWidgets.fetch_widgets"):
             assert isinstance(widgets.items, dict)
 
     def test_progressive_images(self):
@@ -787,7 +775,7 @@ class TestSubredditWidgets(IntegrationTest):
 
             return False
 
-        with self.recorder.use_cassette("TestSubredditWidgets.test_progressive_images"):
+        with self.use_cassette("TestSubredditWidgets.test_progressive_images"):
             widgets.progressive_images = True
             assert has_progressive(widgets)
             widgets.progressive_images = False
@@ -800,7 +788,7 @@ class TestSubredditWidgets(IntegrationTest):
     def test_refresh(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.test_refresh"):
+        with self.use_cassette("TestSubredditWidgets.test_refresh"):
             assert widgets.sidebar  # to fetch
             old_sidebar = widgets.sidebar  # reference, not value
             widgets.refresh()
@@ -817,7 +805,7 @@ class TestSubredditWidgets(IntegrationTest):
     def test_sidebar(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.fetch_widgets"):
+        with self.use_cassette("TestSubredditWidgets.fetch_widgets"):
             assert len(widgets.sidebar) >= 1  # also tests lazy-loading
 
         # all items should be Widget subclasses
@@ -829,14 +817,14 @@ class TestSubredditWidgets(IntegrationTest):
     def test_specials(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.fetch_widgets"):
+        with self.use_cassette("TestSubredditWidgets.fetch_widgets"):
             assert isinstance(widgets.id_card, IDCard)
             assert isinstance(widgets.moderators_widget, ModeratorsWidget)
 
     def test_topbar(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.fetch_widgets"):
+        with self.use_cassette("TestSubredditWidgets.fetch_widgets"):
             assert 1 <= len(widgets.topbar)
             assert all(
                 isinstance(widget, Widget) and type(widget) != Widget
@@ -856,7 +844,7 @@ class TestSubredditWidgetsModeration(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.recorder.use_cassette("TestSubredditWidgetsModeration.test_reorder"):
+        with self.use_cassette("TestSubredditWidgetsModeration.test_reorder"):
             old_order = list(widgets.sidebar)
             new_order = list(reversed(old_order))
 
@@ -885,9 +873,7 @@ class TestSubredditWidgetsModeration(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.recorder.use_cassette(
-            "TestSubredditWidgetsModeration.test_upload_image"
-        ):
+        with self.use_cassette("TestSubredditWidgetsModeration.test_upload_image"):
             for image in ("test.jpg", "test.png"):
                 image_url = widgets.mod.upload_image(self.image_path(image))
                 assert image_url
@@ -901,9 +887,7 @@ class TestTextArea(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.recorder.use_cassette(
-            "TestTextArea.test_create_and_update_and_delete"
-        ):
+        with self.use_cassette("TestTextArea.test_create_and_update_and_delete"):
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
             widget = widgets.mod.add_text_area(
                 short_name="My new widget!", text="Hello world!", styles=styles
@@ -926,7 +910,7 @@ class TestTextArea(IntegrationTest):
     def test_text_area(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.fetch_widgets"):
+        with self.use_cassette("TestSubredditWidgets.fetch_widgets"):
             text = None
             for widget in widgets.sidebar:
                 if isinstance(widget, TextArea):
@@ -948,7 +932,7 @@ class TestWidget(IntegrationTest):
     def test_inequality(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        with self.recorder.use_cassette("TestSubredditWidgets.fetch_widgets"):
+        with self.use_cassette("TestSubredditWidgets.fetch_widgets"):
             assert len(widgets.sidebar) >= 2
         assert widgets.sidebar[0] != widgets.sidebar[1]
         assert widgets.sidebar[0] != widgets.sidebar[1].id
