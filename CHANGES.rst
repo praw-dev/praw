@@ -7,7 +7,7 @@ Unreleased
 **Added**
 
 * Add method :meth:`~.Subreddits.premium` to reflect the naming change in
-    Reddit's API.
+  Reddit's API.
 
 **Deprecated**
 
