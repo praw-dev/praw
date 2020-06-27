@@ -13,8 +13,6 @@ Unreleased
 
 * :meth:`~.Subreddits.gold` and changed it to alias :meth:`~.Subreddits.premium`.
 
-Change Log
-==========
 
 7.1.0 (2020/06/22)
 ------------------
