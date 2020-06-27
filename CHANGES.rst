@@ -1,6 +1,21 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Added**
+
+* Add method :meth:`~.Subreddits.premium` to reflect the naming change in
+    Reddit's API.
+
+**Deprecated**
+
+* :meth:`~.Subreddits.gold` and changed it to alias :meth:`~.Subreddits.premium`.
+
+Change Log
+==========
+
 7.1.0 (2020/06/22)
 ------------------
 
@@ -127,9 +142,9 @@ Change Log
 
 **Fixed**
 
-* :meth:`.SubredditFlair.update` will not error out when the flair text 
+* :meth:`.SubredditFlair.update` will not error out when the flair text
   contains quote marks.
-  
+
 **Removed**
 
 * Converting :class:`.APIException` to string will no longer escape unicode
