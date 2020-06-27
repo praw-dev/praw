@@ -9,9 +9,13 @@ Unreleased
 * Add method :meth:`~.Subreddits.premium` to reflect the naming change in
   Reddit's API.
 
+**Changed**
+
+* :meth:`~.Subreddits.gold` is an alias of :meth:`~.Subreddits.premium`.
+
 **Deprecated**
 
-* :meth:`~.Subreddits.gold` and changed it to alias :meth:`~.Subreddits.premium`.
+* :meth:`~.Subreddits.gold` is superseded by :meth:`~.Subreddits.premium`.
 
 
 7.1.0 (2020/06/22)
