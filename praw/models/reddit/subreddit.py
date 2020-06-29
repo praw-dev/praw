@@ -1017,7 +1017,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         .. code-block:: python
 
            title = "Do you like PRAW?"
-           reddit.subreddit("reddit_api_test").submit(
+           reddit.subreddit("reddit_api_test").submit_poll(
                title,
                selftext="",
                options=["Yes", "No"],
