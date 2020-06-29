@@ -1017,7 +1017,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         .. code-block:: python
 
            title = "Do you like PRAW?"
-           reddit.subreddit("reddit_api_test").submit(
+           reddit.subreddit("reddit_api_test").submit_poll(
                title,
                selftext="",
                options=["Yes", "No"],
@@ -2813,7 +2813,7 @@ mark_read=True)
         ]
 
     def conversations(
-        self, after=None, limit=None, other_subreddits=None, sort=None, state=None,
+        self, after=None, limit=None, other_subreddits=None, sort=None, state=None
     ):  # noqa: D207, D301
         """Generate :class:`.ModmailConversation` objects for subreddit(s).
 
@@ -3105,10 +3105,7 @@ class SubredditStylesheet:
            reddit.subreddit("SUBREDDIT").stylesheet.delete_banner_additional_image()
 
         """
-        data = {
-            "bannerPositionedImage": "",
-            "secondaryBannerPositionedImage": "",
-        }
+        data = {"bannerPositionedImage": "", "secondaryBannerPositionedImage": ""}
         self._update_structured_styles(data)
 
     def delete_banner_hover_image(self):
@@ -3200,11 +3197,7 @@ class SubredditStylesheet:
                'p { color: green; }', "color text green")
 
         """
-        data = {
-            "op": "save",
-            "reason": reason,
-            "stylesheet_contents": stylesheet,
-        }
+        data = {"op": "save", "reason": reason, "stylesheet_contents": stylesheet}
         url = API_PATH["subreddit_stylesheet"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
 
