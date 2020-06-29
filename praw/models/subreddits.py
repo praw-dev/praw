@@ -1,6 +1,7 @@
 """Provide the Subreddits class."""
 from typing import Dict, Iterator, List, Optional, Union
 
+from warnings import warn
 from ..const import API_PATH
 from . import Subreddit
 from .base import PRAWBase
@@ -27,10 +28,19 @@ class Subreddits(PRAWBase):
             self._reddit, API_PATH["subreddits_default"], **generator_kwargs
         )
 
-    def gold(
+    def gold(self, **generator_kwargs) -> Iterator[Subreddit]:
+        """Alias for :meth:`.premium` to maintain backwards compatibility."""
+        warn(
+            "`subreddits.gold` has be renamed to `subreddits.premium`.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.premium(**generator_kwargs)
+
+    def premium(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
     ) -> Iterator[Subreddit]:
-        """Return a :class:`.ListingGenerator` for gold subreddits.
+        """Return a :class:`.ListingGenerator` for premium subreddits.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.

@@ -12,10 +12,25 @@ class TestSubreddits(IntegrationTest):
             subreddits = list(self.reddit.subreddits.default(limit=None))
         assert 0 < len(subreddits) < 100
 
-    def test_gold__without_gold(self):
-        with self.recorder.use_cassette("TestSubreddits.test_gold__without_gold"):
+    def test_premium__without_premium(self):
+        with self.recorder.use_cassette("TestSubreddits.test_premium__without_premium"):
+            subreddits = list(self.reddit.subreddits.premium())
+        assert len(subreddits) == 0
+
+    def test_premium__with_premium(self):
+        with self.recorder.use_cassette("TestSubreddits.test_premium__with_premium"):
+            subreddits = list(self.reddit.subreddits.premium())
+        assert len(subreddits) == 100
+
+    def test_gold__without_gold(self):  # ensure backwards compatibility
+        with self.recorder.use_cassette("TestSubreddits.test_premium__without_premium"):
             subreddits = list(self.reddit.subreddits.gold())
         assert len(subreddits) == 0
+
+    def test_gold__with_gold(self):  # ensure backwards compatibility
+        with self.recorder.use_cassette("TestSubreddits.test_premium__with_premium"):
+            subreddits = list(self.reddit.subreddits.gold())
+        assert len(subreddits) == 100
 
     def test_new(self):
         with self.recorder.use_cassette("TestSubreddits.test_new"):

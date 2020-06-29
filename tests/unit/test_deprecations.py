@@ -50,3 +50,11 @@ class TestDeprecation(UnitTest):
             " Please rewrite your code in such a way that this attribute does "
             "not need to be used. It will be removed in PRAW 8.0."
         )
+
+    def test_gold_method(self):
+        with pytest.raises(DeprecationWarning) as excinfo:
+            self.reddit.subreddits.gold()
+            assert (
+                excinfo.value.args[0]
+                == "`subreddits.gold` has be renamed to `subreddits.premium`."
+            )
