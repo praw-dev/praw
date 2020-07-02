@@ -26,7 +26,8 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
     Attribute               Description
     ======================= ===================================================
     ``author``              Provides an instance of :class:`.Redditor`.
-    ``body``                The body of the message.
+    ``body``                The body of the message, as Markdown.
+    ``body_html``           The body of the message, as HTML.
     ``created_utc``         Time the message was created, represented in
                             `Unix Time`_.
     ``dest``                Provides an instance of :class:`.Redditor`. The
@@ -113,7 +114,8 @@ class SubredditMessage(Message):
     Attribute               Description
     ======================= ===================================================
     ``author``              Provides an instance of :class:`.Redditor`.
-    ``body``                The body of the message.
+    ``body``                The body of the message, as Markdown.
+    ``body_html``           The body of the message, as HTML.
     ``created_utc``         Time the message was created, represented in
                             `Unix Time`_.
     ``dest``                Provides an instance of :class:`.Redditor`. The

@@ -35,7 +35,8 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     Attribute               Description
     ======================= ===================================================
     ``author``              Provides an instance of :class:`.Redditor`.
-    ``body``                The body of the comment.
+    ``body``                The body of the comment, as Markdown.
+    ``body_html``           The body of the comment, as HTML.
     ``created_utc``         Time the comment was created, represented in
                             `Unix Time`_.
     ``distinguished``       Whether or not the comment is distinguished.
