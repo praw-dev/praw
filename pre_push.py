@@ -52,7 +52,7 @@ def run_static():
             path.join(current_directory, "tools", "check_documentation.py"),
         ]
     )
-    success &= do_process(["black ."], shell=True)
+    success &= do_process(["black", "."], shell=True)
     success &= do_process(["flake8", "--exclude=.eggs,build,docs"])
     success &= do_process(["pydocstyle", "praw"])
     # success &= do_process(["pylint", "--rcfile=.pylintrc", "praw"])
