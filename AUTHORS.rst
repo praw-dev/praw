@@ -16,6 +16,8 @@ Documentation Contributors
 - Eric Woolard `@ericwoolard <https://github.com/ericwoolard>`_
 - Marc `@PerhapsSomeone <https://github.com/PerhapsSomeone>`_
 - Richard Hoekstra `@RichardHoekstra <https://github.com/RichardHoekstra>`_
+- Pim Tholhuijsen `@mandjevant <https://github.com/mandjevant>`_
+
 <!-- - Add "Name <email (optional)> and github profile link" above this line. -->
 
 

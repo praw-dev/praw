@@ -2258,8 +2258,8 @@ class SubredditModerationStream:
         :param sort: Can be one of: mod, recent, unread, user
             (default: recent).
         :param state: Can be one of: all, archived, highlighted, inprogress,
-            mod, new, notifications, (default: all). "all" does not include
-            internal or archived conversations.
+            mod, new, notifications, or appeals, (default: all). "all" does not
+            include internal, archived, or appeals conversations.
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
@@ -2789,8 +2789,8 @@ mark_read=True)
         :param other_subreddits: A list of :class:`.Subreddit` instances for
             which to mark conversations (default: None).
         :param state: Can be one of: all, archived, highlighted, inprogress,
-            mod, new, notifications, (default: all). "all" does not include
-            internal or archived conversations.
+            mod, new, notifications, or appeals, (default: all). "all" does not
+            include internal, archived, or appeals conversations.
         :returns: A list of :class:`.ModmailConversation` instances that were
             marked read.
 
@@ -2827,8 +2827,8 @@ mark_read=True)
         :param sort: Can be one of: mod, recent, unread, user
             (default: recent).
         :param state: Can be one of: all, archived, highlighted, inprogress,
-            mod, new, notifications, (default: all). "all" does not include
-            internal or archived conversations.
+            mod, new, notifications, or appeals, (default: all). "all" does not
+            include internal, archived, or appeals conversations.
 
 
         For example:
@@ -2912,7 +2912,7 @@ state="mod")
         """Return unread conversation count by conversation state.
 
         At time of writing, possible states are: archived, highlighted,
-        inprogress, mod, new, notifications.
+        inprogress, mod, new, notifications, or appeals.
 
         :returns: A dict mapping conversation states to unread counts.
 
