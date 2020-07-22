@@ -2636,7 +2636,9 @@ class ModeratorRelationship(SubredditRelationship):
            reddit.subreddit("subredditname").moderator.leave()
 
         """
-        self.remove(self.subreddit._reddit.config.username)
+        self.remove(
+            self.subreddit._reddit.config.username or self.subreddit._reddit.user.me()
+        )
 
     def remove_invite(self, redditor):
         """Remove the moderator invite for ``redditor``.
