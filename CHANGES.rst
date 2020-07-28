@@ -18,6 +18,9 @@ Unreleased
 
 * :meth:`~.Subreddits.gold` is superseded by :meth:`~.Subreddits.premium`.
 
+**Fixed**
+
+* An issue where leaving as a moderator fails if you are using token auth.
 
 7.1.0 (2020/06/22)
 ------------------
