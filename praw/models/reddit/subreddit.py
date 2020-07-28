@@ -6,7 +6,7 @@ from copy import deepcopy
 from csv import writer
 from io import StringIO
 from json import dumps, loads
-from os.path import basename, dirname, join
+from os.path import basename, dirname, isfile, join
 from typing import List
 from urllib.parse import urljoin
 from xml.etree.ElementTree import XML
@@ -153,7 +153,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         wiki_edit_age=None,
         wiki_edit_karma=None,
         wikimode=None,
-        **other_settings
+        **other_settings,
     ):
         # pylint: disable=invalid-name,too-many-locals,too-many-arguments
         model = {
@@ -201,6 +201,20 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         if other_subreddits:
             return ",".join([str(subreddit)] + [str(x) for x in other_subreddits])
         return str(subreddit)
+
+    @staticmethod
+    def _validate_gallery(images):
+        for image in images:
+            image_path = image.get("image_path", "")
+            if image_path:
+                if not isfile(image_path):
+                    raise TypeError(
+                        "{!r} is not a valid image path.".format(image_path)
+                    )
+            else:
+                raise TypeError("'image_path' is required.")
+            if not len(image.get("caption", "")) <= 180:
+                raise TypeError("Caption must be 180 characters or less.")
 
     @property
     def _kind(self) -> str:
@@ -610,11 +624,12 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         url = ws_update["payload"]["redirect"]
         return self._reddit.submission(url=url)
 
-    def _upload_media(self, media_path, expected_mime_prefix=None):
+    def _upload_media(self, media_path, expected_mime_prefix=None, gallery=False):
         """Upload media and return its URL. Uses undocumented endpoint.
 
         :param expected_mime_prefix: If provided, enforce that the media has a
             mime type that starts with the provided prefix.
+        :param gallery: If True, treat this as a gallery upload.
         """
         if media_path is None:
             media_path = join(
@@ -647,7 +662,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         url = API_PATH["media_asset"]
         # until we learn otherwise, assume this request always succeeds
-        upload_lease = self._reddit.post(url, data=img_data)["args"]
+        upload_response = self._reddit.post(url, data=img_data)
+        upload_lease = upload_response["args"]
         upload_url = "https:{}".format(upload_lease["action"])
         upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
 
@@ -658,7 +674,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         if not response.ok:
             self._parse_xml_response(response)
         response.raise_for_status()
-
+        if gallery:
+            return upload_response["asset"]["asset_id"]
         return upload_url + "/" + upload_data["key"]
 
     def post_requirements(self):
@@ -729,7 +746,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         sort="relevance",
         syntax="lucene",
         time_filter="all",
-        **generator_kwargs
+        **generator_kwargs,
     ):
         """Return a :class:`.ListingGenerator` for items that match ``query``.
 
@@ -844,6 +861,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
            * :meth:`.submit_image` to submit images
            * :meth:`.submit_video` to submit videos and videogifs
            * :meth:`.submit_poll` to submit polls
+           * :meth:`.submit_gallery`. to submit more than one image in the same post
 
         """
         if (bool(selftext) or selftext == "") == bool(url):
@@ -872,6 +890,113 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             data.update(kind="link", url=url)
 
         return self._reddit.post(API_PATH["submit"], data=data)
+
+    def submit_gallery(
+        self,
+        title,
+        images,
+        *,
+        collection_id=None,
+        discussion_type=None,
+        flair_id=None,
+        flair_text=None,
+        nsfw=False,
+        send_replies=True,
+        spoiler=False,
+    ):
+        """Add an image gallery submission to the subreddit.
+
+        :param title: The title of the submission.
+        :param images: The images to post in dict with the following structure:
+            ``{"image_path": "path", "caption": "caption", "outbound_url": "url"}``,
+            only ``"image_path"`` is required.
+        :param collection_id: The UUID of a :class:`.Collection` to add the
+            newly-submitted post to.
+        :param discussion_type: Set to ``CHAT`` to enable live discussion instead of
+            traditional comments (default: None).
+        :param flair_id: The flair template to select (default: None).
+        :param flair_text: If the template's ``flair_text_editable`` value isTrue, this
+            value will set a custom text (default: None).
+        :param nsfw: Whether or not the submission should be marked NSFW
+            (default: False).
+        :param send_replies: When True, messages will be sent to the submission author
+            when comments are made to the submission (default: True).
+        :param spoiler: Whether or not the submission should be marked asa spoiler
+            (default: False).
+        :returns: A :class:`.Submission` object for the newly created submission.
+
+        If ``image_path`` in ``images`` refers to a file that is not an image, PRAW will
+        raise a :class:`.ClientException`.
+
+        For example to submit an image gallery to ``r/reddit_api_test`` do:
+
+        .. code-block:: python
+
+            title = "My favorite pictures"
+            image = "/path/to/image.png"
+            image2 = "/path/to/image2.png"
+            image3 = "/path/to/image3.png"
+            images = [
+               {
+                   "image_path": image
+               },
+               {
+                   "image_path": image2,
+                   "caption": "Image caption 2",
+               },
+               {
+                   "image_path": image3,
+                   "caption": "Image caption 3",
+                   "outbound_url": "https://example.com/link3"
+               }
+            ]
+            reddit.subreddit("reddit_api_test").submit_gallery(title, images)
+
+        .. seealso ::
+
+           * :meth:`.submit` to submit url posts and selftexts
+           * :meth:`.submit_image`. to submit single images
+           * :meth:`.submit_poll` to submit polls
+           * :meth:`.submit_video`. to submit videos and videogifs
+
+        """
+        self._validate_gallery(images)
+        data = {
+            "api_type": "json",
+            "items": [],
+            "nsfw": bool(nsfw),
+            "sendreplies": bool(send_replies),
+            "show_error_list": True,
+            "spoiler": bool(spoiler),
+            "sr": str(self),
+            "title": title,
+            "validate_on_submit": self._reddit.validate_on_submit,
+        }
+        for key, value in (
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+            ("collection_id", collection_id),
+            ("discussion_type", discussion_type),
+        ):
+            if value is not None:
+                data[key] = value
+        for image in images:
+            data["items"].append(
+                {
+                    "caption": image.get("caption", ""),
+                    "outbound_url": image.get("outbound_url", ""),
+                    "media_id": self._upload_media(
+                        image["image_path"], expected_mime_prefix="image", gallery=True,
+                    ),
+                }
+            )
+        response = self._reddit.request(
+            "POST", API_PATH["submit_gallery_post"], json=data
+        )["json"]
+        if response["errors"]:
+            raise RedditAPIException(response["errors"])
+        else:
+            return self._reddit.submission(url=response["data"]["url"])
 
     def submit_image(
         self,
@@ -945,6 +1070,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
            * :meth:`.submit` to submit url posts and selftexts
            * :meth:`.submit_video`. to submit videos and videogifs
+           * :meth:`.submit_gallery`. to submit more than one image in the same post
 
         """
         data = {
@@ -1128,6 +1254,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
            * :meth:`.submit` to submit url posts and selftexts
            * :meth:`.submit_image` to submit images
+           * :meth:`.submit_gallery`. to submit more than one image in the same post
 
         """
         data = {
@@ -1379,7 +1506,7 @@ class SubredditFlair:
         self_assign=False,
         link_position="left",
         link_self_assign=False,
-        **settings
+        **settings,
     ):
         """Update the subreddit's flair configuration.
 
@@ -1886,7 +2013,7 @@ class SubredditModeration:
         return ListingGenerator(
             self.subreddit._reddit,
             API_PATH["about_edited"].format(subreddit=self.subreddit),
-            **generator_kwargs
+            **generator_kwargs,
         )
 
     def inbox(self, **generator_kwargs):
@@ -1910,7 +2037,7 @@ class SubredditModeration:
         return ListingGenerator(
             self.subreddit._reddit,
             API_PATH["moderator_messages"].format(subreddit=self.subreddit),
-            **generator_kwargs
+            **generator_kwargs,
         )
 
     def log(self, action=None, mod=None, **generator_kwargs):
@@ -1937,7 +2064,7 @@ class SubredditModeration:
         return ListingGenerator(
             self.subreddit._reddit,
             API_PATH["about_log"].format(subreddit=self.subreddit),
-            **generator_kwargs
+            **generator_kwargs,
         )
 
     def modqueue(self, only=None, **generator_kwargs):
@@ -1961,7 +2088,7 @@ class SubredditModeration:
         return ListingGenerator(
             self.subreddit._reddit,
             API_PATH["about_modqueue"].format(subreddit=self.subreddit),
-            **generator_kwargs
+            **generator_kwargs,
         )
 
     @cachedproperty
@@ -2026,7 +2153,7 @@ class SubredditModeration:
         return ListingGenerator(
             self.subreddit._reddit,
             API_PATH["about_reports"].format(subreddit=self.subreddit),
-            **generator_kwargs
+            **generator_kwargs,
         )
 
     def settings(self):
@@ -2055,7 +2182,7 @@ class SubredditModeration:
         return ListingGenerator(
             self.subreddit._reddit,
             API_PATH["about_spam"].format(subreddit=self.subreddit),
-            **generator_kwargs
+            **generator_kwargs,
         )
 
     def unmoderated(self, **generator_kwargs):
@@ -2075,7 +2202,7 @@ class SubredditModeration:
         return ListingGenerator(
             self.subreddit._reddit,
             API_PATH["about_unmoderated"].format(subreddit=self.subreddit),
-            **generator_kwargs
+            **generator_kwargs,
         )
 
     def unread(self, **generator_kwargs):
@@ -2097,7 +2224,7 @@ class SubredditModeration:
         return ListingGenerator(
             self.subreddit._reddit,
             API_PATH["moderator_unread"].format(subreddit=self.subreddit),
-            **generator_kwargs
+            **generator_kwargs,
         )
 
     def update(self, **settings):
@@ -2245,7 +2372,7 @@ class SubredditModerationStream:
             action=action,
             mod=mod,
             attribute_name="id",
-            **stream_options
+            **stream_options,
         )
 
     def modmail_conversations(
@@ -2281,7 +2408,7 @@ class SubredditModerationStream:
             state=state,
             attribute_name="id",
             exclude_before=True,
-            **stream_options
+            **stream_options,
         )
 
     def modqueue(self, only=None, **stream_options):

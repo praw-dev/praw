@@ -163,6 +163,7 @@ API_PATH = {
     "submission":              "comments/{id}/",
     "submission_replies":      "message/selfreply/",
     "submit":                  "api/submit/",
+    "submit_gallery_post":     "api/submit_gallery_post.json",
     "submit_poll_post":        "api/submit_poll_post",
     "subreddit":               "r/{subreddit}/",
     "subreddit_about":         "r/{subreddit}/about/",
