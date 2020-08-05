@@ -29,7 +29,7 @@ setup(
     name=PACKAGE_NAME,
     author="Bryce Boe",
     author_email="bbzbryce@gmail.com",
-    python_requires=">3.5.3",
+    python_requires="~=3.6",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
@@ -39,7 +39,6 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
@@ -52,8 +51,8 @@ setup(
     ),
     extras_require=extras,
     install_requires=[
-        "prawcore >=1.3.0, <2.0",
-        "update_checker >=0.17",
+        "prawcore >=1.5.0, <2.0",
+        "update_checker >=0.18",
         "websocket-client >=0.54.0",
     ],
     keywords="reddit api wrapper",

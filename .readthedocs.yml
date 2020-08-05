@@ -3,4 +3,4 @@ formats:
   - pdf
 python:
   pip_install: true
-  version: 3.5
+  version: 3.8
