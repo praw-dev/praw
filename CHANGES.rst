@@ -13,6 +13,7 @@ Unreleased
 **Changed**
 
 * :meth:`~.Subreddits.gold` is an alias of :meth:`~.Subreddits.premium`.
+* Drop support for Python 3.5, which is end-of-life on 2020-09-13.
 
 **Deprecated**
 

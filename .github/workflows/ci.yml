@@ -134,7 +134,7 @@ jobs:
       run: coverage report -m --fail-under=100
     strategy:
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8]
 
   test-network:
     name: Test Network Request
