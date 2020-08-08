@@ -732,7 +732,7 @@ class Reddit:
         self,
         method: str,
         path: str,
-        params: Optional[Union[str, Dict[str, str]]] = None,
+        params: Optional[Union[str, Dict[str, Union[str, int]]]] = None,
         data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
         files: Optional[Dict[str, IO]] = None,
         json=None,

@@ -9,6 +9,7 @@ Unreleased
 * Add method :meth:`~.Subreddits.premium` to reflect the naming change in
   Reddit's API.
 * Ability to submit image galleries with :meth:`.submit_gallery`.
+* Ability to specify modmail mute duration.
 
 **Changed**
 
