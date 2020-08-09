@@ -1,6 +1,7 @@
 """Provide helper classes used by other models."""
 import random
 import time
+from collections import OrderedDict
 from typing import Any, Callable, Generator, List, Optional, Set
 
 
@@ -13,19 +14,23 @@ class BoundedSet:
     def __init__(self, max_items: int):
         """Construct an instance of the BoundedSet."""
         self.max_items = max_items
-        self._fifo = []
-        self._set = set()
+        self._set = OrderedDict()
 
     def __contains__(self, item: Any) -> bool:
         """Test if the BoundedSet contains item."""
+        self._access(item)
         return item in self._set
+
+    def _access(self, item: Any):
+        if item in self._set:
+            self._set.move_to_end(item)
 
     def add(self, item: Any):
         """Add an item to the set discarding the oldest item if necessary."""
-        if len(self._set) == self.max_items:
-            self._set.remove(self._fifo.pop(0))
-        self._fifo.append(item)
-        self._set.add(item)
+        self._access(item)
+        self._set[item] = None
+        if len(self._set) > self.max_items:
+            self._set.popitem(last=False)
 
 
 class ExponentialCounter:
