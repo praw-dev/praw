@@ -182,11 +182,11 @@ class ModmailConversation(RedditBase):
         """
         self._reddit.post(API_PATH["modmail_highlight"].format(id=self.id))
 
-    def mute(self, duration=None):
+    def mute(self, num_days=3):
         """Mute the non-mod user associated with the conversation.
 
-        :param duration: Duration of mute in days. Valid options are 3, 7, or 28.
-            Defaults to 3 days. (default: None)
+        :param num_days: Duration of mute in days. Valid options are 3, 7, or 28.
+            (default: 3)
 
         For example:
 
@@ -202,8 +202,8 @@ class ModmailConversation(RedditBase):
 
 
         """
-        if duration:
-            params = {"num_hours": duration * 24}
+        if num_days != 3:  # no need to pass params if it's the default
+            params = {"num_hours": num_days * 24}
         else:
             params = {}
         self._reddit.request(
