@@ -1,3 +1,4 @@
+from datetime import datetime
 from unittest import mock
 
 from praw.models import ModmailMessage
@@ -32,6 +33,19 @@ class TestModmailConversation(IntegrationTest):
             conversation.mute()
             conversation = self.reddit.subreddit("all").modmail("ik72")
             assert conversation.user.mute_status["isMuted"]
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_mute_duration(self, _):
+        self.reddit.read_only = False
+        conversation = self.reddit.subreddit("all").modmail("g46rw")
+        with self.recorder.use_cassette("TestModmailConversation.test_mute_duration"):
+            conversation.mute(7)
+            conversation = self.reddit.subreddit("all").modmail("g46rw")
+            assert conversation.user.mute_status["isMuted"]
+            diff = datetime.fromisoformat(
+                conversation.user.mute_status["endDate"]
+            ) - datetime.fromisoformat(conversation.mod_actions[-1].date)
+            assert diff.days == 6  # 6 here because it is not 7 whole days
 
     @mock.patch("time.sleep", return_value=None)
     def test_read(self, _):
