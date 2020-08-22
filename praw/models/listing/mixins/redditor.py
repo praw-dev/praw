@@ -153,7 +153,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
         .. code-block:: python
 
-            for item in reddit.user.me().saved():
+            for item in reddit.user.me().saved(limit=None):
                 print(item.id)
 
         """
