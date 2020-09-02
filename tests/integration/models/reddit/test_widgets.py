@@ -809,9 +809,10 @@ class TestSubredditWidgets(IntegrationTest):
     def test_repr(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        assert ("SubredditWidgets(subreddit=Subreddit(display_name='{}'))").format(
-            pytest.placeholders.test_subreddit
-        ) == repr(widgets)
+        assert (
+            f"SubredditWidgets(subreddit=Subreddit(display_name='{pytest.placeholders.test_subreddit}'))"
+            == repr(widgets)
+        )
 
     def test_sidebar(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)

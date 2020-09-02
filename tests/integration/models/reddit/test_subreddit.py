@@ -1546,7 +1546,7 @@ class TestSubredditModeration(IntegrationTest):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubredditModeration.test_update"):
             before_settings = self.subreddit.mod.settings()
-            new_title = before_settings["title"] + "x"
+            new_title = f"{before_settings['title']}x"
             new_title = (
                 "x"
                 if (len(new_title) >= 20 and "placeholder" not in new_title)

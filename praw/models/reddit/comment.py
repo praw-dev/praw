@@ -199,9 +199,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         data = data["data"]
 
         if not data["children"]:
-            raise ClientException(
-                "No data returned for comment {}".format(self.fullname)
-            )
+            raise ClientException(f"No data returned for comment {self.fullname}")
 
         comment_data = data["children"][0]["data"]
         other = type(self)(self._reddit, _data=comment_data)
@@ -257,7 +255,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
                if refresh_counter % 9 == 0:
                    ancestor.refresh()
                refresh_counter += 1
-           print('Top-most Ancestor: {}'.format(ancestor))
+           print(f'Top-most Ancestor: {ancestor}')
 
         The above code should result in 5 network requests to Reddit. Without
         the calls to :meth:`.refresh()` it would make at least 31 network
@@ -295,7 +293,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             comment_path = self.context.split("?", 1)[0]
         else:
             path = API_PATH["submission"].format(id=self.submission.id)
-            comment_path = "{}_/{}".format(path, self.id)
+            comment_path = f"{path}_/{self.id}"
 
         # The context limit appears to be 8, but let's ask for more anyway.
         params = {"context": 100}

@@ -182,13 +182,11 @@ class WikiPage(RedditBase):
 
     def __repr__(self) -> str:
         """Return an object initialization representation of the instance."""
-        return "{}(subreddit={!r}, name={!r})".format(
-            self.__class__.__name__, self.subreddit, self.name
-        )
+        return f"{self.__class__.__name__}(subreddit={self.subreddit!r}, name={self.name!r})"
 
     def __str__(self) -> str:
         """Return a string representation of the instance."""
-        return "{}/{}".format(self.subreddit, self.name)
+        return f"{self.subreddit}/{self.name}"
 
     def _fetch_info(self):
         return (

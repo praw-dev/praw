@@ -208,9 +208,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             image_path = image.get("image_path", "")
             if image_path:
                 if not isfile(image_path):
-                    raise TypeError(
-                        "{!r} is not a valid image path.".format(image_path)
-                    )
+                    raise TypeError(f"{image_path!r} is not a valid image path.")
             else:
                 raise TypeError("'image_path' is required.")
             if not len(image.get("caption", "")) <= 180:
@@ -236,7 +234,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         .. code-block:: python
 
            for ban in reddit.subreddit("SUBREDDIT").banned():
-               print('{}: {}'.format(ban, ban.note))
+               print(f'{ban}: {ban.note}')
 
         """
         return SubredditRelationship(self, "banned")
@@ -366,7 +364,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         .. code-block:: python
 
            for moderator in reddit.subreddit("SUBREDDIT").moderator():
-               print('{}: {}'.format(moderator, moderator.mod_permissions))
+               print(f'{moderator}: {moderator.mod_permissions}')
 
         """
         return ModeratorRelationship(self, "moderator")
@@ -395,7 +393,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         .. code-block:: python
 
             for mute in reddit.subreddit("redditdev").muted():
-                print('{}: {}'.format(mute, mute.note))
+                print(f'{mute}: {mute.note}')
 
         """
         return SubredditRelationship(self, "muted")
@@ -653,10 +651,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             and mime_type.partition("/")[0] != expected_mime_prefix
         ):
             raise ClientException(
-                "Expected a mimetype starting with {!r} but got mimetype {!r} "
-                "(from file extension {!r}).".format(
-                    expected_mime_prefix, mime_type, file_extension
-                )
+                f"Expected a mimetype starting with {expected_mime_prefix!r} but got mimetype {mime_type!r} (from file extension {file_extension!r})."
             )
         img_data = {"filepath": file_name, "mimetype": mime_type}
 
@@ -664,7 +659,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         # until we learn otherwise, assume this request always succeeds
         upload_response = self._reddit.post(url, data=img_data)
         upload_lease = upload_response["args"]
-        upload_url = "https:{}".format(upload_lease["action"])
+        upload_url = f"https:{upload_lease['action']}"
         upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
 
         with open(media_path, "rb") as media:
@@ -676,7 +671,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         response.raise_for_status()
         if gallery:
             return upload_response["asset"]["asset_id"]
-        return upload_url + "/" + upload_data["key"]
+        return f"{upload_url}/{upload_data['key']}"
 
     def post_requirements(self):
         """Get the post requirements for a subreddit.
@@ -2031,9 +2026,9 @@ class SubredditModeration:
         .. code-block:: python
 
            for message in reddit.subreddit("mod").mod.inbox(limit=5):
-               print("From: {}, Body: {}".format(message.author, message.body))
+               print(f"From: {message.author}, Body: {message.body}")
                for reply in message.replies:
-                   print("From: {}, Body: {}".format(reply.author, reply.body))
+                   print(f"From: {reply.author}, Body: {reply.body}")
 
         """
         return ListingGenerator(
@@ -2058,7 +2053,7 @@ class SubredditModeration:
         .. code-block:: python
 
            for log in reddit.subreddit("mod").mod.log(limit=5):
-               print("Mod: {}, Subreddit: {}".format(log.mod, log.subreddit))
+               print(f"Mod: {log.mod}, Subreddit: {log.subreddit}")
 
         """
         params = {"mod": str(mod) if mod else mod, "type": action}
@@ -2103,7 +2098,7 @@ class SubredditModeration:
         .. code-block:: python
 
            for log in reddit.subreddit("mod").mod.stream.log():
-               print("Mod: {}, Subreddit: {}".format(log.mod, log.subreddit))
+               print(f"Mod: {log.mod}, Subreddit: {log.subreddit}")
 
         """
         return SubredditModerationStream(self.subreddit)
@@ -2147,8 +2142,8 @@ class SubredditModeration:
         .. code-block:: python
 
            for reported_item in reddit.subreddit("mod").mod.reports():
-               print("User Reports: {}".format(reported_item.user_reports))
-               print("Mod Reports: {}".format(reported_item.mod_reports))
+               print(f"User Reports: {reported_item.user_reports}")
+               print(f"Mod Reports: {reported_item.mod_reports}")
 
         """
         self._handle_only(only, generator_kwargs)
@@ -2220,7 +2215,7 @@ class SubredditModeration:
         .. code-block:: python
 
            for message in reddit.subreddit("mod").mod.unread():
-               print("From: {}, To: {}".format(message.author, message.dest))
+               print(f"From: {message.author}, To: {message.dest}")
 
         """
         return ListingGenerator(
@@ -2366,7 +2361,7 @@ class SubredditModerationStream:
         .. code-block:: python
 
            for log in reddit.subreddit("mod").mod.stream.log():
-               print("Mod: {}, Subreddit: {}".format(log.mod, log.subreddit))
+               print(f"Mod: {log.mod}, Subreddit: {log.subreddit}")
 
         """
         return stream_generator(
@@ -2398,7 +2393,7 @@ class SubredditModerationStream:
 
            subreddit = reddit.subreddit("all")
            for message in subreddit.mod.stream.modmail_conversations():
-               print("From: {}, To: {}".format(message.owner, message.participant))
+               print(f"From: {message.owner}, To: {message.participant}")
 
         """  # noqa: E501
         if self.subreddit == "mod":
@@ -2496,7 +2491,7 @@ class SubredditModerationStream:
         .. code-block:: python
 
            for message in reddit.subreddit("mod").mod.stream.unread():
-               print("From: {}, To: {}".format(message.author, message.dest))
+               print(f"From: {message.author}, To: {message.dest}")
 
         """
         return stream_generator(self.subreddit.mod.unread, **stream_options)
@@ -2573,7 +2568,7 @@ class SubredditRelationship:
     .. code-block:: python
 
        for ban in reddit.subreddit("redditdev").banned():
-           print('{}: {}'.format(ban, ban.note))
+           print(f'{ban}: {ban.note}')
 
     """
 
@@ -2590,9 +2585,7 @@ class SubredditRelationship:
 
         """
         Subreddit._safely_add_arguments(generator_kwargs, "params", user=redditor)
-        url = API_PATH["list_{}".format(self.relationship)].format(
-            subreddit=self.subreddit
-        )
+        url = API_PATH[f"list_{self.relationship}"].format(subreddit=self.subreddit)
         return ListingGenerator(self.subreddit._reddit, url, **generator_kwargs)
 
     def __init__(self, subreddit, relationship):
@@ -2695,14 +2688,12 @@ class ModeratorRelationship(SubredditRelationship):
         .. code-block:: python
 
            for moderator in reddit.subreddit("SUBREDDIT").moderator():
-               print('{}: {}'.format(moderator, moderator.mod_permissions))
+               print(f'{moderator}: {moderator.mod_permissions}')
 
 
         """
         params = {} if redditor is None else {"user": redditor}
-        url = API_PATH["list_{}".format(self.relationship)].format(
-            subreddit=self.subreddit
-        )
+        url = API_PATH[f"list_{self.relationship}"].format(subreddit=self.subreddit)
         return self.subreddit._reddit.get(url, params=params)
 
     # pylint: disable=arguments-differ
@@ -3198,7 +3189,7 @@ class SubredditStylesheet:
 
         upload_lease = self.subreddit._reddit.post(url, data=data)["s3UploadLease"]
         upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
-        upload_url = "https:{}".format(upload_lease["action"])
+        upload_url = f"https:{upload_lease['action']}"
 
         with open(image_path, "rb") as image:
             response = self.subreddit._reddit._core._requestor._http.post(
@@ -3206,7 +3197,7 @@ class SubredditStylesheet:
             )
         response.raise_for_status()
 
-        return "{}/{}".format(upload_url, upload_data["key"])
+        return f"{upload_url}/{upload_data['key']}"
 
     def delete_banner(self):
         """Remove the current subreddit (redesign) banner image.

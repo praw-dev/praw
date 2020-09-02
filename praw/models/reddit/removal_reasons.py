@@ -96,9 +96,7 @@ class RemovalReason(RedditBase):
                 self._fetched = True
                 return
         raise ClientException(
-            "Subreddit {} does not have the removal reason {}".format(
-                self.subreddit, self.id
-            )
+            f"Subreddit {self.subreddit} does not have the removal reason {self.id}"
         )
 
     def delete(self):

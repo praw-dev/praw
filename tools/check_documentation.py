@@ -58,10 +58,7 @@ class DocumentationChecker:
                 continue
             if not cls.HAS_ATTRIBUTE_TABLE.search(subclass.__doc__):
                 print(
-                    "Subclass {mod}.{name} is missing a table "
-                    "of common attributes.".format(
-                        mod=subclass.__module__, name=subclass.__name__
-                    )
+                    f"Subclass {subclass.__module__}.{subclass.__name__} is missing a table of common attributes."
                 )
                 success = False
             for method_name in dir(subclass):
@@ -75,12 +72,7 @@ class DocumentationChecker:
                         method = method.func
                     if not cls.HAS_CODE_BLOCK.search(method.__doc__):
                         print(
-                            "Method {mod}.{classname}.{methodname} is missing "
-                            "code examples.".format(
-                                mod=subclass.__module__,
-                                classname=subclass.__name__,
-                                methodname=method.__name__,
-                            )
+                            f"Method {subclass.__module__}.{subclass.__name__}.{method.__name__} is missing code examples."
                         )
                         success = False
         return success

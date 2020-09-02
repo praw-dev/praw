@@ -14,4 +14,4 @@ class FullnameMixin:
         underscore and the object's base36 ID, e.g., ``t1_c5s96e0``.
 
         """
-        return "{}_{}".format(self._kind, self.id)
+        return f"{self._kind}_{self.id}"

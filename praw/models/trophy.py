@@ -58,4 +58,4 @@ class Trophy(PRAWBase):
 
     def __repr__(self) -> str:
         """Return the object's REPR status."""
-        return "{}(name={!r})".format(self.__class__.__name__, self.name)
+        return f"{self.__class__.__name__}(name={self.name!r})"

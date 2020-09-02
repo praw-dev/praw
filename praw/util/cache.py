@@ -41,4 +41,4 @@ class cachedproperty:
 
     def __repr__(self) -> str:
         """Return repr(self)."""
-        return "<%s %s>" % (self.__class__.__name__, self.func)
+        return f"<{self.__class__.__name__} {self.func}>"

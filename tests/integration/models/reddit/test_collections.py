@@ -75,15 +75,12 @@ class TestCollectionModeration(IntegrationTest):
         uuid = self.NONEMPTY_REAL_UUID
         with self.recorder.use_cassette("TestCollectionModeration.test_add_post"):
             collection = self.subreddit.collections(uuid)
-            posts = [
-                self.subreddit.submit("Post #{}".format(i), selftext="")
-                for i in range(4)
-            ]
+            posts = [self.subreddit.submit(f"Post #{i}", selftext="") for i in range(4)]
 
             # Testing different types for _post_fullname
             collection.mod.add_post(posts[0])  # Subreddit object
             collection.mod.add_post(posts[1].fullname)  # fullname
-            collection.mod.add_post("https://reddit.com" + posts[2].permalink)
+            collection.mod.add_post(f"https://reddit.com{posts[2].permalink}")
             collection.mod.add_post(posts[3].id)  # id
 
             posts.append(

@@ -22,9 +22,9 @@ class RedditErrorItem:
     @property
     def error_message(self) -> str:
         """Get the completed error message string."""
-        error_str = "{}: {!r}".format(self.error_type, self.message)
+        error_str = f"{self.error_type}: {self.message!r}"
         if self.field:
-            error_str += " on field {!r}".format(self.field)
+            error_str += f" on field {self.field!r}"
         return error_str
 
     def __init__(self, error_type: str, message: str, field: Optional[str] = None):
@@ -50,9 +50,7 @@ class RedditErrorItem:
 
     def __repr__(self):
         """Return repr(self)."""
-        return "{}(error_type={!r}, message={!r}, field={!r})".format(
-            self.__class__.__name__, self.error_type, self.message, self.field
-        )
+        return f"{self.__class__.__name__}(error_type={self.error_type!r}, message={self.message!r}, field={self.field!r})"
 
     def __str__(self):
         """Get the message returned from str(self)."""
@@ -128,10 +126,7 @@ class APIException(PRAWException):
 
     def _get_old_attr(self, attrname):
         warn(
-            "Accessing attribute ``{}`` through APIException is deprecated. "
-            "This behavior will be removed in PRAW 8.0. Check out "
-            "https://praw.readthedocs.io/en/latest/package_info/"
-            "praw7_migration.html to learn how to migrate your code.".format(attrname),
+            f"Accessing attribute ``{attrname}`` through APIException is deprecated. This behavior will be removed in PRAW 8.0. Check out https://praw.readthedocs.io/en/latest/package_info/praw7_migration.html to learn how to migrate your code.",
             category=DeprecationWarning,
             stacklevel=3,
         )
@@ -140,7 +135,7 @@ class APIException(PRAWException):
     def __init__(
         self,
         items: Union[List[Union[RedditErrorItem, List[str], str]], str],
-        *optional_args: str
+        *optional_args: str,
     ):
         """Initialize an instance of RedditAPIException.
 
@@ -182,10 +177,7 @@ class InvalidFlairTemplateID(ClientException):
     def __init__(self, template_id: str):
         """Initialize the class."""
         super().__init__(
-            "The flair template id ``{template_id}`` is invalid. If you are "
-            "trying to create a flair, please use the ``add`` method.".format(
-                template_id=template_id
-            )
+            f"The flair template id ``{template_id}`` is invalid. If you are trying to create a flair, please use the ``add`` method."
         )
 
 
@@ -226,10 +218,7 @@ class TooLargeMediaException(ClientException):
         self.maximum_size = maximum_size
         self.actual = actual
         super().__init__(
-            "The media that you uploaded was too large (maximum size is "
-            "{maximum_size} bytes, uploaded {actual} bytes)".format(
-                maximum_size=maximum_size, actual=actual
-            )
+            f"The media that you uploaded was too large (maximum size is {maximum_size} bytes, uploaded {actual} bytes)"
         )
 
 

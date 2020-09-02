@@ -179,8 +179,7 @@ class Collection(RedditBase):
             # causes Reddit to return something that looks like an error
             # but with no content.
             raise ClientException(
-                "Error during fetch. Check collection "
-                "ID {!r} is correct.".format(self.collection_id)
+                f"Error during fetch. Check collection ID {self.collection_id!r} is correct."
             )
 
         other = type(self)(self._reddit, _data=data)
@@ -239,10 +238,8 @@ class CollectionModeration(PRAWBase):
         if isinstance(post, Submission):
             return post.fullname
         elif not isinstance(post, str):
-            raise TypeError(
-                "Cannot get fullname from object of type {}.".format(type(post))
-            )
-        if post.startswith("{}_".format(self._reddit.config.kinds["submission"])):
+            raise TypeError(f"Cannot get fullname from object of type {type(post)}.")
+        if post.startswith(f"{self._reddit.config.kinds['submission']}_"):
             return post
         try:
             return self._reddit.submission(url=post).fullname

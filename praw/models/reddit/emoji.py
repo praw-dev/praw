@@ -67,7 +67,7 @@ class Emoji(RedditBase):
                 self._fetched = True
                 return
         raise ClientException(
-            "/r/{} does not have the emoji {}".format(self.subreddit, self.name)
+            f"/r/{self.subreddit} does not have the emoji {self.name}"
         )
 
     def delete(self):
@@ -226,7 +226,7 @@ class SubredditEmoji:
         # until we learn otherwise, assume this request always succeeds
         upload_lease = self._reddit.post(url, data=data)["s3UploadLease"]
         upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
-        upload_url = "https:{}".format(upload_lease["action"])
+        upload_url = f"https:{upload_lease['action']}"
 
         with open(image_path, "rb") as image:
             response = self._reddit._core._requestor._http.post(

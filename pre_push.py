@@ -20,14 +20,14 @@ def do_process(args, shell=False):
 
     Exit if command is not found.
     """
-    print("Running: {}".format(" ".join(args)))
+    print(f"Running: {' '.join(args)}")
     try:
         check_call(args, shell=shell)
     except CalledProcessError:
-        print("\nFailed: {}".format(" ".join(args)))
+        print(f"\nFailed: {' '.join(args)}")
         return False
     except Exception as exc:
-        sys.stderr.write(str(exc) + "\n")
+        sys.stderr.write(f"{str(exc)}\n")
         sys.exit(1)
     return True
 
@@ -52,6 +52,7 @@ def run_static():
             path.join(current_directory, "tools", "check_documentation.py"),
         ]
     )
+    success &= do_process(["flynt", "-q", "-tc", "-ll", "1000", "."])
     success &= do_process(["black", "."])
     success &= do_process(["flake8", "--exclude=.eggs,build,docs,.venv"])
     success &= do_process(["pydocstyle", "praw"])

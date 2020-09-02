@@ -24,15 +24,13 @@ class BaseListingMixin(PRAWBase):
         """Raise :py:class:`.ValueError` if ``time_filter`` is not valid."""
         if time_filter not in BaseListingMixin.VALID_TIME_FILTERS:
             raise ValueError(
-                "time_filter must be one of: {}".format(
-                    ", ".join(BaseListingMixin.VALID_TIME_FILTERS)
-                )
+                f"time_filter must be one of: {', '.join(BaseListingMixin.VALID_TIME_FILTERS)}"
             )
 
     def controversial(
         self,
         time_filter: str = "all",
-        **generator_kwargs: Union[str, int, Dict[str, str]]
+        **generator_kwargs: Union[str, int, Dict[str, str]],
     ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for controversial submissions.
 
@@ -108,7 +106,7 @@ class BaseListingMixin(PRAWBase):
     def top(
         self,
         time_filter: str = "all",
-        **generator_kwargs: Union[str, int, Dict[str, str]]
+        **generator_kwargs: Union[str, int, Dict[str, str]],
     ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for top submissions.
 

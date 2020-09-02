@@ -101,9 +101,7 @@ class Rule(RedditBase):
                 self._fetched = True
                 return
         raise ClientException(
-            "Subreddit {} does not have the rule {}".format(
-                self.subreddit, self.short_name
-            )
+            f"Subreddit {self.subreddit} does not have the rule {self.short_name}"
         )
 
 

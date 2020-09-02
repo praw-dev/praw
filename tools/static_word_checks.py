@@ -35,14 +35,10 @@ class StaticChecker:
             if self.replace:
                 with open(filename, "w") as fp:
                     fp.write(newcontent)
-                print(
-                    "{filename}: Replaced all ``code::`` to "
-                    "``code-block::``".format(filename=filename)
-                )
+                print(f"{filename}: Replaced all ``code::`` to ``code-block::``")
                 return True
             print(
-                "{filename}; This file uses the `code::` syntax, please change"
-                " the syntax to ``code-block::``.".format(filename=filename)
+                f"{filename}; This file uses the `code::` syntax, please change the syntax to ``code-block::``."
             )
             return False
         return True
@@ -65,14 +61,11 @@ class StaticChecker:
             with open(filename, "w") as fp:
                 fp.write(newcontent)
             print(
-                "{filename}: Replaced all instances of ``/r/`` and/or "
-                "``/u/`` to ``r/`` and/or ``u/``.".format(filename=filename)
+                f"{filename}: Replaced all instances of ``/r/`` and/or ``/u/`` to ``r/`` and/or ``u/``."
             )
             return True
         print(
-            "{filename}: This file contains instances of ``/r/`` and/or "
-            "``/u/``. Please change them to ``r/`` and/or "
-            "``u/``.".format(filename=filename)
+            f"{filename}: This file contains instances of ``/r/`` and/or ``/u/``. Please change them to ``r/`` and/or ``u/``."
         )
         return False
 
@@ -86,10 +79,7 @@ class StaticChecker:
         """
         if "noreturn" in content.lower():
             print(
-                "{filename}: Line {line_number} has phrase ``noreturn``, "
-                "please edit and remove this.".format(
-                    filename=filename, line_number=line_number
-                )
+                f"{filename}: Line {line_number} has phrase ``noreturn``, please edit and remove this."
             )
             return False
         return True

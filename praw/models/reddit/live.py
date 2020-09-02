@@ -24,7 +24,7 @@ class LiveContributorRelationship:
             permissions = {"all"}
         else:
             permissions = set(permissions)
-        return ",".join("+{}".format(x) for x in permissions)
+        return ",".join(f"+{x}" for x in permissions)
 
     def __call__(self) -> List[Redditor]:
         """Return a :class:`.RedditorList` for live threads' contributors.
@@ -530,7 +530,7 @@ class LiveThreadContribution:
         description: Optional[str] = None,
         nsfw: Optional[bool] = None,
         resources: Optional[str] = None,
-        **other_settings: Optional[str]
+        **other_settings: Optional[str],
     ):
         """Update settings of the live thread.
 

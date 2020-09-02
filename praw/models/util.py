@@ -74,8 +74,8 @@ def permissions_string(
     else:
         to_set = ["-all"]
         omitted = sorted(known_permissions - set(permissions))
-        to_set.extend("-{}".format(x) for x in omitted)
-        to_set.extend("+{}".format(x) for x in permissions)
+        to_set.extend(f"-{x}" for x in omitted)
+        to_set.extend(f"+{x}" for x in permissions)
     return ",".join(to_set)
 
 
@@ -85,7 +85,7 @@ def stream_generator(
     skip_existing: bool = False,
     attribute_name: str = "fullname",
     exclude_before: bool = False,
-    **function_kwargs: Any
+    **function_kwargs: Any,
 ) -> Generator[Any, None, None]:
     """Yield new items from ListingGenerators and ``None`` when paused.
 

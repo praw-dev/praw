@@ -355,7 +355,7 @@ class SubredditWidgets(PRAWBase):
             self._fetch()
             return getattr(self, attr)
         raise AttributeError(
-            "{!r} object has no attribute {!r}".format(self.__class__.__name__, attr)
+            f"{self.__class__.__name__!r} object has no attribute {attr!r}"
         )
 
     def __init__(self, subreddit):
@@ -373,9 +373,7 @@ class SubredditWidgets(PRAWBase):
 
     def __repr__(self):
         """Return an object initialization representation of the object."""
-        return "SubredditWidgets(subreddit={subreddit!r})".format(
-            subreddit=self.subreddit
-        )
+        return f"SubredditWidgets(subreddit={self.subreddit!r})"
 
     def _fetch(self):
         data = self._reddit.get(
@@ -575,7 +573,7 @@ class SubredditWidgetsModeration:
         requires_sync,
         configuration,
         styles,
-        **other_settings
+        **other_settings,
     ):
         """Add and return a :class:`.Calendar` widget.
 
@@ -972,7 +970,7 @@ class SubredditWidgetsModeration:
         # until we learn otherwise, assume this request always succeeds
         upload_lease = self._reddit.post(url, data=img_data)["s3UploadLease"]
         upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
-        upload_url = "https:{}".format(upload_lease["action"])
+        upload_url = f"https:{upload_lease['action']}"
 
         with open(file_path, "rb") as image:
             response = self._reddit._core._requestor._http.post(
@@ -980,7 +978,7 @@ class SubredditWidgetsModeration:
             )
         response.raise_for_status()
 
-        return upload_url + "/" + upload_data["key"]
+        return f"{upload_url}/{upload_data['key']}"
 
 
 class Widget(PRAWBase):

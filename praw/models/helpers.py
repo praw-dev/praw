@@ -122,7 +122,7 @@ class MultiredditHelper(PRAWBase):
         :param name: The name of the multireddit.
 
         """
-        path = "/user/{}/m/{}".format(redditor, name)
+        path = f"/user/{redditor}/m/{name}"
         return Multireddit(self._reddit, _data={"name": name, "path": path})
 
     def create(
@@ -196,7 +196,7 @@ class SubredditHelper(PRAWBase):
         link_type: str = "any",
         subreddit_type: str = "public",
         wikimode: str = "disabled",
-        **other_settings: Optional[str]
+        **other_settings: Optional[str],
     ) -> Subreddit:
         """Create a new subreddit.
 
@@ -226,6 +226,6 @@ class SubredditHelper(PRAWBase):
             subreddit_type=subreddit_type,
             title=title or name,
             wikimode=wikimode,
-            **other_settings
+            **other_settings,
         )
         return self(name)

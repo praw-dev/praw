@@ -69,7 +69,7 @@ class Config:
         self,
         site_name: str,
         config_interpolation: Optional[str] = None,
-        **settings: str
+        **settings: str,
     ):
         """Initialize a Config instance."""
         with Config.LOCK:
@@ -99,7 +99,7 @@ class Config:
         if key in self._settings:  # Passed in values have the highest priority
             return self._fetch(key)
 
-        env_value = os.getenv("praw_{}".format(key))
+        env_value = os.getenv(f"praw_{key}")
         ini_value = self._fetch_default(key)  # Needed to remove from custom
 
         # Environment variables have higher priority than praw.ini settings
@@ -111,7 +111,7 @@ class Config:
             self._fetch_or_not_set("check_for_updates")
         )
         self.kinds = {
-            x: self._fetch("{}_kind".format(x))
+            x: self._fetch(f"{x}_kind")
             for x in [
                 "comment",
                 "message",
@@ -149,10 +149,5 @@ class Config:
                 setattr(self, attribute, conversion(getattr(self, attribute)))
             except ValueError:
                 raise ValueError(
-                    "An incorrect config type was given for option {}. The "
-                    "expected type is {}, but the given value is {}.".format(
-                        attribute,
-                        conversion.__name__,
-                        getattr(self, attribute),
-                    )
+                    f"An incorrect config type was given for option {attribute}. The expected type is {conversion.__name__}, but the given value is {getattr(self, attribute)}."
                 )

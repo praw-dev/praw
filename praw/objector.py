@@ -159,7 +159,7 @@ class Objector:
                 del data["json"]["data"]["url"]
                 parser = self.parsers[self._reddit.config.kinds["submission"]]
                 if data["json"]["data"]["id"].startswith(
-                    self._reddit.config.kinds["submission"] + "_"
+                    f"{self._reddit.config.kinds['submission']}_"
                 ):
                     # With polls, Reddit returns a fullname but calls it an
                     # "id". This fixes this by coercing the fullname into an
