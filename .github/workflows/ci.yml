@@ -66,6 +66,8 @@ jobs:
         pip install .[lint]
     - name: Check other phrase usages
       run: python ./tools/static_word_checks.py
+    - name: Run flynt
+      run: flynt -vdf -tc -ll 1000 .
     - name: Run black
       run: black --check --verbose .
     - name: Run flake8
