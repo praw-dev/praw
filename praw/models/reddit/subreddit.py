@@ -986,7 +986,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                     "caption": image.get("caption", ""),
                     "outbound_url": image.get("outbound_url", ""),
                     "media_id": self._upload_media(
-                        image["image_path"], expected_mime_prefix="image", gallery=True,
+                        image["image_path"],
+                        expected_mime_prefix="image",
+                        gallery=True,
                     ),
                 }
             )

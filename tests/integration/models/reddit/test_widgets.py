@@ -112,7 +112,10 @@ class TestButtonWidget(IntegrationTest):
                 },
             ]
             widget = widgets.mod.add_button_widget(
-                "Things to click", "Click some of these *cool* links!", buttons, styles,
+                "Things to click",
+                "Click some of these *cool* links!",
+                buttons,
+                styles,
             )
 
             assert isinstance(widget, ButtonWidget)
@@ -740,7 +743,9 @@ class TestRulesWidget(IntegrationTest):
             assert rules.styles != new_styles
 
             rules = rules.mod.update(
-                display="compact", shortName="Our regulations", styles=new_styles,
+                display="compact",
+                shortName="Our regulations",
+                styles=new_styles,
             )
 
             assert rules.display == "compact"

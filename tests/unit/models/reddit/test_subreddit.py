@@ -52,7 +52,8 @@ class TestSubreddit(UnitTest):
         assert hash(subreddit1) != hash(subreddit3)
 
     @mock.patch(
-        "praw.Reddit.post", return_value={"json": {"data": {"websocket_url": ""}}},
+        "praw.Reddit.post",
+        return_value={"json": {"data": {"websocket_url": ""}}},
     )
     @mock.patch("praw.models.Subreddit._upload_media", return_value="")
     @mock.patch("websocket.create_connection")

@@ -294,7 +294,8 @@ class CollectionModeration(PRAWBase):
 
         """
         self._reddit.post(
-            API_PATH["collection_delete"], data={"collection_id": self.collection_id},
+            API_PATH["collection_delete"],
+            data={"collection_id": self.collection_id},
         )
 
     def remove_post(self, submission: "Submission"):
@@ -410,7 +411,9 @@ class SubredditCollections(PRAWBase):
         return SubredditCollectionsModeration(self._reddit, self.subreddit.fullname)
 
     def __call__(
-        self, collection_id: Optional[str] = None, permalink: Optional[str] = None,
+        self,
+        collection_id: Optional[str] = None,
+        permalink: Optional[str] = None,
     ):
         """Return the :class:`.Collection` with the specified ID.
 

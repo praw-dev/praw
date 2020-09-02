@@ -74,7 +74,9 @@ class APIException(PRAWException):
             exception
             if isinstance(exception, RedditErrorItem)
             else RedditErrorItem(
-                exception[0], exception[1], exception[2] if bool(exception[2]) else "",
+                exception[0],
+                exception[1],
+                exception[2] if bool(exception[2]) else "",
             )
             for exception in exceptions
         ]

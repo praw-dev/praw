@@ -56,7 +56,8 @@ class TestSubreddits(IntegrationTest):
             "TestSubreddits.test_recommended__with_multiple"
         ):
             subreddits = self.reddit.subreddits.recommended(
-                ["cityporn", "earthporn"], omit_subreddits=["skyporn", "winterporn"],
+                ["cityporn", "earthporn"],
+                omit_subreddits=["skyporn", "winterporn"],
             )
         assert len(subreddits) > 1
         for subreddit in subreddits:

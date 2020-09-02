@@ -139,7 +139,9 @@ class TestRule(IntegrationTest):
         with self.recorder.use_cassette("TestRule.test_update_rule"):
             rule = self.subreddit.rules[0]
             rule2 = rule.mod.update(
-                description="Updated rule", kind="link", violation_reason="PUpdate",
+                description="Updated rule",
+                kind="link",
+                violation_reason="PUpdate",
             )
             assert rule.description != rule2.description
             assert rule2.description == "Updated rule"

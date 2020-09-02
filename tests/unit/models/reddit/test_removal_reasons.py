@@ -39,7 +39,10 @@ class TestRemovalReason(UnitTest):
             RemovalReason(self.reddit, subreddit=self.reddit.subreddit("a"))
         with pytest.raises(ValueError):
             RemovalReason(
-                self.reddit, subreddit=self.reddit.subreddit("a"), id="test", _data={},
+                self.reddit,
+                subreddit=self.reddit.subreddit("a"),
+                id="test",
+                _data={},
             )
 
     def test__get(self):

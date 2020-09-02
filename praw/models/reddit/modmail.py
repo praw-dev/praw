@@ -89,7 +89,10 @@ class ModmailConversation(RedditBase):
 
     @classmethod
     def parse(  # pylint: disable=arguments-differ
-        cls, data: Dict[str, Any], reddit: "Reddit", convert_objects: bool = True,
+        cls,
+        data: Dict[str, Any],
+        reddit: "Reddit",
+        convert_objects: bool = True,
     ):
         """Return an instance of ModmailConversation from ``data``.
 

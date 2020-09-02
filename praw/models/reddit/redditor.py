@@ -245,7 +245,8 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         if months < 1 or months > 36:
             raise TypeError("months must be between 1 and 36")
         self._reddit.post(
-            API_PATH["gild_user"].format(username=self), data={"months": months},
+            API_PATH["gild_user"].format(username=self),
+            data={"months": months},
         )
 
     def moderated(self) -> List["Subreddit"]:

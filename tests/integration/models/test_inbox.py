@@ -49,7 +49,8 @@ class TestInbox(IntegrationTest):
     def test_mark_read(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-            "TestInbox.test_mark_read", match_requests_on=["uri", "method", "body"],
+            "TestInbox.test_mark_read",
+            match_requests_on=["uri", "method", "body"],
         ):
             self.reddit.inbox.mark_read(list(self.reddit.inbox.unread()))
 
@@ -57,7 +58,8 @@ class TestInbox(IntegrationTest):
     def test_mark_unread(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-            "TestInbox.test_mark_unread", match_requests_on=["uri", "method", "body"],
+            "TestInbox.test_mark_unread",
+            match_requests_on=["uri", "method", "body"],
         ):
             self.reddit.inbox.mark_unread(list(self.reddit.inbox.all()))
 

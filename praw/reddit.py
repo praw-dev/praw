@@ -497,7 +497,9 @@ class Reddit:
         return self._objectify_request(method="GET", params=params, path=path)
 
     def info(
-        self, fullnames: Optional[Iterable[str]] = None, url: Optional[str] = None,
+        self,
+        fullnames: Optional[Iterable[str]] = None,
+        url: Optional[str] = None,
     ) -> Generator[Union[Subreddit, Comment, Submission], None, None]:
         """Fetch information about each item in ``fullnames`` or from ``url``.
 
@@ -678,7 +680,11 @@ class Reddit:
                 )
                 time.sleep(seconds)
                 return self._objectify_request(
-                    data=data, files=files, method="POST", params=params, path=path,
+                    data=data,
+                    files=files,
+                    method="POST",
+                    params=params,
+                    path=path,
                 )
             raise
 

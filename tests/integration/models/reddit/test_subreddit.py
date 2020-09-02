@@ -327,7 +327,10 @@ class TestSubreddit(IntegrationTest):
         with self.recorder.use_cassette("TestSubreddit.test_submit_poll"):
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit_poll(
-                "Test Poll", selftext="Test poll text.", options=options, duration=6,
+                "Test Poll",
+                selftext="Test poll text.",
+                options=options,
+                duration=6,
             )
             assert submission.author == self.reddit.config.username
             assert submission.selftext.startswith("Test poll text.")

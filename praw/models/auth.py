@@ -125,7 +125,10 @@ class Auth(PRAWBase):
             raise MissingRequiredAttributeException("redirect_uri must be provided")
         if isinstance(authenticator, UntrustedAuthenticator):
             return authenticator.authorize_url(
-                "temporary" if implicit else duration, scopes, state, implicit=implicit,
+                "temporary" if implicit else duration,
+                scopes,
+                state,
+                implicit=implicit,
             )
         if implicit:
             raise InvalidImplicitAuth

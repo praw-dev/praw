@@ -151,6 +151,8 @@ class Config:
                 raise ValueError(
                     "An incorrect config type was given for option {}. The "
                     "expected type is {}, but the given value is {}.".format(
-                        attribute, conversion.__name__, getattr(self, attribute),
+                        attribute,
+                        conversion.__name__,
+                        getattr(self, attribute),
                     )
                 )
