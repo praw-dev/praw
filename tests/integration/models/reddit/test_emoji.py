@@ -27,12 +27,12 @@ class TestEmoji(IntegrationTest):
             with pytest.raises(ClientException) as excinfo:
                 emoji.url
             assert str(excinfo.value) == (
-                f"/r/{subreddit} does not have the emoji invalid"
+                f"r/{subreddit} does not have the emoji invalid"
             )
             with pytest.raises(ClientException) as excinfo2:
                 emoji2.url
             assert str(excinfo2.value) == (
-                f"/r/{subreddit} does not have the emoji Test_png"
+                f"r/{subreddit} does not have the emoji Test_png"
             )
 
     def test_delete(self):
