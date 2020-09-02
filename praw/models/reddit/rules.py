@@ -123,7 +123,8 @@ class SubredditRules:
         reddit.subreddit("NAME").rules.mod.add(
             short_name="No spam",
             kind="all",
-            description="Do not spam. Spam bad")
+            description="Do not spam. Spam bad"
+        )
     """
 
     @cachedproperty
@@ -134,10 +135,11 @@ class SubredditRules:
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").rules.mod.add(
+            reddit.subreddit("NAME").rules.mod.add(
                 short_name="No spam",
                 kind="all",
-                description="Do not spam. Spam bad")
+                description="Do not spam. Spam bad"
+            )
 
         To move the fourth rule to the first position, and then to move the
         prior first rule to where the third rule originally was in the
@@ -187,7 +189,7 @@ class SubredditRules:
 
         :param short_name: The short_name of the rule, or the rule number.
 
-        .. note:: Rules fetched using a specific rule name are lazy loaded, so
+        .. note:: Rules fetched using a specific rule name are lazily loaded, so
             you might have to access an attribute to get all of the expected
             attributes.
 
@@ -242,8 +244,8 @@ class SubredditRules:
 
         .. code-block:: python
 
-           for rule in reddit.subreddit("NAME").rules:
-               print(rule)
+            for rule in reddit.subreddit("NAME").rules:
+                print(rule)
 
         """
         return iter(self._rule_list)
@@ -279,7 +281,7 @@ class RuleModeration:
     """
 
     def __init__(self, rule: Rule):
-        """Instantize the RuleModeration class."""
+        """Initialize the RuleModeration class."""
         self.rule = rule
 
     def delete(self):
@@ -350,10 +352,11 @@ class SubredditRulesModeration:
 
     .. code-block:: python
 
-       reddit.subreddit("NAME").rules.mod.add(
+        reddit.subreddit("NAME").rules.mod.add(
             short_name="No spam",
             kind="all",
-            description="Do not spam. Spam bad")
+            description="Do not spam. Spam bad"
+        )
 
     To move the fourth rule to the first position, and then to move the prior
     first rule to where the third rule originally was in the subreddit
@@ -370,7 +373,7 @@ class SubredditRulesModeration:
     """
 
     def __init__(self, subreddit_rules: SubredditRules):
-        """Instantize the SubredditRulesModeration class."""
+        """Initialize the SubredditRulesModeration class."""
         self.subreddit_rules = subreddit_rules
 
     def add(
@@ -395,10 +398,11 @@ class SubredditRulesModeration:
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").rules.mod.add(
-               short_name="No spam",
-               kind="all",
-               description="Do not spam. Spam bad")
+            reddit.subreddit("NAME").rules.mod.add(
+                short_name="No spam",
+                kind="all",
+                description="Do not spam. Spam bad"
+            )
 
         """
         data = {

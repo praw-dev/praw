@@ -46,7 +46,7 @@ class RemovalReason(RedditBase):
             warn(
                 "Parameter ``reason_id`` is deprecated. Either use positional"
                 ' arguments (reason_id="x" -> "x") or change the parameter '
-                'name to ``id`` (resaon_id="x" -> id="x"). The parameter will'
+                'name to ``id`` (reason_id="x" -> id="x"). The parameter will'
                 " be removed in PRAW 8.",
                 category=DeprecationWarning,
                 stacklevel=3,
@@ -106,7 +106,7 @@ class RemovalReason(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").mod.removal_reasons["141vv5c16py7d"].delete()
+            reddit.subreddit("NAME").mod.removal_reasons["141vv5c16py7d"].delete()
 
         """
         url = API_PATH["removal_reason"].format(subreddit=self.subreddit, id=self.id)
@@ -124,9 +124,9 @@ class RemovalReason(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").mod.removal_reasons["141vv5c16py7d"].update(
-               message="New message",
-               title="New title")
+            reddit.subreddit("NAME").mod.removal_reasons["141vv5c16py7d"].update(
+                message="New message",
+                title="New title")
 
         """
         url = API_PATH["removal_reason"].format(subreddit=self.subreddit, id=self.id)
@@ -145,7 +145,7 @@ class SubredditRemovalReasons:
 
         :param reason_id: The ID or index of the removal reason
 
-        .. note:: Removal reasons fetched using a specific rule name are lazy
+        .. note:: Removal reasons fetched using a specific rule name are lazily
             loaded, so you might have to access an attribute to get all of the
             expected attributes.
 
@@ -153,12 +153,12 @@ class SubredditRemovalReasons:
 
         .. code-block:: python
 
-           reason_id = "141vv5c16py7d"
-           reason = reddit.subreddit("NAME").mod.removal_reasons[reason_id]
-           print(reason)
+            reason_id = "141vv5c16py7d"
+            reason = reddit.subreddit("NAME").mod.removal_reasons[reason_id]
+            print(reason)
 
-        You can also use indices to get a numbered rule. Since Python
-        uses 0-indexing, the first rule is index 0, and so on.
+        You can also use indices to get a numbered removal reason. Since Python
+        uses 0-indexing, the first removal reason is index 0, and so on.
 
         .. note:: Both negative indices and slices can be used to interact with
             the removal reasons.
@@ -166,18 +166,17 @@ class SubredditRemovalReasons:
         :raises: :py:class:`IndexError` if a removal reason of a specific
             number does not exist.
 
-        For example, to get the second removal reason of the subreddit
-        ``"NAME"``:
+        For example, to get the second removal reason of the subreddit ``"NAME"``:
 
         .. code-block:: python
 
-            reason = reddit.subreddit('NAME').mod.removal_reasons[1]
+            reason = reddit.subreddit("NAME").mod.removal_reasons[1]
 
         To get the last three removal reasons in a subreddit:
 
         .. code-block:: python
 
-            reasons = reddit.subreddit('NAME').mod.removal_reasons[-3:]
+            reasons = reddit.subreddit("NAME").mod.removal_reasons[-3:]
             for reason in reasons:
                 print(reason)
 
@@ -203,8 +202,8 @@ class SubredditRemovalReasons:
 
         .. code-block:: python
 
-           for removal_reason in reddit.subreddit("NAME").mod.removal_reasons:
-               print(removal_reason)
+            for removal_reason in reddit.subreddit("NAME").mod.removal_reasons:
+                print(removal_reason)
 
         """
         return iter(self._removal_reason_list)
@@ -236,9 +235,7 @@ class SubredditRemovalReasons:
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").mod.removal_reasons.add(
-               message="Foobar",
-               title="Test")
+            reddit.subreddit("NAME").mod.removal_reasons.add(message="Foobar", title="Test")
 
         """
         data = {"message": message, "title": title}

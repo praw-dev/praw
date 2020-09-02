@@ -23,11 +23,11 @@ class VotableMixin:
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
-           submission.clear_vote()
+            submission = reddit.submission(id="5or86n")
+            submission.clear_vote()
 
-           comment = reddit.comment(id="dxolpyc")
-           comment.clear_vote()
+            comment = reddit.comment(id="dxolpyc")
+            comment.clear_vote()
 
         """
         self._vote(direction=0)
@@ -45,11 +45,11 @@ class VotableMixin:
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
-           submission.downvote()
+            submission = reddit.submission(id="5or86n")
+            submission.downvote()
 
-           comment = reddit.comment(id="dxolpyc")
-           comment.downvote()
+            comment = reddit.comment(id="dxolpyc")
+            comment.downvote()
 
         .. seealso:: :meth:`~.upvote`
 
@@ -69,11 +69,11 @@ class VotableMixin:
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
-           submission.upvote()
+            submission = reddit.submission(id="5or86n")
+            submission.upvote()
 
-           comment = reddit.comment(id="dxolpyc")
-           comment.upvote()
+            comment = reddit.comment(id="dxolpyc")
+            comment.upvote()
 
         .. seealso:: :meth:`~.downvote`
 

@@ -15,22 +15,22 @@ class ReplyableMixin:
         A ``None`` value can be returned if the target is a comment or
         submission in a quarantined subreddit and the authenticated user
         has not opt-ed in to viewing the content. When this happens the
-        comment will be sucessfully created on Reddit and can be retried
+        comment will be successfully created on Reddit and can be retried
         by drawing the comment from the user's comment history.
 
         .. note:: Some items, such as locked submissions/comments or
-            non-replyable messages will throw ``prawcore.exceptions.Forbidden``
-            when attempting to reply to them.
+            non-replyable messages will throw ``prawcore.exceptions.Forbidden`` when
+            attempting to reply to them.
 
         Example usage:
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
-           submission.reply("reply")
+            submission = reddit.submission(id="5or86n")
+            submission.reply("reply")
 
-           comment = reddit.comment(id="dxolpyc")
-           comment.reply("reply")
+            comment = reddit.comment(id="dxolpyc")
+            comment.reply("reply")
 
         """
         data = {"text": body, "thing_id": self.fullname}

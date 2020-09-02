@@ -119,9 +119,9 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           comment.reply_sort = "new"
-           comment.refresh()
-           replies = comment.replies
+            comment.reply_sort = "new"
+            comment.refresh()
+            replies = comment.replies
 
         .. note:: The appropriate values for ``reply_sort`` include
            ``confidence``, ``controversial``, ``new``, ``old``, ``q&a``,
@@ -187,7 +187,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         super().__setattr__(attribute, value)
 
     def _fetch_info(self):
-        return ("info", {}, {"id": self.fullname})
+        return "info", {}, {"id": self.fullname}
 
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
@@ -228,12 +228,12 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           comment = reddit.comment("cklhv0f")
-           parent = comment.parent()
-           # `replies` is empty until the comment is refreshed
-           print(parent.replies)  # Output: []
-           parent.refresh()
-           print(parent.replies)  # Output is at least: [Comment(id='cklhv0f')]
+            comment = reddit.comment("cklhv0f")
+            parent = comment.parent()
+            # `replies` is empty until the comment is refreshed
+            print(parent.replies)  # Output: []
+            parent.refresh()
+            print(parent.replies)  # Output is at least: [Comment(id="cklhv0f")]
 
         .. warning:: Successive calls to :meth:`.parent()` may result in a
            network request per call when the comment is not obtained through a
@@ -247,15 +247,15 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           comment = reddit.comment("dkk4qjd")
-           ancestor = comment
-           refresh_counter = 0
-           while not ancestor.is_root:
-               ancestor = ancestor.parent()
-               if refresh_counter % 9 == 0:
-                   ancestor.refresh()
-               refresh_counter += 1
-           print(f'Top-most Ancestor: {ancestor}')
+            comment = reddit.comment("dkk4qjd")
+            ancestor = comment
+            refresh_counter = 0
+            while not ancestor.is_root:
+                ancestor = ancestor.parent()
+                if refresh_counter % 9 == 0:
+                    ancestor.refresh()
+                refresh_counter += 1
+            print(f"Top-most Ancestor: {ancestor}")
 
         The above code should result in 5 network requests to Reddit. Without
         the calls to :meth:`.refresh()` it would make at least 31 network
@@ -285,8 +285,8 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           comment = reddit.comment("dkk4qjd")
-           comment.refresh()
+            comment = reddit.comment("dkk4qjd")
+            comment.refresh()
 
         """
         if "context" in self.__dict__:  # Using hasattr triggers a fetch
@@ -332,8 +332,8 @@ class CommentModeration(ThingModerationMixin):
 
     .. code-block:: python
 
-       comment = reddit.comment("dkk4qjd")
-       comment.mod.approve()
+        comment = reddit.comment("dkk4qjd")
+        comment.mod.approve()
 
     """
 
@@ -354,9 +354,9 @@ class CommentModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           # lock a comment:
-           comment = reddit.comment("dkk4qjd")
-           comment.mod.show()
+            # lock a comment:
+            comment = reddit.comment("dkk4qjd")
+            comment.mod.show()
         """
         url = API_PATH["show_comment"]
 

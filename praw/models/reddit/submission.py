@@ -40,7 +40,7 @@ class SubmissionFlair:
 
         .. code-block:: python
 
-           choices = submission.flair.choices()
+            choices = submission.flair.choices()
 
         """
         url = API_PATH["flairselector"].format(subreddit=self.submission.subreddit)
@@ -62,10 +62,10 @@ class SubmissionFlair:
 
         .. code-block:: python
 
-           choices = submission.flair.choices()
-           template_id = next(x for x in choices
-                              if x["flair_text_editable"])["flair_template_id"]
-           submission.flair.select(template_id, "my custom value")
+            choices = submission.flair.choices()
+            template_id = next(x for x in choices
+                               if x["flair_text_editable"])["flair_template_id"]
+            submission.flair.select(template_id, "my custom value")
 
         """
         data = {
@@ -84,8 +84,8 @@ class SubmissionModeration(ThingModerationMixin):
 
     .. code-block:: python
 
-       submission = reddit.submission(id="8dmv8z")
-       submission.mod.approve()
+        submission = reddit.submission(id="8dmv8z")
+        submission.mod.approve()
 
     """
 
@@ -117,8 +117,8 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
-           submission.mod.contest_mode(state=True)
+            submission = reddit.submission(id="5or86n")
+            submission.mod.contest_mode(state=True)
 
         """
         self.thing._reddit.post(
@@ -134,12 +134,9 @@ class SubmissionModeration(ThingModerationMixin):
     ):
         """Set flair for the submission.
 
-        :param text: The flair text to associate with the Submission (default:
-            '').
-        :param css_class: The css class to associate with the flair html
-            (default: '').
-        :param flair_template_id: The flair template id to use when flairing
-            (Optional).
+        :param text: The flair text to associate with the Submission (default: "").
+        :param css_class: The css class to associate with the flair html (default: "").
+        :param flair_template_id: The flair template id to use when flairing (Optional).
 
         This method can only be used by an authenticated user who is a
         moderator of the Submission's Subreddit.
@@ -148,8 +145,8 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
-           submission.mod.flair(text="PRAW", css_class="bot")
+            submission = reddit.submission(id="5or86n")
+            submission.mod.flair(text="PRAW", css_class="bot")
 
         """
         data = {
@@ -173,9 +170,8 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.subreddit("test").submit("nsfw test",
-                                                        selftext="nsfw")
-           submission.mod.nsfw()
+            submission = reddit.subreddit("test").submit("nsfw test", selftext="nsfw")
+            submission.mod.nsfw()
 
         .. seealso:: :meth:`~.sfw`
 
@@ -194,9 +190,8 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.subreddit("test").submit("oc test",
-                                                        selftext="original")
-           submission.mod.set_original_content()
+            submission = reddit.subreddit("test").submit("oc test", selftext="original")
+            submission.mod.set_original_content()
 
         .. seealso:: :meth:`.unset_original_content`
 
@@ -220,8 +215,8 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
-           submission.mod.sfw()
+            submission = reddit.submission(id="5or86n")
+            submission.mod.sfw()
 
         .. seealso:: :meth:`~.nsfw`
 
@@ -240,8 +235,8 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
-           submission.mod.spoiler()
+            submission = reddit.submission(id="5or86n")
+            submission.mod.spoiler()
 
         .. seealso:: :meth:`~.unspoiler`
 
@@ -259,7 +254,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. note:: When a submission is stickied two or more times, the Reddit
             API responds with a 409 error that is raises as a ``Conflict`` by
-            PRAWCore. The method suppresses these ``Conflict`` errors.
+            prawcore. The method suppresses these ``Conflict`` errors.
 
         This submission will replace the second stickied submission if one
         exists.
@@ -268,8 +263,8 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
-           submission.mod.sticky()
+            submission = reddit.submission(id="5or86n")
+            submission.mod.sticky()
 
         """
         data = {"id": self.thing.fullname, "state": state}
@@ -304,9 +299,8 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.subreddit("test").submit("oc test",
-                                                        selftext="original")
-           submission.mod.unset_original_content()
+            submission = reddit.subreddit("test").submit("oc test", selftext="original")
+            submission.mod.unset_original_content()
 
         .. seealso:: :meth:`.set_original_content`
 
@@ -330,9 +324,8 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.subreddit("test").submit("not spoiler",
-                                                        selftext="spoiler")
-           submission.mod.unspoiler()
+            submission = reddit.subreddit("test").submit("not spoiler", selftext="spoiler")
+            submission.mod.unspoiler()
 
         .. seealso:: :meth:`~.spoiler`
 
@@ -443,8 +436,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. code-block:: python
 
-           submission.comments.replace_more(limit=0)
-           comments = submission.comments.list()
+            submission.comments.replace_more(limit=0)
+            comments = submission.comments.list()
 
         Sort order and comment limit can be set with the ``comment_sort`` and
         ``comment_limit`` attributes before comments are fetched, including
@@ -452,8 +445,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. code-block:: python
 
-           submission.comment_sort = "new"
-           comments = submission.comments.list()
+            submission.comment_sort = "new"
+            comments = submission.comments.list()
 
         .. note:: The appropriate values for ``comment_sort`` include
            ``confidence``, ``controversial``, ``new``, ``old``, ``q&a``,
@@ -479,10 +472,9 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. code-block:: python
 
-           choices = submission.flair.choices()
-           template_id = next(x for x in choices
-                              if x["flair_text_editable"])["flair_template_id"]
-           submission.flair.select(template_id, "my custom value")
+            choices = submission.flair.choices()
+            template_id = next(x for x in choices if x["flair_text_editable"])["flair_template_id"]
+            submission.flair.select(template_id, "my custom value")
 
         """
         return SubmissionFlair(self)
@@ -495,8 +487,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. code-block:: python
 
-           submission = reddit.submission(id="8dmv8z")
-           submission.mod.approve()
+            submission = reddit.submission(id="8dmv8z")
+            submission.mod.approve()
 
         """
         return SubmissionModeration(self)
@@ -522,8 +514,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         :param reddit: An instance of :class:`~.Reddit`.
         :param id: A reddit base36 submission ID, e.g., ``2gmzqe``.
-        :param url: A URL supported by
-            :meth:`~praw.models.Submission.id_from_url`.
+        :param url: A URL supported by :meth:`~praw.models.Submission.id_from_url`.
 
         Either ``id`` or ``url`` can be provided, but not both.
 
@@ -598,8 +589,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
-           submission.mark_visited()
+            submission = reddit.submission(id="5or86n")
+            submission.mark_visited()
 
         """
         data = {"links": self.fullname}
@@ -616,8 +607,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
-           submission.hide()
+            submission = reddit.submission(id="5or86n")
+            submission.hide()
 
         .. seealso:: :meth:`~.unhide`
 
@@ -636,8 +627,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
-           submission.unhide()
+            submission = reddit.submission(id="5or86n")
+            submission.unhide()
 
         .. seealso:: :meth:`~.hide`
 
@@ -681,9 +672,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
-           cross_post = submission.crosspost(subreddit="learnprogramming",
-                                             send_replies=False)
+            submission = reddit.submission(id="5or86n")
+            cross_post = submission.crosspost(subreddit="learnprogramming", send_replies=False)
 
         .. seealso:: :meth:`~.hide`
 

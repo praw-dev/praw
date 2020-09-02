@@ -68,7 +68,6 @@ def permissions_string(
        permissions.
 
     """
-    to_set = []
     if permissions is None:
         to_set = ["+all"]
     else:
@@ -121,37 +120,37 @@ def stream_generator(
 
     .. code-block:: python
 
-       reply_function = reddit.inbox.comment_replies
-       for reply in praw.models.util.stream_generator(reply_function):
-           print(reply)
+        reply_function = reddit.inbox.comment_replies
+        for reply in praw.models.util.stream_generator(reply_function):
+            print(reply)
 
     To pause a comment stream after six responses with no new
     comments, try:
 
     .. code-block:: python
 
-       subreddit = reddit.subreddit("redditdev")
-       for comment in subreddit.stream.comments(pause_after=6):
-           if comment is None:
-               break
-           print(comment)
+        subreddit = reddit.subreddit("redditdev")
+        for comment in subreddit.stream.comments(pause_after=6):
+            if comment is None:
+                break
+            print(comment)
 
     To resume fetching comments after a pause, try:
 
     .. code-block:: python
 
-       subreddit = reddit.subreddit("help")
-       comment_stream = subreddit.stream.comments(pause_after=5)
+        subreddit = reddit.subreddit("help")
+        comment_stream = subreddit.stream.comments(pause_after=5)
 
-       for comment in comment_stream:
-           if comment is None:
-               break
-           print(comment)
-       # Do any other processing, then try to fetch more data
-       for comment in comment_stream:
-           if comment is None:
-               break
-           print(comment)
+        for comment in comment_stream:
+            if comment is None:
+                break
+            print(comment)
+        # Do any other processing, then try to fetch more data
+        for comment in comment_stream:
+            if comment is None:
+                break
+            print(comment)
 
     To bypass the internal exponential backoff, try the following. This
     approach is useful if you are monitoring a subreddit with infrequent
@@ -161,11 +160,11 @@ def stream_generator(
 
     .. code-block:: python
 
-       subreddit = reddit.subreddit("help")
-       for comment in subreddit.stream.comments(pause_after=0):
-           if comment is None:
-               continue
-           print(comment)
+        subreddit = reddit.subreddit("help")
+        for comment in subreddit.stream.comments(pause_after=0):
+            if comment is None:
+                continue
+            print(comment)
 
     """
     before_attribute = None

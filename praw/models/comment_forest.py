@@ -42,15 +42,15 @@ class CommentForest:
 
         .. code-block:: python
 
-           first_comment = submission.comments[0]
+            first_comment = submission.comments[0]
 
         Alternatively, the presence of this method enables one to iterate over
         all top_level comments, like so:
 
         .. code-block:: python
 
-           for comment in submission.comments:
-               print(comment.body)
+            for comment in submission.comments:
+                print(comment.body)
 
         """
         return self._comments[index]
@@ -83,7 +83,7 @@ class CommentForest:
             self._comments.append(comment)
         else:
             assert comment.parent_id in self._submission._comments_by_id, (
-                "PRAW Error occured. Please file a bug report and include "
+                "PRAW Error occurred. Please file a bug report and include "
                 "the code that caused the error."
             )
             parent = self._submission._comments_by_id[comment.parent_id]
@@ -131,17 +131,17 @@ class CommentForest:
 
         .. code-block:: python
 
-           submission = reddit.submission("3hahrw")
-           submission.comments.replace_more()
+            submission = reddit.submission("3hahrw")
+            submission.comments.replace_more()
 
         Alternatively, to replace :class:`.MoreComments` instances within the
         replies of a single comment try:
 
         .. code-block:: python
 
-           comment = reddit.comment("d8r4im1")
-           comment.refresh()
-           comment.replies.replace_more()
+            comment = reddit.comment("d8r4im1")
+            comment.refresh()
+            comment.replies.replace_more()
 
         .. note:: This method can take a long time as each replacement will
                   discover at most 20 new :class:`.Comment` or
@@ -151,13 +151,13 @@ class CommentForest:
 
                   .. code-block:: python
 
-                     while True:
-                         try:
-                             submission.comments.replace_more()
-                             break
-                         except PossibleExceptions:
-                             print("Handling replace_more exception")
-                             sleep(1)
+                      while True:
+                          try:
+                              submission.comments.replace_more()
+                              break
+                          except PossibleExceptions:
+                              print("Handling replace_more exception")
+                              sleep(1)
 
         .. warning:: If this method is called, and the comments are refreshed,
             calling this method again will result in a

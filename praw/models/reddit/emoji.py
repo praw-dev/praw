@@ -66,9 +66,7 @@ class Emoji(RedditBase):
                 self.__dict__.update(emoji.__dict__)
                 self._fetched = True
                 return
-        raise ClientException(
-            f"/r/{self.subreddit} does not have the emoji {self.name}"
-        )
+        raise ClientException(f"r/{self.subreddit} does not have the emoji {self.name}")
 
     def delete(self):
         """Delete an emoji from this subreddit by Emoji.
@@ -77,7 +75,7 @@ class Emoji(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit("praw_test").emoji["test"].delete()
+            reddit.subreddit("praw_test").emoji["test"].delete()
 
         """
         url = API_PATH["emoji_delete"].format(
@@ -112,7 +110,7 @@ class Emoji(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit("wowemoji").emoji["test"].update(mod_flair_only=True)
+            reddit.subreddit("wowemoji").emoji["test"].update(mod_flair_only=True)
 
         """
         locals_reference = locals()
@@ -150,8 +148,8 @@ class SubredditEmoji:
 
         .. code-block:: python
 
-           emoji = reddit.subreddit("praw_test").emoji["test"]
-           print(emoji)
+            emoji = reddit.subreddit("praw_test").emoji["test"]
+            print(emoji)
 
         """
         return Emoji(self._reddit, self.subreddit, name)
@@ -172,8 +170,8 @@ class SubredditEmoji:
 
         .. code-block:: python
 
-           for emoji in reddit.subreddit("praw_test").emoji:
-               print(emoji)
+            for emoji in reddit.subreddit("praw_test").emoji:
+                print(emoji)
 
         """
         response = self._reddit.get(
@@ -212,7 +210,7 @@ class SubredditEmoji:
 
         .. code-block:: python
 
-           reddit.subreddit("praw_test").emoji.add("test", "test.png")
+            reddit.subreddit("praw_test").emoji.add("test", "test.png")
 
         """
         data = {

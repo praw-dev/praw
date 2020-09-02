@@ -33,10 +33,9 @@ class LiveContributorRelationship:
 
         .. code-block:: python
 
-           thread = reddit.live("ukaeu1ik4sw5")
-           for contributor in thread.contributor():
-               print(contributor)
-
+            thread = reddit.live("ukaeu1ik4sw5")
+            for contributor in thread.contributor():
+                print(contributor)
         """
         url = API_PATH["live_contributors"].format(id=self.thread.id)
         temp = self.thread._reddit.get(url)
@@ -85,11 +84,11 @@ class LiveContributorRelationship:
 
         .. code-block:: python
 
-           thread = reddit.live("ukaeu1ik4sw5")
-           redditor = reddit.redditor("spez")
+            thread = reddit.live("ukaeu1ik4sw5")
+            redditor = reddit.redditor("spez")
 
-           # "manage" and "settings" permissions
-           thread.contributor.invite(redditor, ["manage", "settings"])
+            # "manage" and "settings" permissions
+            thread.contributor.invite(redditor, ["manage", "settings"])
 
         .. seealso:: :meth:`.LiveContributorRelationship.remove_invite` to
             remove the invite for redditor.
@@ -127,10 +126,10 @@ class LiveContributorRelationship:
 
         .. code-block:: python
 
-           thread = reddit.live("ukaeu1ik4sw5")
-           redditor = reddit.redditor("spez")
-           thread.contributor.remove(redditor)
-           thread.contributor.remove("t2_1w72")  # with fullname
+            thread = reddit.live("ukaeu1ik4sw5")
+            redditor = reddit.redditor("spez")
+            thread.contributor.remove(redditor)
+            thread.contributor.remove("t2_1w72")  # with fullname
 
         """
         if isinstance(redditor, Redditor):
@@ -151,10 +150,10 @@ class LiveContributorRelationship:
 
         .. code-block:: python
 
-           thread = reddit.live("ukaeu1ik4sw5")
-           redditor = reddit.redditor("spez")
-           thread.contributor.remove_invite(redditor)
-           thread.contributor.remove_invite("t2_1w72")  # with fullname
+            thread = reddit.live("ukaeu1ik4sw5")
+            redditor = reddit.redditor("spez")
+            thread.contributor.remove_invite(redditor)
+            thread.contributor.remove_invite("t2_1w72")  # with fullname
 
         .. seealso:: :meth:`.LiveContributorRelationship.invite` to
             invite a redditor to be a contributor of the live thread.
@@ -185,21 +184,21 @@ class LiveContributorRelationship:
 
         .. code-block:: python
 
-           thread = reddit.live("ukaeu1ik4sw5")
-           thread.contributor.update("spez")
+            thread = reddit.live("ukaeu1ik4sw5")
+            thread.contributor.update("spez")
 
         To grant ``"access"`` and ``"edit"`` permissions (and to
         remove other permissions), try:
 
         .. code-block:: python
 
-           thread.contributor.update("spez", ["access", "edit"])
+            thread.contributor.update("spez", ["access", "edit"])
 
         To remove all permissions from the contributor, try:
 
         .. code-block:: python
 
-           subreddit.moderator.update("spez", [])
+            subreddit.moderator.update("spez", [])
 
         """
         url = API_PATH["live_update_perms"].format(id=self.thread.id)
@@ -227,21 +226,21 @@ class LiveContributorRelationship:
 
         .. code-block:: python
 
-           thread = reddit.live("ukaeu1ik4sw5")
-           thread.contributor.update_invite("spez")
+            thread = reddit.live("ukaeu1ik4sw5")
+            thread.contributor.update_invite("spez")
 
         To set "access" and "edit" permissions (and to remove other
         permissions) to the invitation, try:
 
         .. code-block:: python
 
-           thread.contributor.update_invite("spez", ["access", "edit"])
+            thread.contributor.update_invite("spez", ["access", "edit"])
 
         To remove all permissions from the invitation, try:
 
         .. code-block:: python
 
-           thread.contributor.update_invite("spez", [])
+            thread.contributor.update_invite("spez", [])
 
         """
         url = API_PATH["live_update_perms"].format(id=self.thread.id)
@@ -289,8 +288,8 @@ class LiveThread(RedditBase):
 
         .. code-block:: python
 
-           thread = reddit.live("ukaeu1ik4sw5")
-           thread.contrib.add("### update")
+            thread = reddit.live("ukaeu1ik4sw5")
+            thread.contrib.add("### update")
 
         """
         return LiveThreadContribution(self)
@@ -306,10 +305,10 @@ class LiveThread(RedditBase):
 
         .. code-block:: python
 
-           thread = reddit.live("ukaeu1ik4sw5")
-           for contributor in thread.contributor():
-               # prints `(Redditor(name="Acidtwist"), ["all"])`
-               print(contributor, contributor.permissions)
+            thread = reddit.live("ukaeu1ik4sw5")
+            for contributor in thread.contributor():
+                # prints `(Redditor(name="Acidtwist"), ["all"])`
+                print(contributor, contributor.permissions)
 
         """
         return LiveContributorRelationship(self)
@@ -359,11 +358,11 @@ class LiveThread(RedditBase):
 
         .. code-block:: python
 
-           thread = reddit.live("ukaeu1ik4sw5")
-           update = thread["7827987a-c998-11e4-a0b9-22000b6a88d2"]
-           update.thread     # LiveThread(id="ukaeu1ik4sw5")
-           update.id         # "7827987a-c998-11e4-a0b9-22000b6a88d2"
-           update.author     # "umbrae"
+            thread = reddit.live("ukaeu1ik4sw5")
+            update = thread["7827987a-c998-11e4-a0b9-22000b6a88d2"]
+            update.thread     # LiveThread(id="ukaeu1ik4sw5")
+            update.id         # "7827987a-c998-11e4-a0b9-22000b6a88d2"
+            update.author     # "umbrae"
         """
         return LiveUpdate(self._reddit, self.id, update_id)
 
@@ -389,7 +388,7 @@ class LiveThread(RedditBase):
             self.id = id
 
     def _fetch_info(self):
-        return ("liveabout", {"id": self.id}, None)
+        return "liveabout", {"id": self.id}, None
 
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
@@ -420,9 +419,9 @@ class LiveThread(RedditBase):
 
         .. code-block:: python
 
-           thread = reddit.live("ukaeu1ik4sw5")
-           for submission in thread.discussions(limit=None):
-               print(submission.title)
+            thread = reddit.live("ukaeu1ik4sw5")
+            for submission in thread.discussions(limit=None):
+                print(submission.title)
 
         """
         url = API_PATH["live_discussions"].format(id=self.id)
@@ -439,8 +438,8 @@ class LiveThread(RedditBase):
 
         .. code-block:: python
 
-           thread = reddit.live("xyu8kmjvfrww")
-           thread.report("spam")
+            thread = reddit.live("xyu8kmjvfrww")
+            thread.report("spam")
 
         """
         url = API_PATH["live_report"].format(id=self.id)
@@ -463,10 +462,10 @@ class LiveThread(RedditBase):
 
         .. code-block:: python
 
-           thread = reddit.live("ukaeu1ik4sw5")
-           after = "LiveUpdate_fefb3dae-7534-11e6-b259-0ef8c7233633"
-           for submission in thread.updates(limit=5, params={"after": after}):
-               print(submission.body)
+            thread = reddit.live("ukaeu1ik4sw5")
+            after = "LiveUpdate_fefb3dae-7534-11e6-b259-0ef8c7233633"
+            for submission in thread.updates(limit=5, params={"after": after}):
+                print(submission.body)
 
         """
         url = API_PATH["live_updates"].format(id=self.id)
@@ -488,8 +487,8 @@ class LiveThreadContribution:
 
         .. code-block:: python
 
-           thread = reddit.live("ukaeu1ik4sw5")
-           thread.contrib.add("### update")
+            thread = reddit.live("ukaeu1ik4sw5")
+            thread.contrib.add("### update")
 
         """
         self.thread = thread
@@ -503,8 +502,8 @@ class LiveThreadContribution:
 
         .. code-block:: python
 
-           thread = reddit.live("ydwwxneu7vsa")
-           thread.contrib.add("test `LiveThreadContribution.add()`")
+            thread = reddit.live("ydwwxneu7vsa")
+            thread.contrib.add("test `LiveThreadContribution.add()`")
 
         """
         url = API_PATH["live_add_update"].format(id=self.thread.id)
@@ -517,8 +516,8 @@ class LiveThreadContribution:
 
         .. code-block:: python
 
-           thread = reddit.live("ukaeu1ik4sw5")
-           thread.contrib.close()
+            thread = reddit.live("ukaeu1ik4sw5")
+            thread.contrib.close()
 
         """
         url = API_PATH["live_close"].format(id=self.thread.id)
@@ -553,7 +552,7 @@ class LiveThreadContribution:
 
         .. code-block:: python
 
-           thread = reddit.live("xyu8kmjvfrww")
+            thread = reddit.live("xyu8kmjvfrww")
 
            # update `title` and `nsfw`
            updated_thread = thread.contrib.update(title=new_title, nsfw=True)
@@ -563,8 +562,8 @@ class LiveThreadContribution:
 
         .. code-block:: python
 
-           # update `nsfw` and maintain new setting `foo`
-           thread.contrib.update(nsfw=True, foo=None)
+            # update `nsfw` and maintain new setting `foo`
+            thread.contrib.update(nsfw=True, foo=None)
 
         """
         settings = {
@@ -679,9 +678,9 @@ class LiveUpdate(FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           thread = reddit.live("ukaeu1ik4sw5")
-           update = thread["7827987a-c998-11e4-a0b9-22000b6a88d2"]
-           update.contrib  # LiveUpdateContribution instance
+            thread = reddit.live("ukaeu1ik4sw5")
+            update = thread["7827987a-c998-11e4-a0b9-22000b6a88d2"]
+            update.contrib  # LiveUpdateContribution instance
 
         """
         return LiveUpdateContribution(self)
@@ -712,11 +711,10 @@ class LiveUpdate(FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           update = LiveUpdate(reddit, "ukaeu1ik4sw5",
-                               "7827987a-c998-11e4-a0b9-22000b6a88d2")
-           update.thread     # LiveThread(id="ukaeu1ik4sw5")
-           update.id         # "7827987a-c998-11e4-a0b9-22000b6a88d2"
-           update.author     # "umbrae"
+            update = LiveUpdate(reddit, "ukaeu1ik4sw5", "7827987a-c998-11e4-a0b9-22000b6a88d2")
+            update.thread     # LiveThread(id="ukaeu1ik4sw5")
+            update.id         # "7827987a-c998-11e4-a0b9-22000b6a88d2"
+            update.author     # "umbrae"
         """
         if _data is not None:
             # Since _data (part of JSON returned from reddit) have no
@@ -759,10 +757,10 @@ class LiveUpdateContribution:
 
         .. code-block:: python
 
-           thread = reddit.live("ukaeu1ik4sw5")
-           update = thread["7827987a-c998-11e4-a0b9-22000b6a88d2"]
-           update.contrib  # LiveUpdateContribution instance
-           update.contrib.remove()
+            thread = reddit.live("ukaeu1ik4sw5")
+            update = thread["7827987a-c998-11e4-a0b9-22000b6a88d2"]
+            update.contrib  # LiveUpdateContribution instance
+            update.contrib.remove()
 
         """
         self.update = update
@@ -774,9 +772,9 @@ class LiveUpdateContribution:
 
          .. code-block:: python
 
-           thread = reddit.live("ydwwxneu7vsa")
-           update = thread["6854605a-efec-11e6-b0c7-0eafac4ff094"]
-           update.contrib.remove()
+             thread = reddit.live("ydwwxneu7vsa")
+             update = thread["6854605a-efec-11e6-b0c7-0eafac4ff094"]
+             update.contrib.remove()
 
         """
         url = API_PATH["live_remove_update"].format(id=self.update.thread.id)
@@ -788,9 +786,9 @@ class LiveUpdateContribution:
 
         .. code-block:: python
 
-           thread = reddit.live("xyu8kmjvfrww")
-           update = thread["cb5fe532-dbee-11e6-9a91-0e6d74fabcc4"]
-           update.contrib.strike()
+            thread = reddit.live("xyu8kmjvfrww")
+            update = thread["cb5fe532-dbee-11e6-9a91-0e6d74fabcc4"]
+            update.contrib.strike()
 
         To check whether the update is stricken or not, use ``update.stricken``
         attribute. But note that accessing lazy attributes on updates

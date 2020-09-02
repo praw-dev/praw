@@ -543,7 +543,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         self._path = API_PATH["subreddit"].format(subreddit=self)
 
     def _fetch_info(self):
-        return ("subreddit_about", {"subreddit": self}, None)
+        return "subreddit_about", {"subreddit": self}, None
 
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
@@ -1561,9 +1561,9 @@ class SubredditFlair:
         :param redditor: (Required) A redditor name (e.g., ``"spez"``) or
             :class:`~.Redditor` instance.
         :param text: The flair text to associate with the Redditor or
-            Submission (default: '').
+            Submission (default: "").
         :param css_class: The css class to associate with the flair html
-            (default: ''). Use either this or ``flair_template_id``.
+            ((default: "")). Use either this or ``flair_template_id``.
         :param flair_template_id: The ID of the flair template to be used
             (default: ``None``). Use either this or ``css_class``.
 
@@ -1608,9 +1608,9 @@ class SubredditFlair:
             arguments.
 
         :param text: The flair text to use when not explicitly provided in
-            ``flair_list`` (default: '').
+            ``flair_list`` ((default: "")).
         :param css_class: The css class to use when not explicitly provided in
-            ``flair_list`` (default: '').
+            ``flair_list`` ((default: "")).
         :returns: List of dictionaries indicating the success or failure of
             each update.
 
@@ -1734,7 +1734,7 @@ class SubredditFlairTemplates:
         :param template_id: The flair template to update. If not valid then
             an exception will be thrown.
         :param text: The flair template's new text (required).
-        :param css_class: The flair template's new css_class (default: '').
+        :param css_class: The flair template's new css_class ((default: "")).
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color,
@@ -1827,7 +1827,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         """Add a Redditor flair template to the associated subreddit.
 
         :param text: The flair template's text (required).
-        :param css_class: The flair template's css_class (default: '').
+        :param css_class: The flair template's css_class ((default: "")).
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color,
@@ -1908,7 +1908,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         """Add a link flair template to the associated subreddit.
 
         :param text: The flair template's text (required).
-        :param css_class: The flair template's css_class (default: '').
+        :param css_class: The flair template's css_class ((default: "")).
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color,

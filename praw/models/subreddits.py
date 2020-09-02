@@ -140,6 +140,8 @@ class Subreddits(PRAWBase):
 
         :param query: Search for subreddits relevant to the search topic.
 
+        .. note:: As of 09/01/2020, this endpoint always returns 404.
+
         """
         result = self._reddit.get(
             API_PATH["subreddits_by_topic"], params={"query": query}

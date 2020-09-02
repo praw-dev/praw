@@ -30,6 +30,9 @@ class LiveHelper(PRAWBase):
     def info(self, ids: List[str]) -> Generator[LiveThread, None, None]:
         """Fetch information about each live thread in ``ids``.
 
+        .. note::
+            This method doesn't support IDs for live updates.
+
         :param ids: A list of IDs for a live thread.
         :returns: A generator that yields :class:`.LiveThread` instances.
 
