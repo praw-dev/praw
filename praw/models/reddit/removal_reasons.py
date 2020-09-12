@@ -125,8 +125,8 @@ class RemovalReason(RedditBase):
         .. code-block:: python
 
             reddit.subreddit("NAME").mod.removal_reasons["141vv5c16py7d"].update(
-                message="New message",
-                title="New title")
+                message="New message", title="New title"
+            )
 
         """
         url = API_PATH["removal_reason"].format(subreddit=self.subreddit, id=self.id)

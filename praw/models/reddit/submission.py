@@ -63,8 +63,7 @@ class SubmissionFlair:
         .. code-block:: python
 
             choices = submission.flair.choices()
-            template_id = next(x for x in choices
-                               if x["flair_text_editable"])["flair_template_id"]
+            template_id = next(x for x in choices if x["flair_text_editable"])["flair_template_id"]
             submission.flair.select(template_id, "my custom value")
 
         """

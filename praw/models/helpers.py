@@ -50,10 +50,8 @@ class LiveHelper(PRAWBase):
 
         .. code-block:: python
 
-            ids = ["3rgnbke2rai6hen7ciytwcxadi",
-                   "sw7bubeycai6hey4ciytwamw3a",
-                   "t8jnufucss07"]
-            for thread in reddit.live.info(ids)
+            ids = ["3rgnbke2rai6hen7ciytwcxadi", "sw7bubeycai6hey4ciytwamw3a", "t8jnufucss07"]
+            for thread in reddit.live.info(ids):
                 print(thread.title)
 
         """

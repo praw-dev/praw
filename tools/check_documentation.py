@@ -26,7 +26,10 @@ class DocumentationChecker:
     exceptions = {
         ModmailObject,  # is never publicly accessed
     }
-    HAS_CODE_BLOCK = re.compile(r".. code-block::")
+    HAS_CODE_BLOCK = re.compile(r"\.\. code-block::")
+    CODE_BLOCK_IMPROPER_INDENT = re.compile(
+        r"( +)\.\. code-block:: python\n\n\1 {3}[\w#]"
+    )
     HAS_ATTRIBUTE_TABLE = re.compile(r"Attribute[ ]+Description")
     METHOD_EXCEPTIONS = {
         "from_data",
@@ -70,7 +73,12 @@ class DocumentationChecker:
                 ) and not method_name.startswith("_"):
                     if isinstance(method, cachedproperty):
                         method = method.func
-                    if not cls.HAS_CODE_BLOCK.search(method.__doc__):
+                    if cls.HAS_CODE_BLOCK.search(method.__doc__):
+                        if cls.CODE_BLOCK_IMPROPER_INDENT.search(method.__doc__):
+                            print(
+                                f"Code block for method {subclass.__module__}.{subclass.__name__}.{method.__name__} is improperly indented."
+                            )
+                    else:
                         print(
                             f"Method {subclass.__module__}.{subclass.__name__}.{method.__name__} is missing code examples."
                         )

@@ -37,6 +37,8 @@ jobs:
       run: python ./tools/static_word_checks.py
     - name: Check documentation
       run: python ./tools/check_documentation.py
+    - name: Check docstrings
+      run: python ./tools/check_docstring.py
     - name: Run pydocstyle
       run: pydocstyle praw
     - name: Run sphinx
@@ -74,6 +76,8 @@ jobs:
       run: flake8 --exclude docs --statistics
     - name: Check documentation
       run: python ./tools/check_documentation.py
+    - name: Check docstrings
+      run: python ./tools/check_docstring.py
     - name: Run pydocstyle
       run: pydocstyle praw
     - name: Run sphinx

@@ -52,6 +52,12 @@ def run_static():
             path.join(current_directory, "tools", "check_documentation.py"),
         ]
     )
+    success &= do_process(
+        [
+            sys.executable,
+            path.join(current_directory, "tools", "check_docstring.py"),
+        ]
+    )
     success &= do_process(["flynt", "-q", "-tc", "-ll", "1000", "."])
     success &= do_process(["black", "."])
     success &= do_process(["flake8", "--exclude=.eggs,build,docs,.venv"])

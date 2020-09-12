@@ -27,7 +27,8 @@ class Collection(RedditBase):
     .. code-block:: python
 
         collection = reddit.subreddit("SUBREDDIT").collections(
-            permalink="https://reddit.com/r/SUBREDDIT/collection/some_uuid")
+            permalink="https://reddit.com/r/SUBREDDIT/collection/some_uuid"
+        )
 
     **Typical Attributes**
 

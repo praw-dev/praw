@@ -57,9 +57,14 @@ class Reddit:
     .. code-block:: python
 
         import praw
-        reddit = praw.Reddit(client_id="CLIENT_ID",
-                             client_secret="CLIENT_SECRET", password="PASSWORD",
-                             user_agent="USERAGENT", username="USERNAME")
+
+        reddit = praw.Reddit(
+            client_id="CLIENT_ID",
+            client_secret="CLIENT_SECRET",
+            password="PASSWORD",
+            user_agent="USERAGENT",
+            username="USERNAME",
+        )
 
     """
 
@@ -173,6 +178,8 @@ class Reddit:
         .. code-block:: python
 
             import json, betamax, requests
+            from prawcore import Requestor
+
 
             class JSONDebugRequestor(Requestor):
                 def request(self, *args, **kwargs):
@@ -180,9 +187,11 @@ class Reddit:
                     print(json.dumps(response.json(), indent=4))
                     return response
 
+
             my_session = betamax.Betamax(requests.Session())
-            reddit = Reddit(..., requestor_class=JSONDebugRequestor,
-                            requestor_kwargs={"session": my_session})
+            reddit = Reddit(
+                ..., requestor_class=JSONDebugRequestor, requestor_kwargs={"session": my_session}
+            )
 
         """
         self._core = self._authorized_core = self._read_only_core = None

@@ -37,7 +37,9 @@ class MessageableMixin:
 
         .. code-block:: python
 
-            reddit.redditor("spez").message("TEST", "test message from r/test", from_subreddit="test")
+            reddit.redditor("spez").message(
+                "TEST", "test message from r/test", from_subreddit="test"
+            )
 
         To send a message to the moderators of ``r/test``, try:
 

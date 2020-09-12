@@ -80,7 +80,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         .. code-block:: python
 
             for comment in reddit.multireddit("spez", "fun").stream.comments():
-               print(comment)
+                print(comment)
 
         Additionally, new submissions can be retrieved via the stream. In the
         following example all new submissions to the multireddit are fetched:
@@ -131,7 +131,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         .. code-block:: python
 
-            subreddit=reddit.subreddit("test")
+            subreddit = reddit.subreddit("test")
             reddit.multireddit("bboe", "test").add(subreddit)
 
         """
@@ -195,9 +195,8 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         .. code-block:: python
 
-            subreddit=reddit.subreddit("test")
+            subreddit = reddit.subreddit("test")
             reddit.multireddit("bboe", "test").remove(subreddit)
-
 
         """
         url = API_PATH["multireddit_update"].format(

@@ -149,15 +149,15 @@ class CommentForest:
                   looping and handling exceptions until the method returns
                   successfully. For example:
 
-                  .. code-block:: python
+            .. code-block:: python
 
-                      while True:
-                          try:
-                              submission.comments.replace_more()
-                              break
-                          except PossibleExceptions:
-                              print("Handling replace_more exception")
-                              sleep(1)
+                while True:
+                    try:
+                        submission.comments.replace_more()
+                        break
+                    except PossibleExceptions:
+                        print("Handling replace_more exception")
+                        sleep(1)
 
         .. warning:: If this method is called, and the comments are refreshed,
             calling this method again will result in a

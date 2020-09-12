@@ -63,8 +63,8 @@ class Rule(RedditBase):
         .. code-block:: python
 
             reddit.subreddit("NAME").removal_reasons["No spam"].mod.update(
-                description="Don't do this!",
-                violation_reason="Spam post")
+                description="Don't do this!", violation_reason="Spam post"
+            )
         """
         return RuleModeration(self)
 
@@ -121,9 +121,7 @@ class SubredditRules:
     .. code-block:: python
 
         reddit.subreddit("NAME").rules.mod.add(
-            short_name="No spam",
-            kind="all",
-            description="Do not spam. Spam bad"
+            short_name="No spam", kind="all", description="Do not spam. Spam bad"
         )
     """
 
@@ -136,9 +134,7 @@ class SubredditRules:
         .. code-block:: python
 
             reddit.subreddit("NAME").rules.mod.add(
-                short_name="No spam",
-                kind="all",
-                description="Do not spam. Spam bad"
+                short_name="No spam", kind="all", description="Do not spam. Spam bad"
             )
 
         To move the fourth rule to the first position, and then to move the
@@ -276,8 +272,8 @@ class RuleModeration:
     .. code-block:: python
 
         reddit.subreddit("NAME").removal_reasons["No spam"].mod.update(
-            description="Don't do this!",
-            violation_reason="Spam post")
+            description="Don't do this!", violation_reason="Spam post"
+        )
     """
 
     def __init__(self, rule: Rule):
@@ -323,8 +319,8 @@ class RuleModeration:
         .. code-block:: python
 
             reddit.subreddit("NAME").removal_reasons["No spam"].mod.update(
-                description="Don't do this!",
-                violation_reason="Spam post")
+                description="Don't do this!", violation_reason="Spam post"
+            )
 
         """
         data = {
@@ -353,9 +349,7 @@ class SubredditRulesModeration:
     .. code-block:: python
 
         reddit.subreddit("NAME").rules.mod.add(
-            short_name="No spam",
-            kind="all",
-            description="Do not spam. Spam bad"
+            short_name="No spam", kind="all", description="Do not spam. Spam bad"
         )
 
     To move the fourth rule to the first position, and then to move the prior
@@ -399,9 +393,7 @@ class SubredditRulesModeration:
         .. code-block:: python
 
             reddit.subreddit("NAME").rules.mod.add(
-                short_name="No spam",
-                kind="all",
-                description="Do not spam. Spam bad"
+                short_name="No spam", kind="all", description="Do not spam. Spam bad"
             )
 
         """

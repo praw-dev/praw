@@ -44,7 +44,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
     .. code-block:: python
 
-       subreddit = reddit.subreddit("redditdev")
+        subreddit = reddit.subreddit("redditdev")
 
     While ``r/all`` is not a real subreddit, it can still be treated like
     one. The following outputs the titles of the 25 hottest submissions in
@@ -52,15 +52,15 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
     .. code-block:: python
 
-       for submission in reddit.subreddit("all").hot(limit=25):
-           print(submission.title)
+        for submission in reddit.subreddit("all").hot(limit=25):
+            print(submission.title)
 
     Multiple subreddits can be combined with a ``+`` like so:
 
     .. code-block:: python
 
-       for submission in reddit.subreddit("redditdev+learnpython").top("all"):
-           print(submission)
+        for submission in reddit.subreddit("redditdev+learnpython").top("all"):
+            print(submission)
 
     Subreddits can be filtered from combined listings as follows. Note that
     these filters are ignored by certain methods, including
@@ -70,8 +70,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
     .. code-block:: python
 
-       for submission in reddit.subreddit("all-redditdev").new():
-           print(submission)
+        for submission in reddit.subreddit("all-redditdev").new():
+            print(submission)
 
     **Typical Attributes**
 
@@ -227,14 +227,14 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").banned.add("NAME", ban_reason="...")
+            reddit.subreddit("SUBREDDIT").banned.add("NAME", ban_reason="...")
 
         To list the banned users along with any notes, try:
 
         .. code-block:: python
 
-           for ban in reddit.subreddit("SUBREDDIT").banned():
-               print(f'{ban}: {ban.note}')
+            for ban in reddit.subreddit("SUBREDDIT").banned():
+                print(f'{ban}: {ban.note}')
 
         """
         return SubredditRelationship(self, "banned")
@@ -248,17 +248,18 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-           for collection in reddit.subreddit("SUBREDDIT").collections:
-               print(collection.permalink)
+            for collection in reddit.subreddit("SUBREDDIT").collections:
+                print(collection.permalink)
 
         To get a specific :class:`.Collection` by its UUID or permalink,
         use one of the following:
 
         .. code-block:: python
 
-           collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
-           collection = reddit.subreddit("SUBREDDIT").collections(
-               permalink='https://reddit.com/r/SUBREDDIT/collection/some_uuid')
+            collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
+            collection = reddit.subreddit("SUBREDDIT").collections(
+                permalink='https://reddit.com/r/SUBREDDIT/collection/some_uuid'
+            )
 
         """
         return self._subreddit_collections_class(self._reddit, self)
@@ -273,7 +274,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").contributor.add("NAME")
+            reddit.subreddit("SUBREDDIT").contributor.add("NAME")
 
         """
         return ContributorRelationship(self, "contributor")
@@ -286,14 +287,14 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-           for emoji in reddit.subreddit("iama").emoji:
-               print(emoji)
+            for emoji in reddit.subreddit("iama").emoji:
+                print(emoji)
 
         A single emoji can be lazily retrieved via:
 
         .. code-block:: python
 
-           reddit.subreddit("blah").emoji["emoji_name"]
+            reddit.subreddit("blah").emoji["emoji_name"]
 
         .. note:: Attempting to access attributes of an nonexistent emoji will
            result in a :class:`.ClientException`.
@@ -324,15 +325,15 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-           for flair in reddit.subreddit("NAME").flair():
-               print(flair)
+            for flair in reddit.subreddit("NAME").flair():
+                print(flair)
 
         Flair templates can be interacted with through this attribute via:
 
         .. code-block:: python
 
-           for template in reddit.subreddit("NAME").flair.templates:
-               print(template)
+            for template in reddit.subreddit("NAME").flair.templates:
+                print(template)
 
         """
         return SubredditFlair(self)
@@ -346,6 +347,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         .. code-block:: python
 
             reddit.subreddit("test").mod.accept_invite()
+
         """
         return SubredditModeration(self)
 
@@ -357,14 +359,14 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").moderator.add("NAME")
+            reddit.subreddit("SUBREDDIT").moderator.add("NAME")
 
         To list the moderators along with their permissions try:
 
         .. code-block:: python
 
-           for moderator in reddit.subreddit("SUBREDDIT").moderator():
-               print(f'{moderator}: {moderator.mod_permissions}')
+            for moderator in reddit.subreddit("SUBREDDIT").moderator():
+                print(f'{moderator}: {moderator.mod_permissions}')
 
         """
         return ModeratorRelationship(self, "moderator")
@@ -434,9 +436,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         .. code-block:: python
 
             reddit.subreddit("NAME").rules.mod.add(
-                short_name="No spam",
-                kind="all",
-                description="Do not spam. Spam bad")
+                short_name="No spam", kind="all", description="Do not spam. Spam bad"
+            )
 
         """
         return SubredditRules(self)
@@ -450,8 +451,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-           for comment in reddit.subreddit("iama").stream.comments():
-               print(comment)
+            for comment in reddit.subreddit("iama").stream.comments():
+                print(comment)
 
         Additionally, new submissions can be retrieved via the stream. In the
         following example all submissions are fetched via the special subreddit
@@ -459,8 +460,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-           for submission in reddit.subreddit("all").stream.submissions():
-               print(submission)
+            for submission in reddit.subreddit("all").stream.submissions():
+                print(submission)
 
         """
         return SubredditStream(self)
@@ -492,14 +493,14 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-           for widget in reddit.subreddit("redditdev").widgets.sidebar:
-               print(widget)
+            for widget in reddit.subreddit("redditdev").widgets.sidebar:
+                print(widget)
 
         Get ID card widget:
 
         .. code-block:: python
 
-           print(reddit.subreddit("redditdev").widgets.id_card)
+            print(reddit.subreddit("redditdev").widgets.id_card)
 
         """
         return SubredditWidgets(self)
@@ -512,15 +513,15 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-           for wikipage in reddit.subreddit("iama").wiki:
-               print(wikipage)
+            for wikipage in reddit.subreddit("iama").wiki:
+                print(wikipage)
 
         To fetch the content for a given wikipage try:
 
         .. code-block:: python
 
-           wikipage = reddit.subreddit("iama").wiki["proof"]
-           print(wikipage.content_md)
+            wikipage = reddit.subreddit("iama").wiki["proof"]
+            print(wikipage.content_md)
 
         """
         return SubredditWiki(self)
@@ -760,8 +761,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-           for submission in reddit.subreddit("all").search("praw"):
-               print(submission.title)
+            for submission in reddit.subreddit("all").search("praw"):
+                print(submission.title)
 
         """
         self._validate_time_filter(time_filter)
@@ -847,9 +848,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-           title = "PRAW documentation"
-           url = 'https://praw.readthedocs.io'
-           reddit.subreddit("reddit_api_test").submit(title, url=url)
+            title = "PRAW documentation"
+            url = 'https://praw.readthedocs.io'
+            reddit.subreddit("reddit_api_test").submit(title, url=url)
 
         .. seealso ::
 
@@ -932,18 +933,16 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             image2 = "/path/to/image2.png"
             image3 = "/path/to/image3.png"
             images = [
-               {
-                   "image_path": image
-               },
-               {
-                   "image_path": image2,
-                   "caption": "Image caption 2",
-               },
-               {
-                   "image_path": image3,
-                   "caption": "Image caption 3",
-                   "outbound_url": "https://example.com/link3"
-               }
+                {"image_path": image},
+                {
+                    "image_path": image2,
+                    "caption": "Image caption 2",
+                },
+                {
+                    "image_path": image3,
+                    "caption": "Image caption 3",
+                    "outbound_url": "https://example.com/link3",
+                },
             ]
             reddit.subreddit("reddit_api_test").submit_gallery(title, images)
 
@@ -1059,9 +1058,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-           title = "My favorite picture"
-           image = "/path/to/image.png"
-           reddit.subreddit("reddit_api_test").submit_image(title, image)
+            title = "My favorite picture"
+            image = "/path/to/image.png"
+            reddit.subreddit("reddit_api_test").submit_image(title, image)
 
         .. seealso ::
 
@@ -1139,13 +1138,11 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-           title = "Do you like PRAW?"
-           reddit.subreddit("reddit_api_test").submit_poll(
-               title,
-               selftext="",
-               options=["Yes", "No"],
-               duration=3
-           )
+            title = "Do you like PRAW?"
+            reddit.subreddit("reddit_api_test").submit_poll(
+                title, selftext="", options=["Yes", "No"], duration=3
+            )
+
         """
         data = {
             "sr": str(self),
@@ -1243,9 +1240,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-           title = "My favorite movie"
-           video = "/path/to/video.mp4"
-           reddit.subreddit("reddit_api_test").submit_video(title, video)
+            title = "My favorite movie"
+            video = "/path/to/video.mp4"
+            reddit.subreddit("reddit_api_test").submit_video(title, video)
 
         .. seealso ::
 
@@ -1321,7 +1318,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-            stats=reddit.subreddit("test").traffic()
+            stats = reddit.subreddit("test").traffic()
 
         """
         return self._reddit.get(API_PATH["about_traffic"].format(subreddit=self))
@@ -1379,8 +1376,8 @@ class SubredditFilters:
 
         .. code-block:: python
 
-           for subreddit in reddit.subreddit("NAME").filters:
-               ...
+            for subreddit in reddit.subreddit("NAME").filters:
+                ...
 
         """
         url = API_PATH["subreddit_filter_list"].format(
@@ -1404,7 +1401,7 @@ class SubredditFilters:
 
         .. code-block:: python
 
-           reddit.subreddit("all-redditdev-learnpython")
+            reddit.subreddit("all-redditdev-learnpython")
 
         Raises ``prawcore.NotFound`` when calling on a non-special subreddit.
 
@@ -1445,8 +1442,8 @@ class SubredditFlair:
 
         .. code-block:: python
 
-           for template in reddit.subreddit("NAME").flair.link_templates:
-               print(template)
+            for template in reddit.subreddit("NAME").flair.link_templates:
+                print(template)
 
         """
         return SubredditLinkFlairTemplates(self.subreddit)
@@ -1461,8 +1458,8 @@ class SubredditFlair:
 
         .. code-block:: python
 
-           for template in reddit.subreddit("NAME").flair.templates:
-               print(template)
+            for template in reddit.subreddit("NAME").flair.templates:
+                print(template)
 
         """
         return SubredditRedditorFlairTemplates(self.subreddit)
@@ -1480,8 +1477,8 @@ class SubredditFlair:
 
         .. code-block:: python
 
-           for flair in reddit.subreddit("NAME").flair(limit=None):
-               print(flair)
+            for flair in reddit.subreddit("NAME").flair(limit=None):
+                print(flair)
 
         """
         Subreddit._safely_add_arguments(generator_kwargs, "params", name=redditor)
@@ -1574,11 +1571,11 @@ class SubredditFlair:
 
         .. code-block:: python
 
-           reddit.subreddit("redditdev").flair.set("bboe", "PRAW author",
-                                                   css_class="mods")
-           template = "6bd28436-1aa7-11e9-9902-0e05ab0fad46"
-           reddit.subreddit("redditdev").flair.set("spez", "Reddit CEO",
-                                                   flair_template_id=template)
+            reddit.subreddit("redditdev").flair.set("bboe", "PRAW author", css_class="mods")
+            template = "6bd28436-1aa7-11e9-9902-0e05ab0fad46"
+            reddit.subreddit("redditdev").flair.set(
+                "spez", "Reddit CEO", flair_template_id=template
+            )
 
         """
         if css_class and flair_template_id is not None:
@@ -1619,8 +1616,7 @@ class SubredditFlair:
 
         .. code-block:: python
 
-           subreddit.flair.update(["bboe", "spez", "spladug"],
-                                  css_class="praw")
+            subreddit.flair.update(["bboe", "spez", "spladug"], css_class="praw")
 
         """
         templines = StringIO()
@@ -1709,8 +1705,8 @@ class SubredditFlairTemplates:
 
         .. code-block:: python
 
-           template_info = list(subreddit.flair.templates)[0]
-           subreddit.flair.templates.delete(template_info["id"])
+            template_info = list(subreddit.flair.templates)[0]
+            subreddit.flair.templates.delete(template_info["id"])
 
         """
         url = API_PATH["flairtemplatedelete"].format(subreddit=self.subreddit)
@@ -1760,11 +1756,10 @@ class SubredditFlairTemplates:
 
         .. code-block:: python
 
-           template_info = list(subreddit.flair.templates)[0]
-           subreddit.flair.templates.update(
-               template_info["id"],
-               template_info["flair_text"],
-               text_editable=True)
+            template_info = list(subreddit.flair.templates)[0]
+            subreddit.flair.templates.update(
+                template_info["id"], template_info["flair_text"], text_editable=True
+            )
 
         """
         url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
@@ -1803,8 +1798,8 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
 
         .. code-block:: python
 
-           for template in reddit.subreddit("NAME").flair.templates:
-               print(template)
+            for template in reddit.subreddit("NAME").flair.templates:
+                print(template)
 
 
         """
@@ -1847,8 +1842,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").flair.templates.add(
-               css_class="praw", text_editable=True)
+            reddit.subreddit("NAME").flair.templates.add(css_class="praw", text_editable=True)
 
         """
         self._add(
@@ -1870,7 +1864,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").flair.templates.clear()
+            reddit.subreddit("NAME").flair.templates.clear()
 
         """
         self._clear(is_link=False)
@@ -1886,8 +1880,8 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         .. code-block:: python
 
-           for template in reddit.subreddit("NAME").flair.link_templates:
-               print(template)
+            for template in reddit.subreddit("NAME").flair.link_templates:
+                print(template)
 
         """
         url = API_PATH["link_flair"].format(subreddit=self.subreddit)
@@ -1928,8 +1922,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").flair.link_templates.add(
-               css_class="praw", text_editable=True)
+            reddit.subreddit("NAME").flair.link_templates.add(css_class="praw", text_editable=True)
 
         """
         self._add(
@@ -1951,7 +1944,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").flair.link_templates.clear()
+            reddit.subreddit("NAME").flair.link_templates.clear()
 
         """
         self._clear(is_link=True)
@@ -2002,8 +1995,8 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for item in reddit.subreddit("mod").mod.edited(limit=None):
-               print(item)
+            for item in reddit.subreddit("mod").mod.edited(limit=None):
+                print(item)
 
         """
         self._handle_only(only, generator_kwargs)
@@ -2025,10 +2018,10 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for message in reddit.subreddit("mod").mod.inbox(limit=5):
-               print(f"From: {message.author}, Body: {message.body}")
-               for reply in message.replies:
-                   print(f"From: {reply.author}, Body: {reply.body}")
+            for message in reddit.subreddit("mod").mod.inbox(limit=5):
+                print(f"From: {message.author}, Body: {message.body}")
+                for reply in message.replies:
+                    print(f"From: {reply.author}, Body: {reply.body}")
 
         """
         return ListingGenerator(
@@ -2052,8 +2045,8 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for log in reddit.subreddit("mod").mod.log(limit=5):
-               print(f"Mod: {log.mod}, Subreddit: {log.subreddit}")
+            for log in reddit.subreddit("mod").mod.log(limit=5):
+                print(f"Mod: {log.mod}, Subreddit: {log.subreddit}")
 
         """
         params = {"mod": str(mod) if mod else mod, "type": action}
@@ -2077,8 +2070,8 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for item in reddit.subreddit("mod").mod.modqueue(limit=None):
-               print(item)
+            for item in reddit.subreddit("mod").mod.modqueue(limit=None):
+                print(item)
 
         """
         self._handle_only(only, generator_kwargs)
@@ -2097,8 +2090,8 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for log in reddit.subreddit("mod").mod.stream.log():
-               print(f"Mod: {log.mod}, Subreddit: {log.subreddit}")
+            for log in reddit.subreddit("mod").mod.stream.log():
+                print(f"Mod: {log.mod}, Subreddit: {log.subreddit}")
 
         """
         return SubredditModerationStream(self.subreddit)
@@ -2113,14 +2106,14 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for removal_reason in reddit.subreddit("NAME").mod.removal_reasons:
-               print(removal_reason)
+            for removal_reason in reddit.subreddit("NAME").mod.removal_reasons:
+                print(removal_reason)
 
         A single removal reason can be lazily retrieved via:
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").mod.removal_reasons["reason_id"]
+            reddit.subreddit("NAME").mod.removal_reasons["reason_id"]
 
         .. note:: Attempting to access attributes of an nonexistent removal
            reason will result in a :class:`.ClientException`.
@@ -2141,9 +2134,9 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for reported_item in reddit.subreddit("mod").mod.reports():
-               print(f"User Reports: {reported_item.user_reports}")
-               print(f"Mod Reports: {reported_item.mod_reports}")
+            for reported_item in reddit.subreddit("mod").mod.reports():
+                print(f"User Reports: {reported_item.user_reports}")
+                print(f"Mod Reports: {reported_item.mod_reports}")
 
         """
         self._handle_only(only, generator_kwargs)
@@ -2171,8 +2164,8 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for item in reddit.subreddit("mod").mod.spam():
-               print(item)
+            for item in reddit.subreddit("mod").mod.spam():
+                print(item)
 
         """
         self._handle_only(only, generator_kwargs)
@@ -2192,8 +2185,8 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for item in reddit.subreddit("mod").mod.unmoderated():
-               print(item)
+            for item in reddit.subreddit("mod").mod.unmoderated():
+                print(item)
 
         """
         return ListingGenerator(
@@ -2214,8 +2207,8 @@ class SubredditModeration:
 
         .. code-block:: python
 
-           for message in reddit.subreddit("mod").mod.unread():
-               print(f"From: {message.author}, To: {message.dest}")
+            for message in reddit.subreddit("mod").mod.unread():
+                print(f"From: {message.author}, To: {message.dest}")
 
         """
         return ListingGenerator(
@@ -2341,8 +2334,8 @@ class SubredditModerationStream:
 
         .. code-block:: python
 
-           for item in reddit.subreddit("mod").mod.stream.edited():
-               print(item)
+            for item in reddit.subreddit("mod").mod.stream.edited():
+                print(item)
 
         """
         return stream_generator(self.subreddit.mod.edited, only=only, **stream_options)
@@ -2360,8 +2353,8 @@ class SubredditModerationStream:
 
         .. code-block:: python
 
-           for log in reddit.subreddit("mod").mod.stream.log():
-               print(f"Mod: {log.mod}, Subreddit: {log.subreddit}")
+            for log in reddit.subreddit("mod").mod.stream.log():
+                print(f"Mod: {log.mod}, Subreddit: {log.subreddit}")
 
         """
         return stream_generator(
@@ -2391,9 +2384,9 @@ class SubredditModerationStream:
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit("all")
-           for message in subreddit.mod.stream.modmail_conversations():
-               print(f"From: {message.owner}, To: {message.participant}")
+            subreddit = reddit.subreddit("all")
+            for message in subreddit.mod.stream.modmail_conversations():
+                print(f"From: {message.owner}, To: {message.participant}")
 
         """  # noqa: E501
         if self.subreddit == "mod":
@@ -2420,8 +2413,8 @@ class SubredditModerationStream:
 
         .. code-block:: python
 
-           for item in reddit.subreddit("mod").mod.stream.modqueue():
-               print(item)
+            for item in reddit.subreddit("mod").mod.stream.modqueue():
+                print(item)
 
         """
         return stream_generator(
@@ -2440,8 +2433,8 @@ class SubredditModerationStream:
 
         .. code-block:: python
 
-           for item in reddit.subreddit("mod").mod.stream.reports():
-               print(item)
+            for item in reddit.subreddit("mod").mod.stream.reports():
+                print(item)
 
         """
         return stream_generator(self.subreddit.mod.reports, only=only, **stream_options)
@@ -2458,8 +2451,8 @@ class SubredditModerationStream:
 
         .. code-block:: python
 
-           for item in reddit.subreddit("mod").mod.stream.spam():
-               print(item)
+            for item in reddit.subreddit("mod").mod.stream.spam():
+                print(item)
 
         """
         return stream_generator(self.subreddit.mod.spam, only=only, **stream_options)
@@ -2473,8 +2466,8 @@ class SubredditModerationStream:
 
         .. code-block:: python
 
-           for item in reddit.subreddit("mod").mod.stream.unmoderated():
-               print(item)
+            for item in reddit.subreddit("mod").mod.stream.unmoderated():
+                print(item)
 
         """
         return stream_generator(self.subreddit.mod.unmoderated, **stream_options)
@@ -2490,8 +2483,8 @@ class SubredditModerationStream:
 
         .. code-block:: python
 
-           for message in reddit.subreddit("mod").mod.stream.unread():
-               print(f"From: {message.author}, To: {message.dest}")
+            for message in reddit.subreddit("mod").mod.stream.unread():
+                print(f"From: {message.author}, To: {message.dest}")
 
         """
         return stream_generator(self.subreddit.mod.unread, **stream_options)
@@ -2523,11 +2516,11 @@ class SubredditQuarantine:
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit("QUESTIONABLE")
-           next(subreddit.hot())  # Raises prawcore.Forbidden
+            subreddit = reddit.subreddit("QUESTIONABLE")
+            next(subreddit.hot())  # Raises prawcore.Forbidden
 
-           subreddit.quaran.opt_in()
-           next(subreddit.hot())  # Returns Submission
+            subreddit.quaran.opt_in()
+            next(subreddit.hot())  # Returns Submission
 
         """
         data = {"sr_name": self.subreddit}
@@ -2543,11 +2536,11 @@ class SubredditQuarantine:
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit("QUESTIONABLE")
-           next(subreddit.hot())  # Returns Submission
+            subreddit = reddit.subreddit("QUESTIONABLE")
+            next(subreddit.hot())  # Returns Submission
 
-           subreddit.quaran.opt_out()
-           next(subreddit.hot())  # Raises prawcore.Forbidden
+            subreddit.quaran.opt_out()
+            next(subreddit.hot())  # Raises prawcore.Forbidden
 
         """
         data = {"sr_name": self.subreddit}
@@ -2567,8 +2560,8 @@ class SubredditRelationship:
 
     .. code-block:: python
 
-       for ban in reddit.subreddit("redditdev").banned():
-           print(f'{ban}: {ban.note}')
+        for ban in reddit.subreddit("redditdev").banned():
+            print(f'{ban}: {ban.note}')
 
     """
 
@@ -2631,8 +2624,8 @@ class ContributorRelationship(SubredditRelationship):
 
     .. code-block:: python
 
-       for contributor in reddit.subreddit("redditdev").contributor():
-           print(contributor)
+        for contributor in reddit.subreddit("redditdev").contributor():
+            print(contributor)
 
     """
 
@@ -2650,8 +2643,8 @@ class ModeratorRelationship(SubredditRelationship):
 
     .. code-block:: python
 
-       for moderator in reddit.subreddit("redditdev").moderator():
-           print(moderator)
+        for moderator in reddit.subreddit("redditdev").moderator():
+            print(moderator)
 
     """
 
@@ -2681,14 +2674,14 @@ class ModeratorRelationship(SubredditRelationship):
 
         .. code-block:: python
 
-           moderators = reddit.subreddit("nameofsub").moderator()
+            moderators = reddit.subreddit("nameofsub").moderator()
 
         For example, to list the moderators along with their permissions try:
 
         .. code-block:: python
 
-           for moderator in reddit.subreddit("SUBREDDIT").moderator():
-               print(f'{moderator}: {moderator.mod_permissions}')
+            for moderator in reddit.subreddit("SUBREDDIT").moderator():
+                print(f'{moderator}: {moderator.mod_permissions}')
 
 
         """
@@ -2715,7 +2708,7 @@ class ModeratorRelationship(SubredditRelationship):
 
         .. code-block:: python
 
-           reddit.subreddit("test").moderator.add("spez", ["posts", "mail"])
+            reddit.subreddit("test").moderator.add("spez", ["posts", "mail"])
 
         """
         other_settings = self._handle_permissions(permissions, other_settings)
@@ -2738,7 +2731,7 @@ class ModeratorRelationship(SubredditRelationship):
 
         .. code-block:: python
 
-           reddit.subreddit("test").moderator.invite("spez", ["posts", "mail"])
+            reddit.subreddit("test").moderator.invite("spez", ["posts", "mail"])
 
         """
         data = self._handle_permissions(permissions, other_settings)
@@ -2753,7 +2746,7 @@ class ModeratorRelationship(SubredditRelationship):
 
         .. code-block:: python
 
-           reddit.subreddit("subredditname").moderator.leave()
+            reddit.subreddit("subredditname").moderator.leave()
 
         """
         self.remove(
@@ -2770,7 +2763,7 @@ class ModeratorRelationship(SubredditRelationship):
 
         .. code-block:: python
 
-           reddit.subreddit("subredditname").moderator.remove_invite("spez")
+            reddit.subreddit("subredditname").moderator.remove_invite("spez")
 
         """
         data = {"name": str(redditor), "type": "moderator_invite"}
@@ -2791,13 +2784,13 @@ class ModeratorRelationship(SubredditRelationship):
 
         .. code-block:: python
 
-           subreddit.moderator.update("spez")
+            subreddit.moderator.update("spez")
 
         To remove all permissions from the moderator, try:
 
         .. code-block:: python
 
-           subreddit.moderator.update("spez", [])
+            subreddit.moderator.update("spez", [])
 
         """
         url = API_PATH["setpermissions"].format(subreddit=self.subreddit)
@@ -2821,7 +2814,7 @@ class ModeratorRelationship(SubredditRelationship):
 
         .. code-block:: python
 
-           subreddit.moderator.update_invite("spez", ["flair", "mail"])
+            subreddit.moderator.update_invite("spez", ["flair", "mail"])
 
         """
         url = API_PATH["setpermissions"].format(subreddit=self.subreddit)
@@ -2855,16 +2848,15 @@ class Modmail:
 
         .. code-block:: python
 
-           reddit.subreddit("redditdev").modmail("2gmz", mark_read=True)
+            reddit.subreddit("redditdev").modmail("2gmz", mark_read=True)
 
         To print all messages from a conversation as Markdown source:
 
         .. code-block:: python
 
-           conversation = reddit.subreddit("redditdev").modmail("2gmz", \
-mark_read=True)
-           for message in conversation.messages:
-               print(message.body_markdown)
+            conversation = reddit.subreddit("redditdev").modmail("2gmz", mark_read=True)
+            for message in conversation.messages:
+                print(message.body_markdown)
 
         ``ModmailConversation.user`` is a special instance of
         :class:`.Redditor` with extra attributes describing the non-moderator
@@ -2876,17 +2868,15 @@ mark_read=True)
 
         .. code-block:: python
 
-           conversation = reddit.subreddit("redditdev").modmail("2gmz", \
-mark_read=True)
-           print(conversation.user.ban_status)
+            conversation = reddit.subreddit("redditdev").modmail("2gmz", mark_read=True)
+            print(conversation.user.ban_status)
 
         To print a list of recent submissions by the user:
 
         .. code-block:: python
 
-           conversation = reddit.subreddit("redditdev").modmail("2gmz", \
-mark_read=True)
-           print(conversation.user.recent_posts)
+            conversation = reddit.subreddit("redditdev").modmail("2gmz", mark_read=True)
+            print(conversation.user.recent_posts)
 
         """
         # pylint: disable=invalid-name,redefined-builtin
@@ -2920,8 +2910,8 @@ mark_read=True)
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit("redditdev")
-           subreddit.modmail.bulk_read(state="notifications")
+            subreddit = reddit.subreddit("redditdev")
+            subreddit.modmail.bulk_read(state="notifications")
 
         """
         params = {"entity": self._build_subreddit_list(other_subreddits)}
@@ -2957,8 +2947,7 @@ mark_read=True)
 
         .. code-block:: python
 
-            conversations = reddit.subreddit("all").modmail.conversations(\
-state="mod")
+            conversations = reddit.subreddit("all").modmail.conversations(state="mod")
 
         """
         params = {}
@@ -3000,9 +2989,9 @@ state="mod")
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit("redditdev")
-           redditor = reddit.redditor("bboe")
-           subreddit.modmail.create("Subject", "Body", redditor)
+            subreddit = reddit.subreddit("redditdev")
+            redditor = reddit.redditor("bboe")
+            subreddit.modmail.create("Subject", "Body", redditor)
 
         """
         data = {
@@ -3021,7 +3010,7 @@ state="mod")
 
         .. code-block:: python
 
-           subreddits = reddit.subreddit("all").modmail.subreddits()
+            subreddits = reddit.subreddit("all").modmail.subreddits()
 
         """
         response = self.subreddit._reddit.get(API_PATH["modmail_subreddits"])
@@ -3042,9 +3031,9 @@ state="mod")
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit("redditdev")
-           unread_counts = subreddit.modmail.unread_count()
-           print(unread_counts["mod"])
+            subreddit = reddit.subreddit("redditdev")
+            unread_counts = subreddit.modmail.unread_count()
+            print(unread_counts["mod"])
 
         """
         return self.subreddit._reddit.get(API_PATH["modmail_unread_count"])
@@ -3077,17 +3066,17 @@ class SubredditStream:
 
         .. code-block:: python
 
-           for comment in reddit.subreddit("iama").stream.comments():
-               print(comment)
+            for comment in reddit.subreddit("iama").stream.comments():
+                print(comment)
 
         To only retrieve new submissions starting when the stream is
         created, pass ``skip_existing=True``:
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit("iama")
-           for comment in subreddit.stream.comments(skip_existing=True):
-               print(comment)
+            subreddit = reddit.subreddit("iama")
+            for comment in subreddit.stream.comments(skip_existing=True):
+                print(comment)
 
         """
         return stream_generator(self.subreddit.comments, **stream_options)
@@ -3108,8 +3097,8 @@ class SubredditStream:
 
         .. code-block:: python
 
-           for submission in reddit.subreddit("all").stream.submissions():
-               print(submission)
+            for submission in reddit.subreddit("all").stream.submissions():
+                print(submission)
 
         """
         return stream_generator(self.subreddit.new, **stream_options)
@@ -3137,7 +3126,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           stylesheet = reddit.subreddit("SUBREDDIT").stylesheet()
+            stylesheet = reddit.subreddit("SUBREDDIT").stylesheet()
 
         """
         url = API_PATH["about_stylesheet"].format(subreddit=self.subreddit)
@@ -3152,7 +3141,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").stylesheet
+            reddit.subreddit("SUBREDDIT").stylesheet
 
         """
         self.subreddit = subreddit
@@ -3208,7 +3197,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").stylesheet.delete_banner()
+            reddit.subreddit("SUBREDDIT").stylesheet.delete_banner()
 
         """
         data = {"bannerBackgroundImage": ""}
@@ -3224,7 +3213,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").stylesheet.delete_banner_additional_image()
+            reddit.subreddit("SUBREDDIT").stylesheet.delete_banner_additional_image()
 
         """
         data = {"bannerPositionedImage": "", "secondaryBannerPositionedImage": ""}
@@ -3239,7 +3228,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").stylesheet.delete_banner_hover_image()
+            reddit.subreddit("SUBREDDIT").stylesheet.delete_banner_hover_image()
 
         """
         data = {"secondaryBannerPositionedImage": ""}
@@ -3254,7 +3243,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").stylesheet.delete_header()
+            reddit.subreddit("SUBREDDIT").stylesheet.delete_header()
 
         """
         url = API_PATH["delete_sr_header"].format(subreddit=self.subreddit)
@@ -3269,7 +3258,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").stylesheet.delete_image("smile")
+            reddit.subreddit("SUBREDDIT").stylesheet.delete_image("smile")
 
         """
         url = API_PATH["delete_sr_image"].format(subreddit=self.subreddit)
@@ -3284,7 +3273,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").stylesheet.delete_mobile_header()
+            reddit.subreddit("SUBREDDIT").stylesheet.delete_mobile_header()
 
         """
         url = API_PATH["delete_sr_header"].format(subreddit=self.subreddit)
@@ -3299,7 +3288,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").stylesheet.delete_mobile_icon()
+            reddit.subreddit("SUBREDDIT").stylesheet.delete_mobile_icon()
 
         """
         url = API_PATH["delete_sr_icon"].format(subreddit=self.subreddit)
@@ -3315,8 +3304,9 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").stylesheet.update(
-               'p { color: green; }', "color text green")
+            reddit.subreddit("SUBREDDIT").stylesheet.update(
+                "p { color: green; }", "color text green"
+            )
 
         """
         data = {"op": "save", "reason": reason, "stylesheet_contents": stylesheet}
@@ -3343,7 +3333,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").stylesheet.upload("smile", "img.png")
+            reddit.subreddit("SUBREDDIT").stylesheet.upload("smile", "img.png")
 
         """
         return self._upload_image(image_path, {"name": name, "upload_type": "img"})
@@ -3364,7 +3354,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").stylesheet.upload_banner("banner.png")
+            reddit.subreddit("SUBREDDIT").stylesheet.upload_banner("banner.png")
 
         """
         image_type = "bannerBackgroundImage"
@@ -3375,8 +3365,7 @@ class SubredditStylesheet:
         """Upload an image for the subreddit's (redesign) additional image.
 
         :param image_path: A path to a jpeg or png image.
-        :param align: Either ``left``, ``centered``, or ``right``. (default:
-            ``left``).
+        :param align: Either ``left``, ``centered``, or ``right``. (default: ``left``).
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
@@ -3389,8 +3378,8 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit("SUBREDDIT")
-           subreddit.stylesheet.upload_banner_additional_image("banner.png")
+            subreddit = reddit.subreddit("SUBREDDIT")
+            subreddit.stylesheet.upload_banner_additional_image("banner.png")
 
         """
         alignment = {}
@@ -3426,8 +3415,8 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           subreddit = reddit.subreddit("SUBREDDIT")
-           subreddit.stylesheet.upload_banner_hover_image("banner.png")
+            subreddit = reddit.subreddit("SUBREDDIT")
+            subreddit.stylesheet.upload_banner_hover_image("banner.png")
 
         """
         image_type = "secondaryBannerPositionedImage"
@@ -3452,7 +3441,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").stylesheet.upload_header("header.png")
+            reddit.subreddit("SUBREDDIT").stylesheet.upload_header("header.png")
 
         """
         return self._upload_image(image_path, {"upload_type": "header"})
@@ -3475,8 +3464,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").stylesheet.upload_mobile_header(
-               "header.png")
+            reddit.subreddit("SUBREDDIT").stylesheet.upload_mobile_header("header.png")
 
         """
         return self._upload_image(image_path, {"upload_type": "banner"})
@@ -3499,8 +3487,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").stylesheet.upload_mobile_icon(
-               "icon.png")
+            reddit.subreddit("SUBREDDIT").stylesheet.upload_mobile_icon("icon.png")
 
         """
         return self._upload_image(image_path, {"upload_type": "icon"})
@@ -3516,8 +3503,8 @@ class SubredditWiki:
 
         .. code-block:: python
 
-           wikipage = reddit.subreddit("iama").wiki["proof"]
-           print(wikipage.content_md)
+            wikipage = reddit.subreddit("iama").wiki["proof"]
+            print(wikipage.content_md)
 
         """
         return WikiPage(self.subreddit._reddit, self.subreddit, page_name.lower())
@@ -3539,8 +3526,8 @@ class SubredditWiki:
 
         .. code-block:: python
 
-           for wikipage in reddit.subreddit("iama").wiki:
-               print(wikipage)
+            for wikipage in reddit.subreddit("iama").wiki:
+                print(wikipage)
 
         """
         response = self.subreddit._reddit.get(
@@ -3563,8 +3550,9 @@ class SubredditWiki:
 
         .. code-block:: python
 
-           reddit.subreddit("test").wiki.create(
-               "praw_test", "wiki body text", reason="PRAW Test Creation")
+            reddit.subreddit("test").wiki.create(
+                "praw_test", "wiki body text", reason="PRAW Test Creation"
+            )
 
         """
         name = name.replace(" ", "_").lower()
@@ -3582,8 +3570,8 @@ class SubredditWiki:
 
         .. code-block:: python
 
-           for item in reddit.subreddit("test").wiki["praw_test"].revisions():
-               print(item)
+            for item in reddit.subreddit("test").wiki["praw_test"].revisions():
+                print(item)
 
         """
         url = API_PATH["wiki_revisions"].format(subreddit=self.subreddit)

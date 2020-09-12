@@ -360,9 +360,10 @@ class LiveThread(RedditBase):
 
             thread = reddit.live("ukaeu1ik4sw5")
             update = thread["7827987a-c998-11e4-a0b9-22000b6a88d2"]
-            update.thread     # LiveThread(id="ukaeu1ik4sw5")
-            update.id         # "7827987a-c998-11e4-a0b9-22000b6a88d2"
-            update.author     # "umbrae"
+            update.thread  # LiveThread(id="ukaeu1ik4sw5")
+            update.id  # "7827987a-c998-11e4-a0b9-22000b6a88d2"
+            update.author  # "umbrae"
+
         """
         return LiveUpdate(self._reddit, self.id, update_id)
 
@@ -554,8 +555,8 @@ class LiveThreadContribution:
 
             thread = reddit.live("xyu8kmjvfrww")
 
-           # update `title` and `nsfw`
-           updated_thread = thread.contrib.update(title=new_title, nsfw=True)
+            # update `title` and `nsfw`
+            updated_thread = thread.contrib.update(title=new_title, nsfw=True)
 
         If Reddit introduces new settings, you must specify ``None`` for the
         setting you want to maintain:
@@ -712,9 +713,10 @@ class LiveUpdate(FullnameMixin, RedditBase):
         .. code-block:: python
 
             update = LiveUpdate(reddit, "ukaeu1ik4sw5", "7827987a-c998-11e4-a0b9-22000b6a88d2")
-            update.thread     # LiveThread(id="ukaeu1ik4sw5")
-            update.id         # "7827987a-c998-11e4-a0b9-22000b6a88d2"
-            update.author     # "umbrae"
+            update.thread  # LiveThread(id="ukaeu1ik4sw5")
+            update.id  # "7827987a-c998-11e4-a0b9-22000b6a88d2"
+            update.author  # "umbrae"
+
         """
         if _data is not None:
             # Since _data (part of JSON returned from reddit) have no
