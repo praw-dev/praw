@@ -69,7 +69,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.3.1.dev0 prawcore/0.8.0"
         },
         "method": "POST",
-        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/delete_sr_header?raw_json=1"
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/delete_sr_banner?raw_json=1"
       },
       "response": {
         "body": {
@@ -104,7 +104,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/delete_sr_header?raw_json=1"
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/delete_sr_banner?raw_json=1"
       }
     }
   ],

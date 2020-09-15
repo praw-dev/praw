@@ -3294,7 +3294,7 @@ class SubredditStylesheet:
            reddit.subreddit("SUBREDDIT").stylesheet.delete_mobile_header()
 
         """
-        url = API_PATH["delete_sr_header"].format(subreddit=self.subreddit)
+        url = API_PATH["delete_sr_banner"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url)
 
     def delete_mobile_icon(self):
