@@ -21,33 +21,33 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
     **Typical Attributes**
 
-    This table describes attributes that typically belong to objects of this
-    class. Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a
-    guarantee that these attributes will always be present, nor is this list
-    necessarily complete.
+    This table describes attributes that typically belong to objects of this class.
+    Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
+    these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ===================================================
+    ======================= ============================================================
     Attribute               Description
-    ======================= ===================================================
-    ``can_edit``            A ``bool`` representing whether or not the
-                            authenticated user may edit the multireddit.
-    ``copied_from``         The multireddit that the multireddit was copied
-                            from, if it exists, otherwise ``None``.
+    ======================= ============================================================
+    ``can_edit``            A ``bool`` representing whether or not the authenticated
+                            user may edit the multireddit.
+    ``copied_from``         The multireddit that the multireddit was copied from, if it
+                            exists, otherwise ``None``.
     ``created_utc``         When the multireddit was created, in `Unix Time`_.
     ``description_html``    The description of the multireddit, as HTML.
     ``description_md``      The description of the multireddit, as Markdown.
     ``display_name``        The display name of the multireddit.
     ``name``                The name of the multireddit.
-    ``over_18``             A ``bool`` representing whether or not the
-                            multireddit is restricted for users over 18.
-    ``subreddits``          A ``list`` of :class:`.Subreddit`\ s that make up
-                            the multireddit.
-    ``visibility``          The visibility of the multireddit, either
-                            ``private``, ``public``, or ``hidden``.
-    ======================= ===================================================
+    ``over_18``             A ``bool`` representing whether or not the multireddit is
+                            restricted for users over 18.
+    ``subreddits``          A ``list`` of :class:`.Subreddit`\ s that make up the
+                            multireddit.
+    ``visibility``          The visibility of the multireddit, either ``private``,
+                            ``public``, or ``hidden``.
+    ======================= ============================================================
 
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+
     """
 
     STR_FIELD = "path"
@@ -74,16 +74,16 @@ class Multireddit(SubredditListingMixin, RedditBase):
     def stream(self) -> SubredditStream:
         """Provide an instance of :class:`.SubredditStream`.
 
-        Streams can be used to indefinitely retrieve new comments made to a
-        multireddit, like:
+        Streams can be used to indefinitely retrieve new comments made to a multireddit,
+        like:
 
         .. code-block:: python
 
             for comment in reddit.multireddit("spez", "fun").stream.comments():
                 print(comment)
 
-        Additionally, new submissions can be retrieved via the stream. In the
-        following example all new submissions to the multireddit are fetched:
+        Additionally, new submissions can be retrieved via the stream. In the following
+        example all new submissions to the multireddit are fetched:
 
         .. code-block:: python
 
@@ -144,10 +144,10 @@ class Multireddit(SubredditListingMixin, RedditBase):
     def copy(self, display_name: Optional[str] = None) -> "Multireddit":
         """Copy this multireddit and return the new multireddit.
 
-        :param display_name: (optional) The display name for the copied
-            multireddit. Reddit will generate the ``name`` field from this
-            display name. When not provided the copy will use the same display
-            name and name as this multireddit.
+        :param display_name: (optional) The display name for the copied multireddit.
+            Reddit will generate the ``name`` field from this display name. When not
+            provided the copy will use the same display name and name as this
+            multireddit.
 
         To copy the multireddit ``bboe/test`` with a name of ``testing``:
 
@@ -190,8 +190,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         :param subreddit: The subreddit to remove from this multi.
 
-        For example, to remove subreddit ``r/test`` from multireddit
-        ``bboe/test``:
+        For example, to remove subreddit ``r/test`` from multireddit ``bboe/test``:
 
         .. code-block:: python
 
@@ -211,21 +210,20 @@ class Multireddit(SubredditListingMixin, RedditBase):
     ):
         """Update this multireddit.
 
-        Keyword arguments are passed for settings that should be updated. They
-        can any of:
+        Keyword arguments are passed for settings that should be updated. They can any
+        of:
 
-        :param display_name: The display name for this multireddit. Must be no
-            longer than 50 characters.
+        :param display_name: The display name for this multireddit. Must be no longer
+            than 50 characters.
         :param subreddits: Subreddits for this multireddit.
-        :param description_md: Description for this multireddit, formatted in
-            Markdown.
-        :param icon_name: Can be one of: ``art and design``, ``ask``,
-            ``books``, ``business``, ``cars``, ``comics``, ``cute animals``,
-            ``diy``, ``entertainment``, ``food and drink``, ``funny``,
-            ``games``, ``grooming``, ``health``, ``life advice``, ``military``,
-            ``models pinup``, ``music``, ``news``, ``philosophy``, ``pictures
-            and gifs``, ``science``, ``shopping``, ``sports``, ``style``,
-            ``tech``, ``travel``, ``unusual stories``, ``video``, or ``None``.
+        :param description_md: Description for this multireddit, formatted in Markdown.
+        :param icon_name: Can be one of: ``art and design``, ``ask``, ``books``,
+            ``business``, ``cars``, ``comics``, ``cute animals``, ``diy``,
+            ``entertainment``, ``food and drink``, ``funny``, ``games``, ``grooming``,
+            ``health``, ``life advice``, ``military``, ``models pinup``, ``music``,
+            ``news``, ``philosophy``, ``pictures and gifs``, ``science``, ``shopping``,
+            ``sports``, ``style``, ``tech``, ``travel``, ``unusual stories``, ``video``,
+            or ``None``.
         :param key_color: RGB hex color code of the form ``"#FFFFFF"``.
         :param visibility: Can be one of: ``hidden``, ``private``, ``public``.
         :param weighting_scheme: Can be one of: ``classic``, ``fresh``.

@@ -16,21 +16,20 @@ class Emoji(RedditBase):
 
     **Typical Attributes**
 
-    This table describes attributes that typically belong to objects of this
-    class. Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a
-    guarantee that these attributes will always be present, nor is this list
-    necessarily comprehensive.
+    This table describes attributes that typically belong to objects of this class.
+    Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
+    these attributes will always be present, nor is this list necessarily comprehensive.
 
-    ======================= ===================================================
+    ======================= ============================================================
     Attribute               Description
-    ======================= ===================================================
+    ======================= ============================================================
     ``mod_flair_only``      Whether the emoji is restricted for mod use only.
     ``name``                The name of the emoji.
     ``post_flair_allowed``  Whether the emoji may appear in post flair.
     ``url``                 The URL of the emoji image.
     ``user_flair_allowed``  Whether the emoji may appear in user flair.
-    ======================= ===================================================
+    ======================= ============================================================
 
     """
 
@@ -91,22 +90,20 @@ class Emoji(RedditBase):
     ):
         """Update the permissions of an emoji in this subreddit.
 
-        :param mod_flair_only: (boolean) Indicate whether the emoji is
-            restricted to mod use only. Respects pre-existing settings if not
-            provided.
-        :param post_flair_allowed: (boolean) Indicate whether the emoji may
-            appear in post flair. Respects pre-existing settings if not
-            provided.
-        :param user_flair_allowed: (boolean) Indicate whether the emoji may
-            appear in user flair. Respects pre-existing settings if not
-            provided.
+        :param mod_flair_only: (boolean) Indicate whether the emoji is restricted to mod
+            use only. Respects pre-existing settings if not provided.
+        :param post_flair_allowed: (boolean) Indicate whether the emoji may appear in
+            post flair. Respects pre-existing settings if not provided.
+        :param user_flair_allowed: (boolean) Indicate whether the emoji may appear in
+            user flair. Respects pre-existing settings if not provided.
 
-        .. note:: In order to retain pre-existing values for those that are not
-           explicitly passed, a network request is issued. To  avoid that
-           network request, explicitly provide all values.
+        .. note::
 
-        To restrict the emoji ``test`` in subreddit ``wowemoji`` to mod use
-        only, try:
+            In order to retain pre-existing values for those that are not explicitly
+            passed, a network request is issued. To avoid that network request,
+            explicitly provide all values.
+
+        To restrict the emoji ``test`` in subreddit ``wowemoji`` to mod use only, try:
 
         .. code-block:: python
 
@@ -198,13 +195,12 @@ class SubredditEmoji:
 
         :param name: The name of the emoji
         :param image_path: A path to a jpeg or png image.
-        :param mod_flair_only: (boolean) When provided, indicate whether the
-            emoji is restricted to mod use only. (Default: ``None``)
-        :param post_flair_allowed: (boolean) When provided, indicate whether
-            the emoji may appear in post flair. (Default: ``None``)
-        :param user_flair_allowed: (boolean) When provided, indicate whether
-            the emoji may appear in user flair. (Default: ``None``)
-        :returns: The Emoji added.
+        :param mod_flair_only: (boolean) When provided, indicate whether the emoji is
+            restricted to mod use only. (Default: ``None``)
+        :param post_flair_allowed: (boolean) When provided, indicate whether the emoji
+            may appear in post flair. (Default: ``None``)
+        :param user_flair_allowed: (boolean) When provided, indicate whether the emoji
+            may appear in user flair. (Default: ``None``) :returns: The Emoji added.
 
         To add ``test`` to the subreddit ``praw_test`` try:
 

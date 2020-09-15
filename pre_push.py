@@ -19,6 +19,7 @@ def do_process(args, shell=False):
     Output failed message on non-zero exit and return False.
 
     Exit if command is not found.
+
     """
     print(f"Running: {' '.join(args)}")
     try:
@@ -37,6 +38,7 @@ def run_static():
 
     Returns a statuscode of 0 if everything ran correctly.
     Otherwise, it will return statuscode 1
+
     """
     success = True
     success &= do_process(
@@ -78,6 +80,7 @@ def run_unit():
 
     Follows the behavior of the static tests,
     where any failed tests cause pre_push.py to fail.
+
     """
     return do_process(["pytest"])
 
@@ -88,6 +91,7 @@ def main():
     usage: pre_push.py [-h] [-n] [-u] [-a]
 
     Run static and/or unit-tests
+
     """
     parser = argparse.ArgumentParser(description="Run static and/or unit-tests")
     parser.add_argument(

@@ -15,12 +15,12 @@ if TYPE_CHECKING:  # pragma: no cover
 class WikiPageModeration:
     """Provides a set of moderation functions for a WikiPage.
 
-    For example, to add ``spez`` as an editor on the wikipage ``praw_test``
-    try:
+    For example, to add ``spez`` as an editor on the wikipage ``praw_test`` try:
 
     .. code-block:: python
 
         reddit.subreddit("test").wiki["praw_test"].mod.add("spez")
+
     """
 
     def __init__(self, wikipage: "WikiPage"):
@@ -34,8 +34,8 @@ class WikiPageModeration:
     def add(self, redditor: Redditor):
         """Add an editor to this WikiPage.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or
-            :class:`~.Redditor` instance.
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+            instance.
 
         To add ``"spez"`` as an editor on the wikipage ``"praw_test"`` try:
 
@@ -53,8 +53,8 @@ class WikiPageModeration:
     def remove(self, redditor: Redditor):
         """Remove an editor from this WikiPage.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or
-            :class:`~.Redditor` instance.
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+            instance.
 
         To remove ``"spez"`` as an editor on the wikipage ``"praw_test"`` try:
 
@@ -83,14 +83,13 @@ class WikiPageModeration:
 
         :param listed: (boolean) Show this page on page list.
         :param permlevel: (int) Who can edit this page? (0) use subreddit wiki
-            permissions, (1) only approved wiki contributors for this page may
-            edit (see :meth:`.WikiPageModeration.add`), (2) only mods may edit
-            and view
+            permissions, (1) only approved wiki contributors for this page may edit (see
+            :meth:`.WikiPageModeration.add`), (2) only mods may edit and view
         :param other_settings: Additional keyword arguments to pass.
         :returns: The updated WikiPage settings.
 
-        To set the wikipage ``praw_test`` in ``/r/test`` to mod only and
-        disable it from showing in the page list, try:
+        To set the wikipage ``praw_test`` in ``/r/test`` to mod only and disable it from
+        showing in the page list, try:
 
         .. code-block:: python
 
@@ -109,27 +108,27 @@ class WikiPage(RedditBase):
 
     **Typical Attributes**
 
-    This table describes attributes that typically belong to objects of this
-    class. Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a
-    guarantee that these attributes will always be present, nor is this list
-    necessarily complete.
+    This table describes attributes that typically belong to objects of this class.
+    Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
+    these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ===================================================
+    ======================= ============================================================
     Attribute               Description
-    ======================= ===================================================
+    ======================= ============================================================
     ``content_html``        The contents of the wiki page, as HTML.
     ``content_md``          The contents of the wiki page, as Markdown.
-    ``may_revise``          A ``bool`` representing whether or not the
-                            authenticated user may edit the wiki page.
+    ``may_revise``          A ``bool`` representing whether or not the authenticated
+                            user may edit the wiki page.
     ``name``                The name of the wiki page.
-    ``revision_by``         The :class:`.Redditor` who authored this
-                            revision of the wiki page.
+    ``revision_by``         The :class:`.Redditor` who authored this revision of the
+                            wiki page.
     ``revision_date``       The time of this revision, in `Unix Time`_.
     ``subreddit``           The :class:`.Subreddit` this wiki page belongs to.
-    ======================= ===================================================
+    ======================= ============================================================
 
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+
     """
 
     __hash__ = RedditBase.__hash__
@@ -150,8 +149,7 @@ class WikiPage(RedditBase):
     def mod(self) -> WikiPageModeration:
         """Provide an instance of :class:`.WikiPageModeration`.
 
-        For example, to add ``spez`` as an editor on the wikipage ``praw_test``
-        try:
+        For example, to add ``spez`` as an editor on the wikipage ``praw_test`` try:
 
         .. code-block:: python
 
@@ -170,8 +168,8 @@ class WikiPage(RedditBase):
     ):
         """Construct an instance of the WikiPage object.
 
-        :param revision: A specific revision ID to fetch. By default, fetches
-            the most recent revision.
+        :param revision: A specific revision ID to fetch. By default, fetches the most
+            recent revision.
 
         """
         self.name = name
@@ -216,8 +214,8 @@ class WikiPage(RedditBase):
         :param reason: (Optional) The reason for the revision.
         :param other_settings: Additional keyword arguments to pass.
 
-        For example, to replace the first wiki page of ``r/test`` with the
-        phrase ``test wiki page``:
+        For example, to replace the first wiki page of ``r/test`` with the phrase ``test
+        wiki page``:
 
         .. code-block:: python
 

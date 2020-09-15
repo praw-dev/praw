@@ -28,9 +28,9 @@ class MoreComments(PRAWBase):
 
     def __lt__(self, other: "MoreComments") -> bool:
         """Provide a sort order on the MoreComments object."""
-        # To work with heapq a "smaller" item is the one with the most comments
-        # We are intentionally making the biggest element the smallest element
-        # to turn the min-heap implementation in heapq into a max-heap.
+        # To work with heapq a "smaller" item is the one with the most comments We are
+        # intentionally making the biggest element the smallest element to turn the
+        # min-heap implementation in heapq into a max-heap.
         return self.count > other.count
 
     def __repr__(self) -> str:

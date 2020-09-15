@@ -30,7 +30,9 @@ class SubmissionListingMixin(PRAWBase):
                 # process each duplicate
                 ...
 
-        .. seealso:: :meth:`~.upvote`
+        .. seealso::
+
+            :meth:`~.upvote`
 
         """
         url = API_PATH["duplicates"].format(submission_id=self.id)

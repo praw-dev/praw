@@ -32,11 +32,11 @@ class Collection(RedditBase):
 
     **Typical Attributes**
 
-    This table describes attributes that typically belong to objects of this
-    class. Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a
-    guarantee that these attributes will always be present, nor that they
-    will be the only attributes present.
+    This table describes attributes that typically belong to objects of this class.
+    Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
+    these attributes will always be present, nor that they will be the only attributes
+    present.
 
     ======================= ==================================================
     Attribute               Description
@@ -46,12 +46,11 @@ class Collection(RedditBase):
     ``created_at_utc``      Time the collection was created, represented in
                             `Unix Time`_.
     ``description``         The collection description.
-    ``last_update_utc``     Time the collection was last updated, represented
-                            in `Unix Time`_.
+    ``last_update_utc``     Time the collection was last updated, represented in
+                            `Unix Time`_.
     ``link_ids``            A ``list`` of :class:`.Submission` fullnames.
     ``permalink``           The collection's permalink (to view on the web).
-    ``sorted_links``        An iterable listing of the posts in
-                            this collection.
+    ``sorted_links``        An iterable listing of the posts in this collection.
     ``title``               The title of the collection.
     ======================= ==================================================
 
@@ -196,7 +195,10 @@ class Collection(RedditBase):
 
             reddit.subreddit("SUBREDDIT").collections("some_uuid").follow()
 
-        .. seealso:: :meth:`~.unfollow`
+        .. seealso::
+
+            :meth:`~.unfollow`
+
         """
         self._reddit.post(
             API_PATH["collection_follow"],
@@ -212,7 +214,10 @@ class Collection(RedditBase):
 
             reddit.subreddit("SUBREDDIT").collections("some_uuid").unfollow()
 
-        .. seealso:: :meth:`~.follow`
+        .. seealso::
+
+            :meth:`~.follow`
+
         """
         self._reddit.post(
             API_PATH["collection_follow"],
@@ -228,6 +233,7 @@ class CollectionModeration(PRAWBase):
     .. code-block:: python
 
         reddit.subreddit("SUBREDDIT").collections("some_uuid").mod
+
     """
 
     def _post_fullname(self, post):
@@ -235,6 +241,7 @@ class CollectionModeration(PRAWBase):
 
         :param post: A fullname, a Submission, a permalink, or an ID.
         :returns: The fullname of the post.
+
         """
         if isinstance(post, Submission):
             return post.fullname
@@ -251,6 +258,7 @@ class CollectionModeration(PRAWBase):
         """Initialize an instance of CollectionModeration.
 
         :param collection_id: The ID of a collection.
+
         """
         super().__init__(reddit, _data=None)
         self.collection_id = collection_id
@@ -258,9 +266,8 @@ class CollectionModeration(PRAWBase):
     def add_post(self, submission: "Submission"):
         """Add a post to the collection.
 
-        :param submission: The post to add, a :class:`.Submission`, its
-            permalink as a ``str``, its fullname as a ``str``, or its ID as a
-            ``str``.
+        :param submission: The post to add, a :class:`.Submission`, its permalink as a
+            ``str``, its fullname as a ``str``, or its ID as a ``str``.
 
         Example usage:
 
@@ -269,7 +276,9 @@ class CollectionModeration(PRAWBase):
             collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
             collection.mod.add_post("bgibu9")
 
-        .. seealso:: :meth:`.remove_post`
+        .. seealso::
+
+            :meth:`.remove_post`
 
         """
         link_fullname = self._post_fullname(submission)
@@ -288,7 +297,9 @@ class CollectionModeration(PRAWBase):
 
             reddit.subreddit("SUBREDDIT").collections("some_uuid").mod.delete()
 
-        .. seealso:: :meth:`~.SubredditCollectionsModeration.create`
+        .. seealso::
+
+            :meth:`~.SubredditCollectionsModeration.create`
 
         """
         self._reddit.post(
@@ -299,9 +310,8 @@ class CollectionModeration(PRAWBase):
     def remove_post(self, submission: "Submission"):
         """Remove a post from the collection.
 
-        :param submission: The post to remove, a :class:`.Submission`, its
-            permalink as a ``str``, its fullname as a ``str``, or its ID as a
-            ``str``.
+        :param submission: The post to remove, a :class:`.Submission`, its permalink as
+            a ``str``, its fullname as a ``str``, or its ID as a ``str``.
 
         Example usage:
 
@@ -310,7 +320,9 @@ class CollectionModeration(PRAWBase):
             collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
             collection.mod.remove_post("bgibu9")
 
-        .. seealso:: :meth:`.add_post`
+        .. seealso::
+
+            :meth:`.add_post`
 
         """
         link_fullname = self._post_fullname(submission)
@@ -323,8 +335,8 @@ class CollectionModeration(PRAWBase):
     def reorder(self, links: List[Union[str, Submission]]):
         """Reorder posts in the collection.
 
-        :param links: A ``list`` of submissions, as :class:`.Submission`,
-            permalink as a ``str``, fullname as a ``str``, or ID as a ``str``.
+        :param links: A ``list`` of submissions, as :class:`.Submission`, permalink as a
+            ``str``, fullname as a ``str``, or ID as a ``str``.
 
         Example usage:
 
@@ -354,7 +366,9 @@ class CollectionModeration(PRAWBase):
             collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
             collection.mod.update_description("Please enjoy these links!")
 
-        .. seealso:: :meth:`.update_title`
+        .. seealso::
+
+            :meth:`.update_title`
 
         """
         self._reddit.post(
@@ -374,7 +388,9 @@ class CollectionModeration(PRAWBase):
             collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
             collection.mod.update_title("Titley McTitleface")
 
-        .. seealso:: :meth:`.update_description`
+        .. seealso::
+
+            :meth:`.update_description`
 
         """
         self._reddit.post(
@@ -499,8 +515,8 @@ class SubredditCollectionsModeration(PRAWBase):
     def create(self, title: str, description: str):
         """Create a new :class:`.Collection`.
 
-        The authenticated account must have appropriate moderator
-        permissions in the subreddit this collection belongs to.
+        The authenticated account must have appropriate moderator permissions in the
+        subreddit this collection belongs to.
 
         :param title: The title of the collection, up to 300 characters.
         :param description: The description, up to 500 characters.
@@ -515,7 +531,9 @@ class SubredditCollectionsModeration(PRAWBase):
             new_collection = my_sub.collections.mod.create("Title", "desc")
             new_collection.mod.add_post("bgibu9")
 
-        .. seealso:: :meth:`~CollectionModeration.delete`
+        .. seealso::
+
+            :meth:`~CollectionModeration.delete`
 
         """
         return self._reddit.post(

@@ -91,35 +91,35 @@ more examples of what you can do with PRAW.
 PRAW Discussion and Support
 ---------------------------
 
-For those new to Python, or would otherwise consider themselves a Python
-beginner, please consider asking questions on the `r/learnpython
-<https://www.reddit.com/r/learnpython>`_ subreddit. There are wonderful people
-there who can help with general Python and simple PRAW related questions.
+For those new to Python, or would otherwise consider themselves a Python beginner,
+please consider asking questions on the `r/learnpython
+<https://www.reddit.com/r/learnpython>`_ subreddit. There are wonderful people there who
+can help with general Python and simple PRAW related questions.
 
 Otherwise, there are a few official places to ask questions about PRAW:
 
-`r/redditdev <https://www.reddit.com/r/redditdev>`_ is the best place on
-Reddit to ask PRAW related questions. This subreddit is for all Reddit API
-related discussion so please tag submissions with *[PRAW]*. Please perform a
-search on the subreddit first to see if anyone has similar questions.
+`r/redditdev <https://www.reddit.com/r/redditdev>`_ is the best place on Reddit to ask
+PRAW related questions. This subreddit is for all Reddit API related discussion so
+please tag submissions with *[PRAW]*. Please perform a search on the subreddit first to
+see if anyone has similar questions.
 
-Real-time chat can be conducted via the `PRAW Slack Organization
-<https://join.slack.com/t/praw/shared_invite/enQtOTUwMDcxOTQ0NzY5LWVkMGQ3ZDk5YmQ5MDEwYTZmMmJkMTJkNjBkNTY3OTU0Y2E2NGRlY2ZhZTAzMWZmMWRiMTMwYjdjODkxOGYyZjY>`_
-(please create an issue if that invite link has expired).
+Real-time chat can be conducted via the `PRAW Slack Organization <https://join.slack.com/t/praw/shared_invite/enQtOTUwMDcxOTQ0NzY5LWVkMGQ3ZDk5YmQ5MDEwYTZmMmJkMTJkNjBkNTY3OTU0Y2E2NGRlY2ZhZTAzMWZmMWRiMTMwYjdjODkxOGYyZjY>`_ (please create an issue if that invite link
+has expired).
 
-Please do not directly message any of the contributors via Reddit, email, or
-Slack unless they have indicated otherwise. We strongly encourage everyone to
-help others with their questions.
+Please do not directly message any of the contributors via Reddit, email, or Slack
+unless they have indicated otherwise. We strongly encourage everyone to help others with
+their questions.
 
-Please file bugs and feature requests as issues on `GitHub
-<https://github.com/praw-dev/praw/issues>`_ after first searching to ensure a
-similar issue was not already filed. If such an issue already exists please
-give it a thumbs up reaction. Comments to issues containing additional
-information are certainly welcome.
+Please file bugs and feature requests as issues on `GitHub <https://github.com/praw-
+dev/praw/issues>`_ after first searching to ensure a similar issue was not already
+filed. If such an issue already exists please give it a thumbs up reaction. Comments to
+issues containing additional information are certainly welcome.
 
-.. note:: This project is released with a `Contributor Code of Conduct
-   <https://github.com/praw-dev/praw/blob/master/CODE_OF_CONDUCT.md>`_. By
-   participating in this project you agree to abide by its terms.
+.. note::
+
+    This project is released with a `Contributor Code of Conduct
+    <https://github.com/praw-dev/praw/blob/master/CODE_OF_CONDUCT.md>`_. By
+    participating in this project you agree to abide by its terms.
 
 Documentation
 -------------

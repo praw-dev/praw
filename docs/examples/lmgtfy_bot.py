@@ -8,7 +8,7 @@ REPLY_TEMPLATE = "[Let me google that for you](http://lmgtfy.com/?q={})"
 
 def main():
     reddit = praw.Reddit(
-        user_agent="LMGTFY (by /u/USERNAME)",
+        user_agent="LMGTFY (by u/USERNAME)",
         client_id="CLIENT_ID",
         client_secret="CLIENT_SECRET",
         username="USERNAME",
@@ -21,8 +21,7 @@ def main():
 
 
 def process_submission(submission):
-    # Ignore titles with more than 10 words as they probably are not simple
-    # questions.
+    # Ignore titles with more than 10 words as they probably are not simple questions.
     if len(submission.title.split()) > 10:
         return
 

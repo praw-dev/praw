@@ -52,13 +52,12 @@ class SubmissionFlair:
         """Select flair for submission.
 
         :param flair_template_id: The flair template to select. The possible
-            ``flair_template_id`` values can be discovered through
-            :meth:`.choices`.
-        :param text: If the template's ``flair_text_editable`` value is True,
-            this value will set a custom text (default: None).
+            ``flair_template_id`` values can be discovered through :meth:`.choices`.
+        :param text: If the template's ``flair_text_editable`` value is True, this value
+            will set a custom text (default: None).
 
-        For example, to select an arbitrary editable flair text (assuming there
-        is one) and set a custom value try:
+        For example, to select an arbitrary editable flair text (assuming there is one)
+        and set a custom value try:
 
         .. code-block:: python
 
@@ -101,16 +100,15 @@ class SubmissionModeration(ThingModerationMixin):
     def contest_mode(self, state: bool = True):
         """Set contest mode for the comments of this submission.
 
-        :param state: (boolean) True enables contest mode, False, disables
-            (default: True).
+        :param state: (boolean) True enables contest mode, False, disables (default:
+            True).
 
         Contest mode have the following effects:
           * The comment thread will default to being sorted randomly.
-          * Replies to top-level comments will be hidden behind
-            "[show replies]" buttons.
+          * Replies to top-level comments will be hidden behind "[show replies]" buttons.
           * Scores will be hidden from non-moderators.
-          * Scores accessed through the API (mobile apps, bots) will be
-            obscured to "1" for non-moderators.
+          * Scores accessed through the API (mobile apps, bots) will be obscured to "1"
+            for non-moderators.
 
         Example usage:
 
@@ -137,8 +135,8 @@ class SubmissionModeration(ThingModerationMixin):
         :param css_class: The css class to associate with the flair html (default: "").
         :param flair_template_id: The flair template id to use when flairing (Optional).
 
-        This method can only be used by an authenticated user who is a
-        moderator of the Submission's Subreddit.
+        This method can only be used by an authenticated user who is a moderator of the
+        Submission's Subreddit.
 
         Example usage:
 
@@ -162,8 +160,8 @@ class SubmissionModeration(ThingModerationMixin):
     def nsfw(self):
         """Mark as not safe for work.
 
-        This method can be used both by the submission author and moderators of
-        the subreddit that the submission belongs to.
+        This method can be used both by the submission author and moderators of the
+        subreddit that the submission belongs to.
 
         Example usage:
 
@@ -172,7 +170,9 @@ class SubmissionModeration(ThingModerationMixin):
             submission = reddit.subreddit("test").submit("nsfw test", selftext="nsfw")
             submission.mod.nsfw()
 
-        .. seealso:: :meth:`~.sfw`
+        .. seealso::
+
+            :meth:`~.sfw`
 
         """
         self.thing._reddit.post(API_PATH["marknsfw"], data={"id": self.thing.fullname})
@@ -180,10 +180,9 @@ class SubmissionModeration(ThingModerationMixin):
     def set_original_content(self):
         """Mark as original content.
 
-        This method can be used by moderators of the subreddit that the
-        submission belongs to. If the subreddit has enabled the Original
-        Content beta feature in settings, then the submission's author
-        can use it as well.
+        This method can be used by moderators of the subreddit that the submission
+        belongs to. If the subreddit has enabled the Original Content beta feature in
+        settings, then the submission's author can use it as well.
 
         Example usage:
 
@@ -192,7 +191,9 @@ class SubmissionModeration(ThingModerationMixin):
             submission = reddit.subreddit("test").submit("oc test", selftext="original")
             submission.mod.set_original_content()
 
-        .. seealso:: :meth:`.unset_original_content`
+        .. seealso::
+
+            :meth:`.unset_original_content`
 
         """
         data = {
@@ -207,8 +208,8 @@ class SubmissionModeration(ThingModerationMixin):
     def sfw(self):
         """Mark as safe for work.
 
-        This method can be used both by the submission author and moderators of
-        the subreddit that the submission belongs to.
+        This method can be used both by the submission author and moderators of the
+        subreddit that the submission belongs to.
 
         Example usage:
 
@@ -217,7 +218,9 @@ class SubmissionModeration(ThingModerationMixin):
             submission = reddit.submission(id="5or86n")
             submission.mod.sfw()
 
-        .. seealso:: :meth:`~.nsfw`
+        .. seealso::
+
+            :meth:`~.nsfw`
 
         """
         self.thing._reddit.post(
@@ -227,8 +230,8 @@ class SubmissionModeration(ThingModerationMixin):
     def spoiler(self):
         """Indicate that the submission contains spoilers.
 
-        This method can be used both by the submission author and moderators of
-        the subreddit that the submission belongs to.
+        This method can be used both by the submission author and moderators of the
+        subreddit that the submission belongs to.
 
         Example usage:
 
@@ -237,7 +240,9 @@ class SubmissionModeration(ThingModerationMixin):
             submission = reddit.submission(id="5or86n")
             submission.mod.spoiler()
 
-        .. seealso:: :meth:`~.unspoiler`
+        .. seealso::
+
+            :meth:`~.unspoiler`
 
         """
         self.thing._reddit.post(API_PATH["spoiler"], data={"id": self.thing.fullname})
@@ -245,18 +250,19 @@ class SubmissionModeration(ThingModerationMixin):
     def sticky(self, state: bool = True, bottom: bool = True):
         """Set the submission's sticky state in its subreddit.
 
-        :param state: (boolean) True sets the sticky for the submission, false
-            unsets (default: True).
-        :param bottom: (boolean) When true, set the submission as the bottom
-            sticky. If no top sticky exists, this submission will become the
-            top sticky regardless (default: True).
+        :param state: (boolean) True sets the sticky for the submission, false unsets
+            (default: True).
+        :param bottom: (boolean) When true, set the submission as the bottom sticky. If
+            no top sticky exists, this submission will become the top sticky regardless
+            (default: True).
 
-        .. note:: When a submission is stickied two or more times, the Reddit
-            API responds with a 409 error that is raises as a ``Conflict`` by
-            prawcore. The method suppresses these ``Conflict`` errors.
+        .. note::
 
-        This submission will replace the second stickied submission if one
-        exists.
+            When a submission is stickied two or more times, the Reddit API responds
+            with a 409 error that is raises as a ``Conflict`` by prawcore. The method
+            suppresses these ``Conflict`` errors.
+
+        This submission will replace the second stickied submission if one exists.
 
         For example:
 
@@ -277,8 +283,8 @@ class SubmissionModeration(ThingModerationMixin):
     def suggested_sort(self, sort: str = "blank"):
         """Set the suggested sort for the comments of the submission.
 
-        :param sort: Can be one of: confidence, top, new, controversial, old,
-            random, qa, blank (default: blank).
+        :param sort: Can be one of: confidence, top, new, controversial, old, random,
+            qa, blank (default: blank).
 
         """
         self.thing._reddit.post(
@@ -289,10 +295,9 @@ class SubmissionModeration(ThingModerationMixin):
     def unset_original_content(self):
         """Indicate that the submission is not original content.
 
-        This method can be used by moderators of the subreddit that the
-        submission belongs to. If the subreddit has enabled the Original
-        Content beta feature in settings, then the submission's author
-        can use it as well.
+        This method can be used by moderators of the subreddit that the submission
+        belongs to. If the subreddit has enabled the Original Content beta feature in
+        settings, then the submission's author can use it as well.
 
         Example usage:
 
@@ -301,7 +306,9 @@ class SubmissionModeration(ThingModerationMixin):
             submission = reddit.subreddit("test").submit("oc test", selftext="original")
             submission.mod.unset_original_content()
 
-        .. seealso:: :meth:`.set_original_content`
+        .. seealso::
+
+            :meth:`.set_original_content`
 
         """
         data = {
@@ -316,8 +323,8 @@ class SubmissionModeration(ThingModerationMixin):
     def unspoiler(self):
         """Indicate that the submission does not contain spoilers.
 
-        This method can be used both by the submission author and moderators of
-        the subreddit that the submission belongs to.
+        This method can be used both by the submission author and moderators of the
+        subreddit that the submission belongs to.
 
         For example:
 
@@ -326,7 +333,9 @@ class SubmissionModeration(ThingModerationMixin):
             submission = reddit.subreddit("test").submit("not spoiler", selftext="spoiler")
             submission.mod.unspoiler()
 
-        .. seealso:: :meth:`~.spoiler`
+        .. seealso::
+
+            :meth:`~.spoiler`
 
         """
         self.thing._reddit.post(API_PATH["unspoiler"], data={"id": self.thing.fullname})
@@ -337,54 +346,48 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
     **Typical Attributes**
 
-    This table describes attributes that typically belong to objects of this
-    class. Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a
-    guarantee that these attributes will always be present, nor is this list
-    necessarily complete.
+    This table describes attributes that typically belong to objects of this class.
+    Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
+    these attributes will always be present, nor is this list necessarily complete.
 
-    =========================== ===============================================
+    =========================== ========================================================
     Attribute                   Description
-    =========================== ===============================================
+    =========================== ========================================================
     ``author``                  Provides an instance of :class:`.Redditor`.
-    ``clicked``                 Whether or not the submission has been clicked
-                                by the client.
-    ``comments``                Provides an instance of
-                                :class:`.CommentForest`.
-    ``created_utc``             Time the submission was created, represented in
-                                `Unix Time`_.
+    ``clicked``                 Whether or not the submission has been clicked by the
+                                client.
+    ``comments``                Provides an instance of :class:`.CommentForest`.
+    ``created_utc``             Time the submission was created, represented in `Unix
+                                Time`_.
     ``distinguished``           Whether or not the submission is distinguished.
     ``edited``                  Whether or not the submission has been edited.
     ``id``                      ID of the submission.
-    ``is_original_content``     Whether or not the submission has been set
-                                as original content.
-    ``is_self``                 Whether or not the submission is a selfpost
-                                (text-only).
+    ``is_original_content``     Whether or not the submission has been set as original
+                                content.
+    ``is_self``                 Whether or not the submission is a selfpost (text-only).
     ``link_flair_template_id``  The link flair's ID, or None if not flaired.
-    ``link_flair_text``         The link flair's text content, or None if not
-                                flaired.
+    ``link_flair_text``         The link flair's text content, or None if not flaired.
     ``locked``                  Whether or not the submission has been locked.
     ``name``                    Fullname of the submission.
     ``num_comments``            The number of comments on the submission.
-    ``over_18``                 Whether or not the submission has been marked
-                                as NSFW.
+    ``over_18``                 Whether or not the submission has been marked as NSFW.
     ``permalink``               A permalink for the submission.
-    ``poll_data``               A :class:`.PollData` object representing the
-                                data of this submission, if it is a poll
-                                submission.
+    ``poll_data``               A :class:`.PollData` object representing the data of
+                                this submission, if it is a poll submission.
     ``score``                   The number of upvotes for the submission.
-    ``selftext``                The submissions' selftext - an empty string if
-                                a link post.
-    ``spoiler``                 Whether or not the submission has been marked
-                                as a spoiler.
+    ``selftext``                The submissions' selftext - an empty string if a link
+                                post.
+    ``spoiler``                 Whether or not the submission has been marked as a
+                                spoiler.
     ``stickied``                Whether or not the submission is stickied.
     ``subreddit``               Provides an instance of :class:`.Subreddit`.
     ``title``                   The title of the submission.
     ``upvote_ratio``            The percentage of upvotes from all votes on the
                                 submission.
-    ``url``                     The URL the submission links to, or the
-                                permalink if a selfpost.
-    =========================== ===============================================
+    ``url``                     The URL the submission links to, or the permalink if a
+                                selfpost.
+    =========================== ========================================================
 
 
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
@@ -447,9 +450,10 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             submission.comment_sort = "new"
             comments = submission.comments.list()
 
-        .. note:: The appropriate values for ``comment_sort`` include
-           ``confidence``, ``controversial``, ``new``, ``old``, ``q&a``,
-           and ``top``
+        .. note::
+
+            The appropriate values for ``comment_sort`` include ``confidence``,
+            ``controversial``, ``new``, ``old``, ``q&a``, and ``top``
 
         See :ref:`extracting_comments` for more on working with a
         :class:`.CommentForest`.
@@ -598,9 +602,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
     def hide(self, other_submissions: Optional[List["Submission"]] = None):
         """Hide Submission.
 
-        :param other_submissions: When provided, additionally
-            hide this list of :class:`.Submission` instances
-            as part of a single request (default: None).
+        :param other_submissions: When provided, additionally hide this list of
+            :class:`.Submission` instances as part of a single request (default: None).
 
         Example usage:
 
@@ -609,7 +612,9 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             submission = reddit.submission(id="5or86n")
             submission.hide()
 
-        .. seealso:: :meth:`~.unhide`
+        .. seealso::
+
+            :meth:`~.unhide`
 
         """
         for submissions in self._chunk(other_submissions, 50):
@@ -618,9 +623,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
     def unhide(self, other_submissions: Optional[List["Submission"]] = None):
         """Unhide Submission.
 
-        :param other_submissions: When provided, additionally
-            unhide this list of :class:`.Submission` instances
-            as part of a single request (default: None).
+        :param other_submissions: When provided, additionally unhide this list of
+            :class:`.Submission` instances as part of a single request (default: None).
 
         Example usage:
 
@@ -629,7 +633,9 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             submission = reddit.submission(id="5or86n")
             submission.unhide()
 
-        .. seealso:: :meth:`~.hide`
+        .. seealso::
+
+            :meth:`~.hide`
 
         """
         for submissions in self._chunk(other_submissions, 50):
@@ -648,24 +654,23 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         """Crosspost the submission to a subreddit.
 
         .. note::
+
             Be aware you have to be subscribed to the target subreddit.
 
-        :param subreddit: Name of the subreddit or :class:`~.Subreddit`
-            object to crosspost into.
-        :param title: Title of the submission. Will use this submission's
-            title if `None` (default: None).
+        :param subreddit: Name of the subreddit or :class:`~.Subreddit` object to
+            crosspost into.
+        :param title: Title of the submission. Will use this submission's title if
+            `None` (default: None).
         :param flair_id: The flair template to select (default: None).
-        :param flair_text: If the template's ``flair_text_editable`` value is
-            True, this value will set a custom text (default: None).
-        :param send_replies: When True, messages will be sent to the
-            submission author when comments are made to the submission
-            (default: True).
-        :param nsfw: Whether or not the submission should be marked NSFW
+        :param flair_text: If the template's ``flair_text_editable`` value is True, this
+            value will set a custom text (default: None).
+        :param send_replies: When True, messages will be sent to the submission author
+            when comments are made to the submission (default: True).
+        :param nsfw: Whether or not the submission should be marked NSFW (default:
+            False).
+        :param spoiler: Whether or not the submission should be marked as a spoiler
             (default: False).
-        :param spoiler: Whether or not the submission should be marked as
-            a spoiler (default: False).
-        :returns: A :class:`~.Submission` object for the newly created
-            submission.
+        :returns: A :class:`~.Submission` object for the newly created submission.
 
         Example usage:
 
@@ -674,7 +679,9 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             submission = reddit.submission(id="5or86n")
             cross_post = submission.crosspost(subreddit="learnprogramming", send_replies=False)
 
-        .. seealso:: :meth:`~.hide`
+        .. seealso::
+
+            :meth:`~.hide`
 
         """
         if title is None:

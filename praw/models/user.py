@@ -34,17 +34,15 @@ class User(PRAWBase):
 
             reddit.user.preferences.update(show_link_flair=True)
 
-        The :meth:`.Preferences.update` method returns the new state of the
-        preferences as a ``dict``, which can be used to check whether a
-        change went through. Changes with invalid types or parameter names
-        fail silently.
+        The :meth:`.Preferences.update` method returns the new state of the preferences
+        as a ``dict``, which can be used to check whether a change went through. Changes
+        with invalid types or parameter names fail silently.
 
         .. code-block:: python
 
             original_preferences = reddit.user.preferences()
             new_preferences = reddit.user.preferences.update(invalid_param=123)
             print(original_preferences == new_preferences)  # True, no change
-
 
         """
         return Preferences(self._reddit)
@@ -81,12 +79,13 @@ class User(PRAWBase):
     ) -> Union[List[Redditor], Redditor]:
         """Return a RedditorList of friends or a Redditor in the friends list.
 
-        :param user: Checks to see if you are friends with the Redditor. Either
-            an instance of :class:`.Redditor` or a string can be given.
-        :returns: A list of Redditors, or a Redditor if you are friends with
-            the given Redditor. The Redditor also has friend attributes.
-        :raises: An instance of :class:`.RedditAPIException` if you are
-            not friends with the specified Redditor.
+        :param user: Checks to see if you are friends with the Redditor. Either an
+            instance of :class:`.Redditor` or a string can be given.
+        :returns: A list of Redditors, or a Redditor if you are friends with the given
+            Redditor. The Redditor also has friend attributes.
+        :raises: An instance of :class:`.RedditAPIException` if you are not friends with
+            the specified Redditor.
+
         """
         endpoint = (
             API_PATH["friends"]
@@ -98,13 +97,16 @@ class User(PRAWBase):
     def karma(self) -> Dict[Subreddit, Dict[str, int]]:
         """Return a dictionary mapping subreddits to their karma.
 
-        The returned dict contains subreddits as keys. Each subreddit key
-        contains a sub-dict that have keys for ``comment_karma`` and
-        ``link_karma``. The dict is sorted in descending karma order.
+        The returned dict contains subreddits as keys. Each subreddit key contains a
+        sub-dict that have keys for ``comment_karma`` and ``link_karma``. The dict is
+        sorted in descending karma order.
 
-        .. note:: Each key of the main dict is an instance of
-            :class:`~.Subreddit`. It is recommended to iterate over the dict in
-            order to retrieve the values, preferably through ``dict.items()``.
+        .. note::
+
+            Each key of the main dict is an instance of :class:`~.Subreddit`. It is
+            recommended to iterate over the dict in order to retrieve the values,
+            preferably through ``dict.items()``.
+
         """
         karma_map = {}
         for row in self._reddit.get(API_PATH["karma"])["data"]:
@@ -120,12 +122,14 @@ class User(PRAWBase):
 
         In :attr:`~praw.Reddit.read_only` mode, this method returns ``None``.
 
-        :param use_cache: When true, and if this function has been previously
-            called, returned the cached version (default: True).
+        :param use_cache: When true, and if this function has been previously called,
+            returned the cached version (default: True).
 
-        .. note:: If you change the Reddit instance's authorization, you might
-           want to refresh the cached value. Prefer using separate Reddit
-           instances, however, for distinct authorizations.
+        .. note::
+
+            If you change the Reddit instance's authorization, you might want to refresh
+            the cached value. Prefer using separate Reddit instances, however, for
+            distinct authorizations.
 
         """
         if self._reddit.read_only:

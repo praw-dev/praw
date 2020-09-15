@@ -53,7 +53,7 @@ class Inbox(PRAWBase):
 
         .. seealso::
 
-           :meth:`.Message.uncollapse`
+            :meth:`.Message.uncollapse`
 
         """
         while items:
@@ -85,8 +85,8 @@ class Inbox(PRAWBase):
         """Mark Comments or Messages as read.
 
         :param items: A list containing instances of :class:`.Comment` and/or
-            :class:`.Message` to be be marked as read relative to the
-            authorized user's inbox.
+            :class:`.Message` to be be marked as read relative to the authorized user's
+            inbox.
 
         Requests are batched at 25 items (reddit limit).
 
@@ -104,7 +104,7 @@ class Inbox(PRAWBase):
 
         .. seealso::
 
-           :meth:`.Comment.mark_read` and :meth:`.Message.mark_read`
+            :meth:`.Comment.mark_read` and :meth:`.Message.mark_read`
 
         """
         while items:
@@ -116,8 +116,8 @@ class Inbox(PRAWBase):
         """Unmark Comments or Messages as read.
 
         :param items: A list containing instances of :class:`.Comment` and/or
-            :class:`.Message` to be be marked as unread relative to the
-            authorized user's inbox.
+            :class:`.Message` to be be marked as unread relative to the authorized
+            user's inbox.
 
         Requests are batched at 25 items (reddit limit).
 
@@ -130,7 +130,7 @@ class Inbox(PRAWBase):
 
         .. seealso::
 
-           :meth:`.Comment.mark_unread` and :meth:`.Message.mark_unread`
+            :meth:`.Comment.mark_unread` and :meth:`.Message.mark_unread`
 
         """
         while items:
@@ -143,14 +143,13 @@ class Inbox(PRAWBase):
     ) -> Iterator["Comment"]:
         r"""Return a :class:`.ListingGenerator` for mentions.
 
-        A mention is :class:`.Comment` in which the authorized redditor is
-        named in its body like ``/u/redditor_name``.
+        A mention is :class:`.Comment` in which the authorized redditor is named in its
+        body like ``u/redditor_name``.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        For example, to output the author and body of the first 25 mentions
-        try:
+        For example, to output the author and body of the first 25 mentions try:
 
         .. code-block:: python
 
@@ -205,8 +204,7 @@ class Inbox(PRAWBase):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        For example, to output the recipient of the most recent 15 messages
-        try:
+        For example, to output the recipient of the most recent 15 messages try:
 
         .. code-block:: python
 
@@ -221,8 +219,8 @@ class Inbox(PRAWBase):
     ) -> Iterator[Union["Comment", "Message"]]:
         """Yield new inbox items as they become available.
 
-        Items are yielded oldest first. Up to 100 historical items will
-        initially be returned.
+        Items are yielded oldest first. Up to 100 historical items will initially be
+        returned.
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
@@ -277,7 +275,7 @@ class Inbox(PRAWBase):
 
         .. seealso::
 
-           :meth:`.Message.collapse`
+            :meth:`.Message.collapse`
 
         """
         while items:
@@ -294,8 +292,10 @@ class Inbox(PRAWBase):
 
         :param mark_read: Marks the inbox as read (default: False).
 
-        .. note:: This only marks the inbox as read not the messages. Use
-                  :meth:`.Inbox.mark_read` to mark the messages.
+        .. note::
+
+            This only marks the inbox as read not the messages. Use
+            :meth:`.Inbox.mark_read` to mark the messages.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.

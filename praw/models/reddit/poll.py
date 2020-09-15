@@ -8,8 +8,7 @@ from ..base import PRAWBase
 class PollOption(PRAWBase):
     """Class to represent one option of a poll.
 
-    If ``submission`` is a poll :class:`.Submission`, access the poll's
-    options like so:
+    If ``submission`` is a poll :class:`.Submission`, access the poll's options like so:
 
     .. code-block:: python
 
@@ -23,11 +22,10 @@ class PollOption(PRAWBase):
 
     **Typical Attributes**
 
-    This table describes attributes that typically belong to objects of this
-    class. Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a
-    guarantee that these attributes will always be present, nor is this list
-    necessarily complete.
+    This table describes attributes that typically belong to objects of this class.
+    Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
+    these attributes will always be present, nor is this list necessarily complete.
 
     =================== =======================================================
     Attribute           Description
@@ -50,8 +48,7 @@ class PollOption(PRAWBase):
 class PollData(PRAWBase):
     """Class to represent poll data on a poll submission.
 
-    If ``submission`` is a poll :class:`.Submission`, access the poll data
-    like so:
+    If ``submission`` is a poll :class:`.Submission`, access the poll data like so:
 
     .. code-block:: python
 
@@ -64,33 +61,34 @@ class PollData(PRAWBase):
 
     **Typical Attributes**
 
-    This table describes attributes that typically belong to objects of this
-    class. Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a
-    guarantee that these attributes will always be present, nor is this list
-    necessarily complete.
+    This table describes attributes that typically belong to objects of this class.
+    Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
+    these attributes will always be present, nor is this list necessarily complete.
 
-    =========================== ===============================================
+    =========================== ========================================================
     Attribute                   Description
-    =========================== ===============================================
+    =========================== ========================================================
     ``options``                 A list of :class:`.PollOption` of the poll.
     ``total_vote_count``        The total number of votes cast in the poll.
-    ``user_selection``          The poll option selected by the authenticated
-                                user (possibly ``None``).
+    ``user_selection``          The poll option selected by the authenticated user
+                                (possibly ``None``).
     ``voting_end_timestamp``    Time the poll voting closes, represented in
                                 `Unix Time`_.
-    =========================== ===============================================
+    =========================== ========================================================
 
 
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+
     """
 
     @cachedproperty
     def user_selection(self) -> Optional[PollOption]:
         """Get the user's selection in this poll, if any.
 
-        :returns: The user's selection as a :class:`.PollOption`, or ``None``
-                  if there is no choice.
+        :returns: The user's selection as a :class:`.PollOption`, or ``None`` if there
+            is no choice.
+
         """
         if self._user_selection is None:
             return None
@@ -111,6 +109,7 @@ class PollData(PRAWBase):
         :returns: The specified :class:`.PollOption`.
 
         Raises ``KeyError`` if no option exists with the specified ID.
+
         """
         for option in self.options:
             if option.id == option_id:

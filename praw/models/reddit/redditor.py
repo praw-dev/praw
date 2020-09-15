@@ -23,56 +23,56 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
 
     **Typical Attributes**
 
-    This table describes attributes that typically belong to objects of this
-    class. Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a
-    guarantee that these attributes will always be present, nor is this list
-    necessarily complete.
+    This table describes attributes that typically belong to objects of this class.
+    Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
+    these attributes will always be present, nor is this list necessarily complete.
 
-    .. note:: Shadowbanned accounts are treated the same as non-existent
-        accounts, meaning that they will not have any attributes.
+    .. note::
 
-    .. note:: Suspended/banned accounts will only return the ``name`` and
-        ``is_suspended`` attributes.
+        Shadowbanned accounts are treated the same as non-existent accounts, meaning
+        that they will not have any attributes.
 
-    ==================================== ======================================
+    .. note::
+
+        Suspended/banned accounts will only return the ``name`` and ``is_suspended``
+        attributes.
+
+    ==================================== ===============================================
     Attribute                            Description
-    ==================================== ======================================
+    ==================================== ===============================================
     ``comment_karma``                    The comment karma for the Redditor.
-    ``comments``                         Provide an instance of
-                                         :class:`.SubListing` for comment
-                                         access.
-    ``created_utc``                      Time the account was created,
-                                         represented in `Unix Time`_.
-    ``has_verified_email``               Whether or not the Redditor has
-                                         verified their email.
+    ``comments``                         Provide an instance of :class:`.SubListing`
+                                         for comment access.
+    ``created_utc``                      Time the account was created, represented in
+                                         `Unix Time`_.
+    ``has_verified_email``               Whether or not the Redditor has verified their
+                                         email.
     ``icon_img``                         The url of the Redditors' avatar.
     ``id``                               The ID of the Redditor.
-    ``is_employee``                      Whether or not the Redditor is a
-                                         Reddit employee.
-    ``is_friend``                        Whether or not the Redditor is friends
-                                         with the authenticated user.
+    ``is_employee``                      Whether or not the Redditor is a Reddit
+                                         employee.
+    ``is_friend``                        Whether or not the Redditor is friends with the
+                                         authenticated user.
     ``is_mod``                           Whether or not the Redditor mods any
                                          subreddits.
-    ``is_gold``                          Whether or not the Redditor has active
-                                         Reddit Premium status.
-    ``is_suspended``                     Whether or not the Redditor is
-                                         currently suspended.
+    ``is_gold``                          Whether or not the Redditor has active Reddit
+                                         Premium status.
+    ``is_suspended``                     Whether or not the Redditor is currently
+                                         suspended.
     ``link_karma``                       The link karma for the Redditor.
     ``name``                             The Redditor's username.
-    ``subreddit``                        If the Redditor has created a
-                                         user-subreddit, provides a dictionary
-                                         of additional attributes. See below.
+    ``subreddit``                        If the Redditor has created a user-subreddit,
+                                         provides a dictionary of additional attributes.
+                                         See below.
     ``subreddit["banner_img"]``          The URL of the user-subreddit banner.
     ``subreddit["name"]``                The fullname of the user-subreddit.
-    ``subreddit["over_18"]``             Whether or not the user-subreddit is
-                                         NSFW.
-    ``subreddit["public_description"]``  The public description of the user-
-                                         subreddit.
+    ``subreddit["over_18"]``             Whether or not the user-subreddit is NSFW.
+    ``subreddit["public_description"]``  The public description of the user-subreddit.
     ``subreddit["subscribers"]``         The number of users subscribed to the
                                          user-subreddit.
     ``subreddit["title"]``               The title of the user-subreddit.
-    ==================================== ======================================
+    ==================================== ===============================================
 
 
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
@@ -92,17 +92,16 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def stream(self) -> "RedditorStream":
         """Provide an instance of :class:`.RedditorStream`.
 
-        Streams can be used to indefinitely retrieve new comments made by a
-        redditor, like:
+        Streams can be used to indefinitely retrieve new comments made by a redditor,
+        like:
 
         .. code-block:: python
 
             for comment in reddit.redditor("spez").stream.comments():
                 print(comment)
 
-        Additionally, new submissions can be retrieved via the stream. In the
-        following example all submissions are fetched via the redditor
-        ``spez``:
+        Additionally, new submissions can be retrieved via the stream. In the following
+        example all submissions are fetched via the redditor ``spez``:
 
         .. code-block:: python
 
@@ -193,8 +192,8 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def friend(self, note: str = None):
         """Friend the Redditor.
 
-        :param note: A note to save along with the relationship. Requires
-            Reddit Premium (default: None).
+        :param note: A note to save along with the relationship. Requires Reddit Premium
+            (default: None).
 
         Calling this method subsequent times will update the note.
 
@@ -216,8 +215,8 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def friend_info(self) -> "Redditor":
         """Return a Redditor instance with specific friend-related attributes.
 
-        :returns: A :class:`.Redditor` instance with fields ``date``, ``id``,
-            and possibly ``note`` if the authenticated user has Reddit Premium.
+        :returns: A :class:`.Redditor` instance with fields ``date``, ``id``, and
+            possibly ``note`` if the authenticated user has Reddit Premium.
 
         For example, to get the friendship information of Redditor ``spez``:
 
@@ -232,8 +231,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def gild(self, months: int = 1):
         """Gild the Redditor.
 
-        :param months: Specifies the number of months to gild up to 36
-            (default: 1).
+        :param months: Specifies the number of months to gild up to 36 (default: 1).
 
         For example, to gild Redditor ``spez`` for 1 month:
 
@@ -252,12 +250,13 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def moderated(self) -> List["Subreddit"]:
         """Return a list of the redditor's moderated subreddits.
 
-        :returns: A ``list`` of :class:`~praw.models.Subreddit` objects.
-            Return ``[]`` if the redditor has no moderated subreddits.
+        :returns: A ``list`` of :class:`~praw.models.Subreddit` objects. Return ``[]``
+            if the redditor has no moderated subreddits.
 
-        .. note:: The redditor's own user profile subreddit will not be
-           returned, but other user profile subreddits they moderate
-           will be returned.
+        .. note::
+
+            The redditor's own user profile subreddit will not be returned, but other
+            user profile subreddits they moderate will be returned.
 
         Usage:
 
@@ -284,15 +283,14 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
 
             multireddits = reddit.redditor("spez").multireddits()
 
-
         """
         return self._reddit.get(API_PATH["multireddit_user"].format(user=self))
 
     def trophies(self) -> List["Trophy"]:
         """Return a list of the redditor's trophies.
 
-        :returns: A ``list`` of :class:`~praw.models.Trophy` objects.
-            Return an empty list (``[]``) if the redditor has no trophies.
+        :returns: A ``list`` of :class:`~praw.models.Trophy` objects. Return an empty
+            list (``[]``) if the redditor has no trophies.
 
         :raises: :class:`.RedditAPIException` if the redditor doesn't exist.
 
@@ -354,13 +352,12 @@ class RedditorStream:
     ) -> Generator["Comment", None, None]:
         """Yield new comments as they become available.
 
-        Comments are yielded oldest first. Up to 100 historical comments will
-        initially be returned.
+        Comments are yielded oldest first. Up to 100 historical comments will initially
+        be returned.
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
-        For example, to retrieve all new comments made by redditor ``spez``,
-        try:
+        For example, to retrieve all new comments made by redditor ``spez``, try:
 
         .. code-block:: python
 
@@ -375,13 +372,12 @@ class RedditorStream:
     ) -> Generator["Submission", None, None]:
         """Yield new submissions as they become available.
 
-        Submissions are yielded oldest first. Up to 100 historical submissions
-        will initially be returned.
+        Submissions are yielded oldest first. Up to 100 historical submissions will
+        initially be returned.
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
-        For example to retrieve all new submissions made by redditor
-        ``spez``, try:
+        For example to retrieve all new submissions made by redditor ``spez``, try:
 
         .. code-block:: python
 

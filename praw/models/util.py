@@ -34,8 +34,9 @@ class ExponentialCounter:
     def __init__(self, max_counter: int):
         """Initialize an instance of ExponentialCounter.
 
-        :param max_counter: The maximum base value. Note that the computed
-            value may be 3.125% higher due to jitter.
+        :param max_counter: The maximum base value. Note that the computed value may be
+            3.125% higher due to jitter.
+
         """
         self._base = 1
         self._max = max_counter
@@ -57,15 +58,13 @@ def permissions_string(
 ) -> str:
     """Return a comma separated string of permission changes.
 
-    :param permissions: A list of strings, or ``None``. These strings can
-       exclusively contain ``+`` or ``-`` prefixes, or contain no prefixes at
-       all. When prefixed, the resulting string will simply be the joining of
-       these inputs. When not prefixed, all permissions are considered to be
-       additions, and all permissions in the ``known_permissions`` set that
-       aren't provided are considered to be removals. When None, the result is
-       ``+all``.
-    :param known_permissions: A set of strings representing the available
-       permissions.
+    :param permissions: A list of strings, or ``None``. These strings can exclusively
+        contain ``+`` or ``-`` prefixes, or contain no prefixes at all. When prefixed,
+        the resulting string will simply be the joining of these inputs. When not
+        prefixed, all permissions are considered to be additions, and all permissions in
+        the ``known_permissions`` set that aren't provided are considered to be
+        removals. When ``None``, the result is ``"+all"``.
+    :param known_permissions: A set of strings representing the available permissions.
 
     """
     if permissions is None:
@@ -89,32 +88,29 @@ def stream_generator(
     """Yield new items from ListingGenerators and ``None`` when paused.
 
     :param function: A callable that returns a ListingGenerator, e.g.
-       ``subreddit.comments`` or ``subreddit.new``.
-
-    :param pause_after: An integer representing the number of requests that
-        result in no new items before this function yields ``None``,
-        effectively introducing a pause into the stream. A negative value
-        yields ``None`` after items from a single response have been yielded,
-        regardless of number of new items obtained in that response. A value of
-        ``0`` yields ``None`` after every response resulting in no new items,
-        and a value of ``None`` never introduces a pause (default: None).
-
-    :param skip_existing: When True does not yield any results from the first
-        request thereby skipping any items that existed in the stream prior to
-        starting the stream (default: False).
-
+        ``subreddit.comments`` or ``subreddit.new``.
+    :param pause_after: An integer representing the number of requests that result in no
+        new items before this function yields ``None``, effectively introducing a pause
+        into the stream. A negative value yields ``None`` after items from a single
+        response have been yielded, regardless of number of new items obtained in that
+        response. A value of ``0`` yields ``None`` after every response resulting in no
+        new items, and a value of ``None`` never introduces a pause (default: None).
+    :param skip_existing: When True does not yield any results from the first request
+        thereby skipping any items that existed in the stream prior to starting the
+        stream (default: False).
     :param attribute_name: The field to use as an id (default: "fullname").
-
-    :param exclude_before: When True does not pass ``params`` to ``functions``
-         (default: False).
+    :param exclude_before: When True does not pass ``params`` to ``functions`` (default:
+        False).
 
     Additional keyword arguments will be passed to ``function``.
 
-    .. note:: This function internally uses an exponential delay with jitter
-       between subsequent responses that contain no new results, up to a
-       maximum delay of just over a 16 seconds. In practice that means that the
-       time before pause for ``pause_after=N+1`` is approximately twice the
-       time before pause for ``pause_after=N``.
+    .. note::
+
+        This function internally uses an exponential delay with jitter between
+        subsequent responses that contain no new results, up to a maximum delay of just
+        over a 16 seconds. In practice that means that the time before pause for
+        ``pause_after=N+1`` is approximately twice the time before pause for
+        ``pause_after=N``.
 
     For example, to create a stream of comment replies, try:
 
@@ -124,8 +120,7 @@ def stream_generator(
         for reply in praw.models.util.stream_generator(reply_function):
             print(reply)
 
-    To pause a comment stream after six responses with no new
-    comments, try:
+    To pause a comment stream after six responses with no new comments, try:
 
     .. code-block:: python
 
@@ -152,11 +147,10 @@ def stream_generator(
                 break
             print(comment)
 
-    To bypass the internal exponential backoff, try the following. This
-    approach is useful if you are monitoring a subreddit with infrequent
-    activity, and you want the to consistently learn about new items from the
-    stream as soon as possible, rather than up to a delay of just over sixteen
-    seconds.
+    To bypass the internal exponential backoff, try the following. This approach is
+    useful if you are monitoring a subreddit with infrequent activity, and you want the
+    to consistently learn about new items from the stream as soon as possible, rather
+    than up to a delay of just over sixteen seconds.
 
     .. code-block:: python
 

@@ -36,6 +36,7 @@ class LiveContributorRelationship:
             thread = reddit.live("ukaeu1ik4sw5")
             for contributor in thread.contributor():
                 print(contributor)
+
         """
         url = API_PATH["live_contributors"].format(id=self.thread.id)
         temp = self.thread._reddit.get(url)
@@ -46,9 +47,11 @@ class LiveContributorRelationship:
 
         :param thread: An instance of :class:`.LiveThread`.
 
-        .. note:: This class should not be initialized directly. Instead obtain
-           an instance via: ``thread.contributor`` where ``thread`` is a
-           :class:`.LiveThread` instance.
+        .. note::
+
+            This class should not be initialized directly. Instead obtain an instance
+            via: ``thread.contributor`` where ``thread`` is a :class:`.LiveThread`
+            instance.
 
         """
         self.thread = thread
@@ -72,12 +75,12 @@ class LiveContributorRelationship:
     ):
         """Invite a redditor to be a contributor of the live thread.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or
-            :class:`~.Redditor` instance.
-        :param permissions: When provided (not ``None``), permissions should
-            be a list of strings specifying which subset of permissions to
-            grant. An empty list ``[]`` indicates no permissions, and when
-            not provided (``None``), indicates full permissions.
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+            instance.
+        :param permissions: When provided (not ``None``), permissions should be a list
+            of strings specifying which subset of permissions to grant. An empty list
+            ``[]`` indicates no permissions, and when not provided (``None``), indicates
+            full permissions.
         :raises: :class:`.RedditAPIException` if the invitation already exists.
 
         Usage:
@@ -90,8 +93,10 @@ class LiveContributorRelationship:
             # "manage" and "settings" permissions
             thread.contributor.invite(redditor, ["manage", "settings"])
 
-        .. seealso:: :meth:`.LiveContributorRelationship.remove_invite` to
-            remove the invite for redditor.
+        .. seealso::
+
+            :meth:`.LiveContributorRelationship.remove_invite` to remove the invite for
+            redditor.
 
         """
         url = API_PATH["live_invite"].format(id=self.thread.id)
@@ -155,8 +160,10 @@ class LiveContributorRelationship:
             thread.contributor.remove_invite(redditor)
             thread.contributor.remove_invite("t2_1w72")  # with fullname
 
-        .. seealso:: :meth:`.LiveContributorRelationship.invite` to
-            invite a redditor to be a contributor of the live thread.
+        .. seealso::
+
+            :meth:`.LiveContributorRelationship.invite` to invite a redditor to be a
+            contributor of the live thread.
 
         """
         if isinstance(redditor, Redditor):
@@ -172,13 +179,12 @@ class LiveContributorRelationship:
     ):
         """Update the contributor permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or
-            :class:`~.Redditor` instance.
-        :param permissions: When provided (not ``None``), permissions should
-            be a list of strings specifying which subset of permissions to
-            grant (other permissions are removed). An empty list ``[]``
-            indicates no permissions, and when not provided (``None``),
-            indicates full permissions.
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+            instance.
+        :param permissions: When provided (not ``None``), permissions should be a list
+            of strings specifying which subset of permissions to grant (other
+            permissions are removed). An empty list ``[]`` indicates no permissions, and
+            when not provided (``None``), indicates full permissions.
 
         For example, to grant all permissions to the contributor, try:
 
@@ -187,8 +193,8 @@ class LiveContributorRelationship:
             thread = reddit.live("ukaeu1ik4sw5")
             thread.contributor.update("spez")
 
-        To grant ``"access"`` and ``"edit"`` permissions (and to
-        remove other permissions), try:
+        To grant ``"access"`` and ``"edit"`` permissions (and to remove other
+        permissions), try:
 
         .. code-block:: python
 
@@ -214,13 +220,12 @@ class LiveContributorRelationship:
     ):
         """Update the contributor invite permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or
-            :class:`~.Redditor` instance.
-        :param permissions: When provided (not ``None``), permissions should
-            be a list of strings specifying which subset of permissions to
-            grant (other permissions are removed). An empty list ``[]``
-            indicates no permissions, and when not provided (``None``),
-            indicates full permissions.
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+            instance.
+        :param permissions: When provided (not ``None``), permissions should be a list
+            of strings specifying which subset of permissions to grant (other
+            permissions are removed). An empty list ``[]`` indicates no permissions, and
+            when not provided (``None``), indicates full permissions.
 
         For example, to set all permissions to the invitation, try:
 
@@ -229,8 +234,8 @@ class LiveContributorRelationship:
             thread = reddit.live("ukaeu1ik4sw5")
             thread.contributor.update_invite("spez")
 
-        To set "access" and "edit" permissions (and to remove other
-        permissions) to the invitation, try:
+        To set "access" and "edit" permissions (and to remove other permissions) to the
+        invitation, try:
 
         .. code-block:: python
 
@@ -257,23 +262,21 @@ class LiveThread(RedditBase):
 
     **Typical Attributes**
 
-    This table describes attributes that typically belong to objects of this
-    class. Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a
-    guarantee that these attributes will always be present, nor is this list
-    necessarily complete.
+    This table describes attributes that typically belong to objects of this class.
+    Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
+    these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ===================================================
+    ======================= =========================================================
     Attribute               Description
-    ======================= ===================================================
-    ``created_utc``         The creation time of the live thread, in `Unix
-                            Time`_.
+    ======================= =========================================================
+    ``created_utc``         The creation time of the live thread, in `Unix Time`_.
     ``description``         Description of the live thread, as Markdown.
     ``description_html``    Description of the live thread, as HTML.
     ``id``                  The ID of the live thread.
-    ``nsfw``                A ``bool`` representing whether or not the live
-                            thread is marked as NSFW.
-    ======================= ===================================================
+    ``nsfw``                A ``bool`` representing whether or not the live thread is
+                            marked as NSFW.
+    ======================= =========================================================
 
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
     """
@@ -298,10 +301,9 @@ class LiveThread(RedditBase):
     def contributor(self) -> LiveContributorRelationship:
         """Provide an instance of :class:`.LiveContributorRelationship`.
 
-        You can call the instance to get a list of contributors which is
-        represented as :class:`.RedditorList` instance consists of
-        :class:`.Redditor` instances. Those Redditor instances have
-        ``permissions`` attributes as contributors:
+        You can call the instance to get a list of contributors which is represented as
+        :class:`.RedditorList` instance consists of :class:`.Redditor` instances. Those
+        Redditor instances have ``permissions`` attributes as contributors:
 
         .. code-block:: python
 
@@ -317,18 +319,18 @@ class LiveThread(RedditBase):
     def stream(self) -> "LiveThreadStream":
         """Provide an instance of :class:`.LiveThreadStream`.
 
-        Streams are used to indefinitely retrieve new updates made to a
-        live thread, like:
+        Streams are used to indefinitely retrieve new updates made to a live thread,
+        like:
 
         .. code-block:: python
 
             for live_update in reddit.live("ta535s1hq2je").stream.updates():
                 print(live_update.body)
 
-        Updates are yielded oldest first as :class:`.LiveUpdate`. Up to 100
-        historical updates will initially be returned.
-        To only retrieve new updates starting from when the stream is
-        created, pass ``skip_existing=True``:
+        Updates are yielded oldest first as :class:`.LiveUpdate`. Up to 100 historical
+        updates will initially be returned.
+        To only retrieve new updates starting from when the stream is created, pass
+        ``skip_existing=True``:
 
         .. code-block:: python
 
@@ -342,7 +344,10 @@ class LiveThread(RedditBase):
     def __eq__(self, other: Union[str, "LiveThread"]) -> bool:
         """Return whether the other instance equals the current.
 
-        .. note:: This comparison is case sensitive.
+        .. note::
+
+            This comparison is case sensitive.
+
         """
         if isinstance(other, str):
             return other == str(self)
@@ -381,6 +386,7 @@ class LiveThread(RedditBase):
 
         :param reddit: An instance of :class:`.Reddit`.
         :param id: A live thread ID, e.g., ``"ukaeu1ik4sw5"``
+
         """
         if bool(id) == bool(_data):
             raise TypeError("Either `id` or `_data` must be provided.")
@@ -408,10 +414,10 @@ class LiveThread(RedditBase):
     ) -> Iterator["Submission"]:
         """Get submissions linking to the thread.
 
-        :param generator_kwargs: keyword arguments passed to
-            :class:`.ListingGenerator` constructor.
-        :returns: A :class:`.ListingGenerator` object which yields
-            :class:`.Submission` object.
+        :param generator_kwargs: keyword arguments passed to :class:`.ListingGenerator`
+            constructor.
+        :returns: A :class:`.ListingGenerator` object which yields :class:`.Submission`
+            object.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -431,9 +437,8 @@ class LiveThread(RedditBase):
     def report(self, type: str):  # pylint: disable=redefined-builtin
         """Report the thread violating the Reddit rules.
 
-        :param type: One of ``"spam"``, ``"vote-manipulation"``,
-            ``"personal-information"``, ``"sexualizing-minors"``,
-            ``"site-breaking"``.
+        :param type: One of ``"spam"``, ``"vote-manipulation"``, ``"personal-
+            information"``, ``"sexualizing-minors"``, ``"site-breaking"``.
 
         Usage:
 
@@ -451,10 +456,10 @@ class LiveThread(RedditBase):
     ) -> Iterator["LiveUpdate"]:
         """Return a :class:`.ListingGenerator` yields :class:`.LiveUpdate` s.
 
-        :param generator_kwargs: keyword arguments passed to
-            :class:`.ListingGenerator` constructor.
-        :returns: A :class:`.ListingGenerator` object which yields
-            :class:`.LiveUpdate` object.
+        :param generator_kwargs: keyword arguments passed to :class:`.ListingGenerator`
+            constructor.
+        :returns: A :class:`.ListingGenerator` object which yields :class:`.LiveUpdate`
+            object.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -483,8 +488,8 @@ class LiveThreadContribution:
 
         :param thread: An instance of :class:`.LiveThread`.
 
-        This instance can be retrieved through ``thread.contrib``
-        where thread is a :class:`.LiveThread` instance. E.g.,
+        This instance can be retrieved through ``thread.contrib`` where thread is a
+        :class:`.LiveThread` instance. E.g.,
 
         .. code-block:: python
 
@@ -535,19 +540,18 @@ class LiveThreadContribution:
         """Update settings of the live thread.
 
         :param title: (Optional) The title of the live thread (default: None).
-        :param description: (Optional) The live thread's description
+        :param description: (Optional) The live thread's description (default: None).
+        :param nsfw: (Optional) Indicate whether this thread is not safe for work
             (default: None).
-        :param nsfw: (Optional) Indicate whether this thread is not safe for
-            work (default: None).
-        :param resources: (Optional) Markdown formatted information that is
-            useful for the live thread (default: None).
+        :param resources: (Optional) Markdown formatted information that is useful for
+            the live thread (default: None).
 
         Does nothing if no arguments are provided.
 
         Each setting will maintain its current value if ``None`` is specified.
 
-        Additional keyword arguments can be provided to handle new settings as
-        Reddit introduces them.
+        Additional keyword arguments can be provided to handle new settings as Reddit
+        introduces them.
 
         Usage:
 
@@ -558,8 +562,8 @@ class LiveThreadContribution:
             # update `title` and `nsfw`
             updated_thread = thread.contrib.update(title=new_title, nsfw=True)
 
-        If Reddit introduces new settings, you must specify ``None`` for the
-        setting you want to maintain:
+        If Reddit introduces new settings, you must specify ``None`` for the setting you
+        want to maintain:
 
         .. code-block:: python
 
@@ -611,27 +615,27 @@ class LiveThreadStream:
     def updates(self, **stream_options: Dict[str, Any]) -> Iterator["LiveUpdate"]:
         """Yield new updates to the live thread as they become available.
 
-        :param skip_existing: Set to ``True`` to only fetch items created
-            after the stream (default: ``False``).
+        :param skip_existing: Set to ``True`` to only fetch items created after the
+            stream (default: ``False``).
 
         As with :meth:`.LiveThread.updates()`, updates are yielded as
         :class:`.LiveUpdate`.
 
-        Updates are yielded oldest first. Up to 100 historical updates will
-        initially be returned.
+        Updates are yielded oldest first. Up to 100 historical updates will initially be
+        returned.
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
-        For example, to retrieve all new updates made to the
-        ``"ta535s1hq2je"`` live thread, try:
+        For example, to retrieve all new updates made to the ``"ta535s1hq2je"`` live
+        thread, try:
 
         .. code-block:: python
 
             for live_update in reddit.live("ta535s1hq2je").stream.updates():
                 print(live_update.body)
 
-        To only retrieve new updates starting from when the stream is
-        created, pass ``skip_existing=True``:
+        To only retrieve new updates starting from when the stream is created, pass
+        ``skip_existing=True``:
 
         .. code-block:: python
 
@@ -648,22 +652,21 @@ class LiveUpdate(FullnameMixin, RedditBase):
 
     **Typical Attributes**
 
-    This table describes attributes that typically belong to objects of this
-    class. Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a
-    guarantee that these attributes will always be present, nor is this list
-    necessarily complete.
+    This table describes attributes that typically belong to objects of this class.
+    Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
+    these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ===================================================
+    ======================= ============================================================
     Attribute               Description
-    ======================= ===================================================
+    ======================= ============================================================
     ``author``              The :class:`.Redditor` who made the update.
     ``body``                Body of the update, as Markdown.
     ``body_html``           Body of the update, as HTML.
     ``created_utc``         The time the update was created, as `Unix Time`_.
-    ``stricken``            A ``bool`` representing whether or not the update
-                            was stricken (see :meth:`.strike`).
-    ======================= ===================================================
+    ``stricken``            A ``bool`` representing whether or not the update was
+                            stricken (see :meth:`.strike`).
+    ======================= ============================================================
 
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
     """
@@ -700,8 +703,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
     ):
         """Initialize a lazy :class:`.LiveUpdate` instance.
 
-        Either ``thread_id`` and ``update_id``, or ``_data`` must be
-        provided.
+        Either ``thread_id`` and ``update_id``, or ``_data`` must be provided.
 
         :param reddit: An instance of :class:`.Reddit`.
         :param thread_id: A live thread ID, e.g., ``"ukaeu1ik4sw5"``.
@@ -719,9 +721,9 @@ class LiveUpdate(FullnameMixin, RedditBase):
 
         """
         if _data is not None:
-            # Since _data (part of JSON returned from reddit) have no
-            # thread ID, self._thread must be set by the caller of
-            # LiveUpdate(). See the code of LiveThread.updates() for example.
+            # Since _data (part of JSON returned from reddit) have no thread ID,
+            # self._thread must be set by the caller of LiveUpdate(). See the code of
+            # LiveThread.updates() for example.
             super().__init__(reddit, _data=_data)
             self._fetched = True
         elif thread_id and update_id:
@@ -754,8 +756,8 @@ class LiveUpdateContribution:
 
         :param update: An instance of :class:`.LiveUpdate`.
 
-        This instance can be retrieved through ``update.contrib``
-        where update is a :class:`.LiveUpdate` instance. E.g.,
+        This instance can be retrieved through ``update.contrib`` where update is a
+        :class:`.LiveUpdate` instance. E.g.,
 
         .. code-block:: python
 

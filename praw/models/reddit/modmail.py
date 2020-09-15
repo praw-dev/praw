@@ -14,41 +14,38 @@ class ModmailConversation(RedditBase):
 
     **Typical Attributes**
 
-    This table describes attributes that typically belong to objects of this
-    class. Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a
-    guarantee that these attributes will always be present, nor is this list
-    necessarily complete.
+    This table describes attributes that typically belong to objects of this class.
+    Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
+    these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ===================================================
+    ======================= ============================================================
     Attribute               Description
-    ======================= ===================================================
-    ``authors``             Provides an ordered list of :class:`.Redditor`
-                            instances. The authors of each message in the
-                            modmail conversation.
+    ======================= ============================================================
+    ``authors``             Provides an ordered list of :class:`.Redditor` instances.
+                            The authors of each message in the modmail conversation.
     ``id``                  The ID of the ModmailConversation.
-    ``is_highlighted``      Whether or not the ModmailConversation is
-                            highlighted.
-    ``is_internal``         Whether or not the ModmailConversation is a private
-                            mod conversation.
-    ``last_mod_update``     Time of the last mod message reply, represented in
-                            the `ISO 8601`_ standard with timezone.
-    ``last_updated``        Time of the last message reply, represented in
-                            the `ISO 8601`_ standard with timezone.
-    ``last_user_update``    Time of the last user message reply, represented in
-                            the `ISO 8601`_ standard with timezone.
+    ``is_highlighted``      Whether or not the ModmailConversation is highlighted.
+    ``is_internal``         Whether or not the ModmailConversation is a private mod
+                            conversation.
+    ``last_mod_update``     Time of the last mod message reply, represented in the
+                            `ISO 8601`_ standard with timezone.
+    ``last_updated``        Time of the last message reply, represented in the
+                            `ISO 8601`_ standard with timezone.
+    ``last_user_update``    Time of the last user message reply, represented in the
+                            `ISO 8601`_ standard with timezone.
     ``num_messages``        The number of messages in the ModmailConversation.
-    ``obj_ids``             Provides a list of dictionaries representing
-                            mod actions on the ModmailConversation. Each dict
-                            contains attributes of "key" and "id". The key can
-                            be either "messages" or "ModAction". ModAction
-                            represents archiving/highlighting etc.
-    ``owner``               Provides an instance of :class:`.Subreddit`. The
-                            subreddit that the ModmailConversation belongs to.
+    ``obj_ids``             Provides a list of dictionaries representing mod actions on
+                            the ModmailConversation. Each dict contains attributes of
+                            "key" and "id". The key can be either "messages" or
+                            "ModAction". ModAction represents archiving/highlighting
+                            etc.
+    ``owner``               Provides an instance of :class:`.Subreddit`. The subreddit
+                            that the ModmailConversation belongs to.
     ``participant``         Provides an instance of :class:`.Redditor`. The
                             participating user in the ModmailConversation.
     ``subject``             The subject of the ModmailConversation.
-    ======================= ===================================================
+    ======================= ============================================================
 
 
     .. _ISO 8601: https://en.wikipedia.org/wiki/ISO_8601
@@ -98,8 +95,8 @@ class ModmailConversation(RedditBase):
 
         :param data: The structured data.
         :param reddit: An instance of :class:`.Reddit`.
-        :param convert_objects: If True, convert message and mod action data
-            into objects (default: True).
+        :param convert_objects: If True, convert message and mod action data into
+            objects (default: True).
 
         """
         conversation = data["conversation"]
@@ -129,8 +126,7 @@ class ModmailConversation(RedditBase):
     ):
         """Construct an instance of the ModmailConversation object.
 
-        :param mark_read: If True, conversation is marked as read
-            (default: False).
+        :param mark_read: If True, conversation is marked as read (default: False).
 
         """
         super().__init__(reddit, _data=_data)
@@ -203,7 +199,6 @@ class ModmailConversation(RedditBase):
 
             reddit.subreddit("redditdev").modmail("2gmz").mute(7)
 
-
         """
         if num_days != 3:  # no need to pass params if it's the default
             params = {"num_hours": num_days * 24}
@@ -218,8 +213,8 @@ class ModmailConversation(RedditBase):
     ):  # noqa: D207, D301
         """Mark the conversation(s) as read.
 
-        :param other_conversations: A list of other conversations to mark
-            (default: None).
+        :param other_conversations: A list of other conversations to mark (default:
+            None).
 
         For example, to mark the conversation as read along with other recent
         conversations from the same user:
@@ -238,12 +233,11 @@ class ModmailConversation(RedditBase):
         """Reply to the conversation.
 
         :param body: The Markdown formatted content for a message.
-        :param author_hidden: When True, author is hidden from non-moderators
-            (default: False).
-        :param internal: When True, message is a private moderator note,
-            hidden from non-moderators (default: False).
-        :returns: A :class:`~.ModmailMessage` object for the newly created
-            message.
+        :param author_hidden: When True, author is hidden from non-moderators (default:
+            False).
+        :param internal: When True, message is a private moderator note, hidden from
+            non-moderators (default: False).
+        :returns: A :class:`~.ModmailMessage` object for the newly created message.
 
         For example, to reply to the non-mod user while hiding your username:
 
@@ -312,8 +306,8 @@ class ModmailConversation(RedditBase):
     ):  # noqa: D207, D301
         """Mark the conversation(s) as unread.
 
-        :param other_conversations: A list of other conversations to mark
-            (default: None).
+        :param other_conversations: A list of other conversations to mark (default:
+            None).
 
         For example, to mark the conversation as unread along with other recent
         conversations from the same user:

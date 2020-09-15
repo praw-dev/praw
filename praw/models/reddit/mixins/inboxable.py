@@ -9,7 +9,9 @@ class InboxableMixin:
     def block(self):
         """Block the user who sent the item.
 
-        .. note:: This method pertains only to objects which were retrieved via the inbox.
+        .. note::
+
+            This method pertains only to objects which were retrieved via the inbox.
 
         Example usage:
 
@@ -28,8 +30,7 @@ class InboxableMixin:
     def collapse(self):
         """Mark the item as collapsed.
 
-        .. note:: This method pertains only to objects which were retrieved via
-                  the inbox.
+        This method pertains only to objects which were retrieved via the inbox.
 
         Example usage:
 
@@ -37,11 +38,12 @@ class InboxableMixin:
 
             inbox = reddit.inbox()
 
-            # select first inbox item and collapse it
-            message = next(inbox)
+            # select first inbox item and collapse it message = next(inbox)
             message.collapse()
 
-        .. seealso:: :meth:`~.uncollapse`
+        .. seealso::
+
+            :meth:`~.uncollapse`
 
         """
         self._reddit.inbox.collapse([self])
@@ -49,8 +51,9 @@ class InboxableMixin:
     def mark_read(self):
         """Mark a single inbox item as read.
 
-        .. note:: This method pertains only to objects which were retrieved via
-                  the inbox.
+        .. note::
+
+            This method pertains only to objects which were retrieved via the inbox.
 
         Example usage:
 
@@ -62,10 +65,12 @@ class InboxableMixin:
                 # process unread messages
                 ...
 
-        .. seealso:: :meth:`~.mark_unread`
+        .. seealso::
 
-        To mark the whole inbox as read with a single network request,
-        use :meth:`praw.models.Inbox.mark_read`
+            :meth:`~.mark_unread`
+
+        To mark the whole inbox as read with a single network request, use
+        :meth:`praw.models.Inbox.mark_read`
 
         """
         self._reddit.inbox.mark_read([self])
@@ -73,8 +78,9 @@ class InboxableMixin:
     def mark_unread(self):
         """Mark the item as unread.
 
-        .. note:: This method pertains only to objects which were retrieved via
-                  the inbox.
+        .. note::
+
+            This method pertains only to objects which were retrieved via the inbox.
 
         Example usage:
 
@@ -86,7 +92,9 @@ class InboxableMixin:
                 # process messages
                 ...
 
-        .. seealso:: :meth:`~.mark_read`
+        .. seealso::
+
+            :meth:`~.mark_read`
 
         """
         self._reddit.inbox.mark_unread([self])
@@ -94,8 +102,9 @@ class InboxableMixin:
     def uncollapse(self):
         """Mark the item as uncollapsed.
 
-        .. note:: This method pertains only to objects which were retrieved via
-                  the inbox.
+        .. note::
+
+            This method pertains only to objects which were retrieved via the inbox.
 
         Example usage:
 
@@ -107,7 +116,9 @@ class InboxableMixin:
             message = next(inbox)
             message.uncollapse()
 
-        .. seealso:: :meth:`~.collapse`
+        .. seealso::
+
+            :meth:`~.collapse`
 
         """
         self._reddit.inbox.uncollapse([self])

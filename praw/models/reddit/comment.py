@@ -25,40 +25,38 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
     **Typical Attributes**
 
-    This table describes attributes that typically belong to objects of this
-    class. Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a
-    guarantee that these attributes will always be present, nor is this list
-    necessarily complete.
+    This table describes attributes that typically belong to objects of this class.
+    Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
+    these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ===================================================
+    ======================= ============================================================
     Attribute               Description
-    ======================= ===================================================
+    ======================= ============================================================
     ``author``              Provides an instance of :class:`.Redditor`.
     ``body``                The body of the comment, as Markdown.
     ``body_html``           The body of the comment, as HTML.
-    ``created_utc``         Time the comment was created, represented in
-                            `Unix Time`_.
+    ``created_utc``         Time the comment was created, represented in `Unix Time`_.
     ``distinguished``       Whether or not the comment is distinguished.
     ``edited``              Whether or not the comment has been edited.
     ``id``                  The ID of the comment.
-    ``is_submitter``        Whether or not the comment author is also the
-                            author of the submission.
+    ``is_submitter``        Whether or not the comment author is also the author of the
+                            submission.
     ``link_id``             The submission ID that the comment belongs to.
-    ``parent_id``           The ID of the parent comment (prefixed with ``t1_``).
-                            If it is a top-level comment, this returns the
-                            submission ID instead (prefixed with ``t3_``).
-    ``permalink``           A permalink for the comment. Comment objects from
-                            the inbox have a ``context`` attribute instead.
+    ``parent_id``           The ID of the parent comment (prefixed with ``t1_``). If it
+                            is a top-level comment, this returns the submission ID
+                            instead (prefixed with ``t3_``).
+    ``permalink``           A permalink for the comment. Comment objects from the inbox
+                            have a ``context`` attribute instead.
     ``replies``             Provides an instance of :class:`.CommentForest`.
     ``score``               The number of upvotes for the comment.
     ``stickied``            Whether or not the comment is stickied.
-    ``submission``          Provides an instance of :class:`.Submission`. The
-                            submission that the comment belongs to.
-    ``subreddit``           Provides an instance of :class:`.Subreddit`. The
-                            subreddit that the comment belongs to.
+    ``submission``          Provides an instance of :class:`.Submission`. The submission
+                            that the comment belongs to.
+    ``subreddit``           Provides an instance of :class:`.Subreddit`. The subreddit
+                            that the comment belongs to.
     ``subreddit_id``        The subreddit ID that the comment belongs to.
-    ======================= ===================================================
+    ======================= ============================================================
 
 
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
@@ -110,13 +108,12 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     def replies(self) -> CommentForest:
         """Provide an instance of :class:`.CommentForest`.
 
-        This property may return an empty list if the comment
-        has not been refreshed with :meth:`.refresh()`
+        This property may return an empty list if the comment has not been refreshed
+        with :meth:`.refresh()`
 
         Sort order and reply limit can be set with the ``reply_sort`` and
-        ``reply_limit`` attributes before replies are fetched, including
-        any call to :meth:`.refresh`:
-
+        ``reply_limit`` attributes before replies are fetched, including any call to
+        :meth:`.refresh`:
         .. code-block:: python
 
             comment.reply_sort = "new"
@@ -214,15 +211,15 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     def parent(self) -> Union["Comment", "Submission"]:
         """Return the parent of the comment.
 
-        The returned parent will be an instance of either
-        :class:`.Comment`, or :class:`.Submission`.
+        The returned parent will be an instance of either :class:`.Comment`, or
+        :class:`.Submission`.
 
-        If this comment was obtained through a :class:`.Submission`, then its
-        entire ancestry should be immediately available, requiring no extra
-        network requests. However, if this comment was obtained through other
-        means, e.g., ``reddit.comment("COMMENT_ID")``, or
-        ``reddit.inbox.comment_replies``, then the returned parent may be a
-        lazy instance of either :class:`.Comment`, or :class:`.Submission`.
+        If this comment was obtained through a :class:`.Submission`, then its entire
+        ancestry should be immediately available, requiring no extra network requests.
+        However, if this comment was obtained through other means, e.g.,
+        ``reddit.comment("COMMENT_ID")``, or ``reddit.inbox.comment_replies``, then the
+        returned parent may be a lazy instance of either :class:`.Comment`, or
+        :class:`.Submission`.
 
         Lazy comment example:
 
@@ -235,15 +232,16 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             parent.refresh()
             print(parent.replies)  # Output is at least: [Comment(id="cklhv0f")]
 
-        .. warning:: Successive calls to :meth:`.parent()` may result in a
-           network request per call when the comment is not obtained through a
-           :class:`.Submission`. See below for an example of how to minimize
-           requests.
+        .. warning::
 
-        If you have a deeply nested comment and wish to most efficiently
-        discover its top-most :class:`.Comment` ancestor you can chain
-        successive calls to :meth:`.parent()` with calls to :meth:`.refresh()`
-        at every 9 levels. For example:
+            Successive calls to :meth:`.parent()` may result in a network request per
+            call when the comment is not obtained through a :class:`.Submission`. See
+            below for an example of how to minimize requests.
+
+        If you have a deeply nested comment and wish to most efficiently discover its
+        top-most :class:`.Comment` ancestor you can chain successive calls to
+        :meth:`.parent()` with calls to :meth:`.refresh()` at every 9 levels. For
+        example:
 
         .. code-block:: python
 
@@ -257,9 +255,8 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
                 refresh_counter += 1
             print(f"Top-most Ancestor: {ancestor}")
 
-        The above code should result in 5 network requests to Reddit. Without
-        the calls to :meth:`.refresh()` it would make at least 31 network
-        requests.
+        The above code should result in 5 network requests to Reddit. Without the calls
+        to :meth:`.refresh()` it would make at least 31 network requests.
 
         """
         # pylint: disable=no-member
@@ -278,8 +275,8 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     def refresh(self):
         """Refresh the comment's attributes.
 
-        If using :meth:`.Reddit.comment` this method must be called in order to
-        obtain the comment's replies.
+        If using :meth:`.Reddit.comment` this method must be called in order to obtain
+        the comment's replies.
 
         Example usage:
 
@@ -357,6 +354,7 @@ class CommentModeration(ThingModerationMixin):
             # lock a comment:
             comment = reddit.comment("dkk4qjd")
             comment.mod.show()
+
         """
         url = API_PATH["show_comment"]
 
