@@ -8,7 +8,7 @@ REPLY_TEMPLATE = "[Let me google that for you](http://lmgtfy.com/?q={})"
 
 def main():
     reddit = praw.Reddit(
-        user_agent="LMGTFY (by /u/USERNAME)",
+        user_agent="LMGTFY (by u/USERNAME)",
         client_id="CLIENT_ID",
         client_secret="CLIENT_SECRET",
         username="USERNAME",
@@ -21,8 +21,7 @@ def main():
 
 
 def process_submission(submission):
-    # Ignore titles with more than 10 words as they probably are not simple
-    # questions.
+    # Ignore titles with more than 10 words as they probably are not simple questions.
     if len(submission.title.split()) > 10:
         return
 
@@ -31,7 +30,7 @@ def process_submission(submission):
         if question_phrase in normalized_title:
             url_title = quote_plus(submission.title)
             reply_text = REPLY_TEMPLATE.format(url_title)
-            print("Replying to: {}".format(submission.title))
+            print(f"Replying to: {submission.title}")
             submission.reply(reply_text)
             # A reply has been made so do not attempt to match other phrases.
             break

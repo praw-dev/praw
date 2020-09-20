@@ -37,7 +37,10 @@ class TestRedditor(UnitTest):
 
         with pytest.raises(TypeError) as excinfo:
             Redditor(
-                self.reddit, name="dummy", fullname="t2_dummy", _data={"id": "dummy"},
+                self.reddit,
+                name="dummy",
+                fullname="t2_dummy",
+                _data={"id": "dummy"},
             )
         assert str(excinfo.value) == message
 

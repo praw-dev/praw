@@ -18,28 +18,25 @@ class Rule(RedditBase):
 
     **Typical Attributes**
 
-    This table describes attributes that typically belong to objects of this
-    class. Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a
-    guarantee that these attributes will always be present, nor is this list
-    necessarily comprehensive.
+    This table describes attributes that typically belong to objects of this class.
+    Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
+    these attributes will always be present, nor is this list necessarily comprehensive.
 
-    ======================= ===================================================
+    ======================= ============================================================
     Attribute               Description
-    ======================= ===================================================
-    ``created_utc``         Time the rule was created, represented in
-                            `Unix Time`_.
-    ``description``         The description of the rule, if provided, otherwise
-                            a blank string.
-    ``kind``                The kind of rule. Can be ``"link"``, ``comment"``,
-                            or ``"all"``.
-    ``priority``            Represents where the rule is ranked. For example,
-                            the first rule is at priority ``0``. Serves as an
-                            index number on the list of rules.
+    ======================= ============================================================
+    ``created_utc``         Time the rule was created, represented in `Unix Time`_.
+    ``description``         The description of the rule, if provided, otherwise a blank
+                            string.
+    ``kind``                The kind of rule. Can be ``"link"``, ``comment"``, or ``"all"``.
+    ``priority``            Represents where the rule is ranked. For example, the first
+                            rule is at priority ``0``. Serves as an index number on the
+                            list of rules.
     ``short_name``          The name of the rule.
-    ``violation_reason``    The reason that is displayed on the report menu for
-                            the rule.
-    ======================= ===================================================
+    ``violation_reason``    The reason that is displayed on the report menu for the
+                            rule.
+    ======================= ============================================================
 
 
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
@@ -63,8 +60,9 @@ class Rule(RedditBase):
         .. code-block:: python
 
             reddit.subreddit("NAME").removal_reasons["No spam"].mod.update(
-                description="Don't do this!",
-                violation_reason="Spam post")
+                description="Don't do this!", violation_reason="Spam post"
+            )
+
         """
         return RuleModeration(self)
 
@@ -79,9 +77,9 @@ class Rule(RedditBase):
         if (short_name, _data).count(None) != 1:
             raise ValueError("Either short_name or _data needs to be given.")
         self.short_name = short_name
-        # Note: The subreddit parameter can be None, because the objector
-        # does not know this info. In that case, it is the responsibility of
-        # the caller to set the `subreddit` property on the returned value.
+        # Note: The subreddit parameter can be None, because the objector does not know
+        # this info. In that case, it is the responsibility of the caller to set the
+        # `subreddit` property on the returned value.
         self.subreddit = subreddit
         super().__init__(reddit, _data=_data)
 
@@ -101,9 +99,7 @@ class Rule(RedditBase):
                 self._fetched = True
                 return
         raise ClientException(
-            "Subreddit {} does not have the rule {}".format(
-                self.subreddit, self.short_name
-            )
+            f"Subreddit {self.subreddit} does not have the rule {self.short_name}"
         )
 
 
@@ -117,15 +113,15 @@ class SubredditRules:
         for rule in reddit.subreddit("AskReddit").rules:
             print(rule)
 
-    Moderators can also add rules to the subreddit. For example, to make
-    a rule called ``"No spam"`` in the subreddit ``"NAME"``:
+    Moderators can also add rules to the subreddit. For example, to make a rule called
+    ``"No spam"`` in the subreddit ``"NAME"``:
 
     .. code-block:: python
 
         reddit.subreddit("NAME").rules.mod.add(
-            short_name="No spam",
-            kind="all",
-            description="Do not spam. Spam bad")
+            short_name="No spam", kind="all", description="Do not spam. Spam bad"
+        )
+
     """
 
     @cachedproperty
@@ -136,14 +132,12 @@ class SubredditRules:
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").rules.mod.add(
-                short_name="No spam",
-                kind="all",
-                description="Do not spam. Spam bad")
+            reddit.subreddit("NAME").rules.mod.add(
+                short_name="No spam", kind="all", description="Do not spam. Spam bad"
+            )
 
-        To move the fourth rule to the first position, and then to move the
-        prior first rule to where the third rule originally was in the
-        subreddit ``"NAME"``:
+        To move the fourth rule to the first position, and then to move the prior first
+        rule to where the third rule originally was in the subreddit ``"NAME"``:
 
         .. code-block:: python
 
@@ -162,13 +156,15 @@ class SubredditRules:
         :returns: A list of instances of :class:`.Rule`.
 
         .. deprecated:: 7.1
-            Use the iterator by removing the call to :class:`.SubredditRules`.
-            For example, in order to use the iterator:
+
+            Use the iterator by removing the call to :class:`.SubredditRules`. For
+            example, in order to use the iterator:
 
             .. code-block:: python
 
                 for rule in reddit.subreddit("test").rules:
                     print(rule)
+
         """
         warn(
             "Calling SubredditRules to get a list of rules is deprecated. "
@@ -189,9 +185,10 @@ class SubredditRules:
 
         :param short_name: The short_name of the rule, or the rule number.
 
-        .. note:: Rules fetched using a specific rule name are lazy loaded, so
-            you might have to access an attribute to get all of the expected
-            attributes.
+        .. note::
+
+            Rules fetched using a specific rule name are lazily loaded, so you might
+            have to access an attribute to get all of the expected attributes.
 
         This method is to be used to fetch a specific rule, like so:
 
@@ -203,15 +200,16 @@ class SubredditRules:
 
         You can also fetch a numbered rule of a subreddit.
 
-        Rule numbers start at ``0``, so the first rule is at index ``0``, and the
-        second rule is at index ``1``, and so on.
+        Rule numbers start at ``0``, so the first rule is at index ``0``, and the second
+        rule is at index ``1``, and so on.
 
-        :raises: :py:class:`IndexError` if a rule of a specific number does not
-            exist.
+        :raises: :py:class:`IndexError` if a rule of a specific number does not exist.
 
-        .. note:: You can use negative indexes, such as ``-1``, to get the last
-            rule. You can also use slices, to get a subset of rules, such as
-            the last three rules with ``rules[-3:]``.
+        .. note::
+
+            You can use negative indexes, such as ``-1``, to get the last rule. You can
+            also use slices, to get a subset of rules, such as the last three rules with
+            ``rules[-3:]``.
 
         For example, to fetch the second rule of ``AskReddit``:
 
@@ -244,8 +242,8 @@ class SubredditRules:
 
         .. code-block:: python
 
-           for rule in reddit.subreddit("NAME").rules:
-               print(rule)
+            for rule in reddit.subreddit("NAME").rules:
+                print(rule)
 
         """
         return iter(self._rule_list)
@@ -255,6 +253,7 @@ class SubredditRules:
         """Get a list of Rule objects.
 
         :returns: A list of instances of :class:`.Rule`.
+
         """
         rule_list = self._reddit.get(API_PATH["rules"].format(subreddit=self.subreddit))
         for rule in rule_list:
@@ -276,12 +275,13 @@ class RuleModeration:
     .. code-block:: python
 
         reddit.subreddit("NAME").removal_reasons["No spam"].mod.update(
-            description="Don't do this!",
-            violation_reason="Spam post")
+            description="Don't do this!", violation_reason="Spam post"
+        )
+
     """
 
     def __init__(self, rule: Rule):
-        """Instantize the RuleModeration class."""
+        """Initialize the RuleModeration class."""
         self.rule = rule
 
     def delete(self):
@@ -309,11 +309,13 @@ class RuleModeration:
     ) -> Rule:
         """Update the rule from this subreddit.
 
-        .. note:: Existing values will be used for any unspecified arguments.
+        .. note::
+
+            Existing values will be used for any unspecified arguments.
 
         :param description: The new description for the rule. Can be empty.
-        :param kind: The kind of item that the rule applies to. One of
-            ``"link"``, ``"comment"``, or ``"all"``.
+        :param kind: The kind of item that the rule applies to. One of ``"link"``,
+            ``"comment"``, or ``"all"``.
         :param short_name: The name of the rule.
         :param violation_reason: The reason that is shown on the report menu.
         :returns: A Rule object containing the updated values.
@@ -323,8 +325,8 @@ class RuleModeration:
         .. code-block:: python
 
             reddit.subreddit("NAME").removal_reasons["No spam"].mod.update(
-                description="Don't do this!",
-                violation_reason="Spam post")
+                description="Don't do this!", violation_reason="Spam post"
+            )
 
         """
         data = {
@@ -352,14 +354,12 @@ class SubredditRulesModeration:
 
     .. code-block:: python
 
-       reddit.subreddit("NAME").rules.mod.add(
-            short_name="No spam",
-            kind="all",
-            description="Do not spam. Spam bad")
+        reddit.subreddit("NAME").rules.mod.add(
+            short_name="No spam", kind="all", description="Do not spam. Spam bad"
+        )
 
-    To move the fourth rule to the first position, and then to move the prior
-    first rule to where the third rule originally was in the subreddit
-    ``"NAME"``:
+    To move the fourth rule to the first position, and then to move the prior first rule
+    to where the third rule originally was in the subreddit ``"NAME"``:
 
     .. code-block:: python
 
@@ -372,7 +372,7 @@ class SubredditRulesModeration:
     """
 
     def __init__(self, subreddit_rules: SubredditRules):
-        """Instantize the SubredditRulesModeration class."""
+        """Initialize the SubredditRulesModeration class."""
         self.subreddit_rules = subreddit_rules
 
     def add(
@@ -385,22 +385,21 @@ class SubredditRulesModeration:
         """Add a removal reason to this subreddit.
 
         :param short_name: The name of the rule.
-        :param kind: The kind of item that the rule applies to. One of
-            ``"link"``, ``"comment"``, or ``"all"``.
+        :param kind: The kind of item that the rule applies to. One of ``"link"``,
+            ``"comment"``, or ``"all"``.
         :param description: The description for the rule. Optional.
-        :param violation_reason: The reason that is shown on the report menu.
-            If a violation reason is not specified, the short name will be used
-            as the violation reason.
+        :param violation_reason: The reason that is shown on the report menu. If a
+            violation reason is not specified, the short name will be used as the
+            violation reason.
         :returns: The Rule added.
 
         To add rule ``"No spam"`` to the subreddit ``"NAME"`` try:
 
         .. code-block:: python
 
-           reddit.subreddit("NAME").rules.mod.add(
-               short_name="No spam",
-               kind="all",
-               description="Do not spam. Spam bad")
+            reddit.subreddit("NAME").rules.mod.add(
+                short_name="No spam", kind="all", description="Do not spam. Spam bad"
+            )
 
         """
         data = {
@@ -421,13 +420,13 @@ class SubredditRulesModeration:
     def reorder(self, rule_list: List[Rule]) -> List[Rule]:
         """Reorder the rules of a subreddit.
 
-        :param rule_list: The list of rules, in the wanted order. Each index of
-            the list indicates the position of the rule.
+        :param rule_list: The list of rules, in the wanted order. Each index of the list
+            indicates the position of the rule.
         :returns: A list containing the rules in the specified order.
 
-        For example, to move the fourth rule to the first position, and then to
-        move the prior first rule to where the third rule originally was in the
-        subreddit ``"NAME"``:
+        For example, to move the fourth rule to the first position, and then to move the
+        prior first rule to where the third rule originally was in the subreddit
+        ``"NAME"``:
 
         .. code-block:: python
 

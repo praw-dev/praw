@@ -34,9 +34,7 @@ class RedditBase(PRAWBase):
             self._fetch()
             return getattr(self, attribute)
         raise AttributeError(
-            "{!r} object has no attribute {!r}".format(
-                self.__class__.__name__, attribute
-            )
+            f"{self.__class__.__name__!r} object has no attribute {attribute!r}"
         )
 
     def __hash__(self) -> int:
@@ -54,7 +52,7 @@ class RedditBase(PRAWBase):
 
     def __repr__(self) -> str:
         """Return an object initialization representation of the instance."""
-        return "{}({}={!r})".format(self.__class__.__name__, self.STR_FIELD, str(self))
+        return f"{self.__class__.__name__}({self.STR_FIELD}={str(self)!r})"
 
     def __str__(self) -> str:
         """Return a string representation of the instance."""

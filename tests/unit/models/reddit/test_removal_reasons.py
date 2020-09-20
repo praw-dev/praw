@@ -39,7 +39,10 @@ class TestRemovalReason(UnitTest):
             RemovalReason(self.reddit, subreddit=self.reddit.subreddit("a"))
         with pytest.raises(ValueError):
             RemovalReason(
-                self.reddit, subreddit=self.reddit.subreddit("a"), id="test", _data={},
+                self.reddit,
+                subreddit=self.reddit.subreddit("a"),
+                id="test",
+                _data={},
             )
 
     def test__get(self):
@@ -83,7 +86,7 @@ class TestRemovalReason(UnitTest):
         reason = RemovalReason(
             self.reddit, subreddit=self.reddit.subreddit("a"), id="x"
         )
-        assert repr(reason) == ("RemovalReason(id='x')")
+        assert repr(reason) == "RemovalReason(id='x')"
 
     def test_str(self):
         reason = RemovalReason(

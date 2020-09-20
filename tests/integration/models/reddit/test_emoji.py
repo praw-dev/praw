@@ -27,12 +27,12 @@ class TestEmoji(IntegrationTest):
             with pytest.raises(ClientException) as excinfo:
                 emoji.url
             assert str(excinfo.value) == (
-                "/r/{} does not have the emoji {}".format(subreddit, "invalid")
+                f"r/{subreddit} does not have the emoji invalid"
             )
             with pytest.raises(ClientException) as excinfo2:
                 emoji2.url
             assert str(excinfo2.value) == (
-                "/r/{} does not have the emoji {}".format(subreddit, "Test_png")
+                f"r/{subreddit} does not have the emoji Test_png"
             )
 
     def test_delete(self):
@@ -47,7 +47,9 @@ class TestEmoji(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         with self.recorder.use_cassette("TestEmoji.test_update"):
             subreddit.emoji["test_png"].update(
-                mod_flair_only=False, post_flair_allowed=True, user_flair_allowed=True,
+                mod_flair_only=False,
+                post_flair_allowed=True,
+                user_flair_allowed=True,
             )
 
     @mock.patch("time.sleep", return_value=None)
@@ -79,8 +81,8 @@ class TestSubredditEmoji(IntegrationTest):
         with self.recorder.use_cassette("TestSubredditEmoji.test_add"):
             for extension in ["jpg", "png"]:
                 emoji = subreddit.emoji.add(
-                    "test_{}".format(extension),
-                    "tests/integration/files/test.{}".format(extension),
+                    f"test_{extension}",
+                    f"tests/integration/files/test.{extension}",
                 )
                 assert isinstance(emoji, Emoji)
 
@@ -91,8 +93,8 @@ class TestSubredditEmoji(IntegrationTest):
         with self.recorder.use_cassette("TestSubredditEmoji.test_add_with_perms"):
             for extension in ["jpg", "png"]:
                 emoji = subreddit.emoji.add(
-                    "test_{}".format(extension),
-                    "tests/integration/files/test.{}".format(extension),
+                    f"test_{extension}",
+                    f"tests/integration/files/test.{extension}",
                     mod_flair_only=True,
                     post_flair_allowed=True,
                     user_flair_allowed=False,

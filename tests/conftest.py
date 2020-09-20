@@ -35,7 +35,7 @@ def b64_string(input_string):
 
 def env_default(key):
     """Return environment variable or placeholder string."""
-    return os.environ.get("prawtest_{}".format(key), "placeholder_{}".format(key))
+    return os.environ.get(f"prawtest_{key}", f"placeholder_{key}")
 
 
 def filter_access_token(interaction, current_cassette):
@@ -69,7 +69,7 @@ placeholders = {
 
 
 placeholders["basic_auth"] = b64_string(
-    "{}:{}".format(placeholders["client_id"], placeholders["client_secret"])
+    f"{placeholders['client_id']}:{placeholders['client_secret']}"
 )
 
 
@@ -77,10 +77,7 @@ class PrettyJSONSerializer(JSONSerializer):
     name = "prettyjson"
 
     def serialize(self, cassette_data):
-        return (
-            json.dumps(cassette_data, sort_keys=True, indent=2, separators=(",", ": "))
-            + "\n"
-        )
+        return f"{json.dumps(cassette_data, sort_keys=True, indent=2, separators=(',', ': '))}\n"
 
 
 betamax.Betamax.register_serializer(PrettyJSONSerializer)
@@ -91,7 +88,7 @@ with betamax.Betamax.configure() as config:
     for key, value in placeholders.items():
         if key == "password":
             value = quote_plus(value)
-        config.define_cassette_placeholder("<{}>".format(key.upper()), value)
+        config.define_cassette_placeholder(f"<{key.upper()}>", value)
 
 
 def add_init_hook(original_init):

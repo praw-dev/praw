@@ -8,26 +8,24 @@ from ..base import PRAWBase
 class PollOption(PRAWBase):
     """Class to represent one option of a poll.
 
-    If ``submission`` is a poll :class:`.Submission`, access the poll's
-    options like so:
+    If ``submission`` is a poll :class:`.Submission`, access the poll's options like so:
 
     .. code-block:: python
 
-       poll_data = submission.poll_data
+        poll_data = submission.poll_data
 
-       # By index -- print the first option
-       print(poll_data.options[0])
+        # By index -- print the first option
+        print(poll_data.options[0])
 
-       # By ID -- print the option with ID "576797"
-       print(poll_data.option("576797"))
+        # By ID -- print the option with ID "576797"
+        print(poll_data.option("576797"))
 
     **Typical Attributes**
 
-    This table describes attributes that typically belong to objects of this
-    class. Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a
-    guarantee that these attributes will always be present, nor is this list
-    necessarily complete.
+    This table describes attributes that typically belong to objects of this class.
+    Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
+    these attributes will always be present, nor is this list necessarily complete.
 
     =================== =======================================================
     Attribute           Description
@@ -40,7 +38,7 @@ class PollOption(PRAWBase):
 
     def __repr__(self):
         """Make a string representation of the PollData."""
-        return "PollOption(id={!r})".format(self.id)
+        return f"PollOption(id={self.id!r})"
 
     def __str__(self):
         """Return a string version of the PollData, its text."""
@@ -50,47 +48,47 @@ class PollOption(PRAWBase):
 class PollData(PRAWBase):
     """Class to represent poll data on a poll submission.
 
-    If ``submission`` is a poll :class:`.Submission`, access the poll data
-    like so:
+    If ``submission`` is a poll :class:`.Submission`, access the poll data like so:
 
     .. code-block:: python
 
-       poll_data = submission.poll_data
-       print("There are {} votes total.".format(poll_data.total_vote_count))
-       print("The options are:")
-       for option in poll_data.options:
-           print("{} ({} votes)".format(option, option.vote_count))
-       print("I voted for {}.".format(poll_data.user_selection))
+        poll_data = submission.poll_data
+        print(f"There are {poll_data.total_vote_count} votes total.")
+        print("The options are:")
+        for option in poll_data.options:
+            print(f"{option} ({option.vote_count} votes)")
+        print(f"I voted for {poll_data.user_selection}.")
 
     **Typical Attributes**
 
-    This table describes attributes that typically belong to objects of this
-    class. Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a
-    guarantee that these attributes will always be present, nor is this list
-    necessarily complete.
+    This table describes attributes that typically belong to objects of this class.
+    Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
+    these attributes will always be present, nor is this list necessarily complete.
 
-    =========================== ===============================================
+    =========================== ========================================================
     Attribute                   Description
-    =========================== ===============================================
+    =========================== ========================================================
     ``options``                 A list of :class:`.PollOption` of the poll.
     ``total_vote_count``        The total number of votes cast in the poll.
-    ``user_selection``          The poll option selected by the authenticated
-                                user (possibly ``None``).
+    ``user_selection``          The poll option selected by the authenticated user
+                                (possibly ``None``).
     ``voting_end_timestamp``    Time the poll voting closes, represented in
                                 `Unix Time`_.
-    =========================== ===============================================
+    =========================== ========================================================
 
 
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+
     """
 
     @cachedproperty
     def user_selection(self) -> Optional[PollOption]:
         """Get the user's selection in this poll, if any.
 
-        :returns: The user's selection as a :class:`.PollOption`, or ``None``
-                  if there is no choice.
+        :returns: The user's selection as a :class:`.PollOption`, or ``None`` if there
+            is no choice.
+
         """
         if self._user_selection is None:
             return None
@@ -111,9 +109,10 @@ class PollData(PRAWBase):
         :returns: The specified :class:`.PollOption`.
 
         Raises ``KeyError`` if no option exists with the specified ID.
+
         """
         for option in self.options:
             if option.id == option_id:
                 return option
 
-        raise KeyError("No poll option with ID {!r}.".format(option_id))
+        raise KeyError(f"No poll option with ID {option_id!r}.")

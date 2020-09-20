@@ -10,21 +10,22 @@ class SavableMixin:
     def save(self, category: Optional[str] = None):
         """Save the object.
 
-        :param category: (Premium) The category to save to. If your user does
-            not have Reddit Premium this value is ignored by Reddit
-            (default: ``None``).
+        :param category: (Premium) The category to save to. If your user does not have
+            Reddit Premium this value is ignored by Reddit (default: ``None``).
 
         Example usage:
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
-           submission.save(category="view later")
+            submission = reddit.submission(id="5or86n")
+            submission.save(category="view later")
 
-           comment = reddit.comment(id="dxolpyc")
-           comment.save()
+            comment = reddit.comment(id="dxolpyc")
+            comment.save()
 
-        .. seealso:: :meth:`~.unsave`
+        .. seealso::
+
+            :meth:`~.unsave`
 
         """
         self._reddit.post(
@@ -38,13 +39,14 @@ class SavableMixin:
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
-           submission.unsave()
+            submission = reddit.submission(id="5or86n")
+            submission.unsave()
 
-           comment = reddit.comment(id="dxolpyc")
-           comment.unsave()
+        comment = reddit.comment(id="dxolpyc") comment.unsave()
 
-        .. seealso:: :meth:`~.save`
+        .. seealso::
+
+            :meth:`~.save`
 
         """
         self._reddit.post(API_PATH["unsave"], data={"id": self.fullname})

@@ -19,15 +19,16 @@ def do_process(args, shell=False):
     Output failed message on non-zero exit and return False.
 
     Exit if command is not found.
+
     """
-    print("Running: {}".format(" ".join(args)))
+    print(f"Running: {' '.join(args)}")
     try:
         check_call(args, shell=shell)
     except CalledProcessError:
-        print("\nFailed: {}".format(" ".join(args)))
+        print(f"\nFailed: {' '.join(args)}")
         return False
     except Exception as exc:
-        sys.stderr.write(str(exc) + "\n")
+        sys.stderr.write(f"{str(exc)}\n")
         sys.exit(1)
     return True
 
@@ -37,6 +38,7 @@ def run_static():
 
     Returns a statuscode of 0 if everything ran correctly.
     Otherwise, it will return statuscode 1
+
     """
     success = True
     success &= do_process(
@@ -52,8 +54,15 @@ def run_static():
             path.join(current_directory, "tools", "check_documentation.py"),
         ]
     )
+    success &= do_process(
+        [
+            sys.executable,
+            path.join(current_directory, "tools", "check_docstring.py"),
+        ]
+    )
+    success &= do_process(["flynt", "-q", "-tc", "-ll", "1000", "."])
     success &= do_process(["black", "."])
-    success &= do_process(["flake8", "--exclude=.eggs,build,docs"])
+    success &= do_process(["flake8", "--exclude=.eggs,build,docs,.venv"])
     success &= do_process(["pydocstyle", "praw"])
     # success &= do_process(["pylint", "--rcfile=.pylintrc", "praw"])
 
@@ -71,6 +80,7 @@ def run_unit():
 
     Follows the behavior of the static tests,
     where any failed tests cause pre_push.py to fail.
+
     """
     return do_process(["pytest"])
 
@@ -81,6 +91,7 @@ def main():
     usage: pre_push.py [-h] [-n] [-u] [-a]
 
     Run static and/or unit-tests
+
     """
     parser = argparse.ArgumentParser(description="Run static and/or unit-tests")
     parser.add_argument(

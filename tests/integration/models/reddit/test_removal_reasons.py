@@ -46,9 +46,7 @@ class TestRemovalReason(IntegrationTest):
             with pytest.raises(ClientException) as excinfo:
                 reason.title
             assert str(excinfo.value) == (
-                "Subreddit {} does not have the removal reason {}".format(
-                    self.subreddit, "invalid"
-                )
+                f"Subreddit {self.subreddit} does not have the removal reason invalid"
             )
 
     @mock.patch("time.sleep", return_value=None)

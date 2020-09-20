@@ -16,21 +16,20 @@ class Emoji(RedditBase):
 
     **Typical Attributes**
 
-    This table describes attributes that typically belong to objects of this
-    class. Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a
-    guarantee that these attributes will always be present, nor is this list
-    necessarily comprehensive.
+    This table describes attributes that typically belong to objects of this class.
+    Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
+    these attributes will always be present, nor is this list necessarily comprehensive.
 
-    ======================= ===================================================
+    ======================= ============================================================
     Attribute               Description
-    ======================= ===================================================
+    ======================= ============================================================
     ``mod_flair_only``      Whether the emoji is restricted for mod use only.
     ``name``                The name of the emoji.
     ``post_flair_allowed``  Whether the emoji may appear in post flair.
     ``url``                 The URL of the emoji image.
     ``user_flair_allowed``  Whether the emoji may appear in user flair.
-    ======================= ===================================================
+    ======================= ============================================================
 
     """
 
@@ -66,9 +65,7 @@ class Emoji(RedditBase):
                 self.__dict__.update(emoji.__dict__)
                 self._fetched = True
                 return
-        raise ClientException(
-            "/r/{} does not have the emoji {}".format(self.subreddit, self.name)
-        )
+        raise ClientException(f"r/{self.subreddit} does not have the emoji {self.name}")
 
     def delete(self):
         """Delete an emoji from this subreddit by Emoji.
@@ -77,7 +74,7 @@ class Emoji(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit("praw_test").emoji["test"].delete()
+            reddit.subreddit("praw_test").emoji["test"].delete()
 
         """
         url = API_PATH["emoji_delete"].format(
@@ -93,26 +90,24 @@ class Emoji(RedditBase):
     ):
         """Update the permissions of an emoji in this subreddit.
 
-        :param mod_flair_only: (boolean) Indicate whether the emoji is
-            restricted to mod use only. Respects pre-existing settings if not
-            provided.
-        :param post_flair_allowed: (boolean) Indicate whether the emoji may
-            appear in post flair. Respects pre-existing settings if not
-            provided.
-        :param user_flair_allowed: (boolean) Indicate whether the emoji may
-            appear in user flair. Respects pre-existing settings if not
-            provided.
+        :param mod_flair_only: (boolean) Indicate whether the emoji is restricted to mod
+            use only. Respects pre-existing settings if not provided.
+        :param post_flair_allowed: (boolean) Indicate whether the emoji may appear in
+            post flair. Respects pre-existing settings if not provided.
+        :param user_flair_allowed: (boolean) Indicate whether the emoji may appear in
+            user flair. Respects pre-existing settings if not provided.
 
-        .. note:: In order to retain pre-existing values for those that are not
-           explicitly passed, a network request is issued. To  avoid that
-           network request, explicitly provide all values.
+        .. note::
 
-        To restrict the emoji ``test`` in subreddit ``wowemoji`` to mod use
-        only, try:
+            In order to retain pre-existing values for those that are not explicitly
+            passed, a network request is issued. To avoid that network request,
+            explicitly provide all values.
+
+        To restrict the emoji ``test`` in subreddit ``wowemoji`` to mod use only, try:
 
         .. code-block:: python
 
-           reddit.subreddit("wowemoji").emoji["test"].update(mod_flair_only=True)
+            reddit.subreddit("wowemoji").emoji["test"].update(mod_flair_only=True)
 
         """
         locals_reference = locals()
@@ -150,8 +145,8 @@ class SubredditEmoji:
 
         .. code-block:: python
 
-           emoji = reddit.subreddit("praw_test").emoji["test"]
-           print(emoji)
+            emoji = reddit.subreddit("praw_test").emoji["test"]
+            print(emoji)
 
         """
         return Emoji(self._reddit, self.subreddit, name)
@@ -172,8 +167,8 @@ class SubredditEmoji:
 
         .. code-block:: python
 
-           for emoji in reddit.subreddit("praw_test").emoji:
-               print(emoji)
+            for emoji in reddit.subreddit("praw_test").emoji:
+                print(emoji)
 
         """
         response = self._reddit.get(
@@ -200,19 +195,18 @@ class SubredditEmoji:
 
         :param name: The name of the emoji
         :param image_path: A path to a jpeg or png image.
-        :param mod_flair_only: (boolean) When provided, indicate whether the
-            emoji is restricted to mod use only. (Default: ``None``)
-        :param post_flair_allowed: (boolean) When provided, indicate whether
-            the emoji may appear in post flair. (Default: ``None``)
-        :param user_flair_allowed: (boolean) When provided, indicate whether
-            the emoji may appear in user flair. (Default: ``None``)
-        :returns: The Emoji added.
+        :param mod_flair_only: (boolean) When provided, indicate whether the emoji is
+            restricted to mod use only. (Default: ``None``)
+        :param post_flair_allowed: (boolean) When provided, indicate whether the emoji
+            may appear in post flair. (Default: ``None``)
+        :param user_flair_allowed: (boolean) When provided, indicate whether the emoji
+            may appear in user flair. (Default: ``None``) :returns: The Emoji added.
 
         To add ``test`` to the subreddit ``praw_test`` try:
 
         .. code-block:: python
 
-           reddit.subreddit("praw_test").emoji.add("test", "test.png")
+            reddit.subreddit("praw_test").emoji.add("test", "test.png")
 
         """
         data = {
@@ -226,7 +220,7 @@ class SubredditEmoji:
         # until we learn otherwise, assume this request always succeeds
         upload_lease = self._reddit.post(url, data=data)["s3UploadLease"]
         upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
-        upload_url = "https:{}".format(upload_lease["action"])
+        upload_url = f"https:{upload_lease['action']}"
 
         with open(image_path, "rb") as image:
             response = self._reddit._core._requestor._http.post(
