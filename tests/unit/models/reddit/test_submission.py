@@ -68,8 +68,8 @@ class TestSubmission(UnitTest):
             "https://redd.it/2gmzqe",
             "https://redd.it/2gmzqe/",
             "http://reddit.com/comments/2gmzqe",
-            "https://www.reddit.com/r/redditdev/comments/2gmzqe/"
-            "praw_https_enabled_praw_testing_needed/",
+            "https://www.reddit.com/r/redditdev/comments/2gmzqe/praw_https_enabled_praw_testing_needed/",
+            "https://www.reddit.com/gallery/2gmzqe",
         ]
         for url in urls:
             assert Submission.id_from_url(url) == "2gmzqe", url
