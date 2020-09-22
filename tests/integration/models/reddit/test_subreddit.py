@@ -1776,6 +1776,15 @@ class TestSubredditRelationships(IntegrationTest):
             assert self.REDDITOR not in self.subreddit.moderator()
 
     @mock.patch("time.sleep", return_value=None)
+    def test_moderator_invited_moderators(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditRelationships.test_moderator_invited_moderators"
+        ):
+            for moderator in self.subreddit.moderator.invited():
+                assert isinstance(moderator, Redditor)
+
+    @mock.patch("time.sleep", return_value=None)
     def test_modeator_leave(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubredditRelationships.moderator_leave"):

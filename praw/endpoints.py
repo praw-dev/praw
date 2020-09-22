@@ -72,6 +72,7 @@ API_PATH = {
     "list_banned":             "r/{subreddit}/about/banned/",
     "list_contributor":        "r/{subreddit}/about/contributors/",
     "list_moderator":          "r/{subreddit}/about/moderators/",
+    "list_invited_moderator":  "/api/v1/{subreddit}/moderators_invited",
     "list_muted":              "r/{subreddit}/about/muted/",
     "list_wikibanned":         "r/{subreddit}/about/wikibanned/",
     "list_wikicontributor":    "r/{subreddit}/about/wikicontributors/",
