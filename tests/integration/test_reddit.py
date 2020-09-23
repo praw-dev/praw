@@ -31,7 +31,7 @@ class TestReddit(IntegrationTest):
         items = []
         for i in range(100):
             for base in bases:
-                items.append("{}{:02d}".format(base, i))
+                items.append(f"{base}{i:02d}")
 
         item_generator = self.reddit.info(items)
         with self.recorder.use_cassette("TestReddit.test_info"):

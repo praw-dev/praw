@@ -12,13 +12,15 @@ class InboxToggleableMixin:
 
         .. code-block:: python
 
-           comment = reddit.comment("dkk4qjd")
-           comment.disable_inbox_replies()
+            comment = reddit.comment("dkk4qjd")
+            comment.disable_inbox_replies()
 
-           submission = reddit.submission("8dmv8z")
-           submission.disable_inbox_replies()
+            submission = reddit.submission("8dmv8z")
+            submission.disable_inbox_replies()
 
-        .. seealso:: :meth:`~.enable_inbox_replies`
+        .. seealso::
+
+            :meth:`~.enable_inbox_replies`
 
         """
         self._reddit.post(
@@ -32,13 +34,15 @@ class InboxToggleableMixin:
 
         .. code-block:: python
 
-           comment = reddit.comment("dkk4qjd")
-           comment.enable_inbox_replies()
+            comment = reddit.comment("dkk4qjd")
+            comment.enable_inbox_replies()
 
-           submission = reddit.submission("8dmv8z")
-           submission.enable_inbox_replies()
+            submission = reddit.submission("8dmv8z")
+            submission.enable_inbox_replies()
 
-        .. seealso:: :meth:`~.disable_inbox_replies`
+        .. seealso::
+
+            :meth:`~.disable_inbox_replies`
 
         """
         self._reddit.post(

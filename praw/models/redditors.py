@@ -30,6 +30,7 @@ class Redditors(PRAWBase):
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
         """
         return ListingGenerator(self._reddit, API_PATH["users_new"], **generator_kwargs)
 
@@ -42,6 +43,7 @@ class Redditors(PRAWBase):
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
         """
         return ListingGenerator(
             self._reddit, API_PATH["users_popular"], **generator_kwargs
@@ -53,11 +55,11 @@ class Redditors(PRAWBase):
         r"""Return a :class:`.ListingGenerator` of Redditors for ``query``.
 
         :param query: The query string to filter Redditors by.
-
         :returns: :class:`.Redditor`\ s.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
         """
         self._safely_add_arguments(generator_kwargs, "params", q=query)
         return ListingGenerator(
@@ -69,12 +71,13 @@ class Redditors(PRAWBase):
     ) -> Iterator["Subreddit"]:
         """Yield new Redditors as they are created.
 
-        Redditors are yielded oldest first. Up to 100 historical Redditors
-        will initially be returned.
+        Redditors are yielded oldest first. Up to 100 historical Redditors will
+        initially be returned.
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
         :returns: Redditor profiles, which are a type of :class:`.Subreddit`.
+
         """
         return stream_generator(self.new, **stream_options)
 
@@ -87,6 +90,7 @@ class Redditors(PRAWBase):
         Each ID must be prefixed with ``t2_``.
 
         Invalid IDs are ignored by the server.
+
         """
         iterable = iter(ids)
         while True:

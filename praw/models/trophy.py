@@ -10,37 +10,36 @@ if TYPE_CHECKING:  # pragma: no cover
 class Trophy(PRAWBase):
     """Represent a trophy.
 
-    End users should not instantiate this class directly.
-    :meth:`.Redditor.trophies` can be used to get a list
-    of the redditor's trophies.
+    End users should not instantiate this class directly. :meth:`.Redditor.trophies` can
+    be used to get a list of the redditor's trophies.
 
 
     **Typical Attributes**
 
-    This table describes attributes that typically belong to objects of this
-    class. Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a
-    guarantee that these attributes will always be present, nor is this list
-    necessarily complete.
+    This table describes attributes that typically belong to objects of this class.
+    Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
+    these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ===================================================
+    ======================= ============================================================
     Attribute               Description
-    ======================= ===================================================
+    ======================= ============================================================
     ``award_id``            The ID of the trophy (sometimes ``None``).
     ``description``         The description of the trophy (sometimes ``None``).
     ``icon_40``             The URL of a 41x41 px icon for the trophy.
     ``icon_70``             The URL of a 71x71 px icon for the trophy.
     ``name``                The name of the trophy.
     ``url``                 A relevant URL (sometimes ``None``).
-    ======================= ===================================================
+    ======================= ============================================================
+
     """
 
     def __init__(self, reddit: "Reddit", _data: Dict[str, Any]):
         """Initialize a Trophy instance.
 
         :param reddit: An instance of :class:`.Reddit`.
-        :param _data: The structured data, assumed to be a dict
-            and key ``"name"`` must be provided.
+        :param _data: The structured data, assumed to be a dict and key ``"name"`` must
+            be provided.
 
         """
         assert isinstance(_data, dict) and "name" in _data
@@ -58,4 +57,4 @@ class Trophy(PRAWBase):
 
     def __repr__(self) -> str:
         """Return the object's REPR status."""
-        return "{}(name={!r})".format(self.__class__.__name__, self.name)
+        return f"{self.__class__.__name__}(name={self.name!r})"

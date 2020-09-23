@@ -327,7 +327,10 @@ class TestSubreddit(IntegrationTest):
         with self.recorder.use_cassette("TestSubreddit.test_submit_poll"):
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit_poll(
-                "Test Poll", selftext="Test poll text.", options=options, duration=6,
+                "Test Poll",
+                selftext="Test poll text.",
+                options=options,
+                duration=6,
             )
             assert submission.author == self.reddit.config.username
             assert submission.selftext.startswith("Test poll text.")
@@ -1543,7 +1546,7 @@ class TestSubredditModeration(IntegrationTest):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubredditModeration.test_update"):
             before_settings = self.subreddit.mod.settings()
-            new_title = before_settings["title"] + "x"
+            new_title = f"{before_settings['title']}x"
             new_title = (
                 "x"
                 if (len(new_title) >= 20 and "placeholder" not in new_title)

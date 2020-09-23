@@ -160,7 +160,7 @@ class TestReddit(UnitTest):
             password=None,
             refresh_token="refresh",
             username=None,
-            **self.REQUIRED_DUMMY_SETTINGS
+            **self.REQUIRED_DUMMY_SETTINGS,
         ) as reddit:
             assert not reddit.read_only
             reddit.read_only = True
@@ -221,7 +221,7 @@ class TestReddit(UnitTest):
                 settings[setting] = Config.CONFIG_NOT_SET
                 Reddit(**settings)
             assert str(excinfo.value).startswith(
-                "Required configuration setting '{}' missing.".format(setting)
+                f"Required configuration setting '{setting}' missing."
             )
             if setting == "client_secret":
                 assert "set to None" in str(excinfo.value)
@@ -235,7 +235,7 @@ class TestReddit(UnitTest):
                 settings[setting] = None
                 Reddit(**settings)
             assert str(excinfo.value).startswith(
-                "Required configuration setting '{}' missing.".format(setting)
+                f"Required configuration setting '{setting}' missing."
             )
 
     def test_reddit__site_name_no_section(self):
@@ -260,7 +260,10 @@ class TestReddit(UnitTest):
         reddit = Reddit(client_id="dummy", client_secret="dummy", user_agent="dummy")
         with pytest.raises(ClientException) as excinfo:
             reddit.request(
-                method="POST", path="/", data={"key": "value"}, json={"key": "value"},
+                method="POST",
+                path="/",
+                data={"key": "value"},
+                json={"key": "value"},
             )
         assert str(excinfo.value).startswith(
             "At most one of `data` and `json` is supported."

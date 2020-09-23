@@ -23,6 +23,7 @@ class Subreddits(PRAWBase):
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
         """
         return ListingGenerator(
             self._reddit, API_PATH["subreddits_default"], **generator_kwargs
@@ -44,6 +45,7 @@ class Subreddits(PRAWBase):
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
         """
         return ListingGenerator(
             self._reddit, API_PATH["subreddits_gold"], **generator_kwargs
@@ -56,6 +58,7 @@ class Subreddits(PRAWBase):
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
         """
         return ListingGenerator(
             self._reddit, API_PATH["subreddits_new"], **generator_kwargs
@@ -68,6 +71,7 @@ class Subreddits(PRAWBase):
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
         """
         return ListingGenerator(
             self._reddit, API_PATH["subreddits_popular"], **generator_kwargs
@@ -80,11 +84,9 @@ class Subreddits(PRAWBase):
     ) -> List[Subreddit]:
         """Return subreddits recommended for the given list of subreddits.
 
-        :param subreddits: A list of Subreddit instances and/or subreddit
-            names.
-        :param omit_subreddits: A list of Subreddit instances and/or subreddit
-            names to exclude from the results (Reddit's end may not work as
-            expected).
+        :param subreddits: A list of Subreddit instances and/or subreddit names.
+        :param omit_subreddits: A list of Subreddit instances and/or subreddit names to
+            exclude from the results (Reddit's end may not work as expected).
 
         """
         if not isinstance(subreddits, list):
@@ -111,7 +113,9 @@ class Subreddits(PRAWBase):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        .. seealso:: :meth:`~.search_by_name` to search by subreddit names
+        .. seealso::
+
+            :meth:`~.search_by_name` to search by subreddit names
 
         """
         self._safely_add_arguments(generator_kwargs, "params", q=query)
@@ -140,6 +144,10 @@ class Subreddits(PRAWBase):
 
         :param query: Search for subreddits relevant to the search topic.
 
+        .. note::
+
+            As of 09/01/2020, this endpoint always returns 404.
+
         """
         result = self._reddit.get(
             API_PATH["subreddits_by_topic"], params={"query": query}
@@ -151,8 +159,8 @@ class Subreddits(PRAWBase):
     ) -> Iterator[Subreddit]:
         """Yield new subreddits as they are created.
 
-        Subreddits are yielded oldest first. Up to 100 historical subreddits
-        will initially be returned.
+        Subreddits are yielded oldest first. Up to 100 historical subreddits will
+        initially be returned.
 
         Keyword arguments are passed to :func:`.stream_generator`.
 

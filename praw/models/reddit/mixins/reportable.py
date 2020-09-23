@@ -10,18 +10,18 @@ class ReportableMixin:
 
         :param reason: The reason for reporting.
 
-        Raises :class:`.RedditAPIException` if ``reason`` is longer than 100
-        characters.
+        :raises :class:`.RedditAPIException` if ``reason`` is longer than 100
+            characters.
 
         Example usage:
 
         .. code-block:: python
 
-           submission = reddit.submission(id="5or86n")
-           submission.report("report reason")
+            submission = reddit.submission(id="5or86n")
+            submission.report("report reason")
 
-           comment = reddit.comment(id="dxolpyc")
-           comment.report("report reason")
+            comment = reddit.comment(id="dxolpyc")
+            comment.report("report reason")
 
         """
         self._reddit.post(

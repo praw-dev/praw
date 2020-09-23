@@ -5,8 +5,8 @@ from .base import BaseList
 class TrophyList(BaseList):
     """A list of trophies.
 
-    This class is solely used to parse responses from reddit,
-    so end users should not use this class directly.
+    This class is solely used to parse responses from reddit, so end users should not
+    use this class directly.
 
     """
 

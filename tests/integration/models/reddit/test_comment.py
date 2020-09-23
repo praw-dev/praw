@@ -334,7 +334,7 @@ class TestCommentModeration(IntegrationTest):
                 for type in ("public", "private", "private_exposed")
             ]
             assert isinstance(res[0], Comment)
-            assert res[0].parent_id == "t1_" + comment.id
+            assert res[0].parent_id == f"t1_{comment.id}"
             assert res[0].body == message
             assert res[1] is None
             assert res[2] is None

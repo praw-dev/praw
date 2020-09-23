@@ -13,10 +13,9 @@ class PRAWBase:
     def _safely_add_arguments(argument_dict, key, **new_arguments):
         """Replace argument_dict[key] with a deepcopy and update.
 
-        This method is often called when new parameters need to be added to a
-        request. By calling this method and adding the new or updated
-        parameters we can insure we don't modify the dictionary passed in by
-        the caller.
+        This method is often called when new parameters need to be added to a request.
+        By calling this method and adding the new or updated parameters we can insure we
+        don't modify the dictionary passed in by the caller.
 
         """
         value = deepcopy(argument_dict[key]) if key in argument_dict else {}

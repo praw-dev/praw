@@ -39,8 +39,8 @@ class CommentHelper(PRAWBase):
 
         .. code-block:: python
 
-           for comment in reddit.subreddit("redditdev").comments(limit=25):
-               print(comment.author)
+            for comment in reddit.subreddit("redditdev").comments(limit=25):
+                print(comment.author)
 
         """
         return ListingGenerator(self._reddit, self._path, **generator_kwargs)
@@ -54,12 +54,12 @@ class SubredditListingMixin(BaseListingMixin, GildedListingMixin, RisingListingM
         """Provide an instance of :class:`.CommentHelper`.
 
         For example, to output the author of the 25 most recent comments of
-        ``/r/redditdev`` execute:
+        ``r/redditdev`` execute:
 
         .. code-block:: python
 
-           for comment in reddit.subreddit("redditdev").comments(limit=25):
-               print(comment.author)
+            for comment in reddit.subreddit("redditdev").comments(limit=25):
+                print(comment.author)
 
         """
         return CommentHelper(self)

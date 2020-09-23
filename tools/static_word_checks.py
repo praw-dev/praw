@@ -35,14 +35,10 @@ class StaticChecker:
             if self.replace:
                 with open(filename, "w") as fp:
                     fp.write(newcontent)
-                print(
-                    "{filename}: Replaced all ``code::`` to "
-                    "``code-block::``".format(filename=filename)
-                )
+                print(f"{filename}: Replaced all ``code::`` to ``code-block::``")
                 return True
             print(
-                "{filename}; This file uses the `code::` syntax, please change"
-                " the syntax to ``code-block::``.".format(filename=filename)
+                f"{filename}; This file uses the `code::` syntax, please change the syntax to ``code-block::``."
             )
             return False
         return True
@@ -53,26 +49,24 @@ class StaticChecker:
         :param filename: The name of the file to check & replace.
         :param content: The content of the file
         :returns: A boolean with the status of the check
+
         """
         if os.path.join("praw", "const.py") in filename:  # fails due to bytes blocks
             return True
         newcontent = re.sub(r"(^|\s)/(u|r)/", r"\1\2/", content)
-        # will only replace if the character behind a /r/ is a
-        # whitespace character or the start of a line
+        # will only replace if the character behind a /r/ is a  whitespace character or
+        # the start of a line
         if content == newcontent:
             return True
         if self.replace:
             with open(filename, "w") as fp:
                 fp.write(newcontent)
             print(
-                "{filename}: Replaced all instances of ``/r/`` and/or "
-                "``/u/`` to ``r/`` and/or ``u/``.".format(filename=filename)
+                f"{filename}: Replaced all instances of ``/r/`` and/or ``/u/`` to ``r/`` and/or ``u/``."
             )
             return True
         print(
-            "{filename}: This file contains instances of ``/r/`` and/or "
-            "``/u/``. Please change them to ``r/`` and/or "
-            "``u/``.".format(filename=filename)
+            f"{filename}: This file contains instances of ``/r/`` and/or ``/u/``. Please change them to ``r/`` and/or ``u/``."
         )
         return False
 
@@ -83,13 +77,11 @@ class StaticChecker:
         :param line_number: The line number
         :param content: The content of the line
         :returns: A boolean with the status of the check
+
         """
         if "noreturn" in content.lower():
             print(
-                "{filename}: Line {line_number} has phrase ``noreturn``, "
-                "please edit and remove this.".format(
-                    filename=filename, line_number=line_number
-                )
+                f"{filename}: Line {line_number} has phrase ``noreturn``, please edit and remove this."
             )
             return False
         return True
@@ -104,8 +96,8 @@ class StaticChecker:
         It runs the checks located in the ``self.full_file_checks`` and
         ``self.line_checks`` lists, with full file checks being run first.
 
-        Full-file checks are checks that can also fix the errors they find,
-        while the line checks can just warn about found errors.
+        Full-file checks are checks that can also fix the errors they find, while the
+        line checks can just warn about found errors.
 
         * Full file checks:
 

@@ -25,8 +25,8 @@ class ThingModerationMixin:
         :param mod_note: A message for the other moderators.
         :param reason_id: The removal reason ID.
 
-        It is necessary to first call :meth:`~.remove` on the
-        :class:`~.Comment` or :class:`~.Submission`.
+        It is necessary to first call :meth:`~.remove` on the :class:`~.Comment` or
+        :class:`~.Submission`.
 
         If ``reason_id`` is not specified, ``mod_note`` cannot be blank.
 
@@ -44,21 +44,20 @@ class ThingModerationMixin:
     def approve(self):
         """Approve a :class:`~.Comment` or :class:`~.Submission`.
 
-        Approving a comment or submission reverts a removal, resets the report
-        counter, adds a green check mark indicator (only visible to other
-        moderators) on the website view, and sets the ``approved_by`` attribute
-        to the authenticated user.
+        Approving a comment or submission reverts a removal, resets the report counter,
+        adds a green check mark indicator (only visible to other moderators) on the
+        website view, and sets the ``approved_by`` attribute to the authenticated user.
 
         Example usage:
 
         .. code-block:: python
 
-           # approve a comment:
-           comment = reddit.comment("dkk4qjd")
-           comment.mod.approve()
-           # approve a submission:
-           submission = reddit.submission(id="5or86n")
-           submission.mod.approve()
+            # approve a comment:
+            comment = reddit.comment("dkk4qjd")
+            comment.mod.approve()
+            # approve a submission:
+            submission = reddit.submission(id="5or86n")
+            submission.mod.approve()
 
         """
         self.thing._reddit.post(API_PATH["approve"], data={"id": self.thing.fullname})
@@ -66,25 +65,27 @@ class ThingModerationMixin:
     def distinguish(self, how="yes", sticky=False):
         """Distinguish a :class:`~.Comment` or :class:`~.Submission`.
 
-        :param how: One of "yes", "no", "admin", "special". "yes" adds a
-            moderator level distinguish. "no" removes any distinction. "admin"
-            and "special" require special user privileges to use.
-        :param sticky: Comment is stickied if ``True``, placing it at the top
-            of the comment page regardless of score. If thing is not a
-            top-level comment, this parameter is silently ignored.
+        :param how: One of "yes", "no", "admin", "special". "yes" adds a moderator level
+            distinguish. "no" removes any distinction. "admin" and "special" require
+            special user privileges to use.
+        :param sticky: Comment is stickied if ``True``, placing it at the top of the
+            comment page regardless of score. If thing is not a top-level comment, this
+            parameter is silently ignored.
 
         Example usage:
 
         .. code-block:: python
 
-           # distinguish and sticky a comment:
-           comment = reddit.comment("dkk4qjd")
-           comment.mod.distinguish(how="yes", sticky=True)
-           # undistinguish a submission:
-           submission = reddit.submission(id="5or86n")
-           submission.mod.distinguish(how="no")
+            # distinguish and sticky a comment:
+            comment = reddit.comment("dkk4qjd")
+            comment.mod.distinguish(how="yes", sticky=True)
+            # undistinguish a submission:
+            submission = reddit.submission(id="5or86n")
+            submission.mod.distinguish(how="no")
 
-        .. seealso:: :meth:`~.undistinguish`
+        .. seealso::
+
+            :meth:`~.undistinguish`
 
         """
         data = {"how": how, "id": self.thing.fullname}
@@ -95,23 +96,24 @@ class ThingModerationMixin:
     def ignore_reports(self):
         """Ignore future reports on a :class:`~.Comment` or :class:`~.Submission`.
 
-        Calling this method will prevent future reports on this Comment or
-        Submission from both triggering notifications and appearing in the
-        various moderation listings. The report count will still increment on
-        the Comment or Submission.
+        Calling this method will prevent future reports on this Comment or Submission
+        from both triggering notifications and appearing in the various moderation
+        listings. The report count will still increment on the Comment or Submission.
 
         Example usage:
 
         .. code-block:: python
 
-           # ignore future reports on a comment:
-           comment = reddit.comment("dkk4qjd")
-           comment.mod.ignore_reports()
-           # ignore future reports on a submission:
-           submission = reddit.submission(id="5or86n")
-           submission.mod.ignore_reports()
+            # ignore future reports on a comment:
+            comment = reddit.comment("dkk4qjd")
+            comment.mod.ignore_reports()
+            # ignore future reports on a submission:
+            submission = reddit.submission(id="5or86n")
+            submission.mod.ignore_reports()
 
-        .. seealso:: :meth:`~.unignore_reports`
+        .. seealso::
+
+            :meth:`~.unignore_reports`
 
         """
         self.thing._reddit.post(
@@ -125,14 +127,16 @@ class ThingModerationMixin:
 
         .. code-block:: python
 
-           # lock a comment:
-           comment = reddit.comment("dkk4qjd")
-           comment.mod.lock()
-           # lock a submission:
-           submission = reddit.submission(id="5or86n")
-           submission.mod.lock()
+            # lock a comment:
+            comment = reddit.comment("dkk4qjd")
+            comment.mod.lock()
+            # lock a submission:
+            submission = reddit.submission(id="5or86n")
+            submission.mod.lock()
 
-        .. seealso:: :meth:`~.unlock`
+        .. seealso::
+
+            :meth:`~.unlock`
 
         """
         self.thing._reddit.post(API_PATH["lock"], data={"id": self.thing.fullname})
@@ -141,27 +145,27 @@ class ThingModerationMixin:
         """Remove a :class:`~.Comment` or :class:`~.Submission`.
 
         :param mod_note: A message for the other moderators.
-        :param spam: When True, use the removal to help train the Subreddit's
-            spam filter (default: False).
+        :param spam: When True, use the removal to help train the Subreddit's spam
+            filter (default: False).
         :param reason_id: The removal reason ID.
 
-        If either ``reason_id`` or ``mod_note`` are provided, a second API
-        call is made to add the removal reason.
+        If either ``reason_id`` or ``mod_note`` are provided, a second API call is made
+        to add the removal reason.
 
         Example usage:
 
         .. code-block:: python
 
-           # remove a comment and mark as spam:
-           comment = reddit.comment("dkk4qjd")
-           comment.mod.remove(spam=True)
-           # remove a submission
-           submission = reddit.submission(id="5or86n")
-           submission.mod.remove()
-           # remove a submission with a removal reason
-           reason = reddit.subreddit.mod.removal_reasons["110ni21zo23ql"]
-           submission = reddit.submission(id="5or86n")
-           submission.mod.remove(reason_id=reason.id)
+            # remove a comment and mark as spam:
+            comment = reddit.comment("dkk4qjd")
+            comment.mod.remove(spam=True)
+            # remove a submission
+            submission = reddit.submission(id="5or86n")
+            submission.mod.remove()
+            # remove a submission with a removal reason
+            reason = reddit.subreddit.mod.removal_reasons["110ni21zo23ql"]
+            submission = reddit.submission(id="5or86n")
+            submission.mod.remove(reason_id=reason.id)
 
         """
         data = {"id": self.thing.fullname, "spam": bool(spam)}
@@ -177,26 +181,27 @@ class ThingModerationMixin:
     ):
         """Send a removal message for a :class:`~.Comment` or :class:`~.Submission`.
 
-        .. warning:: The object has to be removed before giving it a removal
-            reason. Remove the object with :meth:`.remove`. Trying to add a
-            removal reason without removing the object will result in
-            :class:`.RedditAPIException` being thrown with an ``INVALID_ID``
-            error_type.
+        .. warning::
+
+            The object has to be removed before giving it a removal reason. Remove the
+            object with :meth:`.remove`. Trying to add a removal reason without removing
+            the object will result in :class:`.RedditAPIException` being thrown with an
+            ``INVALID_ID`` error_type.
 
         Reddit adds human-readable information about the object to the message.
 
-        :param type: One of "public", "private", "private_exposed".
-            "public" leaves a stickied comment on the post.
-            "private" sends a Modmail message with hidden username.
-            "private_exposed" sends a Modmail message without hidden username.
-        :param title: The short reason given in the message.
-            (Ignored if type is "public".)
+        :param type: One of "public", "private", "private_exposed". "public" leaves a
+            stickied comment on the post. "private" sends a Modmail message with hidden
+            username. "private_exposed" sends a Modmail message without hidden username.
+        :param title: The short reason given in the message. (Ignored if type is
+            "public".)
         :param message: The body of the message.
 
         If ``type`` is "public", the new :class:`~.Comment` is returned.
+
         """
-        # The API endpoint used to send removal messages is different
-        # for posts and comments, so the derived classes specify which one.
+        # The API endpoint used to send removal messages is different for posts and
+        # comments, so the derived classes specify which one.
         if self.REMOVAL_MESSAGE_API is None:
             raise NotImplementedError("ThingModerationMixin must be extended.")
         url = API_PATH[self.REMOVAL_MESSAGE_API]
@@ -220,14 +225,16 @@ class ThingModerationMixin:
 
         .. code-block:: python
 
-           # undistinguish a comment:
-           comment = reddit.comment("dkk4qjd")
-           comment.mod.undistinguish()
-           # undistinguish a submission:
-           submission = reddit.submission(id="5or86n")
-           submission.mod.undistinguish()
+            # undistinguish a comment:
+            comment = reddit.comment("dkk4qjd")
+            comment.mod.undistinguish()
+            # undistinguish a submission:
+            submission = reddit.submission(id="5or86n")
+            submission.mod.undistinguish()
 
-        .. seealso:: :meth:`~.distinguish`
+        .. seealso::
+
+            :meth:`~.distinguish`
 
         """
         self.distinguish(how="no")
@@ -235,22 +242,23 @@ class ThingModerationMixin:
     def unignore_reports(self):
         """Resume receiving future reports on a Comment or Submission.
 
-        Future reports on this :class:`~.Comment` or :class:`~.Submission`
-        will cause notifications, and appear in the various moderation
-        listings.
+        Future reports on this :class:`~.Comment` or :class:`~.Submission` will cause
+        notifications, and appear in the various moderation listings.
 
         Example usage:
 
         .. code-block:: python
 
-           # accept future reports on a comment:
-           comment = reddit.comment("dkk4qjd")
-           comment.mod.unignore_reports()
-           # accept future reports on a submission:
-           submission = reddit.submission(id="5or86n")
-           submission.mod.unignore_reports()
+            # accept future reports on a comment:
+            comment = reddit.comment("dkk4qjd")
+            comment.mod.unignore_reports()
+            # accept future reports on a submission:
+            submission = reddit.submission(id="5or86n")
+            submission.mod.unignore_reports()
 
-        .. seealso:: :meth:`~.ignore_reports`
+        .. seealso::
+
+            :meth:`~.ignore_reports`
 
         """
         self.thing._reddit.post(
@@ -264,14 +272,16 @@ class ThingModerationMixin:
 
         .. code-block:: python
 
-           # unlock a comment:
-           comment = reddit.comment("dkk4qjd")
-           comment.mod.unlock()
-           # unlock a submission:
-           submission = reddit.submission(id="5or86n")
-           submission.mod.unlock()
+            # unlock a comment:
+            comment = reddit.comment("dkk4qjd")
+            comment.mod.unlock()
+            # unlock a submission:
+            submission = reddit.submission(id="5or86n")
+            submission.mod.unlock()
 
-        .. seealso:: :meth:`~.lock`
+        .. seealso::
+
+            :meth:`~.lock`
 
         """
         self.thing._reddit.post(API_PATH["unlock"], data={"id": self.thing.fullname})

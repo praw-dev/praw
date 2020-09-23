@@ -69,10 +69,9 @@ class TestRule(IntegrationTest):
             rule = self.subreddit.rules["fake rule"]
             with pytest.raises(ClientException) as excinfo:
                 rule.kind
-            assert excinfo.value.args[
-                0
-            ] == "Subreddit {} does not have the rule {}".format(
-                self.subreddit, "fake rule"
+            assert (
+                excinfo.value.args[0]
+                == f"Subreddit {self.subreddit} does not have the rule fake rule"
             )
 
     def test_iter_rule_int(self):
@@ -139,7 +138,9 @@ class TestRule(IntegrationTest):
         with self.recorder.use_cassette("TestRule.test_update_rule"):
             rule = self.subreddit.rules[0]
             rule2 = rule.mod.update(
-                description="Updated rule", kind="link", violation_reason="PUpdate",
+                description="Updated rule",
+                kind="link",
+                violation_reason="PUpdate",
             )
             assert rule.description != rule2.description
             assert rule2.description == "Updated rule"
