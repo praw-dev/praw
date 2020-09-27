@@ -2348,7 +2348,7 @@ class SubredditModerationStream:
     def modmail_conversations(
         self, other_subreddits=None, sort=None, state=None, **stream_options
     ):
-        """Yield unread new modmail messages as they become available.
+        """Yield new-modmail conversations as they become available.
 
         :param other_subreddits: A list of :class:`.Subreddit` instances for
             which to fetch conversations (default: None).
