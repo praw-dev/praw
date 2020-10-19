@@ -93,7 +93,7 @@ class CommentForest:
         for comment in comments:
             comment.submission = self._submission
 
-    def list(self) -> Union["Comment", "MoreComments"]:
+    def list(self) -> List[Union["Comment", "MoreComments"]]:
         """Return a flattened list of all Comments.
 
         This list may contain :class:`.MoreComments` instances if :meth:`.replace_more`
