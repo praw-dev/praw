@@ -490,12 +490,14 @@ class Reddit:
         self,
         fullnames: Optional[Iterable[str]] = None,
         url: Optional[str] = None,
+        sr_names: Optional[Iterable[str]] = None,
     ) -> Generator[Union[Subreddit, Comment, Submission], None, None]:
-        """Fetch information about each item in ``fullnames`` or from ``url``.
+        """Fetch information about each item in ``fullnames``, ``url``, or ``sr_names``.
 
         :param fullnames: A list of fullnames for comments, submissions, and/or
             subreddits.
         :param url: A url (as a string) to retrieve lists of link submissions from.
+        :param sr_names: A list of subreddit names for subreddits.
         :returns: A generator that yields found items in their relative order.
 
         Items that cannot be matched will not be generated. Requests will be issued in
@@ -514,24 +516,34 @@ class Reddit:
             "https://www.youtube.com" will provide a different set of submissions.
 
         """
-        none_count = (fullnames, url).count(None)
-        if none_count > 1:
-            raise TypeError("Either `fullnames` or `url` must be provided.")
-        if none_count < 1:
-            raise TypeError("Mutually exclusive parameters: `fullnames`, `url`")
+        none_count = (fullnames, url, sr_names).count(None)
+        if none_count > 2:
+            raise TypeError(
+                "Either `fullnames`, `url`, or `sr_names` must be provided."
+            )
+        if none_count < 2:
+            raise TypeError(
+                "Mutually exclusive parameters: `fullnames`, `url`, `sr_names`"
+            )
 
-        if fullnames is not None:
-            if isinstance(fullnames, str):
-                raise TypeError("`fullnames` must be a non-str iterable.")
+        is_using_fullnames = fullnames is not None
+        ids_or_names = fullnames if is_using_fullnames else sr_names
+
+        if ids_or_names is not None:
+            if isinstance(ids_or_names, str):
+                raise TypeError(
+                    "`fullnames` and `sr_names` must be a non-str iterable."
+                )
+
+            api_parameter_name = "id" if is_using_fullnames else "sr_name"
 
             def generator(fullnames):
-                iterable = iter(fullnames)
+                iterable = iter(ids_or_names)
                 while True:
                     chunk = list(islice(iterable, 100))
                     if not chunk:
                         break
-
-                    params = {"id": ",".join(chunk)}
+                    params = {api_parameter_name: ",".join(chunk)}
                     for result in self.get(API_PATH["info"], params=params):
                         yield result
 

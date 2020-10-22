@@ -45,7 +45,7 @@ class TestReddit(UnitTest):
         with pytest.raises(TypeError) as excinfo:
             self.reddit.info(None)
 
-        err_str = "Either `fullnames` or `url` must be provided."
+        err_str = "Either `fullnames`, `url`, or `sr_names` must be provided."
         assert str(excinfo.value) == err_str
 
         with pytest.raises(TypeError) as excinfo:
