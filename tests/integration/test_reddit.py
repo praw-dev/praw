@@ -7,6 +7,7 @@ from prawcore.exceptions import BadRequest
 from praw.models import LiveThread
 from praw.models.reddit.base import RedditBase
 from praw.models.reddit.submission import Submission
+from praw.models.reddit.subreddit import Subreddit
 
 from . import IntegrationTest
 
@@ -46,6 +47,15 @@ class TestReddit(IntegrationTest):
         assert len(results) > 0
         for item in results:
             assert isinstance(item, Submission)
+
+    def test_info_sr_names(self):
+        items = ["redditdev", "reddit.com", "t:1337", "nl"]
+        item_generator = self.reddit.info(sr_names=items)
+        with self.recorder.use_cassette("TestReddit.test_info_sr_names"):
+            results = list(item_generator)
+        assert len(results) == 4
+        for item in results:
+            assert isinstance(item, Subreddit)
 
     @mock.patch("time.sleep", return_value=None)
     def test_live_call(self, _):
