@@ -29,6 +29,7 @@ from ..listing.mixins import SubredditListingMixin
 from ..util import permissions_string, stream_generator
 from .base import RedditBase
 from .emoji import SubredditEmoji
+from .inline_media import InlineMedia
 from .mixins import FullnameMixin, MessageableMixin
 from .modmail import ModmailConversation
 from .removal_reasons import SubredditRemovalReasons
@@ -212,6 +213,11 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                 raise TypeError("'image_path' is required.")
             if not len(image.get("caption", "")) <= 180:
                 raise TypeError("Caption must be 180 characters or less.")
+
+    @staticmethod
+    def _validate_inline_media(inline_media: InlineMedia):
+        if not isfile(inline_media.path):
+            raise ValueError(f"{inline_media.path!r} is not a valid file path.")
 
     @property
     def _kind(self) -> str:
@@ -544,6 +550,16 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             self.display_name = display_name
         self._path = API_PATH["subreddit"].format(subreddit=self)
 
+    def _convert_to_fancypants(self, markdown_text: str):
+        """Convert a Markdown string to a dict for use with the ``richtext_json`` param.
+
+        :param markdown_text: A Markdown string to convert.
+        :returns: A dict in ``richtext_json`` format.
+
+        """
+        text_data = {"output_mode": "rtjson", "markdown_text": markdown_text}
+        return self._reddit.post(API_PATH["convert_rte_body"], text_data)["output"]
+
     def _fetch_info(self):
         return "subreddit_about", {"subreddit": self}, None
 
@@ -622,12 +638,13 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         url = ws_update["payload"]["redirect"]
         return self._reddit.submission(url=url)
 
-    def _upload_media(self, media_path, expected_mime_prefix=None, gallery=False):
+    def _upload_media(self, media_path, expected_mime_prefix=None, upload_type="link"):
         """Upload media and return its URL. Uses undocumented endpoint.
 
         :param expected_mime_prefix: If provided, enforce that the media has a mime type
             that starts with the provided prefix.
-        :param gallery: If True, treat this as a gallery upload.
+        :param upload_type: One of ``link``, ``gallery'', or ``selfpost``. (default:
+            ``link``)
 
         """
         if media_path is None:
@@ -670,9 +687,22 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         if not response.ok:
             self._parse_xml_response(response)
         response.raise_for_status()
-        if gallery:
+        if upload_type == "link":
+            return f"{upload_url}/{upload_data['key']}"
+        else:
             return upload_response["asset"]["asset_id"]
-        return f"{upload_url}/{upload_data['key']}"
+
+    def _upload_inline_media(self, inline_media: InlineMedia):
+        """Upload media for use in self posts and return ``inline_media``.
+
+        :param inline_media: An :class:`.InlineMedia` object to validate and upload.
+
+        """
+        self._validate_inline_media(inline_media)
+        inline_media.media_id = self._upload_media(
+            inline_media.path, upload_type="selfpost"
+        )
+        return inline_media
 
     def post_requirements(self):
         """Get the post requirements for a subreddit.
@@ -816,7 +846,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         spoiler=False,
         collection_id=None,
         discussion_type=None,
-    ):
+        inline_media=None,
+    ):  # noqa: D301
         """Add a submission to the subreddit.
 
         :param title: The title of the submission.
@@ -838,6 +869,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             (default: False).
         :param discussion_type: Set to ``CHAT`` to enable live discussion instead of
             traditional comments (default: None).
+        :param inline_media: A dict of :class:`.InlineMedia` objects where the key is
+            the placeholder name in ``selftext``.
         :returns: A :class:`~.Submission` object for the newly created submission.
 
         Either ``selftext`` or ``url`` can be provided, but not both.
@@ -849,6 +882,41 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             title = "PRAW documentation"
             url = 'https://praw.readthedocs.io'
             reddit.subreddit("reddit_api_test").submit(title, url=url)
+
+        For example to submit a self post with inline media do:
+
+        .. code-block:: python
+
+            from praw.models import InlineGif, InlineImage, InlineVideo
+
+            gif = InlineGif("path/to/image.gif", "optional caption")
+            image = InlineImage("path/to/image.jpg", "optional caption")
+            video = InlineVideo("path/to/video.mp4", "optional caption")
+            selftext = "Text with a gif {gif1} an image {image1} and a video {video1} inline"
+            media = {'gif1': gif, 'image1': image, 'video1': video}
+            reddit.subreddit('redditdev').submit('title', selftext=selftext, inline_media=media)
+
+        .. note::
+
+            Inserted media will have a padding of `\n\n` automatically added. This due
+            to the weirdness with Reddit's API. Using the example above the result
+            selftext body will look like so:
+
+            .. code-block::
+
+                Text with a gif
+
+                ![gif](u1rchuphryq51 "optional caption")
+
+                an image
+
+                ![img](srnr8tshryq51 "optional caption")
+
+                and video
+
+                ![video](gmc7rvthryq51 "optional caption")
+
+                inline
 
         .. seealso ::
 
@@ -879,7 +947,18 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             if value is not None:
                 data[key] = value
         if selftext is not None:
-            data.update(kind="self", text=selftext)
+            data.update(kind="self")
+            if inline_media:
+                body = selftext.format(
+                    **{
+                        placeholder: self._upload_inline_media(media)
+                        for placeholder, media in inline_media.items()
+                    }
+                )
+                converted = self._convert_to_fancypants(body)
+                data.update(richtext_json=dumps(converted))
+            else:
+                data.update(text=selftext)
         else:
             data.update(kind="link", url=url)
 
@@ -980,7 +1059,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                     "media_id": self._upload_media(
                         image["image_path"],
                         expected_mime_prefix="image",
-                        gallery=True,
+                        upload_type="gallery",
                     ),
                 }
             )
