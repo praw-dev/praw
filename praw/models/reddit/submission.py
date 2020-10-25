@@ -400,23 +400,26 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
     def id_from_url(url: str) -> str:
         """Return the ID contained within a submission URL.
 
-        :param url: A url to a submission in one of the following formats (http
-            urls will also work):
+        :param url: A url to a submission in one of the following formats (http urls
+            will also work):
 
             * https://redd.it/2gmzqe
             * https://reddit.com/comments/2gmzqe/
             * https://www.reddit.com/r/redditdev/comments/2gmzqe/praw_https/
+            * https://www.reddit.com/gallery/2gmzqe
 
         :raises: :class:`.InvalidURL` if URL is not a valid submission URL.
 
         """
         parts = RedditBase._url_parts(url)
-        if "comments" not in parts:
+        if "comments" not in parts and "gallery" not in parts:
             submission_id = parts[-1]
             if "r" in parts:
                 raise InvalidURL(
                     url, message="Invalid URL (subreddit, not submission): {}"
                 )
+        elif "gallery" in parts:
+            submission_id = parts[parts.index("gallery") + 1]
         else:
             submission_id = parts[parts.index("comments") + 1]
 
@@ -433,8 +436,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
     def comments(self) -> CommentForest:
         """Provide an instance of :class:`.CommentForest`.
 
-        This attribute can be used, for example, to obtain a flat list of
-        comments, with any :class:`.MoreComments` removed:
+        This attribute can be used, for example, to obtain a flat list of comments, with
+        any :class:`.MoreComments` removed:
 
         .. code-block:: python
 
@@ -442,8 +445,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             comments = submission.comments.list()
 
         Sort order and comment limit can be set with the ``comment_sort`` and
-        ``comment_limit`` attributes before comments are fetched, including
-        any call to :meth:`.replace_more`:
+        ``comment_limit`` attributes before comments are fetched, including any call to
+        :meth:`.replace_more`:
 
         .. code-block:: python
 
@@ -466,12 +469,11 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
     def flair(self) -> SubmissionFlair:
         """Provide an instance of :class:`.SubmissionFlair`.
 
-        This attribute is used to work with flair as a regular user of the
-        subreddit the submission belongs to. Moderators can directly use
-        :meth:`.flair`.
+        This attribute is used to work with flair as a regular user of the subreddit the
+         submission belongs to. Moderators can directly use meth:`.flair`.
 
-        For example, to select an arbitrary editable flair text (assuming there
-        is one) and set a custom value try:
+        For example, to select an arbitrary editable flair text (assuming there is one)
+        and set a custom value try:
 
         .. code-block:: python
 
