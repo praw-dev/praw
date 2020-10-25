@@ -1,6 +1,5 @@
 formats:
   - htmlzip
-  - pdf
 python:
   install:
     - method: pip
