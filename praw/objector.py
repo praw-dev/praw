@@ -115,6 +115,20 @@ class Objector:
             parser = self.parsers[self._reddit.config.kinds["comment"]]
         elif "collection_id" in data.keys():
             parser = self.parsers["Collection"]
+        elif {"moderators", "moderatorIds", "allUsersLoaded", "subredditId"}.issubset(
+            data
+        ):
+            data = snake_case_keys(data)
+            moderators = []
+            for mod_id in data["moderator_ids"]:
+                mod = snake_case_keys(data["moderators"][mod_id])
+                mod["mod_permissions"] = list(mod["mod_permissions"].keys())
+                moderators.append(mod)
+            data["moderators"] = moderators
+            parser = self.parsers["moderator-list"]
+        elif "username" in data.keys():
+            data["name"] = data.pop("username")
+            parser = self.parsers[self._reddit.config.kinds["redditor"]]
         else:
             if "user" in data:
                 parser = self.parsers[self._reddit.config.kinds["redditor"]]

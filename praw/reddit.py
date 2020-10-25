@@ -385,6 +385,7 @@ class Reddit:
             "image": models.ImageWidget,
             "menu": models.Menu,
             "modaction": models.ModAction,
+            "moderator-list": models.ModeratorListing,
             "moderators": models.ModeratorsWidget,
             "more": models.MoreComments,
             "post-flair": models.PostFlairWidget,
