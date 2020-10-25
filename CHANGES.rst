@@ -11,15 +11,18 @@ Unreleased
 * Ability to pass a gallery url to :meth:`.Reddit.submission`.
 * Ability to specify modmail mute duration.
 * Add method :meth:`.invited` to get invited moderators of a subreddit.
+* Add method :meth:`~.Submission.award` and :meth:`~.Comment.award` with the ability to
+  specify type of award, anonymity, and message when awarding a submission or comment.
 
 **Changed**
 
-* :meth:`~.Subreddits.gold` is an alias of :meth:`~.Subreddits.premium`.
 * Drop support for Python 3.5, which is end-of-life on 2020-09-13.
 
 **Deprecated**
 
 * :meth:`~.Subreddits.gold` is superseded by :meth:`~.Subreddits.premium`.
+* :meth:`~.Submission.gild` is superseded by :meth:`~.Submission.award`.
+* :meth:`~.Comment.gild` is superseded by :meth:`~.Comment.award`.
 
 **Fixed**
 

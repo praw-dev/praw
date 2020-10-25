@@ -69,13 +69,37 @@ class TestSubmission(IntegrationTest):
         with self.recorder.use_cassette("TestSubmission.test_enable_inbox_replies"):
             submission.enable_inbox_replies()
 
-    def test_gild__no_creddits(self):
+    def test_award(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestSubmission.test_gild__no_creddits"):
+        with self.recorder.use_cassette("TestSubmission.test_award"):
+            award_data = Submission(self.reddit, "j3kyoo").award()
+            assert award_data["gildings"]["gid_2"] == 1
+
+    def test_award__not_enough_coins(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestSubmission.test_award__not_enough_coins"):
             with pytest.raises(RedditAPIException) as excinfo:
-                Submission(self.reddit, "4b1tfm").gild()
+                Submission(self.reddit, "j3fkiw").award(
+                    gild_type="award_2385c499-a1fb-44ec-b9b7-d260f3dc55de"
+                )
             exception = excinfo.value
-            assert "INSUFFICIENT_CREDDITS" == exception.error_type
+            assert "INSUFFICIENT_COINS_WITH_AMOUNT" == exception.error_type
+
+    def test_award__self_gild(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestSubmission.test_award__self_gild"):
+            with pytest.raises(RedditAPIException) as excinfo:
+                Submission(self.reddit, "j3fkiw").award(
+                    gild_type="award_2385c499-a1fb-44ec-b9b7-d260f3dc55de"
+                )
+            exception = excinfo.value
+            assert "SELF_GILDING_NOT_ALLOWED" == exception.error_type
+
+    def test_gild(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestSubmission.test_award"):
+            award_data = Submission(self.reddit, "j3kyoo").gild()
+            assert award_data["gildings"]["gid_2"] == 1
 
     def test_gilded(self):
         with self.recorder.use_cassette("TestSubmission.test_gilded"):

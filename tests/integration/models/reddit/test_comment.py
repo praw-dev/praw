@@ -69,13 +69,37 @@ class TestComment(IntegrationTest):
         with self.recorder.use_cassette("TestComment.test_enable_inbox_replies"):
             comment.enable_inbox_replies()
 
-    def test_gild__no_creddits(self):
+    def test_award(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestComment.test_gild__no_creddits"):
+        with self.recorder.use_cassette("TestComment.test_award"):
+            award_data = Comment(self.reddit, "g7cmlgc").award()
+            assert award_data["gildings"]["gid_2"] == 1
+
+    def test_award__not_enough_coins(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestComment.test_award__not_enough_coins"):
             with pytest.raises(RedditAPIException) as excinfo:
-                Comment(self.reddit, "d1616q2").gild()
+                Comment(self.reddit, "g7cmlgc").award(
+                    gild_type="award_2385c499-a1fb-44ec-b9b7-d260f3dc55de"
+                )
             exception = excinfo.value
-            assert "INSUFFICIENT_CREDDITS" == exception.error_type
+            assert "INSUFFICIENT_COINS_WITH_AMOUNT" == exception.error_type
+
+    def test_award__self_gild(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestComment.test_award__self_gild"):
+            with pytest.raises(RedditAPIException) as excinfo:
+                Comment(self.reddit, "g7cn9xb").award(
+                    gild_type="award_2385c499-a1fb-44ec-b9b7-d260f3dc55de"
+                )
+            exception = excinfo.value
+            assert "SELF_GILDING_NOT_ALLOWED" == exception.error_type
+
+    def test_gild(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestComment.test_award"):
+            award_data = Comment(self.reddit, "g7cmlgc").gild()
+            assert award_data["gildings"]["gid_2"] == 1
 
     def test_invalid(self):
         with self.recorder.use_cassette("TestComment.test_invalid"):

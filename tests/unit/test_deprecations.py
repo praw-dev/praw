@@ -58,3 +58,8 @@ class TestDeprecation(UnitTest):
                 excinfo.value.args[0]
                 == "`subreddits.gold` has be renamed to `subreddits.premium`."
             )
+
+    def test_gild_method(self):
+        with pytest.raises(DeprecationWarning) as excinfo:
+            self.reddit.submission("1234").gild()
+            assert excinfo.value.args[0] == "`.gild` has been renamed to `.award`."
