@@ -13,6 +13,7 @@ from .preferences import Preferences
 from .reddit.collections import Collection
 from .reddit.comment import Comment
 from .reddit.emoji import Emoji
+from .reddit.inline_media import InlineGif, InlineImage, InlineMedia, InlineVideo
 from .reddit.live import LiveThread, LiveUpdate
 from .reddit.message import Message, SubredditMessage
 from .reddit.modmail import ModmailAction, ModmailConversation, ModmailMessage

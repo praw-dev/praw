@@ -34,6 +34,7 @@ API_PATH = {
     "comment_replies":         "message/comments/",
     "compose":                 "api/compose/",
     "contest_mode":            "api/set_contest_mode/",
+    "convert_rte_body":        "api/convert_rte_body_format",
     "del":                     "api/del/",
     "delete_message":          "api/del_msg",
     "delete_sr_banner":        "r/{subreddit}/api/delete_sr_banner",
