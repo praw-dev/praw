@@ -24,6 +24,7 @@ extras = {
         "sphinx_rtd_theme",
         "flynt",
     ],
+    "readthedocs": ["sphinx<3.0"],
     "test": [
         "betamax >=0.8, <0.9",
         "betamax-matchers >=0.3.0, <0.5",
