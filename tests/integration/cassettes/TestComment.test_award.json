@@ -1,0 +1,204 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2020-10-02T00:57:27",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "Content-Length": [
+            "75"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.1.1.dev0 prawcore/1.5.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"account creddits edit flair history identity livemanage modconfig modcontributors modflair modlog modmail modothers modposts modself modtraffic modwiki mysubreddits privatemessages read report save structuredstyles submit subscribe vote wikiedit wikiread\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "Content-Length": [
+            "367"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 02 Oct 2020 00:57:27 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=CwJYBRfFT4pQr5kKXO; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2020-10-02T00:57:27",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "13"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "Cookie": [
+            "edgebucket=CwJYBRfFT4pQr5kKXO"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.1.1.dev0 prawcore/1.5.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/api/v2/gold/gild?api_type=json&gild_type=gid_2&is_anonymous=True&thing_id=t1_g7cmlgc&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"subreddit_balance\": 0, \"treatment_tags\": [], \"coins\": 7760, \"gildings\": {\"gid_1\": 0, \"gid_2\": 1, \"gid_3\": 0}, \"awarder_karma_received\": 67, \"all_awardings\": [{\"giver_coin_reward\": null, \"subreddit_id\": null, \"is_new\": false, \"days_of_drip_extension\": 0, \"coin_price\": 500, \"id\": \"gid_2\", \"penny_donate\": null, \"coin_reward\": 100, \"icon_url\": \"https://www.redditstatic.com/gold/awards/icon/gold_512.png\", \"days_of_premium\": 7, \"icon_height\": 512, \"tiers_by_required_awardings\": null, \"icon_width\": 512, \"static_icon_width\": 512, \"start_date\": null, \"is_enabled\": true, \"awardings_required_to_grant_benefits\": null, \"description\": \"Gives the author a week of Reddit Premium, %{coin_symbol}100 Coins to do with as they please, and shows a Gold Award.\", \"end_date\": null, \"subreddit_coin_reward\": 0, \"count\": 1, \"static_icon_height\": 512, \"name\": \"Gold\", \"icon_format\": null, \"award_sub_type\": \"GLOBAL\", \"penny_price\": null, \"award_type\": \"global\", \"static_icon_url\": \"https://www.redditstatic.com/gold/awards/icon/gold_512.png\"}]}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "1029"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 02 Oct 2020 00:57:27 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=llkikkfqanfhnekbhr.0.1601600247376.Z0FBQUFBQmZkbnIzWlE1eVNsYkZSc1V0RE9MZi05LVVLWmhzaTJRWmZWNmlMb0dWYWRVUWdJYlZ2YlUxMnNkWW9qWkhyOWxPb0Z4TVVtLW9mZnhOUHpGUVdVdTNjQTZmMnVxdlFCUTUyTTRYQ040b2U4SjZJYlhKYU9oT2dCWi1CN1J1WVNlUzk2Rmg; Domain=reddit.com; Max-Age=7199; Path=/; expires=Fri, 02-Oct-2020 02:57:27 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "181.0"
+          ],
+          "x-ratelimit-reset": [
+            "153"
+          ],
+          "x-ratelimit-used": [
+            "419"
+          ],
+          "x-reddit-decoy-snail": [
+            "3879,900"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/v2/gold/gild?api_type=json&gild_type=gid_2&is_anonymous=True&thing_id=t1_g7cmlgc&raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}

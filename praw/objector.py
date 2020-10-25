@@ -151,6 +151,10 @@ class Objector:
             return None
         if isinstance(data, list):
             return [self.objectify(item) for item in data]
+        if "json" in data and "errors" in data["json"]:
+            errors = data["json"]["errors"]
+            if len(errors) > 0:
+                raise RedditAPIException(errors)
         if "kind" in data and (
             "shortName" in data or data["kind"] in ("menu", "moderators")
         ):
@@ -184,10 +188,6 @@ class Objector:
             return parser.parse(data["json"]["data"], self._reddit)
         if "rules" in data:
             return self.objectify(data["rules"])
-        if "json" in data and "errors" in data["json"]:
-            errors = data["json"]["errors"]
-            if len(errors) > 0:
-                raise RedditAPIException(errors)
         elif isinstance(data, dict):
             return self._objectify_dict(data)
 

@@ -2,7 +2,7 @@ import ast
 import os
 import re
 from ast import ClassDef, get_docstring, FunctionDef
-
+from os.path import basename
 
 import black
 import docutils.nodes
@@ -22,6 +22,7 @@ DOCSTRING_INCORRECT_FORMAT = re.compile(r"( +)\.\. code-block:: python\n\n\1 {3}
 current = None
 current_file = None
 failed = False
+skip_files = ["gildable.py"]
 
 
 class Visitor(docutils.nodes.NodeVisitor):
@@ -57,7 +58,8 @@ def parse_rst(text: str) -> docutils.nodes.document:
     ).get_default_values()
     settings.report_level = 4
     document = docutils.utils.new_document("<rst-doc>", settings=settings)
-    parser.parse(text, document)
+    if basename(current_file) not in skip_files:
+        parser.parse(text, document)
     return document
 
 
