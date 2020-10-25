@@ -978,9 +978,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                     "caption": image.get("caption", ""),
                     "outbound_url": image.get("outbound_url", ""),
                     "media_id": self._upload_media(
-                        image["image_path"],
-                        expected_mime_prefix="image",
-                        gallery=True,
+                        image["image_path"], expected_mime_prefix="image", gallery=True,
                     ),
                 }
             )
@@ -2354,9 +2352,10 @@ class SubredditModerationStream:
             which to fetch conversations (default: None).
         :param sort: Can be one of: mod, recent, unread, user
             (default: recent).
-        :param state: Can be one of: all, archived, highlighted, inprogress,
-            mod, new, notifications, or appeals, (default: all). "all" does not
-            include internal, archived, or appeals conversations.
+        :param state: Can be one of: all, appeals, archived, default, highlighted,
+            inbox, inprogress, mod, new, notifications (default: all). "all" does not
+            include mod or archived conversations. "inbox" does not include appeals
+            conversations.
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
