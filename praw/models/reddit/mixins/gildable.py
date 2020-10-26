@@ -7,15 +7,6 @@ from ....const import API_PATH
 class GildableMixin:
     """Interface for classes that can be gilded."""
 
-    def gild(self):
-        """Alias for :meth:`.award` to maintain backwards compatibility."""
-        warn(
-            "`.gild` has been renamed to `.award`.",
-            category=DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.award()
-
     def award(
         self, gild_type: str = "gid_2", is_anonymous: bool = True, message: str = None
     ) -> dict:
@@ -70,8 +61,6 @@ class GildableMixin:
                     ],
                 }
 
-
-
         Requires the authenticated user to own Reddit Coins. Calling this method will
         consume Reddit Coins.
 
@@ -96,8 +85,6 @@ class GildableMixin:
             submission = reddit.submission("8dmv8z")
             submission.award(gild_type="gild_3", message="Nice!", is_anonymous=False)
 
-        This is a list of known global awards (as of 09/29/2020)
-
         .. include:: awards.txt
 
         """
@@ -109,3 +96,12 @@ class GildableMixin:
             "message": message,
         }
         return self._reddit.post(API_PATH["award_thing"], params=params)
+
+    def gild(self):
+        """Alias for :meth:`.award` to maintain backwards compatibility."""
+        warn(
+            "`.gild` has been renamed to `.award`.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.award()
