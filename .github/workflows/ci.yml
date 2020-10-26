@@ -84,7 +84,7 @@ jobs:
       run: sphinx-build --keep-going docs/ /tmp/foo
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8, 3.9]
 
   test-multi-os:
     name: Test ${{ matrix.os }}
@@ -142,7 +142,7 @@ jobs:
       run: coverage report -m --fail-under=100
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8, 3.9]
 
   test-network:
     name: Test Network Request
