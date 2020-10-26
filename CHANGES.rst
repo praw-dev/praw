@@ -27,6 +27,7 @@ Unreleased
 **Fixed**
 
 * An issue where leaving as a moderator fails if you are using token auth.
+* An issue where an incorrect error was being raised due to invalid submission urls.
 
 7.1.0 (2020/06/22)
 ------------------
