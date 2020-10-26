@@ -1,16 +1,19 @@
 """This is to generate the awards table."""
 import argparse
+import random
 import socket
 import sys
+import time
 from copy import copy
+from datetime import datetime
 from json import dumps, load
-import random
 from os.path import isdir, split
 from textwrap import wrap
-import time
-from praw import Reddit
+
 import requests
 import tabulate
+
+from praw import Reddit
 
 AWARD_TYPES = {
     "a": lambda _: True,
@@ -43,7 +46,6 @@ def send_message(client, message):
 
 
 def get_request_params(client_id, redirect_uri, thing):
-    """Provide the program's entry point when directly executed."""
     scopes = ["*"]
 
     reddit = Reddit(
@@ -204,7 +206,14 @@ def main():
     else:
         with open(load_file) as f:
             award_json = load(f)
-    awards = validate_award_json(award_json, award_type)
+    awards = sorted(
+        validate_award_json(award_json, award_type),
+        key=lambda d: (
+            0 if d["id"].startswith("gid") else 1,
+            d["coinPrice"],
+            d["name"],
+        ),
+    )
     if output_format == "j":
         if load_file:
             print(
@@ -225,11 +234,15 @@ def main():
             ]
             for award in awards
         ]
-        final_content = tabulate.tabulate(
+        table = tabulate.tabulate(
             rows,
             ["Name", "Icon", "Gild Type", "Description", "Cost"],
             tablefmt="rst",
             disable_numparse=True,
+        )
+        final_content = (
+            f"This is a list of known global awards (as of "
+            f"{datetime.today().strftime('%m/%d/%Y')})\n\n{table}"
         )
     if out_file is None:
         print(final_content)
