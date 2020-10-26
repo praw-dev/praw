@@ -85,6 +85,8 @@ class TestSubmission(UnitTest):
             "http://reddit.com/comments/_/2gmzqe",
             "https://reddit.com/r/wallpapers/",
             "https://reddit.com/r/wallpapers",
+            "https://www.reddit.com/r/test/comments/",
+            "https://reddit.com/comments/",
         ]
         for url in urls:
             with pytest.raises(ClientException):

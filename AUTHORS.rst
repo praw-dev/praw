@@ -64,4 +64,5 @@ Source Contributors
 - Todd Roberts `@toddrob99 <https://github.com/toddrob99>`_
 - MaybeNetwork `@MaybeNetwork <https://github.com/MaybeNetwork>`_
 - Nick Kelly `@nickatnight <https://github.com/nickatnight>`_
+- Yash Chhabria `@Cyatos <https://github.com/Cyatos>`_
 <!-- - Add "Name <email (optional)> and github profile link" above this line. -->
