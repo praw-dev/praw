@@ -49,8 +49,8 @@ class TestReddit(IntegrationTest):
             assert isinstance(item, Submission)
 
     def test_info_sr_names(self):
-        items = ["redditdev", "reddit.com", "t:1337", "nl"]
-        item_generator = self.reddit.info(sr_names=items)
+        items = [self.reddit.subreddit("redditdev"), "reddit.com", "t:1337", "nl"]
+        item_generator = self.reddit.info(subreddits=items)
         with self.recorder.use_cassette("TestReddit.test_info_sr_names"):
             results = list(item_generator)
         assert len(results) == 4

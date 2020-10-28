@@ -45,13 +45,13 @@ class TestReddit(UnitTest):
         with pytest.raises(TypeError) as excinfo:
             self.reddit.info(None)
 
-        err_str = "Either `fullnames`, `url`, or `sr_names` must be provided."
+        err_str = "Either `fullnames`, `url`, or `subreddits` must be provided."
         assert str(excinfo.value) == err_str
 
         with pytest.raises(TypeError) as excinfo:
             self.reddit.info([], "")
 
-        assert excinfo.match("(?i)mutually exclusive")
+        assert str(excinfo.value) == err_str
 
     def test_invalid_config(self):
         with pytest.raises(ValueError) as excinfo:
