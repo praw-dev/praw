@@ -1,0 +1,197 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2020-10-23T00:13:45",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=client_credentials"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "Content-Length": [
+            "29"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.1.1.dev0 prawcore/1.5.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "Content-Length": [
+            "106"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 23 Oct 2020 00:13:46 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=WG6Jsnlyn7CDtukUYG; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-reddit-loid": [
+            "00000000008l6qhqq7.2.1603412026327.Z0FBQUFBQmZraUE2cl9aeExUXzkyWnNmNVl5R3ZWM1lqMU5Hc1Y1THlXZTJuMUJ4dDhaVE90LVlnODV3Z2lwU0pLdFQ2eUhKdjVDZDJnNmt5OWt0QWRhMk9SeUhYdGhsMVJzYkpJajVpWE1OdEktRy0weERVc3hIWjJOTXZjVmJkTi1vckwzVzlMTkQ"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2020-10-23T00:13:45",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=WG6Jsnlyn7CDtukUYG"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.1.1.dev0 prawcore/1.5.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/info/?sr_name=redditdev%2Creddit.com%2Ct%3A1337%2Cnl&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"Listing\", \"data\": {\"modhash\": \"\", \"dist\": 4, \"children\": [{\"kind\": \"t5\", \"data\": {\"user_flair_background_color\": null, \"submit_text_html\": null, \"restrict_posting\": true, \"user_is_banned\": null, \"free_form_reports\": true, \"wiki_enabled\": true, \"user_is_muted\": null, \"user_can_flair_in_sr\": null, \"display_name\": \"reddit.com\", \"header_img\": \"\", \"title\": \"reddit.com\", \"allow_galleries\": false, \"icon_size\": null, \"primary_color\": \"#0079d3\", \"active_user_count\": null, \"icon_img\": null, \"display_name_prefixed\": \"r/reddit.com\", \"accounts_active\": null, \"public_traffic\": false, \"subscribers\": 865709, \"user_flair_richtext\": [], \"videostream_links_count\": 0, \"name\": \"t5_6\", \"quarantine\": false, \"hide_ads\": false, \"emojis_enabled\": false, \"advertiser_category\": \"\", \"public_description\": \"The original subreddit, now archived.\", \"comment_score_hide_mins\": 0, \"allow_predictions\": false, \"user_has_favorited\": null, \"user_flair_template_id\": null, \"community_icon\": \"https://styles.redditmedia.com/t5_6/styles/communityIcon_a8uzjit9bwr21.png?width=256\\u0026s=d28ea66f16da5a6c2ccae0d069cc4d42322d69a9\", \"banner_background_image\": \"https://styles.redditmedia.com/t5_6/styles/bannerBackgroundImage_yddlxq1m39r21.jpg?width=4000\\u0026s=f91d1be5c5a1ea6e492818ecb8a846ea4978563c\", \"original_content_tag_enabled\": false, \"submit_text\": \"\", \"description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003ETo report a site-wide rule violation to the Reddit Admins, please use our \\u003Ca href=\\\"https://www.reddit.com/report\\\"\\u003Ereport forms\\u003C/a\\u003E or message \\u003Ca href=\\\"https://www.reddit.com/message/compose?to=%2Fr%2Freddit.com\\\"\\u003E/r/reddit.com modmail\\u003C/a\\u003E.\\u003C/p\\u003E\\n\\n\\u003Cp\\u003EThis subreddit is \\u003Ca href=\\\"https://redditblog.com/2011/10/18/saying-goodbye-to-an-old-friend-and-revising-the-default-subreddits/\\\"\\u003Earchived and no longer accepting submissions.\\u003C/a\\u003E\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"spoilers_enabled\": true, \"header_title\": \"\", \"header_size\": null, \"user_flair_position\": \"right\", \"all_original_content\": false, \"has_menu_widget\": false, \"is_enrolled_in_new_modmail\": null, \"key_color\": \"\", \"can_assign_user_flair\": false, \"created\": 1137566705.0, \"wls\": 6, \"show_media_preview\": true, \"submission_type\": \"any\", \"user_is_subscriber\": null, \"disable_contributor_requests\": false, \"allow_videogifs\": true, \"user_flair_type\": \"text\", \"allow_polls\": true, \"collapse_deleted_comments\": false, \"emojis_custom_size\": null, \"public_description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThe original subreddit, now archived.\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"allow_videos\": true, \"is_crosspostable_subreddit\": false, \"suggested_comment_sort\": null, \"can_assign_link_flair\": false, \"accounts_active_is_fuzzed\": false, \"submit_text_label\": \"\", \"link_flair_position\": \"\", \"user_sr_flair_enabled\": null, \"user_flair_enabled_in_sr\": false, \"allow_discovery\": true, \"user_sr_theme_enabled\": true, \"link_flair_enabled\": false, \"subreddit_type\": \"archived\", \"notification_level\": null, \"banner_img\": \"\", \"user_flair_text\": null, \"banner_background_color\": \"#0dd3bb\", \"show_media\": false, \"id\": \"6\", \"user_is_contributor\": null, \"over18\": false, \"description\": \"To report a site-wide rule violation to the Reddit Admins, please use our [report forms](https://www.reddit.com/report) or message [/r/reddit.com modmail](https://www.reddit.com/message/compose?to=%2Fr%2Freddit.com).\\n\\nThis subreddit is [archived and no longer accepting submissions.](https://redditblog.com/2011/10/18/saying-goodbye-to-an-old-friend-and-revising-the-default-subreddits/)\", \"submit_link_label\": \"\", \"user_flair_text_color\": null, \"restrict_commenting\": false, \"user_flair_css_class\": null, \"allow_images\": true, \"lang\": \"en\", \"whitelist_status\": \"all_ads\", \"url\": \"/r/reddit.com/\", \"created_utc\": 1137537905.0, \"banner_size\": null, \"mobile_banner_image\": \"\", \"user_is_moderator\": null}}, {\"kind\": \"t5\", \"data\": {\"user_flair_background_color\": null, \"submit_text_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EGet faster, better responses by including more information, such as:\\u003C/p\\u003E\\n\\n\\u003Cul\\u003E\\n\\u003Cli\\u003EThe exact API URL you were hitting\\u003C/li\\u003E\\n\\u003Cli\\u003EThe request headers (but obfuscate cookies and secrets!!)\\u003C/li\\u003E\\n\\u003Cli\\u003EThe POST data you\\u0026#39;re sending, if any\\u003C/li\\u003E\\n\\u003Cli\\u003EAny response headers\\u003C/li\\u003E\\n\\u003Cli\\u003EThe response \\u003Cstrong\\u003Ebody\\u003C/strong\\u003E\\u003C/li\\u003E\\n\\u003C/ul\\u003E\\n\\n\\u003Cp\\u003E\\u0026quot;XYZ isn\\u0026#39;t working\\u0026quot; is \\u003Cstrong\\u003ENOT\\u003C/strong\\u003E enough information for us to help you!\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"restrict_posting\": true, \"user_is_banned\": null, \"free_form_reports\": true, \"wiki_enabled\": true, \"user_is_muted\": null, \"user_can_flair_in_sr\": null, \"display_name\": \"redditdev\", \"header_img\": \"https://e.thumbs.redditmedia.com/bOToSJt13ylszjE4.png\", \"title\": \"reddit Development\", \"allow_galleries\": false, \"icon_size\": [256, 256], \"primary_color\": \"#666666\", \"active_user_count\": null, \"icon_img\": \"https://b.thumbs.redditmedia.com/7GVLmrH9CdZeqXceSEWkmL8_DSUKRGUfwMxnUNh8D8A.png\", \"display_name_prefixed\": \"r/redditdev\", \"accounts_active\": null, \"public_traffic\": false, \"subscribers\": 43967, \"user_flair_richtext\": [], \"name\": \"t5_2qizd\", \"quarantine\": false, \"hide_ads\": false, \"emojis_enabled\": false, \"advertiser_category\": \"\", \"public_description\": \"A subreddit for discussion of reddit API clients.\", \"comment_score_hide_mins\": 0, \"allow_predictions\": false, \"user_has_favorited\": null, \"user_flair_template_id\": null, \"community_icon\": \"\", \"banner_background_image\": \"\", \"original_content_tag_enabled\": false, \"submit_text\": \"Get faster, better responses by including more information, such as:\\n\\n* The exact API URL you were hitting\\n* The request headers (but obfuscate cookies and secrets!!)\\n* The POST data you're sending, if any\\n* Any response headers\\n* The response **body**\\n\\n\\\"XYZ isn't working\\\" is **NOT** enough information for us to help you!\", \"description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EA subreddit for discussion of reddit API clients.\\u003C/p\\u003E\\n\\n\\u003Cul\\u003E\\n\\u003Cli\\u003E\\u003Ca href=\\\"https://github.com/reddit/reddit/wiki/API\\\"\\u003ERead the API Overview \\u0026amp; Rules\\u003C/a\\u003E\\u003C/li\\u003E\\n\\u003Cli\\u003E\\u003Ca href=\\\"http://www.reddit.com/dev/api\\\"\\u003ECheck out the API documentation\\u003C/a\\u003E\\u003C/li\\u003E\\n\\u003Cli\\u003E\\u003Ca href=\\\"https://join.slack.com/t/praw/shared_invite/enQtOTUwMDcxOTQ0NzY5LWVkMGQ3ZDk5YmQ5MDEwYTZmMmJkMTJkNjBkNTY3OTU0Y2E2NGRlY2ZhZTAzMWZmMWRiMTMwYjdjODkxOGYyZjY\\\"\\u003EPRAW chat\\u003C/a\\u003E\\u003C/li\\u003E\\n\\u003Cli\\u003E\\u003Ca href=\\\"https://gitter.im/not-an-aardvark/snoowrap\\\"\\u003ESnoowrap chat\\u003C/a\\u003E\\u003C/li\\u003E\\n\\u003Cli\\u003E\\u003Ca href=\\\"http://webchat.freenode.net/?channels=reddit-dev\\\"\\u003EJoin us on IRC: \\u003Ccode\\u003E#reddit-dev\\u003C/code\\u003E on irc.freenode.net\\u003C/a\\u003E\\u003C/li\\u003E\\n\\u003Cli\\u003E\\u003Ca href=\\\"https://discord.gg/hVMhxpV\\\"\\u003EUnofficial Discord\\u003C/a\\u003E\\u003C/li\\u003E\\n\\u003Cli\\u003EPlease do not request bots here. Consider \\u003Ca href=\\\"/r/requestabot\\\"\\u003E/r/requestabot\\u003C/a\\u003E instead.\\u003C/li\\u003E\\n\\u003C/ul\\u003E\\n\\n\\u003Cp\\u003EPlease confine discussion to reddit\\u0026#39;s API instead of using this as a soapbox to talk to the admins. In particular, use \\u003Ca href=\\\"/r/ideasfortheadmins\\\"\\u003E/r/ideasfortheadmins\\u003C/a\\u003E for feature ideas and \\u003Ca href=\\\"/r/bugs\\\"\\u003E/r/bugs\\u003C/a\\u003E for bugs. If you have general reddit questions, try \\u003Ca href=\\\"/r/help\\\"\\u003E/r/help\\u003C/a\\u003E.\\u003C/p\\u003E\\n\\n\\u003Cp\\u003ETo see an explanation of recent user-facing changes to reddit (and the code behind them), check out \\u003Ca href=\\\"/r/changelog\\\"\\u003E/r/changelog\\u003C/a\\u003E.\\u003C/p\\u003E\\n\\n\\u003Chr/\\u003E\\n\\n\\u003Cp\\u003ETo report a security issue with reddit, please send an email to \\u003Ca href=\\\"mailto:security@reddit.com\\\"\\u003Esecurity@reddit.com\\u003C/a\\u003E .\\u003C/p\\u003E\\n\\n\\u003Cp\\u003EThis is an admin-sponsored subreddit.\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"spoilers_enabled\": false, \"header_title\": \"from reddit import code\", \"header_size\": [120, 40], \"user_flair_position\": \"right\", \"all_original_content\": false, \"has_menu_widget\": false, \"is_enrolled_in_new_modmail\": null, \"key_color\": \"#222222\", \"can_assign_user_flair\": true, \"created\": 1213830977.0, \"wls\": 6, \"show_media_preview\": false, \"submission_type\": \"self\", \"user_is_subscriber\": null, \"disable_contributor_requests\": false, \"allow_videogifs\": false, \"user_flair_type\": \"text\", \"allow_polls\": false, \"collapse_deleted_comments\": false, \"emojis_custom_size\": null, \"public_description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EA subreddit for discussion of reddit API clients.\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"allow_videos\": false, \"is_crosspostable_subreddit\": false, \"suggested_comment_sort\": null, \"can_assign_link_flair\": true, \"accounts_active_is_fuzzed\": false, \"submit_text_label\": \"\", \"link_flair_position\": \"left\", \"user_sr_flair_enabled\": null, \"user_flair_enabled_in_sr\": false, \"allow_chat_post_creation\": false, \"allow_discovery\": true, \"user_sr_theme_enabled\": true, \"link_flair_enabled\": true, \"subreddit_type\": \"public\", \"notification_level\": null, \"banner_img\": \"\", \"user_flair_text\": null, \"banner_background_color\": \"#666666\", \"show_media\": false, \"id\": \"2qizd\", \"user_is_contributor\": null, \"over18\": false, \"description\": \"A subreddit for discussion of reddit API clients.\\n\\n* [Read the API Overview \\u0026 Rules](https://github.com/reddit/reddit/wiki/API)\\n* [Check out the API documentation](http://www.reddit.com/dev/api)\\n* [PRAW chat](https://join.slack.com/t/praw/shared_invite/enQtOTUwMDcxOTQ0NzY5LWVkMGQ3ZDk5YmQ5MDEwYTZmMmJkMTJkNjBkNTY3OTU0Y2E2NGRlY2ZhZTAzMWZmMWRiMTMwYjdjODkxOGYyZjY)\\n* [Snoowrap chat](https://gitter.im/not-an-aardvark/snoowrap)\\n* [Join us on IRC: `#reddit-dev` on irc.freenode.net](http://webchat.freenode.net/?channels=reddit-dev)\\n* [Unofficial Discord](https://discord.gg/hVMhxpV)\\n* Please do not request bots here. Consider /r/requestabot instead.\\n\\n\\nPlease confine discussion to reddit's API instead of using this as a soapbox to talk to the admins. In particular, use [/r/ideasfortheadmins](/r/ideasfortheadmins) for feature ideas and [/r/bugs](/r/bugs) for bugs. If you have general reddit questions, try [/r/help](/r/help).\\n\\nTo see an explanation of recent user-facing changes to reddit (and the code behind them), check out /r/changelog.\\n\\n---\\n\\nTo report a security issue with reddit, please send an email to \\u003Csecurity@reddit.com\\u003E .\\n\\nThis is an admin-sponsored subreddit.\", \"is_chat_post_feature_enabled\": true, \"submit_link_label\": \"\", \"user_flair_text_color\": null, \"restrict_commenting\": false, \"user_flair_css_class\": null, \"allow_images\": false, \"lang\": \"en\", \"whitelist_status\": \"all_ads\", \"url\": \"/r/redditdev/\", \"created_utc\": 1213802177.0, \"banner_size\": null, \"mobile_banner_image\": \"\", \"user_is_moderator\": null}}, {\"kind\": \"t5\", \"data\": {\"user_flair_background_color\": null, \"submit_text_html\": null, \"restrict_posting\": true, \"user_is_banned\": null, \"free_form_reports\": true, \"wiki_enabled\": false, \"user_is_muted\": null, \"user_can_flair_in_sr\": null, \"display_name\": \"t:1337\", \"header_img\": null, \"title\": \"1337\", \"allow_galleries\": true, \"icon_size\": null, \"primary_color\": \"\", \"active_user_count\": null, \"icon_img\": \"\", \"display_name_prefixed\": \"r/t:1337\", \"accounts_active\": null, \"public_traffic\": false, \"subscribers\": 205, \"user_flair_richtext\": [], \"videostream_links_count\": 0, \"name\": \"t5_2ttui\", \"quarantine\": false, \"hide_ads\": false, \"emojis_enabled\": false, \"advertiser_category\": \"\", \"public_description\": \"\", \"comment_score_hide_mins\": 0, \"allow_predictions\": false, \"user_has_favorited\": null, \"user_flair_template_id\": null, \"community_icon\": \"\", \"banner_background_image\": \"\", \"original_content_tag_enabled\": false, \"submit_text\": \"\", \"description_html\": null, \"spoilers_enabled\": true, \"header_title\": \"\", \"header_size\": null, \"user_flair_position\": \"right\", \"all_original_content\": false, \"has_menu_widget\": false, \"is_enrolled_in_new_modmail\": null, \"key_color\": \"\", \"can_assign_user_flair\": false, \"created\": 1333292093.0, \"wls\": null, \"show_media_preview\": true, \"submission_type\": \"any\", \"user_is_subscriber\": null, \"disable_contributor_requests\": false, \"allow_videogifs\": true, \"user_flair_type\": \"text\", \"allow_polls\": true, \"collapse_deleted_comments\": false, \"emojis_custom_size\": null, \"public_description_html\": null, \"allow_videos\": true, \"is_crosspostable_subreddit\": false, \"suggested_comment_sort\": null, \"can_assign_link_flair\": false, \"accounts_active_is_fuzzed\": false, \"submit_text_label\": \"\", \"link_flair_position\": \"\", \"user_sr_flair_enabled\": null, \"user_flair_enabled_in_sr\": false, \"allow_discovery\": true, \"user_sr_theme_enabled\": true, \"link_flair_enabled\": false, \"subreddit_type\": \"public\", \"notification_level\": null, \"banner_img\": \"\", \"user_flair_text\": null, \"banner_background_color\": \"\", \"show_media\": false, \"id\": \"2ttui\", \"user_is_contributor\": null, \"over18\": false, \"description\": \"\", \"submit_link_label\": \"\", \"user_flair_text_color\": null, \"restrict_commenting\": false, \"user_flair_css_class\": null, \"allow_images\": true, \"lang\": \"en\", \"whitelist_status\": null, \"url\": \"/r/t:1337/\", \"created_utc\": 1333263293.0, \"banner_size\": null, \"mobile_banner_image\": \"\", \"user_is_moderator\": null}}, {\"kind\": \"t5\", \"data\": {\"user_flair_background_color\": null, \"submit_text_html\": null, \"restrict_posting\": true, \"user_is_banned\": null, \"free_form_reports\": true, \"wiki_enabled\": false, \"user_is_muted\": null, \"user_can_flair_in_sr\": null, \"display_name\": \"nl\", \"header_img\": null, \"title\": \"nl\", \"allow_galleries\": true, \"icon_size\": null, \"primary_color\": \"\", \"active_user_count\": null, \"icon_img\": \"\", \"display_name_prefixed\": \"r/nl\", \"accounts_active\": null, \"public_traffic\": false, \"subscribers\": 638, \"user_flair_richtext\": [], \"videostream_links_count\": 0, \"name\": \"t5_247d\", \"quarantine\": false, \"hide_ads\": false, \"emojis_enabled\": false, \"advertiser_category\": \"\", \"public_description\": \"\", \"comment_score_hide_mins\": 0, \"allow_predictions\": false, \"user_has_favorited\": null, \"user_flair_template_id\": null, \"community_icon\": \"\", \"banner_background_image\": \"\", \"original_content_tag_enabled\": false, \"submit_text\": \"\", \"description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EBack in the day, reddit auto-created a bunch of subreddits on a per-country level (using two-letter country codes).  [\\u003Ca href=\\\"/r/TheNetherlands\\\"\\u003E/r/TheNetherlands\\u003C/a\\u003E] though, making this subreddit redundant.  You should go there!\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"spoilers_enabled\": true, \"header_title\": null, \"header_size\": null, \"user_flair_position\": \"right\", \"all_original_content\": false, \"has_menu_widget\": false, \"is_enrolled_in_new_modmail\": null, \"key_color\": \"\", \"can_assign_user_flair\": false, \"created\": 1140613148.0, \"wls\": null, \"show_media_preview\": true, \"submission_type\": \"any\", \"user_is_subscriber\": null, \"disable_contributor_requests\": false, \"allow_videogifs\": true, \"user_flair_type\": \"text\", \"allow_polls\": true, \"collapse_deleted_comments\": false, \"emojis_custom_size\": null, \"public_description_html\": null, \"allow_videos\": true, \"is_crosspostable_subreddit\": false, \"suggested_comment_sort\": null, \"can_assign_link_flair\": false, \"accounts_active_is_fuzzed\": false, \"submit_text_label\": null, \"link_flair_position\": \"\", \"user_sr_flair_enabled\": null, \"user_flair_enabled_in_sr\": false, \"allow_discovery\": true, \"user_sr_theme_enabled\": true, \"link_flair_enabled\": false, \"subreddit_type\": \"restricted\", \"notification_level\": null, \"banner_img\": \"\", \"user_flair_text\": null, \"banner_background_color\": \"\", \"show_media\": false, \"id\": \"247d\", \"user_is_contributor\": null, \"over18\": false, \"description\": \"Back in the day, reddit auto-created a bunch of subreddits on a per-country level (using two-letter country codes).  [/r/TheNetherlands] though, making this subreddit redundant.  You should go there!\", \"submit_link_label\": null, \"user_flair_text_color\": null, \"restrict_commenting\": false, \"user_flair_css_class\": null, \"allow_images\": true, \"lang\": \"nl\", \"whitelist_status\": null, \"url\": \"/r/nl/\", \"created_utc\": 1140584348.0, \"banner_size\": null, \"mobile_banner_image\": \"\", \"user_is_moderator\": null}}], \"after\": null, \"before\": null}}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "16863"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 23 Oct 2020 00:13:46 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "loid=00000000008l6qhqq7.2.1603412026327.Z0FBQUFBQmZraUE2Q1lDemFLYUlmbWdCenV3TmxXNEhIWEVSakkydGFhVElqU3M3MVFlV3ZFMWZUcG5mT0hMXzdCbGdFdmhxamhTd0R1b25RUDRBcTdpUHpCM2lLSXkzWjZwakstWDEyd3h4WGY3R1N0NmRnckVqcHdwT0p0ZVVVUTVQeWM3dExQUHI; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Sun, 23-Oct-2022 00:13:46 GMT; secure; SameSite=None; Secure",
+            "session_tracker=dcodkeogdoelnelknl.0.1603412026604.Z0FBQUFBQmZraUE2Z0FqRnR0NXU2TVFLUUVsZHczbC1iMUJQRlN1RTZXeEtEM3VoN2E0d1cxMHJXLTFkU3RETGNkTHROeUR3ZXBITDhyWHpyeGNqa25lSU9yUmxnc0xmMTVPcTR2bzRUcnRVY1lUd21XM3h3SGhlcWlHUWFfUVNNbDBnUG5sbXFpRGI; Domain=reddit.com; Max-Age=7199; Path=/; expires=Fri, 23-Oct-2020 02:13:46 GMT; secure; SameSite=None; Secure",
+            "csv=1; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "access-control-allow-origin": [
+            "*"
+          ],
+          "access-control-expose-headers": [
+            "X-Moose"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/info/?sr_name=redditdev%2Creddit.com%2Ct%3A1337%2Cnl&raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}
