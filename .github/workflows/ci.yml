@@ -42,7 +42,7 @@ jobs:
     - name: Run pydocstyle
       run: pydocstyle praw
     - name: Run sphinx
-      run: sphinx-build -W --keep-going docs/ /tmp/foo
+      run: sphinx-build --keep-going docs/ /tmp/foo
     strategy:
       matrix:
         os: [macOS-latest, ubuntu-latest, windows-latest]
@@ -81,10 +81,10 @@ jobs:
     - name: Run pydocstyle
       run: pydocstyle praw
     - name: Run sphinx
-      run: sphinx-build -W --keep-going docs/ /tmp/foo
+      run: sphinx-build --keep-going docs/ /tmp/foo
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8, 3.9]
 
   test-multi-os:
     name: Test ${{ matrix.os }}
@@ -142,7 +142,7 @@ jobs:
       run: coverage report -m --fail-under=100
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8, 3.9]
 
   test-network:
     name: Test Network Request

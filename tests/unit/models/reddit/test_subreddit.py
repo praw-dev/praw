@@ -4,7 +4,7 @@ import pytest
 from unittest import mock
 
 from praw.exceptions import MediaPostFailed
-from praw.models import Subreddit, WikiPage
+from praw.models import InlineGif, InlineImage, InlineVideo, Subreddit, WikiPage
 from praw.models.reddit.subreddit import SubredditFlairTemplates
 
 from ... import UnitTest
@@ -133,6 +133,18 @@ class TestSubreddit(UnitTest):
             subreddit.submit_gallery(
                 "Cool title", images=[{"image_path": __file__, "caption": caption}]
             )
+        assert str(excinfo.value) == message
+
+    def test_submit_inline_media__invalid_path(self):
+        message = "'invalid_image_path' is not a valid file path."
+        subreddit = Subreddit(self.reddit, display_name="name")
+        gif = InlineGif("invalid_image_path", "optional caption")
+        image = InlineImage("invalid_image_path", "optional caption")
+        video = InlineVideo("invalid_image_path", "optional caption")
+        selftext = "Text with {gif1}, {image1}, and {video1} inline"
+        media = {"gif1": gif, "image1": image, "video1": video}
+        with pytest.raises(ValueError) as excinfo:
+            subreddit.submit("title", selftext=selftext, inline_media=media)
         assert str(excinfo.value) == message
 
     def test_upload_banner_additional_image(self):

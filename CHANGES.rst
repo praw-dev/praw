@@ -6,23 +6,30 @@ Unreleased
 
 **Added**
 
-* Add method :meth:`~.Subreddits.premium` to reflect the naming change in
-  Reddit's API.
+* Add method :meth:`~.Subreddits.premium` to reflect the naming change in Reddit's API.
 * Ability to submit image galleries with :meth:`.submit_gallery`.
+* Ability to pass a gallery url to :meth:`.Reddit.submission`.
 * Ability to specify modmail mute duration.
+* Add method :meth:`.invited` to get invited moderators of a subreddit.
+* Add method :meth:`~.Submission.award` and :meth:`~.Comment.award` with the ability to
+  specify type of award, anonymity, and message when awarding a submission or comment.
+* Ability to specify subreddits by name using the `subreddits` parameter in
+  :meth:`.Reddit.info`.
 
 **Changed**
 
-* :meth:`~.Subreddits.gold` is an alias of :meth:`~.Subreddits.premium`.
 * Drop support for Python 3.5, which is end-of-life on 2020-09-13.
 
 **Deprecated**
 
 * :meth:`~.Subreddits.gold` is superseded by :meth:`~.Subreddits.premium`.
+* :meth:`~.Submission.gild` is superseded by :meth:`~.Submission.award`.
+* :meth:`~.Comment.gild` is superseded by :meth:`~.Comment.award`.
 
 **Fixed**
 
 * An issue where leaving as a moderator fails if you are using token auth.
+* An issue where an incorrect error was being raised due to invalid submission urls.
 
 7.1.0 (2020/06/22)
 ------------------

@@ -24,6 +24,7 @@ extras = {
         "sphinx_rtd_theme",
         "flynt",
     ],
+    "readthedocs": ["sphinx<3.0"],
     "test": [
         "betamax >=0.8, <0.9",
         "betamax-matchers >=0.3.0, <0.5",
@@ -49,6 +50,7 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Topic :: Utilities",
     ],
     description=(

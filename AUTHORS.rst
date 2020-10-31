@@ -3,6 +3,7 @@ Maintainers
 
 - Bryce Boe <bbzbryce@gmail.com> `@bboe <https://github.com/bboe>`_
 - Joe RH <jarhill0@gmail.com> `@jarhill0 <https://github.com/jarhill0>`_
+- Joel Payne <lilspazjoekp@gmail.com> `@LilSpazJoekp <https://github.com/LilSpazJoekp>`_
 
 
 Documentation Contributors
@@ -51,7 +52,6 @@ Source Contributors
 - Elaina Martineau `@CrackedP0t <https://github.com/CrackedP0t>`_
 - Rob Curtis <BourbonInExile@gmail.com> `@waab76 <https://github.com/waab76>`_
 - Pyprohly <pyprohly@outlook.com> `@Pyprohly <https://github.com/Pyprohly>`_
-- LilSpazJoekp `@LilSpazJoekp <https://github.com/LilSpazJoekp>`_
 - Timendum `@timendum <https://github.com/timendum>`_
 - vaclav-2012 `@vaclav-2012 <https://github.com/vaclav-2012>`_
 - Jon Meager `@H4CKY54CK <https://github.com/H4CKY54CK>`_
@@ -64,5 +64,7 @@ Source Contributors
 - Todd Roberts `@toddrob99 <https://github.com/toddrob99>`_
 - MaybeNetwork `@MaybeNetwork <https://github.com/MaybeNetwork>`_
 - Nick Kelly `@nickatnight <https://github.com/nickatnight>`_
+- Yash Chhabria `@Cyatos <https://github.com/Cyatos>`_
+- Justin Krejcha <justin@justinkrejcha.com> `@jkrejcha <https://github.com/jkrejcha>`_
 - Vartan Benohanian `@vartanbeno <https://github.com/vartanbeno>`_
 <!-- - Add "Name <email (optional)> and github profile link" above this line. -->

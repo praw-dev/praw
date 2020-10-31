@@ -31,12 +31,7 @@ class DocumentationChecker:
         r"( +)\.\. code-block:: python\n\n\1 {3}[\w#]"
     )
     HAS_ATTRIBUTE_TABLE = re.compile(r"Attribute[ ]+Description")
-    METHOD_EXCEPTIONS = {
-        "from_data",
-        "id_from_url",
-        "parse",
-        "sluggify",
-    }
+    METHOD_EXCEPTIONS = {"from_data", "id_from_url", "parse", "sluggify", "gild"}
     subclasses = set()
 
     @staticmethod

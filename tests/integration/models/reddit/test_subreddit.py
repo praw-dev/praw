@@ -26,6 +26,9 @@ from praw.exceptions import (
 )
 from praw.models import (
     Comment,
+    InlineGif,
+    InlineImage,
+    InlineVideo,
     ModAction,
     ModmailAction,
     ModmailConversation,
@@ -263,6 +266,30 @@ class TestSubreddit(IntegrationTest):
             assert submission.author == self.reddit.config.username
             assert submission.selftext == ""
             assert submission.title == "Test Title"
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submit__selftext_inline_media(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit__selftext_inline_media"
+        ):
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+            gif = InlineGif(self.image_path("test.gif"), "optional caption")
+            image = InlineImage(self.image_path("test.png"), "optional caption")
+            video = InlineVideo(self.image_path("test.mp4"), "optional caption")
+            selftext = (
+                "Text with a gif {gif1} an image {image1} and a video {video1} inline"
+            )
+            media = {"gif1": gif, "image1": image, "video1": video}
+            submission = subreddit.submit(
+                "title", selftext=selftext, inline_media=media
+            )
+            assert submission.author == pytest.placeholders.username
+            assert (
+                submission.selftext
+                == "Text with a gif\n\n[optional caption](https://i.redd.it/3vwgfvq3tyq51.gif)\n\nan image\n\n[optional caption](https://preview.redd.it/9147est3tyq51.png?width=128&format=png&auto=webp&s=54d1a865a9339dcca9ec19eb1e357079c81e5100)\n\nand a video\n\n[optional caption](https://reddit.com/link/j4p2rk/video/vsie20v3tyq51/player)\n\ninline"
+            )
+            assert submission.title == "title"
 
     @mock.patch("time.sleep", return_value=None)
     def test_submit_live_chat(self, _):
@@ -1774,6 +1801,15 @@ class TestSubredditRelationships(IntegrationTest):
             # invite list.
             self.subreddit.moderator.invite(self.REDDITOR, permissions=[])
             assert self.REDDITOR not in self.subreddit.moderator()
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_moderator_invited_moderators(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditRelationships.test_moderator_invited_moderators"
+        ):
+            for moderator in self.subreddit.moderator.invited():
+                assert isinstance(moderator, Redditor)
 
     @mock.patch("time.sleep", return_value=None)
     def test_modeator_leave(self, _):

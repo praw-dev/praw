@@ -33,3 +33,9 @@ class FlairListing(Listing):
     def after(self) -> Optional[Any]:
         """Return the next attribute or None."""
         return getattr(self, "next", None)
+
+
+class ModeratorListing(Listing):
+    """Special Listing for handling moderator lists."""
+
+    CHILD_ATTRIBUTE = "moderators"
