@@ -2285,6 +2285,8 @@ class SubredditModeration:
     def update(self, **settings):
         """Update the subreddit's settings.
 
+        See https://www.reddit.com/dev/api#POST_api_site_admin for the full list.
+
         :param all_original_content: Mandate all submissions to be original content
             only.
         :param allow_chat_post_creation: Allow users to create chat submissions.
@@ -2312,7 +2314,7 @@ class SubredditModeration:
             modqueue/unmoderated.
         :param free_form_reports: Allow users to specify custom reasons in the report
             menu.
-        :param header_hover_text: The text seen when hovering over the snoo.
+        :param header-title: The text seen when hovering over the snoo.
         :param hide_ads: Don't show ads within this subreddit. Only applies to Premium-
             user only subreddits.
         :param key_color: A 6-digit rgb hex color (e.g. ``"#AABBCC"``), used as a
@@ -2344,12 +2346,12 @@ class SubredditModeration:
         :param submit_text: Text to show on submission page.
         :param submit_text_label: Custom label for submit text post button (None for
             default).
-        :param subreddit_type: One of ``archived``, ``employees_only``, ``gold_only``,
-            ``gold_restricted``, ``private``, ``public``, ``restricted``.
         :param suggested_comment_sort: All comment threads will use this sorting method
             by default. Leave None, or choose one of ``confidence``, ``controversial``,
             ``live``, ``new``, ``old``, ``qa``, ``random``, ``top``.
         :param title: The title of the subreddit.
+        :param type: One of ``archived``, ``employees_only``, ``gold_only``,
+            ``gold_restricted``, ``private``, ``public``, ``restricted``.
         :param welcome_message_enabled: Enables the subreddit welcome message.
         :param welcome_message_text: The text to be used as a welcome message. A welcome
             message is sent to all new subscribers by a Reddit bot.
