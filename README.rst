@@ -88,6 +88,14 @@ With the ``reddit`` instance you can then interact with Reddit:
 Please see PRAW's `documentation <https://praw.readthedocs.io/>`_ for
 more examples of what you can do with PRAW.
 
+Discord Bots and Asynchronous Environments
+------------------------------------------
+
+If you plan on using PRAW in an asynchronous environment, (e.g., discord.py, asyncio) it
+is strongly recommended to use `Async PRAW <https://asyncpraw.readthedocs.io/>`_. It is
+the official asynchronous version of PRAW and its usage is similar and has the same
+features as PRAW.
+
 PRAW Discussion and Support
 ---------------------------
 
