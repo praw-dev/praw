@@ -140,16 +140,22 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             raise TypeError(
                 "Exactly one of `name`, `fullname`, or `_data` must be provided."
             )
+        invalid_name_message = "Please enter a valid `name` or `fullname`."
         if _data:
             assert (
                 isinstance(_data, dict) and "name" in _data
             ), "Please file a bug with PRAW"
+            if not (_data.get("name")):
+                raise ValueError(invalid_name_message)
         super().__init__(reddit, _data=_data)
         self._listing_use_sort = True
+
         if name:
             self.name = name
         elif fullname:
             self._fullname = fullname
+        elif not _data:
+            raise ValueError(invalid_name_message)
 
     def _fetch_username(self, fullname):
         return self._reddit.get(API_PATH["user_by_fullname"], params={"ids": fullname})[

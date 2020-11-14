@@ -30,6 +30,7 @@ Unreleased
 
 * An issue where leaving as a moderator fails if you are using token auth.
 * An issue where an incorrect error was being raised due to invalid submission urls.
+* An infinite recursion error when redditor is initialised with empty strings.
 
 7.1.0 (2020/06/22)
 ------------------

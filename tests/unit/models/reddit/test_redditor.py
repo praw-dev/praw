@@ -23,6 +23,7 @@ class TestRedditor(UnitTest):
 
     def test_construct_failure(self):
         message = "Exactly one of `name`, `fullname`, or `_data` must be provided."
+        invalid_name_message = "Please enter a valid `name` or `fullname`."
         with pytest.raises(TypeError) as excinfo:
             Redditor(self.reddit)
         assert str(excinfo.value) == message
@@ -49,6 +50,18 @@ class TestRedditor(UnitTest):
 
         with pytest.raises(AssertionError):
             Redditor(self.reddit, _data={"notname": "dummy"})
+
+        with pytest.raises(ValueError) as excinfo:
+            Redditor(self.reddit, "")
+        assert str(excinfo.value) == invalid_name_message
+
+        with pytest.raises(ValueError) as excinfo:
+            Redditor(self.reddit, fullname="")
+        assert str(excinfo.value) == invalid_name_message
+
+        with pytest.raises(ValueError) as excinfo:
+            Redditor(self.reddit, _data={"name": ""})
+        assert str(excinfo.value) == invalid_name_message
 
     def test_fullname(self):
         redditor = Redditor(self.reddit, _data={"name": "name", "id": "dummy"})
