@@ -114,6 +114,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         Sort order and reply limit can be set with the ``reply_sort`` and
         ``reply_limit`` attributes before replies are fetched, including any call to
         :meth:`.refresh`:
+
         .. code-block:: python
 
             comment.reply_sort = "new"
