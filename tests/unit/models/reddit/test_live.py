@@ -35,6 +35,9 @@ class TestLiveThread(UnitTest):
             LiveThread(self.reddit, id="dummy", _data={"id": "dummy"})
         assert str(excinfo.value) == message
 
+        with pytest.raises(ValueError):
+            LiveThread(self.reddit, "")
+
     def test_contrib(self):
         thread_id = "ukaeu1ik4sw5"
         thread = LiveThread(self.reddit, thread_id)

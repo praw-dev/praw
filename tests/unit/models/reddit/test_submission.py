@@ -44,6 +44,11 @@ class TestSubmission(UnitTest):
             Submission(self.reddit, "dummy", "dummy", {"id": "dummy"})
         assert str(excinfo.value) == message
 
+        with pytest.raises(ValueError):
+            Submission(self.reddit, "")
+        with pytest.raises(ValueError):
+            Submission(self.reddit, url="")
+
     def test_construct_from_url(self):
         assert Submission(self.reddit, url="http://my.it/2gmzqe") == "2gmzqe"
 

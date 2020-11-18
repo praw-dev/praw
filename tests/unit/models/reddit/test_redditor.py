@@ -50,6 +50,11 @@ class TestRedditor(UnitTest):
         with pytest.raises(AssertionError):
             Redditor(self.reddit, _data={"notname": "dummy"})
 
+        with pytest.raises(ValueError):
+            Redditor(self.reddit, "")
+        with pytest.raises(ValueError):
+            Redditor(self.reddit, fullname="")
+
     def test_fullname(self):
         redditor = Redditor(self.reddit, _data={"name": "name", "id": "dummy"})
         assert redditor.fullname == "t2_dummy"
