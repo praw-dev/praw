@@ -388,7 +388,7 @@ class LiveThread(RedditBase):
         :param id: A live thread ID, e.g., ``"ukaeu1ik4sw5"``
 
         """
-        if bool(id) == bool(_data):
+        if (id, _data).count(None) != 1:
             raise TypeError("Either `id` or `_data` must be provided.")
         if id:
             self.id = id
@@ -726,9 +726,9 @@ class LiveUpdate(FullnameMixin, RedditBase):
             # LiveThread.updates() for example.
             super().__init__(reddit, _data=_data, _fetched=True)
         elif thread_id and update_id:
-            self._thread = LiveThread(self._reddit, thread_id)
             self.id = update_id
             super().__init__(reddit, _data=None)
+            self._thread = LiveThread(self._reddit, thread_id)
         else:
             raise TypeError(
                 "Either `thread_id` and `update_id`, or `_data` must be provided."

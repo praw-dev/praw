@@ -108,7 +108,6 @@ class Collection(RedditBase):
         :param collection_id: The ID of the Collection (optional).
         :param permalink: The permalink of the Collection (optional).
         """
-
         if (_data, collection_id, permalink).count(None) != 2:
             raise TypeError(
                 "Exactly one of _data, collection_id, or permalink must be provided."

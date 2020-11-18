@@ -149,7 +149,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             self.name = name
         elif fullname:
             self._fullname = fullname
-        super().__init__(reddit, _data=_data)
+        super().__init__(reddit, _data=_data, _extra_attribute_to_check="_fullname")
 
     def _fetch_username(self, fullname):
         return self._reddit.get(API_PATH["user_by_fullname"], params={"ids": fullname})[

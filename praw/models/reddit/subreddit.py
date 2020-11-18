@@ -543,7 +543,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             via: ``reddit.subreddit("subreddit_name")``
 
         """
-        if bool(display_name) == bool(_data):
+        if (display_name, _data).count(None) != 1:
             raise TypeError("Either `display_name` or `_data` must be provided.")
         if display_name:
             self.display_name = display_name

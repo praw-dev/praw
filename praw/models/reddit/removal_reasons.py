@@ -86,7 +86,8 @@ class RemovalReason(RedditBase):
         if (id, _data).count(None) != 1:
             raise ValueError("Either id or _data needs to be given.")
 
-        self.id = id
+        if id:
+            self.id = id
         self.subreddit = subreddit
         super().__init__(reddit, _data=_data)
 
