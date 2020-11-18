@@ -41,14 +41,25 @@ class RedditBase(PRAWBase):
         """Return the hash of the current instance."""
         return hash(self.__class__.__name__) ^ hash(str(self).lower())
 
-    def __init__(self, reddit: "Reddit", _data: Optional[Dict[str, Any]]):
+    def __init__(
+        self,
+        reddit: "Reddit",
+        _data: Optional[Dict[str, Any]],
+        _fetched: bool = False,
+        _str_field: bool = True,
+    ):
         """Initialize a RedditBase instance (or a subclass).
 
         :param reddit: An instance of :class:`~.Reddit`.
 
         """
         super().__init__(reddit, _data=_data)
-        self._fetched = False
+        self._fetched = _fetched
+        if _str_field and getattr(self, self.STR_FIELD, None) is None:
+            raise ValueError(
+                f"An invalid value was specified for {self.STR_FIELD}. Check that the "
+                f"argument for the {self.STR_FIELD} parameter is not empty."
+            )
 
     def __repr__(self) -> str:
         """Return an object initialization representation of the instance."""
