@@ -144,12 +144,12 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             assert (
                 isinstance(_data, dict) and "name" in _data
             ), "Please file a bug with PRAW"
-        super().__init__(reddit, _data=_data)
         self._listing_use_sort = True
         if name:
             self.name = name
         elif fullname:
             self._fullname = fullname
+        super().__init__(reddit, _data=_data)
 
     def _fetch_username(self, fullname):
         return self._reddit.get(API_PATH["user_by_fullname"], params={"ids": fullname})[

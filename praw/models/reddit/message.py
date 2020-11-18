@@ -79,8 +79,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
 
     def __init__(self, reddit: "Reddit", _data: Dict[str, Any]):
         """Construct an instance of the Message object."""
-        super().__init__(reddit, _data=_data)
-        self._fetched = True
+        super().__init__(reddit, _data=_data, _fetched=True)
 
     def delete(self):
         """Delete the message.

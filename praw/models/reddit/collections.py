@@ -108,18 +108,19 @@ class Collection(RedditBase):
         :param collection_id: The ID of the Collection (optional).
         :param permalink: The permalink of the Collection (optional).
         """
-        super().__init__(reddit, _data)
 
         if (_data, collection_id, permalink).count(None) != 2:
             raise TypeError(
                 "Exactly one of _data, collection_id, or permalink must be provided."
             )
 
-        if permalink is not None:
+        if permalink:
             collection_id = self._url_parts(permalink)[4]
 
-        if collection_id is not None:
+        if collection_id:
             self.collection_id = collection_id  # set from _data otherwise
+
+        super().__init__(reddit, _data)
 
         self._info_params = {
             "collection_id": self.collection_id,

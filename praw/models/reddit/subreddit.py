@@ -545,9 +545,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         """
         if bool(display_name) == bool(_data):
             raise TypeError("Either `display_name` or `_data` must be provided.")
-        super().__init__(reddit, _data=_data)
         if display_name:
             self.display_name = display_name
+        super().__init__(reddit, _data=_data)
         self._path = API_PATH["subreddit"].format(subreddit=self)
 
     def _convert_to_fancypants(self, markdown_text: str):
