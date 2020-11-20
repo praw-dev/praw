@@ -34,6 +34,9 @@ class TestSubreddit(UnitTest):
             Subreddit(self.reddit, "dummy", {"id": "dummy"})
         assert str(excinfo.value) == message
 
+        with pytest.raises(ValueError):
+            Subreddit(self.reddit, "")
+
     def test_fullname(self):
         subreddit = Subreddit(
             self.reddit, _data={"display_name": "name", "id": "dummy"}

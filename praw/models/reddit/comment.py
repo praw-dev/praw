@@ -1,10 +1,6 @@
 """Provide the Comment class."""
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
-from ...const import API_PATH
-from ...exceptions import ClientException, InvalidURL
-from ...util.cache import cachedproperty
-from ..comment_forest import CommentForest
 from .base import RedditBase
 from .mixins import (
     FullnameMixin,
@@ -13,6 +9,10 @@ from .mixins import (
     UserContentMixin,
 )
 from .redditor import Redditor
+from ..comment_forest import CommentForest
+from ...const import API_PATH
+from ...exceptions import ClientException, InvalidURL
+from ...util.cache import cachedproperty
 
 if TYPE_CHECKING:  # pragma: no cover
     from ... import Reddit
@@ -156,15 +156,16 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         """Construct an instance of the Comment object."""
         if (id, url, _data).count(None) != 2:
             raise TypeError("Exactly one of `id`, `url`, or `_data` must be provided.")
+        fetched = False
         self._replies = []
         self._submission = None
-        super().__init__(reddit, _data=_data)
         if id:
             self.id = id
         elif url:
             self.id = self.id_from_url(url)
         else:
-            self._fetched = True
+            fetched = True
+        super().__init__(reddit, _data=_data, _fetched=fetched)
 
     def __setattr__(
         self,

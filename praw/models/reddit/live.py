@@ -388,11 +388,11 @@ class LiveThread(RedditBase):
         :param id: A live thread ID, e.g., ``"ukaeu1ik4sw5"``
 
         """
-        if bool(id) == bool(_data):
+        if (id, _data).count(None) != 1:
             raise TypeError("Either `id` or `_data` must be provided.")
-        super().__init__(reddit, _data=_data)
         if id:
             self.id = id
+        super().__init__(reddit, _data=_data)
 
     def _fetch_info(self):
         return "liveabout", {"id": self.id}, None
@@ -724,12 +724,11 @@ class LiveUpdate(FullnameMixin, RedditBase):
             # Since _data (part of JSON returned from reddit) have no thread ID,
             # self._thread must be set by the caller of LiveUpdate(). See the code of
             # LiveThread.updates() for example.
-            super().__init__(reddit, _data=_data)
-            self._fetched = True
+            super().__init__(reddit, _data=_data, _fetched=True)
         elif thread_id and update_id:
+            self.id = update_id
             super().__init__(reddit, _data=None)
             self._thread = LiveThread(self._reddit, thread_id)
-            self.id = update_id
         else:
             raise TypeError(
                 "Either `thread_id` and `update_id`, or `_data` must be provided."

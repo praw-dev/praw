@@ -76,7 +76,8 @@ class Rule(RedditBase):
         """Construct an instance of the Rule object."""
         if (short_name, _data).count(None) != 1:
             raise ValueError("Either short_name or _data needs to be given.")
-        self.short_name = short_name
+        if short_name:
+            self.short_name = short_name
         # Note: The subreddit parameter can be None, because the objector does not know
         # this info. In that case, it is the responsibility of the caller to set the
         # `subreddit` property on the returned value.

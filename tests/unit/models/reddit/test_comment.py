@@ -48,6 +48,11 @@ class TestComment(UnitTest):
             Comment(self.reddit, "dummy", "dummy", {"id": "dummy"})
         assert str(excinfo.value) == message
 
+        with pytest.raises(ValueError):
+            Comment(self.reddit, "")
+        with pytest.raises(ValueError):
+            Comment(self.reddit, url="")
+
     def test_construct_from_url(self):
         url = "https://reddit.com/comments/2gmzqe/_/cklhv0f/"
         assert Comment(self.reddit, url=url) == "cklhv0f"
