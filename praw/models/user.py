@@ -120,8 +120,8 @@ class User(PRAWBase):
 
         In read-only mode this method returns ``None``, although you should
         use :attr:`~praw.Reddit.read_only` to check if the client has a user
-        context. This may change in future to raise an error instead of
-        returning ``None``.
+        context. This behavior is deprecated, and will raise an exception
+        in PRAW 8.
 
         :param use_cache: When true, and if this function has been previously
             called, returned the cached version (default: True).
