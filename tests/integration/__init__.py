@@ -70,18 +70,16 @@ class IntegrationTest:
         dynamic_name = self.get_cassette_name()
         if cassette_name:
             self.logger.debug(
-                "Static cassette name provided by {}. The following "
-                "name was provided: {}".format(dynamic_name, cassette_name)
+                f"Static cassette name provided by {dynamic_name}. The following name "
+                f"was provided: {cassette_name}"
             )
             if cassette_name != dynamic_name:
                 self.logger.warning(
-                    "Dynamic cassette name for function {} does not "
-                    "match the provided cassette name: {}".format(
-                        dynamic_name, cassette_name
-                    )
+                    f"Dynamic cassette name for function {dynamic_name} does not match"
+                    f" the provided cassette name: {cassette_name}"
                 )
         return self.recorder.use_cassette(cassette_name or dynamic_name, **kwargs)
 
     def get_cassette_name(self) -> str:
         function_name = inspect.currentframe().f_back.f_back.f_code.co_name
-        return "{}.{}".format(type(self).__name__, function_name)
+        return f"{type(self).__name__}.{function_name}"
