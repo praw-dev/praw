@@ -2,14 +2,35 @@
 
 import os.path
 from json import JSONEncoder, dumps
+from typing import Optional, Any, Dict, TYPE_CHECKING
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
 from ..base import PRAWBase
 from ..list.base import BaseList
 
+if TYPE_CHECKING:
+    from ... import Reddit
 
-class Button(PRAWBase):
+
+class WidgetBase(PRAWBase):
+    """Class that serves as a base to widget objects."""
+
+    def __init__(
+        self,
+        reddit: Optional["Reddit"] = None,
+        _data: Optional[Dict[str, Any]] = None,
+        **attributes,
+    ):
+        """Initialize the class with the provided keyword arguments."""
+        for key, value in attributes.copy().items():
+            if value is None:
+                attributes.pop(key)
+        attributes.update(_data)
+        super().__init__(reddit, attributes)
+
+
+class Button(WidgetBase):
     """Class to represent a single button inside a :class:`.ButtonWidget`.
 
     **Typical Attributes**
@@ -25,8 +46,8 @@ class Button(PRAWBase):
     ``color``               The hex color used to outline the button.
     ``fillColor``           The hex color for the background of the button.
     ``height``              Image height. Only present on image buttons.
-    ``hoverState``          A ``dict`` describing the state of the button when hovered
-                            over. Optional.
+    ``hoverState``          An instance of :class:`.Hover` describing the state of the
+                            button when hovered over. Optional.
     ``kind``                Either ``"text"`` or ``"image"``.
     ``linkUrl``             A link that can be visited by clicking the button. Only
                             present on image buttons.
@@ -41,8 +62,155 @@ class Button(PRAWBase):
 
     """
 
+    def __init__(
+        self,
+        reddit: Optional["Reddit"] = None,
+        kind: Optional[str] = None,
+        text: Optional[str] = None,
+        url: Optional[str] = None,
+        _data: Optional[Dict[str, Any]] = None,
+        **optional_attributes,
+    ):
+        """Generate an instance of :class:`.Button`.
 
-class CalendarConfiguration(PRAWBase):
+        This object should be used with :meth:`.add_button_widget` to create
+        a button widget.
+
+        :param kind: The type of button (``"image"`` or ``"text"``)
+        :param text: The button text.
+        :param url: The URL of the button. On image buttons, ``url`` should be
+            a link to the image obtained from :meth:`.upload_image`.
+        :param color: The color of the button. Should either be given as a
+            7-character RGB code (``"#FFFFFF"``) or the integer representation
+            (``0xFFFFFF``). Optional.
+        :param fillColor: The background color of the button. Should either be
+            given as a 7-character RGB code (``"#FFFFFF"``) or the integer
+            representation (``0xFFFFFF``). Optional.
+        :param height: The height of the image, if the button is an image
+            button. Optional.
+        :param hoverState: An instance of :class:`.Hover` containing the hover
+            data for the button. Optional.
+        :param linkUrl: If the button is an image button, represents the link
+            that the user will visit when the image is clicked on. Optional.
+        :param textColor: The color of the button text. Should either be given
+            as a 7-character RGB code (``"#FFFFFF"``) or the integer
+            representation (``0xFFFFFF``). Optional.
+        :param width: The width of the image, if the button is an image button.
+            Optional.
+
+        For example, to generate a text button:
+
+        .. code-block:: python
+
+            from praw.models import Button, Hover
+
+            hover = Hover(
+                kind="text",
+                color=0xFF0000,
+                fillColor=0x000000,
+                text="Don't click me",
+                textColor=0xFFFFFF,
+                url="https://www.reddit.com",
+            )
+            button = Button(
+                kind="text",
+                text="Click me!",
+                url="https://www.google.com",
+                color=0x00FF00,
+                fillColor=0xFFFFFF,
+                hoverState=hover,
+                textColor=0x000000,
+            )
+
+        To generate an image button:
+
+        .. code-block:: python
+
+            from praw.models import Button, Hover
+
+            widget_mod = reddit.subreddit("test").widgets.mod
+            image_1 = widget_mod.upload_image("image.png")
+            image_2 = widget_mod.upload_image("image2.png")
+            hover = Hover(
+                kind="image",
+                linkUrl="https://www.reddit.com",
+                height=400,
+                text="Don't click me",
+                url=image_2,
+                width=200,
+            )
+            button = Button(
+                kind="image",
+                text="Click me!",
+                url=image_1,
+                height=200,
+                hoverState=hover,
+                linkUrl="https://www.google.com",
+                width=200,
+            )
+
+        The hover states do not have to correspond to the given button types.
+
+        .. code-block:: python
+
+            from praw.models import Button, Hover
+
+            widget_mod = reddit.subreddit("test").widgets.mod
+            image_1 = widget_mod.upload_image("image.png")
+            hover = Hover(
+                kind="text",
+                color=0xFF0000,
+                fillColor=0x000000,
+                text="Don't click me",
+                textColor=0xFFFFFF,
+                url="https://www.reddit.com",
+            )
+            button = Button(
+                kind="image",
+                text="Click me!",
+                url=image_1,
+                height=200,
+                hoverState=hover,
+                linkUrl="https://www.google.com",
+                width=200,
+            )
+
+        .. code-block:: python
+
+            from praw.models import Button, Hover
+
+            widget_mod = reddit.subreddit("test").widgets.mod
+            image = widget_mod.upload_image("image.png")
+            hover = Hover(
+                kind="image",
+                linkUrl="https://www.reddit.com",
+                height=400,
+                text="Don't click me",
+                url=image,
+                width=200,
+            )
+            button = Button(
+                kind="text",
+                text="Click me!",
+                url="https://www.google.com",
+                color=0x00FF00,
+                fillColor=0xFFFFFF,
+                hoverState=hover,
+                textColor=0x000000,
+            )
+        """
+        if bool(_data) == bool(kind or text or url):
+            raise ValueError(
+                "Either '_data' or the 'kind', 'text', and 'url' parameters have to "
+                "be specified."
+            )
+        if not _data and (kind, text, url).count(None) > 0:
+            raise ValueError("'kind', 'text', and 'url' cannot be None.")
+        optional_attributes.update(kind=kind, text=text, url=url)
+        super().__init__(reddit, _data, **optional_attributes)
+
+
+class CalendarConfiguration(WidgetBase):
     """Class to represent the configuration of a :class:`.Calendar`.
 
     **Typical Attributes**
@@ -66,8 +234,8 @@ class CalendarConfiguration(PRAWBase):
     """
 
 
-class Hover(PRAWBase):
-    """Class to represent the hover data for a :class:`.ButtonWidget`.
+class Hover(WidgetBase):
+    """Class to represent the hover data for a :class:`.Button`.
 
     These values will take effect when the button is hovered over (the user moves their
     cursor so it's on top of the button).
@@ -82,23 +250,94 @@ class Hover(PRAWBase):
     ======================= ============================================================
     Attribute               Description
     ======================= ============================================================
-    ``color``               The hex color used to outline the button.
-    ``fillColor``           The hex color for the background of the button.
-    ``textColor``           The hex color for the text of the button.
-    ``height``              Image height. Only present on image buttons.
+    ``color``               The hex color used to outline the hover.
+    ``fillColor``           The hex color for the background of the hover.
+    ``textColor``           The hex color for the text of the hover.
+    ``height``              Image height. Only present on image hovers.
     ``kind``                Either ``text`` or ``image``.
-    ``text``                The text displayed on the button.
-    ``url``                 * If the button is a text button, a link that can be visited
+    ``text``                The text displayed on the hover.
+    ``url``                 * If the hover is a text hover, a link that can be visited
                               by clicking the button.
-                            * If the button is an image button, the URL of a
+                            * If the hover is an image hover, the URL of a
                               Reddit-hosted image.
-    ``width``               Image width. Only present on image buttons.
+    ``width``               Image width. Only present on image hovers.
     ======================= ============================================================
 
     """
 
+    def __init__(
+        self,
+        reddit: Optional["Reddit"] = None,
+        kind: Optional[str] = None,
+        _data: Optional[Dict[str, Any]] = None,
+        **optional_attributes,
+    ):
+        """Generate an instance of :class:`.Hover`.
 
-class Image(PRAWBase):
+        .. note:: You can use hover states that do not correspond with the
+            given button type, such as an ``image`` hover state for a ``text``
+            button.
+
+        :param kind: The type of hover state (``image`` or ``text``)
+        :param text: The hover state text. Optional.
+        :param url: The link to an uploaded image obtained from
+            :meth:`.upload_image` for image hovers or a link to a website for text
+            hovers. Optional.
+        :param color: The color of the hover state. Should either be given as a
+            7-character RGB code (``"#FFFFFF"``) or the integer representation
+            (``0xFFFFFF``). Optional.
+        :param fillColor: The background color of the hover state. Should either be
+            given as a 7-character RGB code (``"#FFFFFF"``) or the integer
+            representation (``0xFFFFFF``). Optional.
+        :param height: The height of the image, if the hover state is an image hover
+            state.
+        :param linkUrl: If the button is an image button, represents the link that the
+            user will visit when the image is clicked on. Optional.
+        :param textColor: The color of the hover state text. Should either be given as a
+            7-character RGB code (``"#FFFFFF"``) or the integer representation
+            (``0xFFFFFF``). Optional.
+        :param width: The width of the image, if the hover state is an image hover
+            state. Optional.
+
+        For example, to generate a text Hover:
+
+        .. code-block:: python
+
+            from praw.models import Hover
+
+            hover = Hover(
+                kind="text",
+                color=0xFF0000,
+                fillColor=0x000000,
+                text="Don't click me",
+                textColor=0xFFFFFF,
+                url="https://www.reddit.com",
+            )
+
+        To generate an image Hover:
+
+        .. code-block:: python
+
+            from praw.models import Hover
+
+            widget_mod = reddit.subreddit("test").widgets.mod
+            image = widget_mod.upload_image("image.png")
+            hover = Hover(
+                kind="image",
+                linkUrl="https://www.reddit.com",
+                height=400,
+                text="Don't click me",
+                url=image,
+                width=200,
+            )
+        """
+        if (kind, _data).count(None) != 1:
+            raise ValueError("Either 'kind' or '_data' has to be specified.")
+        optional_attributes.update(kind=kind)
+        super().__init__(reddit, _data, **optional_attributes)
+
+
+class Image(WidgetBase):
     """Class to represent an image that's part of a :class:`.ImageWidget`.
 
     **Typical Attributes**
@@ -120,7 +359,7 @@ class Image(PRAWBase):
     """
 
 
-class ImageData(PRAWBase):
+class ImageData(WidgetBase):
     """Class for image data that's part of a :class:`.CustomWidget`.
 
     **Typical Attributes**
@@ -142,7 +381,7 @@ class ImageData(PRAWBase):
     """
 
 
-class MenuLink(PRAWBase):
+class MenuLink(WidgetBase):
     """Class to represent a single link inside a menu or submenu.
 
     **Typical Attributes**
@@ -162,7 +401,7 @@ class MenuLink(PRAWBase):
     """
 
 
-class Styles(PRAWBase):
+class Styles(WidgetBase):
     """Class to represent the style information of a widget.
 
     **Typical Attributes**
