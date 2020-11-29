@@ -48,7 +48,7 @@ from .rules import SubredditRules
 from .widgets import SubredditWidgets, WidgetEncoder
 from .wikipage import WikiPage
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ... import Reddit
     from .collections import SubredditCollections
     from .submission import Submission
