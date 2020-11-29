@@ -20,8 +20,7 @@ Unreleased
 
 * Drop support for Python 3.5, which is end-of-life on 2020-09-13.
 * :class:`~.BoundedSet` will now utilize a Last-Recently-Used (LRU) storing mechanism,
-  which will change the order in which elements are removed from the set, but it should
-  not be noticeable.
+  which will change the order in which elements are removed from the set.
 
 **Deprecated**
 
