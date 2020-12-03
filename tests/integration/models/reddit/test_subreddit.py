@@ -607,7 +607,7 @@ class TestSubreddit(IntegrationTest):
     )  # happens with timeout=0
     def test_submit_image__timeout_1(self, _, __):
         self.reddit.read_only = False
-        with self.use_cassette("TestSubreddit.test_submit_image__timeout"):
+        with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             image = self.image_path("test.jpg")
             with pytest.raises(WebSocketException):
@@ -622,7 +622,7 @@ class TestSubreddit(IntegrationTest):
     def test_submit_image__timeout_2(self, _, __):
 
         self.reddit.read_only = False
-        with self.use_cassette("TestSubreddit.test_submit_image__timeout"):
+        with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             image = self.image_path("test.jpg")
             with pytest.raises(WebSocketException):
@@ -638,7 +638,7 @@ class TestSubreddit(IntegrationTest):
     def test_submit_image__timeout_3(self, _, __):
 
         self.reddit.read_only = False
-        with self.use_cassette("TestSubreddit.test_submit_image__timeout"):
+        with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             image = self.image_path("test.jpg")
             with pytest.raises(WebSocketException):
@@ -654,7 +654,7 @@ class TestSubreddit(IntegrationTest):
     def test_submit_image__timeout_4(self, _, __):
 
         self.reddit.read_only = False
-        with self.use_cassette("TestSubreddit.test_submit_image__timeout"):
+        with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             image = self.image_path("test.jpg")
             with pytest.raises(WebSocketException):
@@ -669,7 +669,7 @@ class TestSubreddit(IntegrationTest):
     )
     def test_submit_image__timeout_5(self, _, __):
         self.reddit.read_only = False
-        with self.use_cassette("TestSubreddit.test_submit_image__timeout"):
+        with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             image = self.image_path("test.jpg")
             with pytest.raises(WebSocketException):
@@ -801,7 +801,7 @@ class TestSubreddit(IntegrationTest):
     def test_submit_video__timeout_1(self, _, __):
 
         self.reddit.read_only = False
-        with self.use_cassette("TestSubreddit.test_submit_video__timeout"):
+        with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             video = self.image_path("test.mov")
             with pytest.raises(WebSocketException):
@@ -816,7 +816,7 @@ class TestSubreddit(IntegrationTest):
     def test_submit_video__timeout_2(self, _, __):
 
         self.reddit.read_only = False
-        with self.use_cassette("TestSubreddit.test_submit_video__timeout"):
+        with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             video = self.image_path("test.mov")
             with pytest.raises(WebSocketException):
@@ -832,7 +832,7 @@ class TestSubreddit(IntegrationTest):
     def test_submit_video__timeout_3(self, _, __):
 
         self.reddit.read_only = False
-        with self.use_cassette("TestSubreddit.test_submit_video__timeout"):
+        with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             video = self.image_path("test.mov")
             with pytest.raises(WebSocketException):
@@ -848,7 +848,7 @@ class TestSubreddit(IntegrationTest):
     def test_submit_video__timeout_4(self, _, __):
 
         self.reddit.read_only = False
-        with self.use_cassette("TestSubreddit.test_submit_video__timeout"):
+        with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             video = self.image_path("test.mov")
             with pytest.raises(WebSocketException):
@@ -863,7 +863,7 @@ class TestSubreddit(IntegrationTest):
     )
     def test_submit_video__timeout_5(self, _, __):
         self.reddit.read_only = False
-        with self.use_cassette("TestSubreddit.test_submit_video__timeout"):
+        with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             video = self.image_path("test.mov")
             with pytest.raises(WebSocketException):
