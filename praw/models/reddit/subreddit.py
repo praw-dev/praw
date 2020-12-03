@@ -585,40 +585,32 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             code, message, actual, maximum_size = [element.text for element in root[:4]]
             raise TooLargeMediaException(int(maximum_size), int(actual))
 
-    def _submit_media(self, data, timeout, without_websockets):
+    def _submit_media(self, data, timeout, without_websockets, websocket_url):
         """Submit and return an `image`, `video`, or `videogif`.
 
         This is a helper method for submitting posts that are not link posts or self
         posts.
 
         """
-        response = self._reddit.post(API_PATH["submit"], data=data)
+        connection = None
+        if not without_websockets:
+            try:
+                connection = websocket.create_connection(websocket_url, timeout=timeout)
+            except (
+                websocket.WebSocketException,
+                socket.error,
+                BlockingIOError,
+            ) as ws_exception:
+                raise WebSocketException(
+                    "Error establishing websocket connection.", ws_exception
+                )
 
-        # About the websockets:
-        #
-        # Reddit responds to this request with only two fields: a link to the user's
-        # /submitted page, and a websocket URL. We can use the websocket URL to get a
-        # link to the new post once it is created.
-        #
-        # An important note to PRAW contributors or anyone who would wish to step
-        # through this section with a debugger: This block of code is NOT
-        # debugger-friendly. If there is *any* significant time between the POST request
-        # just above this comment and the creation of the websocket connection just
-        # below, the code will become stuck in an infinite loop at the
-        # connection.recv() call. I believe this is because only one message is sent
-        # over the websocket, and if the client doesn't connect soon enough, it will
-        # miss the message and get stuck forever waiting for another.
-        #
-        # So if you need to debug this section of code, please let the websocket
-        # creation happen right after the POST request, otherwise you will have trouble.
+        self._reddit.post(API_PATH["submit"], data=data)
 
-        if without_websockets:
+        if connection is None:
             return
 
         try:
-            connection = websocket.create_connection(
-                response["json"]["data"]["websocket_url"], timeout=timeout
-            )
             ws_update = loads(connection.recv())
             connection.close()
         except (
@@ -628,9 +620,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         ) as ws_exception:
             raise WebSocketException(
                 "Websocket error. Check your media file. "
-                "Your post may still have been created. "
-                "Use this exception's .original_exception attribute to get "
-                "the original exception.",
+                "Your post may still have been created.",
                 ws_exception,
             )
         if ws_update.get("type") == "failed":
