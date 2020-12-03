@@ -10,7 +10,7 @@ from ... import IntegrationTest
 
 class TestComment(IntegrationTest):
     def test_attributes(self):
-        with self.recorder.use_cassette("TestComment.test_attributes"):
+        with self.use_cassette():
             comment = Comment(self.reddit, "cklhv0f")
             assert comment.author == "bboe"
             assert comment.body.startswith("Yes it does.")
@@ -20,7 +20,7 @@ class TestComment(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_block(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestComment.test_block"):
+        with self.use_cassette():
             comment = None
             for item in self.reddit.inbox.submission_replies():
                 if item.author and item.author != pytest.placeholders.username:
@@ -32,13 +32,13 @@ class TestComment(IntegrationTest):
 
     def test_clear_vote(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestComment.test_clear_vote"):
+        with self.use_cassette():
             Comment(self.reddit, "d1680wu").clear_vote()
 
     @mock.patch("time.sleep", return_value=None)
     def test_delete(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestComment.test_delete"):
+        with self.use_cassette():
             comment = Comment(self.reddit, "d1616q2")
             comment.delete()
             assert comment.author is None
@@ -47,18 +47,18 @@ class TestComment(IntegrationTest):
     def test_disable_inbox_replies(self):
         self.reddit.read_only = False
         comment = Comment(self.reddit, "dcc9snh")
-        with self.recorder.use_cassette("TestComment.test_disable_inbox_replies"):
+        with self.use_cassette():
             comment.disable_inbox_replies()
 
     def test_downvote(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestComment.test_downvote"):
+        with self.use_cassette():
             Comment(self.reddit, "d1680wu").downvote()
 
     @mock.patch("time.sleep", return_value=None)
     def test_edit(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestComment.test_edit"):
+        with self.use_cassette():
             comment = Comment(self.reddit, "d1616q2")
             comment.edit("New text")
             assert comment.body == "New text"
@@ -66,7 +66,7 @@ class TestComment(IntegrationTest):
     def test_enable_inbox_replies(self):
         self.reddit.read_only = False
         comment = Comment(self.reddit, "dcc9snh")
-        with self.recorder.use_cassette("TestComment.test_enable_inbox_replies"):
+        with self.use_cassette():
             comment.enable_inbox_replies()
 
     def test_award(self):
@@ -77,7 +77,7 @@ class TestComment(IntegrationTest):
 
     def test_award__not_enough_coins(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestComment.test_award__not_enough_coins"):
+        with self.use_cassette():
             with pytest.raises(RedditAPIException) as excinfo:
                 Comment(self.reddit, "g7cmlgc").award(
                     gild_type="award_2385c499-a1fb-44ec-b9b7-d260f3dc55de"
@@ -102,7 +102,7 @@ class TestComment(IntegrationTest):
             assert award_data["gildings"]["gid_2"] == 1
 
     def test_invalid(self):
-        with self.recorder.use_cassette("TestComment.test_invalid"):
+        with self.use_cassette():
             with pytest.raises(PRAWException) as excinfo:
                 Comment(self.reddit, "0").body
             assert excinfo.value.args[0].startswith("No data returned for comment")
@@ -110,7 +110,7 @@ class TestComment(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_mark_read(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestComment.test_mark_read"):
+        with self.use_cassette():
             comment = next(self.reddit.inbox.unread())
             assert isinstance(comment, Comment)
             comment.mark_read()
@@ -118,13 +118,13 @@ class TestComment(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_mark_unread(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestComment.test_mark_unread"):
+        with self.use_cassette():
             comment = next(self.reddit.inbox.comment_replies())
             comment.mark_unread()
 
     def test_parent__comment(self):
         comment = Comment(self.reddit, "cklhv0f")
-        with self.recorder.use_cassette("TestComment.test_parent__comment"):
+        with self.use_cassette():
             parent = comment.parent()
             parent.refresh()
             assert comment in parent.replies
@@ -134,7 +134,7 @@ class TestComment(IntegrationTest):
     def test_parent__chain(self):
         comment = Comment(self.reddit, "dkk4qjd")
         counter = 0
-        with self.recorder.use_cassette("TestComment.test_parent__chain"):
+        with self.use_cassette():
             comment.refresh()
             parent = comment.parent()
             while parent != comment.submission:
@@ -145,7 +145,7 @@ class TestComment(IntegrationTest):
 
     def test_parent__comment_from_forest(self):
         submission = self.reddit.submission("2gmzqe")
-        with self.recorder.use_cassette("TestComment.test_parent__comment_from_forest"):
+        with self.use_cassette():
             comment = submission.comments[0].replies[0]
         parent = comment.parent()
         assert comment in parent.replies
@@ -155,7 +155,7 @@ class TestComment(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_parent__from_replies(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestComment.parent__from_replies"):
+        with self.use_cassette():
             comment = next(self.reddit.inbox.comment_replies())
         parent = comment.parent()
         assert isinstance(parent, Comment)
@@ -163,7 +163,7 @@ class TestComment(IntegrationTest):
 
     def test_parent__submission(self):
         comment = Comment(self.reddit, "cklfmye")
-        with self.recorder.use_cassette("TestComment.test_parent__submission"):
+        with self.use_cassette():
             parent = comment.parent()
             assert comment in parent.comments
         assert isinstance(parent, Submission)
@@ -171,13 +171,13 @@ class TestComment(IntegrationTest):
 
     def test_refresh(self):
         comment = Comment(self.reddit, "d81vwef")
-        with self.recorder.use_cassette("TestComment.test_refresh"):
+        with self.use_cassette():
             assert len(comment.replies) == 0
             comment.refresh()
             assert len(comment.replies) > 0
 
     def test_refresh__raises_exception(self):
-        with self.recorder.use_cassette("TestComment.test_refresh__raises_exception"):
+        with self.use_cassette():
             with pytest.raises(ClientException) as excinfo:
                 Comment(self.reddit, "d81vwef").refresh()
         assert (
@@ -185,11 +185,11 @@ class TestComment(IntegrationTest):
         ) == excinfo.value.args
 
     def test_refresh__twice(self):
-        with self.recorder.use_cassette("TestComment.test_refresh__twice"):
+        with self.use_cassette():
             Comment(self.reddit, "d81vwef").refresh().refresh()
 
     def test_refresh__deleted_comment(self):
-        with self.recorder.use_cassette("TestComment.test_refresh__deleted_comment"):
+        with self.use_cassette():
             with pytest.raises(ClientException) as excinfo:
                 Comment(self.reddit, "d7ltvl0").refresh()
         assert (
@@ -197,7 +197,7 @@ class TestComment(IntegrationTest):
         ) == excinfo.value.args
 
     def test_refresh__removed_comment(self):
-        with self.recorder.use_cassette("TestComment.test_refresh__removed_comment"):
+        with self.use_cassette():
             with pytest.raises(ClientException) as excinfo:
                 Comment(self.reddit, "dma3mi5").refresh()
         assert (
@@ -205,9 +205,7 @@ class TestComment(IntegrationTest):
         ) == excinfo.value.args
 
     def test_refresh__with_reply_sort_and_limit(self):
-        with self.recorder.use_cassette(
-            "TestComment.test_refresh__with_reply_sort_and_limit"
-        ):
+        with self.use_cassette():
             comment = Comment(self.reddit, "e4j4830")
             comment.reply_limit = 4
             comment.reply_sort = "new"
@@ -223,7 +221,7 @@ class TestComment(IntegrationTest):
 
     def test_reply(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestComment.test_reply"):
+        with self.use_cassette():
             parent_comment = Comment(self.reddit, "d1616q2")
             comment = parent_comment.reply("Comment reply")
             assert comment.author == self.reddit.config.username
@@ -234,89 +232,83 @@ class TestComment(IntegrationTest):
     def test_reply__none(self):
         self.reddit.read_only = False
         comment = Comment(self.reddit, "eear2ml")
-        with self.recorder.use_cassette("TestComment.test_reply__none"):
+        with self.use_cassette():
             reply = comment.reply("TEST")
         assert reply is None
 
     def test_report(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestComment.test_report"):
+        with self.use_cassette():
             Comment(self.reddit, "d0335z3").report("custom")
 
     def test_save(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestComment.test_save"):
+        with self.use_cassette():
             Comment(self.reddit, "d1680wu").save("foo")
 
     def test_unsave(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestComment.test_unsave"):
+        with self.use_cassette():
             Comment(self.reddit, "d1680wu").unsave()
 
     def test_upvote(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestComment.test_upvote"):
+        with self.use_cassette():
             Comment(self.reddit, "d1680wu").upvote()
 
 
 class TestCommentModeration(IntegrationTest):
     def test_approve(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestCommentModeration.test_approve"):
+        with self.use_cassette():
             Comment(self.reddit, "da2g5y6").mod.approve()
 
     def test_distinguish(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestCommentModeration.test_distinguish"):
+        with self.use_cassette():
             Comment(self.reddit, "da2g5y6").mod.distinguish()
 
     @mock.patch("time.sleep", return_value=None)
     def test_distinguish__sticky(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestCommentModeration.test_distinguish__sticky"
-        ):
+        with self.use_cassette():
             Comment(self.reddit, "da2g5y6").mod.distinguish(sticky=True)
 
     def test_ignore_reports(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestCommentModeration.test_ignore_reports"):
+        with self.use_cassette():
             self.reddit.comment("da2g5y6").mod.ignore_reports()
 
     def test_lock(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestCommentModeration.test_lock"):
+        with self.use_cassette():
             Comment(self.reddit, "da2g6ne").mod.lock()
 
     def test_remove(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestCommentModeration.test_remove"):
+        with self.use_cassette():
             self.reddit.comment("da2g5y6").mod.remove(spam=True)
 
     @mock.patch("time.sleep", return_value=None)
     def test_remove_with_reason_id(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestCommentModeration.test_remove_with_reason_id"
-        ):
+        with self.use_cassette():
             self.reddit.comment("f3dm3b7").mod.remove(reason_id="110nhral8vygf")
 
     def test_show(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestCommentModeration.test_show"):
+        with self.use_cassette():
             self.reddit.comment("fjyyrv6").mod.show()
 
     def test_unlock(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestCommentModeration.test_unlock"):
+        with self.use_cassette():
             Comment(self.reddit, "da2g6ne").mod.unlock()
 
     @mock.patch("time.sleep", return_value=None)
     def test_add_removal_reason(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestCommentModeration.test_add_removal_reason"
-        ):
+        with self.use_cassette():
             comment = self.reddit.comment("f98ukt5")
             comment.mod.remove()
             comment.mod._add_removal_reason(mod_note="Blah", reason_id="110nhral8vygf")
@@ -324,9 +316,7 @@ class TestCommentModeration(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_add_removal_reason_without_id(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestCommentModeration.test_add_removal_reason_without_id"
-        ):
+        with self.use_cassette():
             comment = self.reddit.comment("f98ugot")
             comment.mod.remove()
             comment.mod._add_removal_reason(mod_note="Test")
@@ -334,9 +324,7 @@ class TestCommentModeration(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_add_removal_reason_without_id_or_note(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestCommentModeration.test_add_removal_reason_invalid"
-        ):
+        with self.use_cassette():
             with pytest.raises(ValueError) as excinfo:
                 comment = self.reddit.comment("f9974ce")
                 comment.mod.remove()
@@ -346,9 +334,7 @@ class TestCommentModeration(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_send_removal_message(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestCommentModeration.test_send_removal_message"
-        ):
+        with self.use_cassette():
             comment = self.reddit.comment("edu698v")
             mod = comment.mod
             mod.remove()
@@ -366,9 +352,7 @@ class TestCommentModeration(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_send_removal_message__error(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestCommentModeration.test_send_removal_message__error"
-        ):
+        with self.use_cassette():
             comment = self.reddit.comment("fkmrn4a")
             comment.mod.remove()
             with pytest.raises(RedditAPIException) as excinfo:
@@ -379,10 +363,10 @@ class TestCommentModeration(IntegrationTest):
 
     def test_undistinguish(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestCommentModeration.test_undistinguish"):
+        with self.use_cassette():
             self.reddit.comment("da2g5y6").mod.undistinguish()
 
     def test_unignore_reports(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestCommentModeration.test_unignore_reports"):
+        with self.use_cassette():
             self.reddit.comment("da2g5y6").mod.unignore_reports()

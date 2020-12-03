@@ -15,7 +15,7 @@ class TestRule(IntegrationTest):
 
     def test_add_rule(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestRule.test_add_rule"):
+        with self.use_cassette():
             rule = self.subreddit.rules.mod.add(
                 "PRAW Test",
                 "all",
@@ -29,9 +29,7 @@ class TestRule(IntegrationTest):
 
     def test_add_rule_without_violation_reason(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestRule.test_add_rule_without_violation_reason"
-        ):
+        with self.use_cassette():
             rule = self.subreddit.rules.mod.add("PRAW Test 2", "comment")
             assert rule.short_name == "PRAW Test 2"
             assert rule.kind == "comment"
@@ -41,31 +39,31 @@ class TestRule(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_delete_rule(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestRule.test_delete_rule"):
+        with self.use_cassette():
             rules = list(self.subreddit.rules)
             rule = rules[-1]
             rule.mod.delete()
             assert len(list(self.subreddit.rules)) == (len(rules) - 1)
 
     def test_iter_rules(self):
-        with self.recorder.use_cassette("TestRule.test_iter_rules"):
+        with self.use_cassette():
             for rule in self.subreddit.rules:
                 assert isinstance(rule, Rule)
 
     @pytest.mark.filterwarnings("ignore", category=DeprecationWarning)
     def test_iter_call(self):
-        with self.recorder.use_cassette("TestRule.test_call"):
+        with self.use_cassette():
             assert self.subreddit.rules()["rules"][0]["short_name"] == "Test post 12"
 
     def test_iter_rule_string(self):
-        with self.recorder.use_cassette("TestRule.test_iter_rules"):
+        with self.use_cassette("TestRule.test_iter_rules"):
             rule = self.subreddit.rules["PRAW Test"]
             assert isinstance(rule, Rule)
             rule._fetch()
             assert rule.kind
 
     def test_iter_rule_invalid(self):
-        with self.recorder.use_cassette("TestRule.test_iter_rules"):
+        with self.use_cassette("TestRule.test_iter_rules"):
             rule = self.subreddit.rules["fake rule"]
             with pytest.raises(ClientException) as excinfo:
                 rule.kind
@@ -75,15 +73,15 @@ class TestRule(IntegrationTest):
             )
 
     def test_iter_rule_int(self):
-        with self.recorder.use_cassette("TestRule.test_iter_rules"):
+        with self.use_cassette("TestRule.test_iter_rules"):
             assert isinstance(self.subreddit.rules[0], Rule)
 
     def test_iter_rule_negative_int(self):
-        with self.recorder.use_cassette("TestRule.test_iter_rules"):
+        with self.use_cassette("TestRule.test_iter_rules"):
             assert isinstance(self.subreddit.rules[-1], Rule)
 
     def test_iter_rule_slice(self):
-        with self.recorder.use_cassette("TestRule.test_iter_rules"):
+        with self.use_cassette("TestRule.test_iter_rules"):
             rules = self.subreddit.rules[-3:]
             assert len(rules) == 3
             for rule in rules:
@@ -92,7 +90,7 @@ class TestRule(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_reorder_rules(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestRule.test_reorder_rules"):
+        with self.use_cassette():
             rule_list = list(self.subreddit.rules)
             reordered = rule_list[2:3] + rule_list[0:2] + rule_list[3:]
             rule_info = {rule.short_name: rule for rule in rule_list}
@@ -105,7 +103,7 @@ class TestRule(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_reorder_rules_double(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestRule.test_reorder_rules_double"):
+        with self.use_cassette():
             rule_list = list(self.subreddit.rules)
             with pytest.raises(RedditAPIException):
                 self.subreddit.rules.mod.reorder(rule_list + rule_list[0:1])
@@ -113,21 +111,21 @@ class TestRule(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_reorder_rules_empty(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestRule.test_reorder_rules_empty"):
+        with self.use_cassette():
             with pytest.raises(RedditAPIException):
                 self.subreddit.rules.mod.reorder([])
 
     @mock.patch("time.sleep", return_value=None)
     def test_reorder_rules_no_reorder(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestRule.test_reorder_rules_no_reorder"):
+        with self.use_cassette():
             rule_list = list(self.subreddit.rules)
             assert self.subreddit.rules.mod.reorder(rule_list) == rule_list
 
     @mock.patch("time.sleep", return_value=None)
     def test_reorder_rules_omit(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestRule.test_reorder_rules_omit"):
+        with self.use_cassette():
             rule_list = list(self.subreddit.rules)
             with pytest.raises(RedditAPIException):
                 self.subreddit.rules.mod.reorder(rule_list[:-1])
@@ -135,7 +133,7 @@ class TestRule(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_update_rule(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestRule.test_update_rule"):
+        with self.use_cassette():
             rule = self.subreddit.rules[0]
             rule2 = rule.mod.update(
                 description="Updated rule",
@@ -152,7 +150,7 @@ class TestRule(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_update_rule_short_name(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestRule.test_update_rule_short_name"):
+        with self.use_cassette():
             rule = self.subreddit.rules[1]
             rule2 = rule.mod.update(
                 short_name="PRAW Update",
@@ -174,7 +172,7 @@ class TestRule(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_update_rule_no_params(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestRule.test_update_rule_no_params"):
+        with self.use_cassette():
             rule = self.subreddit.rules[1]
             rule2 = rule.mod.update()
             for attr in (

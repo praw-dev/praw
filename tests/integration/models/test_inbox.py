@@ -12,7 +12,7 @@ from .. import IntegrationTest
 class TestInbox(IntegrationTest):
     def test_all(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestInbox.test_all"):
+        with self.use_cassette():
             count = 0
             for item in self.reddit.inbox.all():
                 assert isinstance(item, Comment) or isinstance(item, Message)
@@ -22,12 +22,12 @@ class TestInbox(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_all__with_limit(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestInbox.test_all__with_limit"):
+        with self.use_cassette():
             assert len(list(self.reddit.inbox.all(limit=128))) == 128
 
     def test_comment_replies(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestInbox.test_comment_replies"):
+        with self.use_cassette():
             count = 0
             for item in self.reddit.inbox.comment_replies(limit=64):
                 assert isinstance(item, Comment)
@@ -38,7 +38,7 @@ class TestInbox(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_comment_reply__refresh(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestInbox.test_comment_reply__refresh"):
+        with self.use_cassette():
             comment = next(self.reddit.inbox.comment_replies())
             saved_id = comment.id
             assert isinstance(comment, Comment)
@@ -48,32 +48,26 @@ class TestInbox(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_mark_read(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestInbox.test_mark_read",
-            match_requests_on=["uri", "method", "body"],
-        ):
+        with self.use_cassette(match_requests_on=["uri", "method", "body"]):
             self.reddit.inbox.mark_read(list(self.reddit.inbox.unread()))
 
     @mock.patch("time.sleep", return_value=None)
     def test_mark_unread(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestInbox.test_mark_unread",
-            match_requests_on=["uri", "method", "body"],
-        ):
+        with self.use_cassette(match_requests_on=["uri", "method", "body"]):
             self.reddit.inbox.mark_unread(list(self.reddit.inbox.all()))
 
     @mock.patch("time.sleep", return_value=None)
     def test_mention__refresh(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestInbox.test_mention__refresh"):
+        with self.use_cassette():
             mention = next(self.reddit.inbox.mentions())
             assert isinstance(mention, Comment)
             mention.refresh()
 
     def test_mentions(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestInbox.test_mentions"):
+        with self.use_cassette():
             count = 0
             for item in self.reddit.inbox.mentions(limit=16):
                 assert isinstance(item, Comment)
@@ -82,7 +76,7 @@ class TestInbox(IntegrationTest):
 
     def test_message(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestInbox.test_message"):
+        with self.use_cassette():
             message = self.reddit.inbox.message("6vzfan")
         assert message.name.split("_", 1)[1] == "6vzfan"
         assert isinstance(message, Message)
@@ -93,31 +87,25 @@ class TestInbox(IntegrationTest):
 
     def test_message__unauthorized(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestInbox.test_message__unauthorized"):
+        with self.use_cassette():
             with pytest.raises(Forbidden):
                 self.reddit.inbox.message("6i8om7")
 
     @mock.patch("time.sleep", return_value=None)
     def test_message_collapse(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestInbox.test_message_collapse",
-            match_requests_on=["uri", "method", "body"],
-        ):
+        with self.use_cassette(match_requests_on=["uri", "method", "body"]):
             self.reddit.inbox.collapse(list(self.reddit.inbox.messages()))
 
     @mock.patch("time.sleep", return_value=None)
     def test_message_uncollapse(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestInbox.test_message_uncollapse",
-            match_requests_on=["uri", "method", "body"],
-        ):
+        with self.use_cassette(match_requests_on=["uri", "method", "body"]):
             self.reddit.inbox.uncollapse(list(self.reddit.inbox.messages()))
 
     def test_messages(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestInbox.test_messages"):
+        with self.use_cassette():
             count = 0
             for item in self.reddit.inbox.messages(limit=64):
                 assert isinstance(item, Message)
@@ -126,7 +114,7 @@ class TestInbox(IntegrationTest):
 
     def test_sent(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestInbox.test_sent"):
+        with self.use_cassette():
             count = 0
             for item in self.reddit.inbox.sent(limit=64):
                 assert isinstance(item, Message)
@@ -137,13 +125,13 @@ class TestInbox(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_stream(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestInbox__test_stream"):
+        with self.use_cassette():
             item = next(self.reddit.inbox.stream())
             assert isinstance(item, Comment) or isinstance(item, Message)
 
     def test_submission_replies(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestInbox.test_submission_replies"):
+        with self.use_cassette():
             count = 0
             for item in self.reddit.inbox.submission_replies(limit=64):
                 assert isinstance(item, Comment)
@@ -154,7 +142,7 @@ class TestInbox(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_unread(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestInbox.test_unread"):
+        with self.use_cassette():
             count = 0
             for item in self.reddit.inbox.unread(limit=64):
                 count += 1

@@ -11,7 +11,7 @@ class TestMessage(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_attributes(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestMessage.test_attributes"):
+        with self.use_cassette():
             messages = list(self.reddit.inbox.messages())
             count = len(messages)
             while messages:
@@ -37,7 +37,7 @@ class TestMessage(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_block(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestMessage.test_block"):
+        with self.use_cassette():
             message = None
             for item in self.reddit.inbox.messages():
                 if item.author and item.author != pytest.placeholders.username:
@@ -50,14 +50,14 @@ class TestMessage(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_delete(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestMessage.test_delete"):
+        with self.use_cassette():
             message = next(self.reddit.inbox.messages())
             message.delete()
 
     @mock.patch("time.sleep", return_value=None)
     def test_mark_read(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestMessage.test_mark_read"):
+        with self.use_cassette():
             message = None
             for item in self.reddit.inbox.unread():
                 if isinstance(item, Message):
@@ -70,28 +70,28 @@ class TestMessage(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_mark_unread(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestMessage.test_mark_unread"):
+        with self.use_cassette():
             message = next(self.reddit.inbox.messages())
             message.mark_unread()
 
     @mock.patch("time.sleep", return_value=None)
     def test_message_collapse(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestMessage.test_message_collapse"):
+        with self.use_cassette():
             message = next(self.reddit.inbox.messages())
             message.collapse()
 
     @mock.patch("time.sleep", return_value=None)
     def test_message_uncollapse(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestMessage.test_message_uncollapse"):
+        with self.use_cassette():
             message = next(self.reddit.inbox.messages())
             message.uncollapse()
 
     @mock.patch("time.sleep", return_value=None)
     def test_reply(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestMessage.test_reply"):
+        with self.use_cassette():
             message = next(self.reddit.inbox.messages())
             reply = message.reply("Message reply")
             assert reply.author == self.reddit.config.username
@@ -102,12 +102,12 @@ class TestMessage(IntegrationTest):
 class TestSubredditMessage(IntegrationTest):
     def test_mute(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestSubredditMessage.test_mute"):
+        with self.use_cassette():
             message = SubredditMessage(self.reddit, _data={"id": "5yr8id"})
             message.mute()
 
     def test_unmute(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette("TestSubredditMessage.test_unmute"):
+        with self.use_cassette():
             message = SubredditMessage(self.reddit, _data={"id": "5yr8id"})
             message.unmute()
