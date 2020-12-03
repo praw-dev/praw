@@ -482,11 +482,9 @@ class TestSubreddit(IntegrationTest):
     @mock.patch(
         "websocket.create_connection",
         return_value=WebsocketMock(
-            "ahf0uh",  # update with cassette
-            "ahf0uq",  # update with cassette
-            "ahf0v4",
+            "k5rhpg", "k5rhsu", "k5rhx3"  # update with cassette
         ),
-    )  # update with cassette
+    )
     def test_submit_image(self, _, __):
         self.reddit.read_only = False
         with self.use_cassette():
@@ -577,7 +575,7 @@ class TestSubreddit(IntegrationTest):
 
     @mock.patch("time.sleep", return_value=None)
     @mock.patch(
-        "websocket.create_connection", return_value=WebsocketMock("flo1ea")
+        "websocket.create_connection", return_value=WebsocketMock("k5s3b3")
     )  # update with cassette
     def test_submit_image_chat(self, _=None, __=None):
         self.reddit.read_only = False
@@ -693,8 +691,8 @@ class TestSubreddit(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     @mock.patch(
         "websocket.create_connection",
-        return_value=WebsocketMock("aheljy", "ahelks"),  # update with cassette
-    )  # update with cassette
+        return_value=WebsocketMock("k5rsq3", "k5rt9d"),  # update with cassette
+    )
     def test_submit_video(self, _, __):
         self.reddit.read_only = False
         with self.use_cassette():
@@ -778,8 +776,8 @@ class TestSubreddit(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     @mock.patch(
         "websocket.create_connection",
-        return_value=WebsocketMock("aheln2", "ahelnz"),  # update with cassette
-    )  # update with cassette
+        return_value=WebsocketMock("k5rvt5", "k5rwbo"),  # update with cassette
+    )
     def test_submit_video__thumbnail(self, _, __):
         self.reddit.read_only = False
         with self.use_cassette():
@@ -876,8 +874,8 @@ class TestSubreddit(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     @mock.patch(
         "websocket.create_connection",
-        return_value=WebsocketMock("ahelor", "ahelpf"),  # update with cassette
-    )  # update with cassette
+        return_value=WebsocketMock("k5s10u", "k5s11v"),  # update with cassette
+    )
     def test_submit_video__videogif(self, _, __):
         self.reddit.read_only = False
         with self.use_cassette():

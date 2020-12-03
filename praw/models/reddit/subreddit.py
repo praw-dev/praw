@@ -1157,11 +1157,17 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         ):
             if value is not None:
                 data[key] = value
-        data.update(
-            kind="image",
-            url=self._upload_media(image_path, expected_mime_prefix="image"),
+
+        image_url, websocket_url = self._upload_media(
+            image_path, expected_mime_prefix="image"
         )
-        return self._submit_media(data, timeout, without_websockets=without_websockets)
+        data.update(kind="image", url=image_url)
+        return self._submit_media(
+            data,
+            timeout,
+            without_websockets=without_websockets,
+            websocket_url=websocket_url,
+        )
 
     def submit_poll(
         self,
@@ -1333,13 +1339,22 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         ):
             if value is not None:
                 data[key] = value
+
+        video_url, websocket_url = self._upload_media(
+            video_path, expected_mime_prefix="video"
+        )
         data.update(
             kind="videogif" if videogif else "video",
-            url=self._upload_media(video_path, expected_mime_prefix="video"),
+            url=video_url,
             # if thumbnail_path is None, it uploads the PRAW logo
-            video_poster_url=self._upload_media(thumbnail_path),
+            video_poster_url=self._upload_media(thumbnail_path)[0],
         )
-        return self._submit_media(data, timeout, without_websockets=without_websockets)
+        return self._submit_media(
+            data,
+            timeout,
+            without_websockets=without_websockets,
+            websocket_url=websocket_url,
+        )
 
     def subscribe(self, other_subreddits=None):
         """Subscribe to the subreddit.
