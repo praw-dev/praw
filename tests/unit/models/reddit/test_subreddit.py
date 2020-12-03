@@ -55,10 +55,12 @@ class TestSubreddit(UnitTest):
         assert hash(subreddit1) != hash(subreddit3)
 
     @mock.patch(
-        "praw.Reddit.post",
-        return_value={"json": {"data": {"websocket_url": ""}}},
+        "praw.Reddit.post", return_value={"json": {"data": {"websocket_url": ""}}}
     )
-    @mock.patch("praw.models.Subreddit._upload_media", return_value="")
+    @mock.patch(
+        "praw.models.Subreddit._upload_media",
+        return_value=("fake_media_url", "fake_websocket_url"),
+    )
     @mock.patch("websocket.create_connection")
     def test_invalid_media(self, connection_mock, _mock_upload_media, _mock_post):
         connection_mock().recv.return_value = json.dumps(
