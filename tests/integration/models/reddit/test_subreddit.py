@@ -599,7 +599,9 @@ class TestSubreddit(IntegrationTest):
             with pytest.raises(
                 (RedditAPIException, BadRequest)
             ):  # waiting for prawcore fix
-                subreddit.submit_image("gdfgfdgdgdgfgfdgdfgfdgfdg", image)
+                subreddit.submit_image(
+                    "gdfgfdgdgdgfgfdgdfgfdgfdg", image, without_websockets=True
+                )
 
     @mock.patch("time.sleep", return_value=None)
     @mock.patch(
@@ -769,7 +771,9 @@ class TestSubreddit(IntegrationTest):
             with pytest.raises(
                 (RedditAPIException, BadRequest)
             ):  # waiting for prawcore fix
-                subreddit.submit_video("gdfgfdgdgdgfgfdgdfgfdgfdg", image)
+                subreddit.submit_video(
+                    "gdfgfdgdgdgfgfdgdfgfdgfdg", image, without_websockets=True
+                )
 
     @mock.patch("time.sleep", return_value=None)
     @mock.patch(
