@@ -68,6 +68,7 @@ class ListingGenerator(PRAWBase, Iterator):
 
     def _next_batch(self):
         if self._exhausted:
+            self.yielded = 0
             raise StopIteration()
 
         self._listing = self._reddit.get(self.url, params=self.params)
