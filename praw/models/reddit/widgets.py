@@ -228,7 +228,7 @@ class SubredditWidgets(PRAWBase):
         widgets.progressive_images = True
         for widget in widgets.sidebar:
             # do something
-            pass
+            ...
 
     Access a subreddit's widgets with the following attributes:
 

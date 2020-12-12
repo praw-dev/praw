@@ -87,6 +87,7 @@ indefinitely iterate over new submissions to a subreddit add:
     subreddit = reddit.subreddit("AskReddit")
     for submission in subreddit.stream.submissions():
         # do something with submission
+        ...
 
 Replace ``AskReddit`` with the name of another subreddit if you want to iterate through
 its new submissions. Additionally multiple subreddits can be specified by joining them
@@ -114,7 +115,7 @@ First we filter out titles that contain more than ten words:
 .. code-block:: python
 
    if len(submission.title.split()) > 10:
-           return
+       return
 
 We then check to see if the submission's title contains any of the desired phrases:
 

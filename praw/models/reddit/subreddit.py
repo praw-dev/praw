@@ -482,8 +482,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
             subreddit = reddit.subreddit("SUBREDDIT")
             stylesheet = subreddit.stylesheet()
-            stylesheet += ".test{color:blue}"
-            subreddit.stylesheet.update(stylesheet)
+            stylesheet.stylesheet += ".test{color:blue}"
+            subreddit.stylesheet.update(stylesheet.stylesheet)
 
         """
         return SubredditStylesheet(self)
