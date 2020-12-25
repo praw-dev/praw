@@ -127,13 +127,13 @@ We then check to see if the submission's title contains any of the desired phras
             # do something with a matched submission
             break
 
-String comparison in python is case sensitive. As a result, we only compare a normalized
+String comparison in Python is case sensitive. As a result, we only compare a normalized
 version of the title to our lower-case question phrases. In this case, "normalized"
 means only lower-case.
 
 The ``break`` at the end prevents us from matching more than once on a single
 submission. For instance, what would happen without the ``break`` if a submission's
-title was "Who is or what are buffalo?
+title was "Who is or what are buffalo?"
 
 Step 4: Automatically Replying to the Submission
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -144,11 +144,11 @@ with an appropriate lmgtfy_ link.
 
 First we will need to construct a working lmgtfy_ link. In essence we want to pass the
 entire submission title to lmgtfy_. However, there are certain characters that are not
-permitted in URLs or have other . For instance, the space character, " ", is not
+permitted in URLs or have other meanings. For instance, the space character, " ", is not
 permitted, and the question mark, "?", has a special meaning. Thus we will transform
 those into their URL-safe representation so that a question like "What is the capital of
 Canada?" is transformed into the link
-``https://lmgtfy.com/?q=What+is+the+capital+of+Canada%3F)``.
+``https://lmgtfy.com/?q=What+is+the+capital+of+Canada%3F``.
 
 There are a number of ways we could accomplish this task. For starters we could write a
 function to replace spaces with pluses, ``+``, and question marks with ``%3F``. However,

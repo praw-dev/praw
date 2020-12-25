@@ -10,7 +10,7 @@ Class :class:`.APIException` has also been renamed to :class:`.RedditAPIExceptio
 Importing :class:`.APIException` will still work, but is deprecated, but will be removed
 in PRAW 8.0.
 
-PRAW 7 introduced a fundamental change in how exceptions are recieved from Reddit's API.
+PRAW 7 introduced a fundamental change in how exceptions are received from Reddit's API.
 Reddit can return multiple exceptions for one API action, and as such, the exception
 :class:`.RedditAPIException` serves as a container for each of the true exception
 objects. These objects are instances of :class:`.RedditErrorItem`, and they contain the
