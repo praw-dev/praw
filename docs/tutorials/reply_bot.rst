@@ -166,11 +166,6 @@ located:
     url_title = quote_plus(submission.title)
     reply_text = reply_template.format(url_title)
 
-.. note::
-
-    This example assumes the use of Python 3. For Python 2 replace ``from urllib.parse
-    import quote_plus`` with ``from urllib import quote_plus``.
-
 Now that we have the reply text, replying to the submission is easy:
 
 .. code-block:: python
