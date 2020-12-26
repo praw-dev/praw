@@ -49,7 +49,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     ``permalink``           A permalink for the comment. Comment objects from the inbox
                             have a ``context`` attribute instead.
     ``replies``             Provides an instance of :class:`.CommentForest`.
-    ``saved``               Weather ot not the comment is saved.
+    ``saved``               Whether or not the comment is saved.
     ``score``               The number of upvotes for the comment.
     ``stickied``            Whether or not the comment is stickied.
     ``submission``          Provides an instance of :class:`.Submission`. The submission
