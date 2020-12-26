@@ -19,6 +19,7 @@ Documentation Contributors
 - Richard Hoekstra `@RichardHoekstra <https://github.com/RichardHoekstra>`_
 - Pim Tholhuijsen `@mandjevant <https://github.com/mandjevant>`_
 - Martin Michlmayr `@tbm <https://github.com/tbm>`_
+- jac0b-w `@jac0b-w <https://github.com/jac0b-w>`_
 
 <!-- - Add "Name <email (optional)> and github profile link" above this line. -->
 
