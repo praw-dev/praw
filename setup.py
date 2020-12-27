@@ -19,10 +19,11 @@ extras = {
     "lint": [
         "black",
         "flake8",
+        "flynt",
+        "isort",
         "pydocstyle",
         "sphinx<3.0",
         "sphinx_rtd_theme",
-        "flynt",
     ],
     "readthedocs": ["sphinx<3.0"],
     "test": [

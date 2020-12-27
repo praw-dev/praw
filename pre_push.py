@@ -41,6 +41,7 @@ def run_static():
 
     """
     success = True
+    # Formatters
     success &= do_process(
         [
             sys.executable,
@@ -48,6 +49,11 @@ def run_static():
             "--replace",
         ]
     )
+    success &= do_process(["flynt", "-q", "-tc", "-ll", "1000", "."])
+    # needs to be first because flynt is not black compliant
+    success &= do_process(["black", "."])
+    success &= do_process(["isort", "."])
+    # Linters
     success &= do_process(
         [
             sys.executable,
@@ -60,8 +66,6 @@ def run_static():
             path.join(current_directory, "tools", "check_docstring.py"),
         ]
     )
-    success &= do_process(["flynt", "-q", "-tc", "-ll", "1000", "."])
-    success &= do_process(["black", "."])
     success &= do_process(["flake8", "--exclude=.eggs,build,docs,.venv"])
     success &= do_process(["pydocstyle", "praw"])
     # success &= do_process(["pylint", "--rcfile=.pylintrc", "praw"])
