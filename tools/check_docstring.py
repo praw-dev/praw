@@ -1,14 +1,13 @@
 import ast
 import os
 import re
-from ast import ClassDef, get_docstring, FunctionDef
+from ast import ClassDef, FunctionDef, get_docstring
 from os.path import basename
 
 import black
 import docutils.nodes
 import docutils.parsers.rst
 import docutils.utils
-
 
 mode = black.Mode(
     target_versions={black.TargetVersion.PY36},

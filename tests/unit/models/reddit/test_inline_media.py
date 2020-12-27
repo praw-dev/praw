@@ -1,6 +1,6 @@
 import pickle
 
-from praw.models import InlineMedia, InlineGif, InlineImage, InlineVideo
+from praw.models import InlineGif, InlineImage, InlineMedia, InlineVideo
 
 from ... import UnitTest
 

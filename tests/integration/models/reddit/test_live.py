@@ -5,13 +5,7 @@ import pytest
 
 from praw.const import API_PATH
 from praw.exceptions import RedditAPIException
-from praw.models import (
-    LiveThread,
-    LiveUpdate,
-    Redditor,
-    RedditorList,
-    Submission,
-)
+from praw.models import LiveThread, LiveUpdate, Redditor, RedditorList, Submission
 
 from ... import IntegrationTest
 

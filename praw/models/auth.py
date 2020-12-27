@@ -1,12 +1,7 @@
 """Provide the Auth class."""
 from typing import Dict, List, Optional, Set, Union
 
-from prawcore import (
-    Authorizer,
-    ImplicitAuthorizer,
-    UntrustedAuthenticator,
-    session,
-)
+from prawcore import Authorizer, ImplicitAuthorizer, UntrustedAuthenticator, session
 
 from ..exceptions import InvalidImplicitAuth, MissingRequiredAttributeException
 from .base import PRAWBase

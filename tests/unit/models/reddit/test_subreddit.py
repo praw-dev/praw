@@ -1,7 +1,8 @@
 import json
 import pickle
-import pytest
 from unittest import mock
+
+import pytest
 
 from praw.exceptions import MediaPostFailed
 from praw.models import InlineGif, InlineImage, InlineVideo, Subreddit, WikiPage

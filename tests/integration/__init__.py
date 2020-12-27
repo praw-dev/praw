@@ -4,9 +4,9 @@ import logging
 
 import pytest
 import requests
+from betamax import Betamax
 
 from praw import Reddit
-from betamax import Betamax
 
 
 class IntegrationTest:
