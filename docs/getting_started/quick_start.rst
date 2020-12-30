@@ -292,7 +292,7 @@ For example:
     # assume you have a Reddit instance bound to variable `reddit`
     submission = reddit.submission(id="39zje0")
     print(submission.title) # to make it non-lazy
-    pprint.pprint(vars(submission))
+    print(vars(submission))
 
 Note the line where we print the title. PRAW uses lazy objects so that network requests
 to Reddit's API are only issued when information is needed. Here, before the print line,
