@@ -509,7 +509,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
     def shortlink(self) -> str:
         """Return a shortlink to the submission.
 
-        For example http://redd.it/eorhm is a shortlink for
+        For example https://redd.it/eorhm is a shortlink for
         https://www.reddit.com/r/announcements/comments/eorhm/reddit_30_less_typing/.
 
         """
