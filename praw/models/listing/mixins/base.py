@@ -21,7 +21,11 @@ class BaseListingMixin(PRAWBase):
 
     @staticmethod
     def _validate_time_filter(time_filter):
-        """Raise :py:class:`.ValueError` if ``time_filter`` is not valid."""
+        """Validate ``time_filter``.
+
+        :raises: :py:class:`ValueError` if ``time_filter`` is not valid.
+
+        """
         if time_filter not in BaseListingMixin.VALID_TIME_FILTERS:
             raise ValueError(
                 f"time_filter must be one of: {', '.join(BaseListingMixin.VALID_TIME_FILTERS)}"

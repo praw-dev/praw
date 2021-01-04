@@ -60,7 +60,11 @@ class Config:
 
     @property
     def short_url(self) -> str:
-        """Return the short url or raise a ClientException when not set."""
+        """Return the short url.
+
+        :raises: :class:`.ClientException` if it is not set.
+
+        """
         if self._short_url is self.CONFIG_NOT_SET:
             raise ClientException("No short domain specified.")
         return self._short_url
