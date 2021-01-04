@@ -814,7 +814,7 @@ as described below:
   ``header_hover_text``, ``show_media`` and ``show_media_preview`` values.
 * Instances of :class:`.Comment` obtained through the inbox (including mentions) are now
   refreshable.
-* Searching ``/r/all`` should now work as intended for all users.
+* Searching ``r/all`` should now work as intended for all users.
 * Accessing an invalid attribute on an instance of :class:`.Message` will raise
   :py:class:`AttributeError` instead of :class:`.PRAWException`.
 
@@ -856,7 +856,7 @@ as described below:
 PRAW 4 introduces significant breaking changes. The numerous changes are not listed
 here, only the feature removals. Please read through :doc:`/getting_started/quick_start`
 to help with updating your code to PRAW 4. If you require additional help please ask on
-`/r/redditdev <https://www.reddit.com/r/redditdev>`_ or via Slack.
+`r/redditdev <https://www.reddit.com/r/redditdev>`_ or via Slack.
 
 **Added**
 
