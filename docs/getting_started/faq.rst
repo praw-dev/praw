@@ -38,7 +38,7 @@ Q: Help, I keep on getting redirected to ``/r/subreddit/login/``!
 
 Q2: I keep on getting this exception:
 
-.. code-block:: none
+.. code-block:: text
 
     prawcore.exceptions.Redirect: Redirect to /r/subreddit/login/ (You may be trying to perform a non-read-only action via a read-only instance.)
 

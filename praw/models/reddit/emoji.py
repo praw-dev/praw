@@ -200,7 +200,9 @@ class SubredditEmoji:
         :param post_flair_allowed: (boolean) When provided, indicate whether the emoji
             may appear in post flair. (Default: ``None``)
         :param user_flair_allowed: (boolean) When provided, indicate whether the emoji
-            may appear in user flair. (Default: ``None``) :returns: The Emoji added.
+            may appear in user flair. (Default: ``None``)
+
+        :returns: The Emoji added.
 
         To add ``test`` to the subreddit ``praw_test`` try:
 

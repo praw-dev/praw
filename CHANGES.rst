@@ -244,8 +244,8 @@ Unreleased
 
 **Expected Changes**
 
-* The behavior of func:`APIException` will no longer unicode-escape strings in the next
-  minor release
+* The behavior of ``APIException`` will no longer unicode-escape strings in the next
+  minor release.
 
 6.4.0 (2019/09/21)
 ------------------
@@ -273,9 +273,9 @@ Unreleased
 * Removed ``css_class`` parameter cannot be used with ``background_color``,
   ``text_color``, or ``mod_only`` constraint on methods:
 
-    * ``SubredditFlairTemplates.update()``
-    * ``SubredditRedditorFlairTemplates.add()``
-    * ``SubredditLinkFlairTemplates.add()``
+  * ``SubredditFlairTemplates.update()``
+  * ``SubredditRedditorFlairTemplates.add()``
+  * ``SubredditLinkFlairTemplates.add()``
 
 **Removed**
 
@@ -394,7 +394,7 @@ Unreleased
 
 **Fixed**
 
-* Widgets of unknown types are parsed as ``Widget`` s rather than raising an exception
+* Widgets of unknown types are parsed as ``Widget``\ s rather than raising an exception.
 
 6.0.0 (2018/07/24)
 ------------------
@@ -679,7 +679,7 @@ as described below:
 
 * Uploading an image resulting in too large of a request (>500 KB) now raises
   ``prawcore.TooLarge`` instead of an ``AssertionError``.
-* Uploading an invalid image raises func:`APIException`.
+* Uploading an invalid image raises ``APIException``.
 * :class:`.Redditor` instances obtained via :attr:`.moderator` (e.g.,
   ``reddit.subreddit("subreddit").moderator()``) will contain attributes with the
   relationship metadata (e.g., ``mod_permissions``).
@@ -816,7 +816,7 @@ as described below:
   refreshable.
 * Searching ``/r/all`` should now work as intended for all users.
 * Accessing an invalid attribute on an instance of :class:`.Message` will raise
-  :py:class:`.AttributeError` instead of :class:`.PRAWException`.
+  :py:class:`AttributeError` instead of :class:`.PRAWException`.
 
 4.0.0 (2016/11/29)
 ------------------

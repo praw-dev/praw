@@ -844,7 +844,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         discussion_type=None,
         inline_media=None,
     ):  # noqa: D301
-        """Add a submission to the subreddit.
+        r"""Add a submission to the subreddit.
 
         :param title: The title of the submission.
         :param selftext: The Markdown formatted content for a ``text`` submission. Use
@@ -894,8 +894,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. note::
 
-            Inserted media will have a padding of `\n\n` automatically added. This due
-            to the weirdness with Reddit's API. Using the example above the result
+            Inserted media will have a padding of ``\\n\\n`` automatically added. This due
+            to the weirdness with Reddit's API. Using the example above, the result
             selftext body will look like so:
 
             .. code-block::

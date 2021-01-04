@@ -104,11 +104,12 @@ class SubmissionModeration(ThingModerationMixin):
             True).
 
         Contest mode have the following effects:
-          * The comment thread will default to being sorted randomly.
-          * Replies to top-level comments will be hidden behind "[show replies]" buttons.
-          * Scores will be hidden from non-moderators.
-          * Scores accessed through the API (mobile apps, bots) will be obscured to "1"
-            for non-moderators.
+
+        * The comment thread will default to being sorted randomly.
+        * Replies to top-level comments will be hidden behind "[show replies]" buttons.
+        * Scores will be hidden from non-moderators.
+        * Scores accessed through the API (mobile apps, bots) will be obscured to "1"
+          for non-moderators.
 
         Example usage:
 
@@ -476,7 +477,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         """Provide an instance of :class:`.SubmissionFlair`.
 
         This attribute is used to work with flair as a regular user of the subreddit the
-         submission belongs to. Moderators can directly use meth:`.flair`.
+        submission belongs to. Moderators can directly use :meth:`.flair`.
 
         For example, to select an arbitrary editable flair text (assuming there is one)
         and set a custom value try:
