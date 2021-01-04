@@ -8,7 +8,7 @@ class StaticChecker:
     """Run simple checks on the entire document or specific lines."""
 
     def __init__(self, replace: bool):
-        """Instantiates the class.
+        """Initializes the class.
 
         :param replace: Whether or not to make replacements.
         """
