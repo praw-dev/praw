@@ -165,7 +165,7 @@ License
 PRAW's source (v4.0.0+) is provided under the `Simplified BSD License
 <https://github.com/praw-dev/praw/blob/0860c11a9309c80621c267af7caeb6a993933744/LICENSE.txt>`_.
 
-* Copyright (c), 2016, Bryce Boe
+* Copyright ©, 2016, Bryce Boe
 
 Earlier versions of PRAW were released under `GPLv3
 <https://github.com/praw-dev/praw/blob/0c88697fdc26e75f87b68e2feb11e101e90ce215/COPYING>`_.
