@@ -52,7 +52,7 @@ of information:
             "personal use script" for the desired `developed application
             <https://www.reddit.com/prefs/apps/>`_
 
-:client_secret: The client secret is the 27-character string listed adjacent to
+:client_secret: The client secret is at least a 27-character string listed adjacent to
                 ``secret`` for the application.
 
 :password: The password for the Reddit account used to register the application.
