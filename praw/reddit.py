@@ -19,7 +19,7 @@ from prawcore import (
     UntrustedAuthenticator,
     session,
 )
-from prawcore.exceptions import BadRequest
+from prawcore.exceptions import ResponseException
 
 from . import models
 from .config import Config
@@ -769,7 +769,7 @@ class Reddit:
                 timeout=self.config.timeout,
                 json=json,
             )
-        except BadRequest as exception:
+        except ResponseException as exception:
             try:
                 data = exception.response.json()
             except ValueError:
@@ -780,7 +780,9 @@ class Reddit:
                     "bug at https://github.com/praw-dev/praw/issues"
                 ) from exception
             if set(data) == {"error", "message"}:
-                raise
+                raise RedditAPIException(
+                    [str(data["error"]), data["message"], None]
+                ) from exception
             if "fields" in data:
                 assert len(data["fields"]) == 1
                 field = data["fields"][0]
