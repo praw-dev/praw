@@ -1,7 +1,7 @@
 """Provide the Subreddits class."""
 from typing import Dict, Iterator, List, Optional, Union
-
 from warnings import warn
+
 from ..const import API_PATH
 from . import Subreddit
 from .base import PRAWBase

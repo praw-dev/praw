@@ -3,6 +3,7 @@ import pytest
 
 from praw.models import Collection
 from praw.models.reddit.collections import SubredditCollections
+
 from ... import UnitTest
 
 

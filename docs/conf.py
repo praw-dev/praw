@@ -7,7 +7,6 @@ sys.path.insert(1, "..")
 
 from praw import __version__
 
-
 copyright = "2020, Bryce Boe"
 exclude_patterns = ["_build"]
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.intersphinx"]

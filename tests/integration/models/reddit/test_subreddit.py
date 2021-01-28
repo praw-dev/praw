@@ -8,13 +8,7 @@ from unittest import mock
 import pytest
 import requests
 import websocket
-from prawcore import (
-    BadRequest,
-    Forbidden,
-    NotFound,
-    RequestException,
-    TooLarge,
-)
+from prawcore import BadRequest, Forbidden, NotFound, RequestException, TooLarge
 
 from praw.const import PNG_HEADER
 from praw.exceptions import (
