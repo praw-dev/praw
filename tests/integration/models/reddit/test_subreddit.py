@@ -1749,7 +1749,7 @@ class TestSubredditRelationships(IntegrationTest):
                 assert isinstance(moderator, Redditor)
 
     @mock.patch("time.sleep", return_value=None)
-    def test_modeator_leave(self, _):
+    def test_moderator_leave(self, _):
         self.reddit.read_only = False
         with self.use_cassette():
             self.subreddit.moderator.leave()
