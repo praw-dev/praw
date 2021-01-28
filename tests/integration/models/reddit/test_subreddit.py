@@ -23,6 +23,7 @@ from praw.models import (
     InlineGif,
     InlineImage,
     InlineVideo,
+    ListingGenerator,
     ModAction,
     ModmailAction,
     ModmailConversation,
@@ -1732,10 +1733,19 @@ class TestSubredditRelationships(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_moderator_invited_moderators(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditRelationships.test_moderator_invited_moderators"
-        ):
-            for moderator in self.subreddit.moderator.invited():
+        with self.use_cassette():
+            invited = self.subreddit.moderator.invited()
+            assert isinstance(invited, ListingGenerator)
+            for moderator in invited:
+                assert isinstance(moderator, Redditor)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_moderator_invited_moderators__fetch_all(self, _):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            invited = self.subreddit.moderator.invited(fetch_all=True)
+            assert isinstance(invited, list)
+            for moderator in invited:
                 assert isinstance(moderator, Redditor)
 
     @mock.patch("time.sleep", return_value=None)
