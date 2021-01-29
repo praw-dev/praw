@@ -1,8 +1,10 @@
+import asyncio
 import configparser
 import types
 from unittest import mock
 
 import pytest
+import requests
 from prawcore import Requestor
 from prawcore.exceptions import BadRequest
 
@@ -17,6 +19,39 @@ class TestReddit(UnitTest):
     REQUIRED_DUMMY_SETTINGS = {
         x: "dummy" for x in ["client_id", "client_secret", "user_agent"]
     }
+
+    @staticmethod
+    async def check_async(reddit):
+        reddit.request("GET", "path")
+
+    @staticmethod
+    def patch_request(*args, **kwargs):
+        """Patch requests to return mock data on specific url."""
+        response = requests.Response()
+        response._content = '{"name":"username"}'.encode("utf-8")
+        response.status_code = 200
+        return response
+
+    def test_check_for_async(self, caplog):
+        reddit = Reddit(**self.REQUIRED_DUMMY_SETTINGS)
+        reddit._core.request = self.patch_request
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.check_async(reddit))
+        log_record = caplog.records[0]
+        assert log_record.levelname == "WARNING"
+        assert log_record.message == (
+            "It appears that you are using PRAW in an asynchronous environment.\nIt is"
+            " strongly recommended to use Async PRAW: https://asyncpraw.readthedocs.io/en/latest/."
+            "\nSee https://praw.readthedocs.io/en/latest/getting_started/multiple_instances.html#discord-bots-and-asynchronous-environments"
+            " for more info.\n"
+        )
+
+    def test_check_for_async__disabled(self, caplog):
+        reddit = Reddit(**self.REQUIRED_DUMMY_SETTINGS, check_for_async=False)
+        reddit._core.request = self.patch_request
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.check_async(reddit))
+        assert caplog.records == []
 
     @mock.patch("praw.reddit.update_check", create=True)
     @mock.patch("praw.reddit.UPDATE_CHECKER_MISSING", False)

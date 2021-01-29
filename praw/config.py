@@ -107,6 +107,9 @@ class Config:
 
     def _initialize_attributes(self):
         self._short_url = self._fetch_default("short_url") or self.CONFIG_NOT_SET
+        self.check_for_async = self._config_boolean(
+            self._fetch_default("check_for_async", True)
+        )
         self.check_for_updates = self._config_boolean(
             self._fetch_or_not_set("check_for_updates")
         )

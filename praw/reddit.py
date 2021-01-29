@@ -1,4 +1,5 @@
 """Provide the Reddit class."""
+import asyncio
 import configparser
 import os
 import re
@@ -136,7 +137,7 @@ class Reddit:
         config_interpolation: Optional[str] = None,
         requestor_class: Optional[Type[Requestor]] = None,
         requestor_kwargs: Dict[str, Any] = None,
-        **config_settings: str,
+        **config_settings: Union[str, bool],
     ):  # noqa: D207, D301
         """Initialize a Reddit instance.
 
@@ -347,6 +348,21 @@ class Reddit:
             print(reddit.user.me())
 
         """
+
+    def _check_for_async(self):
+        if self.config.check_for_async:
+            try:
+                asyncio.get_running_loop()
+            except RuntimeError:
+                pass
+            else:
+                logger.warning(
+                    "It appears that you are using PRAW in an asynchronous"
+                    " environment.\nIt is strongly recommended to use Async PRAW:"
+                    " https://asyncpraw.readthedocs.io/en/latest/.\nSee"
+                    " https://praw.readthedocs.io/en/latest/getting_started/multiple_instances.html#discord-bots-and-asynchronous-environments"
+                    " for more info.\n",
+                )
 
     def _check_for_update(self):
         if UPDATE_CHECKER_MISSING:
@@ -757,6 +773,8 @@ class Reddit:
             provided, ``data`` should not be.
 
         """
+        if self.config.check_for_async:
+            self._check_for_async()
         if data and json:
             raise ClientException("At most one of `data` and `json` is supported.")
         try:
