@@ -22,6 +22,18 @@ is strongly recommended to use `Async PRAW <https://asyncpraw.readthedocs.io/>`_
 the official asynchronous version of PRAW and its usage is similar and has the same
 features as PRAW.
 
+.. note::
+
+    By default, PRAW will check to see if it is in an asynchronous environment at the
+    initialization of :class:`.Reddit` and every time a network request is made. To
+    disable this check you can do:
+
+    .. code-block:: python
+
+        import praw
+
+        reddit = praw.Reddit(..., check_for_async=False)
+
 Multiple Programs
 -----------------
 
