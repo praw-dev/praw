@@ -24,9 +24,9 @@ features as PRAW.
 
 .. note::
 
-    By default, PRAW will check to see if it is in an asynchronous environment at the
-    initialization of :class:`.Reddit` and every time a network request is made. To
-    disable this check you can do:
+    By default, PRAW will check to see if it is in an asynchronous environment every
+    time a network request is made. To disable this check, set the ``check_for_async``
+    configuration option to ``false``. For example:
 
     .. code-block:: python
 

@@ -16,6 +16,9 @@ Unreleased
   specify type of award, anonymity, and message when awarding a submission or comment.
 * Ability to specify subreddits by name using the `subreddits` parameter in
   :meth:`.Reddit.info`.
+* A check to see if PRAW is running in an asynchronous environment and will advise the
+  user to use `Async PRAW <https://asyncpraw.readthedocs.io>`_. This also adds a
+  configuration option to disable the check.
 
 **Changed**
 
