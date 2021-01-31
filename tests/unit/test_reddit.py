@@ -41,7 +41,7 @@ class TestReddit(UnitTest):
         assert log_record.levelname == "WARNING"
         assert log_record.message == (
             "It appears that you are using PRAW in an asynchronous environment.\nIt is"
-            " strongly recommended to use Async PRAW: https://asyncpraw.readthedocs.io/en/latest/."
+            " strongly recommended to use Async PRAW: https://asyncpraw.readthedocs.io."
             "\nSee https://praw.readthedocs.io/en/latest/getting_started/multiple_instances.html#discord-bots-and-asynchronous-environments"
             " for more info.\n"
         )

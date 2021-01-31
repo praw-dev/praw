@@ -95,6 +95,10 @@ Miscellaneous Configuration Options
 
 These are options that do not belong in another category, but still play a part in PRAW.
 
+:check_for_async: When ``true``, check if PRAW is being ran in an asynchronous
+    environment whenever a request is made. If so, a warning will be logged recommending
+    the usage of `Async PRAW <https://asyncpraw.readthedocs.io/>`_. (default: ``true``)
+
 :ratelimit_seconds: Controls the maximum amount of seconds PRAW will capture ratelimits
     returned in JSON data. Because this can be as high as 10 minutes, only ratelimits of
     up to 5 seconds are captured and waited on by default. Should be a number
