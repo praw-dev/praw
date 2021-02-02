@@ -16,10 +16,10 @@ class TestComment(UnitTest):
         more = MoreComments(
             self.reddit, {"children": ["a", "b", "c", "d", "e"], "count": 5}
         )
-        assert repr(more) == ("<MoreComments count=5, children=['a', 'b', 'c', '...']>")
+        assert repr(more) == "<MoreComments count=5, children=['a', 'b', 'c', '...']>"
 
         more = MoreComments(self.reddit, {"children": ["a", "b", "c", "d"], "count": 4})
-        assert repr(more) == ("<MoreComments count=4, children=['a', 'b', 'c', 'd']>")
+        assert repr(more) == "<MoreComments count=4, children=['a', 'b', 'c', 'd']>"
 
     def test_equality(self):
         more = MoreComments(self.reddit, {"children": ["a", "b", "c", "d"], "count": 4})

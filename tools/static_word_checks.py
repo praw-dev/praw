@@ -31,10 +31,10 @@ class StaticChecker:
         :returns: A boolean with the status of the check
         """
         if ".. code::" in content:
-            newcontent = content.replace(".. code::", ".. code-block::")
+            new_content = content.replace(".. code::", ".. code-block::")
             if self.replace:
                 with open(filename, "w") as fp:
-                    fp.write(newcontent)
+                    fp.write(new_content)
                 print(f"{filename}: Replaced all ``code::`` to ``code-block::``")
                 return True
             print(
@@ -53,14 +53,14 @@ class StaticChecker:
         """
         if os.path.join("praw", "const.py") in filename:  # fails due to bytes blocks
             return True
-        newcontent = re.sub(r"(^|\s)/(u|r)/", r"\1\2/", content)
+        new_content = re.sub(r"(^|\s)/(u|r)/", r"\1\2/", content)
         # will only replace if the character behind a /r/ is a  whitespace character or
         # the start of a line
-        if content == newcontent:
+        if content == new_content:
             return True
         if self.replace:
             with open(filename, "w") as fp:
-                fp.write(newcontent)
+                fp.write(new_content)
             print(
                 f"{filename}: Replaced all instances of ``/r/`` and/or ``/u/`` to ``r/`` and/or ``u/``."
             )

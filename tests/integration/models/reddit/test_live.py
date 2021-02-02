@@ -18,7 +18,7 @@ class TestLiveUpdate(IntegrationTest):
         with self.use_cassette():
             assert isinstance(update.author, Redditor)
             assert update.author == "umbrae"
-            assert update.name == ("LiveUpdate_7827987a-c998-11e4-a0b9-22000b6a88d2")
+            assert update.name == "LiveUpdate_7827987a-c998-11e4-a0b9-22000b6a88d2"
             assert update.body.startswith("Small change")
 
 

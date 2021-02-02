@@ -192,7 +192,7 @@ class TestSubredditModmailConversationsStream(UnitTest):
         submodstream.modmail_conversations()
         assert submodstream.subreddit == "all"
 
-    def test_conversation_stream_capilization(self):
+    def test_conversation_stream_capitalization(self):
         submodstream = self.reddit.subreddit("Mod").mod.stream
         submodstream.modmail_conversations()
         assert submodstream.subreddit == "all"

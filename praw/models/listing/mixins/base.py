@@ -27,9 +27,8 @@ class BaseListingMixin(PRAWBase):
 
         """
         if time_filter not in BaseListingMixin.VALID_TIME_FILTERS:
-            raise ValueError(
-                f"time_filter must be one of: {', '.join(BaseListingMixin.VALID_TIME_FILTERS)}"
-            )
+            valid_time_filters = ", ".join(BaseListingMixin.VALID_TIME_FILTERS)
+            raise ValueError(f"time_filter must be one of: {valid_time_filters}")
 
     def controversial(
         self,
