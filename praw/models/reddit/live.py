@@ -794,9 +794,12 @@ class LiveUpdateContribution:
             update.contrib.strike()
 
         To check whether the update is stricken or not, use ``update.stricken``
-        attribute. But note that accessing lazy attributes on updates
-        (includes ``update.stricken``) may raises ``AttributeError``.
-        See :class:`.LiveUpdate` for details.
+        attribute.
+
+        .. note::
+
+            Accessing lazy attributes on updates (includes ``update.stricken``) may
+            raise :py:class:`AttributeError`. See :class:`.LiveUpdate` for details.
 
         """
         url = API_PATH["live_strike"].format(id=self.update.thread.id)

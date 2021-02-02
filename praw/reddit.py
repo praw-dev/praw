@@ -330,7 +330,7 @@ class Reddit:
 
             reddit.subreddit("redditdev")
 
-        Note that multiple subreddits can be combined and filtered views of r/all can
+        Multiple subreddits can be combined and filtered views of r/all can
         also be used just like a subreddit:
 
         .. code-block:: python

@@ -39,8 +39,11 @@ class ExponentialCounter:
     def __init__(self, max_counter: int):
         """Initialize an instance of ExponentialCounter.
 
-        :param max_counter: The maximum base value. Note that the computed value may be
-            3.125% higher due to jitter.
+        :param max_counter: The maximum base value.
+
+            .. note::
+
+                The computed value may be 3.125% higher due to jitter.
 
         """
         self._base = 1
