@@ -39,11 +39,9 @@ class TestReddit(UnitTest):
         loop.run_until_complete(self.check_async(reddit))
         log_record = caplog.records[0]
         assert log_record.levelname == "WARNING"
-        assert log_record.message == (
-            "It appears that you are using PRAW in an asynchronous environment.\nIt is"
-            " strongly recommended to use Async PRAW: https://asyncpraw.readthedocs.io."
-            "\nSee https://praw.readthedocs.io/en/latest/getting_started/multiple_instances.html#discord-bots-and-asynchronous-environments"
-            " for more info.\n"
+        assert (
+            log_record.message
+            == "It appears that you are using PRAW in an asynchronous environment.\nIt is strongly recommended to use Async PRAW: https://asyncpraw.readthedocs.io.\nSee https://praw.readthedocs.io/en/latest/getting_started/multiple_instances.html#discord-bots-and-asynchronous-environments for more info.\n"
         )
 
     def test_check_for_async__disabled(self, caplog):
@@ -93,15 +91,13 @@ class TestReddit(UnitTest):
             Reddit(timeout="test", **self.REQUIRED_DUMMY_SETTINGS)
         assert (
             excinfo.value.args[0]
-            == "An incorrect config type was given for option timeout. The "
-            "expected type is int, but the given value is test."
+            == "An incorrect config type was given for option timeout. The expected type is int, but the given value is test."
         )
         with pytest.raises(ValueError) as excinfo:
             Reddit(ratelimit_seconds="test", **self.REQUIRED_DUMMY_SETTINGS)
         assert (
-            excinfo.value.args[0] == "An incorrect config type was given for option "
-            "ratelimit_seconds. The expected type is int, but the given value "
-            "is test."
+            excinfo.value.args[0]
+            == "An incorrect config type was given for option ratelimit_seconds. The expected type is int, but the given value is test."
         )
 
     def test_info__not_list(self):

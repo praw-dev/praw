@@ -50,7 +50,10 @@ class RedditErrorItem:
 
     def __repr__(self):
         """Return repr(self)."""
-        return f"{self.__class__.__name__}(error_type={self.error_type!r}, message={self.message!r}, field={self.field!r})"
+        return (
+            f"{self.__class__.__name__}(error_type={self.error_type!r},"
+            f" message={self.message!r}, field={self.field!r})"
+        )
 
     def __str__(self):
         """Get the message returned from str(self)."""
@@ -125,7 +128,10 @@ class APIException(PRAWException):
 
     def _get_old_attr(self, attrname):
         warn(
-            f"Accessing attribute ``{attrname}`` through APIException is deprecated. This behavior will be removed in PRAW 8.0. Check out https://praw.readthedocs.io/en/latest/package_info/praw7_migration.html to learn how to migrate your code.",
+            f"Accessing attribute ``{attrname}`` through APIException is deprecated."
+            " This behavior will be removed in PRAW 8.0. Check out"
+            " https://praw.readthedocs.io/en/latest/package_info/praw7_migration.html"
+            " to learn how to migrate your code.",
             category=DeprecationWarning,
             stacklevel=3,
         )
@@ -177,7 +183,8 @@ class InvalidFlairTemplateID(ClientException):
     def __init__(self, template_id: str):
         """Initialize the class."""
         super().__init__(
-            f"The flair template id ``{template_id}`` is invalid. If you are trying to create a flair, please use the ``add`` method."
+            f"The flair template id ``{template_id}`` is invalid. If you are trying to"
+            " create a flair, please use the ``add`` method."
         )
 
 
@@ -220,7 +227,8 @@ class TooLargeMediaException(ClientException):
         self.maximum_size = maximum_size
         self.actual = actual
         super().__init__(
-            f"The media that you uploaded was too large (maximum size is {maximum_size} bytes, uploaded {actual} bytes)"
+            f"The media that you uploaded was too large (maximum size is {maximum_size}"
+            f" bytes, uploaded {actual} bytes)"
         )
 
 
@@ -231,7 +239,9 @@ class WebSocketException(ClientException):
     def original_exception(self) -> Exception:
         """Access the original_exception attribute (now deprecated)."""
         warn(
-            "Accessing the attribute original_exception is deprecated. Please rewrite your code in such a way that this attribute does not need to be used. It will be removed in PRAW 8.0.",
+            "Accessing the attribute original_exception is deprecated. Please rewrite"
+            " your code in such a way that this attribute does not need to be used. It"
+            " will be removed in PRAW 8.0.",
             category=DeprecationWarning,
             stacklevel=2,
         )
@@ -266,6 +276,8 @@ class MediaPostFailed(WebSocketException):
     def __init__(self):
         """Initialize MediaPostFailed."""
         super().__init__(
-            "The attempted media upload action has failed. Possible causes include the corruption of media files. Check that the media file can be opened on your local machine.",
+            "The attempted media upload action has failed. Possible causes include the"
+            " corruption of media files. Check that the media file can be opened on"
+            " your local machine.",
             None,
         )
