@@ -3,6 +3,7 @@ import asyncio
 import configparser
 import os
 import re
+import sys
 import time
 from itertools import islice
 from logging import getLogger
@@ -367,11 +368,16 @@ class Reddit:
 
     def _check_for_async(self):
         if self.config.check_for_async:
-            try:
-                asyncio.get_running_loop()
-            except RuntimeError:
-                pass
-            else:
+            in_async = False
+            if sys.version_info >= (3, 7, 0):
+                try:
+                    asyncio.get_running_loop()
+                    in_async = True
+                except RuntimeError:
+                    pass
+            else:  # pragma: no cover # not able to be covered in > Python 3.6.12
+                in_async = asyncio.get_event_loop().is_running()
+            if in_async:
                 logger.warning(
                     "It appears that you are using PRAW in an asynchronous"
                     " environment.\nIt is strongly recommended to use Async PRAW:"
