@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Fixed**
+
+* Asynchronous check would not work on Python 3.6 as ``asyncio.get_running_loop`` only
+  exists on Python 3.7+.
+
 7.1.1 (2021/02/02)
 ------------------
 
