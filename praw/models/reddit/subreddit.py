@@ -2815,19 +2815,13 @@ class ModeratorRelationship(SubredditRelationship):
         url = API_PATH["friend"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
 
-    def invited(self, redditor=None, fetch_all=False, **generator_kwargs):
+    def invited(self, redditor=None, **generator_kwargs):
         """Return a :class:`.ListingGenerator` for Redditors invited to be moderators.
 
         :param redditor: When provided, return a list containing at most one
             :class:`~.Redditor` instance. This is useful to confirm if a relationship
             exists, or to fetch the metadata associated with a particular relationship
             (default: None).
-        :param fetch_all: If True, all invited moderators are fetched.
-            (default: False)
-
-            .. note::
-
-                If True, requests will be made until all invited moderators are fetched.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -2848,8 +2842,7 @@ class ModeratorRelationship(SubredditRelationship):
         """
         generator_kwargs["params"] = {"username": redditor} if redditor else None
         url = API_PATH["list_invited_moderator"].format(subreddit=self.subreddit)
-        generator = ListingGenerator(self.subreddit._reddit, url, **generator_kwargs)
-        return [mod for mod in generator] if fetch_all else generator
+        return ListingGenerator(self.subreddit._reddit, url, **generator_kwargs)
 
     def leave(self):
         """Abdicate the moderator position (use with care).
