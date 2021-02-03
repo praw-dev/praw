@@ -55,8 +55,8 @@ certificate without an exception from Requests, first export the certificate as 
 
 .. code-block:: python
 
-   import praw
-   from requests import Session
+    import praw
+    from requests import Session
 
 
     session = Session()

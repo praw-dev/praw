@@ -62,10 +62,12 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         for submission in reddit.subreddit("redditdev+learnpython").top("all"):
             print(submission)
 
-    Subreddits can be filtered from combined listings as follows. Note that these
-    filters are ignored by certain methods, including
-    :attr:`~praw.models.Subreddit.comments`, :meth:`~praw.models.Subreddit.gilded`, and
-    :meth:`.SubredditStream.comments`.
+    Subreddits can be filtered from combined listings as follows.
+
+    .. note::
+
+        These filters are ignored by certain methods, including :attr:`.comments`,
+        :meth:`.gilded`, and :meth:`.SubredditStream.comments`.
 
     .. code-block:: python
 
@@ -482,8 +484,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
             subreddit = reddit.subreddit("SUBREDDIT")
             stylesheet = subreddit.stylesheet()
-            stylesheet += ".test{color:blue}"
-            subreddit.stylesheet.update(stylesheet)
+            stylesheet.stylesheet += ".test{color:blue}"
+            subreddit.stylesheet.update(stylesheet.stylesheet)
 
         """
         return SubredditStylesheet(self)
@@ -619,8 +621,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             BlockingIOError,
         ) as ws_exception:
             raise WebSocketException(
-                "Websocket error. Check your media file. "
-                "Your post may still have been created.",
+                "Websocket error. Check your media file. Your post may still have been"
+                " created.",
                 ws_exception,
             )
         if ws_update.get("type") == "failed":
@@ -662,7 +664,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             and mime_type.partition("/")[0] != expected_mime_prefix
         ):
             raise ClientException(
-                f"Expected a mimetype starting with {expected_mime_prefix!r} but got mimetype {mime_type!r} (from file extension {file_extension!r})."
+                f"Expected a mimetype starting with {expected_mime_prefix!r} but got"
+                f" mimetype {mime_type!r} (from file extension {file_extension!r})."
             )
         img_data = {"filepath": file_name, "mimetype": mime_type}
 
@@ -811,7 +814,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :param number: Specify which sticky to return. 1 appears at the top (default:
             1).
 
-        Raises ``prawcore.NotFound`` if the sticky does not exist.
+        :raises: ``prawcore.NotFound`` if the sticky does not exist.
 
         For example, to get the stickied post on the subreddit ``r/test``:
 
@@ -844,7 +847,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         discussion_type=None,
         inline_media=None,
     ):  # noqa: D301
-        """Add a submission to the subreddit.
+        r"""Add a submission to the subreddit.
 
         :param title: The title of the submission.
         :param selftext: The Markdown formatted content for a ``text`` submission. Use
@@ -894,8 +897,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. note::
 
-            Inserted media will have a padding of `\n\n` automatically added. This due
-            to the weirdness with Reddit's API. Using the example above the result
+            Inserted media will have a padding of ``\\n\\n`` automatically added. This due
+            to the weirdness with Reddit's API. Using the example above, the result
             selftext body will look like so:
 
             .. code-block::
@@ -994,8 +997,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             (default: False).
         :returns: A :class:`.Submission` object for the newly created submission.
 
-        If ``image_path`` in ``images`` refers to a file that is not an image, PRAW will
-        raise a :class:`.ClientException`.
+        :raises: :class:`.ClientException` if ``image_path`` in ``images`` refers to a
+            file that is not an image.
 
         For example to submit an image gallery to ``r/reddit_api_test`` do:
 
@@ -1109,8 +1112,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :returns: A :class:`.Submission` object for the newly created submission,
             unless ``without_websockets`` is ``True``.
 
-        If ``image_path`` refers to a file that is not an image, PRAW will raise a
-        :class:`.ClientException`.
+        :raises: :class:`.ClientException` if ``image_path`` refers to a file that is
+            not an image.
 
         .. note::
 
@@ -1292,8 +1295,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :returns: A :class:`.Submission` object for the newly created submission, unless
             ``without_websockets`` is ``True``.
 
-        If ``video_path`` refers to a file that is not a video, PRAW will
-        raise a :class:`.ClientException`.
+        :raises: :class:`.ClientException` if ``video_path`` refers to a file that is
+            not a video.
 
         .. note::
 
@@ -1381,9 +1384,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def traffic(self):
         """Return a dictionary of the subreddit's traffic statistics.
 
-        Raises ``prawcore.NotFound`` when the traffic stats aren't available to the
-        authenticated user, that is, they are not public and the authenticated user is
-        not a moderator of the subreddit.
+        :raises: ``prawcore.NotFound`` when the traffic stats aren't available to the
+            authenticated user, that is, they are not public and the authenticated user
+            is not a moderator of the subreddit.
 
         The traffic method returns a dict with three keys. The keys are ``day``,
         ``hour`` and ``month``. Each key contains a list of lists with 3 or 4 values.
@@ -1486,7 +1489,7 @@ class SubredditFilters:
 
             reddit.subreddit("all-redditdev-learnpython")
 
-        Raises ``prawcore.NotFound`` when calling on a non-special subreddit.
+        :raises: ``prawcore.NotFound`` when calling on a non-special subreddit.
 
         """
         url = API_PATH["subreddit_filter"].format(
@@ -1501,7 +1504,7 @@ class SubredditFilters:
 
         :param subreddit: The subreddit to remove from the filter list.
 
-        Raises ``prawcore.NotFound`` when calling on a non-special subreddit.
+        :raises: ``prawcore.NotFound`` when calling on a non-special subreddit.
 
         """
         url = API_PATH["subreddit_filter"].format(
@@ -1660,8 +1663,8 @@ class SubredditFlair:
         """
         if css_class and flair_template_id is not None:
             raise TypeError(
-                "Parameter `css_class` cannot be used in "
-                "conjunction with `flair_template_id`."
+                "Parameter `css_class` cannot be used in conjunction with"
+                " `flair_template_id`."
             )
         data = {"name": str(redditor), "text": text}
         if flair_template_id is not None:
@@ -1899,7 +1902,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         """Add a Redditor flair template to the associated subreddit.
 
         :param text: The flair template's text (required).
-        :param css_class: The flair template's css_class ((default: "")).
+        :param css_class: The flair template's css_class (default: "").
         :param text_editable: (boolean) Indicate if the flair text can be modified for
             each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color, as a hex
@@ -3421,12 +3424,12 @@ class SubredditStylesheet:
         :returns: A dictionary containing a link to the uploaded image under the key
             ``img_src``.
 
-        Raises ``prawcore.TooLarge`` if the overall request body is too large.
+        :raises: ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.RedditAPIException` if there are other issues with the uploaded
-        image. Unfortunately the exception info might not be very specific, so try
-        through the website with the same image to see what the problem actually might
-        be.
+        :raises: :class:`.RedditAPIException` if there are other issues with the
+            uploaded image. Unfortunately the exception info might not be very specific,
+            so try through the website with the same image to see what the problem
+            actually might be.
 
         For example:
 
@@ -3442,12 +3445,12 @@ class SubredditStylesheet:
 
         :param image_path: A path to a jpeg or png image.
 
-        Raises ``prawcore.TooLarge`` if the overall request body is too large.
+        :raises: ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.RedditAPIException` if there are other issues with the
-        uploaded image. Unfortunately the exception info might not be very
-        specific, so try through the website with the same image to see what
-        the problem actually might be.
+        :raises: :class:`.RedditAPIException` if there are other issues with the
+            uploaded image. Unfortunately the exception info might not be very specific,
+            so try through the website with the same image to see what the problem
+            actually might be.
 
         For example:
 
@@ -3466,12 +3469,12 @@ class SubredditStylesheet:
         :param image_path: A path to a jpeg or png image.
         :param align: Either ``left``, ``centered``, or ``right``. (default: ``left``).
 
-        Raises ``prawcore.TooLarge`` if the overall request body is too large.
+        :raises: ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.RedditAPIException` if there are other issues with the uploaded
-        image. Unfortunately the exception info might not be very specific, so try
-        through the website with the same image to see what the problem actually might
-        be.
+        :raises: :class:`.RedditAPIException` if there are other issues with the
+            uploaded image. Unfortunately the exception info might not be very specific,
+            so try through the website with the same image to see what the problem
+            actually might be.
 
         For example:
 
@@ -3503,12 +3506,12 @@ class SubredditStylesheet:
 
         Fails if the Subreddit does not have an additional image defined
 
-        Raises ``prawcore.TooLarge`` if the overall request body is too large.
+        :raises: ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.RedditAPIException` if there are other issues with the uploaded
-        image. Unfortunately the exception info might not be very specific, so try
-        through the website with the same image to see what the problem actually might
-        be.
+        :raises: :class:`.RedditAPIException` if there are other issues with the
+            uploaded image. Unfortunately the exception info might not be very specific,
+            so try through the website with the same image to see what the problem
+            actually might be.
 
         For example:
 
@@ -3529,12 +3532,12 @@ class SubredditStylesheet:
         :returns: A dictionary containing a link to the uploaded image under the key
             ``img_src``.
 
-        Raises ``prawcore.TooLarge`` if the overall request body is too large.
+        :raises: ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.RedditAPIException` if there are other issues with the uploaded
-        image. Unfortunately the exception info might not be very specific, so try
-        through the website with the same image to see what the problem actually might
-        be.
+        :raises: :class:`.RedditAPIException` if there are other issues with the
+            uploaded image. Unfortunately the exception info might not be very specific,
+            so try through the website with the same image to see what the problem
+            actually might be.
 
         For example:
 
@@ -3552,12 +3555,12 @@ class SubredditStylesheet:
         :returns: A dictionary containing a link to the uploaded image under the key
             ``img_src``.
 
-        Raises ``prawcore.TooLarge`` if the overall request body is too large.
+        :raises: ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.RedditAPIException` if there are other issues with the uploaded
-        image. Unfortunately the exception info might not be very specific, so try
-        through the website with the same image to see what the problem actually might
-        be.
+        :raises: :class:`.RedditAPIException` if there are other issues with the
+            uploaded image. Unfortunately the exception info might not be very specific,
+            so try through the website with the same image to see what the problem
+            actually might be.
 
         For example:
 
@@ -3575,12 +3578,12 @@ class SubredditStylesheet:
         :returns: A dictionary containing a link to the uploaded image under the key
             ``img_src``.
 
-        Raises ``prawcore.TooLarge`` if the overall request body is too large.
+        :raises: ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.RedditAPIException` if there are other issues with the uploaded
-        image. Unfortunately the exception info might not be very specific, so try
-        through the website with the same image to see what the problem actually might
-        be.
+        :raises: :class:`.RedditAPIException` if there are other issues with the
+            uploaded image. Unfortunately the exception info might not be very specific,
+            so try through the website with the same image to see what the problem
+            actually might be.
 
         For example:
 

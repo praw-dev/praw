@@ -179,7 +179,8 @@ class Collection(RedditBase):
             # causes Reddit to return something that looks like an error
             # but with no content.
             raise ClientException(
-                f"Error during fetch. Check collection ID {self.collection_id!r} is correct."
+                f"Error during fetch. Check collection ID {self.collection_id!r} is"
+                " correct."
             )
 
         other = type(self)(self._reddit, _data=data)

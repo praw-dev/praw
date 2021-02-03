@@ -3,7 +3,7 @@ from urllib.parse import quote_plus
 import praw
 
 QUESTIONS = ["what is", "who is", "what are"]
-REPLY_TEMPLATE = "[Let me google that for you](http://lmgtfy.com/?q={})"
+REPLY_TEMPLATE = "[Let me google that for you](https://lmgtfy.com/?q={})"
 
 
 def main():

@@ -189,7 +189,7 @@ redirect. For the implicit flow call :meth:`.url` like so:
 
 .. code-block:: python
 
-    print(reddit.auth.url(["identity"], "...", implicit=True)
+    print(reddit.auth.url(["identity"], "...", implicit=True))
 
 Then use :meth:`.implicit` to provide the authorization to the :class:`.Reddit`
 instance.

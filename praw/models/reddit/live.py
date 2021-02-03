@@ -773,11 +773,11 @@ class LiveUpdateContribution:
 
         Usage:
 
-         .. code-block:: python
+        .. code-block:: python
 
-             thread = reddit.live("ydwwxneu7vsa")
-             update = thread["6854605a-efec-11e6-b0c7-0eafac4ff094"]
-             update.contrib.remove()
+            thread = reddit.live("ydwwxneu7vsa")
+            update = thread["6854605a-efec-11e6-b0c7-0eafac4ff094"]
+            update.contrib.remove()
 
         """
         url = API_PATH["live_remove_update"].format(id=self.update.thread.id)
@@ -794,9 +794,12 @@ class LiveUpdateContribution:
             update.contrib.strike()
 
         To check whether the update is stricken or not, use ``update.stricken``
-        attribute. But note that accessing lazy attributes on updates
-        (includes ``update.stricken``) may raises ``AttributeError``.
-        See :class:`.LiveUpdate` for details.
+        attribute.
+
+        .. note::
+
+            Accessing lazy attributes on updates (includes ``update.stricken``) may
+            raise :py:class:`AttributeError`. See :class:`.LiveUpdate` for details.
 
         """
         url = API_PATH["live_strike"].format(id=self.update.thread.id)

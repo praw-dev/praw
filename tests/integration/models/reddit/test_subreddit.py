@@ -85,8 +85,7 @@ class WebsocketMockException:
             return dumps(
                 {
                     "payload": {
-                        "redirect": "https://reddit.com/r/<TEST_SUBREDDIT>/"
-                        "comments/abcdef/test_title/"
+                        "redirect": "https://reddit.com/r/<TEST_SUBREDDIT>/comments/abcdef/test_title/"
                     }
                 }
             )
@@ -500,13 +499,11 @@ class TestSubreddit(IntegrationTest):
             '<?xml version="1.0" encoding="UTF-8"?>'
             "<Error>"
             "<Code>EntityTooLarge</Code>"
-            "<Message>Your proposed upload exceeds the maximum "
-            "allowed size</Message>"
+            "<Message>Your proposed upload exceeds the maximum allowed size</Message>"
             "<ProposedSize>20971528</ProposedSize>"
             "<MaxSizeAllowed>20971520</MaxSizeAllowed>"
             "<RequestId>23F056D6990D87E0</RequestId>"
-            "<HostId>iYEVOuRfbLiKwMgHt2ewqQRIm0NWL79uiC2rPLj9P0PwW55"
-            "4MhjY2/O8d9JdKTf1iwzLjwWMnGQ=</HostId>"
+            "<HostId>iYEVOuRfbLiKwMgHt2ewqQRIm0NWL79uiC2rPLj9P0PwW554MhjY2/O8d9JdKTf1iwzLjwWMnGQ=</HostId>"
             "</Error>"
         )
         _post = reddit._core._requestor._http.post

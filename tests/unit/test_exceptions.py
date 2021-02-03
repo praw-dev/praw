@@ -48,8 +48,8 @@ class TestRedditErrorItem:
     def test_repr(self):
         error = RedditErrorItem("BAD_SOMETHING", "invalid something", "some_field")
         assert (
-            repr(error) == "RedditErrorItem(error_type='BAD_SOMETHING', message="
-            "'invalid something', field='some_field')"
+            repr(error)
+            == "RedditErrorItem(error_type='BAD_SOMETHING', message='invalid something', field='some_field')"
         )
 
 
@@ -100,8 +100,7 @@ class TestDuplicateReplaceException:
     def test_message(self):
         assert (
             str(DuplicateReplaceException())
-            == "A duplicate comment has been detected. Are you attempting to "
-            "call ``replace_more_comments`` more than once?"
+            == "A duplicate comment has been detected. Are you attempting to call ``replace_more_comments`` more than once?"
         )
 
 
@@ -112,8 +111,7 @@ class TestInvalidFlairTemplateID:
     def test_str(self):
         assert (
             str(InvalidFlairTemplateID("123"))
-            == "The flair template id ``123`` is invalid. If you are "
-            "trying to create a flair, please use the ``add`` method."
+            == "The flair template id ``123`` is invalid. If you are trying to create a flair, please use the ``add`` method."
         )
 
 
@@ -186,7 +184,5 @@ class TestMediaPostFailed:
     def test_message(self):
         assert (
             str(MediaPostFailed())
-            == "The attempted media upload action has failed. Possible causes"
-            " include the corruption of media files. Check that the media "
-            "file can be opened on your local machine."
+            == "The attempted media upload action has failed. Possible causes include the corruption of media files. Check that the media file can be opened on your local machine."
         )

@@ -32,12 +32,7 @@ class TestDeprecation(UnitTest):
             self.reddit.subreddit("test").rules()
         assert (
             excinfo.value.args[0]
-            == "Calling SubredditRules to get a list of rules is deprecated. "
-            "Remove the parentheses to use the iterator. View the "
-            "PRAW documentation on how to change the code in order to use the"
-            "iterator (https://praw.readthedocs.io/en/latest/code_overview"
-            "/other/subredditrules.html#praw.models.reddit.rules."
-            "SubredditRules.__call__)."
+            == "Calling SubredditRules to get a list of rules is deprecated. Remove the parentheses to use the iterator. View the PRAW documentation on how to change the code in order to use the iterator (https://praw.readthedocs.io/en/latest/code_overview/other/subredditrules.html#praw.models.reddit.rules.SubredditRules.__call__)."
         )
 
     def test_web_socket_exception_attribute(self):
@@ -46,9 +41,7 @@ class TestDeprecation(UnitTest):
             _ = exc.original_exception
         assert (
             excinfo.value.args[0]
-            == "Accessing the attribute original_exception is deprecated."
-            " Please rewrite your code in such a way that this attribute does "
-            "not need to be used. It will be removed in PRAW 8.0."
+            == "Accessing the attribute original_exception is deprecated. Please rewrite your code in such a way that this attribute does not need to be used. It will be removed in PRAW 8.0."
         )
 
     def test_gold_method(self):

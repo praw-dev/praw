@@ -95,8 +95,7 @@ class Reddit:
             self._core = self._read_only_core
         elif self._authorized_core is None:
             raise ClientException(
-                "read_only cannot be unset as only the "
-                "ReadOnlyAuthorizer is available."
+                "read_only cannot be unset as only the ReadOnlyAuthorizer is available."
             )
         else:
             self._core = self._authorized_core
@@ -114,7 +113,9 @@ class Reddit:
         value = self._validate_on_submit
         if value is False:
             warn(
-                "Reddit will check for validation on all posts around May-June 2020. It is recommended to check for validation by setting reddit.validate_on_submit to True.",
+                "Reddit will check for validation on all posts around May-June 2020. It"
+                " is recommended to check for validation by setting"
+                " reddit.validate_on_submit to True.",
                 category=DeprecationWarning,
                 stacklevel=3,
             )
@@ -207,12 +208,22 @@ class Reddit:
                 config_section, config_interpolation, **config_settings
             )
         except configparser.NoSectionError as exc:
-            help_message = "You provided the name of a praw.ini configuration which does not exist.\n\nFor help with creating a Reddit instance, visit\nhttps://praw.readthedocs.io/en/latest/code_overview/reddit_instance.html\n\nFor help on configuring PRAW, visit\nhttps://praw.readthedocs.io/en/latest/getting_started/configuration.html"
+            help_message = (
+                "You provided the name of a praw.ini configuration which does not"
+                " exist.\n\nFor help with creating a Reddit instance,"
+                " visit\nhttps://praw.readthedocs.io/en/latest/code_overview/reddit_instance.html\n\nFor"
+                " help on configuring PRAW,"
+                " visit\nhttps://praw.readthedocs.io/en/latest/getting_started/configuration.html"
+            )
             if site_name is not None:
                 exc.message += f"\n{help_message}"
             raise
 
-        required_message = "Required configuration setting {!r} missing. \nThis setting can be provided in a praw.ini file, as a keyword argument to the `Reddit` class constructor, or as an environment variable."
+        required_message = (
+            "Required configuration setting {!r} missing. \nThis setting can be"
+            " provided in a praw.ini file, as a keyword argument to the `Reddit` class"
+            " constructor, or as an environment variable."
+        )
         for attribute in ("client_id", "user_agent"):
             if getattr(self.config, attribute) in (self.config.CONFIG_NOT_SET, None):
                 raise MissingRequiredAttributeException(
@@ -220,7 +231,9 @@ class Reddit:
                 )
         if self.config.client_secret is self.config.CONFIG_NOT_SET:
             raise MissingRequiredAttributeException(
-                f"{required_message.format('client_secret')}\nFor installed applications this value must be set to None via a keyword argument to the `Reddit` class constructor."
+                f"{required_message.format('client_secret')}\nFor installed"
+                " applications this value must be set to None via a keyword argument"
+                " to the `Reddit` class constructor."
             )
 
         self._check_for_update()
@@ -230,8 +243,11 @@ class Reddit:
         self.auth = models.Auth(self, None)
         """An instance of :class:`.Auth`.
 
-        Provides the interface for interacting with installed and web applications. See
-        :ref:`auth_url`
+        Provides the interface for interacting with installed and web applications.
+
+        .. seealso::
+
+             :ref:`auth_url`
 
         """
 
@@ -314,7 +330,7 @@ class Reddit:
 
             reddit.subreddit("redditdev")
 
-        Note that multiple subreddits can be combined and filtered views of r/all can
+        Multiple subreddits can be combined and filtered views of r/all can
         also be used just like a subreddit:
 
         .. code-block:: python

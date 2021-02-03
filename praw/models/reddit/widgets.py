@@ -228,7 +228,7 @@ class SubredditWidgets(PRAWBase):
         widgets.progressive_images = True
         for widget in widgets.sidebar:
             # do something
-            pass
+            ...
 
     Access a subreddit's widgets with the following attributes:
 
@@ -446,7 +446,7 @@ class SubredditWidgetsModeration:
             Each button is either a text button or an image button. A text button looks
             like this:
 
-            .. code-block:: none
+            .. code-block:: text
 
                 {
                     "kind": "text",
@@ -460,7 +460,7 @@ class SubredditWidgetsModeration:
 
             An image button looks like this:
 
-            .. code-block:: none
+            .. code-block:: text
 
                 {
                     "kind": "image",
@@ -476,7 +476,7 @@ class SubredditWidgetsModeration:
             to be included (it is optional). If it is included, it can be one of two
             types: text or image. A text ``hoverState`` looks like this:
 
-            .. code-block:: none
+            .. code-block:: text
 
                 {
                     "kind": "text",
@@ -488,7 +488,7 @@ class SubredditWidgetsModeration:
 
             An image ``hoverState`` looks like this:
 
-            .. code-block:: none
+            .. code-block:: text
 
                {
                    "kind": "image",
@@ -806,7 +806,7 @@ class SubredditWidgetsModeration:
         :param data: A ``list`` of ``dict``\ s describing menu contents, as specified in
             `Reddit docs`_. As of this writing, the format is:
 
-            .. code-block:: none
+            .. code-block:: text
 
                 [
                     {
@@ -1002,8 +1002,8 @@ class Widget(PRAWBase):
         .. note::
 
             Using any of the methods of :class:`.WidgetModeration` will likely make the
-            data in the :class:`.SubredditWidgets` that this widget belongs to,
-            outdated. To remedy this, call :meth:`~.SubredditWidgets.refresh`.
+            data in the :class:`.SubredditWidgets` that this widget belongs to outdated.
+            To remedy this, call :meth:`~.SubredditWidgets.refresh`.
 
         """
         return WidgetModeration(self, self.subreddit, self._reddit)

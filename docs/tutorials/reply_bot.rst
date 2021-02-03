@@ -11,7 +11,7 @@ As a result, it is little surprise that a majority of bots on Reddit are powered
 PRAW.
 
 This tutorial will show you how to build a bot that monitors a particular subreddit,
-`/r/AskReddit <https://www.reddit.com/r/AskReddit/>`_, for new submissions containing
+`r/AskReddit <https://www.reddit.com/r/AskReddit/>`_, for new submissions containing
 simple questions and replies with an appropriate link to lmgtfy_ (Let Me Google That For
 You).
 
@@ -76,8 +76,8 @@ that registered the application are required.
     <https://github.com/reddit/reddit/wiki/oauth2-app-types>`_.
 
 
-Step 2: Monitoring New Submissions to /r/AskReddit
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Step 2: Monitoring New Submissions to r/AskReddit
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PRAW provides a convenient way to obtain new submissions to a given subreddit. To
 indefinitely iterate over new submissions to a subreddit add:
@@ -87,6 +87,7 @@ indefinitely iterate over new submissions to a subreddit add:
     subreddit = reddit.subreddit("AskReddit")
     for submission in subreddit.stream.submissions():
         # do something with submission
+        ...
 
 Replace ``AskReddit`` with the name of another subreddit if you want to iterate through
 its new submissions. Additionally multiple subreddits can be specified by joining them
@@ -96,7 +97,7 @@ specified using the special name ``all``.
 Step 3: Analyzing the Submission Titles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Now that we have a stream of new submissions to /r/AskReddit, it is time to see if their
+Now that we have a stream of new submissions to r/AskReddit, it is time to see if their
 titles contain a simple question. We naïvely define a simple question as:
 
 1. It must contain no more than ten words.
@@ -114,7 +115,7 @@ First we filter out titles that contain more than ten words:
 .. code-block:: python
 
    if len(submission.title.split()) > 10:
-           return
+       return
 
 We then check to see if the submission's title contains any of the desired phrases:
 

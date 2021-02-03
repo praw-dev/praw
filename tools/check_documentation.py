@@ -56,7 +56,8 @@ class DocumentationChecker:
                 continue
             if not cls.HAS_ATTRIBUTE_TABLE.search(subclass.__doc__):
                 print(
-                    f"Subclass {subclass.__module__}.{subclass.__name__} is missing a table of common attributes."
+                    f"Subclass {subclass.__module__}.{subclass.__name__} is missing a"
+                    " table of common attributes."
                 )
                 success = False
             for method_name in dir(subclass):
@@ -71,11 +72,15 @@ class DocumentationChecker:
                     if cls.HAS_CODE_BLOCK.search(method.__doc__):
                         if cls.CODE_BLOCK_IMPROPER_INDENT.search(method.__doc__):
                             print(
-                                f"Code block for method {subclass.__module__}.{subclass.__name__}.{method.__name__} is improperly indented."
+                                "Code block for method"
+                                f" {subclass.__module__}.{subclass.__name__}.{method.__name__}"
+                                " is improperly indented."
                             )
                     else:
                         print(
-                            f"Method {subclass.__module__}.{subclass.__name__}.{method.__name__} is missing code examples."
+                            "Method"
+                            f" {subclass.__module__}.{subclass.__name__}.{method.__name__}"
+                            " is missing code examples."
                         )
                         success = False
         return success

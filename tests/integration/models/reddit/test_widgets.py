@@ -226,8 +226,8 @@ class TestCalendar(IntegrationTest):
             assert isinstance(widget, Calendar)
             assert widget.shortName == "Upcoming Events"
             assert (
-                widget.googleCalendarId == "ccahu0rstno2jrvioq4ccffn78@"
-                "group.calendar.google.com"
+                widget.googleCalendarId
+                == "ccahu0rstno2jrvioq4ccffn78@group.calendar.google.com"
             )
             assert widget.configuration == config
             assert widget.styles == styles
@@ -237,8 +237,8 @@ class TestCalendar(IntegrationTest):
             assert isinstance(widget, Calendar)
             assert widget.shortName == "Past Events :("
             assert (
-                widget.googleCalendarId == "ccahu0rstno2jrvioq4ccffn78@"
-                "group.calendar.google.com"
+                widget.googleCalendarId
+                == "ccahu0rstno2jrvioq4ccffn78@group.calendar.google.com"
             )
             assert widget.configuration == config
             assert widget.styles == styles

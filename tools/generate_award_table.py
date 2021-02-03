@@ -134,8 +134,10 @@ def main():
         action="store",
         choices=["a", "g", "s", "m"],
         default="g",
-        help="One of ``a`` for all, ``g`` for global, ``s`` for subreddit, or ``m`` "
-        "for moderator. Determines the types of awards to give. (default: g)",
+        help=(
+            "One of ``a`` for all, ``g`` for global, ``s`` for subreddit, or ``m`` for"
+            " moderator. Determines the types of awards to give. (default: g)"
+        ),
     )
     parser.add_argument(
         "-f",
@@ -150,8 +152,10 @@ def main():
         "--client_id",
         action="store",
         default=None,
-        help="Used to fetch the awards. Must be a 1st party client id. Note: If this "
-        "is passed [thing] and [subreddit] must be provided.",
+        help=(
+            "Used to fetch the awards. Must be a 1st party client id. Note: If this is"
+            " passed [thing] and [subreddit] must be provided."
+        ),
     )
     parser.add_argument(
         "-r",
@@ -165,25 +169,31 @@ def main():
         "--thing",
         action="store",
         default=None,
-        help="A submission or comment fullname. Must be used in conjunction with "
-        "[client_id].",
+        help=(
+            "A submission or comment fullname. Must be used in conjunction with"
+            " [client_id]."
+        ),
     )
     parser.add_argument(
         "-l",
         "--load_file",
         action="store",
         default=None,
-        help="Load award json from file. This is useful if you grab the JSON response "
-        "from a browser request. Can not be used with [client_id]. If not provided "
-        "[client_id] and [thing] is required.",
+        help=(
+            "Load award json from file. This is useful if you grab the JSON response"
+            " from a browser request. Can not be used with [client_id]. If not provided"
+            " [client_id] and [thing] is required."
+        ),
     )
     parser.add_argument(
         "-o",
         "--out_file",
         action="store",
         default=None,
-        help="File to write the formatted. If not provided output will be written to "
-        "STDOUT.",
+        help=(
+            "File to write the formatted. If not provided output will be written to"
+            " STDOUT."
+        ),
     )
     args = parser.parse_args()
     award_type = args.type
@@ -217,9 +227,8 @@ def main():
     if output_format == "j":
         if load_file:
             print(
-                "Uh...there's nothing to do if "
-                "you want output the loaded JSON "
-                "from 'load_file' as JSON"
+                "Uh...there's nothing to do if you want output the loaded JSON from"
+                " 'load_file' as JSON"
             )
             return
         final_content = dumps(award_json, ident=4)
@@ -241,7 +250,7 @@ def main():
             disable_numparse=True,
         )
         final_content = (
-            f"This is a list of known global awards (as of "
+            "This is a list of known global awards (as of "
             f"{datetime.today().strftime('%m/%d/%Y')})\n\n{table}"
         )
     if out_file is None:

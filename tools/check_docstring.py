@@ -40,7 +40,9 @@ class Visitor(docutils.nodes.NodeVisitor):
             needsReformatted = formatted != f"{node.rawsource}\n"
             if needsReformatted:
                 print(
-                    f"{current_file}:{current.lineno} Object: {current.name} at line {current.lineno}:\n{node.rawsource}\n\nNeeds reformatted to:\n\n{formatted}"
+                    f"{current_file}:{current.lineno} Object: {current.name} at line"
+                    f" {current.lineno}:\n{node.rawsource}\n\nNeeds reformatted"
+                    f" to:\n\n{formatted}"
                 )
                 failed = True
 

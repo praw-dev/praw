@@ -79,11 +79,11 @@ information). For example:
 
     import praw
 
-     reddit = praw.Reddit(
-         client_id="my client id",
-         client_secret="my client secret",
-         user_agent="my user agent"
-     )
+    reddit = praw.Reddit(
+        client_id="my client id",
+        client_secret="my client secret",
+        user_agent="my user agent"
+    )
 
 Just like that, you now have a read-only  :class:`.Reddit` instance.
 

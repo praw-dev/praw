@@ -10,7 +10,7 @@ class ReportableMixin:
 
         :param reason: The reason for reporting.
 
-        :raises :class:`.RedditAPIException` if ``reason`` is longer than 100
+        :raises: :class:`.RedditAPIException` if ``reason`` is longer than 100
             characters.
 
         Example usage:

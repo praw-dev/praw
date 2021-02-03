@@ -108,7 +108,7 @@ class PollData(PRAWBase):
         :param option_id: The ID of a poll option, as a ``str``.
         :returns: The specified :class:`.PollOption`.
 
-        Raises ``KeyError`` if no option exists with the specified ID.
+        :raises: :py:class:`KeyError` if no option exists with the specified ID.
 
         """
         for option in self.options:
