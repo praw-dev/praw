@@ -1740,15 +1740,6 @@ class TestSubredditRelationships(IntegrationTest):
                 assert isinstance(moderator, Redditor)
 
     @mock.patch("time.sleep", return_value=None)
-    def test_moderator_invited_moderators__fetch_all(self, _):
-        self.reddit.read_only = False
-        with self.use_cassette():
-            invited = self.subreddit.moderator.invited(fetch_all=True)
-            assert isinstance(invited, list)
-            for moderator in invited:
-                assert isinstance(moderator, Redditor)
-
-    @mock.patch("time.sleep", return_value=None)
     def test_moderator_leave(self, _):
         self.reddit.read_only = False
         with self.use_cassette():
