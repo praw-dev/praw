@@ -1,8 +1,7 @@
-default_language_version:
-  python: python3.7
 fail_fast: true
 repos:
-  - hooks:
-      - id: black
-    repo: https://github.com/ambv/black
-    rev: stable
+- hooks:
+  - id: black
+    language_version: python3
+  repo: https://github.com/psf/black
+  rev: stable
