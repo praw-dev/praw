@@ -369,7 +369,7 @@ class Reddit:
     def _check_for_async(self):
         if self.config.check_for_async:
             in_async = False
-            if sys.version_info >= (3, 7, 0):
+            if sys.version_info >= (3, 7, 0):  # pragma: no cover
                 try:
                     asyncio.get_running_loop()
                     in_async = True
