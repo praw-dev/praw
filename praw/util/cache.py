@@ -13,7 +13,7 @@ class cachedproperty:
     This is useful for implementing lazy-loaded properties.
 
     The cache can be invalidated via `delattr()`, or by modifying `__dict__` directly.
-    directly. It will be repopulated on next access.
+    It will be repopulated on next access.
 
     .. versionadded:: 6.3.0
 

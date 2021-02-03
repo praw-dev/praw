@@ -27,8 +27,8 @@ class StaticChecker:
         """Checks the code for ``.. code::`` statements.
 
         :param filename: The name of the file to check & replace.
-        :param content: The content of the file
-        :returns: A boolean with the status of the check
+        :param content: The content of the file.
+        :returns: A boolean with the status of the check.
         """
         if ".. code::" in content:
             new_content = content.replace(".. code::", ".. code-block::")
@@ -48,8 +48,8 @@ class StaticChecker:
         """Checks a file for double-slash statements (``/r/`` and ``/u/``).
 
         :param filename: The name of the file to check & replace.
-        :param content: The content of the file
-        :returns: A boolean with the status of the check
+        :param content: The content of the file.
+        :returns: A boolean with the status of the check.
 
         """
         if os.path.join("praw", "const.py") in filename:  # fails due to bytes blocks
@@ -77,9 +77,9 @@ class StaticChecker:
         """Checks a line for ``NoReturn`` statements.
 
         :param filename: The name of the file to check & replace.
-        :param line_number: The line number
-        :param content: The content of the line
-        :returns: A boolean with the status of the check
+        :param line_number: The line number.
+        :param content: The content of the line.
+        :returns: A boolean with the status of the check.
 
         """
         if "noreturn" in content.lower():

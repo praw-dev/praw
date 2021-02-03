@@ -243,10 +243,10 @@ class Reddit:
         self.auth = models.Auth(self, None)
         """An instance of :class:`.Auth`.
 
-        Provides the interface for interacting with installed and web applications. 
-        
+        Provides the interface for interacting with installed and web applications.
+
         .. seealso::
-             
+
              :ref:`auth_url`
 
         """

@@ -1902,7 +1902,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         """Add a Redditor flair template to the associated subreddit.
 
         :param text: The flair template's text (required).
-        :param css_class: The flair template's css_class ((default: "")).
+        :param css_class: The flair template's css_class (default: "").
         :param text_editable: (boolean) Indicate if the flair text can be modified for
             each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color, as a hex

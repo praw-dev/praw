@@ -1002,8 +1002,8 @@ class Widget(PRAWBase):
         .. note::
 
             Using any of the methods of :class:`.WidgetModeration` will likely make the
-            data in the :class:`.SubredditWidgets` that this widget belongs to,
-            outdated. To remedy this, call :meth:`~.SubredditWidgets.refresh`.
+            data in the :class:`.SubredditWidgets` that this widget belongs to outdated.
+            To remedy this, call :meth:`~.SubredditWidgets.refresh`.
 
         """
         return WidgetModeration(self, self.subreddit, self._reddit)
