@@ -367,15 +367,21 @@ class Reddit:
         """
 
     def _check_for_async(self):
-        if self.config.check_for_async:
+        if self.config.check_for_async:  # pragma: no cover
+            try:
+                shell = get_ipython().__class__.__name__
+                if shell == "ZMQInteractiveShell":
+                    return
+            except NameError:
+                pass
             in_async = False
-            if sys.version_info >= (3, 7, 0):  # pragma: no cover
+            if sys.version_info >= (3, 7, 0):
                 try:
                     asyncio.get_running_loop()
                     in_async = True
                 except RuntimeError:
                     pass
-            else:  # pragma: no cover # not able to be covered in > Python 3.6.12
+            else:
                 in_async = asyncio.get_event_loop().is_running()
             if in_async:
                 logger.warning(
