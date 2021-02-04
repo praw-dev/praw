@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Changed**
+
+* Asynchronous check will no longer occur when in a Jupyter notebook.
+
 7.1.2 (2021/02/03)
 ------------------
 
