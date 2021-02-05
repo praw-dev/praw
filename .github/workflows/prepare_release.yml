@@ -1,0 +1,13 @@
+jobs:
+  prepare_release:
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo ${{ github.event.inputs.version }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The version to release'
+        required: true
