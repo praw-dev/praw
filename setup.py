@@ -15,7 +15,7 @@ with open(path.join(HERE, PACKAGE_NAME, "const.py"), encoding="utf-8") as fp:
 
 extras = {
     "ci": ["coveralls"],
-    "dev": ["pre-commit"],
+    "dev": ["packaging", "pre-commit"],
     "lint": [
         "black",
         "flake8",
