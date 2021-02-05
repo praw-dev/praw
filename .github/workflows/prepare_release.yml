@@ -2,12 +2,19 @@ jobs:
   prepare_release:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
     - run: |
-        echo ${{ github.event.inputs.version }}
+        tools/set_version.py ${{ github.event.inputs.version }}
+        git commit -am "Bump to version ${{ github.event.inputs.version }}"
+        git push origin prepare_release
 
+name: Prepare Release
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'The version to release'
+        description: 'The version to prepare for release'
         required: true
