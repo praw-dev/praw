@@ -1,15 +1,23 @@
 jobs:
   prepare_release:
     runs-on: ubuntu-latest
+    name: Prepare Release v${{ github.event.inputs.version }}
     steps:
     - uses: actions/checkout@v2
+      with:
+        ssh-key: ${{ secrets.SSH_DEPLOY_KEY }}
     - uses: actions/setup-python@v2
       with:
         python-version: 3.x
-    - run: |
-        tools/set_version.py ${{ github.event.inputs.version }}
-        git commit -am "Bump to version ${{ github.event.inputs.version }}"
-        git push origin prepare_release
+    - name: Set Version ${{ github.event.inputs.version }}
+      run: tools/set_version.py ${{ github.event.inputs.version }}
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v3
+      with:
+        body:
+        branch: prepare_release_v${{ github.event.inputs.version }}
+        commit-message: Bump to v${{ github.event.inputs.version }}
+        title: Release v${{ github.event.inputs.version }}
 
 name: Prepare Release
 on:
