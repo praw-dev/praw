@@ -9,15 +9,29 @@ jobs:
     - uses: actions/setup-python@v2
       with:
         python-version: 3.x
-    - name: Set Version ${{ github.event.inputs.version }}
-      run: tools/set_version.py ${{ github.event.inputs.version }}
+    - name: Install dependencies
+      run: pip install packaging
+    - name: Prepare Git Variables
+      run: |
+        git config --global author.email ${{ github.actor }}@users.noreply.github.com
+        git config --global author.name ${{ github.actor }}
+        git config --global committer.email noreply@github.com
+        git config --global committer.name GitHub
+    - name: Set desired version
+      run: echo "version=$(tools/set_version.py ${{ github.event.inputs.version }})" >> $GITHUB_ENV
+    - name: Commit desired version
+      run: git commit -am "Bump to v${{ env.version }}"
+    - name: Set development version
+      run: echo "dev_version=$(tools/set_version.py Unreleased)" >> $GITHUB_ENV
+    - name: Commit development version
+      run: git commit -am "Set development version v${{ env.dev_version }}"
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v3
       with:
         body:
-        branch: prepare_release_v${{ github.event.inputs.version }}
-        commit-message: Bump to v${{ github.event.inputs.version }}
-        title: Release v${{ github.event.inputs.version }}
+        branch: prepare_release_v${{ env.version }}
+        draft: false
+        title: Release v${{ env.version }}
 
 name: Prepare Release
 on:
