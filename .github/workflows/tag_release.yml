@@ -29,7 +29,7 @@ jobs:
         body: |
           [Changelog](https://praw.readthedocs.io/en/v${{ env.version }}/package_info/change_log.html#id1)
         commitish: ${{ env.commit }}
-        draft: true
+        draft: false
         prerelease: ${{ env.is_prerelease == '1' }}
         release_name: v${{ env.version }}
         tag_name: v${{ env.version }}
