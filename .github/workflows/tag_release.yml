@@ -10,12 +10,12 @@ jobs:
     - uses: actions/setup-python@v2
       with:
         python-version: 3.x
-    run: |
-      git log
+      run: |
+        git checkout HEAD^2^
+        git show
 name: Prepare Release
 on:
   push:
     branches:
-      - master
       - release_test
 
