@@ -1,7 +1,7 @@
 jobs:
   prepare_release:
-    runs-on: ubuntu-latest
     name: Prepare Release v${{ github.event.inputs.version }}
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
