@@ -1,6 +1,6 @@
 jobs:
   release_tag:
-    if: "startsWith(github.event.head_commit.message, 'Merge pull request #') && contains(github.event.head_commit.message, ' from praw/prepare_release_v')"
+    if: "startsWith(github.event.head_commit.message, 'Merge pull request #') && contains(github.event.head_commit.message, ' from praw-dev/prepare_release_v')"
     name: Tag Release
     runs-on: ubuntu-latest
     steps:

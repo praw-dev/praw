@@ -27,6 +27,7 @@ jobs:
       run: |
         tools/set_version.py Unreleased > tmp_version
         echo "dev_version=$(cat tmp_version)" >> $GITHUB_ENV
+        rm tmp_version
     - name: Commit development version
       run: git commit -am "Set development version v${{ env.dev_version }}"
     - name: Create Pull Request
