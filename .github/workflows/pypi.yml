@@ -21,4 +21,4 @@ jobs:
 name: Upload Python Package
 on:
   release:
-    types: [created]
+    types: [created, published]
