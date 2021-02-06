@@ -1,0 +1,42 @@
+jobs:
+  release_tag:
+    if: "startsWith(github.event.head_commit.message, 'Merge pull request #') && contains(github.event.head_commit.message, ' from praw/prepare_release_v')"
+    name: Tag Release
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 3
+        ssh-key: ${{ secrets.SSH_DEPLOY_KEY }}
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+    - name: Install dependencies
+      run: pip install packaging
+    - name: Extract Version
+      run: |
+        git checkout HEAD^2^
+        echo "commit=$(git rev-parse HEAD)" >> $GITHUB_ENV
+        git log --format=%B -n 1 | ./tools/bump_version.py > tmp_version
+        echo "version=$(cat tmp_version)" >> $GITHUB_ENV
+        cat tmp_version | python -c 'import sys; from packaging import version; print(int(version.Version(sys.stdin.readline()).is_prerelease))' > tmp_is_prerelease
+        echo "is_prerelease=$(cat tmp_is_prerelease)" >> $GITHUB_ENV
+    - env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      name: Create GitHub Release
+      uses: actions/create-release@v1
+      with:
+        body: |
+          [Changelog](https://praw.readthedocs.io/en/v${{ env.version }}/package_info/change_log.html#id1)
+        commitish: ${{ env.commit }}
+        draft: true
+        prerelease: ${{ env.is_prerelease == '1' }}
+        release_name: v${{ env.version }}
+        tag_name: v${{ env.version }}
+name: Tag Release
+on:
+  push:
+    branches:
+      - master
+      - release_test
+

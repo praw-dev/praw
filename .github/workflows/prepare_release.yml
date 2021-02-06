@@ -1,7 +1,7 @@
 jobs:
   prepare_release:
-    runs-on: ubuntu-latest
     name: Prepare Release v${{ github.event.inputs.version }}
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
@@ -18,11 +18,15 @@ jobs:
         git config --global committer.email noreply@github.com
         git config --global committer.name GitHub
     - name: Set desired version
-      run: echo "version=$(tools/set_version.py ${{ github.event.inputs.version }})" >> $GITHUB_ENV
+      run: |
+        tools/set_version.py ${{ github.event.inputs.version }} > tmp_version
+        echo "version=$(cat tmp_version)" >> $GITHUB_ENV
     - name: Commit desired version
       run: git commit -am "Bump to v${{ env.version }}"
     - name: Set development version
-      run: echo "dev_version=$(tools/set_version.py Unreleased)" >> $GITHUB_ENV
+      run: |
+        tools/set_version.py Unreleased > tmp_version
+        echo "dev_version=$(cat tmp_version)" >> $GITHUB_ENV
     - name: Commit development version
       run: git commit -am "Set development version v${{ env.dev_version }}"
     - name: Create Pull Request
