@@ -375,14 +375,14 @@ class Reddit:
             except NameError:
                 pass
             in_async = False
-            if sys.version_info >= (3, 7, 0):
-                try:
+            try:
+                if sys.version_info >= (3, 7, 0):
                     asyncio.get_running_loop()
                     in_async = True
-                except RuntimeError:
-                    pass
-            else:
-                in_async = asyncio.get_event_loop().is_running()
+                else:
+                    in_async = asyncio.get_event_loop().is_running()
+            except Exception:  # Quietly fail if any exception occurs during the check
+                pass
             if in_async:
                 logger.warning(
                     "It appears that you are using PRAW in an asynchronous"
