@@ -157,7 +157,7 @@ class Reddit:
 
         Additional keyword arguments will be used to initialize the :class:`.Config`
         object. This can be used to specify configuration settings during instantiation
-        of the :class:`.Reddit` instance. For more details please see
+        of the :class:`.Reddit` instance. For more details, please see
         :ref:`configuration`.
 
         Required settings are:
@@ -268,7 +268,7 @@ class Reddit:
         """An instance of :class:`.Inbox`.
 
         Provides the interface to a user's inbox which produces :class:`.Message`,
-        :class:`.Comment`, and :class:`.Submission` instances. For example to iterate
+        :class:`.Comment`, and :class:`.Submission` instances. For example, to iterate
         through comments which mention the authorized user run:
 
         .. code-block:: python
@@ -305,7 +305,7 @@ class Reddit:
         self.redditors = models.Redditors(self, None)
         """An instance of :class:`.Redditors`.
 
-        Provides the interface for Redditor discovery. For example to iterate over the
+        Provides the interface for Redditor discovery. For example, to iterate over the
         newest Redditors, run:
 
         .. code-block:: python
@@ -344,7 +344,7 @@ class Reddit:
         self.subreddits = models.Subreddits(self, None)
         """An instance of :class:`.Subreddits`.
 
-        Provides the interface for :class:`.Subreddit` discovery. For example to iterate
+        Provides the interface for :class:`.Subreddit` discovery. For example, to iterate
         over the set of default subreddits run:
 
         .. code-block:: python
@@ -495,10 +495,9 @@ class Reddit:
         id: Optional[str] = None,  # pylint: disable=redefined-builtin
         url: Optional[str] = None,
     ):
-        """Return a lazy instance of :class:`~.Comment` for ``id``.
+        """Return a lazy instance of :class:`~.Comment`.
 
         :param id: The ID of the comment.
-
         :param url: A permalink pointing to the comment.
 
         .. note::

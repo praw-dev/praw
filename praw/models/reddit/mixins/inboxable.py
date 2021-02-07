@@ -30,7 +30,9 @@ class InboxableMixin:
     def collapse(self):
         """Mark the item as collapsed.
 
-        This method pertains only to objects which were retrieved via the inbox.
+        .. note::
+
+            This method pertains only to objects which were retrieved via the inbox.
 
         Example usage:
 

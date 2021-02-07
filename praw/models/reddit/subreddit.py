@@ -86,7 +86,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     ========================== =========================================================
     ``can_assign_link_flair``  Whether users can assign their own link flair.
     ``can_assign_user_flair``  Whether users can assign their own user flair.
-    ``created_utc``            Time the subreddit was created, represented in`Unix
+    ``created_utc``            Time the subreddit was created, represented in `Unix
                                Time`_.
     ``description``            Subreddit description, in Markdown.
     ``description_html``       Subreddit description, in HTML.
@@ -230,7 +230,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def banned(self):
         """Provide an instance of :class:`.SubredditRelationship`.
 
-        For example to ban a user try:
+        For example, to ban a user try:
 
         .. code-block:: python
 
@@ -328,9 +328,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def flair(self):
         """Provide an instance of :class:`.SubredditFlair`.
 
-        Use this attribute for interacting with a subreddit's flair. For example to list
-        all the flair for a subreddit which you have the ``flair`` moderator permission
-        on try:
+        Use this attribute for interacting with a subreddit's flair. For example, to
+        list all the flair for a subreddit which you have the ``flair`` moderator
+        permission on try:
 
         .. code-block:: python
 
@@ -364,7 +364,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def moderator(self):
         """Provide an instance of :class:`.ModeratorRelationship`.
 
-        For example to add a moderator try:
+        For example, to add a moderator try:
 
         .. code-block:: python
 
@@ -786,7 +786,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         For more information on building a search query see:
         https://www.reddit.com/wiki/search
 
-        For example to search all subreddits for ``praw`` try:
+        For example, to search all subreddits for ``praw`` try:
 
         .. code-block:: python
 
@@ -853,8 +853,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :param selftext: The Markdown formatted content for a ``text`` submission. Use
             an empty string, ``""``, to make a title-only submission.
         :param url: The URL for a ``link`` submission.
-        :param collection_id: The UUID of a :class:`.Collection` to add the newly-
-            submitted post to.
+        :param collection_id: The UUID of a :class:`.Collection` to add the
+            newly-submitted post to.
         :param flair_id: The flair template to select (default: None).
         :param flair_text: If the template's ``flair_text_editable`` value is True, this
             value will set a custom text (default: None).
@@ -874,7 +874,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         Either ``selftext`` or ``url`` can be provided, but not both.
 
-        For example to submit a URL to ``r/reddit_api_test`` do:
+        For example, to submit a URL to ``r/reddit_api_test`` do:
 
         .. code-block:: python
 
@@ -882,7 +882,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             url = 'https://praw.readthedocs.io'
             reddit.subreddit("reddit_api_test").submit(title, url=url)
 
-        For example to submit a self post with inline media do:
+        For example, to submit a self post with inline media do:
 
         .. code-block:: python
 
@@ -897,9 +897,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. note::
 
-            Inserted media will have a padding of ``\\n\\n`` automatically added. This due
-            to the weirdness with Reddit's API. Using the example above, the result
-            selftext body will look like so:
+            Inserted media will have a padding of ``\\n\\n`` automatically added. This
+            is due to the weirdness with Reddit's API. Using the example above, the
+            result selftext body will look like so:
 
             .. code-block::
 
@@ -982,8 +982,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :param images: The images to post in dict with the following structure:
             ``{"image_path": "path", "caption": "caption", "outbound_url": "url"}``,
             only ``"image_path"`` is required.
-        :param collection_id: The UUID of a :class:`.Collection` to add the newly-
-            submitted post to.
+        :param collection_id: The UUID of a :class:`.Collection` to add the
+            newly-submitted post to.
         :param discussion_type: Set to ``CHAT`` to enable live discussion instead of
             traditional comments (default: None).
         :param flair_id: The flair template to select (default: None).
@@ -1000,7 +1000,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :raises: :class:`.ClientException` if ``image_path`` in ``images`` refers to a
             file that is not an image.
 
-        For example to submit an image gallery to ``r/reddit_api_test`` do:
+        For example, to submit an image gallery to ``r/reddit_api_test`` do:
 
         .. code-block:: python
 
@@ -1089,8 +1089,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         :param title: The title of the submission.
         :param image_path: The path to an image, to upload and post.
-        :param collection_id: The UUID of a :class:`.Collection` to add the newly-
-            submitted post to.
+        :param collection_id: The UUID of a :class:`.Collection` to add the
+            newly-submitted post to.
         :param flair_id: The flair template to select (default: None).
         :param flair_text: If the template's ``flair_text_editable`` value is True, this
             value will set a custom text (default: None).
@@ -1128,7 +1128,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             may wish to do this if you are running your program in a restricted network
             environment, or using a proxy that doesn't support WebSockets connections.
 
-        For example to submit an image to ``r/reddit_api_test`` do:
+        For example, to submit an image to ``r/reddit_api_test`` do:
 
         .. code-block:: python
 
@@ -1196,8 +1196,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :param options: A ``list`` of two to six poll options as ``str``.
         :param duration: The number of days the poll should accept votes, as an ``int``.
             Valid values are between ``1`` and ``7``, inclusive.
-        :param collection_id: The UUID of a :class:`.Collection` to add the newly-
-            submitted post to.
+        :param collection_id: The UUID of a :class:`.Collection` to add the
+            newly-submitted post to.
         :param flair_id: The flair template to select (default: None).
         :param flair_text: If the template's ``flair_text_editable`` value is True, this
             value will set a custom text (default: None).
@@ -1213,7 +1213,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             traditional comments (default: None).
         :returns: A :class:`~.Submission` object for the newly created submission.
 
-        For example to submit a poll to ``r/reddit_api_test`` do:
+        For example, to submit a poll to ``r/reddit_api_test`` do:
 
         .. code-block:: python
 
@@ -1272,8 +1272,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :param thumbnail_path: (Optional) The path to an image, to be uploaded and used
             as the thumbnail for this video. If not provided, the PRAW logo will be used
             as the thumbnail.
-        :param collection_id: The UUID of a :class:`.Collection` to add the newly-
-            submitted post to.
+        :param collection_id: The UUID of a :class:`.Collection` to add the
+            newly-submitted post to.
         :param flair_id: The flair template to select (default: ``None``).
         :param flair_text: If the template's ``flair_text_editable`` value is True, this
             value will set a custom text (default: ``None``).
@@ -1311,7 +1311,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             may wish to do this if you are running your program in a restricted network
             environment, or using a proxy that doesn't support WebSockets connections.
 
-        For example to submit a video to ``r/reddit_api_test`` do:
+        For example, to submit a video to ``r/reddit_api_test`` do:
 
         .. code-block:: python
 
@@ -1686,12 +1686,12 @@ class SubredditFlair:
             ``flair_text``, or ``flair_css_class`` attributes the default values will
             come from the the following arguments.
         :param text: The flair text to use when not explicitly provided in
-            ``flair_list`` ((default: "")).
+            ``flair_list`` (default: "").
         :param css_class: The css class to use when not explicitly provided in
-            ``flair_list`` ((default: "")).
+            ``flair_list`` (default: "").
         :returns: List of dictionaries indicating the success or failure of each update.
 
-        For example to clear the flair text, and set the ``praw`` flair css class on a
+        For example, to clear the flair text, and set the ``praw`` flair css class on a
         few users try:
 
         .. code-block:: python
@@ -1811,7 +1811,7 @@ class SubredditFlairTemplates:
         :param template_id: The flair template to update. If not valid then an exception
             will be thrown.
         :param text: The flair template's new text (required).
-        :param css_class: The flair template's new css_class ((default: "")).
+        :param css_class: The flair template's new css_class (default: "").
         :param text_editable: (boolean) Indicate if the flair text can be modified for
             each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color, as a hex
@@ -1821,7 +1821,8 @@ class SubredditFlairTemplates:
         :param mod_only: (boolean) Indicate if the flair can only be used by moderators.
         :param allowable_content: If specified, most be one of ``"all"``, ``"emoji"``,
             or ``"text"`` to restrict content to that type. If set to ``"emoji"`` then
-            the ``"text"`` param must be a valid emoji string, for example ``":snoo:"``.
+            the ``"text"`` param must be a valid emoji string, for example,
+            ``":snoo:"``.
         :param max_emojis: (int) Maximum emojis in the flair (Reddit defaults this value
             to 10).
         :param fetch: Whether or not PRAW will fetch existing information on the
@@ -1832,7 +1833,7 @@ class SubredditFlairTemplates:
             If parameter ``fetch`` is set to ``False``, all parameters not provided will
             be reset to default (``None`` or ``False``) values.
 
-        For example to make a user flair template text_editable, try:
+        For example, to make a user flair template text_editable, try:
 
         .. code-block:: python
 
@@ -1912,7 +1913,8 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         :param mod_only: (boolean) Indicate if the flair can only be used by moderators.
         :param allowable_content: If specified, most be one of ``"all"``, ``"emoji"``,
             or ``"text"`` to restrict content to that type. If set to ``"emoji"`` then
-            the ``"text"`` param must be a valid emoji string, for example ``":snoo:"``.
+            the ``"text"`` param must be a valid emoji string, for example,
+            ``":snoo:"``.
         :param max_emojis: (int) Maximum emojis in the flair (Reddit defaults this value
             to 10).
 
@@ -1980,7 +1982,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         """Add a link flair template to the associated subreddit.
 
         :param text: The flair template's text (required).
-        :param css_class: The flair template's css_class ((default: "")).
+        :param css_class: The flair template's css_class (default: "").
         :param text_editable: (boolean) Indicate if the flair text can be modified for
             each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color, as a hex
@@ -1990,7 +1992,8 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         :param mod_only: (boolean) Indicate if the flair can only be used by moderators.
         :param allowable_content: If specified, most be one of ``"all"``, ``"emoji"``,
             or ``"text"`` to restrict content to that type. If set to ``"emoji"`` then
-            the ``"text"`` param must be a valid emoji string, for example ``":snoo:"``.
+            the ``"text"`` param must be a valid emoji string, for example,
+            ``":snoo:"``.
         :param max_emojis: (int) Maximum emojis in the flair (Reddit defaults this value
             to 10).
 
@@ -2331,8 +2334,8 @@ class SubredditModeration:
         :param free_form_reports: Allow users to specify custom reasons in the report
             menu.
         :param header-title: The text seen when hovering over the snoo.
-        :param hide_ads: Don't show ads within this subreddit. Only applies to Premium-
-            user only subreddits.
+        :param hide_ads: Don't show ads within this subreddit. Only applies to
+            Premium-user only subreddits.
         :param key_color: A 6-digit rgb hex color (e.g. ``"#AABBCC"``), used as a
             thematic color for your subreddit on mobile.
         :param lang: A valid IETF language tag (underscore separated).
@@ -2381,7 +2384,7 @@ class SubredditModeration:
 
         Settings that are documented here and aren't explicitly set by you in a call to
         :meth:`.SubredditModeration.update` should retain their current value. If they
-        do not please file a bug.
+        do not, please file a bug.
 
         """
         settings["sr"] = self.subreddit.fullname
@@ -3035,8 +3038,8 @@ class Modmail:
 
         :param after: A base36 modmail conversation id. When provided, the listing
             begins after this conversation (default: None).
-        :param limit: The maximum number of conversations to fetch. If None, the server-
-            side default is 25 at the time of writing (default: None).
+        :param limit: The maximum number of conversations to fetch. If None, the
+            server-side default is 25 at the time of writing (default: None).
         :param other_subreddits: A list of :class:`.Subreddit` instances for which to
             fetch conversations (default: None).
         :param sort: Can be one of: mod, recent, unread, user (default: recent).
@@ -3196,7 +3199,7 @@ class SubredditStream:
             While PRAW tries to catch all new submissions, some high-volume streams,
             especially the r/all stream, may drop some submissions.
 
-        For example to retrieve all new submissions made to all of Reddit, try:
+        For example, to retrieve all new submissions made to all of Reddit, try:
 
         .. code-block:: python
 
@@ -3216,8 +3219,8 @@ class SubredditStylesheet:
 
         subreddit = reddit.subreddit("SUBREDDIT")
         stylesheet = subreddit.stylesheet()
-        stylesheet += ".test{color:blue}"
-        subreddit.stylesheet.update(stylesheet)
+        stylesheet.stylesheet += ".test{color:blue}"
+        subreddit.stylesheet.update(stylesheet.stylesheet)
 
     """
 
@@ -3267,7 +3270,7 @@ class SubredditStylesheet:
                 assert error_type in [
                     "BAD_CSS_NAME",
                     "IMAGE_ERROR",
-                ], "Please file a bug with PRAW"
+                ], "Please file a bug with PRAW."
                 raise RedditAPIException([[error_type, error_value, None]])
             return response
 
