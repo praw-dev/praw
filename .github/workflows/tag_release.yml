@@ -21,13 +21,15 @@ jobs:
         echo "version=$(cat tmp_version)" >> $GITHUB_ENV
         cat tmp_version | python -c 'import sys; from packaging import version; print(int(version.Version(sys.stdin.readline()).is_prerelease))' > tmp_is_prerelease
         echo "is_prerelease=$(cat tmp_is_prerelease)" >> $GITHUB_ENV
+    - name: Extract Change Log
+      run: |
+        echo "change_log_file=$(echo $version | ./tools/extract_log_entry.py)" >> $GITHUB_ENV
     - env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       name: Create GitHub Release
       uses: actions/create-release@v1
       with:
-        body: |
-          [Changelog](https://praw.readthedocs.io/en/v${{ env.version }}/package_info/change_log.html#id1)
+        body_path: ${{ env.change_log_file }}
         commitish: ${{ env.commit }}
         draft: true
         prerelease: ${{ env.is_prerelease == '1' }}
