@@ -4,6 +4,9 @@ Change Log
 Unreleased
 ----------
 
+7.1.4 (2021/02/07)
+------------------
+
 **Fixed**
 
 * Asynchronous check will no longer fail in Python 3.6 multithreading edge cases.
