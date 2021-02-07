@@ -143,7 +143,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         if _data:
             assert (
                 isinstance(_data, dict) and "name" in _data
-            ), "Please file a bug with PRAW"
+            ), "Please file a bug with PRAW."
         self._listing_use_sort = True
         if name:
             self.name = name
