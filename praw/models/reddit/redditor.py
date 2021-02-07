@@ -143,7 +143,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         if _data:
             assert (
                 isinstance(_data, dict) and "name" in _data
-            ), "Please file a bug with PRAW"
+            ), "Please file a bug with PRAW."
         self._listing_use_sort = True
         if name:
             self.name = name
@@ -377,7 +377,7 @@ class RedditorStream:
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
-        For example to retrieve all new submissions made by redditor ``spez``, try:
+        For example, to retrieve all new submissions made by redditor ``spez``, try:
 
         .. code-block:: python
 

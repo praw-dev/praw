@@ -1684,7 +1684,7 @@ class RulesWidget(Widget, BaseList):
     Attribute               Description
     ======================= ============================================================
     ``data``                A list of the subreddit rules. Can be iterated over by
-                            iterating over the :class:`.RulesWidget` (e.g.``for rule in
+                            iterating over the :class:`.RulesWidget` (e.g. ``for rule in
                             rules_widget``).
     ``display``             The display style of the widget, either ``"full"`` or
                             ``"compact"``.
