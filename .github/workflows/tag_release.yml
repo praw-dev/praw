@@ -23,13 +23,13 @@ jobs:
         echo "is_prerelease=$(cat tmp_is_prerelease)" >> $GITHUB_ENV
     - name: Extract Change Log
       run: |
-        echo "change_log_file=$(echo $version | ./tools/extract_log_entry.py)" >> $GITHUB_ENV
+        echo ${{ env.version }} | ./tools/extract_log_entry.py > version_changelog
     - env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       name: Create GitHub Release
       uses: actions/create-release@v1
       with:
-        body_path: ${{ env.change_log_file }}
+        body_path: version_changelog
         commitish: ${{ env.commit }}
         draft: true
         prerelease: ${{ env.is_prerelease == '1' }}

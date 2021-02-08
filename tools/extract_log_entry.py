@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import sys
-import tempfile
 
 import docutils.nodes
 import docutils.parsers.rst
@@ -37,9 +36,4 @@ with open("CHANGES.rst") as f:
     source = f.read()
     document = parse_rst(source)
 
-temp_file = f"{tempfile.mkdtemp()}/change_log.txt"
-
-with open(temp_file, "w") as f:
-    f.write("\n".join(source.splitlines()[get_entry_slice(document)]))
-
-print(temp_file)
+sys.stdout.write("\n".join(source.splitlines()[get_entry_slice(document)]))
