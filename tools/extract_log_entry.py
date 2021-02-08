@@ -7,7 +7,7 @@ import docutils.utils
 
 
 def get_entry_slice(doc):
-    current_version = sys.stdin.readline()
+    current_version = sys.stdin.readline().strip()
     start_line = None
     end_line = None
     for section in doc.children[0].children:
