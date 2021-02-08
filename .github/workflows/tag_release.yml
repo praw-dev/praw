@@ -12,7 +12,7 @@ jobs:
       with:
         python-version: 3.x
     - name: Install dependencies
-      run: pip install packaging
+      run: pip install packaging docutils
     - name: Extract Version
       run: |
         git checkout HEAD^2^
