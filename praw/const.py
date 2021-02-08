@@ -1,7 +1,7 @@
 """PRAW constants."""
 from .endpoints import API_PATH  # noqa: F401
 
-__version__ = "7.1.5.dev0"
+__version__ = "0.dev1"
 
 USER_AGENT_FORMAT = f"{{}} PRAW/{__version__}"
 
