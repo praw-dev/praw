@@ -4,6 +4,45 @@ Change Log
 Unreleased
 ----------
 
+**Added**
+
+* Add method :meth:`~.Subreddits.premium` to reflect the naming change in Reddit's API.
+* Ability to submit image galleries with :meth:`.submit_gallery`.
+* Ability to pass a gallery url to :meth:`.Reddit.submission`.
+* Ability to specify modmail mute duration.
+* Add method :meth:`.invited` to get invited moderators of a subreddit.
+* Ability to submit text/self posts with inline media.
+* Add method :meth:`~.Submission.award` and :meth:`~.Comment.award` with the ability to
+  specify type of award, anonymity, and message when awarding a submission or comment.
+* Ability to specify subreddits by name using the `subreddits` parameter in
+  :meth:`.Reddit.info`.
+* A check to see if PRAW is running in an asynchronous environment and will advise the
+  user to use `Async PRAW <https://asyncpraw.readthedocs.io>`_. This also adds a
+  configuration option to disable the check.
+
+**Changed**
+
+* Drop support for Python 3.5, which is end-of-life on 2020-09-13.
+* :class:`~.BoundedSet` will now utilize a Last-Recently-Used (LRU) storing mechanism,
+  which will change the order in which elements are removed from the set.
+* Improved :meth:`.submit_image` and :meth:`.submit_video` performance in slow
+  network environments by removing a race condition when establishing a
+  websocket connection.
+
+**Deprecated**
+
+* :meth:`~.Subreddits.gold` is superseded by :meth:`~.Subreddits.premium`.
+* :meth:`~.Submission.gild` is superseded by :meth:`~.Submission.award`.
+* :meth:`~.Comment.gild` is superseded by :meth:`~.Comment.award`.
+
+**Fixed**
+
+* An issue where leaving as a moderator fails if you are using token auth.
+* An issue where an incorrect error was being raised due to invalid submission urls.
+* Some cases where streams yield the same item multiple times. This cannot be
+  prevented in every case.
+
+
 7.1.4 (2021/02/07)
 ------------------
 
