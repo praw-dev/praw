@@ -12,7 +12,7 @@ jobs:
       with:
         python-version: 3.x
     - name: Install dependencies
-      run: pip install packaging
+      run: pip install packaging docutils
     - name: Extract Version
       run: |
         git checkout HEAD^2^
@@ -21,13 +21,15 @@ jobs:
         echo "version=$(cat tmp_version)" >> $GITHUB_ENV
         cat tmp_version | python -c 'import sys; from packaging import version; print(int(version.Version(sys.stdin.readline()).is_prerelease))' > tmp_is_prerelease
         echo "is_prerelease=$(cat tmp_is_prerelease)" >> $GITHUB_ENV
+    - name: Extract Change Log
+      run: |
+        echo ${{ env.version }} | ./tools/extract_log_entry.py > version_changelog
     - env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       name: Create GitHub Release
       uses: actions/create-release@v1
       with:
-        body: |
-          [Changelog](https://praw.readthedocs.io/en/v${{ env.version }}/package_info/change_log.html#id1)
+        body_path: version_changelog
         commitish: ${{ env.commit }}
         draft: true
         prerelease: ${{ env.is_prerelease == '1' }}
