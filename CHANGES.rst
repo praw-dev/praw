@@ -937,5 +937,5 @@ to help with updating your code to PRAW 4. If you require additional help please
   ``is_username_available``.
 - Removed captcha related functions.
 
-For changes prior to version 4.0 please see: `3.4.0 changelog
-<https://praw.readthedocs.io/en/v3.4.0/pages/changelog.html>`_
+For changes prior to version 4.0 please see: `3.6.2 changelog
+<https://praw.readthedocs.io/en/v3.6.2/pages/changelog.html>`_
