@@ -8,13 +8,13 @@ from .base import BaseListingMixin
 from .gilded import GildedListingMixin
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import Reddit
+    from .... import praw
 
 
 class SubListing(BaseListingMixin):
     """Helper class for generating :class:`.ListingGenerator` objects."""
 
-    def __init__(self, reddit: "Reddit", base_path: str, subpath: str):
+    def __init__(self, reddit: "praw.Reddit", base_path: str, subpath: str):
         """Initialize a SubListing instance.
 
         :param reddit: An instance of :class:`.Reddit`.

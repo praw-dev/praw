@@ -10,12 +10,7 @@ from .base import RedditBase
 from .mixins import FullnameMixin, MessageableMixin
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import Reddit
-    from ..trophy import Trophy  # noqa: F401
-    from .comment import Comment  # noqa: F401
-    from .multi import Multireddit  # noqa: F401
-    from .submission import Submission  # noqa: F401
-    from .subreddit import Subreddit  # noqa: F401
+    from .... import praw
 
 
 class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase):
@@ -89,7 +84,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         return cls(reddit, data)
 
     @cachedproperty
-    def stream(self) -> "RedditorStream":
+    def stream(self) -> "praw.models.reddit.redditor.RedditorStream":
         """Provide an instance of :class:`.RedditorStream`.
 
         Streams can be used to indefinitely retrieve new comments made by a redditor,
@@ -122,7 +117,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
 
     def __init__(
         self,
-        reddit: "Reddit",
+        reddit: "praw.Reddit",
         name: Optional[str] = None,
         fullname: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
@@ -212,7 +207,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         self._friend("PUT", data={"note": note} if note else {})
 
-    def friend_info(self) -> "Redditor":
+    def friend_info(self) -> "praw.models.Redditor":
         """Return a Redditor instance with specific friend-related attributes.
 
         :returns: A :class:`.Redditor` instance with fields ``date``, ``id``, and
@@ -247,11 +242,11 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             data={"months": months},
         )
 
-    def moderated(self) -> List["Subreddit"]:
+    def moderated(self) -> List["praw.models.Subreddit"]:
         """Return a list of the redditor's moderated subreddits.
 
-        :returns: A ``list`` of :class:`~praw.models.Subreddit` objects. Return ``[]``
-            if the redditor has no moderated subreddits.
+        :returns: A ``list`` of :class:`~.Subreddit` objects. Return ``[]`` if the
+            redditor has no moderated subreddits.
 
         .. note::
 
@@ -274,7 +269,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             subreddits = [self._reddit.subreddit(x["sr"]) for x in modded_data["data"]]
             return subreddits
 
-    def multireddits(self) -> List["Multireddit"]:
+    def multireddits(self) -> List["praw.models.Multireddit"]:
         """Return a list of the redditor's public multireddits.
 
         For example, to to get Redditor ``spez``'s multireddits:
@@ -286,11 +281,11 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         return self._reddit.get(API_PATH["multireddit_user"].format(user=self))
 
-    def trophies(self) -> List["Trophy"]:
+    def trophies(self) -> List["praw.models.Trophy"]:
         """Return a list of the redditor's trophies.
 
-        :returns: A ``list`` of :class:`~praw.models.Trophy` objects. Return an empty
-            list (``[]``) if the redditor has no trophies.
+        :returns: A ``list`` of :class:`.Trophy` objects. Return an empty list
+            (``[]``) if the redditor has no trophies.
 
         :raises: :class:`.RedditAPIException` if the redditor doesn't exist.
 
@@ -339,7 +334,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
 class RedditorStream:
     """Provides submission and comment streams."""
 
-    def __init__(self, redditor: Redditor):
+    def __init__(self, redditor: "praw.models.Redditor"):
         """Create a RedditorStream instance.
 
         :param redditor: The redditor associated with the streams.
@@ -349,7 +344,7 @@ class RedditorStream:
 
     def comments(
         self, **stream_options: Union[str, int, Dict[str, str]]
-    ) -> Generator["Comment", None, None]:
+    ) -> Generator["praw.models.Comment", None, None]:
         """Yield new comments as they become available.
 
         Comments are yielded oldest first. Up to 100 historical comments will initially
@@ -369,7 +364,7 @@ class RedditorStream:
 
     def submissions(
         self, **stream_options: Union[str, int, Dict[str, str]]
-    ) -> Generator["Submission", None, None]:
+    ) -> Generator["praw.models.Submission", None, None]:
         """Yield new submissions as they become available.
 
         Submissions are yielded oldest first. Up to 100 historical submissions will

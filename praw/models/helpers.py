@@ -1,12 +1,14 @@
 """Provide the helper classes."""
 from json import dumps
-from typing import Generator, List, Optional, Union
+from typing import TYPE_CHECKING, Generator, List, Optional, Union
 
 from ..const import API_PATH
 from .base import PRAWBase
 from .reddit.live import LiveThread
 from .reddit.multi import Multireddit, Subreddit
-from .reddit.redditor import Redditor
+
+if TYPE_CHECKING:  # pragma: no cover
+    from ... import praw
 
 
 class LiveHelper(PRAWBase):
@@ -14,7 +16,7 @@ class LiveHelper(PRAWBase):
 
     def __call__(
         self, id: str
-    ) -> LiveThread:  # pylint: disable=invalid-name,redefined-builtin
+    ) -> "praw.models.LiveThread":  # pylint: disable=invalid-name,redefined-builtin
         """Return a new lazy instance of :class:`~.LiveThread`.
 
         This method is intended to be used as:
@@ -28,7 +30,7 @@ class LiveHelper(PRAWBase):
         """
         return LiveThread(self._reddit, id=id)
 
-    def info(self, ids: List[str]) -> Generator[LiveThread, None, None]:
+    def info(self, ids: List[str]) -> Generator["praw.models.LiveThread", None, None]:
         """Fetch information about each live thread in ``ids``.
 
         :param ids: A list of IDs for a live thread.
@@ -70,7 +72,7 @@ class LiveHelper(PRAWBase):
         description: Optional[str] = None,
         nsfw: bool = False,
         resources: str = None,
-    ) -> LiveThread:
+    ) -> "praw.models.LiveThread":
         """Create a new LiveThread.
 
         :param title: The title of the new LiveThread.
@@ -92,7 +94,7 @@ class LiveHelper(PRAWBase):
             },
         )
 
-    def now(self) -> Optional[LiveThread]:
+    def now(self) -> Optional["praw.models.LiveThread"]:
         """Get the currently featured live thread.
 
         :returns: The :class:`.LiveThread` object, or ``None`` if there is no currently
@@ -111,7 +113,9 @@ class LiveHelper(PRAWBase):
 class MultiredditHelper(PRAWBase):
     """Provide a set of functions to interact with Multireddits."""
 
-    def __call__(self, redditor: Union[str, Redditor], name: str) -> Multireddit:
+    def __call__(
+        self, redditor: Union[str, "praw.models.Redditor"], name: str
+    ) -> "praw.models.Multireddit":
         """Return a lazy instance of :class:`~.Multireddit`.
 
         :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
@@ -125,13 +129,13 @@ class MultiredditHelper(PRAWBase):
     def create(
         self,
         display_name: str,
-        subreddits: Union[str, Subreddit],
+        subreddits: Union[str, "praw.models.Subreddit"],
         description_md: Optional[str] = None,
         icon_name: Optional[str] = None,
         key_color: Optional[str] = None,
         visibility: str = "private",
         weighting_scheme: str = "classic",
-    ) -> Multireddit:
+    ) -> "praw.models.Multireddit":
         """Create a new multireddit.
 
         :param display_name: The display name for the new multireddit.
@@ -170,7 +174,7 @@ class MultiredditHelper(PRAWBase):
 class SubredditHelper(PRAWBase):
     """Provide a set of functions to interact with Subreddits."""
 
-    def __call__(self, display_name: str) -> Subreddit:
+    def __call__(self, display_name: str) -> "praw.models.Subreddit":
         """Return a lazy instance of :class:`~.Subreddit`.
 
         :param display_name: The name of the subreddit.
@@ -193,7 +197,7 @@ class SubredditHelper(PRAWBase):
         subreddit_type: str = "public",
         wikimode: str = "disabled",
         **other_settings: Optional[str],
-    ) -> Subreddit:
+    ) -> "praw.models.Subreddit":
         """Create a new subreddit.
 
         :param name: The name for the new subreddit.

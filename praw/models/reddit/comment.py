@@ -15,9 +15,8 @@ from .mixins import (
 from .redditor import Redditor
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import Reddit
-    from .submission import Submission
-    from .subreddit import Subreddit  # noqa: F401
+    from .... import praw
+    from ...reddit import models
 
 
 class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
@@ -92,7 +91,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return parent_type == self._reddit.config.kinds["submission"]
 
     @cachedproperty
-    def mod(self) -> "CommentModeration":
+    def mod(self) -> "praw.models.reddit.comment.CommentModeration":
         """Provide an instance of :class:`.CommentModeration`.
 
         Example usage:
@@ -132,14 +131,14 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return self._replies
 
     @property
-    def submission(self) -> "Submission":
+    def submission(self) -> "models.Submission":
         """Return the Submission object this comment belongs to."""
         if not self._submission:  # Comment not from submission
             self._submission = self._reddit.submission(self._extract_submission_id())
         return self._submission
 
     @submission.setter
-    def submission(self, submission: "Submission"):
+    def submission(self, submission: "models.Submission"):
         """Update the Submission associated with the Comment."""
         submission._comments_by_id[self.fullname] = self
         self._submission = submission
@@ -149,7 +148,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
     def __init__(
         self,
-        reddit: "Reddit",
+        reddit: "praw.Reddit",
         id: Optional[str] = None,  # pylint: disable=redefined-builtin
         url: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
@@ -171,7 +170,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     def __setattr__(
         self,
         attribute: str,
-        value: Union[str, "Redditor", "CommentForest", "Subreddit"],
+        value: Union[str, "Redditor", "CommentForest", "models.subreddit.Subreddit"],
     ):
         """Objectify author, replies, and subreddit."""
         if attribute == "author":
@@ -211,7 +210,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             return self.context.rsplit("/", 4)[1]
         return self.link_id.split("_", 1)[1]
 
-    def parent(self) -> Union["Comment", "Submission"]:
+    def parent(self) -> Union["praw.models.Comment", "praw.models.Submission"]:
         """Return the parent of the comment.
 
         The returned parent will be an instance of either :class:`.Comment`, or
@@ -339,7 +338,7 @@ class CommentModeration(ThingModerationMixin):
 
     REMOVAL_MESSAGE_API = "removal_comment_message"
 
-    def __init__(self, comment: "Comment"):
+    def __init__(self, comment: "praw.models.Comment"):
         """Create a CommentModeration instance.
 
         :param comment: The comment to moderate.

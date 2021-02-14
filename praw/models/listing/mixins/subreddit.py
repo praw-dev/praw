@@ -10,9 +10,7 @@ from .gilded import GildedListingMixin
 from .rising import RisingListingMixin
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .... import Reddit
-    from ...reddit.comment import Comment  # noqa: F401
-    from ...reddit.subreddit import Subreddit
+    from ..... import praw
 
 
 class CommentHelper(PRAWBase):
@@ -22,14 +20,14 @@ class CommentHelper(PRAWBase):
     def _path(self) -> str:
         return urljoin(self.subreddit._path, "comments/")
 
-    def __init__(self, subreddit: "Subreddit"):
+    def __init__(self, subreddit: "praw.models.Subreddit"):
         """Initialize a CommentHelper instance."""
         super().__init__(subreddit._reddit, _data=None)
         self.subreddit = subreddit
 
     def __call__(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["Comment"]:
+    ) -> Iterator["praw.models.Comment"]:
         """Return a :class:`.ListingGenerator` for the Subreddit's comments.
 
         Additional keyword arguments are passed in the initialization of
@@ -64,7 +62,7 @@ class SubredditListingMixin(BaseListingMixin, GildedListingMixin, RisingListingM
         """
         return CommentHelper(self)
 
-    def __init__(self, reddit: "Reddit", _data: Optional[Dict[str, Any]]):
+    def __init__(self, reddit: "praw.Reddit", _data: Optional[Dict[str, Any]]):
         """Initialize a SubredditListingMixin instance.
 
         :param reddit: An instance of :class:`.Reddit`.

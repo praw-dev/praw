@@ -7,7 +7,17 @@ import sys
 import time
 from itertools import islice
 from logging import getLogger
-from typing import IO, Any, Dict, Generator, Iterable, Optional, Type, Union
+from typing import (
+    IO,
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generator,
+    Iterable,
+    Optional,
+    Type,
+    Union,
+)
 from warnings import warn
 
 from prawcore import (
@@ -40,6 +50,8 @@ try:
 except ImportError:  # pragma: no cover
     UPDATE_CHECKER_MISSING = True
 
+if TYPE_CHECKING:  # pragma: no cover
+    from .. import praw
 
 Comment = models.Comment
 Redditor = models.Redditor
@@ -533,8 +545,12 @@ class Reddit:
         self,
         fullnames: Optional[Iterable[str]] = None,
         url: Optional[str] = None,
-        subreddits: Optional[Iterable[Union[Subreddit, str]]] = None,
-    ) -> Generator[Union[Subreddit, Comment, Submission], None, None]:
+        subreddits: Optional[Iterable[Union["praw.models.Subreddit", str]]] = None,
+    ) -> Generator[
+        Union["praw.models.Subreddit", "praw.models.Comment", "praw.models.Submission"],
+        None,
+        None,
+    ]:
         """Fetch information about each item in ``fullnames``, ``url``, or ``subreddits``.
 
         :param fullnames: A list of fullnames for comments, submissions, and/or
@@ -749,7 +765,7 @@ class Reddit:
         """
         return self._objectify_request(data=data, json=json, method="PUT", path=path)
 
-    def random_subreddit(self, nsfw: bool = False) -> Subreddit:
+    def random_subreddit(self, nsfw: bool = False) -> "praw.models.Subreddit":
         """Return a random lazy instance of :class:`~.Subreddit`.
 
         :param nsfw: Return a random NSFW (not safe for work) subreddit
@@ -766,8 +782,8 @@ class Reddit:
 
     def redditor(
         self, name: Optional[str] = None, fullname: Optional[str] = None
-    ) -> Redditor:
-        """Return a lazy instance of :class:`~.Redditor`.
+    ) -> "praw.models.Redditor":
+        """Return a lazy instance of :class:`.Redditor`.
 
         :param name: The name of the redditor.
         :param fullname: The fullname of the redditor, starting with ``t2_``.
@@ -837,11 +853,11 @@ class Reddit:
 
     def submission(  # pylint: disable=invalid-name,redefined-builtin
         self, id: Optional[str] = None, url: Optional[str] = None
-    ) -> Submission:
+    ) -> "praw.models.Submission":
         """Return a lazy instance of :class:`~.Submission`.
 
         :param id: A Reddit base36 submission ID, e.g., ``2gmzqe``.
-        :param url: A URL supported by :meth:`~praw.models.Submission.id_from_url`.`.
+        :param url: A URL supported by :meth:`~.Submission.id_from_url`.
 
         Either ``id`` or ``url`` can be provided, but not both.
 

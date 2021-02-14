@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Dict, Iterator
 from ..base import PRAWBase
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import Reddit
+    from .... import praw
 
 
 class BaseList(PRAWBase):
@@ -12,7 +12,7 @@ class BaseList(PRAWBase):
 
     CHILD_ATTRIBUTE = None
 
-    def __init__(self, reddit: "Reddit", _data: Dict[str, Any]):
+    def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
         """Initialize a BaseList instance.
 
         :param reddit: An instance of :class:`~.Reddit`.

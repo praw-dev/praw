@@ -10,16 +10,15 @@ from .reddit.redditor import Redditor
 from .reddit.subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .. import Reddit
-    from .reddit.multi import Multireddit  # noqa: F401
+    from ... import praw
 
 
 class User(PRAWBase):
     """The user class provides methods for the currently authenticated user."""
 
     @cachedproperty
-    def preferences(self) -> Preferences:
-        """Get an instance of :class:`.Preferences`.
+    def preferences(self) -> "praw.models.Preferences":
+        """Get an instance of :class:`~.Preferences`.
 
         The preferences can be accessed as a ``dict`` like so:
 
@@ -47,7 +46,7 @@ class User(PRAWBase):
         """
         return Preferences(self._reddit)
 
-    def __init__(self, reddit: "Reddit"):
+    def __init__(self, reddit: "praw.Reddit"):
         """Initialize a User instance.
 
         This class is intended to be interfaced with through ``reddit.user``.
@@ -55,13 +54,13 @@ class User(PRAWBase):
         """
         super().__init__(reddit, _data=None)
 
-    def blocked(self) -> List[Redditor]:
+    def blocked(self) -> List["praw.models.Redditor"]:
         """Return a RedditorList of blocked Redditors."""
         return self._reddit.get(API_PATH["blocked"])
 
     def contributor_subreddits(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator[Subreddit]:
+    ) -> Iterator["praw.models.Subreddit"]:
         """Return a :class:`.ListingGenerator` of contributor subreddits.
 
         These are subreddits that the user is a contributor of.
@@ -75,8 +74,8 @@ class User(PRAWBase):
         )
 
     def friends(
-        self, user: Optional[Union[str, Redditor]] = None
-    ) -> Union[List[Redditor], Redditor]:
+        self, user: Optional[Union[str, "praw.models.Redditor"]] = None
+    ) -> Union[List["praw.models.Redditor"], "praw.models.Redditor"]:
         """Return a RedditorList of friends or a Redditor in the friends list.
 
         :param user: Checks to see if you are friends with the Redditor. Either an
@@ -94,7 +93,7 @@ class User(PRAWBase):
         )
         return self._reddit.get(endpoint)
 
-    def karma(self) -> Dict[Subreddit, Dict[str, int]]:
+    def karma(self) -> Dict["praw.models.Subreddit", Dict[str, int]]:
         """Return a dictionary mapping subreddits to their karma.
 
         The returned dict contains subreddits as keys. Each subreddit key contains a
@@ -117,7 +116,7 @@ class User(PRAWBase):
 
     def me(
         self, use_cache: bool = True
-    ) -> Optional[Redditor]:  # pylint: disable=invalid-name
+    ) -> Optional["praw.models.Redditor"]:  # pylint: disable=invalid-name
         """Return a :class:`.Redditor` instance for the authenticated user.
 
         In :attr:`~praw.Reddit.read_only` mode, this method returns ``None``.
@@ -139,13 +138,13 @@ class User(PRAWBase):
             self._me = Redditor(self._reddit, _data=user_data)
         return self._me
 
-    def multireddits(self) -> List["Multireddit"]:
+    def multireddits(self) -> List["praw.models.Multireddit"]:
         """Return a list of multireddits belonging to the user."""
         return self._reddit.get(API_PATH["my_multireddits"])
 
     def subreddits(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator[Subreddit]:
+    ) -> Iterator["praw.models.Subreddit"]:
         """Return a :class:`.ListingGenerator` of subreddits the user is subscribed to.
 
         Additional keyword arguments are passed in the initialization of

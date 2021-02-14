@@ -71,7 +71,7 @@ class TestSubreddits(IntegrationTest):
 
     def test_search_by_name(self):
         with self.use_cassette():
-            subreddits = self.reddit.subreddits.search_by_name("reddit")
+            subreddits = self.reddit.subreddits.search_by_name("praw.reddit.Reddit")
             assert isinstance(subreddits, list)
             assert len(subreddits) > 1
             assert all(isinstance(x, Subreddit) for x in subreddits)

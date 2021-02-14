@@ -6,7 +6,7 @@ from ...exceptions import InvalidURL
 from ..base import PRAWBase
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import Reddit
+    from .... import praw
 
 
 class RedditBase(PRAWBase):
@@ -43,7 +43,7 @@ class RedditBase(PRAWBase):
 
     def __init__(
         self,
-        reddit: "Reddit",
+        reddit: "praw.Reddit",
         _data: Optional[Dict[str, Any]],
         _extra_attribute_to_check: Optional[str] = None,
         _fetched: bool = False,
