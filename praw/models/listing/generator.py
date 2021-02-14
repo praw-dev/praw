@@ -6,7 +6,7 @@ from ..base import PRAWBase
 from .listing import FlairListing
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import Reddit
+    from .... import praw
 
 
 class ListingGenerator(PRAWBase, Iterator):
@@ -23,7 +23,7 @@ class ListingGenerator(PRAWBase, Iterator):
 
     def __init__(
         self,
-        reddit: "Reddit",
+        reddit: "praw.Reddit",
         url: str,
         limit: int = 100,
         params: Optional[Dict[str, Union[str, int]]] = None,

@@ -7,8 +7,7 @@ from .listing.generator import ListingGenerator
 from .util import stream_generator
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .reddit.comment import Comment  # noqa: F401
-    from .reddit.message import Message
+    from ... import praw
 
 
 class Inbox(PRAWBase):
@@ -16,7 +15,7 @@ class Inbox(PRAWBase):
 
     def all(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator[Union["Message", "Comment"]]:
+    ) -> Iterator[Union["praw.models.Message", "praw.models.Comment"]]:
         """Return a :class:`.ListingGenerator` for all inbox comments and messages.
 
         Additional keyword arguments are passed in the initialization of
@@ -32,7 +31,7 @@ class Inbox(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH["inbox"], **generator_kwargs)
 
-    def collapse(self, items: List["Message"]):
+    def collapse(self, items: List["praw.models.Message"]):
         """Mark an inbox message as collapsed.
 
         :param items: A list containing instances of :class:`.Message`.
@@ -63,7 +62,7 @@ class Inbox(PRAWBase):
 
     def comment_replies(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["Comment"]:
+    ) -> Iterator["praw.models.Comment"]:
         """Return a :class:`.ListingGenerator` for comment replies.
 
         Additional keyword arguments are passed in the initialization of
@@ -81,7 +80,9 @@ class Inbox(PRAWBase):
             self._reddit, API_PATH["comment_replies"], **generator_kwargs
         )
 
-    def mark_read(self, items: List[Union["Comment", "Message"]]):
+    def mark_read(
+        self, items: List[Union["praw.models.Comment", "praw.models.Message"]]
+    ):
         """Mark Comments or Messages as read.
 
         :param items: A list containing instances of :class:`.Comment` and/or
@@ -112,7 +113,9 @@ class Inbox(PRAWBase):
             self._reddit.post(API_PATH["read_message"], data=data)
             items = items[25:]
 
-    def mark_unread(self, items: List[Union["Comment", "Message"]]):
+    def mark_unread(
+        self, items: List[Union["praw.models.Comment", "praw.models.Message"]]
+    ):
         """Unmark Comments or Messages as read.
 
         :param items: A list containing instances of :class:`.Comment` and/or
@@ -140,7 +143,7 @@ class Inbox(PRAWBase):
 
     def mentions(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["Comment"]:
+    ) -> Iterator["praw.models.Comment"]:
         r"""Return a :class:`.ListingGenerator` for mentions.
 
         A mention is :class:`.Comment` in which the authorized redditor is named in its
@@ -159,7 +162,7 @@ class Inbox(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH["mentions"], **generator_kwargs)
 
-    def message(self, message_id: str) -> "Message":
+    def message(self, message_id: str) -> "praw.models.Message":
         """Return a Message corresponding to ``message_id``.
 
         :param message_id: The base36 id of a message.
@@ -180,7 +183,7 @@ class Inbox(PRAWBase):
 
     def messages(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["Message"]:
+    ) -> Iterator["praw.models.Message"]:
         """Return a :class:`.ListingGenerator` for inbox messages.
 
         Additional keyword arguments are passed in the initialization of
@@ -198,7 +201,7 @@ class Inbox(PRAWBase):
 
     def sent(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["Message"]:
+    ) -> Iterator["praw.models.Message"]:
         """Return a :class:`.ListingGenerator` for sent messages.
 
         Additional keyword arguments are passed in the initialization of
@@ -216,7 +219,7 @@ class Inbox(PRAWBase):
 
     def stream(
         self, **stream_options: Union[str, int, Dict[str, str]]
-    ) -> Iterator[Union["Comment", "Message"]]:
+    ) -> Iterator[Union["praw.models.Comment", "praw.models.Message"]]:
         """Yield new inbox items as they become available.
 
         Items are yielded oldest first. Up to 100 historical items will initially be
@@ -236,7 +239,7 @@ class Inbox(PRAWBase):
 
     def submission_replies(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["Comment"]:
+    ) -> Iterator["praw.models.Comment"]:
         """Return a :class:`.ListingGenerator` for submission replies.
 
         Additional keyword arguments are passed in the initialization of
@@ -254,7 +257,7 @@ class Inbox(PRAWBase):
             self._reddit, API_PATH["submission_replies"], **generator_kwargs
         )
 
-    def uncollapse(self, items: List["Message"]):
+    def uncollapse(self, items: List["praw.models.Message"]):
         """Mark an inbox message as uncollapsed.
 
         :param items: A list containing instances of :class:`.Message`.
@@ -287,7 +290,7 @@ class Inbox(PRAWBase):
         self,
         mark_read: bool = False,
         **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator[Union["Comment", "Message"]]:
+    ) -> Iterator[Union["praw.models.Comment", "praw.models.Message"]]:
         """Return a :class:`.ListingGenerator` for unread comments and messages.
 
         :param mark_read: Marks the inbox as read (default: False).

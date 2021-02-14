@@ -7,8 +7,7 @@ from ...exceptions import ClientException
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import Reddit
-    from .subreddit import Subreddit
+    from .... import praw
 
 
 class Emoji(RedditBase):
@@ -49,8 +48,8 @@ class Emoji(RedditBase):
 
     def __init__(
         self,
-        reddit: "Reddit",
-        subreddit: "Subreddit",
+        reddit: "praw.Reddit",
+        subreddit: "praw.models.Subreddit",
         name: str,
         _data: Optional[Dict[str, Any]] = None,
     ):
@@ -151,7 +150,7 @@ class SubredditEmoji:
         """
         return Emoji(self._reddit, self.subreddit, name)
 
-    def __init__(self, subreddit: "Subreddit"):
+    def __init__(self, subreddit: "praw.models.Subreddit"):
         """Create a SubredditEmoji instance.
 
         :param subreddit: The subreddit whose emoji are affected.

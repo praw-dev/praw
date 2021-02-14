@@ -8,7 +8,7 @@ from .redditor import Redditor
 from .subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import Reddit
+    from .... import praw
 
 
 class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
@@ -45,7 +45,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
     STR_FIELD = "id"
 
     @classmethod
-    def parse(cls, data: Dict[str, Any], reddit: "Reddit"):
+    def parse(cls, data: Dict[str, Any], reddit: "praw.Reddit"):
         """Return an instance of Message or SubredditMessage from ``data``.
 
         :param data: The structured data.
@@ -77,7 +77,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
         """Return the class's kind."""
         return self._reddit.config.kinds["message"]
 
-    def __init__(self, reddit: "Reddit", _data: Dict[str, Any]):
+    def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
         """Construct an instance of the Message object."""
         super().__init__(reddit, _data=_data, _fetched=True)
 

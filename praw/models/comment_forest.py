@@ -6,8 +6,7 @@ from ..exceptions import DuplicateReplaceException
 from .reddit.more import MoreComments
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .reddit.comment import Comment  # noqa: F401
-    from .reddit.submission import Submission
+    from ... import praw
 
 
 class CommentForest:
@@ -57,8 +56,8 @@ class CommentForest:
 
     def __init__(
         self,
-        submission: "Submission",
-        comments: Optional[List["Comment"]] = None,
+        submission: "praw.models.Submission",
+        comments: Optional[List["praw.models.Comment"]] = None,
     ):
         """Initialize a CommentForest instance.
 
@@ -93,7 +92,7 @@ class CommentForest:
         for comment in comments:
             comment.submission = self._submission
 
-    def list(self) -> List[Union["Comment", "MoreComments"]]:
+    def list(self) -> List[Union["praw.models.Comment", "praw.models.MoreComments"]]:
         """Return a flattened list of all Comments.
 
         This list may contain :class:`.MoreComments` instances if :meth:`.replace_more`
@@ -109,7 +108,9 @@ class CommentForest:
                 queue.extend(comment.replies)
         return comments
 
-    def replace_more(self, limit: int = 32, threshold: int = 0) -> List["MoreComments"]:
+    def replace_more(
+        self, limit: int = 32, threshold: int = 0
+    ) -> List["praw.models.MoreComments"]:
         """Update the comment forest by resolving instances of MoreComments.
 
         :param limit: The maximum number of :class:`.MoreComments` instances to

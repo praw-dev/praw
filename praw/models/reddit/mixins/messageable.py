@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Optional, Union
 from ....const import API_PATH
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..subreddit import Subreddit  # noqa: F401
+    from ..... import praw
 
 
 class MessageableMixin:
@@ -14,7 +14,7 @@ class MessageableMixin:
         self,
         subject: str,
         message: str,
-        from_subreddit: Optional[Union["Subreddit", str]] = None,
+        from_subreddit: Optional[Union["praw.models.Subreddit", str]] = None,
     ):
         """Send a message to a redditor or a subreddit's moderators (mod mail).
 

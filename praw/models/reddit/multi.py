@@ -11,7 +11,7 @@ from .redditor import Redditor
 from .subreddit import Subreddit, SubredditStream
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import Reddit
+    from .... import praw
 
 
 class Multireddit(SubredditListingMixin, RedditBase):
@@ -93,7 +93,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         """
         return SubredditStream(self)
 
-    def __init__(self, reddit: "Reddit", _data: Dict[str, Any]):
+    def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
         """Construct an instance of the Multireddit object."""
         self.path = None
         super().__init__(reddit, _data=_data)
@@ -122,7 +122,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
-    def add(self, subreddit: "Subreddit"):
+    def add(self, subreddit: "praw.models.Subreddit"):
         """Add a subreddit to this multireddit.
 
         :param subreddit: The subreddit to add to this multi.
@@ -141,7 +141,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         self._reddit.put(url, data={"model": dumps({"name": str(subreddit)})})
         self._reset_attributes("subreddits")
 
-    def copy(self, display_name: Optional[str] = None) -> "Multireddit":
+    def copy(self, display_name: Optional[str] = None) -> "praw.models.Multireddit":
         """Copy this multireddit and return the new multireddit.
 
         :param display_name: (optional) The display name for the copied multireddit.
@@ -185,7 +185,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         )
         self._reddit.delete(path)
 
-    def remove(self, subreddit: "Subreddit"):
+    def remove(self, subreddit: "praw.models.Subreddit"):
         """Remove a subreddit from this multireddit.
 
         :param subreddit: The subreddit to remove from this multi.
@@ -206,7 +206,9 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
     def update(
         self,
-        **updated_settings: Union[str, List[Union[str, Subreddit, Dict[str, str]]]],
+        **updated_settings: Union[
+            str, List[Union[str, "praw.models.Subreddit", Dict[str, str]]]
+        ],
     ):
         """Update this multireddit.
 

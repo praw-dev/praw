@@ -50,7 +50,7 @@ or with the submission's ID which comes after ``comments/`` in the URL:
     submission = reddit.submission(id="3g1jfi")
 
 With a submission object we can then interact with its :class:`.CommentForest` through
-the submission's :attr:`~praw.models.Submission.comments` attribute. A
+the submission's :attr:`.Submission.comments` attribute. A
 :class:`.CommentForest` is a list of top-level comments each of which contains a
 :class:`.CommentForest` of replies.
 

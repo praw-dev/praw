@@ -16,6 +16,11 @@ html_theme_options = {"collapse_navigation": True}
 htmlhelp_basename = "PRAW"
 intersphinx_mapping = {"python": ("https://docs.python.org/3.8", None)}
 master_doc = "index"
+nitpick_ignore = [
+    ("py:class", "IO"),
+    ("py:class", "prawcore.requestor.Requestor"),
+    ("py:class", "praw.models.redditors.PartialRedditor"),
+]
 nitpicky = True
 project = "PRAW"
 pygments_style = "sphinx"
@@ -23,7 +28,6 @@ release = __version__
 source_suffix = ".rst"
 suppress_warnings = ["image.nonlocal_uri"]
 version = ".".join(__version__.split(".", 2)[:2])
-
 
 # Use RTD theme locally
 if not os.environ.get("READTHEDOCS"):
@@ -47,4 +51,4 @@ def skip(app, what, name, obj, skip, options):
 
 def setup(app):
     app.connect("autodoc-skip-member", skip)
-    app.add_stylesheet("theme_override.css")
+    app.add_css_file("theme_override.css")

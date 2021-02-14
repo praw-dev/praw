@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Dict, Union
 from .base import PRAWBase
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .. import Reddit
+    from ... import praw
 
 
 class Trophy(PRAWBase):
@@ -34,7 +34,7 @@ class Trophy(PRAWBase):
 
     """
 
-    def __init__(self, reddit: "Reddit", _data: Dict[str, Any]):
+    def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
         """Initialize a Trophy instance.
 
         :param reddit: An instance of :class:`.Reddit`.

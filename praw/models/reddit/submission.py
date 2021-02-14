@@ -17,13 +17,13 @@ from .redditor import Redditor
 from .subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import Reddit
+    from .... import praw
 
 
 class SubmissionFlair:
     """Provide a set of functions pertaining to Submission flair."""
 
-    def __init__(self, submission: "Submission"):
+    def __init__(self, submission: "praw.models.Submission"):
         """Create a SubmissionFlair instance.
 
         :param submission: The submission associated with the flair functions.
@@ -89,7 +89,7 @@ class SubmissionModeration(ThingModerationMixin):
 
     REMOVAL_MESSAGE_API = "removal_link_message"
 
-    def __init__(self, submission: "Submission"):
+    def __init__(self, submission: "praw.models.Submission"):
         """Create a SubmissionModeration instance.
 
         :param submission: The submission to moderate.
@@ -517,7 +517,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
     def __init__(
         self,
-        reddit: "Reddit",
+        reddit: "praw.Reddit",
         id: Optional[str] = None,  # pylint: disable=redefined-builtin
         url: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
@@ -526,7 +526,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         :param reddit: An instance of :class:`~.Reddit`.
         :param id: A reddit base36 submission ID, e.g., ``2gmzqe``.
-        :param url: A URL supported by :meth:`~praw.models.Submission.id_from_url`.
+        :param url: A URL supported by :meth:`~.id_from_url`.
 
         Either ``id`` or ``url`` can be provided, but not both.
 
@@ -609,7 +609,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         data = {"links": self.fullname}
         self._reddit.post(API_PATH["store_visits"], data=data)
 
-    def hide(self, other_submissions: Optional[List["Submission"]] = None):
+    def hide(self, other_submissions: Optional[List["praw.models.Submission"]] = None):
         """Hide Submission.
 
         :param other_submissions: When provided, additionally hide this list of
@@ -630,7 +630,9 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         for submissions in self._chunk(other_submissions, 50):
             self._reddit.post(API_PATH["hide"], data={"id": submissions})
 
-    def unhide(self, other_submissions: Optional[List["Submission"]] = None):
+    def unhide(
+        self, other_submissions: Optional[List["praw.models.Submission"]] = None
+    ):
         """Unhide Submission.
 
         :param other_submissions: When provided, additionally unhide this list of
@@ -653,14 +655,14 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
     def crosspost(
         self,
-        subreddit: "Subreddit",
+        subreddit: "praw.models.Subreddit",
         title: Optional[str] = None,
         send_replies: bool = True,
         flair_id: Optional[str] = None,
         flair_text: Optional[str] = None,
         nsfw: bool = False,
         spoiler: bool = False,
-    ) -> "Submission":
+    ) -> "praw.models.Submission":
         """Crosspost the submission to a subreddit.
 
         .. note::

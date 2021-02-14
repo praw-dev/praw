@@ -5,13 +5,13 @@ from ...const import API_PATH
 from .mixins import BaseListingMixin, RisingListingMixin
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import Reddit
+    from .... import praw
 
 
 class DomainListing(BaseListingMixin, RisingListingMixin):
     """Provide a set of functions to interact with domain listings."""
 
-    def __init__(self, reddit: "Reddit", domain: str):
+    def __init__(self, reddit: "praw.Reddit", domain: str):
         """Initialize a DomainListing instance.
 
         :param reddit: An instance of Reddit.

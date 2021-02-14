@@ -6,7 +6,7 @@ from ...base import PRAWBase
 from ..generator import ListingGenerator
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ...reddit.submission import Submission  # noqa: F401
+    from ..... import praw
 
 
 class RisingListingMixin(PRAWBase):
@@ -14,7 +14,7 @@ class RisingListingMixin(PRAWBase):
 
     def random_rising(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["Submission"]:
+    ) -> Iterator["praw.models.Submission"]:
         """Return a :class:`.ListingGenerator` for random rising submissions.
 
         Additional keyword arguments are passed in the initialization of
@@ -34,7 +34,7 @@ class RisingListingMixin(PRAWBase):
 
     def rising(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["Submission"]:
+    ) -> Iterator["praw.models.Submission"]:
         """Return a :class:`.ListingGenerator` for rising submissions.
 
         Additional keyword arguments are passed in the initialization of

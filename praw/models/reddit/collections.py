@@ -10,7 +10,181 @@ from .submission import Submission
 from .subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import Reddit
+    from .... import praw
+
+
+class CollectionModeration(PRAWBase):
+    """Class to support moderation actions on a :class:`.Collection`.
+
+    Obtain an instance via:
+
+    .. code-block:: python
+
+        reddit.subreddit("SUBREDDIT").collections("some_uuid").mod
+
+    """
+
+    def _post_fullname(self, post):
+        """Get a post's fullname.
+
+        :param post: A fullname, a Submission, a permalink, or an ID.
+        :returns: The fullname of the post.
+
+        """
+        if isinstance(post, Submission):
+            return post.fullname
+        elif not isinstance(post, str):
+            raise TypeError(f"Cannot get fullname from object of type {type(post)}.")
+        if post.startswith(f"{self._reddit.config.kinds['submission']}_"):
+            return post
+        try:
+            return self._reddit.submission(url=post).fullname
+        except ClientException:
+            return self._reddit.submission(id=post).fullname
+
+    def __init__(self, reddit: "praw.Reddit", collection_id: str):
+        """Initialize an instance of CollectionModeration.
+
+        :param collection_id: The ID of a collection.
+
+        """
+        super().__init__(reddit, _data=None)
+        self.collection_id = collection_id
+
+    def add_post(self, submission: "praw.models.Submission"):
+        """Add a post to the collection.
+
+        :param submission: The post to add, a :class:`.Submission`, its permalink as a
+            ``str``, its fullname as a ``str``, or its ID as a ``str``.
+
+        Example usage:
+
+        .. code-block:: python
+
+            collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
+            collection.mod.add_post("bgibu9")
+
+        .. seealso::
+
+            :meth:`.remove_post`
+
+        """
+        link_fullname = self._post_fullname(submission)
+
+        self._reddit.post(
+            API_PATH["collection_add_post"],
+            data={"collection_id": self.collection_id, "link_fullname": link_fullname},
+        )
+
+    def delete(self):
+        """Delete this collection.
+
+        Example usage:
+
+        .. code-block:: python
+
+            reddit.subreddit("SUBREDDIT").collections("some_uuid").mod.delete()
+
+        .. seealso::
+
+            :meth:`~.SubredditCollectionsModeration.create`
+
+        """
+        self._reddit.post(
+            API_PATH["collection_delete"],
+            data={"collection_id": self.collection_id},
+        )
+
+    def remove_post(self, submission: "praw.models.Submission"):
+        """Remove a post from the collection.
+
+        :param submission: The post to remove, a :class:`.Submission`, its permalink as
+            a ``str``, its fullname as a ``str``, or its ID as a ``str``.
+
+        Example usage:
+
+        .. code-block:: python
+
+            collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
+            collection.mod.remove_post("bgibu9")
+
+        .. seealso::
+
+            :meth:`.add_post`
+
+        """
+        link_fullname = self._post_fullname(submission)
+
+        self._reddit.post(
+            API_PATH["collection_remove_post"],
+            data={"collection_id": self.collection_id, "link_fullname": link_fullname},
+        )
+
+    def reorder(self, links: List[Union[str, "praw.models.Submission"]]):
+        """Reorder posts in the collection.
+
+        :param links: A ``list`` of submissions, as :class:`.Submission`, permalink as a
+            ``str``, fullname as a ``str``, or ID as a ``str``.
+
+        Example usage:
+
+        .. code-block:: python
+
+            collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
+            current_order = collection.link_ids
+            new_order = reversed(current_order)
+            collection.mod.reorder(new_order)
+
+        """
+        link_ids = ",".join(self._post_fullname(post) for post in links)
+        self._reddit.post(
+            API_PATH["collection_reorder"],
+            data={"collection_id": self.collection_id, "link_ids": link_ids},
+        )
+
+    def update_description(self, description: str):
+        """Update the collection's description.
+
+        :param description: The new description.
+
+        Example usage:
+
+        .. code-block:: python
+
+            collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
+            collection.mod.update_description("Please enjoy these links!")
+
+        .. seealso::
+
+            :meth:`.update_title`
+
+        """
+        self._reddit.post(
+            API_PATH["collection_desc"],
+            data={"collection_id": self.collection_id, "description": description},
+        )
+
+    def update_title(self, title: str):
+        """Update the collection's title.
+
+        :param title: The new title.
+
+        Example usage:
+
+        .. code-block:: python
+
+            collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
+            collection.mod.update_title("Titley McTitleface")
+
+        .. seealso::
+
+            :meth:`.update_description`
+
+        """
+        self._reddit.post(
+            API_PATH["collection_title"],
+            data={"collection_id": self.collection_id, "title": title},
+        )
 
 
 class Collection(RedditBase):
@@ -61,14 +235,14 @@ class Collection(RedditBase):
     STR_FIELD = "collection_id"
 
     @cachedproperty
-    def mod(self) -> "CollectionModeration":
+    def mod(self) -> CollectionModeration:
         """Get an instance of :class:`.CollectionModeration`.
 
         Provides access to various methods, including
-        :meth:`~reddit.collections.CollectionModeration.add_post`,
-        :meth:`~reddit.collections.CollectionModeration.delete`,
-        :meth:`~reddit.collections.CollectionModeration.reorder`,
-        and :meth:`~reddit.collections.CollectionModeration.update_title`.
+        :meth:`~.CollectionModeration.add_post`,
+        :meth:`~.CollectionModeration.delete`,
+        :meth:`~.CollectionModeration.reorder`,
+        and :meth:`~.CollectionModeration.update_title`.
 
         Example usage:
 
@@ -81,7 +255,7 @@ class Collection(RedditBase):
         return CollectionModeration(self._reddit, self.collection_id)
 
     @cachedproperty
-    def subreddit(self) -> Subreddit:
+    def subreddit(self) -> "praw.models.Subreddit":
         """Get the subreddit that this collection belongs to.
 
         For example:
@@ -96,7 +270,7 @@ class Collection(RedditBase):
 
     def __init__(
         self,
-        reddit: "Reddit",
+        reddit: "praw.Reddit",
         _data: Dict[str, Any] = None,
         collection_id: Optional[str] = None,
         permalink: Optional[str] = None,
@@ -226,177 +400,58 @@ class Collection(RedditBase):
         )
 
 
-class CollectionModeration(PRAWBase):
-    """Class to support moderation actions on a :class:`.Collection`.
+class SubredditCollectionsModeration(PRAWBase):
+    """Class to represent moderator actions on a Subreddit's Collections.
 
     Obtain an instance via:
 
     .. code-block:: python
 
-        reddit.subreddit("SUBREDDIT").collections("some_uuid").mod
+        reddit.subreddit("SUBREDDIT").collections.mod
 
     """
 
-    def _post_fullname(self, post):
-        """Get a post's fullname.
+    def __init__(
+        self,
+        reddit: "praw.Reddit",
+        sub_fullname: str,
+        _data: Optional[Dict[str, Any]] = None,
+    ):
+        """Initialize the SubredditCollectionsModeration instance."""
+        super().__init__(reddit, _data)
+        self.subreddit_fullname = sub_fullname
 
-        :param post: A fullname, a Submission, a permalink, or an ID.
-        :returns: The fullname of the post.
+    def create(self, title: str, description: str):
+        """Create a new :class:`.Collection`.
 
-        """
-        if isinstance(post, Submission):
-            return post.fullname
-        elif not isinstance(post, str):
-            raise TypeError(f"Cannot get fullname from object of type {type(post)}.")
-        if post.startswith(f"{self._reddit.config.kinds['submission']}_"):
-            return post
-        try:
-            return self._reddit.submission(url=post).fullname
-        except ClientException:
-            return self._reddit.submission(id=post).fullname
+        The authenticated account must have appropriate moderator permissions in the
+        subreddit this collection belongs to.
 
-    def __init__(self, reddit: "Reddit", collection_id: str):
-        """Initialize an instance of CollectionModeration.
+        :param title: The title of the collection, up to 300 characters.
+        :param description: The description, up to 500 characters.
 
-        :param collection_id: The ID of a collection.
-
-        """
-        super().__init__(reddit, _data=None)
-        self.collection_id = collection_id
-
-    def add_post(self, submission: "Submission"):
-        """Add a post to the collection.
-
-        :param submission: The post to add, a :class:`.Submission`, its permalink as a
-            ``str``, its fullname as a ``str``, or its ID as a ``str``.
+        :returns: The newly created :class:`.Collection`.
 
         Example usage:
 
         .. code-block:: python
 
-            collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
-            collection.mod.add_post("bgibu9")
+            my_sub = reddit.subreddit("SUBREDDIT")
+            new_collection = my_sub.collections.mod.create("Title", "desc")
+            new_collection.mod.add_post("bgibu9")
 
         .. seealso::
 
-            :meth:`.remove_post`
+            :meth:`~CollectionModeration.delete`
 
         """
-        link_fullname = self._post_fullname(submission)
-
-        self._reddit.post(
-            API_PATH["collection_add_post"],
-            data={"collection_id": self.collection_id, "link_fullname": link_fullname},
-        )
-
-    def delete(self):
-        """Delete this collection.
-
-        Example usage:
-
-        .. code-block:: python
-
-            reddit.subreddit("SUBREDDIT").collections("some_uuid").mod.delete()
-
-        .. seealso::
-
-            :meth:`~.SubredditCollectionsModeration.create`
-
-        """
-        self._reddit.post(
-            API_PATH["collection_delete"],
-            data={"collection_id": self.collection_id},
-        )
-
-    def remove_post(self, submission: "Submission"):
-        """Remove a post from the collection.
-
-        :param submission: The post to remove, a :class:`.Submission`, its permalink as
-            a ``str``, its fullname as a ``str``, or its ID as a ``str``.
-
-        Example usage:
-
-        .. code-block:: python
-
-            collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
-            collection.mod.remove_post("bgibu9")
-
-        .. seealso::
-
-            :meth:`.add_post`
-
-        """
-        link_fullname = self._post_fullname(submission)
-
-        self._reddit.post(
-            API_PATH["collection_remove_post"],
-            data={"collection_id": self.collection_id, "link_fullname": link_fullname},
-        )
-
-    def reorder(self, links: List[Union[str, Submission]]):
-        """Reorder posts in the collection.
-
-        :param links: A ``list`` of submissions, as :class:`.Submission`, permalink as a
-            ``str``, fullname as a ``str``, or ID as a ``str``.
-
-        Example usage:
-
-        .. code-block:: python
-
-            collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
-            current_order = collection.link_ids
-            new_order = reversed(current_order)
-            collection.mod.reorder(new_order)
-
-        """
-        link_ids = ",".join(self._post_fullname(post) for post in links)
-        self._reddit.post(
-            API_PATH["collection_reorder"],
-            data={"collection_id": self.collection_id, "link_ids": link_ids},
-        )
-
-    def update_description(self, description: str):
-        """Update the collection's description.
-
-        :param description: The new description.
-
-        Example usage:
-
-        .. code-block:: python
-
-            collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
-            collection.mod.update_description("Please enjoy these links!")
-
-        .. seealso::
-
-            :meth:`.update_title`
-
-        """
-        self._reddit.post(
-            API_PATH["collection_desc"],
-            data={"collection_id": self.collection_id, "description": description},
-        )
-
-    def update_title(self, title: str):
-        """Update the collection's title.
-
-        :param title: The new title.
-
-        Example usage:
-
-        .. code-block:: python
-
-            collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
-            collection.mod.update_title("Titley McTitleface")
-
-        .. seealso::
-
-            :meth:`.update_description`
-
-        """
-        self._reddit.post(
-            API_PATH["collection_title"],
-            data={"collection_id": self.collection_id, "title": title},
+        return self._reddit.post(
+            API_PATH["collection_create"],
+            data={
+                "sr_fullname": self.subreddit_fullname,
+                "title": title,
+                "description": description,
+            },
         )
 
 
@@ -412,7 +467,7 @@ class SubredditCollections(PRAWBase):
     """
 
     @cachedproperty
-    def mod(self) -> "SubredditCollectionsModeration":
+    def mod(self) -> SubredditCollectionsModeration:
         """Get an instance of :class:`.SubredditCollectionsModeration`.
 
         Provides :meth:`~SubredditCollectionsModeration.create`:
@@ -465,8 +520,8 @@ class SubredditCollections(PRAWBase):
 
     def __init__(
         self,
-        reddit: "Reddit",
-        subreddit: "Subreddit",
+        reddit: "praw.Reddit",
+        subreddit: "praw.models.Subreddit",
         _data: Optional[Dict[str, Any]] = None,
     ):
         """Initialize an instance of SubredditCollections."""
@@ -490,61 +545,6 @@ class SubredditCollections(PRAWBase):
         )
         for collection in request:
             yield collection
-
-
-class SubredditCollectionsModeration(PRAWBase):
-    """Class to represent moderator actions on a Subreddit's Collections.
-
-    Obtain an instance via:
-
-    .. code-block:: python
-
-        reddit.subreddit("SUBREDDIT").collections.mod
-
-    """
-
-    def __init__(
-        self,
-        reddit: "Reddit",
-        sub_fullname: str,
-        _data: Optional[Dict[str, Any]] = None,
-    ):
-        """Initialize the SubredditCollectionsModeration instance."""
-        super().__init__(reddit, _data)
-        self.subreddit_fullname = sub_fullname
-
-    def create(self, title: str, description: str):
-        """Create a new :class:`.Collection`.
-
-        The authenticated account must have appropriate moderator permissions in the
-        subreddit this collection belongs to.
-
-        :param title: The title of the collection, up to 300 characters.
-        :param description: The description, up to 500 characters.
-
-        :returns: The newly created :class:`.Collection`.
-
-        Example usage:
-
-        .. code-block:: python
-
-            my_sub = reddit.subreddit("SUBREDDIT")
-            new_collection = my_sub.collections.mod.create("Title", "desc")
-            new_collection.mod.add_post("bgibu9")
-
-        .. seealso::
-
-            :meth:`~CollectionModeration.delete`
-
-        """
-        return self._reddit.post(
-            API_PATH["collection_create"],
-            data={
-                "sr_fullname": self.subreddit_fullname,
-                "title": title,
-                "description": description,
-            },
-        )
 
 
 Subreddit._subreddit_collections_class = SubredditCollections

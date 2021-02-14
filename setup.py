@@ -22,10 +22,10 @@ extras = {
         "flynt",
         "isort",
         "pydocstyle",
-        "sphinx<3.0",
+        "sphinx",
         "sphinx_rtd_theme",
     ],
-    "readthedocs": ["sphinx<3.0"],
+    "readthedocs": ["sphinx"],
     "test": [
         "betamax >=0.8, <0.9",
         "betamax-matchers >=0.3.0, <0.5",

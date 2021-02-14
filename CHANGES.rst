@@ -627,28 +627,28 @@ as described below:
 
 **Added**
 
-* :meth:`~praw.models.reddit.subreddit.Modmail.unread_count` to get unread count by
+* :meth:`.Modmail.unread_count` to get unread count by
   conversation state.
-* :meth:`~praw.models.reddit.subreddit.Modmail.bulk_read` to mark conversations as read
+* :meth:`.Modmail.bulk_read` to mark conversations as read
   by conversation state.
-* :meth:`~praw.models.reddit.subreddit.Modmail.subreddits` to fetch subreddits using new
+* :meth:`.Modmail.subreddits` to fetch subreddits using new
   modmail.
-* :meth:`~praw.models.reddit.subreddit.Modmail.create` to create a new modmail
+* :meth:`.Modmail.create` to create a new modmail
   conversation.
-* :meth:`~praw.models.ModmailConversation.read` to mark modmail conversations as read.
-* :meth:`~praw.models.ModmailConversation.unread` to mark modmail conversations as
+* :meth:`.ModmailConversation.read` to mark modmail conversations as read.
+* :meth:`.ModmailConversation.unread` to mark modmail conversations as
   unread.
-* :meth:`~praw.models.reddit.subreddit.Modmail.conversations` to get new modmail
+* :meth:`.subreddit.Modmail.conversations` to get new modmail
   conversations.
-* :meth:`~praw.models.ModmailConversation.highlight` to highlight modmail conversations.
-* :meth:`~praw.models.ModmailConversation.unhighlight` to unhighlight modmail
+* :meth:`.ModmailConversation.highlight` to highlight modmail conversations.
+* :meth:`.ModmailConversation.unhighlight` to unhighlight modmail
   conversations.
-* :meth:`~praw.models.ModmailConversation.mute` to mute modmail conversations.
-* :meth:`~praw.models.ModmailConversation.unmute` to unmute modmail conversations.
-* :meth:`~praw.models.ModmailConversation.archive` to archive modmail conversations.
-* :meth:`~praw.models.ModmailConversation.unarchive` to unarchive modmail conversations.
-* :meth:`~praw.models.ModmailConversation.reply` to reply to modmail conversations.
-* :meth:`~praw.models.reddit.subreddit.Modmail.__call__` to get a new modmail
+* :meth:`.ModmailConversation.mute` to mute modmail conversations.
+* :meth:`.ModmailConversation.unmute` to unmute modmail conversations.
+* :meth:`.ModmailConversation.archive` to archive modmail conversations.
+* :meth:`.ModmailConversation.unarchive` to unarchive modmail conversations.
+* :meth:`.ModmailConversation.reply` to reply to modmail conversations.
+* :meth:`.Modmail.__call__` to get a new modmail
   conversation.
 * :meth:`.Inbox.stream` to stream new items in the inbox.
 * Exponential request delay to all streams when no new items are returned in a request.
@@ -660,9 +660,9 @@ as described below:
 * :class:`.Reddit` accepts ``requestor_class=cls`` for a customized requestor class and
   ``requestor_kwargs={"param": value}`` for passing arguments to requestor
   initialization.
-* :meth:`~praw.models.reddit.subreddit.SubredditStream.comments`,
-  :meth:`~praw.models.reddit.subreddit.SubredditStream.submissions`, and
-  :meth:`~praw.models.Subreddits.stream` accept a ``pause_after`` argument to allow
+* :meth:`.SubredditStream.comments`,
+  :meth:`.SubredditStream.submissions`, and
+  :meth:`.Subreddits.stream` accept a ``pause_after`` argument to allow
   pausing of the stream. The default value of ``None`` retains the preexisting behavior.
 
 **Deprecated**
@@ -789,18 +789,18 @@ as described below:
 
 **Added**
 
-* :meth:`praw.models.Subreddits.search_by_topic` to search subreddits by topic. (see:
+* :meth:`.Subreddits.search_by_topic` to search subreddits by topic. (see:
   https://www.reddit.com/dev/api/#GET_api_subreddits_by_topic).
-* :meth:`praw.models.LiveHelper.__call__` to provide interface to
+* :meth:`.LiveHelper.__call__` to provide interface to
   ``praw.models.LiveThread.__init__``.
 * :class:`.SubredditFilters` to work with filters for special subreddits, like
   ``r/all``.
 * Added callables for :class:`.SubredditRelationship` and :class:`.SubredditFlair` so
   that ``limit`` and other parameters can be passed.
-* Add :meth:`~praw.models.Message.reply` to :class:`.Message` which was accidentally
+* Add :meth:`.Message.reply` to :class:`.Message` which was accidentally
   missed previously.
 * Add ``sticky`` parameter to :meth:`.CommentModeration.distinguish` to sticky comments.
-* :meth:`.flair` to add a submission's flair from an instance of :class:`.Submission`.
+* :meth:`.Submission.flair` to add a submission's flair from an instance of :class:`.Submission`.
 * :meth:`.Comment.parent` to obtain the parent of a :class:`.Comment`.
 * :meth:`.opt_in` and :meth:`.opt_out` to :class:`.Subreddit` to permit working with
   quarantined subreddits.
@@ -829,7 +829,7 @@ as described below:
   ``Subreddit.mod.ignore_reports``, ``Subreddit.mod.remove``,
   ``Subreddit.mod.undistinguish``, ``Subreddit.mod.unignore_reports``.
 * Support for passing a :class:`.Submission` to :meth:`.SubredditFlair.set` will be
-  removed in PRAW 5. Use :meth:`.flair` instead.
+  removed in PRAW 5. Use :meth:`.Submission.flair` instead.
 * The ``thing`` argument to :meth:`.SubredditFlair.set` is replaced with ``redditor``
   and will be removed in PRAW 5.
 
@@ -872,7 +872,7 @@ as described below:
 
 **Fixed**
 
-* :meth:`~praw.models.Auth.authorize` properly sets the session's Authentication (thanks
+* :meth:`.Auth.authorize` properly sets the session's Authentication (thanks
   @williammck).
 
 4.0.0rc1 (2016/11/20)
@@ -885,31 +885,23 @@ to help with updating your code to PRAW 4. If you require additional help please
 
 **Added**
 
-* :meth:`praw.models.Comment.block`, :meth:`praw.models.Message.block`, and
-  :meth:`praw.models.SubredditMessage.block` to permit blocking unwanted user contact.
-* :meth:`praw.models.LiveHelper.create` to create new live threads.
-* :meth:`praw.models.Redditor.unblock` to undo a block.
-* :meth:`praw.models.Subreddits.gold` to iterate through gold subreddits.
-* :meth:`praw.models.Subreddits.search` to search for subreddits by name and
-  description.
-* :meth:`praw.models.Subreddits.stream` to obtain newly created subreddits in near-
-  realtime.
-* :meth:`praw.models.User.karma` to retrieve the current user's subreddit karma.
+* :meth:`.Comment.block`, :meth:`.Message.block`, and
+  :meth:`.SubredditMessage.block` to permit blocking unwanted user contact.
+* :meth:`.LiveHelper.create` to create new live threads.
+* :meth:`.Redditor.unblock` to undo a block.
+* :meth:`.Subreddits.gold` to iterate through gold subreddits.
+* :meth:`.Subreddits.search` to search for subreddits by name and description.
+* :meth:`.Subreddits.stream` to obtain newly created subreddits in near realtime.
+* :meth:`.User.karma` to retrieve the current user's subreddit karma.
 * ``praw.models.reddit.submission.SubmissionModeration.lock`` and
   ``praw.models.reddit.submission.SubmissionModeration.unlock`` to change a Submission's
   lock state.
-* :meth:`praw.models.reddit.subreddit.SubredditFlairTemplates.delete` to delete a single
-  flair template.
-* :meth:`praw.models.reddit.subreddit.SubredditModeration.unread` to iterate over unread
-  moderation messages.
-* :meth:`praw.models.reddit.subreddit.ModeratorRelationship.invite` to invite a
-  moderator to a subreddit.
-* :meth:`praw.models.reddit.subreddit.ModeratorRelationship.update` to update a
-  moderator's permissions.
-* :meth:`praw.models.reddit.subreddit.ModeratorRelationship.update_invite` to update an
-  invited moderator's permissions.
-* :meth:`praw.models.Front.random_rising`, :meth:`praw.models.Subreddit.random_rising`
-  and :meth:`praw.models.Multireddit.random_rising`.
+* :meth:`.SubredditFlairTemplates.delete` to delete a single flair template.
+* :meth:`.SubredditModeration.unread` to iterate over unread moderation messages.
+* :meth:`.ModeratorRelationship.invite` to invite a moderator to a subreddit.
+* :meth:`.ModeratorRelationship.update` to update a moderator's permissions.
+* :meth:`.ModeratorRelationship.update_invite` to update an invited moderator's permissions.
+* :meth:`.Front.random_rising`, :meth:`.Subreddit.random_rising` and :meth:`.Multireddit.random_rising`.
 * :class:`~.WikiPage` supports a revision argument.
 * :meth:`~.SubredditWiki.revisions` to obtain a list of recent revisions to a subreddit.
 * :meth:`~.WikiPage.revisions` to obtain a list of revisions for a wiki page.
@@ -925,12 +917,12 @@ to help with updating your code to PRAW 4. If you require additional help please
     Only prominent changes are listed here.
 
 * ``helpers.comments_stream`` is now
-  :meth:`praw.models.reddit.subreddit.SubredditStream.comments`
+  :meth:`.SubredditStream.comments`
 * ``helpers.submissions_between`` is now ``Subreddit.submissions``. This new method now
   only iterates through newest submissions first and as a result makes approximately 33%
   fewer requests.
 * ``helpers.submission_stream`` is now
-  :meth:`praw.models.reddit.subreddit.SubredditStream.submissions`
+  :meth:`.SubredditStream.submissions`
 
 **Removed**
 

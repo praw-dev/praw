@@ -8,8 +8,7 @@ from ...util.cache import cachedproperty
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import Reddit
-    from .subreddit import Subreddit
+    from .... import praw
 
 
 class RemovalReason(RedditBase):
@@ -67,8 +66,8 @@ class RemovalReason(RedditBase):
 
     def __init__(
         self,
-        reddit: "Reddit",
-        subreddit: "Subreddit",
+        reddit: "praw.Reddit",
+        subreddit: "praw.models.Subreddit",
         id: Optional[str] = None,  # pylint: disable=redefined-builtin
         reason_id: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
@@ -192,7 +191,7 @@ class SubredditRemovalReasons:
             return self._removal_reason_list[reason_id]
         return RemovalReason(self._reddit, self.subreddit, reason_id)
 
-    def __init__(self, subreddit: "Subreddit"):
+    def __init__(self, subreddit: "praw.models.Subreddit"):
         """Create a SubredditRemovalReasons instance.
 
         :param subreddit: The subreddit whose removal reasons to work with.
