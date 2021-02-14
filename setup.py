@@ -69,6 +69,11 @@ setup(
     long_description=README,
     package_data={"": ["LICENSE.txt"], PACKAGE_NAME: ["*.ini", "images/*.jpg"]},
     packages=find_packages(exclude=["tests", "tests.*", "tools", "tools.*"]),
-    url="https://praw.readthedocs.org/",
+    project_urls={
+        "Change Log": "https://praw.readthedocs.io/en/latest/package_info/change_log.html",
+        "Documentation": "https://praw.readthedocs.io/",
+        "Issue Tracker": "https://github.com/praw-dev/praw/issues",
+        "Source Code": "https://github.com/praw-dev/praw",
+    },
     version=VERSION,
 )
