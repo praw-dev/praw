@@ -121,8 +121,8 @@ class User(PRAWBase):
 
         In :attr:`.read_only` mode, this method returns ``None``.
 
-        :param use_cache: When true, and if this function has been previously called,
-            returned the cached version (default: True).
+        :param use_cache: When ``True``, and if this function has been previously called,
+            returned the cached version (default: ``True``).
 
         .. note::
 

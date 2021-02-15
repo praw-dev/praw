@@ -63,7 +63,7 @@ class CommentForest:
 
         :param submission: An instance of :class:`.Subreddit` that is the parent of the
             comments.
-        :param comments: Initialize the Forest with a list of comments (default: None).
+        :param comments: Initialize the Forest with a list of comments (default: ``None``).
 
         """
         self._comments = comments
@@ -116,11 +116,11 @@ class CommentForest:
         :param limit: The maximum number of :class:`.MoreComments` instances to
             replace. Each replacement requires 1 API request. Set to ``None`` to
             have no limit, or to ``0`` to remove all :class:`.MoreComments`
-            instances without additional requests (default: 32).
+            instances without additional requests (default: ``32``).
         :param threshold: The minimum number of children comments a
             :class:`.MoreComments` instance must have in order to be replaced.
             :class:`.MoreComments` instances that represent "continue this thread"
-            links unfortunately appear to have 0 children. (default: 0).
+            links unfortunately appear to have 0 children. (default: ``0``).
         :returns: A list of :class:`.MoreComments` instances that were not replaced.
 
         For example, to replace up to 32 :class:`.MoreComments` instances of a

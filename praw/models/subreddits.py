@@ -132,8 +132,8 @@ class Subreddits(PRAWBase):
         """Return list of Subreddits whose names begin with ``query``.
 
         :param query: Search for subreddits beginning with this string.
-        :param include_nsfw: Include subreddits labeled NSFW (default: True).
-        :param exact: Return only exact matches to ``query`` (default: False).
+        :param include_nsfw: Include subreddits labeled NSFW (default: ``True``).
+        :param exact: Return only exact matches to ``query`` (default: ``False``).
 
         """
         result = self._reddit.post(

@@ -37,8 +37,8 @@ class BaseListingMixin(PRAWBase):
     ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for controversial submissions.
 
-        :param time_filter: Can be one of: all, day, hour, month, week, year (default:
-            all).
+        :param time_filter: Can be one of: ``"all"``, ``"day"``, ``"hour"``, ``"month"``, ``"week"``, ``"year"`` (default:
+            ``"all"``).
         :raises: :py:class:`.ValueError` if ``time_filter`` is invalid.
 
         Additional keyword arguments are passed in the initialization of
@@ -112,8 +112,8 @@ class BaseListingMixin(PRAWBase):
     ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for top submissions.
 
-        :param time_filter: Can be one of: all, day, hour, month, week, year (default:
-            all).
+        :param time_filter: Can be one of: ``"all"``, ``"day"``, ``"hour"``, ``"month"``, ``"week"``, ``"year"`` (default:
+            ``"all"``).
         :raises: :py:class:`.ValueError` if ``time_filter`` is invalid.
 
         Additional keyword arguments are passed in the initialization of

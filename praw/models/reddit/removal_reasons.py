@@ -235,7 +235,7 @@ class SubredditRemovalReasons:
         :param title: The title of the removal reason
         :returns: The RemovalReason added.
 
-        The message will be prepended with `Hi u/username,` automatically.
+        The message will be prepended with ``Hi u/username,`` automatically.
 
         To add ``"Test"`` to the subreddit ``"NAME"`` try:
 

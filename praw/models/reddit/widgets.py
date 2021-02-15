@@ -474,7 +474,7 @@ class SubredditWidgetsModeration:
 
             Both types of buttons have the field ``hoverState``. The field does not have
             to be included (it is optional). If it is included, it can be one of two
-            types: text or image. A text ``hoverState`` looks like this:
+            types: ``"text"`` or ``"image"``. A text ``hoverState`` looks like this:
 
             .. code-block:: text
 

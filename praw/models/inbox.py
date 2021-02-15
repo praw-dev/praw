@@ -295,7 +295,7 @@ class Inbox(PRAWBase):
     ) -> Iterator[Union["praw.models.Comment", "praw.models.Message"]]:
         """Return a :class:`.ListingGenerator` for unread comments and messages.
 
-        :param mark_read: Marks the inbox as read (default: False).
+        :param mark_read: Marks the inbox as read (default: ``False``).
 
         .. note::
 

@@ -54,7 +54,7 @@ class SubmissionFlair:
         :param flair_template_id: The flair template to select. The possible
             ``flair_template_id`` values can be discovered through :meth:`.choices`.
         :param text: If the template's ``flair_text_editable`` value is True, this value
-            will set a custom text (default: None).
+            will set a custom text (default: ``None``).
 
         For example, to select an arbitrary editable flair text (assuming there is one)
         and set a custom value try:
@@ -100,8 +100,8 @@ class SubmissionModeration(ThingModerationMixin):
     def contest_mode(self, state: bool = True):
         """Set contest mode for the comments of this submission.
 
-        :param state: (boolean) True enables contest mode, False, disables (default:
-            True).
+        :param state: (boolean) ``True`` enables contest mode, ``False``, disables (default:
+            ``True``).
 
         Contest mode have the following effects:
 
@@ -132,8 +132,8 @@ class SubmissionModeration(ThingModerationMixin):
     ):
         """Set flair for the submission.
 
-        :param text: The flair text to associate with the Submission (default: "").
-        :param css_class: The css class to associate with the flair html (default: "").
+        :param text: The flair text to associate with the Submission (default: ``""``).
+        :param css_class: The css class to associate with the flair html (default: ``""``).
         :param flair_template_id: The flair template id to use when flairing (Optional).
 
         This method can only be used by an authenticated user who is a moderator of the
@@ -173,7 +173,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. seealso::
 
-            :meth:`~.sfw`
+            :meth:`.sfw`
 
         """
         self.thing._reddit.post(API_PATH["marknsfw"], data={"id": self.thing.fullname})
@@ -221,7 +221,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. seealso::
 
-            :meth:`~.nsfw`
+            :meth:`.nsfw`
 
         """
         self.thing._reddit.post(
@@ -243,7 +243,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. seealso::
 
-            :meth:`~.unspoiler`
+            :meth:`.unspoiler`
 
         """
         self.thing._reddit.post(API_PATH["spoiler"], data={"id": self.thing.fullname})
@@ -251,11 +251,11 @@ class SubmissionModeration(ThingModerationMixin):
     def sticky(self, state: bool = True, bottom: bool = True):
         """Set the submission's sticky state in its subreddit.
 
-        :param state: (boolean) True sets the sticky for the submission, false unsets
-            (default: True).
-        :param bottom: (boolean) When true, set the submission as the bottom sticky. If
+        :param state: (boolean) ``True`` sets the sticky for the submission, ``False`` unsets
+            (default: ``True``).
+        :param bottom: (boolean) When ``True``, set the submission as the bottom sticky. If
             no top sticky exists, this submission will become the top sticky regardless
-            (default: True).
+            (default: ``True``).
 
         .. note::
 
@@ -284,8 +284,8 @@ class SubmissionModeration(ThingModerationMixin):
     def suggested_sort(self, sort: str = "blank"):
         """Set the suggested sort for the comments of the submission.
 
-        :param sort: Can be one of: confidence, top, new, controversial, old, random,
-            qa, blank (default: blank).
+        :param sort: Can be one of: ``"confidence"``, ``"top"``, ``"new"``, ``"controversial"``, ``"old"``, ``"random"``,
+            ``"qa"``, ``"blank"`` (default: ``"blank"``).
 
         """
         self.thing._reddit.post(
@@ -613,7 +613,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         """Hide Submission.
 
         :param other_submissions: When provided, additionally hide this list of
-            :class:`.Submission` instances as part of a single request (default: None).
+            :class:`.Submission` instances as part of a single request (default: ``None``).
 
         Example usage:
 
@@ -672,17 +672,17 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         :param subreddit: Name of the subreddit or :class:`.Subreddit` object to
             crosspost into.
         :param title: Title of the submission. Will use this submission's title if
-            `None` (default: None).
-        :param flair_id: The flair template to select (default: None).
+            `None` (default: ``None``).
+        :param flair_id: The flair template to select (default: ``None``).
         :param flair_text: If the template's ``flair_text_editable`` value is True, this
-            value will set a custom text (default: None).
-        :param send_replies: When True, messages will be sent to the submission author
-            when comments are made to the submission (default: True).
+            value will set a custom text (default: ``None``).
+        :param send_replies: When ``True``, messages will be sent to the submission author
+            when comments are made to the submission (default: ``True``).
         :param nsfw: Whether or not the submission should be marked NSFW (default:
-            False).
+            ``False``).
         :param spoiler: Whether or not the submission should be marked as a spoiler
-            (default: False).
-        :returns: A :class:`~.Submission` object for the newly created submission.
+            (default: ``False``).
+        :returns: A :class:`.Submission` object for the newly created submission.
 
         Example usage:
 

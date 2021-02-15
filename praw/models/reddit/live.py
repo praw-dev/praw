@@ -238,7 +238,7 @@ class LiveContributorRelationship:
             thread = reddit.live("ukaeu1ik4sw5")
             thread.contributor.update_invite("spez")
 
-        To set "access" and "edit" permissions (and to remove other permissions) to the
+        To set ``"access"`` and ``"edit"`` permissions (and to remove other permissions) to the
         invitation, try:
 
         .. code-block:: python
@@ -543,12 +543,12 @@ class LiveThreadContribution:
     ):
         """Update settings of the live thread.
 
-        :param title: (Optional) The title of the live thread (default: None).
-        :param description: (Optional) The live thread's description (default: None).
+        :param title: (Optional) The title of the live thread (default: ``None``).
+        :param description: (Optional) The live thread's description (default: ``None``).
         :param nsfw: (Optional) Indicate whether this thread is not safe for work
-            (default: None).
+            (default: ``None``).
         :param resources: (Optional) Markdown formatted information that is useful for
-            the live thread (default: None).
+            the live thread (default: ``None``).
 
         Does nothing if no arguments are provided.
 

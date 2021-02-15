@@ -119,7 +119,7 @@ class Reddit:
 
         .. deprecated:: 7.0
 
-            If property :attr:`.validate_on_submit` is set to False, the behavior is
+            If property :attr:`.validate_on_submit` is set to ``False``, the behavior is
             deprecated by Reddit. This attribute will be removed around May-June 2020.
 
         """
@@ -163,9 +163,9 @@ class Reddit:
             looked for in the environment variable praw_site. If it is not found there,
             the DEFAULT site will be used.
         :param requestor_class: A class that will be used to create a requestor. If not
-            set, use ``prawcore.Requestor`` (default: None).
+            set, use ``prawcore.Requestor`` (default: ``None``).
         :param requestor_kwargs: Dictionary with additional keyword arguments used to
-            initialize the requestor (default: None).
+            initialize the requestor (default: ``None``).
 
         Additional keyword arguments will be used to initialize the :class:`.Config`
         object. This can be used to specify configuration settings during instantiation
@@ -536,7 +536,7 @@ class Reddit:
         """Return parsed objects returned from a GET request to ``path``.
 
         :param path: The path to fetch.
-        :param params: The query parameters to add to the request (default: None).
+        :param params: The query parameters to add to the request (default: ``None``).
 
         """
         return self._objectify_request(method="GET", params=params, path=path)
@@ -627,14 +627,14 @@ class Reddit:
         """Run a request through the ``Objector``.
 
         :param data: Dictionary, bytes, or file-like object to send in the body of the
-            request (default: None).
+            request (default: ``None``).
         :param files: Dictionary, filename to file (like) object mapping (default:
-            None).
+            ``None``).
         :param json: JSON-serializable object to send in the body of the request with a
-            Content-Type header of application/json (default: None). If ``json`` is
+            Content-Type header of application/json (default: ``None``). If ``json`` is
             provided, ``data`` should not be.
         :param method: The HTTP method (e.g., GET, POST, PUT, DELETE).
-        :param params: The query parameters to add to the request (default: None).
+        :param params: The query parameters to add to the request (default: ``None``).
         :param path: The path to fetch.
 
         """
@@ -675,9 +675,9 @@ class Reddit:
 
         :param path: The path to fetch.
         :param data: Dictionary, bytes, or file-like object to send in the body of the
-            request (default: None).
+            request (default: ``None``).
         :param json: JSON-serializable object to send in the body of the request with a
-            Content-Type header of application/json (default: None). If ``json`` is
+            Content-Type header of application/json (default: ``None``). If ``json`` is
             provided, ``data`` should not be.
 
         """
@@ -693,9 +693,9 @@ class Reddit:
 
         :param path: The path to fetch.
         :param data: Dictionary, bytes, or file-like object to send in the body of the
-            request (default: None).
+            request (default: ``None``).
         :param json: JSON-serializable object to send in the body of the request with a
-            Content-Type header of application/json (default: None). If ``json`` is
+            Content-Type header of application/json (default: ``None``). If ``json`` is
             provided, ``data`` should not be.
 
         """
@@ -713,12 +713,12 @@ class Reddit:
 
         :param path: The path to fetch.
         :param data: Dictionary, bytes, or file-like object to send in the body of the
-            request (default: None).
+            request (default: ``None``).
         :param files: Dictionary, filename to file (like) object mapping (default:
-            None).
-        :param params: The query parameters to add to the request (default: None).
+            ``None``).
+        :param params: The query parameters to add to the request (default: ``None``).
         :param json: JSON-serializable object to send in the body of the request with a
-            Content-Type header of application/json (default: None). If ``json`` is
+            Content-Type header of application/json (default: ``None``). If ``json`` is
             provided, ``data`` should not be.
 
         """
@@ -757,9 +757,9 @@ class Reddit:
 
         :param path: The path to fetch.
         :param data: Dictionary, bytes, or file-like object to send in the body of the
-            request (default: None).
+            request (default: ``None``).
         :param json: JSON-serializable object to send in the body of the request with a
-            Content-Type header of application/json (default: None). If ``json`` is
+            Content-Type header of application/json (default: ``None``). If ``json`` is
             provided, ``data`` should not be.
 
         """
@@ -769,7 +769,7 @@ class Reddit:
         """Return a random lazy instance of :class:`.Subreddit`.
 
         :param nsfw: Return a random NSFW (not safe for work) subreddit
-            (default: False).
+            (default: ``False``).
 
         """
         url = API_PATH["subreddit"].format(subreddit="randnsfw" if nsfw else "random")
@@ -806,13 +806,13 @@ class Reddit:
 
         :param method: The HTTP method (e.g., GET, POST, PUT, DELETE).
         :param path: The path to fetch.
-        :param params: The query parameters to add to the request (default: None).
+        :param params: The query parameters to add to the request (default: ``None``).
         :param data: Dictionary, bytes, or file-like object to send in the body of the
-            request (default: None).
+            request (default: ``None``).
         :param files: Dictionary, filename to file (like) object mapping (default:
-            None).
+            ``None``).
         :param json: JSON-serializable object to send in the body of the request with a
-            Content-Type header of application/json (default: None). If ``json`` is
+            Content-Type header of application/json (default: ``None``). If ``json`` is
             provided, ``data`` should not be.
 
         """

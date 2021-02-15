@@ -188,7 +188,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """Friend the Redditor.
 
         :param note: A note to save along with the relationship. Requires Reddit Premium
-            (default: None).
+            (default: ``None``).
 
         Calling this method subsequent times will update the note.
 
@@ -226,7 +226,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def gild(self, months: int = 1):
         """Gild the Redditor.
 
-        :param months: Specifies the number of months to gild up to 36 (default: 1).
+        :param months: Specifies the number of months to gild up to 36 (default: ``1``).
 
         For example, to gild Redditor ``spez`` for 1 month:
 
@@ -245,7 +245,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def moderated(self) -> List["praw.models.Subreddit"]:
         """Return a list of the redditor's moderated subreddits.
 
-        :returns: A ``list`` of :class:`~.Subreddit` objects. Return ``[]`` if the
+        :returns: A list of :class:`.Subreddit` objects. Return ``[]`` if the
             redditor has no moderated subreddits.
 
         .. note::
@@ -284,8 +284,8 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def trophies(self) -> List["praw.models.Trophy"]:
         """Return a list of the redditor's trophies.
 
-        :returns: A ``list`` of :class:`.Trophy` objects. Return an empty list
-            (``[]``) if the redditor has no trophies.
+        :returns: A list of :class:`.Trophy` objects. Return ``[]`` if the redditor has
+            no trophies.
 
         :raises: :class:`.RedditAPIException` if the redditor doesn't exist.
 

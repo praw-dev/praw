@@ -142,18 +142,18 @@ class MultiredditHelper(PRAWBase):
         :param subreddits: Subreddits to add to the new multireddit.
         :param description_md: (Optional) Description for the new multireddit, formatted
             in markdown.
-        :param icon_name: (Optional) Can be one of: ``art and design``, ``ask``,
-            ``books``, ``business``, ``cars``, ``comics``, ``cute animals``, ``diy``,
-            ``entertainment``, ``food and drink``, ``funny``, ``games``, ``grooming``,
-            ``health``, ``life advice``, ``military``, ``models pinup``, ``music``,
-            ``news``, ``philosophy``, ``pictures and gifs``, ``science``, ``shopping``,
-            ``sports``, ``style``, ``tech``, ``travel``, ``unusual stories``, ``video``,
+        :param icon_name: (Optional) Can be one of: ``"art and design"``, ``"ask"``,
+            ``"books"``, ``"business"``, ``"cars"``, ``"comics"``, ``"cute animals"``, ``"diy"``,
+            ``"entertainment"``, ``"food and drink"``, ``"funny"``, ``"games"``, ``"grooming"``,
+            ``"health"``, ``"life advice"``, ``"military"``, ``"models pinup"``, ``"music"``,
+            ``"news"``, ``"philosophy"``, ``"pictures and gifs"``, ``"science"``, ``"shopping"``,
+            ``"sports"``, ``"style"``, ``"tech"``, ``"travel"``, ``"unusual stories"``, ``"video"``,
             or ``None``.
         :param key_color: (Optional) RGB hex color code of the form ``"#FFFFFF"``.
-        :param visibility: (Optional) Can be one of: ``hidden``, ``private``, ``public``
-            (default: private).
-        :param weighting_scheme: (Optional) Can be one of: ``classic``, ``fresh``
-            (default: classic).
+        :param visibility: (Optional) Can be one of: ``"hidden"``, ``"private"``, ``"public"``
+            (default: ``"private"``).
+        :param weighting_scheme: (Optional) Can be one of: ``"classic"``, ``"fresh"``
+            (default: ``"classic"``).
         :returns: The new Multireddit object.
 
         """
@@ -202,16 +202,16 @@ class SubredditHelper(PRAWBase):
 
         :param name: The name for the new subreddit.
         :param title: The title of the subreddit. When ``None`` or ``""`` use the value
-            of ``name``.
-        :param link_type: The types of submissions users can make. One of ``any``,
-            ``link``, ``self`` (default: any).
-        :param subreddit_type: One of ``archived``, ``employees_only``, ``gold_only``,
-            ``gold_restricted``, ``private``, ``public``, ``restricted`` (default:
-            public).
-        :param wikimode: One of ``anyone``, ``disabled``, ``modonly``.
+            of ``"name"``.
+        :param link_type: The types of submissions users can make. One of ``"any"``,
+            ``"link"``, ``"self"`` (default: ``"any"``).
+        :param subreddit_type: One of ``"archived"``, ``"employees_only"``, ``"gold_only"``,
+            ``"gold_restricted"``, ``"private"``, ``"public"``, ``"restricted"`` (default:
+            "public").
+        :param wikimode: One of ``"anyone"``, ``"disabled"``, ``"modonly"``.
 
-        Any keyword parameters not provided, or set explicitly to None, will take on a
-        default value assigned by the Reddit server.
+        Any keyword parameters not provided, or set explicitly to ``None``, will take on
+        a default value assigned by the Reddit server.
 
         .. seealso::
 

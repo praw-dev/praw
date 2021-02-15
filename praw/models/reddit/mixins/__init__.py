@@ -65,8 +65,8 @@ class ThingModerationMixin:
     def distinguish(self, how="yes", sticky=False):
         """Distinguish a :class:`.Comment` or :class:`.Submission`.
 
-        :param how: One of "yes", "no", "admin", "special". "yes" adds a moderator level
-            distinguish. "no" removes any distinction. "admin" and "special" require
+        :param how: One of ``"yes"``, ``"no"``, ``"admin"``, ``"special"``. ``"yes"`` adds a moderator level
+            distinguish. ``"no"`` removes any distinction. ``"admin"`` and ``"special"`` require
             special user privileges to use.
         :param sticky: Comment is stickied if ``True``, placing it at the top of the
             comment page regardless of score. If thing is not a top-level comment, this
@@ -145,8 +145,8 @@ class ThingModerationMixin:
         """Remove a :class:`.Comment` or :class:`.Submission`.
 
         :param mod_note: A message for the other moderators.
-        :param spam: When True, use the removal to help train the Subreddit's spam
-            filter (default: False).
+        :param spam: When ``True``, use the removal to help train the Subreddit's spam
+            filter (default: ``False``).
         :param reason_id: The removal reason ID.
 
         If either ``reason_id`` or ``mod_note`` are provided, a second API call is made
@@ -190,9 +190,9 @@ class ThingModerationMixin:
 
         Reddit adds human-readable information about the object to the message.
 
-        :param type: One of "public", "private", "private_exposed". "public" leaves a
-            stickied comment on the post. "private" sends a Modmail message with hidden
-            username. "private_exposed" sends a Modmail message without hidden username.
+        :param type: One of ``"public"``, ``"private"``, ``"private_exposed"``. ``"public"`` leaves a
+            stickied comment on the post. ``"private"`` sends a Modmail message with hidden
+            username. ``"private_exposed"`` sends a Modmail message without hidden username.
         :param title: The short reason given in the message. (Ignored if type is
             "public".)
         :param message: The body of the message.
