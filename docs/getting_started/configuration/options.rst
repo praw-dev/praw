@@ -60,14 +60,14 @@ order to successfully access a third-party Reddit site:
 :message_kind: The type prefix for messages on the :class:`.Reddit` instance (default:
     ``t4_``).
 :oauth_url: The URL used to access the :class:`.Reddit` instance's API (default:
-    https://oauth.reddit.com).
+    ``https://oauth.reddit.com``).
 :reddit_url: The URL used to access the :class:`.Reddit` instance. PRAW assumes the
     endpoints for establishing OAuth authorization are accessible under this URL
-    (default: https://www.reddit.com).
+    (default: ``https://www.reddit.com``).
 :redditor_kind: The type prefix for redditors on the :class:`.Reddit` instance (default:
     ``t2_``).
 :short_url: The URL used to generate short links on the :class:`.Reddit` instance
-    (default: https://redd.it).
+    (default: ``https://redd.it``).
 :submission_kind: The type prefix for submissions on the :class:`.Reddit` instance
     (default: ``t3_``).
 :subreddit_kind: The type prefix for subreddits on the :class:`.Reddit` instance

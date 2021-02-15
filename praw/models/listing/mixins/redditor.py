@@ -35,12 +35,12 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
     def comments(self) -> SubListing:
         r"""Provide an instance of :class:`.SubListing` for comment access.
 
-        For example, to output the first line of all new comments by ``u/spez`` try:
+        For example, to output the first line of all new comments by u/spez try:
 
         .. code-block:: python
 
             for comment in reddit.redditor("spez").comments.new(limit=None):
-                print(comment.body.split("\n", 1)[0][:79])
+                print(comment.body.split("\\n", 1)[0][:79])
 
         """
         return SubListing(self._reddit, self._path, "comments")
@@ -49,8 +49,8 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
     def submissions(self) -> SubListing:
         """Provide an instance of :class:`.SubListing` for submission access.
 
-        For example, to output the title's of top 100 of all time submissions for
-        ``u/spez`` try:
+        For example, to output the title's of top 100 of all time submissions for u/spez
+        try:
 
         .. code-block:: python
 

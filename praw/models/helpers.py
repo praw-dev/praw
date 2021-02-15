@@ -196,8 +196,8 @@ class LiveHelper(PRAWBase):
     ) -> "praw.models.LiveThread":
         r"""Create a new :class:`.LiveThread`.
 
-        :param title: The title of the new LiveThread.
-        :param description: The new LiveThread's description.
+        :param title: The title of the new :class:`.LiveThread`.
+        :param description: The new :class:`.LiveThread`'s description.
         :param nsfw: Indicate whether this thread is not safe for work (default:
             ``False``).
         :param resources: Markdown formatted information that is useful for the
@@ -265,18 +265,18 @@ class MultiredditHelper(PRAWBase):
             either :class:`.Subreddit` instances or subreddit display names.
         :param description_md: Description for the new multireddit, formatted in
             markdown.
-        :param icon_name: Can be one of: ``art and design``, ``ask``, ``books``,
-            ``business``, ``cars``, ``comics``, ``cute animals``, ``diy``,
-            ``entertainment``, ``food and drink``, ``funny``, ``games``, ``grooming``,
-            ``health``, ``life advice``, ``military``, ``models pinup``, ``music``,
-            ``news``, ``philosophy``, ``pictures and gifs``, ``science``, ``shopping``,
-            ``sports``, ``style``, ``tech``, ``travel``, ``unusual stories``, ``video``,
-            or ``None`` (default ``None``).
+        :param icon_name: Can be one of: ``"art and design"``, ``"ask"``, ``"books"``,
+            ``"business"``, ``"cars"``, ``"comics"``, ``"cute animals"``, ``"diy"``,
+            ``"entertainment"``, ``"food and drink"``, ``"funny"``, ``"games"``,
+            ``"grooming"``, ``"health"``, ``"life advice"``, ``"military"``, ``"models
+            pinup"``, ``"music"``, ``"news"``, ``"philosophy"``, ``"pictures and
+            gifs"``, ``"science"``, ``"shopping"``, ``"sports"``, ``"style"``,
+            ``"tech"``, ``"travel"``, ``"unusual stories"``, ``"video"``, or ``None``.
         :param key_color: RGB hex color code of the form ``"#FFFFFF"``.
-        :param visibility: Can be one of: ``hidden``, ``private``, or ``public``
-            (default: private).
-        :param weighting_scheme: Can be one of: ``classic`` or ``fresh`` (default:
-            classic).
+        :param visibility: Can be one of: ``"hidden"``, ``"private"``, or ``"public"``
+            (default: ``"private"``).
+        :param weighting_scheme: Can be one of: ``"classic"`` or ``"fresh"`` (default:
+            ``"classic"``).
 
         :returns: The new :class:`.Multireddit` object.
 
@@ -326,17 +326,17 @@ class SubredditHelper(PRAWBase):
 
         :param name: The name for the new subreddit.
         :param title: The title of the subreddit. When ``None`` or ``""`` use the value
-            of ``name``.
-        :param link_type: The types of submissions users can make. One of ``any``,
-            ``link``, or ``self`` (default: any).
-        :param subreddit_type: One of ``archived``, ``employees_only``, ``gold_only``,
-            ``gold_restricted``, ``private``, ``public``, or ``restricted`` (default:
-            public).
-        :param wikimode: One of ``anyone``, ``disabled``, or ``modonly`` (default:
+            of ``"name"``.
+        :param link_type: The types of submissions users can make. One of ``"any"``,
+            ``"link"``, or ``"self"`` (default: ``"any"``).
+        :param subreddit_type: One of ``"archived"``, ``"employees_only"``,
+            ``"gold_only"``, ``"gold_restricted"``, ``"private"``, ``"public"``, or
+            ``"restricted"`` (default: "public").
+        :param wikimode: One of ``"anyone"``, ``"disabled"``, or ``"modonly"`` (default:
             ``disabled``).
 
-        Any keyword parameters not provided, or set explicitly to None, will take on a
-        default value assigned by the Reddit server.
+        Any keyword parameters not provided, or set explicitly to ``None``, will take on
+        a default value assigned by the Reddit server.
 
         .. seealso::
 

@@ -42,17 +42,17 @@ class Rule(RedditBase):
     def mod(self) -> "praw.models.reddit.rules.RuleModeration":
         """Contain methods used to moderate rules.
 
-        To delete ``"No spam"`` from the subreddit ``"NAME"`` try:
+        To delete ``"No spam"`` from r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("NAME").rules["No spam"].mod.delete()
+            reddit.subreddit("test").rules["No spam"].mod.delete()
 
-        To update ``"No spam"`` from the subreddit ``"NAME"`` try:
+        To update ``"No spam"`` from r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("NAME").removal_reasons["No spam"].mod.update(
+            reddit.subreddit("test").removal_reasons["No spam"].mod.update(
                 description="Don't do this!", violation_reason="Spam post"
             )
 
@@ -108,11 +108,11 @@ class SubredditRules:
             print(rule)
 
     Moderators can also add rules to the subreddit. For example, to make a rule called
-    ``"No spam"`` in the subreddit ``"NAME"``:
+    ``"No spam"`` in r/test:
 
     .. code-block:: python
 
-        reddit.subreddit("NAME").rules.mod.add(
+        reddit.subreddit("test").rules.mod.add(
             short_name="No spam", kind="all", description="Do not spam. Spam bad"
         )
 
@@ -122,20 +122,20 @@ class SubredditRules:
     def mod(self) -> "SubredditRulesModeration":
         """Contain methods to moderate subreddit rules as a whole.
 
-        To add rule ``"No spam"`` to the subreddit ``"NAME"`` try:
+        To add rule ``"No spam"`` to r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("NAME").rules.mod.add(
+            reddit.subreddit("test").rules.mod.add(
                 short_name="No spam", kind="all", description="Do not spam. Spam bad"
             )
 
         To move the fourth rule to the first position, and then to move the prior first
-        rule to where the third rule originally was in the subreddit ``"NAME"``:
+        rule to where the third rule originally was in r/test:
 
         .. code-block:: python
 
-            subreddit = reddit.subreddit("NAME")
+            subreddit = reddit.subreddit("test")
             rules = list(subreddit.rules)
             new_rules = rules[3:4] + rules[1:3] + rules[0:1] + rules[4:]
             # Alternate: [rules[3]] + rules[1:3] + [rules[0]] + rules[4:]
@@ -187,7 +187,7 @@ class SubredditRules:
         .. code-block:: python
 
             rule_name = "No spam"
-            rule = reddit.subreddit("NAME").rules[rule_name]
+            rule = reddit.subreddit("test").rules[rule_name]
             print(rule)
 
         You can also fetch a numbered rule of a subreddit.
@@ -230,11 +230,11 @@ class SubredditRules:
 
         This method is used to discover all rules for a subreddit.
 
-        For example, to get the rules for the subreddit ``"NAME"``:
+        For example, to get the rules for r/test:
 
         .. code-block:: python
 
-            for rule in reddit.subreddit("NAME").rules:
+            for rule in reddit.subreddit("test").rules:
                 print(rule)
 
         """
@@ -256,17 +256,17 @@ class SubredditRules:
 class RuleModeration:
     """Contain methods used to moderate rules.
 
-    To delete ``"No spam"`` from the subreddit ``"NAME"`` try:
+    To delete ``"No spam"`` from r/test try:
 
     .. code-block:: python
 
-        reddit.subreddit("NAME").rules["No spam"].mod.delete()
+        reddit.subreddit("test").rules["No spam"].mod.delete()
 
-    To update ``"No spam"`` from the subreddit ``"NAME"`` try:
+    To update ``"No spam"`` from r/test try:
 
     .. code-block:: python
 
-        reddit.subreddit("NAME").removal_reasons["No spam"].mod.update(
+        reddit.subreddit("test").removal_reasons["No spam"].mod.update(
             description="Don't do this!", violation_reason="Spam post"
         )
 
@@ -279,11 +279,11 @@ class RuleModeration:
     def delete(self):
         """Delete a rule from this subreddit.
 
-        To delete ``"No spam"`` from the subreddit ``"NAME"`` try:
+        To delete ``"No spam"`` from r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("NAME").rules["No spam"].mod.delete()
+            reddit.subreddit("test").rules["No spam"].mod.delete()
 
         """
         data = {
@@ -313,11 +313,11 @@ class RuleModeration:
 
         :returns: A Rule object containing the updated values.
 
-        To update ``"No spam"`` from the subreddit ``"NAME"`` try:
+        To update ``"No spam"`` from r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("NAME").removal_reasons["No spam"].mod.update(
+            reddit.subreddit("test").removal_reasons["No spam"].mod.update(
                 description="Don't do this!", violation_reason="Spam post"
             )
 
@@ -343,20 +343,20 @@ class RuleModeration:
 class SubredditRulesModeration:
     """Contain methods to moderate subreddit rules as a whole.
 
-    To add rule ``"No spam"`` to the subreddit ``"NAME"`` try:
+    To add rule ``"No spam"`` to r/test try:
 
     .. code-block:: python
 
-        reddit.subreddit("NAME").rules.mod.add(
+        reddit.subreddit("test").rules.mod.add(
             short_name="No spam", kind="all", description="Do not spam. Spam bad"
         )
 
     To move the fourth rule to the first position, and then to move the prior first rule
-    to where the third rule originally was in the subreddit ``"NAME"``:
+    to where the third rule originally was in r/test:
 
     .. code-block:: python
 
-        subreddit = reddit.subreddit("NAME")
+        subreddit = reddit.subreddit("test")
         rules = list(subreddit.rules)
         new_rules = rules[3:4] + rules[1:3] + rules[0:1] + rules[4:]
         # Alternate: [rules[3]] + rules[1:3] + [rules[0]] + rules[4:]
@@ -387,11 +387,11 @@ class SubredditRulesModeration:
 
         :returns: The Rule added.
 
-        To add rule ``"No spam"`` to the subreddit ``"NAME"`` try:
+        To add rule ``"No spam"`` to r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("NAME").rules.mod.add(
+            reddit.subreddit("test").rules.mod.add(
                 short_name="No spam", kind="all", description="Do not spam. Spam bad"
             )
 
@@ -420,12 +420,11 @@ class SubredditRulesModeration:
         :returns: A list containing the rules in the specified order.
 
         For example, to move the fourth rule to the first position, and then to move the
-        prior first rule to where the third rule originally was in the subreddit
-        ``"NAME"``:
+        prior first rule to where the third rule originally was in r/test:
 
         .. code-block:: python
 
-            subreddit = reddit.subreddit("NAME")
+            subreddit = reddit.subreddit("test")
             rules = list(subreddit.rules)
             new_rules = rules[3:4] + rules[1:3] + rules[0:1] + rules[4:]
             # Alternate: [rules[3]] + rules[1:3] + [rules[0]] + rules[4:]

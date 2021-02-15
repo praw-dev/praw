@@ -71,11 +71,11 @@ class WikiPageModeration:
     def revert(self):
         """Revert a wikipage back to a specific revision.
 
-        To revert the page ``"praw_test"`` in ``r/test`` to revision ``[ID]``, try
+        To revert the page ``"praw_test"`` in r/test to revision ``"1234abc"``, try
 
         .. code-block:: python
 
-            reddit.subreddit("test").wiki["praw_test"].revision("[ID]").mod.revert()
+            reddit.subreddit("test").wiki["praw_test"].revision("1234abc").mod.revert()
 
         .. note::
 
@@ -135,7 +135,7 @@ class WikiPageModeration:
 
         :returns: The updated WikiPage settings.
 
-        To set the wikipage ``praw_test`` in ``r/test`` to mod only and disable it from
+        To set the wikipage ``praw_test`` in r/test to mod only and disable it from
         showing in the page list, try:
 
         .. code-block:: python
@@ -263,8 +263,8 @@ class WikiPage(RedditBase):
         :param reason: The reason for the revision.
         :param other_settings: Additional keyword arguments to pass.
 
-        For example, to replace the first wiki page of ``r/test`` with the phrase ``test
-        wiki page``:
+        For example, to replace the first wiki page of r/test with the phrase ``"test
+        wiki page"``:
 
         .. code-block:: python
 
@@ -288,8 +288,7 @@ class WikiPage(RedditBase):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        To view the titles of discussions of the page ``"praw_test"`` in ``r/test``,
-        try:
+        To view the titles of discussions of the page ``"praw_test"`` in r/test, try:
 
         .. code-block:: python
 
@@ -308,11 +307,11 @@ class WikiPage(RedditBase):
     def revision(self, revision: str):
         """Return a specific version of this page by revision ID.
 
-        To view revision ``[ID]`` of ``"praw_test"`` in ``r/test``:
+        To view revision ``"1234abc"`` of ``"praw_test"`` in r/test:
 
         .. code-block:: python
 
-            page = reddit.subreddit("test").wiki["praw_test"].revision("[ID]")
+            page = reddit.subreddit("test").wiki["praw_test"].revision("1234abc")
 
         """
         return WikiPage(self.subreddit._reddit, self.subreddit, self.name, revision)
@@ -325,7 +324,7 @@ class WikiPage(RedditBase):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        To view the wiki revisions for ``"praw_test"`` in ``r/test`` try:
+        To view the wiki revisions for ``"praw_test"`` in r/test try:
 
         .. code-block:: python
 

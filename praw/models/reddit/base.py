@@ -29,7 +29,7 @@ class RedditBase(PRAWBase):
         )
 
     def __getattr__(self, attribute: str) -> Any:
-        """Return the value of `attribute`."""
+        """Return the value of ``attribute``."""
         if not attribute.startswith("_") and not self._fetched:
             self._fetch()
             return getattr(self, attribute)

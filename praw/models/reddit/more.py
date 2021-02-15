@@ -20,7 +20,7 @@ class MoreComments(PRAWBase):
         self.submission = None
 
     def __eq__(self, other: Union[str, "MoreComments"]) -> bool:
-        """Return True if these :class:`.MoreComments` instances are the same."""
+        """Return ``True`` if these :class:`.MoreComments` instances are the same."""
         if isinstance(other, self.__class__):
             return self.count == other.count and self.children == other.children
         return super().__eq__(other)

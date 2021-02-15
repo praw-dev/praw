@@ -125,8 +125,8 @@ class LiveContributorRelationship:
     def remove(self, redditor: Union[str, "praw.models.Redditor"]):
         """Remove the redditor from the live thread contributors.
 
-        :param redditor: A redditor fullname (e.g., ``"t2_1w72"``) or
-            :class:`~.Redditor` instance.
+        :param redditor: A redditor fullname (e.g., ``"t2_1w72"``) or :class:`.Redditor`
+            instance.
 
         Usage:
 
@@ -149,8 +149,8 @@ class LiveContributorRelationship:
     def remove_invite(self, redditor: Union[str, "praw.models.Redditor"]):
         """Remove the invite for redditor.
 
-        :param redditor: A redditor fullname (e.g., ``"t2_1w72"``) or
-            :class:`~.Redditor` instance.
+        :param redditor: A redditor fullname (e.g., ``"t2_1w72"``) or :class:`.Redditor`
+            instance.
 
         Usage:
 
@@ -239,8 +239,8 @@ class LiveContributorRelationship:
             thread = reddit.live("ukaeu1ik4sw5")
             thread.contributor.update_invite("spez")
 
-        To set "access" and "edit" permissions (and to remove other permissions) to the
-        invitation, try:
+        To set ``"access"`` and ``"edit"`` permissions (and to remove other permissions)
+        to the invitation, try:
 
         .. code-block:: python
 
@@ -541,11 +541,12 @@ class LiveThreadContribution:
     ):
         """Update settings of the live thread.
 
-        :param title: The title of the live thread (default: None).
-        :param description: The live thread's description (default: None).
-        :param nsfw: Indicate whether this thread is not safe for work (default: None).
+        :param title: The title of the live thread (default: ``None``).
+        :param description: The live thread's description (default: ``None``).
+        :param nsfw: Indicate whether this thread is not safe for work (default:
+            ``None``).
         :param resources: Markdown formatted information that is useful for the live
-            thread (default: None).
+            thread (default: ``None``).
 
         Does nothing if no arguments are provided.
 

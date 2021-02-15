@@ -21,9 +21,9 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
     .. include:: ../../typical_attributes.rst
 
-    ==================== =============================================================
+    ==================== ==============================================================
     Attribute            Description
-    ==================== =============================================================
+    ==================== ==============================================================
     ``can_edit``         A ``bool`` representing whether or not the authenticated user
                          may edit the multireddit.
     ``copied_from``      The multireddit that the multireddit was copied from, if it
@@ -35,11 +35,10 @@ class Multireddit(SubredditListingMixin, RedditBase):
     ``name``             The name of the multireddit.
     ``over_18``          A ``bool`` representing whether or not the multireddit is
                          restricted for users over 18.
-    ``subreddits``       A ``list`` of :class:`.Subreddit`\ s that make up the
-                         multireddit.
-    ``visibility``       The visibility of the multireddit, either ``private``,
-                         ``public``, or ``hidden``.
-    ==================== =============================================================
+    ``subreddits``       A list of :class:`.Subreddit`\ s that make up the multireddit.
+    ``visibility``       The visibility of the multireddit, either ``"private"``,
+                         ``"public"``, or ``"hidden"``.
+    ==================== ==============================================================
 
     .. _unix time: https://en.wikipedia.org/wiki/Unix_time
 
@@ -122,7 +121,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         :param subreddit: The subreddit to add to this multi.
 
-        For example, to add subreddit ``r/test`` to multireddit ``bboe/test``:
+        For example, to add r/test to multireddit ``bboe/test``:
 
         .. code-block:: python
 
@@ -143,7 +142,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
             generate the ``name`` field from this display name. When not provided the
             copy will use the same display name and name as this multireddit.
 
-        To copy the multireddit ``bboe/test`` with a name of ``testing``:
+        To copy the multireddit ``bboe/test`` with a name of ``"testing"``:
 
         .. code-block:: python
 
@@ -167,7 +166,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
     def delete(self):
         """Delete this multireddit.
 
-        For example, to delete multireddit``bboe/test``:
+        For example, to delete multireddit ``bboe/test``:
 
         .. code-block:: python
 
@@ -184,7 +183,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         :param subreddit: The subreddit to remove from this multi.
 
-        For example, to remove subreddit ``r/test`` from multireddit ``bboe/test``:
+        For example, to remove r/test from multireddit ``bboe/test``:
 
         .. code-block:: python
 
@@ -213,18 +212,18 @@ class Multireddit(SubredditListingMixin, RedditBase):
             than 50 characters.
         :param subreddits: Subreddits for this multireddit.
         :param description_md: Description for this multireddit, formatted in Markdown.
-        :param icon_name: Can be one of: ``art and design``, ``ask``, ``books``,
-            ``business``, ``cars``, ``comics``, ``cute animals``, ``diy``,
-            ``entertainment``, ``food and drink``, ``funny``, ``games``, ``grooming``,
-            ``health``, ``life advice``, ``military``, ``models pinup``, ``music``,
-            ``news``, ``philosophy``, ``pictures and gifs``, ``science``, ``shopping``,
-            ``sports``, ``style``, ``tech``, ``travel``, ``unusual stories``, ``video``,
-            or ``None``.
+        :param icon_name: Can be one of: ``"art and design"``, ``"ask"``, ``"books"``,
+            ``"business"``, ``"cars"``, ``"comics"``, ``"cute animals"``, ``"diy"``,
+            ``"entertainment"``, ``"food and drink"``, ``"funny"``, ``"games"``,
+            ``"grooming"``, ``"health"``, ``"life advice"``, ``"military"``, ``"models
+            pinup"``, ``"music"``, ``"news"``, ``"philosophy"``, ``"pictures and
+            gifs"``, ``"science"``, ``"shopping"``, ``"sports"``, ``"style"``,
+            ``"tech"``, ``"travel"``, ``"unusual stories"``, ``"video"``, or ``None``.
         :param key_color: RGB hex color code of the form ``"#FFFFFF"``.
-        :param visibility: Can be one of: ``hidden``, ``private``, or ``public``.
-        :param weighting_scheme: Can be one of: ``classic`` or ``fresh``.
+        :param visibility: Can be one of: ``"hidden"``, ``"private"``, or ``"public"``.
+        :param weighting_scheme: Can be one of: ``"classic"`` or ``"fresh"``.
 
-        For example, to rename multireddit ``bboe/test`` to ``bboe/testing``:
+        For example, to rename multireddit ``"bboe/test"`` to ``"bboe/testing"``:
 
         .. code-block:: python
 

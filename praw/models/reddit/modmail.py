@@ -33,7 +33,9 @@ class ModmailConversation(RedditBase):
     ``num_messages``     The number of messages in the :class:`.ModmailConversation`.
     ``obj_ids``          Provides a list of dictionaries representing mod actions on the
                          :class:`.ModmailConversation`. Each dict contains attributes of
-                         "key" and "id". The key can be either "messages" or "ModAction". ModAction represents archiving/highlighting etc.
+                         ``"key"`` and ``"id"``. The key can be either ``""messages"``
+                         or ``"ModAction"``. ``"ModAction"`` represents
+                         archiving/highlighting etc.
     ``owner``            Provides an instance of :class:`.Subreddit`. The subreddit that
                          the :class:`.ModmailConversation` belongs to.
     ``participant``      Provides an instance of :class:`.Redditor`. The participating
@@ -88,8 +90,8 @@ class ModmailConversation(RedditBase):
 
         :param data: The structured data.
         :param reddit: An instance of :class:`.Reddit`.
-        :param convert_objects: If True, convert message and mod action data into
-            objects (default: True).
+        :param convert_objects: If ``True``, convert message and mod action data into
+            objects (default: ``True``).
 
         """
         data["authors"] = [
@@ -115,7 +117,8 @@ class ModmailConversation(RedditBase):
     ):
         """Initialize a :class:`.ModmailConversation` instance.
 
-        :param mark_read: If True, conversation is marked as read (default: False).
+        :param mark_read: If ``True``, conversation is marked as read (default:
+            ``False``).
 
         """
         if bool(id) == bool(_data):
@@ -174,8 +177,8 @@ class ModmailConversation(RedditBase):
     def mute(self, num_days=3):
         """Mute the non-mod user associated with the conversation.
 
-        :param num_days: Duration of mute in days. Valid options are 3, 7, or 28
-            (default: 3).
+        :param num_days: Duration of mute in days. Valid options are ``3``, ``7``, or
+            ``28`` (default: ``3``).
 
         For example:
 
@@ -204,7 +207,7 @@ class ModmailConversation(RedditBase):
         """Mark the conversation(s) as read.
 
         :param other_conversations: A list of other conversations to mark (default:
-            None).
+            ``None``).
 
         For example, to mark the conversation as read along with other recent
         conversations from the same user:
@@ -223,10 +226,10 @@ class ModmailConversation(RedditBase):
         """Reply to the conversation.
 
         :param body: The Markdown formatted content for a message.
-        :param author_hidden: When True, author is hidden from non-moderators (default:
-            False).
-        :param internal: When True, message is a private moderator note, hidden from
-            non-moderators (default: False).
+        :param author_hidden: When ``True``, author is hidden from non-moderators
+            (default: ``False``).
+        :param internal: When ``True``, message is a private moderator note, hidden from
+            non-moderators (default: ``False``).
 
         :returns: A :class:`.ModmailMessage` object for the newly created message.
 
@@ -298,7 +301,7 @@ class ModmailConversation(RedditBase):
         """Mark the conversation(s) as unread.
 
         :param other_conversations: A list of other conversations to mark (default:
-            None).
+            ``None``).
 
         For example, to mark the conversation as unread along with other recent
         conversations from the same user:

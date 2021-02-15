@@ -89,5 +89,5 @@ When you execute this script interactively:
    your refresh token will be displayed and will be printed to the command line.
 
 You only have to run this script once for each refresh token. The refresh token (along
-with the application's client_id, client_secret) are valid credentials until manually
-revoked by the user.
+with the application's ``client_id``, ``client_secret``) are valid credentials until
+manually revoked by the user.

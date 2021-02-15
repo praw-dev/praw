@@ -119,7 +119,7 @@ class UserSubreddit(Subreddit):
 class UserSubredditModeration(SubredditModeration):
     """Provides a set of moderation functions to a :class:`.UserSubreddit`.
 
-    For example, to accept a moderation invite from subreddit ``r/test``:
+    For example, to accept a moderation invite from r/test:
 
     .. code-block:: python
 
@@ -140,8 +140,8 @@ class UserSubredditModeration(SubredditModeration):
         :param allow_polls: Allow users to post polls to the subreddit.
         :param allow_post_crossposts: Allow users to crosspost submissions from other
             subreddits.
-        :param allow_top: Allow the subreddit to appear on ``r/all`` as well as the
-            default and trending lists.
+        :param allow_top: Allow the subreddit to appear on r/all as well as the default
+            and trending lists.
         :param allow_videos: Allow users to upload videos using the native image
             hosting.
         :param collapse_deleted_comments: Collapse deleted and removed comments on
@@ -165,8 +165,8 @@ class UserSubredditModeration(SubredditModeration):
         :param key_color: A 6-digit rgb hex color (e.g. ``"#AABBCC"``), used as a
             thematic color for your subreddit on mobile.
         :param lang: A valid IETF language tag (underscore separated).
-        :param link_type: The types of submissions users can make. One of ``any``,
-            ``link``, or ``self``.
+        :param link_type: The types of submissions users can make. One of ``"any"``,
+            ``"link"``, or ``"self"``.
         :param original_content_tag_enabled: Enables the use of the ``original content``
             label for submissions.
         :param over_18: Viewers must be over 18 years old (i.e. NSFW).
@@ -179,22 +179,23 @@ class UserSubredditModeration(SubredditModeration):
             submit posts.
         :param show_media: Show thumbnails on submissions.
         :param show_media_preview: Expand media previews on comments pages.
-        :param spam_comments: Spam filter strength for comments. One of ``all``,
-            ``low``, or ``high``.
-        :param spam_links: Spam filter strength for links. One of ``all``, ``low``, or
-            ``high``.
-        :param spam_selfposts: Spam filter strength for selfposts. One of ``all``,
-            ``low``, or ``high``.
+        :param spam_comments: Spam filter strength for comments. One of ``"all"``,
+            ``"low"``, or ``"high"``.
+        :param spam_links: Spam filter strength for links. One of ``"all"``, ``"low"``,
+            or ``"high"``.
+        :param spam_selfposts: Spam filter strength for selfposts. One of ``"all"``,
+            ``"low"``, or ``"high"``.
         :param spoilers_enabled: Enable marking posts as containing spoilers.
         :param submit_link_label: Custom label for submit link button (None for
             default).
         :param submit_text: Text to show on submission page.
         :param submit_text_label: Custom label for submit text post button (None for
             default).
-        :param subreddit_type: The string ``user``.
+        :param subreddit_type: The string ``"user"``.
         :param suggested_comment_sort: All comment threads will use this sorting method
-            by default. Leave None, or choose one of ``confidence``, ``controversial``,
-            ``live``, ``new``, ``old``, ``qa``, ``random``, or ``top``.
+            by default. Leave ``None``, or choose one of ``confidence``,
+            ``"controversial"``, ``"live"``, ``"new"``, ``"old"``, ``"qa"``,
+            ``"random"``, or ``"top"``.
         :param title: The title of the subreddit.
         :param welcome_message_enabled: Enables the subreddit welcome message.
         :param welcome_message_text: The text to be used as a welcome message. A welcome
@@ -202,7 +203,7 @@ class UserSubredditModeration(SubredditModeration):
         :param wiki_edit_age: Account age, in days, required to edit and create wiki
             pages.
         :param wiki_edit_karma: Subreddit karma required to edit and create wiki pages.
-        :param wikimode: One of ``anyone``, ``disabled``, or ``modonly``.
+        :param wikimode: One of ``"anyone"``, ``"disabled"``, or ``"modonly"``.
 
         Additional keyword arguments can be provided to handle new settings as Reddit
         introduces them.

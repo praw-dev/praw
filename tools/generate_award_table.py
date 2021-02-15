@@ -109,7 +109,7 @@ def main():
     Grabs the awards available to award a submission or comment.
 
     :param --type [-t]: One of ``a`` for all, ``g`` for global, ``s`` for subreddit, or
-        ``m`` for moderator. Determines the types of awards to give. (default: g).
+        ``m`` for moderator. Determines the types of awards to give (default: ``g``).
     :param --format [-f]: One of ``j`` for json or ``r`` for rst.
     :param --client_id [-c]: Used to fetch the awards. Must be a 1st party client id.
         Note: If this is passed [redirect_uri] and [thing] must be provided. If not

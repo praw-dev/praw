@@ -122,7 +122,8 @@ class Inbox(PRAWBase):
 
         .. seealso::
 
-            :meth:`.Comment.mark_read` and :meth:`.Message.mark_read`
+            - :meth:`.Comment.mark_read`
+            - :meth:`.Message.mark_read`
 
         """
         while items:
@@ -150,7 +151,8 @@ class Inbox(PRAWBase):
 
         .. seealso::
 
-            :meth:`.Comment.mark_unread` and :meth:`.Message.mark_unread`
+            - :meth:`.Comment.mark_unread`
+            - :meth:`.Message.mark_unread`
 
         """
         while items:
@@ -164,7 +166,7 @@ class Inbox(PRAWBase):
         r"""Return a :class:`.ListingGenerator` for mentions.
 
         A mention is :class:`.Comment` in which the authorized redditor is named in its
-        body like ``u/redditor_name``.
+        body like u/spez.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -310,7 +312,7 @@ class Inbox(PRAWBase):
     ) -> Iterator[Union["praw.models.Comment", "praw.models.Message"]]:
         """Return a :class:`.ListingGenerator` for unread comments and messages.
 
-        :param mark_read: Marks the inbox as read (default: False).
+        :param mark_read: Marks the inbox as read (default: ``False``).
 
         .. note::
 

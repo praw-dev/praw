@@ -103,13 +103,13 @@ def stream_generator(
         into the stream. A negative value yields ``None`` after items from a single
         response have been yielded, regardless of number of new items obtained in that
         response. A value of ``0`` yields ``None`` after every response resulting in no
-        new items, and a value of ``None`` never introduces a pause (default: None).
-    :param skip_existing: When True does not yield any results from the first request
-        thereby skipping any items that existed in the stream prior to starting the
-        stream (default: False).
-    :param attribute_name: The field to use as an ID (default: "fullname").
-    :param exclude_before: When True does not pass ``params`` to ``functions`` (default:
-        False).
+        new items, and a value of ``None`` never introduces a pause (default: ``None``).
+    :param skip_existing: When ``True`` does not yield any results from the first
+        request thereby skipping any items that existed in the stream prior to starting
+        the stream (default: ``False``).
+    :param attribute_name: The field to use as an ID (default: ``"fullname"``).
+    :param exclude_before: When ``True`` does not pass ``params`` to ``functions``
+        (default: ``False``).
 
     Additional keyword arguments will be passed to ``function``.
 

@@ -399,7 +399,7 @@ class SubredditWidgetsModeration:
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param description: Markdown text to describe the widget.
-        :param buttons: A ``list`` of ``dict``\ s describing buttons, as specified in
+        :param buttons: A list of ``dict``\ s describing buttons, as specified in
             `Reddit docs`_. As of this writing, the format is:
 
             Each button is either a text button or an image button. A text button looks
@@ -433,7 +433,7 @@ class SubredditWidgetsModeration:
 
             Both types of buttons have the field ``hoverState``. The field does not have
             to be included (it is optional). If it is included, it can be one of two
-            types: text or image. A text ``hoverState`` looks like this:
+            types: ``"text"`` or ``"image"``. A text ``hoverState`` looks like this:
 
             .. code-block:: text
 
@@ -591,12 +591,12 @@ class SubredditWidgetsModeration:
         """Add and return a :class:`.CommunityList` widget.
 
         :param short_name: A name for the widget, no longer than 30 characters.
-        :param data: A ``list`` of subreddits. Subreddits can be represented as ``str``
+        :param data: A list of subreddits. Subreddits can be represented as ``str``
             (e.g. the string ``"redditdev"``) or as :class:`.Subreddit` (e.g.
             ``reddit.subreddit("redditdev")``). These types may be mixed within the
             list.
-        :param styles: A ``dict`` with keys ``backgroundColor`` and ``headerColor``, and
-            values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
+        :param styles: A ``dict`` with keys ``"backgroundColor"`` and ``"headerColor"``,
+            and values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
             "headerColor": "#3333EE"}``.
         :param description: A ``str`` containing Markdown (default: ``""``).
 
@@ -638,10 +638,10 @@ class SubredditWidgetsModeration:
                 comment) as your CSS.
 
         :param height: The height of the widget, between 50 and 500.
-        :param image_data: A ``list`` of ``dict``\ s as specified in `Reddit docs`_.
-            Each ``dict`` represents an image and has the key ``"url"`` which maps to
-            the URL of an image hosted on Reddit's servers. Images should be uploaded
-            using :meth:`.upload_image`.
+        :param image_data: A list of ``dict``\ s as specified in `Reddit docs`_. Each
+            ``dict`` represents an image and has the key ``"url"`` which maps to the URL
+            of an image hosted on Reddit's servers. Images should be uploaded using
+            :meth:`.upload_image`.
 
             For example:
 
@@ -701,9 +701,9 @@ class SubredditWidgetsModeration:
         r"""Add and return an :class:`.ImageWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
-        :param data: A ``list`` of ``dict``\ s as specified in `Reddit docs`_. Each
-            ``dict`` has the key ``"url"`` which maps to the URL of an image hosted on
-            Reddit's servers. Images should be uploaded using :meth:`.upload_image`.
+        :param data: A list of ``dict``\ s as specified in `Reddit docs`_. Each ``dict``
+            has the key ``"url"`` which maps to the URL of an image hosted on Reddit's
+            servers. Images should be uploaded using :meth:`.upload_image`.
 
             For example:
 
@@ -761,7 +761,7 @@ class SubredditWidgetsModeration:
     def add_menu(self, data, **other_settings):
         r"""Add and return a :class:`.Menu` widget.
 
-        :param data: A ``list`` of ``dict``\ s describing menu contents, as specified in
+        :param data: A list of ``dict``\ s describing menu contents, as specified in
             `Reddit docs`_. As of this writing, the format is:
 
             .. code-block:: text
@@ -820,8 +820,8 @@ class SubredditWidgetsModeration:
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param display: Display style. Either ``"cloud"`` or ``"list"``.
-        :param order: A ``list`` of flair template IDs. You can get all flair template
-            IDs in a subreddit with:
+        :param order: A list of flair template IDs. You can get all flair template IDs
+            in a subreddit with:
 
             .. code-block:: python
 
@@ -1053,12 +1053,12 @@ class ButtonWidget(Widget, BaseList):
 
     .. include:: ../../typical_attributes.rst
 
-    ==================== =============================================================
+    ==================== ===============================================================
     Attribute            Description
-    ==================== =============================================================
-    ``buttons``          A ``list`` of :class:`.Button`\ s. These can also be accessed
-                         just by iterating over the :class:`.ButtonWidget` (e.g. ``for
-                         button in button_widget``).
+    ==================== ===============================================================
+    ``buttons``          A list of :class:`.Button`\ s. These can also be accessed just
+                         by iterating over the :class:`.ButtonWidget` (e.g. ``for button
+                         in button_widget``).
     ``description``      The description, in Markdown.
     ``description_html`` The description, in HTML.
     ``id``               The widget ID.
@@ -1067,7 +1067,7 @@ class ButtonWidget(Widget, BaseList):
     ``styles``           A ``dict`` with the keys ``"backgroundColor"`` and
                          ``"headerColor"``.
     ``subreddit``        The :class:`.Subreddit` the button widget belongs to.
-    ==================== =============================================================
+    ==================== ===============================================================
 
     """
 
@@ -1128,7 +1128,7 @@ class Calendar(Widget):
     Attribute         Description
     ================= =====================================================
     ``configuration`` A ``dict`` describing the calendar configuration.
-    ``data``          A ``list`` of ``dict``\ s that represent events.
+    ``data``          A list of ``dict``\ s that represent events.
     ``id``            The widget ID.
     ``kind``          The widget kind (always ``"calendar"``).
     ``requiresSync``  A ``bool``.
@@ -1188,8 +1188,8 @@ class CommunityList(Widget, BaseList):
     ============= =====================================================================
     Attribute     Description
     ============= =====================================================================
-    ``data``      A ``list`` of :class:`.Subreddit`\ s. These can also be iterated over
-                  by iterating over the :class:`.CommunityList` (e.g. ``for sub in
+    ``data``      A list of :class:`.Subreddit`\ s. These can also be iterated over by
+                  iterating over the :class:`.CommunityList` (e.g. ``for sub in
                   community_list``).
     ``id``        The widget ID.
     ``kind``      The widget kind (always ``"community-list"``).
@@ -1296,7 +1296,7 @@ class IDCard(Widget):
     ========================= =======================================================
     ``currentlyViewingCount`` The number of redditors viewing the subreddit.
     ``currentlyViewingText``  The text displayed next to the view count. For example,
-                              "users online".
+                              ``"users online"``.
     ``description``           The subreddit description.
     ``id``                    The widget ID.
     ``kind``                  The widget kind (always ``"id-card"``).

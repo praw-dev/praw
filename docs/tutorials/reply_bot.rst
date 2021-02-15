@@ -83,10 +83,12 @@ indefinitely iterate over new submissions to a subreddit add:
         # do something with submission
         ...
 
-Replace ``AskReddit`` with the name of another subreddit if you want to iterate through
-its new submissions. Additionally multiple subreddits can be specified by joining them
-with pluses, for example ``AskReddit+NoStupidQuestions``. All subreddits can be
-specified using the special name ``all``.
+Replace ``"AskReddit"`` with the name of another subreddit if you want to iterate
+through its new submissions. Additionally, multiple subreddits can be specified by
+joining them with pluses (``+``), for example ``"AskReddit+NoStupidQuestions"``. All
+subreddits can be specified using the special name ``"all"``. Subreddits can be excluded
+from the special ``"all"`` subreddit by joining them with minuses (``-``), for example
+``"all-excluded_subreddit1-excluded_subreddit2"``.
 
 Step 3: Analyzing the Submission Titles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,7 +97,7 @@ Now that we have a stream of new submissions to r/AskReddit, it is time to see i
 titles contain a simple question. We naïvely define a simple question as:
 
 1. It must contain no more than ten words.
-2. It must contain one of the phrases "what is", "what are", or "who is".
+2. It must contain one of the phrases ``"what is"``, ``"what are"``, or ``"who is"``.
 
 .. warning::
 

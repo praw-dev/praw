@@ -133,8 +133,8 @@ class User(PRAWBase):
     ) -> Optional["praw.models.Redditor"]:  # pylint: disable=invalid-name
         """Return a :class:`.Redditor` instance for the authenticated user.
 
-        :param use_cache: When true, and if this function has been previously called,
-            returned the cached version (default: True).
+        :param use_cache: When ``True``, and if this function has been previously
+            called, returned the cached version (default: ``True``).
 
         .. note::
 

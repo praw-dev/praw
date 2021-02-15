@@ -190,11 +190,11 @@ class SubredditEmoji:
         :param name: The name of the emoji.
         :param image_path: A path to a jpeg or png image.
         :param mod_flair_only: When provided, indicate whether the emoji is restricted
-            to mod use only (Default: ``None``).
+            to mod use only (default: ``None``).
         :param post_flair_allowed: When provided, indicate whether the emoji may appear
-            in post flair (Default: ``None``).
+            in post flair (default: ``None``).
         :param user_flair_allowed: When provided, indicate whether the emoji may appear
-            in user flair (Default: ``None``).
+            in user flair (default: ``None``).
 
         :returns: The :class:`.Emoji` added.
 

@@ -14,7 +14,7 @@ class GildableMixin:
 
         :param gild_type: Type of award to give. See table below for currently know
             global award types.
-        :param is_anonymous: If True, the authenticated user's username will not be
+        :param is_anonymous: If ``True``, the authenticated user's username will not be
             revealed to the recipient.
         :param message: Message to include with the award.
 

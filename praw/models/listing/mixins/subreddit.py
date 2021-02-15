@@ -51,12 +51,12 @@ class SubredditListingMixin(BaseListingMixin, GildedListingMixin, RisingListingM
     def comments(self) -> CommentHelper:
         """Provide an instance of :class:`.CommentHelper`.
 
-        For example, to output the author of the 25 most recent comments of
-        ``r/redditdev`` execute:
+        For example, to output the author of the 25 most recent comments of r/test
+        execute:
 
         .. code-block:: python
 
-            for comment in reddit.subreddit("redditdev").comments(limit=25):
+            for comment in reddit.subreddit("test").comments(limit=25):
                 print(comment.author)
 
         """

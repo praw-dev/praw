@@ -37,8 +37,8 @@ class BaseListingMixin(PRAWBase):
     ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for controversial items.
 
-        :param time_filter: Can be one of: all, day, hour, month, week, or year (default:
-            all).
+        :param time_filter: Can be one of: ``"all"``, ``"day"``, ``"hour"``,
+            ``"month"``, ``"week"``, or ``"year"`` (default: ``"all"``).
 
         :raises: :py:class:`ValueError` if ``time_filter`` is invalid.
 
@@ -113,8 +113,8 @@ class BaseListingMixin(PRAWBase):
     ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for top items.
 
-        :param time_filter: Can be one of: all, day, hour, month, week, or year (default:
-            all).
+        :param time_filter: Can be one of: ``"all"``, ``"day"``, ``"hour"``,
+            ``"month"``, ``"week"``, or ``"year"`` (default: ``"all"``).
 
         :raises: :py:class:`ValueError` if ``time_filter`` is invalid.
 

@@ -18,7 +18,7 @@ class Listing(PRAWBase):
         return getattr(self, self.CHILD_ATTRIBUTE)[index]
 
     def __setattr__(self, attribute: str, value: Any):
-        """Objectify the CHILD_ATTRIBUTE attribute."""
+        """Objectify the ``CHILD_ATTRIBUTE`` attribute."""
         if attribute == self.CHILD_ATTRIBUTE:
             value = self._reddit._objector.objectify(value)
         super().__setattr__(attribute, value)
@@ -31,7 +31,7 @@ class FlairListing(Listing):
 
     @property
     def after(self) -> Optional[Any]:
-        """Return the next attribute or None."""
+        """Return the next attribute or ``None``."""
         return getattr(self, "next", None)
 
 

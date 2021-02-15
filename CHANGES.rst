@@ -254,8 +254,8 @@ Unreleased
 - :meth:`.SubmissionModeration.flair` has the parameter ``flair_template_id`` for
   applying flairs with template IDs.
 - :meth:`.Emoji.update` supports modifying an emoji's permissions.
-- :meth:`.SubredditEmoji.add` now supports optionally passing booleans to set an
-  emoji's permissions upon upload.
+- :meth:`.SubredditEmoji.add` now supports optionally passing booleans to set an emoji's
+  permissions upon upload.
 - Methods :meth:`.SubredditLinkFlairTemplates.update` and
   :meth:`.SubredditRedditorFlairTemplates.update` contain a new parameter, ``fetch``,
   that toggles the automatic fetching of existing data from Reddit. It is set to True by
@@ -391,8 +391,8 @@ Unreleased
 
 - Method ``reddit.user.moderator_subreddits`` as :meth:`.moderated` provides more
   functionality.
-- The file for ModActions (praw/models/modaction.py) has been moved to
-  praw/models/mod_action.py and the previous has been Deprecated.
+- The file for ModActions (``praw/models/modaction.py``) has been moved to
+  ``praw/models/mod_action.py`` and the previous has been deprecated.
 
 **Expected Changes**
 
@@ -404,16 +404,14 @@ Unreleased
 
 **Added**
 
-- :meth:`.crosspost` support parameter ``flair_id`` to flair the submission
+- :meth:`.crosspost` support parameter ``flair_id`` to flair the submission immediately
+  upon crossposting.
+- :meth:`.crosspost` support parameter ``flair_text`` to set a custom text to the flair
   immediately upon crossposting.
-- :meth:`.crosspost` support parameter ``flair_text`` to set a custom text
-  to the flair immediately upon crossposting.
+- :meth:`.crosspost` support parameter ``nsfw`` to mark the submission NSFW immediately
+  upon crossposting.
 - :meth:`.crosspost` support parameter ``spoiler`` to mark the submission as a spoiler
   immediately upon crossposting.
-- :meth:`.crosspost` support parameter ``nsfw`` to mark the submission NSFW
-  immediately upon crossposting.
-- :meth:`~.Submission.crosspost` support parameter ``spoiler`` to mark the submission as
-  a spoiler immediately upon crossposting.
 
 **Fixed**
 
@@ -503,8 +501,8 @@ Unreleased
 
 **Added**
 
-- :meth:`.SubredditFlair.set` supports parameter ``flair_template_id`` for giving a
-  user redesign flair.
+- :meth:`.SubredditFlair.set` supports parameter ``flair_template_id`` for giving a user
+  redesign flair.
 
 6.1.0 (2019/01/19)
 ------------------
@@ -653,8 +651,8 @@ Unreleased
 - :class:`.RedditorStream` has been added to facilitate :attr:`.Redditor.stream`
 - :meth:`.Inbox.collapse` to mark messages as collapsed.
 - :meth:`.Inbox.uncollapse` to mark messages as uncollapsed.
-- Raise :class:`.ClientException` when calling :meth:`.Comment.refresh` when the
-  comment does not appear in the resulting comment tree.
+- Raise :class:`.ClientException` when calling :meth:`.Comment.refresh` when the comment
+  does not appear in the resulting comment tree.
 - :meth:`.Submission.crosspost` to crosspost to a subreddit.
 
 **Fixed**

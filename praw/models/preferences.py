@@ -43,8 +43,8 @@ class Preferences:
     def update(self, **preferences: Union[bool, int, str]):
         """Modify the specified settings.
 
-        :param accept_pms: Who can send you personal messages (one of ``everyone`` or
-            ``whitelisted``).
+        :param accept_pms: Who can send you personal messages (one of ``"everyone"`` or
+            ``"whitelisted"``).
         :param activity_relevant_ads: Allow Reddit to use your activity on Reddit to
             show you more relevant advertisements.
         :param allow_clicktracking: Allow Reddit to log my outbound clicks for

@@ -79,7 +79,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
     @property
     def is_root(self) -> bool:
-        """Return True when the comment is a top level comment."""
+        """Return ``True`` when the comment is a top level comment."""
         parent_type = self.parent_id.split("_", 1)[0]
         return parent_type == self._reddit.config.kinds["submission"]
 
@@ -116,8 +116,8 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. note::
 
-            The appropriate values for ``reply_sort`` include ``confidence``,
-            ``controversial``, ``new``, ``old``, ``q&a``, and ``top``.
+            The appropriate values for ``reply_sort`` include ``"confidence"``,
+            ``"controversial"``, ``"new"``, ``"old"``, ``"q&a"``, and ``"top"``.
 
         """
         if isinstance(self._replies, list):

@@ -98,11 +98,11 @@ class RemovalReason(RedditBase):
     def delete(self):
         """Delete a removal reason from this subreddit.
 
-        To delete ``"141vv5c16py7d"`` from the subreddit ``"NAME"`` try:
+        To delete ``"141vv5c16py7d"`` from r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("NAME").mod.removal_reasons["141vv5c16py7d"].delete()
+            reddit.subreddit("test").mod.removal_reasons["141vv5c16py7d"].delete()
 
         """
         url = API_PATH["removal_reason"].format(subreddit=self.subreddit, id=self.id)
@@ -118,11 +118,11 @@ class RemovalReason(RedditBase):
         :param message: The removal reason's new message.
         :param title: The removal reason's new title.
 
-        To update ``"141vv5c16py7d"`` from the subreddit ``"NAME"`` try:
+        To update ``"141vv5c16py7d"`` from r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("NAME").mod.removal_reasons["141vv5c16py7d"].update(
+            reddit.subreddit("test").mod.removal_reasons["141vv5c16py7d"].update(
                 message="New message", title="New title"
             )
 
@@ -153,7 +153,7 @@ class SubredditRemovalReasons:
         .. code-block:: python
 
             reason_id = "141vv5c16py7d"
-            reason = reddit.subreddit("NAME").mod.removal_reasons[reason_id]
+            reason = reddit.subreddit("test").mod.removal_reasons[reason_id]
             print(reason)
 
         You can also use indices to get a numbered removal reason. Since Python uses
@@ -167,17 +167,17 @@ class SubredditRemovalReasons:
         :raises: :py:class:`IndexError` if a removal reason of a specific number does
             not exist.
 
-        For example, to get the second removal reason of the subreddit ``"NAME"``:
+        For example, to get the second removal reason of r/test:
 
         .. code-block:: python
 
-            reason = reddit.subreddit("NAME").mod.removal_reasons[1]
+            reason = reddit.subreddit("test").mod.removal_reasons[1]
 
         To get the last three removal reasons in a subreddit:
 
         .. code-block:: python
 
-            reasons = reddit.subreddit("NAME").mod.removal_reasons[-3:]
+            reasons = reddit.subreddit("test").mod.removal_reasons[-3:]
             for reason in reasons:
                 print(reason)
 
@@ -202,7 +202,7 @@ class SubredditRemovalReasons:
 
         .. code-block:: python
 
-            for removal_reason in reddit.subreddit("NAME").mod.removal_reasons:
+            for removal_reason in reddit.subreddit("test").mod.removal_reasons:
                 print(removal_reason)
 
         """
@@ -231,13 +231,13 @@ class SubredditRemovalReasons:
 
         :returns: The :class:`.RemovalReason` added.
 
-        The message will be prepended with `Hi u/username,` automatically.
+        The message will be prepended with ``Hi u/username,`` automatically.
 
-        To add ``"Test"`` to the subreddit ``"NAME"`` try:
+        To add ``"Test"`` to r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("NAME").mod.removal_reasons.add(message="Foobar", title="Test")
+            reddit.subreddit("test").mod.removal_reasons.add(message="Foobar", title="Test")
 
         """
         data = {"message": message, "title": title}
