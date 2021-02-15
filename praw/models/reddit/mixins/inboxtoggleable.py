@@ -20,7 +20,7 @@ class InboxToggleableMixin:
 
         .. seealso::
 
-            :meth:`~.enable_inbox_replies`
+            :meth:`.enable_inbox_replies`
 
         """
         self._reddit.post(
@@ -42,7 +42,7 @@ class InboxToggleableMixin:
 
         .. seealso::
 
-            :meth:`~.disable_inbox_replies`
+            :meth:`.disable_inbox_replies`
 
         """
         self._reddit.post(

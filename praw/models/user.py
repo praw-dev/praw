@@ -18,7 +18,7 @@ class User(PRAWBase):
 
     @cachedproperty
     def preferences(self) -> "praw.models.Preferences":
-        """Get an instance of :class:`~.Preferences`.
+        """Get an instance of :class:`.Preferences`.
 
         The preferences can be accessed as a ``dict`` like so:
 
@@ -102,9 +102,9 @@ class User(PRAWBase):
 
         .. note::
 
-            Each key of the main dict is an instance of :class:`~.Subreddit`. It is
+            Each key of the main dict is an instance of :class:`.Subreddit`. It is
             recommended to iterate over the dict in order to retrieve the values,
-            preferably through ``dict.items()``.
+            preferably through :py:meth:`dict.items`.
 
         """
         karma_map = {}
@@ -119,7 +119,7 @@ class User(PRAWBase):
     ) -> Optional["praw.models.Redditor"]:  # pylint: disable=invalid-name
         """Return a :class:`.Redditor` instance for the authenticated user.
 
-        In :attr:`~praw.Reddit.read_only` mode, this method returns ``None``.
+        In :attr:`.read_only` mode, this method returns ``None``.
 
         :param use_cache: When true, and if this function has been previously called,
             returned the cached version (default: True).

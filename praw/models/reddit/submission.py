@@ -336,7 +336,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. seealso::
 
-            :meth:`~.spoiler`
+            :meth:`.spoiler`
 
         """
         self.thing._reddit.post(API_PATH["unspoiler"], data={"id": self.thing.fullname})
@@ -524,9 +524,9 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
     ):
         """Initialize a Submission instance.
 
-        :param reddit: An instance of :class:`~.Reddit`.
+        :param reddit: An instance of :class:`.Reddit`.
         :param id: A reddit base36 submission ID, e.g., ``2gmzqe``.
-        :param url: A URL supported by :meth:`~.id_from_url`.
+        :param url: A URL supported by :meth:`.id_from_url`.
 
         Either ``id`` or ``url`` can be provided, but not both.
 
@@ -624,7 +624,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. seealso::
 
-            :meth:`~.unhide`
+            :meth:`.unhide`
 
         """
         for submissions in self._chunk(other_submissions, 50):
@@ -636,7 +636,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         """Unhide Submission.
 
         :param other_submissions: When provided, additionally unhide this list of
-            :class:`.Submission` instances as part of a single request (default: None).
+            :class:`.Submission` instances as part of a single request (default: ``None``).
 
         Example usage:
 
@@ -647,7 +647,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. seealso::
 
-            :meth:`~.hide`
+            :meth:`.hide`
 
         """
         for submissions in self._chunk(other_submissions, 50):
@@ -669,7 +669,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
             Be aware you have to be subscribed to the target subreddit.
 
-        :param subreddit: Name of the subreddit or :class:`~.Subreddit` object to
+        :param subreddit: Name of the subreddit or :class:`.Subreddit` object to
             crosspost into.
         :param title: Title of the submission. Will use this submission's title if
             `None` (default: None).
@@ -693,7 +693,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. seealso::
 
-            :meth:`~.hide`
+            :meth:`.hide`
 
         """
         if title is None:

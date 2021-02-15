@@ -9,7 +9,7 @@ class ReplyableMixin:
         """Reply to the object.
 
         :param body: The Markdown formatted content for a comment.
-        :returns: A :class:`~.Comment` object for the newly created comment or ``None``
+        :returns: A :class:`.Comment` object for the newly created comment or ``None``
             if Reddit doesn't provide one.
 
         A ``None`` value can be returned if the target is a comment or submission in a

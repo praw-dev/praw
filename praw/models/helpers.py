@@ -12,12 +12,12 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class LiveHelper(PRAWBase):
-    """Provide a set of functions to interact with LiveThreads."""
+    r"""Provide a set of functions to interact with :class:`.LiveThread`\ s."""
 
     def __call__(
         self, id: str
     ) -> "praw.models.LiveThread":  # pylint: disable=invalid-name,redefined-builtin
-        """Return a new lazy instance of :class:`~.LiveThread`.
+        """Return a new lazy instance of :class:`.LiveThread`.
 
         This method is intended to be used as:
 
@@ -73,15 +73,15 @@ class LiveHelper(PRAWBase):
         nsfw: bool = False,
         resources: str = None,
     ) -> "praw.models.LiveThread":
-        """Create a new LiveThread.
+        r"""Create a new :class:`.LiveThread`.
 
-        :param title: The title of the new LiveThread.
-        :param description: (Optional) The new LiveThread's description.
+        :param title: The title of the new :class:`.LiveThread`.
+        :param description: (Optional) The new :class:`.LiveThread`\ 's description.
         :param nsfw: (boolean) Indicate whether this thread is not safe for work
-            (default: False).
+            (default: ``False``).
         :param resources: (Optional) Markdown formatted information that is useful for
-            the LiveThread.
-        :returns: The new LiveThread object.
+            the :class:`.LiveThread`.
+        :returns: The new :class`.LiveThread` object.
 
         """
         return self._reddit.post(
@@ -116,9 +116,9 @@ class MultiredditHelper(PRAWBase):
     def __call__(
         self, redditor: Union[str, "praw.models.Redditor"], name: str
     ) -> "praw.models.Multireddit":
-        """Return a lazy instance of :class:`~.Multireddit`.
+        """Return a lazy instance of :class:`.Multireddit`.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance who owns the multireddit.
         :param name: The name of the multireddit.
 
@@ -175,7 +175,7 @@ class SubredditHelper(PRAWBase):
     """Provide a set of functions to interact with Subreddits."""
 
     def __call__(self, display_name: str) -> "praw.models.Subreddit":
-        """Return a lazy instance of :class:`~.Subreddit`.
+        """Return a lazy instance of :class:`.Subreddit`.
 
         :param display_name: The name of the subreddit.
 

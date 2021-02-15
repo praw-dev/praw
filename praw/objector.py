@@ -21,7 +21,7 @@ class Objector:
         """Convert JSON response into an error object.
 
         :param data: The dict to be converted.
-        :returns: An instance of :class:`~.RedditAPIException`, or ``None`` if ``data``
+        :returns: An instance of :class:`.RedditAPIException`, or ``None`` if ``data``
             doesn't fit this model.
 
         """
@@ -48,7 +48,7 @@ class Objector:
     def __init__(self, reddit: "praw.Reddit", parsers: Optional[Dict[str, Any]] = None):
         """Initialize an Objector instance.
 
-        :param reddit: An instance of :class:`~.Reddit`.
+        :param reddit: An instance of :class:`.Reddit`.
 
         """
         self.parsers = {} if parsers is None else parsers
@@ -58,7 +58,7 @@ class Objector:
         """Create RedditBase objects from dicts.
 
         :param data: The structured data, assumed to be a dict.
-        :returns: An instance of :class:`~.RedditBase`.
+        :returns: An instance of :class:`.RedditBase`.
 
         """
         if {"conversation", "messages", "modActions"}.issubset(data):
@@ -142,7 +142,7 @@ class Objector:
         """Create RedditBase objects from data.
 
         :param data: The structured data.
-        :returns: An instance of :class:`~.RedditBase`, or ``None`` if given ``data`` is
+        :returns: An instance of :class:`.RedditBase`, or ``None`` if given ``data`` is
             ``None``.
 
         """

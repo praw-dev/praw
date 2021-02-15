@@ -238,7 +238,7 @@ class ModmailConversation(RedditBase):
             False).
         :param internal: When True, message is a private moderator note, hidden from
             non-moderators (default: False).
-        :returns: A :class:`~.ModmailMessage` object for the newly created message.
+        :returns: A :class:`.ModmailMessage` object for the newly created message.
 
         For example, to reply to the non-mod user while hiding your username:
 

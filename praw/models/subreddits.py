@@ -118,7 +118,7 @@ class Subreddits(PRAWBase):
 
         .. seealso::
 
-            :meth:`~.search_by_name` to search by subreddit names
+            :meth:`.search_by_name` to search by subreddit names
 
         """
         self._safely_add_arguments(generator_kwargs, "params", q=query)

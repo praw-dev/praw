@@ -57,7 +57,7 @@ class VotableMixin:
 
         .. seealso::
 
-            :meth:`~.upvote`
+            :meth:`.upvote`
 
         """
         self._vote(direction=-1)
@@ -85,7 +85,7 @@ class VotableMixin:
 
         .. seealso::
 
-            :meth:`~.downvote`
+            :meth:`.downvote`
 
         """
         self._vote(direction=1)

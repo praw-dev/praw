@@ -51,7 +51,7 @@ class RedditBase(PRAWBase):
     ):
         """Initialize a RedditBase instance (or a subclass).
 
-        :param reddit: An instance of :class:`~.Reddit`.
+        :param reddit: An instance of :class:`.Reddit`.
 
         """
         super().__init__(reddit, _data=_data)

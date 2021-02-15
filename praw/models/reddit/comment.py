@@ -347,7 +347,7 @@ class CommentModeration(ThingModerationMixin):
         self.thing = comment
 
     def show(self):
-        """Uncollapse a :class:`~.Comment` that has been collapsed by Crowd Control.
+        """Uncollapse a :class:`.Comment` that has been collapsed by Crowd Control.
 
         Example usage:
 

@@ -507,7 +507,7 @@ class Reddit:
         id: Optional[str] = None,  # pylint: disable=redefined-builtin
         url: Optional[str] = None,
     ):
-        """Return a lazy instance of :class:`~.Comment`.
+        """Return a lazy instance of :class:`.Comment`.
 
         :param id: The ID of the comment.
         :param url: A permalink pointing to the comment.
@@ -766,7 +766,7 @@ class Reddit:
         return self._objectify_request(data=data, json=json, method="PUT", path=path)
 
     def random_subreddit(self, nsfw: bool = False) -> "praw.models.Subreddit":
-        """Return a random lazy instance of :class:`~.Subreddit`.
+        """Return a random lazy instance of :class:`.Subreddit`.
 
         :param nsfw: Return a random NSFW (not safe for work) subreddit
             (default: False).
@@ -854,10 +854,10 @@ class Reddit:
     def submission(  # pylint: disable=invalid-name,redefined-builtin
         self, id: Optional[str] = None, url: Optional[str] = None
     ) -> "praw.models.Submission":
-        """Return a lazy instance of :class:`~.Submission`.
+        """Return a lazy instance of :class:`.Submission`.
 
         :param id: A Reddit base36 submission ID, e.g., ``2gmzqe``.
-        :param url: A URL supported by :meth:`~.Submission.id_from_url`.
+        :param url: A URL supported by :meth:`.Submission.id_from_url`.
 
         Either ``id`` or ``url`` can be provided, but not both.
 

@@ -124,7 +124,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     ):
         """Initialize a Redditor instance.
 
-        :param reddit: An instance of :class:`~.Reddit`.
+        :param reddit: An instance of :class:`.Reddit`.
         :param name: The name of the redditor.
         :param fullname: The fullname of the redditor, starting with ``t2_``.
 

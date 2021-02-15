@@ -61,7 +61,7 @@ class CommentForest:
     ):
         """Initialize a CommentForest instance.
 
-        :param submission: An instance of :class:`~.Subreddit` that is the parent of the
+        :param submission: An instance of :class:`.Subreddit` that is the parent of the
             comments.
         :param comments: Initialize the Forest with a list of comments (default: None).
 

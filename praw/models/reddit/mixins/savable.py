@@ -25,7 +25,7 @@ class SavableMixin:
 
         .. seealso::
 
-            :meth:`~.unsave`
+            :meth:`.unsave`
 
         """
         self._reddit.post(
@@ -46,7 +46,7 @@ class SavableMixin:
 
         .. seealso::
 
-            :meth:`~.save`
+            :meth:`.save`
 
         """
         self._reddit.post(API_PATH["unsave"], data={"id": self.fullname})

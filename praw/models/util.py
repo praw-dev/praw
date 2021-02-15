@@ -96,7 +96,7 @@ def stream_generator(
     """Yield new items from ListingGenerators and ``None`` when paused.
 
     :param function: A callable that returns a ListingGenerator, e.g.
-        ``subreddit.comments`` or ``subreddit.new``.
+        :meth:`.Subreddit.comments` or :meth:`.Subreddit.new`.
     :param pause_after: An integer representing the number of requests that result in no
         new items before this function yields ``None``, effectively introducing a pause
         into the stream. A negative value yields ``None`` after items from a single

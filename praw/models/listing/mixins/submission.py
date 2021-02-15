@@ -32,7 +32,7 @@ class SubmissionListingMixin(PRAWBase):
 
         .. seealso::
 
-            :meth:`~.upvote`
+            :meth:`.upvote`
 
         """
         url = API_PATH["duplicates"].format(submission_id=self.id)

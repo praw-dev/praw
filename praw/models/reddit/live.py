@@ -49,8 +49,7 @@ class LiveContributorRelationship:
         .. note::
 
             This class should not be initialized directly. Instead obtain an instance
-            via: ``thread.contributor`` where ``thread`` is a :class:`.LiveThread`
-            instance.
+            via: :meth:`.LiveThread.contributor`.
 
         """
         self.thread = thread
@@ -76,7 +75,7 @@ class LiveContributorRelationship:
     ):
         """Invite a redditor to be a contributor of the live thread.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant. An empty list
@@ -126,7 +125,7 @@ class LiveContributorRelationship:
         """Remove the redditor from the live thread contributors.
 
         :param redditor: A redditor fullname (e.g., ``"t2_1w72"``) or
-            :class:`~.Redditor` instance.
+            :class:`.Redditor` instance.
 
         Usage:
 
@@ -150,7 +149,7 @@ class LiveContributorRelationship:
         """Remove the invite for redditor.
 
         :param redditor: A redditor fullname (e.g., ``"t2_1w72"``) or
-            :class:`~.Redditor` instance.
+            :class:`.Redditor` instance.
 
         Usage:
 
@@ -182,7 +181,7 @@ class LiveContributorRelationship:
     ):
         """Update the contributor permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant (other
@@ -225,7 +224,7 @@ class LiveContributorRelationship:
     ):
         """Update the contributor invite permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant (other

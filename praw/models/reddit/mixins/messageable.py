@@ -20,7 +20,7 @@ class MessageableMixin:
 
         :param subject: The subject of the message.
         :param message: The message content.
-        :param from_subreddit: A :class:`~.Subreddit` instance or string to send the
+        :param from_subreddit: A :class:`.Subreddit` instance or string to send the
             message from. When provided, messages are sent from the subreddit rather
             than from the authenticated user.
 

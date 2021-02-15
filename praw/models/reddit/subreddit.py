@@ -536,7 +536,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def __init__(self, reddit, display_name=None, _data=None):
         """Initialize a Subreddit instance.
 
-        :param reddit: An instance of :class:`~.Reddit`.
+        :param reddit: An instance of :class:`.Reddit`.
         :param display_name: The name of the subreddit.
 
         .. note::
@@ -870,7 +870,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             traditional comments (default: None).
         :param inline_media: A dict of :class:`.InlineMedia` objects where the key is
             the placeholder name in ``selftext``.
-        :returns: A :class:`~.Submission` object for the newly created submission.
+        :returns: A :class:`.Submission` object for the newly created submission.
 
         Either ``selftext`` or ``url`` can be provided, but not both.
 
@@ -1435,7 +1435,7 @@ WidgetEncoder._subreddit_class = Subreddit
 class SubredditFilters:
     """Provide functions to interact with the special Subreddit's filters.
 
-    Members of this class should be utilized via ``Subreddit.filters``. For example, to
+    Members of this class should be utilized via :meth:`.Subreddit.filters`. For example, to
     add a filter, run:
 
     .. code-block:: python
@@ -1615,7 +1615,7 @@ class SubredditFlair:
     def delete(self, redditor):
         """Delete flair for a Redditor.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
 
         .. seealso::
@@ -1639,7 +1639,7 @@ class SubredditFlair:
         """Set flair for a Redditor.
 
         :param redditor: (Required) A redditor name (e.g., ``"spez"``) or
-            :class:`~.Redditor` instance.
+            :class:`.Redditor` instance.
         :param text: The flair text to associate with the Redditor or Submission
             (default: "").
         :param css_class: The css class to associate with the flair html ((default:
@@ -2093,7 +2093,7 @@ class SubredditModeration:
 
         .. seealso::
 
-            :meth:`~.unread` for unread moderator messages.
+            :meth:`.unread` for unread moderator messages.
 
         To print the last 5 moderator mail messages and their replies, try:
 
@@ -2285,7 +2285,7 @@ class SubredditModeration:
 
         .. seealso::
 
-            :meth:`inbox` for all messages.
+            :meth:`.inbox` for all messages.
 
         To print the mail in the unread modmail queue try:
 
@@ -2560,7 +2560,7 @@ class SubredditModerationStream:
 
         .. seealso::
 
-            :meth:`~.inbox` for all messages.
+            :meth:`.inbox` for all messages.
 
         To print new mail in the unread modmail queue try:
 
@@ -2651,7 +2651,7 @@ class SubredditRelationship:
     def __call__(self, redditor=None, **generator_kwargs):
         """Return a :class:`.ListingGenerator` for Redditors in the relationship.
 
-        :param redditor: When provided, yield at most a single :class:`~.Redditor`
+        :param redditor: When provided, yield at most a single :class:`.Redditor`
             instance. This is useful to confirm if a relationship exists, or to fetch
             the metadata associated with a particular relationship (default: None).
 
@@ -2676,7 +2676,7 @@ class SubredditRelationship:
     def add(self, redditor, **other_settings):
         """Add ``redditor`` to this relationship.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
 
         """
@@ -2688,7 +2688,7 @@ class SubredditRelationship:
     def remove(self, redditor):
         """Remove ``redditor`` from this relationship.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
 
         """
@@ -2744,7 +2744,7 @@ class ModeratorRelationship(SubredditRelationship):
         """Return a list of Redditors who are moderators.
 
         :param redditor: When provided, return a list containing at most one
-            :class:`~.Redditor` instance. This is useful to confirm if a relationship
+            :class:`.Redditor` instance. This is useful to confirm if a relationship
             exists, or to fetch the metadata associated with a particular relationship
             (default: None).
 
@@ -2776,7 +2776,7 @@ class ModeratorRelationship(SubredditRelationship):
     def add(self, redditor, permissions=None, **other_settings):
         """Add or invite ``redditor`` to be a moderator of the subreddit.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant. An empty list
@@ -2801,7 +2801,7 @@ class ModeratorRelationship(SubredditRelationship):
     def invite(self, redditor, permissions=None, **other_settings):
         """Invite ``redditor`` to be a moderator of the subreddit.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant. An empty list
@@ -2825,7 +2825,7 @@ class ModeratorRelationship(SubredditRelationship):
         """Return a :class:`.ListingGenerator` for Redditors invited to be moderators.
 
         :param redditor: When provided, return a list containing at most one
-            :class:`~.Redditor` instance. This is useful to confirm if a relationship
+            :class:`.Redditor` instance. This is useful to confirm if a relationship
             exists, or to fetch the metadata associated with a particular relationship
             (default: None).
 
@@ -2867,7 +2867,7 @@ class ModeratorRelationship(SubredditRelationship):
     def remove_invite(self, redditor):
         """Remove the moderator invite for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
 
         For example:
@@ -2884,7 +2884,7 @@ class ModeratorRelationship(SubredditRelationship):
     def update(self, redditor, permissions=None):
         """Update the moderator permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant. An empty list
@@ -2913,7 +2913,7 @@ class ModeratorRelationship(SubredditRelationship):
     def update_invite(self, redditor, permissions=None):
         """Update the moderator invite permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant. An empty list

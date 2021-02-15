@@ -105,7 +105,8 @@ class Inbox(PRAWBase):
 
         .. seealso::
 
-            :meth:`.Comment.mark_read` and :meth:`.Message.mark_read`
+            * :meth:`.Comment.mark_read`
+            * :meth:`.Message.mark_read`
 
         """
         while items:
@@ -133,7 +134,8 @@ class Inbox(PRAWBase):
 
         .. seealso::
 
-            :meth:`.Comment.mark_unread` and :meth:`.Message.mark_unread`
+            * :meth:`.Comment.mark_unread`
+            * :meth:`.Message.mark_unread`
 
         """
         while items:

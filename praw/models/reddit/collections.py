@@ -372,7 +372,7 @@ class Collection(RedditBase):
 
         .. seealso::
 
-            :meth:`~.unfollow`
+            :meth:`.unfollow`
 
         """
         self._reddit.post(
@@ -391,7 +391,7 @@ class Collection(RedditBase):
 
         .. seealso::
 
-            :meth:`~.follow`
+            :meth:`.follow`
 
         """
         self._reddit.post(
@@ -442,7 +442,7 @@ class SubredditCollectionsModeration(PRAWBase):
 
         .. seealso::
 
-            :meth:`~CollectionModeration.delete`
+            :meth:`~.CollectionModeration.delete`
 
         """
         return self._reddit.post(

@@ -15,7 +15,7 @@ class BaseList(PRAWBase):
     def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
         """Initialize a BaseList instance.
 
-        :param reddit: An instance of :class:`~.Reddit`.
+        :param reddit: An instance of :class:`.Reddit`.
 
         """
         super().__init__(reddit, _data=_data)
