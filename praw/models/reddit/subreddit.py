@@ -333,9 +333,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def flair(self) -> "praw.models.reddit.subreddit.SubredditFlair":
         """Provide an instance of :class:`.SubredditFlair`.
 
-        Use this attribute for interacting with a subreddit's flair. For example, to
-        list all the flair for a subreddit which you have the ``flair`` moderator
-        permission on try:
+        Use this attribute for interacting with a :class:`.Subreddit`'s flair. For
+        example, to list all the flair for a subreddit which you have the ``flair``
+        moderator permission on try:
 
         .. code-block:: python
 
@@ -417,8 +417,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def quaran(self) -> "praw.models.reddit.subreddit.SubredditQuarantine":
         """Provide an instance of :class:`.SubredditQuarantine`.
 
-        This property is named ``quaran`` because ``quarantine`` is a Subreddit
-        attribute returned by Reddit to indicate whether or not a Subreddit is
+        This property is named ``quaran`` because ``quarantine`` is a subreddit
+        attribute returned by Reddit to indicate whether or not a subreddit is
         quarantined.
 
         To opt-in into a quarantined subreddit:
@@ -434,7 +434,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def rules(self) -> SubredditRules:
         """Provide an instance of :class:`.SubredditRules`.
 
-        Use this attribute for interacting with a subreddit's rules.
+        Use this attribute for interacting with a :class:`.Subreddit`'s rules.
 
         For example, to list all the rules for a subreddit:
 
@@ -544,9 +544,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         display_name: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
     ):
-        """Initialize a Subreddit instance.
+        """Initialize a :class:`.Subreddit` instance.
 
-        :param reddit: An instance of :class:`~.Reddit`.
+        :param reddit: An instance of :class:`.Reddit`.
         :param display_name: The name of the subreddit.
 
         .. note::
@@ -758,7 +758,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         )
 
     def random(self) -> Union["praw.models.Submission", None]:
-        """Return a random Submission.
+        """Return a random :class:`.Submission`.
 
         Returns ``None`` on subreddits that do not support the random feature. One
         example, at the time of writing, is ``r/wallpapers``.
@@ -826,7 +826,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
     def sticky(self, number: int = 1) -> "praw.models.Submission":
-        """Return a Submission object for a sticky of the subreddit.
+        """Return a :class:`.Submission` object for a sticky of the subreddit.
 
         :param number: Specify which sticky to return. 1 appears at the top (default:
             1).
@@ -865,7 +865,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         inline_media: Optional[Dict[str, "praw.models.InlineMedia"]] = None,
         draft_id: Optional[str] = None,
     ) -> "praw.models.Submission":  # noqa: D301
-        r"""Add a submission to the subreddit.
+        r"""Add a submission to the :class:`.Subreddit`.
 
         :param title: The title of the submission.
         :param selftext: The Markdown formatted content for a ``text`` submission. Use
@@ -891,7 +891,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             the placeholder name in ``selftext``.
         :param draft_id: The ID of a draft to submit.
 
-        :returns: A :class:`~.Submission` object for the newly created submission.
+        :returns: A :class:`.Submission` object for the newly created submission.
 
         Either ``selftext`` or ``url`` can be provided, but not both.
 
@@ -1232,7 +1232,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :param title: The title of the submission.
         :param selftext: The Markdown formatted content for the submission. Use an empty
             string, ``""``, to make a submission with no text contents.
-        :param options: A ``list`` of two to six poll options as ``str``.
+        :param options: A list of two to six poll options as ``str``.
         :param duration: The number of days the poll should accept votes, as an ``int``.
             Valid values are between ``1`` and ``7``, inclusive.
         :param collection_id: The UUID of a :class:`.Collection` to add the
@@ -1428,7 +1428,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         self._reddit.post(API_PATH["subscribe"], data=data)
 
     def traffic(self) -> Dict[str, List[List[int]]]:
-        """Return a dictionary of the subreddit's traffic statistics.
+        """Return a dictionary of the :class:`.Subreddit`'s traffic statistics.
 
         :raises: ``prawcore.NotFound`` when the traffic stats aren't available to the
             authenticated user, that is, they are not public and the authenticated user
@@ -1481,10 +1481,10 @@ WidgetEncoder._subreddit_class = Subreddit
 
 
 class SubredditFilters:
-    """Provide functions to interact with the special Subreddit's filters.
+    """Provide functions to interact with the special :class:`.Subreddit`'s filters.
 
-    Members of this class should be utilized via ``Subreddit.filters``. For example, to
-    add a filter, run:
+    Members of this class should be utilized via :meth:`.Subreddit.filters`. For
+    example, to add a filter, run:
 
     .. code-block:: python
 
@@ -1493,7 +1493,7 @@ class SubredditFilters:
     """
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Initialize a SubredditFilters instance.
+        """Initialize a :class:`.SubredditFilters` instance.
 
         :param subreddit: The special subreddit whose filters to work with.
 
@@ -1504,7 +1504,7 @@ class SubredditFilters:
         self.subreddit = subreddit
 
     def __iter__(self) -> Generator["praw.models.Subreddit", None, None]:
-        """Iterate through the special subreddit's filters.
+        """Iterate through the special :class:`.Subreddit`'s filters.
 
         This method should be invoked as:
 
@@ -1564,7 +1564,7 @@ class SubredditFilters:
 
 
 class SubredditFlair:
-    """Provide a set of functions to interact with a Subreddit's flair."""
+    """Provide a set of functions to interact with a :class:`.Subreddit`'s flair."""
 
     @cachedproperty
     def link_templates(
@@ -1572,9 +1572,9 @@ class SubredditFlair:
     ) -> "praw.models.reddit.subreddit.SubredditLinkFlairTemplates":
         """Provide an instance of :class:`.SubredditLinkFlairTemplates`.
 
-        Use this attribute for interacting with a subreddit's link flair templates. For
-        example to list all the link flair templates for a subreddit which you have the
-        ``flair`` moderator permission on try:
+        Use this attribute for interacting with a :class:`.Subreddit`'s link flair
+        templates. For example to list all the link flair templates for a subreddit
+        which you have the ``flair`` moderator permission on try:
 
         .. code-block:: python
 
@@ -1590,8 +1590,8 @@ class SubredditFlair:
     ) -> "praw.models.reddit.subreddit.SubredditRedditorFlairTemplates":
         """Provide an instance of :class:`.SubredditRedditorFlairTemplates`.
 
-        Use this attribute for interacting with a subreddit's flair templates. For
-        example to list all the flair templates for a subreddit which you have the
+        Use this attribute for interacting with a :class:`.Subreddit`'s flair templates.
+        For example to list all the flair templates for a subreddit which you have the
         ``flair`` moderator permission on try:
 
         .. code-block:: python
@@ -1629,7 +1629,7 @@ class SubredditFlair:
         return ListingGenerator(self.subreddit._reddit, url, **generator_kwargs)
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Initialize a SubredditFlair instance.
+        """Initialize a :class:`.SubredditFlair` instance.
 
         :param subreddit: The subreddit whose flair to work with.
 
@@ -1644,7 +1644,7 @@ class SubredditFlair:
         link_self_assign: bool = False,
         **settings: Any,
     ):
-        """Update the subreddit's flair configuration.
+        """Update the :class:`.Subreddit`'s flair configuration.
 
         :param position: One of left, right, or False to disable (default: right).
         :param self_assign: (boolean) Permit self assignment of user flair (default:
@@ -1669,22 +1669,22 @@ class SubredditFlair:
         self.subreddit._reddit.post(url, data=data)
 
     def delete(self, redditor: Union["praw.models.Redditor", str]):
-        """Delete flair for a Redditor.
+        """Delete flair for a :class:`.Redditor`.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
 
         .. seealso::
 
-            :meth:`~praw.models.reddit.subreddit.SubredditFlair.update` to delete the
-            flair of many Redditors at once.
+            :meth:`~.SubredditFlair.update` to delete the flair of many redditors at
+            once.
 
         """
         url = API_PATH["deleteflair"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data={"name": str(redditor)})
 
     def delete_all(self) -> List[Dict[str, Union[str, bool, Dict[str, str]]]]:
-        """Delete all Redditor flair in the Subreddit.
+        """Delete all :class:`.Redditor` flair in the :class:`.Subreddit`.
 
         :returns: List of dictionaries indicating the success or failure of each delete.
 
@@ -1698,19 +1698,19 @@ class SubredditFlair:
         css_class: str = "",
         flair_template_id: Optional[str] = None,
     ):
-        """Set flair for a Redditor.
+        """Set flair for a :class:`.Redditor`.
 
         :param redditor: (Required) A redditor name (e.g., ``"spez"``) or
-            :class:`~.Redditor` instance.
-        :param text: The flair text to associate with the Redditor or Submission
-            (default: "").
+            :class:`.Redditor` instance.
+        :param text: The flair text to associate with the :class:`.Redditor` or
+            :class:`.Submission` (default: "").
         :param css_class: The css class to associate with the flair html ((default:
             "")). Use either this or ``flair_template_id``.
         :param flair_template_id: The ID of the flair template to be used (default:
             ``None``). Use either this or ``css_class``.
 
         This method can only be used by an authenticated user who is a moderator of the
-        associated Subreddit.
+        associated :class:`.Subreddit`.
 
         For example:
 
@@ -1749,7 +1749,7 @@ class SubredditFlair:
         text: str = "",
         css_class: str = "",
     ) -> List[Dict[str, Union[str, bool, Dict[str, str]]]]:
-        """Set or clear the flair for many Redditors at once.
+        """Set or clear the flair for many redditors at once.
 
         :param flair_list: Each item in this list should be either: the name of a
             Redditor, an instance of :class:`.Redditor`, or a dictionary mapping keys
@@ -1798,7 +1798,7 @@ class SubredditFlair:
 
 
 class SubredditFlairTemplates:
-    """Provide functions to interact with a Subreddit's flair templates."""
+    """Provide functions to interact with a :class:`.Subreddit`'s flair templates."""
 
     @staticmethod
     def flair_type(is_link: bool) -> str:
@@ -1856,7 +1856,7 @@ class SubredditFlairTemplates:
     def delete(self, template_id: str):
         """Remove a flair template provided by ``template_id``.
 
-        For example, to delete the first Redditor flair template listed, try:
+        For example, to delete the first :class:`.Redditor` flair template listed, try:
 
         .. code-block:: python
 
@@ -1887,7 +1887,7 @@ class SubredditFlairTemplates:
         :param text: The flair template's new text (required).
         :param css_class: The flair template's new css_class (default: "").
         :param text_editable: (boolean) Indicate if the flair text can be modified for
-            each Redditor that sets it (default: False).
+            each :class:`.Redditor` that sets it (default: False).
         :param background_color: The flair template's new background color, as a hex
             color.
         :param text_color: The flair template's new text color, either ``"light"`` or
@@ -1944,7 +1944,7 @@ class SubredditFlairTemplates:
 
 
 class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
-    """Provide functions to interact with Redditor flair templates."""
+    """Provide functions to interact with :class:`.Redditor` flair templates."""
 
     def __iter__(
         self,
@@ -1975,12 +1975,12 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         allowable_content: Optional[str] = None,
         max_emojis: Optional[int] = None,
     ):
-        """Add a Redditor flair template to the associated subreddit.
+        """Add a :class:`.Redditor` flair template to the associated subreddit.
 
         :param text: The flair template's text (required).
         :param css_class: The flair template's css_class (default: "").
         :param text_editable: (boolean) Indicate if the flair text can be modified for
-            each Redditor that sets it (default: False).
+            each :class:`.Redditor` that sets it (default: False).
         :param background_color: The flair template's new background color, as a hex
             color.
         :param text_color: The flair template's new text color, either ``"light"`` or
@@ -1993,7 +1993,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         :param max_emojis: (int) Maximum emojis in the flair (Reddit defaults this value
             to 10).
 
-        For example, to add an editable Redditor flair try:
+        For example, to add an editable :class:`.Redditor` flair try:
 
         .. code-block:: python
 
@@ -2013,7 +2013,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         )
 
     def clear(self):
-        """Remove all Redditor flair templates from the subreddit.
+        """Remove all :class:`.Redditor` flair templates from the subreddit.
 
         For example:
 
@@ -2061,7 +2061,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         :param text: The flair template's text (required).
         :param css_class: The flair template's css_class (default: "").
         :param text_editable: (boolean) Indicate if the flair text can be modified for
-            each Redditor that sets it (default: False).
+            each :class:`.Redditor` that sets it (default: False).
         :param background_color: The flair template's new background color, as a hex
             color.
         :param text_color: The flair template's new text color, either ``"light"`` or
@@ -2126,7 +2126,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
 
 class SubredditModeration:
-    """Provides a set of moderation functions to a Subreddit.
+    """Provides a set of moderation functions to a :class:`.Subreddit`.
 
     For example, to accept a moderation invite from subreddit ``r/test``:
 
@@ -2144,7 +2144,7 @@ class SubredditModeration:
             RedditBase._safely_add_arguments(generator_kwargs, "params", only=only)
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Initialize a SubredditModeration instance.
+        """Initialize a :class:`.SubredditModeration` instance.
 
         :param subreddit: The subreddit to moderate.
 
@@ -2199,7 +2199,7 @@ class SubredditModeration:
 
         .. seealso::
 
-            :meth:`~.unread` for unread moderator messages.
+            :meth:`.unread` for unread moderator messages.
 
         To print the last 5 moderator mail messages and their replies, try:
 
@@ -2234,7 +2234,7 @@ class SubredditModeration:
 
         :param action: If given, only return log entries for the specified action.
         :param mod: If given, only return log entries for actions made by the passed in
-            Redditor.
+            redditor.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -2300,8 +2300,8 @@ class SubredditModeration:
     def removal_reasons(self) -> SubredditRemovalReasons:
         """Provide an instance of :class:`.SubredditRemovalReasons`.
 
-        Use this attribute for interacting with a subreddit's removal reasons. For
-        example to list all the removal reasons for a subreddit which you have the
+        Use this attribute for interacting with a :class:`.Subreddit`'s removal reasons.
+        For example to list all the removal reasons for a subreddit which you have the
         ``posts`` moderator permission on, try:
 
         .. code-block:: python
@@ -2351,7 +2351,7 @@ class SubredditModeration:
         )
 
     def settings(self) -> Dict[str, Union[str, int, bool]]:
-        """Return a dictionary of the subreddit's current settings."""
+        """Return a dictionary of the :class:`.Subreddit`'s current settings."""
         url = API_PATH["subreddit_settings"].format(subreddit=self.subreddit)
         return self.subreddit._reddit.get(url)["data"]
 
@@ -2419,7 +2419,7 @@ class SubredditModeration:
 
         .. seealso::
 
-            :meth:`inbox` for all messages.
+            :meth:`.inbox` for all messages.
 
         To print the mail in the unread modmail queue try:
 
@@ -2445,7 +2445,7 @@ class SubredditModeration:
     def update(
         self, **settings: Union[str, int, bool]
     ) -> Dict[str, Union[str, int, bool]]:
-        """Update the subreddit's settings.
+        """Update the :class:`.Subreddit`'s settings.
 
         See https://www.reddit.com/dev/api#POST_api_site_admin for the full list.
 
@@ -2557,7 +2557,7 @@ class SubredditModerationStream:
     """Provides moderator streams."""
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Initialize a SubredditModerationStream instance.
+        """Initialize a :class:`.SubredditModerationStream` instance.
 
         :param subreddit: The moderated subreddit associated with the streams.
 
@@ -2595,7 +2595,7 @@ class SubredditModerationStream:
 
         :param action: If given, only return log entries for the specified action.
         :param mod: If given, only return log entries for actions made by the passed in
-            Redditor.
+            redditor.
 
         For example, to retrieve all new mod actions made to all moderated subreddits,
         try:
@@ -2657,7 +2657,7 @@ class SubredditModerationStream:
     def modqueue(
         self, only: Optional[str] = None, **stream_options: Any
     ) -> Generator[Union["praw.models.Comment", "praw.models.Submission"], None, None]:
-        """Yield comments/submissions in the modqueue as they become available.
+        r"""Yield :class:`.Comment`\ s and :class:`.Submission`\ s in the modqueue as they become available.
 
         :param only: If specified, one of ``"comments"``, or ``"submissions"`` to yield
             only results of that type.
@@ -2679,7 +2679,7 @@ class SubredditModerationStream:
     def reports(
         self, only: Optional[str] = None, **stream_options: Any
     ) -> Generator[Union["praw.models.Comment", "praw.models.Submission"], None, None]:
-        """Yield reported comments and submissions as they become available.
+        r"""Yield reported :class:`.Comment`\ s and :class:`.Submission`\ s as they become available.
 
         :param only: If specified, one of ``"comments"``, or ``"submissions"`` to yield
             only results of that type.
@@ -2699,7 +2699,7 @@ class SubredditModerationStream:
     def spam(
         self, only: Optional[str] = None, **stream_options: Any
     ) -> Generator[Union["praw.models.Comment", "praw.models.Submission"], None, None]:
-        """Yield spam comments and submissions as they become available.
+        r"""Yield spam :class:`.Comment`\ s and :class:`.Submission`\ s as they become available.
 
         :param only: If specified, one of ``"comments"``, or ``"submissions"`` to yield
             only results of that type.
@@ -2719,7 +2719,7 @@ class SubredditModerationStream:
     def unmoderated(
         self, **stream_options: Any
     ) -> Generator["praw.models.Submission", None, None]:
-        """Yield unmoderated submissions as they become available.
+        r"""Yield unmoderated :class:`.Submission`\ s as they become available.
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
@@ -2742,7 +2742,7 @@ class SubredditModerationStream:
 
         .. seealso::
 
-            :meth:`~.SubredditModeration.inbox` for all messages.
+            :meth:`.SubredditModeration.inbox` for all messages.
 
         To print new mail in the unread modmail queue try:
 
@@ -2767,9 +2767,9 @@ class SubredditQuarantine:
     """
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Initialize a SubredditQuarantine instance.
+        """Initialize a :class:`.SubredditQuarantine` instance.
 
-        :param subreddit: The subreddit associated with the quarantine.
+        :param subreddit: The :class:`.Subreddit` associated with the quarantine.
 
         """
         self.subreddit = subreddit
@@ -2816,7 +2816,7 @@ class SubredditQuarantine:
 
 
 class SubredditRelationship:
-    """Represents a relationship between a redditor and subreddit.
+    """Represents a relationship between a :class:`.Redditor` and :class:`.Subreddit`.
 
     Instances of this class can be iterated through in order to discover the Redditors
     that make up the relationship.
@@ -2835,9 +2835,9 @@ class SubredditRelationship:
         redditor: Optional[Union[str, "praw.models.Redditor"]] = None,
         **generator_kwargs,
     ) -> Iterator["praw.models.Redditor"]:
-        """Return a :class:`.ListingGenerator` for Redditors in the relationship.
+        r"""Return a :class:`.ListingGenerator` for :class:`.Redditor`\ s in the relationship.
 
-        :param redditor: When provided, yield at most a single :class:`~.Redditor`
+        :param redditor: When provided, yield at most a single :class:`.Redditor`
             instance. This is useful to confirm if a relationship exists, or to fetch
             the metadata associated with a particular relationship (default: None).
 
@@ -2850,9 +2850,9 @@ class SubredditRelationship:
         return ListingGenerator(self.subreddit._reddit, url, **generator_kwargs)
 
     def __init__(self, subreddit: "praw.models.Subreddit", relationship: str):
-        """Initialize a SubredditRelationship instance.
+        """Initialize a :class:`.SubredditRelationship` instance.
 
-        :param subreddit: The subreddit for the relationship.
+        :param subreddit: The :class:`.Subreddit` for the relationship.
         :param relationship: The name of the relationship.
 
         """
@@ -2862,7 +2862,7 @@ class SubredditRelationship:
     def add(self, redditor: Union[str, "praw.models.Redditor"], **other_settings: Any):
         """Add ``redditor`` to this relationship.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
 
         """
@@ -2874,7 +2874,7 @@ class SubredditRelationship:
     def remove(self, redditor: Union[str, "praw.models.Redditor"]):
         """Remove ``redditor`` from this relationship.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
 
         """
@@ -2884,7 +2884,7 @@ class SubredditRelationship:
 
 
 class ContributorRelationship(SubredditRelationship):
-    """Provides methods to interact with a Subreddit's contributors.
+    r"""Provides methods to interact with a :class:`.Subreddit`'s contributors.
 
     Contributors are also known as approved submitters.
 
@@ -2905,7 +2905,7 @@ class ContributorRelationship(SubredditRelationship):
 
 
 class ModeratorRelationship(SubredditRelationship):
-    """Provides methods to interact with a Subreddit's moderators.
+    r"""Provides methods to interact with a :class:`.Subreddit`'s moderators.
 
     Moderators of a subreddit can be iterated through like so:
 
@@ -2929,10 +2929,10 @@ class ModeratorRelationship(SubredditRelationship):
     def __call__(
         self, redditor: Optional[Union[str, "praw.models.Redditor"]] = None
     ) -> List["praw.models.Redditor"]:  # pylint: disable=arguments-differ
-        """Return a list of Redditors who are moderators.
+        r"""Return a list of :class:`.Redditor`\ s who are moderators.
 
         :param redditor: When provided, return a list containing at most one
-            :class:`~.Redditor` instance. This is useful to confirm if a relationship
+            :class:`.Redditor` instance. This is useful to confirm if a relationship
             exists, or to fetch the metadata associated with a particular relationship
             (default: None).
 
@@ -2967,9 +2967,9 @@ class ModeratorRelationship(SubredditRelationship):
         permissions: Optional[List[str]] = None,
         **other_settings: Any,
     ):
-        """Add or invite ``redditor`` to be a moderator of the subreddit.
+        """Add or invite ``redditor`` to be a moderator of the :class:`.Subreddit`.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant. An empty list
@@ -2999,7 +2999,7 @@ class ModeratorRelationship(SubredditRelationship):
     ):
         """Invite ``redditor`` to be a moderator of the subreddit.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant. An empty list
@@ -3024,10 +3024,10 @@ class ModeratorRelationship(SubredditRelationship):
         redditor: Optional[Union[str, "praw.models.Redditor"]] = None,
         **generator_kwargs: Any,
     ) -> Iterator["praw.models.Redditor"]:
-        """Return a :class:`.ListingGenerator` for Redditors invited to be moderators.
+        r"""Return a :class:`.ListingGenerator` for :class:`.Redditor`\ s invited to be moderators.
 
         :param redditor: When provided, return a list containing at most one
-            :class:`~.Redditor` instance. This is useful to confirm if a relationship
+            :class:`.Redditor` instance. This is useful to confirm if a relationship
             exists, or to fetch the metadata associated with a particular relationship
             (default: None).
 
@@ -3069,7 +3069,7 @@ class ModeratorRelationship(SubredditRelationship):
     def remove_invite(self, redditor: Union[str, "praw.models.Redditor"]):
         """Remove the moderator invite for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
 
         For example:
@@ -3090,7 +3090,7 @@ class ModeratorRelationship(SubredditRelationship):
     ):
         """Update the moderator permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant. An empty list
@@ -3123,14 +3123,14 @@ class ModeratorRelationship(SubredditRelationship):
     ):
         """Update the moderator invite permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant. An empty list
             ``[]`` indicates no permissions, and when not provided, ``None``, indicates
             full permissions.
 
-        For example, to grant the ``flair``` and ``mail``` permissions to the moderator
+        For example, to grant the ``flair`` and ``mail`` permissions to the moderator
         invite, try:
 
         .. code-block:: python
@@ -3146,7 +3146,7 @@ class ModeratorRelationship(SubredditRelationship):
 
 
 class Modmail:
-    """Provides modmail functions for a subreddit.
+    """Provides modmail functions for a :class:`.Subreddit`.
 
     For example, to send a new modmail from the subreddit ``r/test`` to user ``u/spez``
     with the subject ``test`` along with a message body of ``hello``:
@@ -3203,7 +3203,7 @@ class Modmail:
         return ModmailConversation(self.subreddit._reddit, id=id, mark_read=mark_read)
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Initialize a Modmail instance."""
+        """Initialize a :class:`.Modmail` instance."""
         self.subreddit = subreddit
 
     def _build_subreddit_list(
@@ -3324,7 +3324,7 @@ class Modmail:
         recipient: Union[str, "praw.models.Redditor"],
         author_hidden: bool = False,
     ) -> ModmailConversation:
-        """Create a new modmail conversation.
+        """Create a new :class:`.ModmailConversation`.
 
         :param subject: The message subject. Cannot be empty.
         :param body: The message body. Cannot be empty.
@@ -3392,7 +3392,7 @@ class SubredditStream:
     """Provides submission and comment streams."""
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Initialize a SubredditStream instance.
+        """Initialize a :class:`.SubredditStream` instance.
 
         :param subreddit: The subreddit associated with the streams.
 
@@ -3436,7 +3436,7 @@ class SubredditStream:
     def submissions(
         self, **stream_options: Any
     ) -> Generator["praw.models.Submission", None, None]:
-        """Yield new submissions as they become available.
+        r"""Yield new :class:`.Submission`\ s as they become available.
 
         Submissions are yielded oldest first. Up to 100 historical submissions will
         initially be returned.
@@ -3460,7 +3460,7 @@ class SubredditStream:
 
 
 class SubredditStylesheet:
-    """Provides a set of stylesheet functions to a Subreddit.
+    """Provides a set of stylesheet functions to a :class:`.Subreddit`.
 
     For example, to add the css data ``.test{color:blue}`` to the existing stylesheet:
 
@@ -3474,7 +3474,7 @@ class SubredditStylesheet:
     """
 
     def __call__(self) -> "praw.models.Stylesheet":
-        """Return the subreddit's stylesheet.
+        """Return the :class:`.Subreddit`'s stylesheet.
 
         To be used as:
 
@@ -3487,9 +3487,9 @@ class SubredditStylesheet:
         return self.subreddit._reddit.get(url)
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Initialize a SubredditStylesheet instance.
+        """Initialize a :class:`.SubredditStylesheet` instance.
 
-        :param subreddit: The subreddit associated with the stylesheet.
+        :param subreddit: The :class:`.Subreddit` associated with the stylesheet.
 
         An instance of this class is provided as:
 
@@ -3545,7 +3545,7 @@ class SubredditStylesheet:
         return f"{upload_url}/{upload_data['key']}"
 
     def delete_banner(self):
-        """Remove the current subreddit (redesign) banner image.
+        """Remove the current :class:`.Subreddit` (redesign) banner image.
 
         Succeeds even if there is no banner image.
 
@@ -3560,7 +3560,7 @@ class SubredditStylesheet:
         self._update_structured_styles(data)
 
     def delete_banner_additional_image(self):
-        """Remove the current subreddit (redesign) banner additional image.
+        """Remove the current :class:`.Subreddit` (redesign) banner additional image.
 
         Succeeds even if there is no additional image. Will also delete any configured
         hover image.
@@ -3576,7 +3576,7 @@ class SubredditStylesheet:
         self._update_structured_styles(data)
 
     def delete_banner_hover_image(self):
-        """Remove the current subreddit (redesign) banner hover image.
+        """Remove the current :class:`.Subreddit` (redesign) banner hover image.
 
         Succeeds even if there is no hover image.
 
@@ -3591,7 +3591,7 @@ class SubredditStylesheet:
         self._update_structured_styles(data)
 
     def delete_header(self):
-        """Remove the current subreddit header image.
+        """Remove the current :class:`.Subreddit` header image.
 
         Succeeds even if there is no header image.
 
@@ -3606,7 +3606,7 @@ class SubredditStylesheet:
         self.subreddit._reddit.post(url)
 
     def delete_image(self, name: str):
-        """Remove the named image from the subreddit.
+        """Remove the named image from the :class:`.Subreddit`.
 
         Succeeds even if the named image does not exist.
 
@@ -3621,7 +3621,7 @@ class SubredditStylesheet:
         self.subreddit._reddit.post(url, data={"img_name": name})
 
     def delete_mobile_header(self):
-        """Remove the current subreddit mobile header.
+        """Remove the current :class:`.Subreddit` mobile header.
 
         Succeeds even if there is no mobile header.
 
@@ -3636,7 +3636,7 @@ class SubredditStylesheet:
         self.subreddit._reddit.post(url)
 
     def delete_mobile_icon(self):
-        """Remove the current subreddit mobile icon.
+        """Remove the current :class:`.Subreddit` mobile icon.
 
         Succeeds even if there is no mobile icon.
 
@@ -3651,7 +3651,7 @@ class SubredditStylesheet:
         self.subreddit._reddit.post(url)
 
     def update(self, stylesheet: str, reason: Optional[str] = None):
-        """Update the subreddit's stylesheet.
+        """Update the :class:`.Subreddit`'s stylesheet.
 
         :param stylesheet: The CSS for the new stylesheet.
         :param reason: The reason for updating the stylesheet.
@@ -3670,7 +3670,7 @@ class SubredditStylesheet:
         self.subreddit._reddit.post(url, data=data)
 
     def upload(self, name: str, image_path: str) -> Dict[str, str]:
-        """Upload an image to the Subreddit.
+        """Upload an image to the :class:`.Subreddit`.
 
         :param name: The name to use for the image. If an image already exists with the
             same name, it will be replaced.
@@ -3696,7 +3696,7 @@ class SubredditStylesheet:
         return self._upload_image(image_path, {"name": name, "upload_type": "img"})
 
     def upload_banner(self, image_path: str):
-        """Upload an image for the subreddit's (redesign) banner image.
+        """Upload an image for the :class:`.Subreddit` 's (redesign) banner image.
 
         :param image_path: A path to a jpeg or png image.
 
@@ -3721,7 +3721,7 @@ class SubredditStylesheet:
     def upload_banner_additional_image(
         self, image_path: str, align: Optional[str] = None
     ):
-        """Upload an image for the subreddit's (redesign) additional image.
+        """Upload an image for the :class:`.Subreddit` 's (redesign) additional image.
 
         :param image_path: A path to a jpeg or png image.
         :param align: Either ``left``, ``centered``, or ``right``. (default: ``left``).
@@ -3757,11 +3757,11 @@ class SubredditStylesheet:
         self._update_structured_styles(style_data)
 
     def upload_banner_hover_image(self, image_path: str):
-        """Upload an image for the subreddit's (redesign) additional image.
+        """Upload an image for the :class:`.Subreddit` 's (redesign) additional image.
 
         :param image_path: A path to a jpeg or png image.
 
-        Fails if the Subreddit does not have an additional image defined
+        Fails if the :class:`.Subreddit` does not have an additional image defined
 
         :raises: ``prawcore.TooLarge`` if the overall request body is too large.
 
@@ -3783,7 +3783,7 @@ class SubredditStylesheet:
         self._update_structured_styles({image_type: image_url})
 
     def upload_header(self, image_path: str) -> Dict[str, str]:
-        """Upload an image to be used as the Subreddit's header image.
+        """Upload an image to be used as the :class:`.Subreddit`'s header image.
 
         :param image_path: A path to a jpeg or png image.
 
@@ -3807,7 +3807,7 @@ class SubredditStylesheet:
         return self._upload_image(image_path, {"upload_type": "header"})
 
     def upload_mobile_header(self, image_path: str) -> Dict[str, str]:
-        """Upload an image to be used as the Subreddit's mobile header.
+        """Upload an image to be used as the :class:`.Subreddit`'s mobile header.
 
         :param image_path: A path to a jpeg or png image.
 
@@ -3831,7 +3831,7 @@ class SubredditStylesheet:
         return self._upload_image(image_path, {"upload_type": "banner"})
 
     def upload_mobile_icon(self, image_path: str) -> Dict[str, str]:
-        """Upload an image to be used as the Subreddit's mobile icon.
+        """Upload an image to be used as the :class:`.Subreddit`'s mobile icon.
 
         :param image_path: A path to a jpeg or png image.
 
@@ -3856,10 +3856,10 @@ class SubredditStylesheet:
 
 
 class SubredditWiki:
-    """Provides a set of wiki functions to a Subreddit."""
+    """Provides a set of wiki functions to a :class:`.Subreddit`."""
 
     def __getitem__(self, page_name: str) -> WikiPage:
-        """Lazily return the WikiPage for the subreddit named ``page_name``.
+        """Lazily return the :class:`.WikiPage` for the :class:`.Subreddit` named ``page_name``.
 
         This method is to be used to fetch a specific wikipage, like so:
 
@@ -3872,7 +3872,7 @@ class SubredditWiki:
         return WikiPage(self.subreddit._reddit, self.subreddit, page_name.lower())
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Initialize a SubredditWiki instance.
+        """Initialize a :class:`.SubredditWiki` instance.
 
         :param subreddit: The subreddit whose wiki to work with.
 
@@ -3906,10 +3906,11 @@ class SubredditWiki:
         reason: Optional[str] = None,
         **other_settings: Any,
     ):
-        """Create a new wiki page.
+        """Create a new :class:`.WikiPage`.
 
-        :param name: The name of the new WikiPage. This name will be normalized.
-        :param content: The content of the new WikiPage.
+        :param name: The name of the new :class:`.WikiPage`. This name will be
+            normalized.
+        :param content: The content of the new :class:`.WikiPage`.
         :param reason: (Optional) The reason for the creation.
         :param other_settings: Additional keyword arguments to pass.
 

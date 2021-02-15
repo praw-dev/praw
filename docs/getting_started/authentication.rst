@@ -172,9 +172,9 @@ to the specified ``redirect_uri``. After verifying the ``state`` and extracting 
 The first line of output is the ``refresh_token``. You can save this for later use (see
 :ref:`using_refresh_tokens`).
 
-The second line of output reveals the name of the Redditor that completed the code flow.
-It also indicates that the :class:`.Reddit` instance is now associated with that
-account.
+The second line of output reveals the name of the :class:`.Redditor` that completed the
+code flow. It also indicates that the :class:`.Reddit` instance is now associated with
+that account.
 
 The code flow can be used with an **installed** application just as described above with
 one change: set the value of ``client_secret`` to ``None`` when initializing

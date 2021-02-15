@@ -4,7 +4,7 @@ from ....const import API_PATH
 
 
 class InboxableMixin:
-    """Interface for RedditBase classes that originate from the inbox."""
+    """Interface for :class:`.RedditBase` subclasses that originate from the inbox."""
 
     def block(self):
         """Block the user who sent the item.
@@ -45,7 +45,7 @@ class InboxableMixin:
 
         .. seealso::
 
-            :meth:`~.uncollapse`
+            :meth:`.uncollapse`
 
         """
         self._reddit.inbox.collapse([self])
@@ -69,10 +69,10 @@ class InboxableMixin:
 
         .. seealso::
 
-            :meth:`~.mark_unread`
+            :meth:`.mark_unread`
 
         To mark the whole inbox as read with a single network request, use
-        :meth:`praw.models.Inbox.mark_all_read`
+        :meth:`.Inbox.mark_all_read`
 
         """
         self._reddit.inbox.mark_read([self])
@@ -96,7 +96,7 @@ class InboxableMixin:
 
         .. seealso::
 
-            :meth:`~.mark_read`
+            :meth:`.mark_read`
 
         """
         self._reddit.inbox.mark_unread([self])
@@ -147,7 +147,7 @@ class InboxableMixin:
 
         .. seealso::
 
-            :meth:`~.collapse`
+            :meth:`.collapse`
 
         """
         self._reddit.inbox.uncollapse([self])

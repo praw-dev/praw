@@ -11,8 +11,8 @@ if TYPE_CHECKING:  # pragma: no cover
 class Preferences:
     """A class for Reddit preferences.
 
-    The Preferences class provides access to the Reddit preferences of the currently
-    authenticated user.
+    The :class:`.Preferences` class provides access to the Reddit preferences of the
+    currently authenticated user.
 
     """
 
@@ -33,9 +33,9 @@ class Preferences:
         return self._reddit.get(API_PATH["preferences"])
 
     def __init__(self, reddit: "praw.Reddit"):
-        """Initialize a Preferences instance.
+        """Initialize a :class:`.Preferences` instance.
 
-        :param reddit: The Reddit instance.
+        :param reddit: The :class:`.Reddit` instance.
 
         """
         self._reddit = reddit

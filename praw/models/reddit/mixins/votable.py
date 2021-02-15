@@ -3,7 +3,7 @@ from ....const import API_PATH
 
 
 class VotableMixin:
-    """Interface for RedditBase classes that can be voted on."""
+    """Interface for :class:`.RedditBase` classes that can be voted on."""
 
     def _vote(self, direction: int):
         self._reddit.post(
@@ -57,7 +57,7 @@ class VotableMixin:
 
         .. seealso::
 
-            :meth:`~.upvote`
+            :meth:`.upvote`
 
         """
         self._vote(direction=-1)
@@ -85,7 +85,7 @@ class VotableMixin:
 
         .. seealso::
 
-            :meth:`~.downvote`
+            :meth:`.downvote`
 
         """
         self._vote(direction=1)

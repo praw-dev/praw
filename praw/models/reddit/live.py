@@ -49,8 +49,7 @@ class LiveContributorRelationship:
         .. note::
 
             This class should not be initialized directly. Instead obtain an instance
-            via: ``thread.contributor`` where ``thread`` is a :class:`.LiveThread`
-            instance.
+            via: :meth:`.LiveThread.contributor`.
 
         """
         self.thread = thread
@@ -76,7 +75,7 @@ class LiveContributorRelationship:
     ):
         """Invite a redditor to be a contributor of the live thread.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant. An empty list
@@ -183,7 +182,7 @@ class LiveContributorRelationship:
     ):
         """Update the contributor permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant (other
@@ -226,7 +225,7 @@ class LiveContributorRelationship:
     ):
         """Update the contributor invite permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant (other
@@ -264,7 +263,7 @@ class LiveContributorRelationship:
 
 
 class LiveThread(RedditBase):
-    """An individual LiveThread object.
+    """An individual :class:`.LiveThread` object.
 
     **Typical Attributes**
 
@@ -310,7 +309,7 @@ class LiveThread(RedditBase):
 
         You can call the instance to get a list of contributors which is represented as
         :class:`.RedditorList` instance consists of :class:`.Redditor` instances. Those
-        Redditor instances have ``permissions`` attributes as contributors:
+        :class:`.Redditor` instances have ``permissions`` attributes as contributors:
 
         .. code-block:: python
 
@@ -489,7 +488,7 @@ class LiveThread(RedditBase):
 
 
 class LiveThreadContribution:
-    """Provides a set of contribution functions to a LiveThread."""
+    """Provides a set of contribution functions to a :class:`.LiveThread`."""
 
     def __init__(self, thread: "praw.models.LiveThread"):
         """Initialize a :class:`.LiveThreadContribution` instance.
@@ -614,7 +613,7 @@ class LiveThreadStream:
     """
 
     def __init__(self, live_thread: "praw.models.LiveThread"):
-        """Initialize a LiveThreadStream instance.
+        """Initialize a :class:`.LiveThreadStream` instance.
 
         :param live_thread: The live thread associated with the stream.
 
@@ -760,7 +759,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
 
 
 class LiveUpdateContribution:
-    """Provides a set of contribution functions to LiveUpdate."""
+    """Provides a set of contribution functions to :class:`.LiveUpdate`."""
 
     def __init__(self, update: "praw.models.LiveUpdate"):
         """Initialize a :class:`.LiveUpdateContribution` instance.

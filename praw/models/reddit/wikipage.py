@@ -12,7 +12,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class WikiPageModeration:
-    """Provides a set of moderation functions for a WikiPage.
+    """Provides a set of moderation functions for a :class:`.WikiPage`.
 
     For example, to add ``spez`` as an editor on the wikipage ``praw_test`` try:
 
@@ -23,7 +23,7 @@ class WikiPageModeration:
     """
 
     def __init__(self, wikipage: "WikiPage"):
-        """Initialize a WikiPageModeration instance.
+        """Initialize a :class:`.WikiPageModeration` instance.
 
         :param wikipage: The wikipage to moderate.
 
@@ -31,9 +31,9 @@ class WikiPageModeration:
         self.wikipage = wikipage
 
     def add(self, redditor: "praw.models.Redditor"):
-        """Add an editor to this WikiPage.
+        """Add an editor to this :class:`.WikiPage`.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
 
         To add ``"spez"`` as an editor on the wikipage ``"praw_test"`` try:
@@ -50,9 +50,9 @@ class WikiPageModeration:
         self.wikipage._reddit.post(url, data=data)
 
     def remove(self, redditor: "praw.models.Redditor"):
-        """Remove an editor from this WikiPage.
+        """Remove an editor from this :class:`.WikiPage`.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
 
         To remove ``"spez"`` as an editor on the wikipage ``"praw_test"`` try:
@@ -116,7 +116,7 @@ class WikiPageModeration:
         )
 
     def settings(self) -> Dict[str, Any]:
-        """Return the settings for this WikiPage."""
+        """Return the settings for this :class:`.WikiPage`."""
         url = API_PATH["wiki_page_settings"].format(
             subreddit=self.wikipage.subreddit, page=self.wikipage.name
         )
@@ -125,7 +125,7 @@ class WikiPageModeration:
     def update(
         self, listed: bool, permlevel: int, **other_settings: Any
     ) -> Dict[str, Any]:
-        """Update the settings for this WikiPage.
+        """Update the settings for this :class:`.WikiPage`.
 
         :param listed: (boolean) Show this page on page list.
         :param permlevel: (int) Who can edit this page? (0) use subreddit wiki
@@ -151,7 +151,7 @@ class WikiPageModeration:
 
 
 class WikiPage(RedditBase):
-    """An individual WikiPage object.
+    """An individual :class:`.WikiPage` object.
 
     **Typical Attributes**
 
@@ -168,10 +168,10 @@ class WikiPage(RedditBase):
     ``may_revise``    A ``bool`` representing whether or not the authenticated user may
                       edit the wiki page.
     ``name``          The name of the wiki page.
-    ``revision_by``   The :class:`~.Redditor` who authored this revision of the wiki
+    ``revision_by``   The :class:`.Redditor` who authored this revision of the wiki
                       page.
     ``revision_date`` The time of this revision, in `Unix Time`_.
-    ``subreddit``     The :class:`~.Subreddit` this wiki page belongs to.
+    ``subreddit``     The :class:`.Subreddit` this wiki page belongs to.
     ================= =================================================================
 
     .. _unix time: https://en.wikipedia.org/wiki/Unix_time
@@ -217,7 +217,7 @@ class WikiPage(RedditBase):
         revision: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
     ):
-        """Initialize a WikiPage instance.
+        """Initialize a :class:`.WikiPage` instance.
 
         :param revision: A specific revision ID to fetch. By default, fetches the most
             recent revision.

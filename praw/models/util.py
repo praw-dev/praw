@@ -13,12 +13,12 @@ class BoundedSet:
     """
 
     def __init__(self, max_items: int):
-        """Initialize a BoundedSet instance."""
+        """Initialize a :class:`.BoundedSet` instance."""
         self.max_items = max_items
         self._set = OrderedDict()
 
     def __contains__(self, item: Any) -> bool:
-        """Test if the BoundedSet contains item."""
+        """Test if the :class:`.BoundedSet` contains item."""
         self._access(item)
         return item in self._set
 
@@ -38,7 +38,7 @@ class ExponentialCounter:
     """A class to provide an exponential counter with jitter."""
 
     def __init__(self, max_counter: int):
-        """Initialize an ExponentialCounter instance.
+        """Initialize an :class:`.ExponentialCounter` instance.
 
         :param max_counter: The maximum base value.
 
@@ -96,8 +96,8 @@ def stream_generator(
 ) -> Generator[Any, None, None]:
     """Yield new items from ListingGenerators and ``None`` when paused.
 
-    :param function: A callable that returns a ListingGenerator, e.g.
-        ``subreddit.comments`` or ``subreddit.new``.
+    :param function: A callable that returns a :class:`.ListingGenerator`, e.g.
+        :meth:`.Subreddit.comments` or :meth:`.Subreddit.new`.
     :param pause_after: An integer representing the number of requests that result in no
         new items before this function yields ``None``, effectively introducing a pause
         into the stream. A negative value yields ``None`` after items from a single

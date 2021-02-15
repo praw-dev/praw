@@ -156,6 +156,6 @@ details.
 
 .. warning::
 
-    The ConfigParser instance is cached internally at the class level, it is shared
-    across all instances of :class:`.Reddit` and once set it's not overridden by future
-    invocations.
+    The :py:class:`configparser.ConfigParser` instance is cached internally at the class
+    level, it is shared across all instances of :class:`.Reddit` and once set it's not
+    overridden by future invocations.

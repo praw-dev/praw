@@ -5,7 +5,7 @@ from ....const import API_PATH
 
 
 class SavableMixin:
-    """Interface for RedditBase classes that can be saved."""
+    """Interface for :class:`.RedditBase` classes that can be saved."""
 
     def save(self, category: Optional[str] = None):
         """Save the object.
@@ -25,7 +25,7 @@ class SavableMixin:
 
         .. seealso::
 
-            :meth:`~.unsave`
+            :meth:`.unsave`
 
         """
         self._reddit.post(
@@ -46,7 +46,7 @@ class SavableMixin:
 
         .. seealso::
 
-            :meth:`~.save`
+            :meth:`.save`
 
         """
         self._reddit.post(API_PATH["unsave"], data={"id": self.fullname})

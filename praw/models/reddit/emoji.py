@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Emoji(RedditBase):
-    """An individual Emoji object.
+    """An individual :class:`.Emoji` object.
 
     **Typical Attributes**
 
@@ -53,7 +53,7 @@ class Emoji(RedditBase):
         name: str,
         _data: Optional[Dict[str, Any]] = None,
     ):
-        """Initialize an Emoji instance."""
+        """Initialize an :class:`.Emoji` instance."""
         self.name = name
         self.subreddit = subreddit
         super().__init__(reddit, _data=_data)
@@ -67,7 +67,7 @@ class Emoji(RedditBase):
         raise ClientException(f"r/{self.subreddit} does not have the emoji {self.name}")
 
     def delete(self):
-        """Delete an emoji from this subreddit by Emoji.
+        """Delete an emoji from this subreddit by :class:`.Emoji`.
 
         To delete ``"test"`` as an emoji on the subreddit ``"praw_test"`` try:
 
@@ -133,10 +133,10 @@ class Emoji(RedditBase):
 
 
 class SubredditEmoji:
-    """Provides a set of functions to a Subreddit for emoji."""
+    """Provides a set of functions to a :class:`.Subreddit` for emoji."""
 
     def __getitem__(self, name: str) -> Emoji:
-        """Lazily return the Emoji for the subreddit named ``name``.
+        """Lazily return the :class:`.Emoji` for the subreddit named ``name``.
 
         :param name: The name of the emoji
 
@@ -151,7 +151,7 @@ class SubredditEmoji:
         return Emoji(self._reddit, self.subreddit, name)
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Initialize a SubredditEmoji instance.
+        """Initialize a :class:`.SubredditEmoji` instance.
 
         :param subreddit: The subreddit whose emoji are affected.
 
@@ -160,7 +160,7 @@ class SubredditEmoji:
         self._reddit = subreddit._reddit
 
     def __iter__(self) -> List[Emoji]:
-        """Return a list of Emoji for the subreddit.
+        """Return a list of :class:`.Emoji` for the subreddit.
 
         This method is to be used to discover all emoji for a subreddit:
 
@@ -201,7 +201,7 @@ class SubredditEmoji:
         :param user_flair_allowed: (boolean) When provided, indicate whether the emoji
             may appear in user flair. (Default: ``None``)
 
-        :returns: The Emoji added.
+        :returns: The :class:`.Emoji` added.
 
         To add ``test`` to the subreddit ``praw_test`` try:
 

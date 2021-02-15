@@ -25,8 +25,7 @@ As always, you need to begin by creating an instance of :class:`.Reddit`:
 
 In this document, we will detail the process of finding all the comments for a given
 submission. If you instead want to process all comments on Reddit, or comments belonging
-to one or more specific subreddits, please see
-:meth:`praw.models.reddit.subreddit.SubredditStream.comments`.
+to one or more specific subreddits, please see :meth:`.SubredditStream.comments`.
 
 .. _extracting_comments:
 
@@ -79,10 +78,11 @@ could ignore :class:`.MoreComments` in our code, like so:
 The ``replace_more`` method
 ---------------------------
 
-In the previous snippet, we used ``isinstance`` to check whether the item in the comment
-list was a :class:`.MoreComments` so that we could ignore it. But there is a better way:
-the :class:`.CommentForest` object has a method called :meth:`.replace_more`, which
-replaces or removes :class:`.MoreComments` objects from the forest.
+In the previous snippet, we used :py:func:`isinstance` to check whether the item in the
+comment list was a :class:`.MoreComments` so that we could ignore it. But there is a
+better way: the :class:`.CommentForest` object has a method called
+:meth:`.replace_more`, which replaces or removes :class:`.MoreComments` objects from the
+forest.
 
 Each replacement requires one network request, and its response may yield additional
 :class:`.MoreComments` instances. As a result, by default, :meth:`.replace_more` only

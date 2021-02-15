@@ -99,8 +99,8 @@ class Reddit:
     def read_only(self, value: bool) -> None:
         """Set or unset the use of the ReadOnlyAuthorizer.
 
-        :raises: :class:`ClientException` when attempting to unset ``read_only`` and
-            only the ReadOnlyAuthorizer is available.
+        :raises: :class:`.ClientException` when attempting to unset ``read_only`` and
+            only the ``ReadOnlyAuthorizer`` is available.
 
         """
         if value:
@@ -154,7 +154,7 @@ class Reddit:
         token_manager: Optional[BaseTokenManager] = None,
         **config_settings: Union[str, bool],
     ):  # noqa: D207, D301
-        """Initialize a Reddit instance.
+        """Initialize a :class:`.Reddit` instance.
 
         :param site_name: The name of a section in your ``praw.ini`` file from which to
             load settings from. This parameter, in tandem with an appropriately
@@ -342,8 +342,8 @@ class Reddit:
         self.redditors = models.Redditors(self, None)
         """An instance of :class:`.Redditors`.
 
-        Provides the interface for Redditor discovery. For example, to iterate over the
-        newest Redditors, run:
+        Provides the interface for :class:`.Redditor` discovery. For example, to iterate
+        over the newest Redditors, run:
 
         .. code-block:: python
 
@@ -356,7 +356,7 @@ class Reddit:
         """An instance of :class:`.SubredditHelper`.
 
         Provides the interface to working with :class:`.Subreddit` instances. For
-        example to create a Subreddit run:
+        example to create a :class:`.Subreddit` run:
 
         .. code-block:: python
 
@@ -557,7 +557,7 @@ class Reddit:
         id: Optional[str] = None,  # pylint: disable=redefined-builtin
         url: Optional[str] = None,
     ):
-        """Return a lazy instance of :class:`~.Comment`.
+        """Return a lazy instance of :class:`.Comment`.
 
         :param id: The ID of the comment.
         :param url: A permalink pointing to the comment.
@@ -606,8 +606,8 @@ class Reddit:
         :param fullnames: A list of fullnames for comments, submissions, and/or
             subreddits.
         :param url: A url (as a string) to retrieve lists of link submissions from.
-        :param subreddits: A list of subreddit names or Subreddit objects to retrieve
-            subreddits from.
+        :param subreddits: A list of subreddit names or :class:`.Subreddit` objects to
+            retrieve subreddits from.
 
         :returns: A generator that yields found items in their relative order.
 
@@ -824,7 +824,7 @@ class Reddit:
         return self._objectify_request(data=data, json=json, method="PUT", path=path)
 
     def random_subreddit(self, nsfw: bool = False) -> "praw.models.Subreddit":
-        """Return a random lazy instance of :class:`~.Subreddit`.
+        """Return a random lazy instance of :class:`.Subreddit`.
 
         :param nsfw: Return a random NSFW (not safe for work) subreddit (default:
             False).
@@ -911,10 +911,10 @@ class Reddit:
     def submission(  # pylint: disable=invalid-name,redefined-builtin
         self, id: Optional[str] = None, url: Optional[str] = None
     ) -> "praw.models.Submission":
-        """Return a lazy instance of :class:`~.Submission`.
+        """Return a lazy instance of :class:`.Submission`.
 
         :param id: A Reddit base36 submission ID, e.g., ``2gmzqe``.
-        :param url: A URL supported by :meth:`~.Submission.id_from_url`.
+        :param url: A URL supported by :meth:`.Submission.id_from_url`.
 
         Either ``id`` or ``url`` can be provided, but not both.
 

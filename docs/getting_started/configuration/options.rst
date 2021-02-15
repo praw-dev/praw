@@ -55,20 +55,23 @@ PRAW can be configured to work with instances of Reddit which are not hosted at
 `reddit.com <https://www.reddit.com>`_. The following options may need to be updated in
 order to successfully access a third-party Reddit site:
 
-:comment_kind: The type prefix for comments on the Reddit instance (default: ``t1_``).
-:message_kind: The type prefix for messages on the Reddit instance (default: ``t4_``).
-:oauth_url: The URL used to access the Reddit instance's API (default:
+:comment_kind: The type prefix for comments on the :class:`.Reddit` instance (default:
+    ``t1_``).
+:message_kind: The type prefix for messages on the :class:`.Reddit` instance (default:
+    ``t4_``).
+:oauth_url: The URL used to access the :class:`.Reddit` instance's API (default:
     https://oauth.reddit.com).
-:reddit_url: The URL used to access the Reddit instance. PRAW assumes the endpoints for
-    establishing OAuth authorization are accessible under this URL (default:
-    https://www.reddit.com).
-:redditor_kind: The type prefix for redditors on the Reddit instance (default: ``t2_``).
-:short_url: The URL used to generate short links on the Reddit instance (default:
-    https://redd.it).
-:submission_kind: The type prefix for submissions on the Reddit instance (default:
-    ``t3_``).
-:subreddit_kind: The type prefix for subreddits on the Reddit instance (default:
-    ``t5_``).
+:reddit_url: The URL used to access the :class:`.Reddit` instance. PRAW assumes the
+    endpoints for establishing OAuth authorization are accessible under this URL
+    (default: https://www.reddit.com).
+:redditor_kind: The type prefix for redditors on the :class:`.Reddit` instance (default:
+    ``t2_``).
+:short_url: The URL used to generate short links on the :class:`.Reddit` instance
+    (default: https://redd.it).
+:submission_kind: The type prefix for submissions on the :class:`.Reddit` instance
+    (default: ``t3_``).
+:subreddit_kind: The type prefix for subreddits on the :class:`.Reddit` instance
+    (default: ``t5_``).
 
 .. _misc_options:
 
@@ -93,7 +96,7 @@ These are options that do not belong in another category, but still play a part 
     complete before throwing an exception. By default, PRAW waits 16 seconds before
     throwing an exception.
 :warn_comment_sort: When ``true``, log a warning when the ``comment_sort`` attribute of
-    a submission is updated after _fetch() has been called. (default: ``true``)
+    a submission is updated after ``_fetch()`` has been called (default: ``true``).
 
 .. _custom_options:
 

@@ -18,7 +18,7 @@ class CommentForest:
 
     @staticmethod
     def _gather_more_comments(tree, parent_tree=None):
-        """Return a list of MoreComments objects obtained from tree."""
+        """Return a list of :class:`.MoreComments` objects obtained from tree."""
         more_comments = []
         queue = [(None, x) for x in tree]
         while queue:
@@ -59,7 +59,7 @@ class CommentForest:
         submission: "praw.models.Submission",
         comments: Optional[List["praw.models.Comment"]] = None,
     ):
-        """Initialize a CommentForest instance.
+        """Initialize a :class:`.CommentForest` instance.
 
         :param submission: An instance of :class:`.Submission` that is the parent of the
             comments.

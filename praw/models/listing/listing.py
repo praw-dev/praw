@@ -5,7 +5,7 @@ from ..base import PRAWBase
 
 
 class Listing(PRAWBase):
-    """A listing is a collection of RedditBase instances."""
+    """A listing is a collection of :class:`.RedditBase` instances."""
 
     CHILD_ATTRIBUTE = "children"
 

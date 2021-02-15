@@ -199,9 +199,9 @@ its own function:
     :start-line: 18
     :end-line: 33
 
-Observe that we added some comments and a ``print`` call. The ``print`` addition informs
-us every time we are about to reply to a submission, which is useful to ensure the
-script is running.
+Observe that we added some comments and a :py:func:`print` call. The :py:func:`print`
+addition informs us every time we are about to reply to a submission, which is useful to
+ensure the script is running.
 
 Next, it is a good practice to not have any top-level executable code in case you want
 to turn your Python script into a Python module, i.e., import it from another Python

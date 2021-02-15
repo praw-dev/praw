@@ -1,4 +1,4 @@
-"""Represent the Trophy class."""
+"""Represent the :class:`.Trophy` class."""
 from typing import TYPE_CHECKING, Any, Dict, Union
 
 from .base import PRAWBase
@@ -34,7 +34,7 @@ class Trophy(PRAWBase):
     """
 
     def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
-        """Initialize a Trophy instance.
+        """Initialize a :class:`.Trophy` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
         :param _data: The structured data, assumed to be a dict and key ``"name"`` must

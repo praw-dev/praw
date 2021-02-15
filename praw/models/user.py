@@ -18,11 +18,11 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class User(PRAWBase):
-    """The user class provides methods for the currently authenticated user."""
+    """The :class:`.User` class provides methods for the currently authenticated user."""
 
     @cachedproperty
     def preferences(self) -> "praw.models.Preferences":
-        """Get an instance of :class:`~.Preferences`.
+        """Get an instance of :class:`.Preferences`.
 
         The preferences can be accessed as a ``dict`` like so:
 
@@ -51,7 +51,7 @@ class User(PRAWBase):
         return Preferences(self._reddit)
 
     def __init__(self, reddit: "praw.Reddit"):
-        """Initialize an User instance.
+        """Initialize an :class:`.User` instance.
 
         This class is intended to be interfaced with through ``reddit.user``.
 
@@ -59,13 +59,13 @@ class User(PRAWBase):
         super().__init__(reddit, _data=None)
 
     def blocked(self) -> List["praw.models.Redditor"]:
-        """Return a RedditorList of blocked Redditors."""
+        r"""Return a :class:`.RedditorList` of blocked :class:`.Redditor`\ s."""
         return self._reddit.get(API_PATH["blocked"])
 
     def contributor_subreddits(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
     ) -> Iterator["praw.models.Subreddit"]:
-        """Return a :class:`.ListingGenerator` of contributor subreddits.
+        r"""Return a :class:`.ListingGenerator` of contributor :class:`.Subreddit`\ s.
 
         These are subreddits in which the user is an approved user.
 
@@ -87,16 +87,17 @@ class User(PRAWBase):
     def friends(
         self, user: Optional[Union[str, "praw.models.Redditor"]] = None
     ) -> Union[List["praw.models.Redditor"], "praw.models.Redditor"]:
-        """Return a RedditorList of friends or a Redditor in the friends list.
+        r"""Return a :class:`.RedditorList` of friends or a :class:`.Redditor` in the friends list.
 
-        :param user: Checks to see if you are friends with the Redditor. Either an
+        :param user: Checks to see if you are friends with the redditor. Either an
             instance of :class:`.Redditor` or a string can be given.
 
-        :returns: A list of Redditors, or a Redditor if you are friends with the given
-            Redditor. The Redditor also has friend attributes.
+        :returns: A list of :class:`.Redditor`\ s, or a :class:`.Redditor` if you are
+            friends with the given :class:`.Redditor`. The :class:`.Redditor` also has
+            friend attributes.
 
         :raises: An instance of :class:`.RedditAPIException` if you are not friends with
-            the specified Redditor.
+            the specified :class:`.Redditor`.
 
         """
         endpoint = (
@@ -107,7 +108,7 @@ class User(PRAWBase):
         return self._reddit.get(endpoint)
 
     def karma(self) -> Dict["praw.models.Subreddit", Dict[str, int]]:
-        """Return a dictionary mapping subreddits to their karma.
+        r"""Return a dictionary mapping :class:`.Subreddit`\ s to their karma.
 
         The returned dict contains subreddits as keys. Each subreddit key contains a
         sub-dict that have keys for ``comment_karma`` and ``link_karma``. The dict is
@@ -115,9 +116,9 @@ class User(PRAWBase):
 
         .. note::
 
-            Each key of the main dict is an instance of :class:`~.Subreddit`. It is
+            Each key of the main dict is an instance of :class:`.Subreddit`. It is
             recommended to iterate over the dict in order to retrieve the values,
-            preferably through ``dict.items()``.
+            preferably through :py:meth:`dict.items`.
 
         """
         karma_map = {}
@@ -137,9 +138,9 @@ class User(PRAWBase):
 
         .. note::
 
-            If you change the Reddit instance's authorization, you might want to refresh
-            the cached value. Prefer using separate Reddit instances, however, for
-            distinct authorizations.
+            If you change the :class:`.Reddit` instance's authorization, you might want
+            to refresh the cached value. Prefer using separate :class:`.Reddit`
+            instances, however, for distinct authorizations.
 
         .. deprecated:: 7.2
 
@@ -190,7 +191,7 @@ class User(PRAWBase):
         )
 
     def multireddits(self) -> List["praw.models.Multireddit"]:
-        """Return a list of multireddits belonging to the user."""
+        r"""Return a list of :class:`.Multireddit`\ s belonging to the user."""
         return self._reddit.get(API_PATH["my_multireddits"])
 
     def pin(
@@ -257,7 +258,7 @@ class User(PRAWBase):
     def subreddits(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
     ) -> Iterator["praw.models.Subreddit"]:
-        """Return a :class:`.ListingGenerator` of subreddits the user is subscribed to.
+        r"""Return a :class:`.ListingGenerator` of :class:`.Subreddit`\ s the user is subscribed to.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -275,7 +276,7 @@ class User(PRAWBase):
         )
 
     def trusted(self) -> List["praw.models.Redditor"]:
-        """Return a RedditorList of trusted Redditors.
+        r"""Return a :class:`.RedditorList` of trusted :class:`.Redditor`\ s.
 
         To display the usernames of your trusted users and the times at which you
         decided to trust them, try:

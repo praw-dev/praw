@@ -48,7 +48,7 @@ Obtain a :class:`.Reddit` Instance
 .. warning::
 
     For the sake of brevity, the following examples pass authentication information via
-    arguments to :py:func:`praw.Reddit`. If you do this, you need to be careful not to
+    arguments to :meth:`praw.Reddit`. If you do this, you need to be careful not to
     reveal this information to the outside world if you share your code. It is
     recommended to use a :ref:`praw.ini file <praw.ini>` in order to keep your
     authentication information separate from your code.
@@ -163,7 +163,7 @@ To obtain a :class:`.Subreddit` instance, pass the subreddit's name when calling
 
 .. code-block:: python
 
-    # assume you have a Reddit instance bound to variable `reddit`
+    # assume you have a praw.Reddit instance bound to variable `reddit`
     subreddit = reddit.subreddit("redditdev")
 
     print(subreddit.display_name)
@@ -216,7 +216,7 @@ You can create :class:`.Submission` instances in other ways too:
 
 .. code-block:: python
 
-    # assume you have a Reddit instance bound to variable `reddit`
+    # assume you have a praw.Reddit instance bound to variable `reddit`
     submission = reddit.submission(id="39zje0")
     print(submission.title)
     # Output: reddit will soon only be available ...
@@ -242,7 +242,7 @@ For example:
     print(redditor1.name)
     # Output: name of the redditor
 
-    # assume you have a Reddit instance bound to variable `reddit`
+    # assume you have a praw.Reddit instance bound to variable `reddit`
     redditor2 = reddit.redditor("bboe")
     print(redditor2.link_karma)
     # Output: u/bboe's karma
@@ -258,7 +258,7 @@ comments as a flattened list you can call the :meth:`.list` method on a
 
 .. code-block:: python
 
-    # assume you have a Reddit instance bound to variable `reddit`
+    # assume you have a praw.Reddit instance bound to variable `reddit`
     top_level_comments = list(submission.comments)
     all_comments = submission.comments.list()
 
@@ -272,7 +272,7 @@ comments as a flattened list you can call the :meth:`.list` method on a
 
     .. code-block:: python
 
-        # assume you have a Reddit instance bound to variable `reddit`
+        # assume you have a praw.Reddit instance bound to variable `reddit`
         submission = reddit.submission(id="39zje0")
         submission.comment_sort = "new"
         top_level_comments = list(submission.comments)
@@ -297,7 +297,7 @@ For example:
 
     import pprint
 
-    # assume you have a Reddit instance bound to variable `reddit`
+    # assume you have a praw.Reddit instance bound to variable `reddit`
     submission = reddit.submission(id="39zje0")
     print(submission.title)  # to make it non-lazy
     pprint.pprint(vars(submission))

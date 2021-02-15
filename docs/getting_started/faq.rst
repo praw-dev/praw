@@ -44,8 +44,8 @@ Q2: I keep on getting this exception:
 
 A: PRAW is most likely in read-only mode. This normally occurs when PRAW is
 authenticated without a username and password or a refresh token. In order to perform
-this action, the Reddit instance needs to be authenticated. See :ref:`oauth_options` to
-see the available authentication methods.
+this action, the :class:`.Reddit` instance needs to be authenticated. See
+:ref:`oauth_options` to see the available authentication methods.
 
 .. _faq5:
 

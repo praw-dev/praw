@@ -12,7 +12,7 @@ class MoreComments(PRAWBase):
     """A class indicating there are more comments."""
 
     def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
-        """Initialize a MoreComments instance."""
+        """Initialize a :class:`.MoreComments` instance."""
         self.count = self.parent_id = None
         self.children = []
         super().__init__(reddit, _data=_data)
@@ -20,20 +20,20 @@ class MoreComments(PRAWBase):
         self.submission = None
 
     def __eq__(self, other: Union[str, "MoreComments"]) -> bool:
-        """Return True if these MoreComments instances are the same."""
+        """Return True if these :class:`.MoreComments` instances are the same."""
         if isinstance(other, self.__class__):
             return self.count == other.count and self.children == other.children
         return super().__eq__(other)
 
     def __lt__(self, other: "MoreComments") -> bool:
-        """Provide a sort order on the MoreComments object."""
+        """Provide a sort order on the :class:`.MoreComments` object."""
         # To work with heapq a "smaller" item is the one with the most comments. We are
         # intentionally making the biggest element the smallest element to turn the
         # min-heap implementation in heapq into a max-heap.
         return self.count > other.count
 
     def __repr__(self) -> str:
-        """Return a string representation of the MoreComments instance."""
+        """Return a string representation of the :class:`.MoreComments` instance."""
         children = self.children[:4]
         if len(self.children) > 4:
             children[-1] = "..."
@@ -61,7 +61,7 @@ class MoreComments(PRAWBase):
         return comments.children[0]
 
     def comments(self, update: bool = True) -> List["praw.models.Comment"]:
-        """Fetch and return the comments for a single MoreComments object."""
+        """Fetch and return the comments for a single :class:`.MoreComments` object."""
         if self._comments is None:
             if self.count == 0:  # Handle "continue this thread"
                 return self._continue_comments(update)

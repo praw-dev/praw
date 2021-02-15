@@ -78,7 +78,7 @@ Unreleased
 **Added**
 
 - :class:`.UserSubreddit` for the ``subreddit`` attribute of :class:`.Redditor`.
-- :meth:`.Reddit.username_available` checks if a username is available.
+- :meth:`.username_available` checks if a username is available.
 - :meth:`.trusted` to retrieve a :class:`.RedditorList` of trusted users.
 - :meth:`.trust` to add a user to the trusted list.
 - :meth:`.distrust` to remove a user from the trusted list.
@@ -86,7 +86,7 @@ Unreleased
 
 **Changed**
 
-- :meth:`.Redditor.moderated` will now objectify all data returned from the API.
+- :meth:`.moderated` will now objectify all data returned from the API.
 - The ``wiki_edit`` endpoint has been changed from ``r/{subreddit}/api/wiki/edit/`` to
   ``r/{subreddit}/api/wiki/edit``.
 - :meth:`.Redditor.block` no longer needs to retrieve a user's fullname.
@@ -104,11 +104,12 @@ Unreleased
   passed ``content`` and ``reason`` parameters that produced a request with a body
   greater than 500 KiB, even when the parameters did not exceed their respective
   permitted maximum lengths.
-- Fixed bug where :meth:`.Reddit.request` could not handle instances of ``BadRequest``\s
-  when the JSON data contained only the keys "reason" and "message".
-- Fixed bug where :meth:`.Reddit.request` could not handle instances of ``BadRequest``\s
-  when the response did not contain valid JSON data.
-- Fixed bug where :meth:`.FullnameMixin.fullname` sometimes returned the wrong fullname.
+- Fixed bug where :meth:`.request` could not handle instances of ``BadRequest``\ s when
+  the JSON data contained only the keys "reason" and "message".
+- Fixed bug where :meth:`.request` could not handle instances of ``BadRequest``\ s when
+  the response did not contain valid JSON data.
+- Fixed bug where :meth:`~.FullnameMixin.fullname` sometimes returned the wrong
+  fullname.
 
 7.2.0 (2021/02/24)
 ------------------
@@ -150,21 +151,21 @@ Unreleased
 
 **Fixed**
 
-- Asynchronous check would not work on Python 3.6 as ``asyncio.get_running_loop`` only
-  exists on Python 3.7+.
+- Asynchronous check would not work on Python 3.6 as
+  :py:func:`~asyncio.get_running_loop` only exists on Python 3.7+.
 
 7.1.1 (2021/02/02)
 ------------------
 
 **Added**
 
-- Add method :meth:`~.Subreddits.premium` to reflect the naming change in Reddit's API.
+- Add method :meth:`.Subreddits.premium` to reflect the naming change in Reddit's API.
 - Ability to submit image galleries with :meth:`~.Subreddit.submit_gallery`.
 - Ability to pass a gallery url to :meth:`.Reddit.submission`.
 - Ability to specify modmail mute duration.
 - Add method :meth:`.invited` to get invited moderators of a subreddit.
 - Ability to submit text/self posts with inline media.
-- Add method :meth:`~.Submission.award` and :meth:`~.Comment.award` with the ability to
+- Add method :meth:`.Submission.award` and :meth:`.Comment.award` with the ability to
   specify type of award, anonymity, and message when awarding a submission or comment.
 - Ability to specify subreddits by name using the `subreddits` parameter in
   :meth:`.Reddit.info`.
@@ -175,7 +176,7 @@ Unreleased
 **Changed**
 
 - Drop support for Python 3.5, which is end-of-life on 2020-09-13.
-- :class:`~.BoundedSet` will now utilize a Last-Recently-Used (LRU) storing mechanism,
+- :class:`.BoundedSet` will now utilize a Last-Recently-Used (LRU) storing mechanism,
   which will change the order in which elements are removed from the set.
 - Improved :meth:`~.Subreddit.submit_image` and :meth:`~.Subreddit.submit_video`
   performance in slow network environments by removing a race condition when
@@ -183,9 +184,9 @@ Unreleased
 
 **Deprecated**
 
-- :meth:`~.Subreddits.gold` is superseded by :meth:`~.Subreddits.premium`.
-- :meth:`~.Submission.gild` is superseded by :meth:`~.Submission.award`.
-- :meth:`~.Comment.gild` is superseded by :meth:`~.Comment.award`.
+- :meth:`.Subreddits.gold` is superseded by :meth:`.Subreddits.premium`.
+- :meth:`.Submission.gild` is superseded by :meth:`.Submission.award`.
+- :meth:`.Comment.gild` is superseded by :meth:`.Comment.award`.
 
 **Fixed**
 
@@ -243,8 +244,8 @@ Unreleased
 
 - ``config_interpolation`` parameter for :class:`.Reddit` supporting basic and extended
   modes.
-- Add :meth:`.Redditors.partial_redditors` that returns lightweight redditor objects
-  that contain only a few fields. This is useful for resolving Redditor IDs to their
+- Add :meth:`.partial_redditors` that returns lightweight redditor objects that contain
+  only a few fields. This is useful for resolving :class:`.Redditor` IDs to their
   usernames in bulk.
 - :meth:`.User.friends` has a new parameter ``user`` that takes either an instance of
   :class:`.Redditor` or a string containing a redditor name and returns an instance of
@@ -252,8 +253,8 @@ Unreleased
   throws an exception.
 - :meth:`.SubmissionModeration.flair` has the parameter ``flair_template_id`` for
   applying flairs with template IDs.
-- :meth:`~.Emoji.update` supports modifying an emoji's permissions.
-- :meth:`~.SubredditEmoji.add` now supports optionally passing booleans to set an
+- :meth:`.Emoji.update` supports modifying an emoji's permissions.
+- :meth:`.SubredditEmoji.add` now supports optionally passing booleans to set an
   emoji's permissions upon upload.
 - Methods :meth:`.SubredditLinkFlairTemplates.update` and
   :meth:`.SubredditRedditorFlairTemplates.update` contain a new parameter, ``fetch``,
@@ -265,18 +266,18 @@ Unreleased
   existing values for the flair template.
 - The parameter ``text`` for methods :meth:`.SubredditLinkFlairTemplates.update` and
   :meth:`.SubredditRedditorFlairTemplates.update` is no longer required.
-- There is a new method, :meth:`.Subreddit.post_requirements`, to fetch a subreddit's
+- There is a new method, :meth:`~.Subreddit.post_requirements`, to fetch a subreddit's
   post requirements.
 - Method :meth:`.SubmissionModeration.sticky` will now ignore the Conflict exception
   generated by trying to sticky the same post multiple times.
 - A new method :meth:`.CommentModeration.show` will uncollapse a comment that was
   collapsed because of Crowd Control
-- Methods :meth:`.Subreddit.submit_image` and :meth:`.Subreddit.submit_video` will throw
-  :class:`.TooLargeMediaException` if the submitted media is rejected by Reddit due to
-  the size of the media.
+- Methods :meth:`~.Subreddit.submit_image` and :meth:`~.Subreddit.submit_video` will
+  throw :class:`.TooLargeMediaException` if the submitted media is rejected by Reddit
+  due to the size of the media.
 - Class :class:`.Reddit` has an attribute, ``validate_on_submit``, that can be set after
-  class initialization that causes methods :meth:`.Subreddit.submit`,
-  :meth:`.Subreddit.submit_image`, :meth:`.Subreddit.submit_video`, and
+  class initialization that causes methods :meth:`~.Subreddit.submit`,
+  :meth:`~.Subreddit.submit_image`, :meth:`~.Subreddit.submit_video`, and
   :meth:`.Submission.edit` to check that the submission matches a subreddit's post
   validation rules. This attribute will be functionally useless once Reddit implements
   their change. This attribute will be deprecated on the next release after Reddit's
@@ -293,9 +294,9 @@ Unreleased
   :class:`.RedditErrorItem`\ s. You can access the items by doing
   ``RedditAPIException.items``, which returns a list.
 - :class:`.APIException` is an alias to :class:`.RedditAPIException`.
-- Parameter ``discussion_type`` to methods :meth:`.Subreddit.submit`,
-  :meth:`.Subreddit.submit_image`, and :meth:`.Subreddit.submit_video` to support
-  submitting as a live discussion (set to ``CHAT``).
+- Parameter ``discussion_type`` to methods :meth:`~.Subreddit.submit`,
+  :meth:`~.Subreddit.submit_image`, and :meth:`~.Subreddit.submit_video` to support
+  submitting as a live discussion (set to ``"CHAT"``).
 - Instances of :class:`.Trophy` can be compared for equality with each other.
 - :class:`.Reddit` has a new configurable parameter, ``timeout``. This defaults to 16
   seconds. It controls how long PRAW will wait for a response before throwing an
@@ -331,7 +332,7 @@ Unreleased
   :meth:`.SubredditRedditorFlairTemplates.update` will no longer create flairs that are
   using an invalid template id, but instead throw a :class:`.InvalidFlairTemplateID`.
 - Method ``reddit.user.moderator_subreddits`` has been removed. Please use
-  :meth:`.Redditor.moderated` instead.
+  :meth:`.moderated` instead.
 
 6.5.1 (2020/01/07)
 ------------------
@@ -348,39 +349,39 @@ Unreleased
 
 - :meth:`.set_original_content` supports marking a submission as original content.
 - :meth:`.unset_original_content` supports unmarking a submission as original content.
-- :meth:`.Redditor.moderated` to get a list of a Redditor's moderated subreddits.
+- :meth:`.moderated` to get a list of a Redditor's moderated subreddits.
 - Parameter ``without_websockets`` to :meth:`~.Subreddit.submit_image` and
   :meth:`~.Subreddit.submit_video` to submit without using WebSockets.
-- :meth:`.Reddit.redditor` supports ``fullname`` param to fetch a Redditor by the
-  fullname instead of name. :class:`.Redditor` constructor now also has ``fullname``
+- :meth:`.Reddit.redditor` supports ``fullname`` param to fetch a :class:`.Redditor` by
+  the fullname instead of name. :class:`.Redditor` constructor now also has ``fullname``
   param.
 - Add :class:`.RemovalReason` and :class:`.SubredditRemovalReasons` to work with removal
   reasons
 - Attribute ``removal_reasons`` to :class:`.SubredditModeration` to interact with new
   removal reason classes
-- Parameters ``mod_note`` and ``reason_id`` to :meth:`.ThingModerationMixin.remove` to
+- Parameters ``mod_note`` and ``reason_id`` to :meth:`~.ThingModerationMixin.remove` to
   optionally apply a removal reason on removal
 - Add :class:`.SubredditModerationStream` to enable moderation streams
 - Attribute ``stream`` to :class:`.SubredditModeration` to interact with new moderation
   streams
-- Add :meth:`.SubredditModerationStream.edited` to allow streaming of
+- Add :meth:`~.SubredditModerationStream.edited` to allow streaming of
   :meth:`.SubredditModeration.edited`
-- Add :meth:`.SubredditModerationStream.log` to allow streaming of
+- Add :meth:`~.SubredditModerationStream.log` to allow streaming of
   :meth:`.SubredditModeration.log`
-- Add :meth:`.SubredditModerationStream.modmail_conversations` to allow streaming of
+- Add :meth:`~.SubredditModerationStream.modmail_conversations` to allow streaming of
   :meth:`.Modmail.conversations`
-- Add :meth:`.SubredditModerationStream.modqueue` to allow streaming of
+- Add :meth:`~.SubredditModerationStream.modqueue` to allow streaming of
   :meth:`.SubredditModeration.modqueue`
-- Add :meth:`.SubredditModerationStream.reports` to allow streaming of
+- Add :meth:`~.SubredditModerationStream.reports` to allow streaming of
   :meth:`.SubredditModeration.reports`
-- Add :meth:`.SubredditModerationStream.spam` to allow streaming of
+- Add :meth:`~.SubredditModerationStream.spam` to allow streaming of
   :meth:`.SubredditModeration.spam`
-- Add :meth:`.SubredditModerationStream.unmoderated` to allow streaming of
+- Add :meth:`~.SubredditModerationStream.unmoderated` to allow streaming of
   :meth:`.SubredditModeration.unmoderated`
-- Add :meth:`.SubredditModerationStream.unread` to allow streaming of
+- Add :meth:`~.SubredditModerationStream.unread` to allow streaming of
   :meth:`.SubredditModeration.unread`
 - Parameter ``exclude_before`` to :func:`.stream_generator` to allow
-  :meth:`.SubredditModerationStream.modmail_conversations` to work
+  :meth:`~.SubredditModerationStream.modmail_conversations` to work
 - Parameters ``allowable_content`` and ``max_emojis`` to
   :meth:`~.SubredditRedditorFlairTemplates.add`,
   :meth:`~.SubredditLinkFlairTemplates.add`, and
@@ -388,8 +389,8 @@ Unreleased
 
 **Deprecated**
 
-- Method ``reddit.user.moderator_subreddits`` as :meth:`.Redditor.moderated` provides
-  more functionality.
+- Method ``reddit.user.moderator_subreddits`` as :meth:`.moderated` provides more
+  functionality.
 - The file for ModActions (praw/models/modaction.py) has been moved to
   praw/models/mod_action.py and the previous has been Deprecated.
 
@@ -403,11 +404,13 @@ Unreleased
 
 **Added**
 
-- :meth:`~.Submission.crosspost` support parameter ``flair_id`` to flair the submission
+- :meth:`.crosspost` support parameter ``flair_id`` to flair the submission
   immediately upon crossposting.
-- :meth:`~.Submission.crosspost` support parameter ``flair_text`` to set a custom text
+- :meth:`.crosspost` support parameter ``flair_text`` to set a custom text
   to the flair immediately upon crossposting.
-- :meth:`~.Submission.crosspost` support parameter ``nsfw`` to mark the submission NSFW
+- :meth:`.crosspost` support parameter ``spoiler`` to mark the submission as a spoiler
+  immediately upon crossposting.
+- :meth:`.crosspost` support parameter ``nsfw`` to mark the submission NSFW
   immediately upon crossposting.
 - :meth:`~.Submission.crosspost` support parameter ``spoiler`` to mark the submission as
   a spoiler immediately upon crossposting.
@@ -416,7 +419,7 @@ Unreleased
 
 - :meth:`.add_community_list` has parameter ``description`` to support unannounced
   upstream Reddit API changes.
-- :meth:`~.WidgetModeration.update` supports passing a list of :class:`.Subreddit`
+- :meth:`.WidgetModeration.update` supports passing a list of :class:`.Subreddit`
   objects.
 
 **Changed**
@@ -452,9 +455,9 @@ Unreleased
   collection.
 - ``praw.util.camel_to_snake`` and ``praw.util.snake_case_keys``.
 - Comments can now be locked and unlocked via ``comment.mod.lock()`` and
-  ``comment.mod.unlock()``. See: (:meth:`.ThingModerationMixin.lock` and
-  :meth:`.ThingModerationMixin.unlock`).
-- ``align`` parameter to :meth:`.SubredditStylesheet.upload_banner_additional_image`
+  ``comment.mod.unlock()``. See: (:meth:`~.ThingModerationMixin.lock` and
+  :meth:`~.ThingModerationMixin.unlock`).
+- ``align`` parameter to :meth:`.upload_banner_additional_image`
 
 **Changed**
 
@@ -468,12 +471,12 @@ Unreleased
 
 **Added**
 
-- :meth:`.SubredditStylesheet.upload_banner`
-- :meth:`.SubredditStylesheet.upload_banner_additional_image`
-- :meth:`.SubredditStylesheet.upload_banner_hover_image`
-- :meth:`.SubredditStylesheet.delete_banner`
-- :meth:`.SubredditStylesheet.delete_banner_additional_image`
-- :meth:`.SubredditStylesheet.delete_banner_hover_image`
+- :meth:`.upload_banner`
+- :meth:`.upload_banner_additional_image`
+- :meth:`.upload_banner_hover_image`
+- :meth:`.delete_banner`
+- :meth:`.delete_banner_additional_image`
+- :meth:`.delete_banner_hover_image`
 - :meth:`~.Subreddit.submit`, :meth:`~.Subreddit.submit_image`, and
   :meth:`~.Subreddit.submit_video` support parameter ``nsfw`` to mark the submission
   NSFW immediately upon posting.
@@ -500,7 +503,7 @@ Unreleased
 
 **Added**
 
-- :meth:`~.SubredditFlair.set` supports parameter ``flair_template_id`` for giving a
+- :meth:`.SubredditFlair.set` supports parameter ``flair_template_id`` for giving a
   user redesign flair.
 
 6.1.0 (2019/01/19)
@@ -525,36 +528,37 @@ Unreleased
 - Add method :meth:`.add_button_widget`.
 - Add method :meth:`~.SubredditWidgetsModeration.reorder` to reorder a subreddit's
   widgets.
-- Add :class:`.Redditors` (``reddit.redditors``) to provide Redditor listings.
+- Add :class:`.Redditors` (``reddit.redditors``) to provide :class:`.Redditor` listings.
 - Add :meth:`~.Subreddit.submit_image` for submitting native images to Reddit.
 - Add :meth:`~.Subreddit.submit_video` for submitting native videos and videogifs to
   Reddit.
 
 **Changed**
 
-- :meth:`.User.me` returns ``None`` in :attr:`~praw.Reddit.read_only` mode.
+- :meth:`.me` returns ``None`` in :attr:`.read_only` mode.
 - :meth:`.SubredditLinkFlairTemplates.__iter__` uses the v2 flair API endpoint. This
   change will result in additional fields being returned. All fields that were
   previously returned will still be returned.
 - :meth:`.SubredditRedditorFlairTemplates.__iter__` uses the v2 flair API endpoint. The
   method will still return the exact same items.
-- Methods :meth:`~.SubredditRedditorFlairTemplates.add`,
-  :meth:`~.SubredditLinkFlairTemplates.add`,
-  :meth:`~.SubredditRedditorFlairTemplates.update`, and
-  :meth:`~.SubredditLinkFlairTemplates.update` can add and update redesign-style flairs
+- Methods :meth:`.SubredditRedditorFlairTemplates.add`,
+  :meth:`.SubredditLinkFlairTemplates.add`,
+  :meth:`.SubredditRedditorFlairTemplates.update`, and
+  :meth:`.SubredditLinkFlairTemplates.update` can add and update redesign-style flairs
   with the v2 flair API endpoint. They can still update pre-redesign-style flairs with
   the older endpoint.
 
 **Fixed**
 
-- Widgets of unknown types are parsed as ``Widget``\ s rather than raising an exception.
+- Widgets of unknown types are parsed as :class:`.Widget`\ s rather than raising an
+  exception.
 
 6.0.0 (2018/07/24)
 ------------------
 
 **Added**
 
-- Add method :meth:`.WikiPage.revision` to get a specific wiki page revision.
+- Add method :meth:`.revision` to get a specific wiki page revision.
 - Added parameter ``skip_existing`` to :func:`.stream_generator` to skip existing items
   when starting a stream.
 - Add method :meth:`.Front.best` to get the front page "best" listing.
@@ -565,7 +569,7 @@ Unreleased
 
 **Fixed**
 
-- Fix ``RecursionError`` on :class:`.SubredditEmoji`'s ``repr`` and ``str``.
+- Fix :py:class:`RecursionError` on :class:`.SubredditEmoji`'s ``repr`` and ``str``.
 - :meth:`.SubredditFilters.add` and :meth:`.SubredditFilters.remove` also accept a
   :class:`.Subreddit` for the ``subreddit`` parameter.
 - Remove restriction which prevents installed (non-confidential) apps from using OAuth2
@@ -586,7 +590,7 @@ Unreleased
 - Add class :class:`.Preferences` to access and update Reddit preferences.
 - Add attribute :attr:`.User.preferences` to access an instance of
   :class:`.Preferences`.
-- Add method :meth:`.Message.delete()`.
+- Add method :meth:`.Message.delete`.
 - Add class :class:`.Emoji` to work with custom subreddit emoji.
 
 **Deprecated**
@@ -618,8 +622,8 @@ Unreleased
 
 **Fixed**
 
-- Now raises ``prawcore.UnavailableForLegalReasons`` instead of an ``AssertionError``
-  when encountering a HTTP 451 response.
+- Now raises ``prawcore.UnavailableForLegalReasons`` instead of an
+  :py:class:`AssertionError` when encountering a HTTP 451 response.
 
 5.2.0 (2017/10/24)
 ------------------
@@ -644,26 +648,26 @@ Unreleased
 
 **Added**
 
-- :attr:`.Redditor.stream`, with methods :meth:`.RedditorStream.submissions()` and
-  :meth:`.RedditorStream.comments()` to stream a Redditor's comments or submissions
+- :attr:`.Redditor.stream`, with methods :meth:`.RedditorStream.submissions` and
+  :meth:`.RedditorStream.comments` to stream a Redditor's comments or submissions
 - :class:`.RedditorStream` has been added to facilitate :attr:`.Redditor.stream`
 - :meth:`.Inbox.collapse` to mark messages as collapsed.
 - :meth:`.Inbox.uncollapse` to mark messages as uncollapsed.
-- Raise :class:`.ClientException` when calling :meth:`~.Comment.refresh` when the
+- Raise :class:`.ClientException` when calling :meth:`.Comment.refresh` when the
   comment does not appear in the resulting comment tree.
 - :meth:`.Submission.crosspost` to crosspost to a subreddit.
 
 **Fixed**
 
-- Calling :meth:`~.Comment.refresh` on a directly fetched, deeply nested
+- Calling :meth:`.Comment.refresh` on a directly fetched, deeply nested
   :class:`.Comment` will additionally pull in as many parent comments as possible
   (currently 8) enabling significantly quicker traversal to the top-most
-  :class:`.Comment` via successive :meth:`.parent()` calls.
+  :class:`.Comment` via successive :meth:`.parent` calls.
 - Calling :meth:`~.Comment.refresh` previously could have resulted in a
   ``AttributeError: "MoreComments" object has no attribute "_replies"`` exception. This
   situation will now result in a :class:`.ClientException`.
 - Properly handle ``BAD_CSS_NAME`` errors when uploading stylesheet images with invalid
-  filenames. Previously an ``AssertionError`` was raised.
+  filenames. Previously an :py:class:`AssertionError` was raised.
 - :class:`.Submission`'s ``gilded`` attribute properly returns the expected value from
   reddit.
 
@@ -672,7 +676,7 @@ Unreleased
 
 **Fixed**
 
-- Calls to :meth:`.hide()` and :meth:`.unhide()` properly batch into requests of 50
+- Calls to :meth:`.hide` and :meth:`.unhide` properly batch into requests of 50
   submissions at a time.
 - Lowered the average maximum delay between inactive stream checks by 4x to 16 seconds.
   It was previously 64 seconds, which was too long.
@@ -689,7 +693,7 @@ Unreleased
 
 **Changed**
 
-- ``cloudsearch`` is no longer the default syntax for :meth:`.Subreddit.search`.
+- ``cloudsearch`` is no longer the default syntax for :meth:`~.Subreddit.search`.
   ``lucene`` is now the default syntax so that PRAW's default is aligned with Reddit's
   default.
 - :meth:`.Reddit.info` will now take either a list of fullnames or a single URL string.
@@ -755,7 +759,7 @@ as described below:
 - :meth:`.Modmail.create` to create a new modmail conversation.
 - :meth:`.ModmailConversation.read` to mark modmail conversations as read.
 - :meth:`.ModmailConversation.unread` to mark modmail conversations as unread.
-- :meth:`.subreddit.Modmail.conversations` to get new modmail conversations.
+- :meth:`.conversations` to get new modmail conversations.
 - :meth:`.ModmailConversation.highlight` to highlight modmail conversations.
 - :meth:`.ModmailConversation.unhighlight` to unhighlight modmail conversations.
 - :meth:`.ModmailConversation.mute` to mute modmail conversations.
@@ -816,7 +820,7 @@ as described below:
 **Fixed**
 
 - Uploading an image resulting in too large of a request (>500 KB) now raises
-  ``prawcore.TooLarge`` instead of an ``AssertionError``.
+  ``prawcore.TooLarge`` instead of an :py:class:`AssertionError`.
 - Uploading an invalid image raises ``APIException``.
 - :class:`.Redditor` instances obtained via :attr:`~.Subreddit.moderator` (e.g.,
   ``reddit.subreddit("subreddit").moderator()``) will contain attributes with the
@@ -881,7 +885,7 @@ as described below:
 
 **Fixed**
 
-- :meth:`.hide()` and :meth:`.unhide()` now accept a list of additional submissions.
+- :meth:`.hide` and :meth:`.unhide` now accept a list of additional submissions.
 - :meth:`.replace_more` is now recoverable. Previously, when an exception was raised
   during the work done by :meth:`.replace_more`, all unreplaced :class:`.MoreComments`
   instances were lost. Now :class:`.MoreComments` instances are only removed once their
@@ -964,8 +968,8 @@ as described below:
 
 - Fix bug where ipython tries to access attribute
   ``_ipython_canary_method_should_not_exist_`` resulting in a useless fetch.
-- Fix bug where Comment replies becomes ``[]`` after attempting to access an invalid
-  attribute on the Comment.
+- Fix bug where :class:`.Comment` replies becomes ``[]`` after attempting to access an
+  invalid attribute on the Comment.
 - Reddit.wiki[...] converts the passed in page name to lower case as pages are only
   saved in lower case and non-lower case page names results in a Redirect exception
   (thanks pcjonathan).
@@ -1018,9 +1022,9 @@ to help with updating your code to PRAW 4. If you require additional help please
   permissions.
 - :meth:`.Front.random_rising`, :meth:`.Subreddit.random_rising` and
   :meth:`.Multireddit.random_rising`.
-- :class:`~.WikiPage` supports a revision argument.
-- :meth:`~.SubredditWiki.revisions` to obtain a list of recent revisions to a subreddit.
-- :meth:`~.WikiPage.revisions` to obtain a list of revisions for a wiki page.
+- :class:`.WikiPage` supports a revision argument.
+- :meth:`.SubredditWiki.revisions` to obtain a list of recent revisions to a subreddit.
+- :meth:`.WikiPage.revisions` to obtain a list of revisions for a wiki page.
 - Support installed-type OAuth apps.
 - Support read-only OAuth for all application types.
 - Support script-type OAuth apps.

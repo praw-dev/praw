@@ -3,14 +3,14 @@ from ....const import API_PATH
 
 
 class ReplyableMixin:
-    """Interface for RedditBase classes that can be replied to."""
+    """Interface for :class:`.RedditBase` classes that can be replied to."""
 
     def reply(self, body: str):
         """Reply to the object.
 
         :param body: The Markdown formatted content for a comment.
 
-        :returns: A :class:`~.Comment` object for the newly created comment or ``None``
+        :returns: A :class:`.Comment` object for the newly created comment or ``None``
             if Reddit doesn't provide one.
 
         A ``None`` value can be returned if the target is a comment or submission in a

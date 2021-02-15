@@ -1,4 +1,4 @@
-"""Provide the UserSubreddit class."""
+"""Provide the :class:`.UserSubreddit` class."""
 import inspect
 from typing import TYPE_CHECKING, Dict, Union
 from warnings import warn
@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class UserSubreddit(Subreddit):
-    """A class for User Subreddits.
+    """A class for :class:`.User` Subreddits.
 
     To obtain an instance of this class execute:
 
@@ -55,9 +55,9 @@ class UserSubreddit(Subreddit):
     """
 
     def __init__(self, reddit: "praw.Reddit", *args, **kwargs):
-        """Initialize an UserSubreddit instance.
+        """Initialize an :class:`.UserSubreddit` instance.
 
-        :param reddit: An instance of :class:`~.Reddit`.
+        :param reddit: An instance of :class:`.Reddit`.
 
         .. note::
 
@@ -122,7 +122,7 @@ class UserSubreddit(Subreddit):
 
 
 class UserSubredditModeration(SubredditModeration):
-    """Provides a set of moderation functions to a UserSubreddit.
+    """Provides a set of moderation functions to a :class:`.UserSubreddit`.
 
     For example, to accept a moderation invite from subreddit ``r/test``:
 
@@ -135,7 +135,7 @@ class UserSubredditModeration(SubredditModeration):
     def update(
         self, **settings: Union[str, int, bool]
     ) -> Dict[str, Union[str, int, bool]]:
-        """Update the subreddit's settings.
+        """Update the :class:`.Subreddit`'s settings.
 
         :param all_original_content: Mandate all submissions to be original content
             only.

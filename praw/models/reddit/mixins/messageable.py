@@ -16,11 +16,11 @@ class MessageableMixin:
         message: str,
         from_subreddit: Optional[Union["praw.models.Subreddit", str]] = None,
     ):
-        """Send a message to a redditor or a subreddit's moderators (mod mail).
+        """Send a message to a :class:`.Redditor` or a :class:`.Subreddit`'s moderators (modmail).
 
         :param subject: The subject of the message.
         :param message: The message content.
-        :param from_subreddit: A :class:`~.Subreddit` instance or string to send the
+        :param from_subreddit: A :class:`.Subreddit` instance or string to send the
             message from. When provided, messages are sent from the subreddit rather
             than from the authenticated user.
 

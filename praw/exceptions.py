@@ -149,7 +149,7 @@ class APIException(PRAWException):
         items: Union[List[Union[RedditErrorItem, List[str], str]], str],
         *optional_args: str,
     ):
-        """Initialize a RedditAPIException instance.
+        """Initialize a :class:`.RedditAPIException` instance.
 
         :param items: Either a list of instances of :class:`.RedditErrorItem` or a list
             containing lists of unformed errors.
@@ -174,7 +174,7 @@ class ClientException(PRAWException):
 
 
 class DuplicateReplaceException(ClientException):
-    """Indicate exceptions that involve the replacement of MoreComments."""
+    """Indicate exceptions that involve the replacement of :class:`.MoreComments`."""
 
     def __init__(self):
         """Initialize a :class:`.DuplicateReplaceException` instance."""
@@ -229,7 +229,7 @@ class TooLargeMediaException(ClientException):
     """Indicate exceptions from uploading media that's too large."""
 
     def __init__(self, maximum_size: int, actual: int):
-        """Initialize a TooLargeMediaException instance.
+        """Initialize a :class:`.TooLargeMediaException` instance.
 
         :param maximum_size: The maximum_size size of the uploaded media.
         :param actual: The actual size of the uploaded media.
@@ -267,7 +267,7 @@ class WebSocketException(ClientException):
         del self._original_exception
 
     def __init__(self, message: str, exception: Optional[Exception]):
-        """Initialize a WebSocketException instance.
+        """Initialize a :class:`.WebSocketException` instance.
 
         :param message: The exception message.
         :param exception: The exception thrown by the websocket library.
@@ -285,7 +285,7 @@ class MediaPostFailed(WebSocketException):
     """Indicate exceptions where media uploads failed.."""
 
     def __init__(self):
-        """Initialize a MediaPostFailed instance."""
+        """Initialize a :class:`.MediaPostFailed` instance."""
         super().__init__(
             "The attempted media upload action has failed. Possible causes include the"
             " corruption of media files. Check that the media file can be opened on"

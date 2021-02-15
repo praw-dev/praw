@@ -13,7 +13,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Rule(RedditBase):
-    """An individual Rule object.
+    """An individual :class:`.Rule` object.
 
     **Typical Attributes**
 
@@ -71,7 +71,7 @@ class Rule(RedditBase):
         short_name: Optional[str] = None,
         _data: Optional[Dict[str, str]] = None,
     ):
-        """Initialize a Rule instance."""
+        """Initialize a :class:`.Rule` instance."""
         if (short_name, _data).count(None) != 1:
             raise ValueError("Either short_name or _data needs to be given.")
         if short_name:
@@ -103,7 +103,7 @@ class Rule(RedditBase):
 
 
 class SubredditRules:
-    """Provide a set of functions to access a Subreddit's rules.
+    """Provide a set of functions to access a :class:`.Subreddit`'s rules.
 
     For example, to list all the rules for a subreddit:
 
@@ -178,7 +178,7 @@ class SubredditRules:
         )
 
     def __getitem__(self, short_name: Union[str, int, slice]) -> "praw.models.Rule":
-        """Return the Rule for the subreddit with short_name ``short_name``.
+        """Return the :class:`.Rule` for the subreddit with short_name ``short_name``.
 
         :param short_name: The short_name of the rule, or the rule number.
 
@@ -220,7 +220,7 @@ class SubredditRules:
         return Rule(self._reddit, subreddit=self.subreddit, short_name=short_name)
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Initialize a SubredditRules instance.
+        """Initialize a :class:`.SubredditRules` instance.
 
         :param subreddit: The subreddit whose rules to work with.
 
@@ -247,7 +247,7 @@ class SubredditRules:
 
     @cachedproperty
     def _rule_list(self) -> List[Rule]:
-        """Get a list of Rule objects.
+        """Get a list of :class:`.Rule` objects.
 
         :returns: A list of instances of :class:`.Rule`.
 
@@ -278,7 +278,7 @@ class RuleModeration:
     """
 
     def __init__(self, rule: "praw.models.Rule"):
-        """Initialize a RuleModeration instance."""
+        """Initialize a :class:`.RuleModeration` instance."""
         self.rule = rule
 
     def delete(self):
@@ -370,7 +370,7 @@ class SubredditRulesModeration:
     """
 
     def __init__(self, subreddit_rules: SubredditRules):
-        """Initialize a SubredditRulesModeration instance."""
+        """Initialize a :class:`.SubredditRulesModeration` instance."""
         self.subreddit_rules = subreddit_rules
 
     def add(

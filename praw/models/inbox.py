@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Inbox(PRAWBase):
-    """Inbox is a Listing class that represents the Inbox."""
+    """Inbox is a Listing class that represents the inbox."""
 
     def all(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
@@ -180,7 +180,7 @@ class Inbox(PRAWBase):
         return ListingGenerator(self._reddit, API_PATH["mentions"], **generator_kwargs)
 
     def message(self, message_id: str) -> "praw.models.Message":
-        """Return a Message corresponding to ``message_id``.
+        """Return a :class:`.Message` corresponding to ``message_id``.
 
         :param message_id: The base36 id of a message.
 

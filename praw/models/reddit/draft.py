@@ -95,7 +95,7 @@ class Draft(RedditBase):
         id: Optional[str] = None,  # pylint: disable=redefined-builtin
         _data: Dict[str, Any] = None,
     ):
-        """Initialize a Draft instance."""
+        """Initialize a :class:`.Draft` instance."""
         if (id, _data).count(None) != 1:
             raise TypeError("Exactly one of `id` or `_data` must be provided.")
         fetched = False
@@ -111,7 +111,7 @@ class Draft(RedditBase):
         super().__init__(reddit, _data=_data, _fetched=fetched)
 
     def __repr__(self) -> str:
-        """Return a string representation of the Draft instance."""
+        """Return a string representation of the :class:`.Draft` instance."""
         if self._fetched:
             subreddit = (
                 f" subreddit={self.subreddit.display_name!r}" if self.subreddit else ""
@@ -132,7 +132,7 @@ class Draft(RedditBase):
         )
 
     def delete(self):
-        """Delete the Draft.
+        """Delete the :class:`.Draft`.
 
         Example usage:
 
@@ -162,7 +162,7 @@ class Draft(RedditBase):
         url: Optional[str] = None,
         **draft_kwargs,
     ):
-        """Update the Draft.
+        """Update the :class:`.Draft`.
 
         .. note::
 
@@ -259,7 +259,8 @@ class Draft(RedditBase):
 
         .. note::
 
-            Parameters set here will override their respective Draft attributes.
+            Parameters set here will override their respective :class:`.Draft`
+            attributes.
 
         Additional keyword arguments are passed to the :meth:`.Subreddit.submit` method.
 

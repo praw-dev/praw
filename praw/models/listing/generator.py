@@ -28,7 +28,7 @@ class ListingGenerator(PRAWBase, Iterator):
         limit: int = 100,
         params: Optional[Dict[str, Union[str, int]]] = None,
     ):
-        """Initialize a ListingGenerator instance.
+        """Initialize a :class:`.ListingGenerator` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
         :param url: A URL returning a Reddit listing.
@@ -51,11 +51,11 @@ class ListingGenerator(PRAWBase, Iterator):
         self.yielded = 0
 
     def __iter__(self) -> Iterator[Any]:
-        """Permit ListingGenerator to operate as an iterator."""
+        """Permit :class:`.ListingGenerator` to operate as an iterator."""
         return self
 
     def __next__(self) -> Any:
-        """Permit ListingGenerator to operate as a generator."""
+        """Permit :class:`.ListingGenerator` to operate as a generator."""
         if self.limit is not None and self.yielded >= self.limit:
             raise StopIteration()
 

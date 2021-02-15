@@ -141,7 +141,7 @@ class RemovalReason(RedditBase):
 
 
 class SubredditRemovalReasons:
-    """Provide a set of functions to a Subreddit's removal reasons."""
+    """Provide a set of functions to a :class:`.Subreddit`'s removal reasons."""
 
     def __getitem__(self, reason_id: Union[str, int, slice]) -> RemovalReason:
         """Return the Removal Reason with the ID/number/slice ``reason_id``.
@@ -192,7 +192,7 @@ class SubredditRemovalReasons:
         return RemovalReason(self._reddit, self.subreddit, reason_id)
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Initialize a SubredditRemovalReasons instance.
+        """Initialize a :class:`.SubredditRemovalReasons` instance.
 
         :param subreddit: The subreddit whose removal reasons to work with.
 
@@ -234,7 +234,7 @@ class SubredditRemovalReasons:
         :param message: The message associated with the removal reason.
         :param title: The title of the removal reason
 
-        :returns: The RemovalReason added.
+        :returns: The :class:`.RemovalReason` added.
 
         The message will be prepended with `Hi u/username,` automatically.
 

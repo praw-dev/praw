@@ -10,7 +10,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class SubmissionListingMixin(PRAWBase):
-    """Adds additional methods pertaining to Submission instances."""
+    """Adds additional methods pertaining to :class:`.Submission` instances."""
 
     def duplicates(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
@@ -32,7 +32,7 @@ class SubmissionListingMixin(PRAWBase):
 
         .. seealso::
 
-            :meth:`~.upvote`
+            :meth:`.upvote`
 
         """
         url = API_PATH["duplicates"].format(submission_id=self.id)

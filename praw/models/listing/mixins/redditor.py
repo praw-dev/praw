@@ -15,7 +15,7 @@ class SubListing(BaseListingMixin):
     """Helper class for generating :class:`.ListingGenerator` objects."""
 
     def __init__(self, reddit: "praw.Reddit", base_path: str, subpath: str):
-        """Initialize a SubListing instance.
+        """Initialize a :class:`.SubListing` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
         :param base_path: The path to the object up to this point.
@@ -29,7 +29,7 @@ class SubListing(BaseListingMixin):
 
 
 class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
-    """Adds additional methods pertaining to Redditor instances."""
+    """Adds additional methods pertaining to :class:`.Redditor` instances."""
 
     @cachedproperty
     def comments(self) -> SubListing:

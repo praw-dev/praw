@@ -49,9 +49,9 @@ class RedditBase(PRAWBase):
         _fetched: bool = False,
         _str_field: bool = True,
     ):
-        """Initialize a RedditBase instance.
+        """Initialize a :class:`.RedditBase` instance.
 
-        :param reddit: An instance of :class:`~.Reddit`.
+        :param reddit: An instance of :class:`.Reddit`.
 
         """
         super().__init__(reddit, _data=_data)
