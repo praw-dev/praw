@@ -134,7 +134,7 @@ class WikiPage(RedditBase):
 
     @staticmethod
     def _revision_generator(
-        subreddit: "Subreddit", url: str, generator_kwargs: Dict[str, Any]
+        subreddit: "praw.models.Subreddit", url: str, generator_kwargs: Dict[str, Any]
     ) -> Generator[
         Dict[str, Optional[Union[Redditor, "WikiPage", str, int, bool]]], None, None
     ]:
