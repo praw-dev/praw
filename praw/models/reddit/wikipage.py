@@ -133,7 +133,11 @@ class WikiPage(RedditBase):
     __hash__ = RedditBase.__hash__
 
     @staticmethod
-    def _revision_generator(subreddit, url, generator_kwargs):
+    def _revision_generator(
+        subreddit: "praw.models.Subreddit", url: str, generator_kwargs: Dict[str, Any]
+    ) -> Generator[
+        Dict[str, Optional[Union[Redditor, "WikiPage", str, int, bool]]], None, None
+    ]:
         for revision in ListingGenerator(subreddit._reddit, url, **generator_kwargs):
             if revision["author"] is not None:
                 revision["author"] = Redditor(
