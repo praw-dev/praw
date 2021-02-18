@@ -7,16 +7,7 @@ from csv import writer
 from io import StringIO
 from json import dumps, loads
 from os.path import basename, dirname, isfile, join
-from typing import (
-    List,
-    TYPE_CHECKING,
-    Optional,
-    Dict,
-    Any,
-    Union,
-    Iterator,
-    Generator,
-)
+from typing import TYPE_CHECKING, Any, Dict, Generator, Iterator, List, Optional, Union
 from urllib.parse import urljoin
 from xml.etree.ElementTree import XML
 
