@@ -16,7 +16,6 @@ from typing import (
     Union,
     Iterator,
     Generator,
-    Set,
 )
 from urllib.parse import urljoin
 from xml.etree.ElementTree import XML
@@ -49,7 +48,6 @@ from .wikipage import WikiPage
 
 if TYPE_CHECKING:  # pragma: no cover
     from .... import praw
-
 
 
 class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBase):
@@ -764,7 +762,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             API_PATH["post_requirements"].format(subreddit=str(self))
         )
 
-    def random(self) -> "praw.models.Submission":
+    def random(self) -> Union["praw.models.Submission", None]:
         """Return a random Submission.
 
         Returns ``None`` on subreddits that do not support the random feature. One
@@ -2836,7 +2834,7 @@ class ModeratorRelationship(SubredditRelationship):
     PERMISSIONS = {"access", "config", "flair", "mail", "posts", "wiki"}
 
     @staticmethod
-    def _handle_permissions(permissions: Set[str], other_settings: dict):
+    def _handle_permissions(permissions: List[str], other_settings: dict):
         other_settings = deepcopy(other_settings) if other_settings else {}
         other_settings["permissions"] = permissions_string(
             permissions, ModeratorRelationship.PERMISSIONS
@@ -3401,7 +3399,7 @@ class SubredditStylesheet:
         """
         self.subreddit = subreddit
 
-    def _update_structured_styles(self, style_data: str):
+    def _update_structured_styles(self, style_data: Dict[str, Union[str, Any]]):
         url = API_PATH["structured_styles"].format(subreddit=self.subreddit)
         self.subreddit._reddit.patch(url, style_data)
 
