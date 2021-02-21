@@ -215,7 +215,7 @@ class MissingRequiredAttributeException(ClientException):
 
 
 class ReadOnlyException(ClientException):
-    """Raised when a method call requires read_only mode to be disabled."""
+    """Raised when a method call requires :attr:`.read_only` mode to be disabled."""
 
 
 class TooLargeMediaException(ClientException):

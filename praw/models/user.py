@@ -132,17 +132,18 @@ class User(PRAWBase):
 
         .. deprecated:: 7.2
 
-            In read-only mode this method returns ``None``. In PRAW 8 this method will
-            raise :class:`.ReadOnlyException` when called in read-only mode. To operate
-            in PRAW 8 mode, set the config variable ``praw8_raise_exception_on_me`` to True.
+            In :attr:`.read_only` mode this method returns ``None``. In PRAW 8 this
+            method will raise :class:`.ReadOnlyException` when called in
+            :attr:`.read_only` mode. To operate in PRAW 8 mode, set the config variable
+            ``praw8_raise_exception_on_me`` to ``True``.
 
         """
         if self._reddit.read_only:
             if not self._reddit.config.custom.get("praw8_raise_exception_on_me"):
                 warn(
-                    "The `None` return value is deprecated, and will raise a "
-                    "`ReadOnlyException` beginning with PRAW 8. See documentation "
-                    "for forward compatability options.",
+                    "The `None` return value is deprecated, and will raise a"
+                    " `ReadOnlyException` beginning with PRAW 8. See documentation for"
+                    " forward compatability options.",
                     category=DeprecationWarning,
                     stacklevel=2,
                 )

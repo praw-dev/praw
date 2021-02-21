@@ -58,6 +58,5 @@ class TestDeprecation(UnitTest):
             assert excinfo.value.args[0] == "`.gild` has been renamed to `.award`."
 
     def test_reddit_user_me_read_only(self):
-        self.reddit.read_only = True
         with pytest.raises(DeprecationWarning):
             self.reddit.user.me()
