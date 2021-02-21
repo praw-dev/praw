@@ -214,6 +214,10 @@ class MissingRequiredAttributeException(ClientException):
     """Indicate exceptions caused by not including a required attribute."""
 
 
+class ReadOnlyException(ClientException):
+    """Raised when a method call requires :attr:`.read_only` mode to be disabled."""
+
+
 class TooLargeMediaException(ClientException):
     """Indicate exceptions from uploading media that's too large."""
 
