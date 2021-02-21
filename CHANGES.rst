@@ -4,6 +4,12 @@ Change Log
 Unreleased
 ----------
 
+**Deprecated**
+
+* :meth:`.me` will no longer return ``None`` when called in read-only mode starting in
+  PRAW 8. A ``DeprecationWarning`` will be issued. To switch forward to the PRAW 8
+  behavior set ``praw8_raise_exception_on_me=True`` in your ``praw.Reddit(...)`` call.
+
 7.1.4 (2021/02/07)
 ------------------
 
