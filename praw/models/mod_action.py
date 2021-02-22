@@ -1,5 +1,5 @@
 """Provide the ModAction class."""
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 from .base import PRAWBase
 
@@ -16,5 +16,5 @@ class ModAction(PRAWBase):
         return self._reddit.redditor(self._mod)  # pylint: disable=no-member
 
     @mod.setter
-    def mod(self, value: "praw.models.Redditor"):
+    def mod(self, value: Union[str, "praw.models.Redditor"]):
         self._mod = value  # pylint: disable=attribute-defined-outside-init
