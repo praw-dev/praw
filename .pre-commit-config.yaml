@@ -4,4 +4,4 @@ repos:
   - id: black
     language_version: python3
   repo: https://github.com/psf/black
-  rev: stable
+  rev: 20.8b1
