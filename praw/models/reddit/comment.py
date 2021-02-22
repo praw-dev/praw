@@ -353,7 +353,7 @@ class CommentModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-            # lock a comment:
+            # Uncollapse a comment:
             comment = reddit.comment("dkk4qjd")
             comment.mod.show()
 
