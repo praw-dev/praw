@@ -5,12 +5,10 @@ import socket
 import sys
 import time
 from base64 import b64encode
-from functools import wraps
 from sys import platform
 
 import betamax
 import pytest
-from betamax.cassette.cassette import Cassette, dispatch_hooks
 from betamax.serializers import JSONSerializer
 
 # pylint: disable=import-error,no-name-in-module
@@ -63,7 +61,7 @@ placeholders = {
     x: env_default(x)
     for x in (
         "auth_code client_id client_secret password redirect_uri test_subreddit"
-        " user_agent username refresh_token"
+        " user_agent username"
     ).split()
 }
 
@@ -89,28 +87,6 @@ with betamax.Betamax.configure() as config:
         if key == "password":
             value = quote_plus(value)
         config.define_cassette_placeholder(f"<{key.upper()}>", value)
-
-
-def add_init_hook(original_init):
-    """Wrap an __init__ method to also call some hooks."""
-
-    @wraps(original_init)
-    def wrapper(self, *args, **kwargs):
-        original_init(self, *args, **kwargs)
-        dispatch_hooks("after_init", self)
-
-    return wrapper
-
-
-Cassette.__init__ = add_init_hook(Cassette.__init__)
-
-
-def init_hook(cassette):
-    if cassette.is_recording():
-        pytest.set_up_record()  # dynamically defined in __init__.py
-
-
-Cassette.hooks["after_init"].append(init_hook)
 
 
 class Placeholders:
