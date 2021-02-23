@@ -22,6 +22,7 @@ Documentation Contributors
 - jac0b-w `@jac0b-w <https://github.com/jac0b-w>`_
 - Kenneth Yang `@kennethy <https://github.com/kennethy>`_
 - Tarak Oueriache <Igosad@protonmail.com> `@igosad <https://github.com/igosad>`_
+- xCROv `@xCROv <https://github.com/xCROv>`_
 
 <!-- - Add "Name <email (optional)> and github profile link" above this line. -->
 

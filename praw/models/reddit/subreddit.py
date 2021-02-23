@@ -870,7 +870,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             newly-submitted post to.
         :param flair_id: The flair template to select (default: None).
         :param flair_text: If the template's ``flair_text_editable`` value is True, this
-            value will set a custom text (default: None).
+            value will set a custom text (default: None). ``flair_id`` is
+            required when ``flair_text`` is provided.
         :param resubmit: When False, an error will occur if the URL has already been
             submitted (default: True).
         :param send_replies: When True, messages will be sent to the submission author
@@ -1001,7 +1002,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             traditional comments (default: None).
         :param flair_id: The flair template to select (default: None).
         :param flair_text: If the template's ``flair_text_editable`` value isTrue, this
-            value will set a custom text (default: None).
+            value will set a custom text (default: None). ``flair_id`` is
+            required when ``flair_text`` is provided.
         :param nsfw: Whether or not the submission should be marked NSFW (default:
             False).
         :param send_replies: When True, messages will be sent to the submission author
@@ -1106,7 +1108,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             newly-submitted post to.
         :param flair_id: The flair template to select (default: None).
         :param flair_text: If the template's ``flair_text_editable`` value is True, this
-            value will set a custom text (default: None).
+            value will set a custom text (default: None). ``flair_id`` is
+            required when ``flair_text`` is provided.
         :param resubmit: When False, an error will occur if the URL has already been
             submitted (default: True).
         :param send_replies: When True, messages will be sent to the submission author
@@ -1213,7 +1216,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             newly-submitted post to.
         :param flair_id: The flair template to select (default: None).
         :param flair_text: If the template's ``flair_text_editable`` value is True, this
-            value will set a custom text (default: None).
+            value will set a custom text (default: None). ``flair_id`` is
+            required when ``flair_text`` is provided.
         :param resubmit: When False, an error will occur if the URL has already been
             submitted (default: True).
         :param send_replies: When True, messages will be sent to the submission author
@@ -1289,7 +1293,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             newly-submitted post to.
         :param flair_id: The flair template to select (default: ``None``).
         :param flair_text: If the template's ``flair_text_editable`` value is True, this
-            value will set a custom text (default: ``None``).
+            value will set a custom text (default: ``None``). ``flair_id`` is
+            required when ``flair_text`` is provided.
         :param resubmit: When False, an error will occur if the URL has already been
             submitted (default: ``True``).
         :param send_replies: When True, messages will be sent to the submission author
