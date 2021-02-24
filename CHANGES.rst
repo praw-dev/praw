@@ -4,6 +4,9 @@ Change Log
 Unreleased
 ----------
 
+7.2.0 (2021/02/24)
+------------------
+
 **Added**
 
 * :class:`.Reddit` keyword argument ``token_manager``.
