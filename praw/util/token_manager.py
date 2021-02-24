@@ -1,6 +1,6 @@
 """Token Manager classes.
 
-There should be a 1-to-1 mapping betwen an instance of a subclass of
+There should be a 1-to-1 mapping between an instance of a subclass of
 :class:`.BaseTokenManager` and a :class:`.Reddit` instance.
 
 A few trivial token manager classes are provided here, but it is expected that
