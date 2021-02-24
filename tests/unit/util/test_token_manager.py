@@ -6,6 +6,7 @@ import pytest
 from praw.util.token_manager import BaseTokenManager, FileTokenManager
 
 from .. import UnitTest
+from ..test_reddit import DummyTokenManager
 
 
 class DummyAuthorizer:
@@ -14,25 +15,17 @@ class DummyAuthorizer:
 
 
 class TestBaseTokenManager(UnitTest):
-    def test_post_refresh_token_callback__raises_not_implemented(self):
-        manager = BaseTokenManager()
-        with pytest.raises(NotImplementedError) as excinfo:
-            manager.post_refresh_callback(None)
-        assert str(excinfo.value) == "``post_refresh_callback`` must be extended."
-
-    def test_pre_refresh_token_callback__raises_not_implemented(self):
-        manager = BaseTokenManager()
-        with pytest.raises(NotImplementedError) as excinfo:
-            manager.pre_refresh_callback(None)
-        assert str(excinfo.value) == "``pre_refresh_callback`` must be extended."
+    def test_init_base_fail(self):
+        with pytest.raises(TypeError):
+            BaseTokenManager()
 
     def test_reddit(self):
-        manager = BaseTokenManager()
+        manager = DummyTokenManager()
         manager.reddit = "dummy"
         assert manager.reddit == "dummy"
 
     def test_reddit__must_only_be_set_once(self):
-        manager = BaseTokenManager()
+        manager = DummyTokenManager()
         manager.reddit = "dummy"
         with pytest.raises(RuntimeError) as excinfo:
             manager.reddit = None

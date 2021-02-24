@@ -10,8 +10,10 @@ See ref:`using_refresh_tokens` for examples on how to leverage these classes.
 
 """
 
+from abc import ABC, abstractmethod
 
-class BaseTokenManager:
+
+class BaseTokenManager(ABC):
     """An abstract class for all token managers."""
 
     def __init__(self):
@@ -31,6 +33,7 @@ class BaseTokenManager:
             )
         self._reddit = value
 
+    @abstractmethod
     def post_refresh_callback(self, authorizer):
         """Handle callback that is invoked after a refresh token is used.
 
@@ -42,8 +45,8 @@ class BaseTokenManager:
         ``refresh_token``.
 
         """
-        raise NotImplementedError("``post_refresh_callback`` must be extended.")
 
+    @abstractmethod
     def pre_refresh_callback(self, authorizer):
         """Handle callback that is invoked before refreshing PRAW's authorization.
 
@@ -55,7 +58,6 @@ class BaseTokenManager:
         ``refresh_token``.
 
         """
-        raise NotImplementedError("``pre_refresh_callback`` must be extended.")
 
 
 class FileTokenManager(BaseTokenManager):

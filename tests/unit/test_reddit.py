@@ -16,6 +16,14 @@ from praw.util.token_manager import BaseTokenManager
 from . import UnitTest
 
 
+class DummyTokenManager(BaseTokenManager):
+    def post_refresh_callback(self, authorizer):
+        pass
+
+    def pre_refresh_callback(self, authorizer):
+        pass
+
+
 class TestReddit(UnitTest):
     REQUIRED_DUMMY_SETTINGS = {
         x: "dummy" for x in ["client_id", "client_secret", "user_agent"]
@@ -202,8 +210,8 @@ class TestReddit(UnitTest):
     def test_read_only__with_authenticated_core(self):
         with Reddit(
             password=None,
-            token_manager=BaseTokenManager(),
             username=None,
+            token_manager=DummyTokenManager(),
             **self.REQUIRED_DUMMY_SETTINGS,
         ) as reddit:
             assert not reddit.read_only
@@ -230,8 +238,8 @@ class TestReddit(UnitTest):
             client_id="dummy",
             client_secret=None,
             redirect_uri="dummy",
-            token_manager=BaseTokenManager(),
             user_agent="dummy",
+            token_manager=DummyTokenManager(),
         ) as reddit:
             assert not reddit.read_only
             reddit.read_only = True
