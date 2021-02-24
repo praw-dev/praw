@@ -28,9 +28,6 @@ from praw.models import (
 
 from ... import IntegrationTest
 
-if sys.version_info.major > 2:
-    basestring = str  # pylint: disable=invalid-name
-
 
 class TestButtonWidget(IntegrationTest):
     @staticmethod
@@ -860,7 +857,7 @@ class TestSubredditWidgetsModeration(IntegrationTest):
                 thing if i % 2 == 0 else thing.id for i, thing in enumerate(new_order)
             ]
             # mixed_types has some str and some Widget.
-            assert any(isinstance(thing, basestring) for thing in mixed_types)
+            assert any(isinstance(thing, str) for thing in mixed_types)
             assert any(isinstance(thing, Widget) for thing in mixed_types)
 
             widgets.mod.reorder(mixed_types)
