@@ -22,36 +22,36 @@ user defined ``praw.ini`` files in a few other locations:
 
    3. In the directory specified by the ``APPDATA`` environment variable (Windows).
 
-   .. note::
+      .. note::
 
-       To check the values of the environment variables, you can open up a terminal
-       (Terminal/Terminal.app/Command Prompt/Powershell) and echo the variables
-       (replacing <variable> with the name of the variable):
+          To check the values of the environment variables, you can open up a terminal
+          (Terminal/Terminal.app/Command Prompt/Powershell) and echo the variables
+          (replacing <variable> with the name of the variable):
 
-      **MacOS/Linux**:
+          **MacOS/Linux**:
 
-      .. code-block:: bash
+          .. code-block:: bash
 
-          echo "$<variable>"
+              echo "$<variable>"
 
-      **Windows Command Prompt**
+          **Windows Command Prompt**
 
-      .. code-block:: bat
+          .. code-block:: bat
 
-          echo "%<variable>%"
+              echo "%<variable>%"
 
-      **Powershell**
+          **Powershell**
 
-      .. code-block:: powershell
+          .. code-block:: powershell
 
-          Write-Output "$env:<variable>"
+              Write-Output "$env:<variable>"
 
-      You can also view environment variables in Python:
+          You can also view environment variables in Python:
 
-      .. code-block:: python
+          .. code-block:: python
 
-          import os
-          print(os.environ.get("<variable>", ""))
+              import os
+              print(os.environ.get("<variable>", ""))
 
 Format of praw.ini
 ------------------

@@ -19,9 +19,9 @@ checks. The following are PRAW-specific guidelines in addition to those PEP's.
     In order to install the dependencies needed to run the script, you can
     install the ``[dev]`` package of praw, like so:
 
-   .. code-block:: bash
+    .. code-block:: bash
 
-       pip install praw[dev]
+        pip install praw[dev]
 
 Code
 ----
