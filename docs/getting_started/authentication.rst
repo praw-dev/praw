@@ -3,7 +3,7 @@
 Authenticating via OAuth
 ========================
 
-PRAW supports the three types of applications that can be registered on
+PRAW supports all three types of applications that can be registered on
 Reddit. Those are:
 
 * `Web Applications <https://github.com/reddit-archive/reddit/wiki/OAuth2-App-Types#web-app>`_
@@ -14,10 +14,10 @@ Before you can use any one of these with PRAW, you must first `register
 <https://www.reddit.com/prefs/apps/>`_ an application of the appropriate type
 on Reddit.
 
-If your app does not require a user context, it is :ref:`read-only <read_only_application>`.
+If your application does not require a user context, it is :ref:`read-only <read_only_application>`.
 
 PRAW supports the flows that each of these applications can use. The
-following table defines which tables can use which flows:
+following table defines which application types can use which flows:
 
 .. rst-class:: center_table_items
 
@@ -134,8 +134,8 @@ endpoint to complete the code flow.
 If you aren't actually running a website, you can follow the :ref:`refresh_token`
 tutorial to learn how to obtain and use the initial refresh token.
 
-Whether or not you use the script there are two processes involved in obtaining
-access or refresh tokens.
+Whether or not you follow the :ref:`refresh_token` tutorial there are two processes
+involved in obtaining access or refresh tokens.
 
 .. _auth_url:
 
@@ -154,13 +154,15 @@ URL. You can do that as follows:
     )
     print(reddit.auth.url(["identity"], "...", "permanent"))
 
-The above will output an authorization URL for a permanent token that has only the
-`identity` scope. See :meth:`.url` for more information on these parameters.
+The above will output an authorization URL for a permanent token (i.e., the resulting
+authorization will include both a short-lived ``access_token``, and a longer-lived, single
+use ``refresh_token``) that has only the ``identity`` scope. See :meth:`.url` for more
+information on these parameters.
 
 This URL should be accessed by the account that desires to authorize their Reddit access
 to your application. On completion of that flow, the user's browser will be redirected
-to the specified ``redirect_uri``. After extracting verifying the ``state`` and
-extracting the ``code`` you can obtain the refresh token via:
+to the specified ``redirect_uri``. After verifying the ``state`` and extracting the
+``code`` you can obtain the refresh token via:
 
 .. code-block:: python
 
@@ -171,7 +173,7 @@ The first line of output is the ``refresh_token``. You can save this for later u
 :ref:`using_refresh_tokens`).
 
 The second line of output reveals the name of the Redditor that completed the code flow.
-It also indicates that the ``reddit`` instance is now associated with that account.
+It also indicates that the :class:`.Reddit` instance is now associated with that account.
 
 The code flow can be used with an **installed** application just as described above with
 one change: set the value of ``client_secret`` to ``None`` when initializing
