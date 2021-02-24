@@ -484,8 +484,10 @@ class Reddit:
                 authenticator, self.config.username, self.config.password
             )
             self._core = self._authorized_core = session(script_authorizer)
-        elif self.config.refresh_token:
-            authorizer = Authorizer(authenticator, self.config.refresh_token)
+        elif self.config._do_not_use_refresh_token != self.config.CONFIG_NOT_SET:
+            authorizer = Authorizer(
+                authenticator, self.config._do_not_use_refresh_token
+            )
             self._core = self._authorized_core = session(authorizer)
         else:
             self._core = self._read_only_core
@@ -496,8 +498,10 @@ class Reddit:
         )
         read_only_authorizer = DeviceIDAuthorizer(authenticator)
         self._read_only_core = session(read_only_authorizer)
-        if self.config.refresh_token:
-            authorizer = Authorizer(authenticator, self.config.refresh_token)
+        if self.config._do_not_use_refresh_token != self.config.CONFIG_NOT_SET:
+            authorizer = Authorizer(
+                authenticator, self.config._do_not_use_refresh_token
+            )
             self._core = self._authorized_core = session(authorizer)
         else:
             self._core = self._read_only_core

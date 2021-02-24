@@ -6,10 +6,15 @@ Unreleased
 
 **Deprecated**
 
-* :meth:`.me` will no longer return ``None`` when called in :attr:`.read_only` mode 
+* The configuration setting ``refresh_token`` is deprecated and its use will result in a
+  :py:class:`DeprecationWarning`. This deprecation applies in all ways of setting
+  configuration values, i.e., via ``praw.ini``, as a keyword argument when initializing
+  an instance of :class:`.Reddit`, and via the ``PRAW_REFRESH_TOKEN`` environment
+  variable.
+* :meth:`.me` will no longer return ``None`` when called in :attr:`.read_only` mode
   starting in PRAW 8. A :py:class:`DeprecationWarning` will be issued. To switch forward
   to the PRAW 8 behavior set ``praw8_raise_exception_on_me=True`` in your
-  ``praw.Reddit(...)`` call.
+  :class:`.Reddit` call.
 
 7.1.4 (2021/02/07)
 ------------------

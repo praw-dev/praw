@@ -2,6 +2,7 @@
 
 import pytest
 
+from praw import Reddit
 from praw.exceptions import APIException, WebSocketException
 
 from . import UnitTest
@@ -60,3 +61,13 @@ class TestDeprecation(UnitTest):
     def test_reddit_user_me_read_only(self):
         with pytest.raises(DeprecationWarning):
             self.reddit.user.me()
+
+    def test_reddit_refresh_token(self):
+        with pytest.raises(DeprecationWarning):
+            Reddit(
+                client_id="dummy",
+                client_secret=None,
+                redirect_uri="dummy",
+                refresh_token="dummy",
+                user_agent="dummy",
+            )
