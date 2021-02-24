@@ -30,8 +30,6 @@ jobs:
       run: python ./tools/static_word_checks.py
     - name: Check documentation
       run: python ./tools/check_documentation.py
-    - name: Check docstrings
-      run: python ./tools/check_docstring.py
     - name: Run black
       run: black --check --verbose .
     - name: Run docstrfmt

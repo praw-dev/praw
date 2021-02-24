@@ -13,7 +13,6 @@ class StaticChecker:
         :param replace: Whether or not to make replacements.
         """
         self.full_file_checks = [
-            self.check_for_code_statement,
             self.check_for_double_syntax
             # add more checks to the list as they are added
         ]
@@ -22,27 +21,6 @@ class StaticChecker:
             # add more checks to the list as they are added
         ]
         self.replace = replace
-
-    def check_for_code_statement(self, filename: str, content: str) -> bool:
-        """Checks the code for ``.. code::`` statements.
-
-        :param filename: The name of the file to check & replace.
-        :param content: The content of the file.
-        :returns: A boolean with the status of the check.
-        """
-        if ".. code::" in content:
-            new_content = content.replace(".. code::", ".. code-block::")
-            if self.replace:
-                with open(filename, "w") as fp:
-                    fp.write(new_content)
-                print(f"{filename}: Replaced all ``code::`` to ``code-block::``")
-                return True
-            print(
-                f"{filename}; This file uses the `code::` syntax, please change the"
-                " syntax to ``code-block::``."
-            )
-            return False
-        return True
 
     def check_for_double_syntax(self, filename: str, content: str) -> bool:
         """Checks a file for double-slash statements (``/r/`` and ``/u/``).
@@ -105,7 +83,6 @@ class StaticChecker:
 
         * Full file checks:
 
-          * :meth:`.check_for_code_statement`
           * :meth:`.check_for_double_syntax`
 
         * Line checks
