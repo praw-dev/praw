@@ -6,6 +6,8 @@ There should be a 1-to-1 mapping betwen an instance of a subclass of
 A few trivial token manager classes are provided here, but it is expected that
 PRAW users will create their own token manager classes suitable for their needs.
 
+See ref:`using_refresh_tokens` for examples on how to leverage these classes.
+
 """
 
 

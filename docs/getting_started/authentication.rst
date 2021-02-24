@@ -131,9 +131,8 @@ When registering your application you must provide a valid redirect URI. If you 
 running a website you will want to enter the appropriate callback URL and configure that
 endpoint to complete the code flow.
 
-If you aren't actually running a website, you can use the :ref:`refresh_token` script to
-obtain ``refresh_tokens``. Enter ``http://localhost:8080`` as the redirect URI when
-using this script.
+If you aren't actually running a website, you can follow the :ref:`refresh_token`
+tutorial to learn how to obtain and use the initial refresh token.
 
 Whether or not you use the script there are two processes involved in obtaining
 access or refresh tokens.
@@ -169,7 +168,7 @@ extracting the ``code`` you can obtain the refresh token via:
      print(reddit.user.me())
 
 The first line of output is the ``refresh_token``. You can save this for later use (see
-:ref:`using_refresh_token`).
+:ref:`using_refresh_tokens`).
 
 The second line of output reveals the name of the Redditor that completed the code flow.
 It also indicates that the ``reddit`` instance is now associated with that account.
@@ -256,28 +255,3 @@ such as in installed applications where the end user could retrieve the ``client
     from each other (as the supplied device id *should* be a unique string per both
     device (in the case of a web app, server) and user (in the case of a web app,
     browser session).
-
-.. _using_refresh_token:
-
-Using a Saved Refresh Token
----------------------------
-
-A saved refresh token can be used to immediately obtain an authorized instance of
-:class:`.Reddit` like so:
-
-.. code-block:: python
-
-    reddit = praw.Reddit(client_id="SI8pN3DSbt0zor",
-        client_secret="xaxkj7HNh8kwg8e5t4m6KvSrbTI",
-        refresh_token="WeheY7PwgeCZj4S3QgUcLhKE5S2s4eAYdxM",
-        user_agent="testscript by u/fakebot3"
-    )
-    print(reddit.auth.scopes())
-
-The output from the above code displays which scopes are available on the
-:class:`.Reddit` instance.
-
-.. note::
-
-    Observe that ``redirect_uri`` does not need to be provided in such cases. It is only
-    needed when :meth:`.url` is used.

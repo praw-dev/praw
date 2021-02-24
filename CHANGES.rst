@@ -16,7 +16,7 @@ Unreleased
   configuration values, i.e., via ``praw.ini``, as a keyword argument when initializing
   an instance of :class:`.Reddit`, and via the ``PRAW_REFRESH_TOKEN`` environment
   variable. To be prepared for PRAW 8, use the new :class:`.Reddit` keyword argument
-  ``token_manager``.
+  ``token_manager``. See :ref:`refresh_token` in PRAW's documentation for an example.
 * :meth:`.me` will no longer return ``None`` when called in :attr:`.read_only` mode
   starting in PRAW 8. A :py:class:`DeprecationWarning` will be issued. To switch forward
   to the PRAW 8 behavior set ``praw8_raise_exception_on_me=True`` in your
