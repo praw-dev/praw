@@ -60,7 +60,7 @@ setup(
     ),
     extras_require=extras,
     install_requires=[
-        "prawcore >=1.5.0, <2.0",
+        "prawcore >=2, <3",
         "update_checker >=0.18",
         "websocket-client >=0.54.0",
     ],

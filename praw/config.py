@@ -4,6 +4,7 @@ import os
 import sys
 from threading import Lock
 from typing import Optional
+from warnings import warn
 
 from .exceptions import ClientException
 
@@ -84,10 +85,20 @@ class Config:
         self.custom = dict(Config.CONFIG.items(site_name), **settings)
 
         self.client_id = self.client_secret = self.oauth_url = None
-        self.reddit_url = self.refresh_token = self.redirect_uri = None
+        self.reddit_url = self.redirect_uri = None
         self.password = self.user_agent = self.username = None
 
         self._initialize_attributes()
+
+        self._do_not_use_refresh_token = self._fetch_or_not_set("refresh_token")
+        if self._do_not_use_refresh_token != self.CONFIG_NOT_SET:
+            warn(
+                "The ``refresh_token`` configuration setting is deprecated and will be"
+                " removed in PRAW 8. Please use ``token_manager`` to manage your"
+                " refresh tokens.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
 
     def _fetch(self, key):
         value = self.custom[key]
@@ -133,7 +144,6 @@ class Config:
             "client_id",
             "client_secret",
             "redirect_uri",
-            "refresh_token",
             "password",
             "user_agent",
             "username",

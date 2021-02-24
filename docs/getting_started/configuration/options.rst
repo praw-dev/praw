@@ -38,13 +38,6 @@ OAuth Configuration Options
     application. This option is required for all application types, however, the value
     must be set to ``None`` for **installed** applications.
 
-:refresh_token: For either **web** applications, or **installed** applications using the
-    code flow, you can directly provide a previously obtained refresh token. Using a
-    **web** application in conjunction with this option is useful, for example, if you
-    prefer to not have your username and password available to your program, as required
-    for a **script** application. See: :ref:`refresh_token` and
-    :ref:`using_refresh_token`
-
 :redirect_uri: The redirect URI associated with your registered Reddit application. This
     field is unused for **script** applications and is only needed for both **web**
     applications, and **installed** applications when the :meth:`.url` method is used.
