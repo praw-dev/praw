@@ -42,6 +42,7 @@ from .exceptions import (
     RedditAPIException,
 )
 from .objector import Objector
+from .util.token_manager import BaseTokenManager
 
 try:
     from update_checker import update_check
@@ -151,6 +152,8 @@ class Reddit:
         config_interpolation: Optional[str] = None,
         requestor_class: Optional[Type[Requestor]] = None,
         requestor_kwargs: Dict[str, Any] = None,
+        *,
+        token_manager: Optional[BaseTokenManager] = None,
         **config_settings: Union[str, bool],
     ):  # noqa: D207, D301
         """Initialize a Reddit instance.
@@ -166,6 +169,10 @@ class Reddit:
             set, use ``prawcore.Requestor`` (default: None).
         :param requestor_kwargs: Dictionary with additional keyword arguments used to
             initialize the requestor (default: None).
+        :param token_manager: When provided, the passed instance, a subclass of
+            :class:`.BaseTokenManager`, will manage tokens via two callback functions.
+            This parameter must be provided in order to work with refresh tokens
+            (default: None).
 
         Additional keyword arguments will be used to initialize the :class:`.Config`
         object. This can be used to specify configuration settings during instantiation
@@ -212,6 +219,7 @@ class Reddit:
         """
         self._core = self._authorized_core = self._read_only_core = None
         self._objector = None
+        self._token_manager = token_manager
         self._unique_counter = 0
         self._validate_on_submit = False
 
@@ -411,6 +419,29 @@ class Reddit:
             update_check(__package__, __version__)
             Reddit.update_checked = True
 
+    def _prepare_common_authorizer(self, authenticator):
+        if self._token_manager is not None:
+            if self.config._do_not_use_refresh_token != self.config.CONFIG_NOT_SET:
+                raise TypeError(
+                    "legacy ``refresh_token`` setting cannot be provided when providing"
+                    " ``token_manager``"
+                )
+
+            self._token_manager.reddit = self
+            authorizer = Authorizer(
+                authenticator,
+                post_refresh_callback=self._token_manager.post_refresh_callback,
+                pre_refresh_callback=self._token_manager.pre_refresh_callback,
+            )
+        elif self.config._do_not_use_refresh_token != self.config.CONFIG_NOT_SET:
+            authorizer = Authorizer(
+                authenticator, refresh_token=self.config._do_not_use_refresh_token
+            )
+        else:
+            self._core = self._read_only_core
+            return
+        self._core = self._authorized_core = session(authorizer)
+
     def _prepare_objector(self):
         mappings = {
             self.config.kinds["comment"]: models.Comment,
@@ -484,13 +515,8 @@ class Reddit:
                 authenticator, self.config.username, self.config.password
             )
             self._core = self._authorized_core = session(script_authorizer)
-        elif self.config._do_not_use_refresh_token != self.config.CONFIG_NOT_SET:
-            authorizer = Authorizer(
-                authenticator, self.config._do_not_use_refresh_token
-            )
-            self._core = self._authorized_core = session(authorizer)
         else:
-            self._core = self._read_only_core
+            self._prepare_common_authorizer(authenticator)
 
     def _prepare_untrusted_prawcore(self, requestor):
         authenticator = UntrustedAuthenticator(
@@ -498,13 +524,7 @@ class Reddit:
         )
         read_only_authorizer = DeviceIDAuthorizer(authenticator)
         self._read_only_core = session(read_only_authorizer)
-        if self.config._do_not_use_refresh_token != self.config.CONFIG_NOT_SET:
-            authorizer = Authorizer(
-                authenticator, self.config._do_not_use_refresh_token
-            )
-            self._core = self._authorized_core = session(authorizer)
-        else:
-            self._core = self._read_only_core
+        self._prepare_common_authorizer(authenticator)
 
     def comment(
         self,  # pylint: disable=invalid-name

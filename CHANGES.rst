@@ -4,13 +4,19 @@ Change Log
 Unreleased
 ----------
 
+**Added**
+
+* :class:`.Reddit` keyword argument ``token_manager``.
+* :class:`.FileTokenManager` and its parent abstract class :class:`.BaseTokenManager`.
+
 **Deprecated**
 
 * The configuration setting ``refresh_token`` is deprecated and its use will result in a
   :py:class:`DeprecationWarning`. This deprecation applies in all ways of setting
   configuration values, i.e., via ``praw.ini``, as a keyword argument when initializing
   an instance of :class:`.Reddit`, and via the ``PRAW_REFRESH_TOKEN`` environment
-  variable.
+  variable. To be prepared for PRAW 8, use the new :class:`.Reddit` keyword argument
+  ``token_manager``.
 * :meth:`.me` will no longer return ``None`` when called in :attr:`.read_only` mode
   starting in PRAW 8. A :py:class:`DeprecationWarning` will be issued. To switch forward
   to the PRAW 8 behavior set ``praw8_raise_exception_on_me=True`` in your

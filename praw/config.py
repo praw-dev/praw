@@ -94,7 +94,8 @@ class Config:
         if self._do_not_use_refresh_token != self.CONFIG_NOT_SET:
             warn(
                 "The ``refresh_token`` configuration setting is deprecated and will be"
-                " removed in PRAW 8.",
+                " removed in PRAW 8. Please use ``token_manager`` to manage your"
+                " refresh tokens.",
                 category=DeprecationWarning,
                 stacklevel=2,
             )
