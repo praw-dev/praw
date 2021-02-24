@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from urllib.parse import quote_plus
 
 import praw
