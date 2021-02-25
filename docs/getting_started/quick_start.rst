@@ -89,7 +89,8 @@ Just like that, you now have a read-only  :class:`.Reddit` instance.
 
 .. code-block:: python
 
-    print(reddit.read_only)  # Output: True
+    print(reddit.read_only)
+    # Output: True
 
 With a read-only instance, you can do something like obtaining 10 "hot" submissions from
 ``r/learnpython``:
@@ -140,7 +141,8 @@ Again, you may choose to provide these by passing in keyword arguments ``usernam
         password="my password"
     )
 
-    print(reddit.read_only)  # Output: False
+    print(reddit.read_only)
+    # Output: False
 
 Now you can do whatever your Reddit account is authorized to do. And you can switch back
 to read-only mode whenever you want:
@@ -166,9 +168,12 @@ To obtain a :class:`.Subreddit` instance, pass the subreddit's name when calling
     # assume you have a reddit instance bound to variable `reddit`
     subreddit = reddit.subreddit("redditdev")
 
-    print(subreddit.display_name)  # output: redditdev
-    print(subreddit.title)         # output: reddit development
-    print(subreddit.description)   # output: a subreddit for discussion of ...
+    print(subreddit.display_name)
+    # Output: redditdev
+    print(subreddit.title)
+    # Output: reddit development
+    print(subreddit.description)
+    # Output: a subreddit for discussion of ...
 
 Obtain :class:`.Submission` Instances from a :class:`.Subreddit`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -194,11 +199,14 @@ the ``hot`` sort for a given subreddit try:
 
     # assume you have a Subreddit instance bound to variable `subreddit`
     for submission in subreddit.hot(limit=10):
-        print(submission.title)  # Output: the submission's title
-        print(submission.score)  # Output: the submission's score
-        print(submission.id)     # Output: the submission's ID
-        print(submission.url)    # Output: the URL the submission points to
-                                 # or the submission's URL if it's a self post
+        print(submission.title)
+        # Output: the submission's title
+        print(submission.score)
+        # Output: the submission's score
+        print(submission.id)
+        # Output: the submission's ID
+        print(submission.url)
+        # Output: the URL the submission points to or the submission's URL if it's a self post
 
 .. note::
 
@@ -212,7 +220,8 @@ You can create :class:`.Submission` instances in other ways too:
 
     # assume you have a Reddit instance bound to variable `reddit`
     submission = reddit.submission(id="39zje0")
-    print(submission.title)  # Output: reddit will soon only be available ...
+    print(submission.title)
+    # Output: reddit will soon only be available ...
 
     # or
     submission = reddit.submission(url='https://www.reddit.com/...')
@@ -233,11 +242,13 @@ For example:
 
     # assume you have a Submission instance bound to variable `submission`
     redditor1 = submission.author
-    print(redditor1.name)  # Output: name of the redditor
+    print(redditor1.name)
+    # Output: name of the redditor
 
     # assume you have a Reddit instance bound to variable `reddit`
     redditor2 = reddit.redditor("bboe")
-    print(redditor2.link_karma)  # Output: u/bboe's karma
+    print(redditor2.link_karma)
+    # Output: u/bboe's karma
 
 Obtain :class:`.Comment` Instances
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
