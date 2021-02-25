@@ -42,6 +42,7 @@ class Auth(PRAWBase):
         """Complete the web authorization flow and return the refresh token.
 
         :param code: The code obtained through the request to the redirect uri.
+
         :returns: The obtained refresh token, if available, otherwise ``None``.
 
         The session's active authorization will be updated upon success.

@@ -34,6 +34,7 @@ class LiveHelper(PRAWBase):
         """Fetch information about each live thread in ``ids``.
 
         :param ids: A list of IDs for a live thread.
+
         :returns: A generator that yields :class:`.LiveThread` instances.
 
         Live threads that cannot be matched will not be generated. Requests will be
@@ -81,6 +82,7 @@ class LiveHelper(PRAWBase):
             (default: False).
         :param resources: (Optional) Markdown formatted information that is useful for
             the LiveThread.
+
         :returns: The new LiveThread object.
 
         """
@@ -154,6 +156,7 @@ class MultiredditHelper(PRAWBase):
             (default: private).
         :param weighting_scheme: (Optional) Can be one of: ``classic``, ``fresh``
             (default: classic).
+
         :returns: The new Multireddit object.
 
         """

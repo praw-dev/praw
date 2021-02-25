@@ -15,11 +15,11 @@ from praw.util.cache import cachedproperty  # noqa: E402
 class DocumentationChecker:
     """Checks for code block statements and attribute tables in subclasses.
 
-    Attribute exceptions holds all exceptions. All classes and subclasses in
-    the exceptions list will be ignored.
+    Attribute exceptions holds all exceptions. All classes and subclasses in the
+    exceptions list will be ignored.
 
-    Attribute METHOD_EXCEPTIONS holds the names of methods that will be
-    filtered out.
+    Attribute METHOD_EXCEPTIONS holds the names of methods that will be filtered out.
+
     """
 
     BASE_SEARCH_CLASS = RedditBase

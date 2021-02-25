@@ -61,10 +61,10 @@ For example, the code block:
 
 .. code-block:: python
 
-    reddit.subreddit('all').search('https://google.com')
+    reddit.subreddit("all").search("https://google.com")
 
 Will become this code block:
 
 .. code-block:: python
 
-    reddit.subreddit('all').search('url:"https://google.com"')
+    reddit.subreddit("all").search('url:"https://google.com"')

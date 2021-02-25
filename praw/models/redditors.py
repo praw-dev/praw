@@ -55,6 +55,7 @@ class Redditors(PRAWBase):
         r"""Return a :class:`.ListingGenerator` of Redditors for ``query``.
 
         :param query: The query string to filter Redditors by.
+
         :returns: :class:`.Redditor`\ s.
 
         Additional keyword arguments are passed in the initialization of
@@ -85,6 +86,7 @@ class Redditors(PRAWBase):
         """Get user summary data by redditor IDs.
 
         :param ids: An iterable of redditor fullname IDs.
+
         :returns: A iterator producing types.SimpleNamespace objects.
 
         Each ID must be prefixed with ``t2_``.

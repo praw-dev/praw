@@ -2,4 +2,4 @@ PostFlairWidget
 ===============
 
 .. autoclass:: praw.models.PostFlairWidget
-   :inherited-members:
+    :inherited-members:

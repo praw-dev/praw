@@ -1,5 +1,4 @@
-"""
-Python Reddit API Wrapper.
+"""Python Reddit API Wrapper.
 
 PRAW, an acronym for "Python Reddit API Wrapper", is a python package that allows for
 simple access to reddit's API. PRAW aims to be as easy to use as possible and is

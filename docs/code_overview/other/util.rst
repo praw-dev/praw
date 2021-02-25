@@ -2,10 +2,10 @@ Util
 ====
 
 .. autoclass:: praw.models.util.BoundedSet
-   :inherited-members:
+    :inherited-members:
 
 .. autoclass:: praw.models.util.ExponentialCounter
-   :inherited-members:
+    :inherited-members:
 
 .. autofunction:: praw.models.util.permissions_string
 

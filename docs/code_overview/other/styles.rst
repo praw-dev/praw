@@ -1,4 +1,5 @@
 Styles
 ======
+
 .. autoclass:: praw.models.Styles
-   :inherited-members:
+    :inherited-members:

@@ -2,4 +2,4 @@ WikiPageModeration
 ==================
 
 .. autoclass:: praw.models.reddit.wikipage.WikiPageModeration
-   :inherited-members:
+    :inherited-members:

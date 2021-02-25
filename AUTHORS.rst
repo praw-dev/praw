@@ -5,7 +5,6 @@ Maintainers
 - Joe RH <jarhill0@gmail.com> `@jarhill0 <https://github.com/jarhill0>`_
 - Joel Payne <lilspazjoekp@gmail.com> `@LilSpazJoekp <https://github.com/LilSpazJoekp>`_
 
-
 Documentation Contributors
 ==========================
 
@@ -26,12 +25,10 @@ Documentation Contributors
 
 <!-- - Add "Name <email (optional)> and github profile link" above this line. -->
 
-
 Logo Creator
 ============
 
 - kungming2 `@kungming2 <https://github.com/kungming2>`_
-
 
 Source Contributors
 ===================
@@ -51,9 +48,11 @@ Source Contributors
 - Andrew Arnold `@asquared31415 <https://github.com/asquared31415>`_
 - bakonydraco `@bakonydraco <https://github.com/bakonydraco>`_
 - salehio `@salehio <https://github.com/salehio>`_
-- Amanda O'Neal <amanda.oneal.dev@gmail.com> `@amandaoneal <https://github.com/amandaoneal>`_
+- Amanda O'Neal <amanda.oneal.dev@gmail.com> `@amandaoneal
+  <https://github.com/amandaoneal>`_
 - Gourari Oussama <gourari.ouss@gmail.com> `@O-Gourari <https://github.com/O-Gourari>`_
-- Declan Hoare <declanhoare@exemail.com.au> `@NetwideRogue <https://github.com/NetwideRogue>`_
+- Declan Hoare <declanhoare@exemail.com.au> `@NetwideRogue
+  <https://github.com/NetwideRogue>`_
 - Elaina Martineau `@CrackedP0t <https://github.com/CrackedP0t>`_
 - Rob Curtis <BourbonInExile@gmail.com> `@waab76 <https://github.com/waab76>`_
 - Pyprohly <pyprohly@outlook.com> `@Pyprohly <https://github.com/Pyprohly>`_
@@ -64,7 +63,8 @@ Source Contributors
 - Jack Steel `@jackodsteel <https://github.com/jackodsteel>`_
 - David Mirch `@fwump38 <https://github.com/fwump38>`_
 - PythonCoderAS `@PythonCoderAS <https://github.com/PythonCoderAS>`_
-- Michael Cetrulo <contact@michael-cetrulo.com> `@git2samus <https://github.com/git2samus>`_
+- Michael Cetrulo <contact@michael-cetrulo.com> `@git2samus
+  <https://github.com/git2samus>`_
 - George Schizas `@gschizas <https://github.com/gschizas>`_
 - Todd Roberts `@toddrob99 <https://github.com/toddrob99>`_
 - MaybeNetwork `@MaybeNetwork <https://github.com/MaybeNetwork>`_

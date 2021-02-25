@@ -73,6 +73,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
                 Since this function returns a :class:`.ListingGenerator` the exception
                 may not occur until sometime after this function has returned.
 
+
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
@@ -100,6 +101,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
                 Since this function returns a :class:`.ListingGenerator` the exception
                 may not occur until sometime after this function has returned.
+
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -129,6 +131,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
                 Since this function returns a :class:`.ListingGenerator` the exception
                 may not occur until sometime after this function has returned.
 
+
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
@@ -157,6 +160,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
                 Since this function returns a :class:`.ListingGenerator` the exception
                 may not occur until sometime after this function has returned.
 
+
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
@@ -184,6 +188,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
                 Since this function returns a :class:`.ListingGenerator` the exception
                 may not occur until sometime after this function has returned.
+
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.

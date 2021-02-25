@@ -2,4 +2,4 @@ ListingGenerator
 ================
 
 .. autoclass:: praw.models.ListingGenerator
-   :inherited-members:
+    :inherited-members:

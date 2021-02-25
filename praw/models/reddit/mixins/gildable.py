@@ -17,6 +17,7 @@ class GildableMixin:
         :param is_anonymous: If True, the authenticated user's username will not be
             revealed to the recipient.
         :param message: Message to include with the award.
+
         :returns: A dict containing info similar to what is shown below:
 
             .. code-block:: python
@@ -60,6 +61,7 @@ class GildableMixin:
                         }
                     ],
                 }
+
 
         Requires the authenticated user to own Reddit Coins. Calling this method will
         consume Reddit Coins.

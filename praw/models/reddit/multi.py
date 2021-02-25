@@ -26,27 +26,27 @@ class Multireddit(SubredditListingMixin, RedditBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``can_edit``            A ``bool`` representing whether or not the authenticated
-                            user may edit the multireddit.
-    ``copied_from``         The multireddit that the multireddit was copied from, if it
-                            exists, otherwise ``None``.
-    ``created_utc``         When the multireddit was created, in `Unix Time`_.
-    ``description_html``    The description of the multireddit, as HTML.
-    ``description_md``      The description of the multireddit, as Markdown.
-    ``display_name``        The display name of the multireddit.
-    ``name``                The name of the multireddit.
-    ``over_18``             A ``bool`` representing whether or not the multireddit is
-                            restricted for users over 18.
-    ``subreddits``          A ``list`` of :class:`.Subreddit`\ s that make up the
-                            multireddit.
-    ``visibility``          The visibility of the multireddit, either ``private``,
-                            ``public``, or ``hidden``.
-    ======================= ============================================================
+    ==================== =============================================================
+    Attribute            Description
+    ==================== =============================================================
+    ``can_edit``         A ``bool`` representing whether or not the authenticated user
+                         may edit the multireddit.
+    ``copied_from``      The multireddit that the multireddit was copied from, if it
+                         exists, otherwise ``None``.
+    ``created_utc``      When the multireddit was created, in `Unix Time`_.
+    ``description_html`` The description of the multireddit, as HTML.
+    ``description_md``   The description of the multireddit, as Markdown.
+    ``display_name``     The display name of the multireddit.
+    ``name``             The name of the multireddit.
+    ``over_18``          A ``bool`` representing whether or not the multireddit is
+                         restricted for users over 18.
+    ``subreddits``       A ``list`` of :class:`.Subreddit`\ s that make up the
+                         multireddit.
+    ``visibility``       The visibility of the multireddit, either ``private``,
+                         ``public``, or ``hidden``.
+    ==================== =============================================================
 
-    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
 
     """
 

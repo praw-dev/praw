@@ -10,7 +10,7 @@ For example, you can invoke your script as follows:
 
 .. code-block:: shell
 
-   praw_username=bboe praw_password=not_my_password python my_script.py
+    praw_username=bboe praw_password=not_my_password python my_script.py
 
 The ``username`` and ``password`` provided via environment variables will override any
 values contained in a ``praw.ini`` file., but not any variables passed in through

@@ -2,4 +2,4 @@ InlineVideo
 ===========
 
 .. autoclass:: praw.models.InlineVideo
-   :inherited-members:
+    :inherited-members:

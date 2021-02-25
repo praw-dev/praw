@@ -68,8 +68,9 @@ class WebsocketMockException:
         :param recv_exc: An exception to be raised during a call to recv().
         :param close_exc: An exception to be raised during close().
 
-        The purpose of this class is to mock a WebSockets connection that is
-        faulty or times out, to see how PRAW handles it.
+        The purpose of this class is to mock a WebSockets connection that is faulty or
+        times out, to see how PRAW handles it.
+
         """
         self._recv_exc = recv_exc
         self._close_exc = close_exc

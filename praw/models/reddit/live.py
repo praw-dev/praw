@@ -82,6 +82,7 @@ class LiveContributorRelationship:
             of strings specifying which subset of permissions to grant. An empty list
             ``[]`` indicates no permissions, and when not provided (``None``), indicates
             full permissions.
+
         :raises: :class:`.RedditAPIException` if the invitation already exists.
 
         Usage:
@@ -272,18 +273,19 @@ class LiveThread(RedditBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= =========================================================
-    Attribute               Description
-    ======================= =========================================================
-    ``created_utc``         The creation time of the live thread, in `Unix Time`_.
-    ``description``         Description of the live thread, as Markdown.
-    ``description_html``    Description of the live thread, as HTML.
-    ``id``                  The ID of the live thread.
-    ``nsfw``                A ``bool`` representing whether or not the live thread is
-                            marked as NSFW.
-    ======================= =========================================================
+    ==================== =========================================================
+    Attribute            Description
+    ==================== =========================================================
+    ``created_utc``      The creation time of the live thread, in `Unix Time`_.
+    ``description``      Description of the live thread, as Markdown.
+    ``description_html`` Description of the live thread, as HTML.
+    ``id``               The ID of the live thread.
+    ``nsfw``             A ``bool`` representing whether or not the live thread is
+                         marked as NSFW.
+    ==================== =========================================================
 
-    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
+
     """
 
     STR_FIELD = "id"
@@ -333,9 +335,8 @@ class LiveThread(RedditBase):
                 print(live_update.body)
 
         Updates are yielded oldest first as :class:`.LiveUpdate`. Up to 100 historical
-        updates will initially be returned.
-        To only retrieve new updates starting from when the stream is created, pass
-        ``skip_existing=True``:
+        updates will initially be returned. To only retrieve new updates starting from
+        when the stream is created, pass ``skip_existing=True``:
 
         .. code-block:: python
 
@@ -421,6 +422,7 @@ class LiveThread(RedditBase):
 
         :param generator_kwargs: keyword arguments passed to :class:`.ListingGenerator`
             constructor.
+
         :returns: A :class:`.ListingGenerator` object which yields :class:`.Submission`
             object.
 
@@ -463,6 +465,7 @@ class LiveThread(RedditBase):
 
         :param generator_kwargs: keyword arguments passed to :class:`.ListingGenerator`
             constructor.
+
         :returns: A :class:`.ListingGenerator` object which yields :class:`.LiveUpdate`
             object.
 
@@ -614,6 +617,7 @@ class LiveThreadStream:
         """Create a LiveThreadStream instance.
 
         :param live_thread: The live thread associated with the stream.
+
         """
         self.live_thread = live_thread
 
@@ -664,18 +668,19 @@ class LiveUpdate(FullnameMixin, RedditBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``author``              The :class:`.Redditor` who made the update.
-    ``body``                Body of the update, as Markdown.
-    ``body_html``           Body of the update, as HTML.
-    ``created_utc``         The time the update was created, as `Unix Time`_.
-    ``stricken``            A ``bool`` representing whether or not the update was
-                            stricken (see :meth:`.strike`).
-    ======================= ============================================================
+    =============== ===================================================================
+    Attribute       Description
+    =============== ===================================================================
+    ``author``      The :class:`.Redditor` who made the update.
+    ``body``        Body of the update, as Markdown.
+    ``body_html``   Body of the update, as HTML.
+    ``created_utc`` The time the update was created, as `Unix Time`_.
+    ``stricken``    A ``bool`` representing whether or not the update was stricken (see
+                    :meth:`.strike`).
+    =============== ===================================================================
 
-    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
+
     """
 
     STR_FIELD = "id"

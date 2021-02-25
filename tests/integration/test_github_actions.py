@@ -1,7 +1,8 @@
 """A test that is run only by Github Actions
 
-This test makes real network requests, so environment variables
-should be specified in Github Actions.
+This test makes real network requests, so environment variables should be specified in
+Github Actions.
+
 """
 import os
 

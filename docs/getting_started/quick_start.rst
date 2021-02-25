@@ -10,33 +10,31 @@ Prerequisites
 :Python Knowledge: You need to know at least a little Python to use PRAW; it's a Python
     wrapper after all. PRAW supports `Python 3.6+`_. If you are stuck on a problem,
     `r/learnpython`_ is a great place to ask for help.
-
 :Reddit Knowledge: A basic understanding of how Reddit works is a must. In the event you
     are not already familiar with Reddit start at `Reddit Help`_.
-
 :Reddit Account: A Reddit account is required to access Reddit's API. Create one at
-    `reddit.com`_.
-
+    reddit.com_.
 :Client ID & Client Secret: These two values are needed to access Reddit's API as a
     **script** application (see :ref:`oauth` for other application types). If you don't
     already have a client ID and client secret, follow Reddit's `First Steps Guide`_ to
     create them.
-
 :User Agent: A user agent is a unique identifier that helps Reddit determine the source
     of network requests. To use Reddit's API, you need a unique and descriptive user
     agent. The recommended format is ``<platform>:<app ID>:<version string> (by
     u/<Reddit username>)``. For example, ``android:com.example.myredditapp:v1.2.3 (by
     u/kemitche)``. Read more about user agents at `Reddit's API wiki page`_.
 
+.. _first steps guide: https://github.com/reddit/reddit/wiki/OAuth2-Quick-Start-Example#first-steps
 
-.. _`Python 3.6+`: https://docs.python.org/3/tutorial/index.html
-.. _`r/learnpython`: https://www.reddit.com/r/learnpython/
+.. _python 3.6+: https://docs.python.org/3/tutorial/index.html
+
+.. _r/learnpython: https://www.reddit.com/r/learnpython/
+
+.. _reddit help: https://www.reddithelp.com/en
+
+.. _reddit's api wiki page: https://github.com/reddit/reddit/wiki/API
+
 .. _reddit.com: https://www.reddit.com
-.. _`Reddit Help`: https://www.reddithelp.com/en
-.. _`Reddit's API wiki page`: https://github.com/reddit/reddit/wiki/API
-
-.. _`First Steps Guide`:
-   https://github.com/reddit/reddit/wiki/OAuth2-Quick-Start-Example#first-steps
 
 With these prerequisites satisfied, you are ready to learn how to do some of the most
 common tasks with Reddit's API.
@@ -62,13 +60,13 @@ and :ref:`authorized <authorized>`.
 .. _read-only:
 
 Read-only :class:`.Reddit` Instances
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+++++++++++++++++++++++++++++++++++++
 
 To create a read-only :class:`.Reddit` instance, you need three pieces of information:
 
-1) Client ID
-2) Client secret
-3) User agent
+1. Client ID
+2. Client secret
+3. User agent
 
 You may choose to provide these by passing in three keyword arguments when calling the
 initializer of the :class:`.Reddit` class: ``client_id``, ``client_secret``,
@@ -82,10 +80,10 @@ information). For example:
     reddit = praw.Reddit(
         client_id="my client id",
         client_secret="my client secret",
-        user_agent="my user agent"
+        user_agent="my user agent",
     )
 
-Just like that, you now have a read-only  :class:`.Reddit` instance.
+Just like that, you now have a read-only :class:`.Reddit` instance.
 
 .. code-block:: python
 
@@ -117,14 +115,14 @@ authorized :class:`.Reddit` instance.
 .. _authorized:
 
 Authorized :class:`.Reddit` Instances
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++++++++++++++++++++++++++++++++++++++
 
 In order to create an authorized :class:`.Reddit` instance, two additional pieces of
 information are required for **script** applications (see :ref:`oauth` for other
 application types):
 
-4) Your Reddit username, and
-5) Your Reddit password
+4. Your Reddit username, and
+5. Your Reddit password
 
 Again, you may choose to provide these by passing in keyword arguments ``username`` and
 ``password`` when you call the :class:`.Reddit` initializer, like the following:
@@ -138,7 +136,7 @@ Again, you may choose to provide these by passing in keyword arguments ``usernam
         client_secret="my client secret",
         user_agent="my user agent",
         username="my username",
-        password="my password"
+        password="my password",
     )
 
     print(reddit.read_only)
@@ -224,8 +222,7 @@ You can create :class:`.Submission` instances in other ways too:
     # Output: reddit will soon only be available ...
 
     # or
-    submission = reddit.submission(url='https://www.reddit.com/...')
-
+    submission = reddit.submission(url="https://www.reddit.com/...")
 
 Obtain :class:`.Redditor` Instances
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -302,7 +299,7 @@ For example:
 
     # assume you have a Reddit instance bound to variable `reddit`
     submission = reddit.submission(id="39zje0")
-    print(submission.title) # to make it non-lazy
+    print(submission.title)  # to make it non-lazy
     pprint.pprint(vars(submission))
 
 Note the line where we print the title. PRAW uses lazy objects so that network requests

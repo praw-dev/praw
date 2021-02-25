@@ -28,37 +28,36 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``author``              Provides an instance of :class:`.Redditor`.
-    ``body``                The body of the comment, as Markdown.
-    ``body_html``           The body of the comment, as HTML.
-    ``created_utc``         Time the comment was created, represented in `Unix Time`_.
-    ``distinguished``       Whether or not the comment is distinguished.
-    ``edited``              Whether or not the comment has been edited.
-    ``id``                  The ID of the comment.
-    ``is_submitter``        Whether or not the comment author is also the author of the
-                            submission.
-    ``link_id``             The submission ID that the comment belongs to.
-    ``parent_id``           The ID of the parent comment (prefixed with ``t1_``). If it
-                            is a top-level comment, this returns the submission ID
-                            instead (prefixed with ``t3_``).
-    ``permalink``           A permalink for the comment. Comment objects from the inbox
-                            have a ``context`` attribute instead.
-    ``replies``             Provides an instance of :class:`.CommentForest`.
-    ``saved``               Whether or not the comment is saved.
-    ``score``               The number of upvotes for the comment.
-    ``stickied``            Whether or not the comment is stickied.
-    ``submission``          Provides an instance of :class:`.Submission`. The submission
-                            that the comment belongs to.
-    ``subreddit``           Provides an instance of :class:`.Subreddit`. The subreddit
-                            that the comment belongs to.
-    ``subreddit_id``        The subreddit ID that the comment belongs to.
-    ======================= ============================================================
+    ================= ==================================================================
+    Attribute         Description
+    ================= ==================================================================
+    ``author``        Provides an instance of :class:`.Redditor`.
+    ``body``          The body of the comment, as Markdown.
+    ``body_html``     The body of the comment, as HTML.
+    ``created_utc``   Time the comment was created, represented in `Unix Time`_.
+    ``distinguished`` Whether or not the comment is distinguished.
+    ``edited``        Whether or not the comment has been edited.
+    ``id``            The ID of the comment.
+    ``is_submitter``  Whether or not the comment author is also the author of the
+                      submission.
+    ``link_id``       The submission ID that the comment belongs to.
+    ``parent_id``     The ID of the parent comment (prefixed with ``t1_``). If it is a
+                      top-level comment, this returns the submission ID instead
+                      (prefixed with ``t3_``).
+    ``permalink``     A permalink for the comment. Comment objects from the inbox have a
+                      ``context`` attribute instead.
+    ``replies``       Provides an instance of :class:`.CommentForest`.
+    ``saved``         Whether or not the comment is saved.
+    ``score``         The number of upvotes for the comment.
+    ``stickied``      Whether or not the comment is stickied.
+    ``submission``    Provides an instance of :class:`.Submission`. The submission that
+                      the comment belongs to.
+    ``subreddit``     Provides an instance of :class:`.Subreddit`. The subreddit that
+                      the comment belongs to.
+    ``subreddit_id``  The subreddit ID that the comment belongs to.
+    ================= ==================================================================
 
-
-    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
 
     """
 
@@ -120,9 +119,10 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             comment.refresh()
             replies = comment.replies
 
-        .. note:: The appropriate values for ``reply_sort`` include
-           ``confidence``, ``controversial``, ``new``, ``old``, ``q&a``,
-           and ``top``.
+        .. note::
+
+            The appropriate values for ``reply_sort`` include ``confidence``,
+            ``controversial``, ``new``, ``old``, ``q&a``, and ``top``.
 
         """
         if isinstance(self._replies, list):

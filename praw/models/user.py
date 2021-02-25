@@ -82,8 +82,10 @@ class User(PRAWBase):
 
         :param user: Checks to see if you are friends with the Redditor. Either an
             instance of :class:`.Redditor` or a string can be given.
+
         :returns: A list of Redditors, or a Redditor if you are friends with the given
             Redditor. The Redditor also has friend attributes.
+
         :raises: An instance of :class:`.RedditAPIException` if you are not friends with
             the specified Redditor.
 

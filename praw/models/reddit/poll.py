@@ -27,13 +27,14 @@ class PollOption(PRAWBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    =================== =======================================================
-    Attribute           Description
-    =================== =======================================================
-    ``id``              ID of the poll option.
-    ``text``            The text of the poll option.
-    ``vote_count``      The number of votes the poll option has received.
-    =================== =======================================================
+    ============== =================================================
+    Attribute      Description
+    ============== =================================================
+    ``id``         ID of the poll option.
+    ``text``       The text of the poll option.
+    ``vote_count`` The number of votes the poll option has received.
+    ============== =================================================
+
     """
 
     def __repr__(self):
@@ -66,19 +67,17 @@ class PollData(PRAWBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    =========================== ========================================================
-    Attribute                   Description
-    =========================== ========================================================
-    ``options``                 A list of :class:`.PollOption` of the poll.
-    ``total_vote_count``        The total number of votes cast in the poll.
-    ``user_selection``          The poll option selected by the authenticated user
-                                (possibly ``None``).
-    ``voting_end_timestamp``    Time the poll voting closes, represented in
-                                `Unix Time`_.
-    =========================== ========================================================
+    ======================== =========================================================
+    Attribute                Description
+    ======================== =========================================================
+    ``options``              A list of :class:`.PollOption` of the poll.
+    ``total_vote_count``     The total number of votes cast in the poll.
+    ``user_selection``       The poll option selected by the authenticated user
+                             (possibly ``None``).
+    ``voting_end_timestamp`` Time the poll voting closes, represented in `Unix Time`_.
+    ======================== =========================================================
 
-
-    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
 
     """
 
@@ -106,6 +105,7 @@ class PollData(PRAWBase):
         """Get the option with the specified ID.
 
         :param option_id: The ID of a poll option, as a ``str``.
+
         :returns: The specified :class:`.PollOption`.
 
         :raises: :py:class:`KeyError` if no option exists with the specified ID.

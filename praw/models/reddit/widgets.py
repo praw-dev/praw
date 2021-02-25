@@ -19,25 +19,24 @@ class Button(PRAWBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``color``               The hex color used to outline the button.
-    ``fillColor``           The hex color for the background of the button.
-    ``height``              Image height. Only present on image buttons.
-    ``hoverState``          A ``dict`` describing the state of the button when hovered
-                            over. Optional.
-    ``kind``                Either ``"text"`` or ``"image"``.
-    ``linkUrl``             A link that can be visited by clicking the button. Only
-                            present on image buttons.
-    ``text``                The text displayed on the button.
-    ``textColor``           The hex color for the text of the button.
-    ``url``                 * If the button is a text button, a link that can be visited
-                              by clicking the button.
-                            * If the button is an image button, the URL of a
-                              Reddit-hosted image.
-    ``width``               Image width. Only present on image buttons.
-    ======================= ============================================================
+    ============== =====================================================================
+    Attribute      Description
+    ============== =====================================================================
+    ``color``      The hex color used to outline the button.
+    ``fillColor``  The hex color for the background of the button.
+    ``height``     Image height. Only present on image buttons.
+    ``hoverState`` A ``dict`` describing the state of the button when hovered over.
+                   Optional.
+    ``kind``       Either ``"text"`` or ``"image"``.
+    ``linkUrl``    A link that can be visited by clicking the button. Only present on
+                   image buttons.
+    ``text``       The text displayed on the button.
+    ``textColor``  The hex color for the text of the button.
+    ``url``        - If the button is a text button, a link that can be visited by
+                     clicking the button.
+                   - If the button is an image button, the URL of a Reddit-hosted image.
+    ``width``      Image width. Only present on image buttons.
+    ============== =====================================================================
 
     """
 
@@ -52,16 +51,16 @@ class CalendarConfiguration(PRAWBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``numEvents``           The number of events to display on the calendar.
-    ``showDate``            Whether or not to show the dates of events.
-    ``showDescription``     Whether or not to show the descriptions of events.
-    ``showLocation``        Whether or not to show the locations of events.
-    ``showTime``            Whether or not to show the times of events.
-    ``showTitle``           Whether or not to show the titles of events.
-    ======================= ============================================================
+    =================== ==================================================
+    Attribute           Description
+    =================== ==================================================
+    ``numEvents``       The number of events to display on the calendar.
+    ``showDate``        Whether or not to show the dates of events.
+    ``showDescription`` Whether or not to show the descriptions of events.
+    ``showLocation``    Whether or not to show the locations of events.
+    ``showTime``        Whether or not to show the times of events.
+    ``showTitle``       Whether or not to show the titles of events.
+    =================== ==================================================
 
     """
 
@@ -79,21 +78,20 @@ class Hover(PRAWBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list comprehensive in any way.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``color``               The hex color used to outline the button.
-    ``fillColor``           The hex color for the background of the button.
-    ``textColor``           The hex color for the text of the button.
-    ``height``              Image height. Only present on image buttons.
-    ``kind``                Either ``text`` or ``image``.
-    ``text``                The text displayed on the button.
-    ``url``                 * If the button is a text button, a link that can be visited
-                              by clicking the button.
-                            * If the button is an image button, the URL of a
-                              Reddit-hosted image.
-    ``width``               Image width. Only present on image buttons.
-    ======================= ============================================================
+    ============= =====================================================================
+    Attribute     Description
+    ============= =====================================================================
+    ``color``     The hex color used to outline the button.
+    ``fillColor`` The hex color for the background of the button.
+    ``textColor`` The hex color for the text of the button.
+    ``height``    Image height. Only present on image buttons.
+    ``kind``      Either ``text`` or ``image``.
+    ``text``      The text displayed on the button.
+    ``url``       - If the button is a text button, a link that can be visited by
+                    clicking the button.
+                  - If the button is an image button, the URL of a Reddit-hosted image.
+    ``width``     Image width. Only present on image buttons.
+    ============= =====================================================================
 
     """
 
@@ -108,14 +106,14 @@ class Image(PRAWBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``height``              Image height.
-    ``linkUrl``             A link that can be visited by clicking the image.
-    ``url``                 The URL of the (Reddit-hosted) image.
-    ``width``               Image width.
-    ======================= ============================================================
+    =========== =================================================
+    Attribute   Description
+    =========== =================================================
+    ``height``  Image height.
+    ``linkUrl`` A link that can be visited by clicking the image.
+    ``url``     The URL of the (Reddit-hosted) image.
+    ``width``   Image width.
+    =========== =================================================
 
     """
 
@@ -130,14 +128,14 @@ class ImageData(PRAWBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``height``              The image height.
-    ``name``                The image name.
-    ``url``                 The URL of the image on Reddit's servers.
-    ``width``               The image width.
-    ======================= ============================================================
+    ========== =========================================
+    Attribute  Description
+    ========== =========================================
+    ``height`` The image height.
+    ``name``   The image name.
+    ``url``    The URL of the image on Reddit's servers.
+    ``width``  The image width.
+    ========== =========================================
 
     """
 
@@ -152,12 +150,12 @@ class MenuLink(PRAWBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``text``                The text of the menu link.
-    ``url``                 The URL that the menu item links to.
-    ======================= ============================================================
+    ========= ====================================
+    Attribute Description
+    ========= ====================================
+    ``text``  The text of the menu link.
+    ``url``   The URL that the menu item links to.
+    ========= ====================================
 
     """
 
@@ -172,14 +170,14 @@ class Styles(PRAWBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list comprehensive in any way.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``backgroundColor``     The background color of a widget, given as a hexadecimal
-                            (``0x######``).
-    ``headerColor``         The header color of a widget, given as a hexadecimal
-                            (``0x######``).
-    ======================= ============================================================
+    =================== ========================================================
+    Attribute           Description
+    =================== ========================================================
+    ``backgroundColor`` The background color of a widget, given as a hexadecimal
+                        (``0x######``).
+    ``headerColor``     The header color of a widget, given as a hexadecimal
+                        (``0x######``).
+    =================== ========================================================
 
     """
 
@@ -194,14 +192,14 @@ class Submenu(BaseList):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``children``            A list of the :class:`.MenuLink`\ s in this submenu. Can be
-                            iterated over by iterating over the :class:`.Submenu` (e.g.
-                            ``for menu_link in submenu``).
-    ``text``                The name of the submenu.
-    ======================= ============================================================
+    ============ =====================================================================
+    Attribute    Description
+    ============ =====================================================================
+    ``children`` A list of the :class:`.MenuLink`\ s in this submenu. Can be iterated
+                 over by iterating over the :class:`.Submenu` (e.g. ``for menu_link in
+                 submenu``).
+    ``text``     The name of the submenu.
+    ============ =====================================================================
 
     """
 
@@ -490,13 +488,12 @@ class SubredditWidgetsModeration:
 
             .. code-block:: text
 
-               {
-                   "kind": "image",
-                   "url": a valid URL of a reddit-hosted image,
-                   "height": an integer,
-                   "width": an integer
-               }
-
+                {
+                    "kind": "image",
+                    "url": a valid URL of a reddit-hosted image,
+                    "height": an integer,
+                    "width": an integer
+                }
 
             .. note::
 
@@ -512,7 +509,7 @@ class SubredditWidgetsModeration:
             values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
             "headerColor": "#3333EE"}``.
 
-        .. _Reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+        .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
 
         Example usage:
 
@@ -524,7 +521,7 @@ class SubredditWidgetsModeration:
                 {
                     "kind": "text",
                     "text": "View source",
-                    "url": 'https://github.com/praw-dev/praw',
+                    "url": "https://github.com/praw-dev/praw",
                     "color": "#FF0000",
                     "textColor": "#00FF00",
                     "fillColor": "#0000FF",
@@ -539,7 +536,7 @@ class SubredditWidgetsModeration:
                 {
                     "kind": "image",
                     "text": "View documentation",
-                    "linkUrl": 'https://praw.readthedocs.io',
+                    "linkUrl": "https://praw.readthedocs.io",
                     "url": my_image,
                     "height": 200,
                     "width": 200,
@@ -594,7 +591,7 @@ class SubredditWidgetsModeration:
             values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
             "headerColor": "#3333EE"}``.
 
-        .. _Reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+        .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
 
         Example usage:
 
@@ -691,13 +688,13 @@ class SubredditWidgetsModeration:
 
                 [
                     {
-                        "url": 'https://some.link',  # from upload_image()
+                        "url": "https://some.link",  # from upload_image()
                         "width": 600,
                         "height": 450,
                         "name": "logo",
                     },
                     {
-                        "url": 'https://other.link',  # from upload_image()
+                        "url": "https://other.link",  # from upload_image()
                         "width": 450,
                         "height": 600,
                         "name": "icon",
@@ -708,7 +705,7 @@ class SubredditWidgetsModeration:
             values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
             "headerColor": "#3333EE"}``.
 
-        .. _Reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+        .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
 
         Example usage:
 
@@ -753,16 +750,16 @@ class SubredditWidgetsModeration:
 
                 [
                     {
-                        "url": 'https://some.link',  # from upload_image()
+                        "url": "https://some.link",  # from upload_image()
                         "width": 600,
                         "height": 450,
-                        "linkUrl": 'https://github.com/praw-dev/praw',
+                        "linkUrl": "https://github.com/praw-dev/praw",
                     },
                     {
-                        "url": 'https://other.link',  # from upload_image()
+                        "url": "https://other.link",  # from upload_image()
                         "width": 450,
                         "height": 600,
-                        "linkUrl": 'https://praw.readthedocs.io',
+                        "linkUrl": "https://praw.readthedocs.io",
                     },
                 ]
 
@@ -770,7 +767,7 @@ class SubredditWidgetsModeration:
             values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
             "headerColor": "#3333EE"}``.
 
-        .. _Reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+        .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
 
         Example usage:
 
@@ -782,7 +779,7 @@ class SubredditWidgetsModeration:
                 {
                     "width": 600,
                     "height": 450,
-                    "linkUrl": '',
+                    "linkUrl": "",
                     "url": widget_moderation.upload_image(img_path),
                 }
                 for img_path in image_paths
@@ -829,7 +826,8 @@ class SubredditWidgetsModeration:
                     ...
                 ]
 
-        .. _Reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+
+        .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
 
         Example usage:
 
@@ -837,15 +835,15 @@ class SubredditWidgetsModeration:
 
             widget_moderation = reddit.subreddit("mysub").widgets.mod
             menu_contents = [
-                {"text": "My homepage", "url": 'https://example.com'},
+                {"text": "My homepage", "url": "https://example.com"},
                 {
                     "text": "Python packages",
                     "children": [
-                        {"text": "PRAW", "url": 'https://praw.readthedocs.io/'},
-                        {"text": "requests", "url": 'http://python-requests.org'},
+                        {"text": "PRAW", "url": "https://praw.readthedocs.io/"},
+                        {"text": "requests", "url": "http://python-requests.org"},
                     ],
                 },
-                {"text": "Reddit homepage", "url": 'https://reddit.com'},
+                {"text": "Reddit homepage", "url": "https://reddit.com"},
             ]
             new_widget = widget_moderation.add_menu(menu_contents)
 
@@ -953,6 +951,7 @@ class SubredditWidgetsModeration:
         """Upload an image to Reddit and get the URL.
 
         :param file_path: The path to the local file.
+
         :returns: The URL of the uploaded image as a ``str``.
 
         This method is used to upload images for widgets. For example, it can be used in
@@ -965,7 +964,7 @@ class SubredditWidgetsModeration:
 
             my_sub = reddit.subreddit("my_sub")
             image_url = my_sub.widgets.mod.upload_image("/path/to/image.jpg")
-            images = [{"width": 300, "height": 300, "url": image_url, "linkUrl": ''}]
+            images = [{"width": 300, "height": 300, "url": image_url, "linkUrl": ""}]
             styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
             my_sub.widgets.mod.add_image_widget("My cool pictures", images, styles)
 
@@ -1049,7 +1048,7 @@ class ButtonWidget(Widget, BaseList):
             {
                 "kind": "text",
                 "text": "View source",
-                "url": 'https://github.com/praw-dev/praw',
+                "url": "https://github.com/praw-dev/praw",
                 "color": "#FF0000",
                 "textColor": "#00FF00",
                 "fillColor": "#0000FF",
@@ -1064,7 +1063,7 @@ class ButtonWidget(Widget, BaseList):
             {
                 "kind": "text",
                 "text": "View documentation",
-                "url": 'https://praw.readthedocs.io',
+                "url": "https://praw.readthedocs.io",
                 "color": "#FFFFFF",
                 "textColor": "#FFFF00",
                 "fillColor": "#0000FF",
@@ -1097,21 +1096,21 @@ class ButtonWidget(Widget, BaseList):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``buttons``             A ``list`` of :class:`.Button`\ s. These can also be
-                            accessed just by iterating over the :class:`.ButtonWidget`
-                            (e.g. ``for button in button_widget``).
-    ``description``         The description, in Markdown.
-    ``description_html``    The description, in HTML.
-    ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``"button"``).
-    ``shortName``           The short name of the widget.
-    ``styles``              A ``dict`` with the keys ``"backgroundColor"`` and
-                            ``"headerColor"``.
-    ``subreddit``           The :class:`.Subreddit` the button widget belongs to.
-    ======================= ============================================================
+    ==================== =============================================================
+    Attribute            Description
+    ==================== =============================================================
+    ``buttons``          A ``list`` of :class:`.Button`\ s. These can also be accessed
+                         just by iterating over the :class:`.ButtonWidget` (e.g. ``for
+                         button in button_widget``).
+    ``description``      The description, in Markdown.
+    ``description_html`` The description, in HTML.
+    ``id``               The widget ID.
+    ``kind``             The widget kind (always ``"button"``).
+    ``shortName``        The short name of the widget.
+    ``styles``           A ``dict`` with the keys ``"backgroundColor"`` and
+                         ``"headerColor"``.
+    ``subreddit``        The :class:`.Subreddit` the button widget belongs to.
+    ==================== =============================================================
 
     """
 
@@ -1173,19 +1172,19 @@ class Calendar(Widget):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``configuration``       A ``dict`` describing the calendar configuration.
-    ``data``                A ``list`` of ``dict``\ s that represent events.
-    ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``"calendar"``).
-    ``requiresSync``        A ``bool``.
-    ``shortName``           The short name of the widget.
-    ``styles``              A ``dict`` with the keys ``"backgroundColor"`` and
-                            ``"headerColor"``.
-    ``subreddit``           The :class:`.Subreddit` the button widget belongs to.
-    ======================= ============================================================
+    ================= =====================================================
+    Attribute         Description
+    ================= =====================================================
+    ``configuration`` A ``dict`` describing the calendar configuration.
+    ``data``          A ``list`` of ``dict``\ s that represent events.
+    ``id``            The widget ID.
+    ``kind``          The widget kind (always ``"calendar"``).
+    ``requiresSync``  A ``bool``.
+    ``shortName``     The short name of the widget.
+    ``styles``        A ``dict`` with the keys ``"backgroundColor"`` and
+                      ``"headerColor"``.
+    ``subreddit``     The :class:`.Subreddit` the button widget belongs to.
+    ================= =====================================================
 
     """
 
@@ -1239,19 +1238,18 @@ class CommunityList(Widget, BaseList):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``data``                A ``list`` of :class:`.Subreddit`\ s. These can also be
-                            iterated over by iterating over the :class:`.CommunityList`
-                            (e.g. ``for sub in community_list``).
-    ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``"community-list"``).
-    ``shortName``           The short name of the widget.
-    ``styles``              A ``dict`` with the keys ``"backgroundColor"`` and
-                            ``"headerColor"``.
-    ``subreddit``           The :class:`.Subreddit` the button widget belongs to.
-    ======================= ============================================================
+    ============= =====================================================================
+    Attribute     Description
+    ============= =====================================================================
+    ``data``      A ``list`` of :class:`.Subreddit`\ s. These can also be iterated over
+                  by iterating over the :class:`.CommunityList` (e.g. ``for sub in
+                  community_list``).
+    ``id``        The widget ID.
+    ``kind``      The widget kind (always ``"community-list"``).
+    ``shortName`` The short name of the widget.
+    ``styles``    A ``dict`` with the keys ``"backgroundColor"`` and ``"headerColor"``.
+    ``subreddit`` The :class:`.Subreddit` the button widget belongs to.
+    ============= =====================================================================
 
     """
 
@@ -1307,22 +1305,22 @@ class CustomWidget(Widget):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``css``                 The CSS of the widget, as a ``str``.
-    ``height``              The height of the widget, as an ``int``.
-    ``id``                  The widget ID.
-    ``imageData``           A ``list`` of :class:`.ImageData` that belong to the widget.
-    ``kind``                The widget kind (always ``"custom"``).
-    ``shortName``           The short name of the widget.
-    ``styles``              A ``dict`` with the keys ``"backgroundColor"`` and
-                            ``"headerColor"``.
-    ``stylesheetUrl``       A link to the widget's stylesheet.
-    ``subreddit``           The :class:`.Subreddit` the button widget belongs to.
-    ``text``                The text contents, as Markdown.
-    ``textHtml``            The text contents, as HTML.
-    ======================= ============================================================
+    ================= ============================================================
+    Attribute         Description
+    ================= ============================================================
+    ``css``           The CSS of the widget, as a ``str``.
+    ``height``        The height of the widget, as an ``int``.
+    ``id``            The widget ID.
+    ``imageData``     A ``list`` of :class:`.ImageData` that belong to the widget.
+    ``kind``          The widget kind (always ``"custom"``).
+    ``shortName``     The short name of the widget.
+    ``styles``        A ``dict`` with the keys ``"backgroundColor"`` and
+                      ``"headerColor"``.
+    ``stylesheetUrl`` A link to the widget's stylesheet.
+    ``subreddit``     The :class:`.Subreddit` the button widget belongs to.
+    ``text``          The text contents, as Markdown.
+    ``textHtml``      The text contents, as HTML.
+    ================= ============================================================
 
     """
 
@@ -1356,23 +1354,23 @@ class IDCard(Widget):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    =========================== ========================================================
-    Attribute                   Description
-    =========================== ========================================================
-    ``currentlyViewingCount``   The number of Redditors viewing the subreddit.
-    ``currentlyViewingText``    The text displayed next to the view count. For example,
-                                "users online".
-    ``description``             The subreddit description.
-    ``id``                      The widget ID.
-    ``kind``                    The widget kind (always ``"id-card"``).
-    ``shortName``               The short name of the widget.
-    ``styles``                  A ``dict`` with the keys ``"backgroundColor"`` and
-                                ``"headerColor"``.
-    ``subreddit``               The :class:`.Subreddit` the button widget belongs to.
-    ``subscribersCount``        The number of subscribers to the subreddit.
-    ``subscribersText``         The text displayed next to the subscriber count. For
-                                example, "users subscribed".
-    =========================== ========================================================
+    ========================= =======================================================
+    Attribute                 Description
+    ========================= =======================================================
+    ``currentlyViewingCount`` The number of Redditors viewing the subreddit.
+    ``currentlyViewingText``  The text displayed next to the view count. For example,
+                              "users online".
+    ``description``           The subreddit description.
+    ``id``                    The widget ID.
+    ``kind``                  The widget kind (always ``"id-card"``).
+    ``shortName``             The short name of the widget.
+    ``styles``                A ``dict`` with the keys ``"backgroundColor"`` and
+                              ``"headerColor"``.
+    ``subreddit``             The :class:`.Subreddit` the button widget belongs to.
+    ``subscribersCount``      The number of subscribers to the subreddit.
+    ``subscribersText``       The text displayed next to the subscriber count. For
+                              example, "users subscribed".
+    ========================= =======================================================
 
     """
 
@@ -1404,7 +1402,7 @@ class ImageWidget(Widget, BaseList):
             {
                 "width": 600,
                 "height": 450,
-                "linkUrl": '',
+                "linkUrl": "",
                 "url": widgets.mod.upload_image(img_path),
             }
             for img_path in image_paths
@@ -1434,19 +1432,18 @@ class ImageWidget(Widget, BaseList):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``data``                A list of the :class:`.Image`\ s in this widget. Can be
-                            iterated over by iterating over the :class:`.ImageWidget`
-                            (e.g. ``for img in image_widget``).
-    ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``"image"``).
-    ``shortName``           The short name of the widget.
-    ``styles``              A ``dict`` with the keys ``"backgroundColor"`` and
-                            ``"headerColor"``.
-    ``subreddit``           The :class:`.Subreddit` the button widget belongs to.
-    ======================= ============================================================
+    ============= =====================================================================
+    Attribute     Description
+    ============= =====================================================================
+    ``data``      A list of the :class:`.Image`\ s in this widget. Can be iterated over
+                  by iterating over the :class:`.ImageWidget` (e.g. ``for img in
+                  image_widget``).
+    ``id``        The widget ID.
+    ``kind``      The widget kind (always ``"image"``).
+    ``shortName`` The short name of the widget.
+    ``styles``    A ``dict`` with the keys ``"backgroundColor"`` and ``"headerColor"``.
+    ``subreddit`` The :class:`.Subreddit` the button widget belongs to.
+    ============= =====================================================================
 
     """
 
@@ -1478,15 +1475,15 @@ class Menu(Widget, BaseList):
 
         widgets = reddit.subreddit("redditdev").widgets
         menu_contents = [
-            {"text": "My homepage", "url": 'https://example.com'},
+            {"text": "My homepage", "url": "https://example.com"},
             {
                 "text": "Python packages",
                 "children": [
-                    {"text": "PRAW", "url": 'https://praw.readthedocs.io/'},
-                    {"text": "requests", "url": 'http://python-requests.org'},
+                    {"text": "PRAW", "url": "https://praw.readthedocs.io/"},
+                    {"text": "requests", "url": "http://python-requests.org"},
                 ],
             },
-            {"text": "Reddit homepage", "url": 'https://reddit.com'},
+            {"text": "Reddit homepage", "url": "https://reddit.com"},
         ]
         menu = widgets.mod.add_menu(menu_contents)
 
@@ -1513,16 +1510,16 @@ class Menu(Widget, BaseList):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``data``                A list of the :class:`.MenuLink`\ s and :class:`.Submenu`\ s
-                            in this widget. Can be iterated over by iterating over the
-                            :class:`.Menu` (e.g. ``for item in menu``).
-    ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``"menu"``).
-    ``subreddit``           The :class:`.Subreddit` the button widget belongs to.
-    ======================= ============================================================
+    ============= ====================================================================
+    Attribute     Description
+    ============= ====================================================================
+    ``data``      A list of the :class:`.MenuLink`\ s and :class:`.Submenu`\ s in this
+                  widget. Can be iterated over by iterating over the :class:`.Menu`
+                  (e.g. ``for item in menu``).
+    ``id``        The widget ID.
+    ``kind``      The widget kind (always ``"menu"``).
+    ``subreddit`` The :class:`.Subreddit` the button widget belongs to.
+    ============= ====================================================================
 
     """
 
@@ -1551,20 +1548,18 @@ class ModeratorsWidget(Widget, BaseList):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``"moderators"``).
-    ``mods``                A list of the :class:`.Redditor`\ s that moderate the
-                            subreddit. Can be iterated over by iterating over the
-                            :class:`.ModeratorsWidget` (e.g. ``for mod in
-                            widgets.moderators_widget``).
-    ``styles``              A ``dict`` with the keys ``"backgroundColor"`` and
-                            ``"headerColor"``.
-    ``subreddit``           The :class:`.Subreddit` the button widget belongs to.
-    ``totalMods``           The total number of moderators in the subreddit.
-    ======================= ============================================================
+    ============= =====================================================================
+    Attribute     Description
+    ============= =====================================================================
+    ``id``        The widget ID.
+    ``kind``      The widget kind (always ``"moderators"``).
+    ``mods``      A list of the :class:`.Redditor`\ s that moderate the subreddit. Can
+                  be iterated over by iterating over the :class:`.ModeratorsWidget`
+                  (e.g. ``for mod in widgets.moderators_widget``).
+    ``styles``    A ``dict`` with the keys ``"backgroundColor"`` and ``"headerColor"``.
+    ``subreddit`` The :class:`.Subreddit` the button widget belongs to.
+    ``totalMods`` The total number of moderators in the subreddit.
+    ============= =====================================================================
 
     """
 
@@ -1628,23 +1623,20 @@ class PostFlairWidget(Widget, BaseList):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``display``             The display style of the widget, either ``"cloud"`` or
-                            ``"list"``.
-    ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``"post-flair"``).
-    ``order``               A list of the flair IDs in this widget. Can be iterated over
-                            by iterating over the :class:`.PostFlairWidget` (e.g. ``for
-                            flair_id in post_flair``).
-    ``shortName``           The short name of the widget.
-    ``styles``              A ``dict`` with the keys ``"backgroundColor"`` and
-                            ``"headerColor"``.
-    ``subreddit``           The :class:`.Subreddit` the button widget belongs to.
-    ``templates``           A ``dict`` that maps flair IDs to ``dict``\ s that describe
-                            flairs.
-    ======================= ============================================================
+    ============= =====================================================================
+    Attribute     Description
+    ============= =====================================================================
+    ``display``   The display style of the widget, either ``"cloud"`` or ``"list"``.
+    ``id``        The widget ID.
+    ``kind``      The widget kind (always ``"post-flair"``).
+    ``order``     A list of the flair IDs in this widget. Can be iterated over by
+                  iterating over the :class:`.PostFlairWidget` (e.g. ``for flair_id in
+                  post_flair``).
+    ``shortName`` The short name of the widget.
+    ``styles``    A ``dict`` with the keys ``"backgroundColor"`` and ``"headerColor"``.
+    ``subreddit`` The :class:`.Subreddit` the button widget belongs to.
+    ``templates`` A ``dict`` that maps flair IDs to ``dict``\ s that describe flairs.
+    ============= =====================================================================
 
     """
 
@@ -1680,21 +1672,18 @@ class RulesWidget(Widget, BaseList):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``data``                A list of the subreddit rules. Can be iterated over by
-                            iterating over the :class:`.RulesWidget` (e.g. ``for rule in
-                            rules_widget``).
-    ``display``             The display style of the widget, either ``"full"`` or
-                            ``"compact"``.
-    ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``"subreddit-rules"``).
-    ``shortName``           The short name of the widget.
-    ``styles``              A ``dict`` with the keys ``"backgroundColor"`` and
-                            ``"headerColor"``.
-    ``subreddit``           The :class:`.Subreddit` the button widget belongs to.
-    ======================= ============================================================
+    ============= =====================================================================
+    Attribute     Description
+    ============= =====================================================================
+    ``data``      A list of the subreddit rules. Can be iterated over by iterating over
+                  the :class:`.RulesWidget` (e.g. ``for rule in rules_widget``).
+    ``display``   The display style of the widget, either ``"full"`` or ``"compact"``.
+    ``id``        The widget ID.
+    ``kind``      The widget kind (always ``"subreddit-rules"``).
+    ``shortName`` The short name of the widget.
+    ``styles``    A ``dict`` with the keys ``"backgroundColor"`` and ``"headerColor"``.
+    ``subreddit`` The :class:`.Subreddit` the button widget belongs to.
+    ============= =====================================================================
 
     """
 
@@ -1753,18 +1742,17 @@ class TextArea(Widget):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``"textarea"``).
-    ``shortName``           The short name of the widget.
-    ``styles``              A ``dict`` with the keys ``"backgroundColor"`` and
-                            ``"headerColor"``.
-    ``subreddit``           The :class:`.Subreddit` the button widget belongs to.
-    ``text``                The widget's text, as Markdown.
-    ``textHtml``            The widget's text, as HTML.
-    ======================= ============================================================
+    ============= =====================================================================
+    Attribute     Description
+    ============= =====================================================================
+    ``id``        The widget ID.
+    ``kind``      The widget kind (always ``"textarea"``).
+    ``shortName`` The short name of the widget.
+    ``styles``    A ``dict`` with the keys ``"backgroundColor"`` and ``"headerColor"``.
+    ``subreddit`` The :class:`.Subreddit` the button widget belongs to.
+    ``text``      The widget's text, as Markdown.
+    ``textHtml``  The widget's text, as HTML.
+    ============= =====================================================================
 
     """
 

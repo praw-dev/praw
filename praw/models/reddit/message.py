@@ -21,24 +21,22 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``author``              Provides an instance of :class:`.Redditor`.
-    ``body``                The body of the message, as Markdown.
-    ``body_html``           The body of the message, as HTML.
-    ``created_utc``         Time the message was created, represented in
-                            `Unix Time`_.
-    ``dest``                Provides an instance of :class:`.Redditor`. The
-                            recipient of the message.
-    ``id``                  The ID of the message.
-    ``name``                The full ID of the message, prefixed with ``t4_``.
-    ``subject``             The subject of the message.
-    ``was_comment``         Whether or not the message was a comment reply.
-    ======================= ============================================================
+    =============== ================================================================
+    Attribute       Description
+    =============== ================================================================
+    ``author``      Provides an instance of :class:`.Redditor`.
+    ``body``        The body of the message, as Markdown.
+    ``body_html``   The body of the message, as HTML.
+    ``created_utc`` Time the message was created, represented in `Unix Time`_.
+    ``dest``        Provides an instance of :class:`.Redditor`. The recipient of the
+                    message.
+    ``id``          The ID of the message.
+    ``name``        The full ID of the message, prefixed with ``t4_``.
+    ``subject``     The subject of the message.
+    ``was_comment`` Whether or not the message was a comment reply.
+    =============== ================================================================
 
-
-    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
 
     """
 
@@ -109,24 +107,24 @@ class SubredditMessage(Message):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``author``              Provides an instance of :class:`.Redditor`.
-    ``body``                The body of the message, as Markdown.
-    ``body_html``           The body of the message, as HTML.
-    ``created_utc``         Time the message was created, represented in `Unix Time`_.
-    ``dest``                Provides an instance of :class:`.Redditor`. The recipient of
-                            the message.
-    ``id``                  The ID of the message.
-    ``name``                The full ID of the message, prefixed with ``t4_``.
-    ``subject``             The subject of the message.
-    ``subreddit``           If the message was sent from a subreddit, provides an
-                            instance of :class:`.Subreddit`.
-    ``was_comment``         Whether or not the message was a comment reply.
-    ======================= ============================================================
+    =============== =================================================================
+    Attribute       Description
+    =============== =================================================================
+    ``author``      Provides an instance of :class:`.Redditor`.
+    ``body``        The body of the message, as Markdown.
+    ``body_html``   The body of the message, as HTML.
+    ``created_utc`` Time the message was created, represented in `Unix Time`_.
+    ``dest``        Provides an instance of :class:`.Redditor`. The recipient of the
+                    message.
+    ``id``          The ID of the message.
+    ``name``        The full ID of the message, prefixed with ``t4_``.
+    ``subject``     The subject of the message.
+    ``subreddit``   If the message was sent from a subreddit, provides an instance of
+                    :class:`.Subreddit`.
+    ``was_comment`` Whether or not the message was a comment reply.
+    =============== =================================================================
 
-    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
 
     """
 

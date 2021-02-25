@@ -21,13 +21,13 @@ class RemovalReason(RedditBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``id``                  The id of the removal reason.
-    ``message``             The message of the removal reason.
-    ``title``               The title of the removal reason.
-    ======================= ============================================================
+    =========== ==================================
+    Attribute   Description
+    =========== ==================================
+    ``id``      The id of the removal reason.
+    ``message`` The message of the removal reason.
+    ``title``   The title of the removal reason.
+    =========== ==================================
 
     """
 
@@ -233,6 +233,7 @@ class SubredditRemovalReasons:
 
         :param message: The message associated with the removal reason.
         :param title: The title of the removal reason
+
         :returns: The RemovalReason added.
 
         The message will be prepended with `Hi u/username,` automatically.

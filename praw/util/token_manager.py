@@ -3,8 +3,8 @@
 There should be a 1-to-1 mapping between an instance of a subclass of
 :class:`.BaseTokenManager` and a :class:`.Reddit` instance.
 
-A few trivial token manager classes are provided here, but it is expected that
-PRAW users will create their own token manager classes suitable for their needs.
+A few trivial token manager classes are provided here, but it is expected that PRAW
+users will create their own token manager classes suitable for their needs.
 
 See ref:`using_refresh_tokens` for examples on how to leverage these classes.
 
@@ -37,9 +37,8 @@ class BaseTokenManager:
         :param authorizer: The ``prawcore.Authorizer`` instance used containing
             ``access_token`` and ``refresh_token`` attributes.
 
-        This function will be called after refreshing the access and refresh
-        tokens. This callback can be used for saving the updated
-        ``refresh_token``.
+        This function will be called after refreshing the access and refresh tokens.
+        This callback can be used for saving the updated ``refresh_token``.
 
         """
         raise NotImplementedError("``post_refresh_callback`` must be extended.")
@@ -51,8 +50,7 @@ class BaseTokenManager:
             ``access_token`` and ``refresh_token`` attributes.
 
         This callback can be used to inspect and modify the attributes of the
-        ``prawcore.Authorizer`` instance, such as setting the
-        ``refresh_token``.
+        ``prawcore.Authorizer`` instance, such as setting the ``refresh_token``.
 
         """
         raise NotImplementedError("``pre_refresh_callback`` must be extended.")

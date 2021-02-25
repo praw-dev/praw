@@ -14,10 +14,11 @@ Working with Refresh Tokens
 Reddit OAuth2 Scopes
 --------------------
 
-Before working with refresh tokens you should decide which scopes your application requires.
-If you want to use all scopes, you can use the special scope ``*``.
+Before working with refresh tokens you should decide which scopes your application
+requires. If you want to use all scopes, you can use the special scope ``*``.
 
-To get an up-to-date listing of all Reddit scopes and their descriptions run the following:
+To get an up-to-date listing of all Reddit scopes and their descriptions run the
+following:
 
 .. code-block:: python
 
@@ -25,14 +26,13 @@ To get an up-to-date listing of all Reddit scopes and their descriptions run the
 
     response = requests.get(
         "https://www.reddit.com/api/v1/scopes.json",
-        headers={"User-Agent": "fetch-scopes by u/bboe"}
+        headers={"User-Agent": "fetch-scopes by u/bboe"},
     )
 
     for scope, data in sorted(response.json().items()):
         print(f"{scope:>18s}  {data['description']}")
 
 As of February 2021, the available scopes are:
-
 
 ================ ======================================================================
 Scope            Description
@@ -83,21 +83,22 @@ The following program can be used to obtain a refresh token with the desired sco
 .. literalinclude:: ../examples/obtain_refresh_token.py
     :language: python
 
-
 .. _using_refresh_tokens:
 
 Using and Updating Refresh Tokens
 ---------------------------------
 
-Reddit refresh tokens can be used only once. When an authorization is refreshed the existing refresh
-token is consumed and a new access token and refresh token will be issued. While PRAW automatically
-handles refreshing tokens when needed, it does not automatically handle the storage of the refresh
-tokens. However, PRAW provides the facilities for you to manage your refresh tokens via custom
-subclasses of :class:`.BaseTokenManager`. For trivial examples, PRAW provides the
+Reddit refresh tokens can be used only once. When an authorization is refreshed the
+existing refresh token is consumed and a new access token and refresh token will be
+issued. While PRAW automatically handles refreshing tokens when needed, it does not
+automatically handle the storage of the refresh tokens. However, PRAW provides the
+facilities for you to manage your refresh tokens via custom subclasses of
+:class:`.BaseTokenManager`. For trivial examples, PRAW provides the
 :class:`.FileTokenManager`.
 
-The following program demonstrates how to prepare a file with an initial refresh token, and configure
-PRAW to both use that refresh token, and keep the file up-to-date with a valid refresh token.
+The following program demonstrates how to prepare a file with an initial refresh token,
+and configure PRAW to both use that refresh token, and keep the file up-to-date with a
+valid refresh token.
 
 .. literalinclude:: ../examples/use_file_token_manager.py
     :language: python

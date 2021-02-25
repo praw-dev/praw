@@ -3,23 +3,20 @@
 praw.ini Files
 ==============
 
-PRAW comes with a ``praw.ini`` file in the package directory, and looks for
-user defined ``praw.ini`` files in a few other locations:
+PRAW comes with a ``praw.ini`` file in the package directory, and looks for user defined
+``praw.ini`` files in a few other locations:
 
 1. In the `current working directory
    <https://docs.python.org/3.6/library/os.html#os.getcwd>`_ at the time
    :class:`.Reddit` is initialized.
-
-2. In the launching user's config directory. This directory, if available, is
-   detected in order as one of the following:
+2. In the launching user's config directory. This directory, if available, is detected
+   in order as one of the following:
 
    1. In the directory specified by the ``XDG_CONFIG_HOME`` environment variable on
       operating systems that define such an environment variable (some modern Linux
       distributions).
-
    2. In the directory specified by ``$HOME/.config`` if the ``HOME`` environment
       variable is defined (Linux and Mac OS systems).
-
    3. In the directory specified by the ``APPDATA`` environment variable (Windows).
 
       .. note::
@@ -51,20 +48,20 @@ user defined ``praw.ini`` files in a few other locations:
           .. code-block:: python
 
               import os
+
               print(os.environ.get("<variable>", ""))
 
 Format of praw.ini
 ------------------
 
-``praw.ini`` uses the `INI file format
-<https://en.wikipedia.org/wiki/INI_file>`_, which can contain multiple groups of
-settings separated into sections. PRAW refers to each section as a ``site``. The default
-site, ``DEFAULT``, is provided in the package's ``praw.ini`` file. This site defines the
-default settings for interaction with Reddit. The contents of the package's ``praw.ini``
-file are:
+``praw.ini`` uses the `INI file format <https://en.wikipedia.org/wiki/INI_file>`_, which
+can contain multiple groups of settings separated into sections. PRAW refers to each
+section as a ``site``. The default site, ``DEFAULT``, is provided in the package's
+``praw.ini`` file. This site defines the default settings for interaction with Reddit.
+The contents of the package's ``praw.ini`` file are:
 
 .. literalinclude:: ../../../praw/praw.ini
-   :language: ini
+    :language: ini
 
 .. warning::
 
@@ -84,6 +81,7 @@ Defining additional sites is a convenient way to store :ref:`OAuth credentials
 you have three separate bots, you might create a site for each:
 
 .. _custom_site_example:
+
 .. code-block:: ini
 
     [bot1]
@@ -134,6 +132,7 @@ This can be useful to separate the components of the ``user_agent`` into individ
 variables, for example:
 
 .. _interpolation_site_example:
+
 .. code-block:: ini
 
     [bot1]
@@ -152,8 +151,8 @@ Then the value of ``reddit.config.user_agent`` will be ``script:MyBot:v1.2.3 (by
 u/MyUser)``.
 
 See `Interpolation of values
-<https://docs.python.org/3/library/configparser.html#interpolation-of-values>`_
-for details.
+<https://docs.python.org/3/library/configparser.html#interpolation-of-values>`_ for
+details.
 
 .. warning::
 
