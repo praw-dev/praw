@@ -13,10 +13,9 @@ Add the following to your code to log everything available:
     handler = logging.StreamHandler()
     handler.setLevel(logging.DEBUG)
     for logger_name in ("praw", "prawcore"):
-       logger = logging.getLogger(logger_name)
-       logger.setLevel(logging.DEBUG)
-       logger.addHandler(handler)
-
+        logger = logging.getLogger(logger_name)
+        logger.setLevel(logging.DEBUG)
+        logger.addHandler(handler)
 
 When properly configured, HTTP requests that are issued should produce output similar to
 the following:

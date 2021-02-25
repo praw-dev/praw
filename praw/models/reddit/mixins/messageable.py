@@ -29,6 +29,7 @@ class MessageableMixin:
                 The authenticated user must be a moderator of the subreddit and have the
                 ``mail`` moderator permission.
 
+
         For example, to send a private message to ``u/spez``, try:
 
         .. code-block:: python

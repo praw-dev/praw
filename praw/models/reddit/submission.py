@@ -105,10 +105,10 @@ class SubmissionModeration(ThingModerationMixin):
 
         Contest mode have the following effects:
 
-        * The comment thread will default to being sorted randomly.
-        * Replies to top-level comments will be hidden behind "[show replies]" buttons.
-        * Scores will be hidden from non-moderators.
-        * Scores accessed through the API (mobile apps, bots) will be obscured to "1"
+        - The comment thread will default to being sorted randomly.
+        - Replies to top-level comments will be hidden behind "[show replies]" buttons.
+        - Scores will be hidden from non-moderators.
+        - Scores accessed through the API (mobile apps, bots) will be obscured to "1"
           for non-moderators.
 
         Example usage:
@@ -352,47 +352,46 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    =========================== ========================================================
-    Attribute                   Description
-    =========================== ========================================================
-    ``author``                  Provides an instance of :class:`.Redditor`.
-    ``clicked``                 Whether or not the submission has been clicked by the
-                                client.
-    ``comments``                Provides an instance of :class:`.CommentForest`.
-    ``created_utc``             Time the submission was created, represented in `Unix
-                                Time`_.
-    ``distinguished``           Whether or not the submission is distinguished.
-    ``edited``                  Whether or not the submission has been edited.
-    ``id``                      ID of the submission.
-    ``is_original_content``     Whether or not the submission has been set as original
-                                content.
-    ``is_self``                 Whether or not the submission is a selfpost (text-only).
-    ``link_flair_template_id``  The link flair's ID, or None if not flaired.
-    ``link_flair_text``         The link flair's text content, or None if not flaired.
-    ``locked``                  Whether or not the submission has been locked.
-    ``name``                    Fullname of the submission.
-    ``num_comments``            The number of comments on the submission.
-    ``over_18``                 Whether or not the submission has been marked as NSFW.
-    ``permalink``               A permalink for the submission.
-    ``poll_data``               A :class:`.PollData` object representing the data of
-                                this submission, if it is a poll submission.
-    ``saved``                   Whether or not the submission is saved.
-    ``score``                   The number of upvotes for the submission.
-    ``selftext``                The submissions' selftext - an empty string if a link
-                                post.
-    ``spoiler``                 Whether or not the submission has been marked as a
-                                spoiler.
-    ``stickied``                Whether or not the submission is stickied.
-    ``subreddit``               Provides an instance of :class:`.Subreddit`.
-    ``title``                   The title of the submission.
-    ``upvote_ratio``            The percentage of upvotes from all votes on the
-                                submission.
-    ``url``                     The URL the submission links to, or the permalink if a
-                                selfpost.
-    =========================== ========================================================
+    ========================== =========================================================
+    Attribute                  Description
+    ========================== =========================================================
+    ``author``                 Provides an instance of :class:`.Redditor`.
+    ``clicked``                Whether or not the submission has been clicked by the
+                               client.
+    ``comments``               Provides an instance of :class:`.CommentForest`.
+    ``created_utc``            Time the submission was created, represented in `Unix
+                               Time`_.
+    ``distinguished``          Whether or not the submission is distinguished.
+    ``edited``                 Whether or not the submission has been edited.
+    ``id``                     ID of the submission.
+    ``is_original_content``    Whether or not the submission has been set as original
+                               content.
+    ``is_self``                Whether or not the submission is a selfpost (text-only).
+    ``link_flair_template_id`` The link flair's ID, or None if not flaired.
+    ``link_flair_text``        The link flair's text content, or None if not flaired.
+    ``locked``                 Whether or not the submission has been locked.
+    ``name``                   Fullname of the submission.
+    ``num_comments``           The number of comments on the submission.
+    ``over_18``                Whether or not the submission has been marked as NSFW.
+    ``permalink``              A permalink for the submission.
+    ``poll_data``              A :class:`.PollData` object representing the data of this
+                               submission, if it is a poll submission.
+    ``saved``                  Whether or not the submission is saved.
+    ``score``                  The number of upvotes for the submission.
+    ``selftext``               The submissions' selftext - an empty string if a link
+                               post.
+    ``spoiler``                Whether or not the submission has been marked as a
+                               spoiler.
+    ``stickied``               Whether or not the submission is stickied.
+    ``subreddit``              Provides an instance of :class:`.Subreddit`.
+    ``title``                  The title of the submission.
+    ``upvote_ratio``           The percentage of upvotes from all votes on the
+                               submission.
+    ``url``                    The URL the submission links to, or the permalink if a
+                               selfpost.
+    ========================== =========================================================
 
-
-    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
 
     """
 
@@ -405,10 +404,10 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         :param url: A url to a submission in one of the following formats (http urls
             will also work):
 
-            * https://redd.it/2gmzqe
-            * https://reddit.com/comments/2gmzqe/
-            * https://www.reddit.com/r/redditdev/comments/2gmzqe/praw_https/
-            * https://www.reddit.com/gallery/2gmzqe
+            - https://redd.it/2gmzqe
+            - https://reddit.com/comments/2gmzqe/
+            - https://www.reddit.com/r/redditdev/comments/2gmzqe/praw_https/
+            - https://www.reddit.com/gallery/2gmzqe
 
         :raises: :class:`.InvalidURL` if URL is not a valid submission URL.
 
@@ -682,6 +681,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             False).
         :param spoiler: Whether or not the submission should be marked as a spoiler
             (default: False).
+
         :returns: A :class:`~.Submission` object for the newly created submission.
 
         Example usage:

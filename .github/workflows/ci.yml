@@ -30,10 +30,10 @@ jobs:
       run: python ./tools/static_word_checks.py
     - name: Check documentation
       run: python ./tools/check_documentation.py
-    - name: Check docstrings
-      run: python ./tools/check_docstring.py
     - name: Run black
       run: black --check --verbose .
+    - name: Run docstrfmt
+      run: docstrfmt -cvp pyproject.toml -e "docs/examples/*" .
     - name: Run flake8
       run: flake8 --exclude docs --statistics
     - name: Run flynt
@@ -71,7 +71,6 @@ jobs:
     strategy:
       matrix:
         os: [macOS-latest, ubuntu-latest, windows-latest]
-
   test-multi-python:
     name: Test Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest

@@ -85,6 +85,7 @@ class WikiPageModeration:
             permissions, (1) only approved wiki contributors for this page may edit (see
             :meth:`.WikiPageModeration.add`), (2) only mods may edit and view
         :param other_settings: Additional keyword arguments to pass.
+
         :returns: The updated WikiPage settings.
 
         To set the wikipage ``praw_test`` in ``r/test`` to mod only and disable it from
@@ -112,21 +113,21 @@ class WikiPage(RedditBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``content_html``        The contents of the wiki page, as HTML.
-    ``content_md``          The contents of the wiki page, as Markdown.
-    ``may_revise``          A ``bool`` representing whether or not the authenticated
-                            user may edit the wiki page.
-    ``name``                The name of the wiki page.
-    ``revision_by``         The :class:`~.Redditor` who authored this revision of the
-                            wiki page.
-    ``revision_date``       The time of this revision, in `Unix Time`_.
-    ``subreddit``           The :class:`~.Subreddit` this wiki page belongs to.
-    ======================= ============================================================
+    ================= =================================================================
+    Attribute         Description
+    ================= =================================================================
+    ``content_html``  The contents of the wiki page, as HTML.
+    ``content_md``    The contents of the wiki page, as Markdown.
+    ``may_revise``    A ``bool`` representing whether or not the authenticated user may
+                      edit the wiki page.
+    ``name``          The name of the wiki page.
+    ``revision_by``   The :class:`~.Redditor` who authored this revision of the wiki
+                      page.
+    ``revision_date`` The time of this revision, in `Unix Time`_.
+    ``subreddit``     The :class:`~.Subreddit` this wiki page belongs to.
+    ================= =================================================================
 
-    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
 
     """
 

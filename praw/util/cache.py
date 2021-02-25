@@ -34,8 +34,8 @@ class cachedproperty:
     def __get__(self, obj: Optional[Any], objtype: Optional[Any] = None) -> Any:
         """Implement descriptor getter.
 
-        Calculate the property's value and then store it in the
-        associated object's instance dictionary.
+        Calculate the property's value and then store it in the associated object's
+        instance dictionary.
 
         """
         if obj is None:

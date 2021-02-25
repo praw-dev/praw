@@ -1,4 +1,5 @@
 Button
 ======
+
 .. autoclass:: praw.models.Button
-   :inherited-members:
+    :inherited-members:

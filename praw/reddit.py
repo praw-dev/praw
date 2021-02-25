@@ -68,7 +68,6 @@ class Reddit:
     Instances of this class are the gateway to interacting with Reddit's API through
     PRAW. The canonical way to obtain an instance of this class is via:
 
-
     .. code-block:: python
 
         import praw
@@ -181,16 +180,17 @@ class Reddit:
 
         Required settings are:
 
-        * client_id
-        * client_secret (for installed applications set this value to ``None``)
-        * user_agent
+        - client_id
+        - client_secret (for installed applications set this value to ``None``)
+        - user_agent
 
         The ``requestor_class`` and ``requestor_kwargs`` allow for customization of the
         requestor :class:`.Reddit` will use. This allows, e.g., easily adding behavior
         to the requestor or wrapping its |Session|_ in a caching layer. Example usage:
 
         .. |Session| replace:: ``Session``
-        .. _Session: https://2.python-requests.org/en/master/api/#requests.Session
+
+        .. _session: https://2.python-requests.org/en/master/api/#requests.Session
 
         .. code-block:: python
 
@@ -214,7 +214,6 @@ class Reddit:
             reddit = Reddit(
                 ..., requestor_class=JSONDebugRequestor, requestor_kwargs={"session": my_session}
             )
-
 
         """
         self._core = self._authorized_core = self._read_only_core = None
@@ -268,7 +267,7 @@ class Reddit:
 
         .. seealso::
 
-             :ref:`auth_url`
+            :ref:`auth_url`
 
         """
 
@@ -351,8 +350,8 @@ class Reddit:
 
             reddit.subreddit("redditdev")
 
-        Multiple subreddits can be combined and filtered views of r/all can
-        also be used just like a subreddit:
+        Multiple subreddits can be combined and filtered views of r/all can also be used
+        just like a subreddit:
 
         .. code-block:: python
 
@@ -364,8 +363,8 @@ class Reddit:
         self.subreddits = models.Subreddits(self, None)
         """An instance of :class:`.Subreddits`.
 
-        Provides the interface for :class:`.Subreddit` discovery. For example, to iterate
-        over the set of default subreddits run:
+        Provides the interface for :class:`.Subreddit` discovery. For example, to
+        iterate over the set of default subreddits run:
 
         .. code-block:: python
 
@@ -582,6 +581,7 @@ class Reddit:
         :param url: A url (as a string) to retrieve lists of link submissions from.
         :param subreddits: A list of subreddit names or Subreddit objects to retrieve
             subreddits from.
+
         :returns: A generator that yields found items in their relative order.
 
         Items that cannot be matched will not be generated. Requests will be issued in
@@ -792,8 +792,8 @@ class Reddit:
     def random_subreddit(self, nsfw: bool = False) -> "praw.models.Subreddit":
         """Return a random lazy instance of :class:`~.Subreddit`.
 
-        :param nsfw: Return a random NSFW (not safe for work) subreddit
-            (default: False).
+        :param nsfw: Return a random NSFW (not safe for work) subreddit (default:
+            False).
 
         """
         url = API_PATH["subreddit"].format(subreddit="randnsfw" if nsfw else "random")

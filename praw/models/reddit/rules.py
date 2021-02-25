@@ -22,23 +22,22 @@ class Rule(RedditBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily comprehensive.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``created_utc``         Time the rule was created, represented in `Unix Time`_.
-    ``description``         The description of the rule, if provided, otherwise a blank
-                            string.
-    ``kind``                The kind of rule. Can be ``"link"``, ``comment"``, or ``"all"``.
-    ``priority``            Represents where the rule is ranked. For example, the first
-                            rule is at priority ``0``. Serves as an index number on the
-                            list of rules.
-    ``short_name``          The name of the rule.
-    ``violation_reason``    The reason that is displayed on the report menu for the
-                            rule.
-    ======================= ============================================================
+    ==================== =============================================================
+    Attribute            Description
+    ==================== =============================================================
+    ``created_utc``      Time the rule was created, represented in `Unix Time`_.
+    ``description``      The description of the rule, if provided, otherwise a blank
+                         string.
+    ``kind``             The kind of rule. Can be ``"link"``, ``comment"``, or
+                         ``"all"``.
+    ``priority``         Represents where the rule is ranked. For example, the first
+                         rule is at priority ``0``. Serves as an index number on the
+                         list of rules.
+    ``short_name``       The name of the rule.
+    ``violation_reason`` The reason that is displayed on the report menu for the rule.
+    ==================== =============================================================
 
-
-    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
 
     """
 
@@ -316,6 +315,7 @@ class RuleModeration:
             ``"comment"``, or ``"all"``.
         :param short_name: The name of the rule.
         :param violation_reason: The reason that is shown on the report menu.
+
         :returns: A Rule object containing the updated values.
 
         To update ``"No spam"`` from the subreddit ``"NAME"`` try:
@@ -389,6 +389,7 @@ class SubredditRulesModeration:
         :param violation_reason: The reason that is shown on the report menu. If a
             violation reason is not specified, the short name will be used as the
             violation reason.
+
         :returns: The Rule added.
 
         To add rule ``"No spam"`` to the subreddit ``"NAME"`` try:
@@ -420,6 +421,7 @@ class SubredditRulesModeration:
 
         :param rule_list: The list of rules, in the wanted order. Each index of the list
             indicates the position of the rule.
+
         :returns: A list containing the rules in the specified order.
 
         For example, to move the fourth rule to the first position, and then to move the

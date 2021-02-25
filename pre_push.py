@@ -36,8 +36,8 @@ def do_process(args, shell=False):
 def run_static():
     """Runs the static tests.
 
-    Returns a statuscode of 0 if everything ran correctly.
-    Otherwise, it will return statuscode 1
+    Returns a statuscode of 0 if everything ran correctly. Otherwise, it will return
+    statuscode 1
 
     """
     success = True
@@ -52,18 +52,13 @@ def run_static():
     success &= do_process(["flynt", "-q", "-tc", "-ll", "1000", "."])
     # needs to be first because flynt is not black compliant
     success &= do_process(["black", "."])
+    success &= do_process(["docstrfmt", "-e", "docs/examples/*", "."])
     success &= do_process(["isort", "."])
     # Linters
     success &= do_process(
         [
             sys.executable,
             path.join(current_directory, "tools", "check_documentation.py"),
-        ]
-    )
-    success &= do_process(
-        [
-            sys.executable,
-            path.join(current_directory, "tools", "check_docstring.py"),
         ]
     )
     success &= do_process(["flake8", "--exclude=.eggs,build,docs,.venv"])
@@ -82,8 +77,8 @@ def run_static():
 def run_unit():
     """Runs the unit-tests.
 
-    Follows the behavior of the static tests,
-    where any failed tests cause pre_push.py to fail.
+    Follows the behavior of the static tests, where any failed tests cause pre_push.py
+    to fail.
 
     """
     return do_process(["pytest"])

@@ -36,6 +36,7 @@ class Preferences:
         """Create a Preferences instance.
 
         :param reddit: The Reddit instance.
+
         """
         self._reddit = reddit
 

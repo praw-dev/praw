@@ -2,9 +2,9 @@ Polls
 =====
 
 .. autoclass:: praw.models.reddit.poll.PollData
-   :inherited-members:
+    :inherited-members:
 
 .. autoclass:: praw.models.reddit.poll.PollOption
-   :inherited-members:
+    :inherited-members:
 
 .. include:: ../models/note_dynamically_provided_attributes.txt

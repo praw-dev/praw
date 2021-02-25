@@ -13,7 +13,6 @@ class Trophy(PRAWBase):
     End users should not instantiate this class directly. :meth:`.Redditor.trophies` can
     be used to get a list of the redditor's trophies.
 
-
     **Typical Attributes**
 
     This table describes attributes that typically belong to objects of this class.
@@ -21,16 +20,16 @@ class Trophy(PRAWBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily complete.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``award_id``            The ID of the trophy (sometimes ``None``).
-    ``description``         The description of the trophy (sometimes ``None``).
-    ``icon_40``             The URL of a 41x41 px icon for the trophy.
-    ``icon_70``             The URL of a 71x71 px icon for the trophy.
-    ``name``                The name of the trophy.
-    ``url``                 A relevant URL (sometimes ``None``).
-    ======================= ============================================================
+    =============== ===================================================
+    Attribute       Description
+    =============== ===================================================
+    ``award_id``    The ID of the trophy (sometimes ``None``).
+    ``description`` The description of the trophy (sometimes ``None``).
+    ``icon_40``     The URL of a 41x41 px icon for the trophy.
+    ``icon_70``     The URL of a 71x71 px icon for the trophy.
+    ``name``        The name of the trophy.
+    ``url``         A relevant URL (sometimes ``None``).
+    =============== ===================================================
 
     """
 

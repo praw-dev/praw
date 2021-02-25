@@ -1,8 +1,8 @@
 Comment Extraction and Parsing
 ==============================
 
-A common use for Reddit's API is to extract comments from submissions and use
-them to perform keyword or phrase analysis.
+A common use for Reddit's API is to extract comments from submissions and use them to
+perform keyword or phrase analysis.
 
 As always, you need to begin by creating an instance of :class:`.Reddit`:
 
@@ -15,7 +15,7 @@ As always, you need to begin by creating an instance of :class:`.Reddit`:
         client_id="CLIENT_ID",
         client_secret="CLIENT_SECRET",
         username="USERNAME",
-        password="PASSWORD"
+        password="PASSWORD",
     )
 
 .. note::
@@ -24,8 +24,8 @@ As always, you need to begin by creating an instance of :class:`.Reddit`:
     optional.
 
 In this document, we will detail the process of finding all the comments for a given
-submission. If you instead want to process all comments on Reddit, or comments belonging to
-one or more specific subreddits, please see
+submission. If you instead want to process all comments on Reddit, or comments belonging
+to one or more specific subreddits, please see
 :meth:`praw.models.reddit.subreddit.SubredditStream.comments`.
 
 .. _extracting_comments:
@@ -50,9 +50,8 @@ or with the submission's ID which comes after ``comments/`` in the URL:
     submission = reddit.submission(id="3g1jfi")
 
 With a submission object we can then interact with its :class:`.CommentForest` through
-the submission's :attr:`.Submission.comments` attribute. A
-:class:`.CommentForest` is a list of top-level comments each of which contains a
-:class:`.CommentForest` of replies.
+the submission's :attr:`.Submission.comments` attribute. A :class:`.CommentForest` is a
+list of top-level comments each of which contains a :class:`.CommentForest` of replies.
 
 If we wanted to output only the ``body`` of the top level comments in the thread we
 could do:

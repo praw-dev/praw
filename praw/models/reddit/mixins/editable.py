@@ -25,6 +25,7 @@ class EditableMixin:
         """Replace the body of the object with ``body``.
 
         :param body: The Markdown formatted content for the updated object.
+
         :returns: The current instance after updating its attributes.
 
         Example usage:

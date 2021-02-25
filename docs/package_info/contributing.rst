@@ -1,14 +1,13 @@
 Contributing to PRAW
 ====================
 
-PRAW gladly welcomes new contributions. As with most larger projects, we have
-an established consistent way of doing things. A consistent style increases
-readability, decreases bug-potential and makes it faster to understand how
-everything works together.
+PRAW gladly welcomes new contributions. As with most larger projects, we have an
+established consistent way of doing things. A consistent style increases readability,
+decreases bug-potential and makes it faster to understand how everything works together.
 
-PRAW follows :PEP:`8` and :PEP:`257`. The ``pre_push.py`` script can be used to
-test for compliance with these PEPs in addition to providing a few other
-checks. The following are PRAW-specific guidelines in addition to those PEP's.
+PRAW follows :PEP:`8` and :PEP:`257`. The ``pre_push.py`` script can be used to test for
+compliance with these PEPs in addition to providing a few other checks. The following
+are PRAW-specific guidelines in addition to those PEP's.
 
 .. note::
 
@@ -16,26 +15,26 @@ checks. The following are PRAW-specific guidelines in addition to those PEP's.
 
 .. note::
 
-    In order to install the dependencies needed to run the script, you can
-    install the ``[dev]`` package of praw, like so:
+    In order to install the dependencies needed to run the script, you can install the
+    ``[dev]`` package of praw, like so:
 
-   .. code-block:: bash
+    .. code-block:: bash
 
-       pip install praw[dev]
+        pip install praw[dev]
 
 Code
 ----
 
-* Within a single file classes are sorted alphabetically where inheritance permits.
-* Within a class, methods are sorted alphabetically within their respective groups with
+- Within a single file classes are sorted alphabetically where inheritance permits.
+- Within a class, methods are sorted alphabetically within their respective groups with
   the following as the grouping order:
 
-  * Static methods
-  * Class methods
-  * Properties
-  * Instance Methods
+  - Static methods
+  - Class methods
+  - Properties
+  - Instance Methods
 
-* Use descriptive names for the catch-all keyword argument. E.g., ``**other_options``
+- Use descriptive names for the catch-all keyword argument. E.g., ``**other_options``
   rather than ``**kwargs``.
 
 Testing
@@ -96,8 +95,8 @@ your cassette.
 Documentation
 -------------
 
-* All publicly available functions, classes and modules should have a docstring.
-* Use correct terminology. A subreddit's fullname is something like ``t5_xyfc7``. The
+- All publicly available functions, classes and modules should have a docstring.
+- Use correct terminology. A subreddit's fullname is something like ``t5_xyfc7``. The
   correct term for a subreddit's "name" like `python <https://www.reddit.com/r/python>`_
   is its display name.
 
@@ -109,7 +108,7 @@ documentation styles (using ``.. code-block::`` instead of ``.. code::``, using 
 instead of ``r/``, etc.).
 
 .. autoclass:: tools.static_word_checks.StaticChecker
-   :inherited-members:
+    :inherited-members:
 
 Files to Update
 ---------------

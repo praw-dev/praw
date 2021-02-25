@@ -20,15 +20,15 @@ class Emoji(RedditBase):
     :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
     these attributes will always be present, nor is this list necessarily comprehensive.
 
-    ======================= ============================================================
-    Attribute               Description
-    ======================= ============================================================
-    ``mod_flair_only``      Whether the emoji is restricted for mod use only.
-    ``name``                The name of the emoji.
-    ``post_flair_allowed``  Whether the emoji may appear in post flair.
-    ``url``                 The URL of the emoji image.
-    ``user_flair_allowed``  Whether the emoji may appear in user flair.
-    ======================= ============================================================
+    ====================== =================================================
+    Attribute              Description
+    ====================== =================================================
+    ``mod_flair_only``     Whether the emoji is restricted for mod use only.
+    ``name``               The name of the emoji.
+    ``post_flair_allowed`` Whether the emoji may appear in post flair.
+    ``url``                The URL of the emoji image.
+    ``user_flair_allowed`` Whether the emoji may appear in user flair.
+    ====================== =================================================
 
     """
 

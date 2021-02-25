@@ -2,4 +2,4 @@ reddit.multireddit
 ==================
 
 .. autoclass:: praw.models.MultiredditHelper
-   :inherited-members:
+    :inherited-members:

@@ -31,8 +31,8 @@ PRAW can be updated by running:
 Installing Older Versions
 -------------------------
 
-Older versions of PRAW can be installed by specifying the version number as
-part of the installation command:
+Older versions of PRAW can be installed by specifying the version number as part of the
+installation command:
 
 .. code-block:: bash
 

@@ -18,6 +18,7 @@ extras = {
     "dev": ["packaging", "pre-commit"],
     "lint": [
         "black",
+        "docstrfmt",
         "flake8",
         "flynt",
         "isort",
