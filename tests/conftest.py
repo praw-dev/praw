@@ -2,20 +2,14 @@
 import json
 import os
 import socket
-import sys
 import time
 from base64 import b64encode
 from sys import platform
+from urllib.parse import quote_plus
 
 import betamax
 import pytest
 from betamax.serializers import JSONSerializer
-
-# pylint: disable=import-error,no-name-in-module
-if sys.version_info.major == 2:
-    from urllib import quote_plus  # NOQA
-else:
-    from urllib.parse import quote_plus  # NOQA
 
 
 # Prevent calls to sleep
