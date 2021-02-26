@@ -145,7 +145,7 @@ class User(PRAWBase):
                 warn(
                     "The `None` return value is deprecated, and will raise a"
                     " `ReadOnlyException` beginning with PRAW 8. See documentation for"
-                    " forward compatability options.",
+                    " forward compatibility options.",
                     category=DeprecationWarning,
                     stacklevel=2,
                 )
