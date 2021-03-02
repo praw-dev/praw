@@ -33,7 +33,7 @@ class Config:
     @staticmethod
     def _config_boolean(item):
         if isinstance(item, _NotSet):
-            return false
+            return False
         if isinstance(item, bool):
             return item
         return item.lower() in {"1", "yes", "true", "on"}
