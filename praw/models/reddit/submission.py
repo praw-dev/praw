@@ -367,7 +367,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
     ``is_original_content``    Whether or not the submission has been set as original
                                content.
     ``is_self``                Whether or not the submission is a selfpost (text-only).
-    ``link_flair_template_id`` The link flair's ID, or None if not flaired.
+    ``link_flair_template_id`` The link flair's ID.
     ``link_flair_text``        The link flair's text content, or None if not flaired.
     ``locked``                 Whether or not the submission has been locked.
     ``name``                   Fullname of the submission.
