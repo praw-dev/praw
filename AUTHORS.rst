@@ -22,7 +22,7 @@ Documentation Contributors
 - Kenneth Yang `@kennethy <https://github.com/kennethy>`_
 - Tarak Oueriache <Igosad@protonmail.com> `@igosad <https://github.com/igosad>`_
 - xCROv `@xCROv <https://github.com/xCROv>`_
-- taq  `@greentaquitos <https://github.com/greentaquitos>`_
+- taq `@greentaquitos <https://github.com/greentaquitos>`_
 
 <!-- - Add "Name <email (optional)> and github profile link" above this line. -->
 
