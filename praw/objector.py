@@ -131,6 +131,9 @@ class Objector:
         elif "username" in data.keys():
             data["name"] = data.pop("username")
             parser = self.parsers[self._reddit.config.kinds["redditor"]]
+        elif {"mod_permissions", "name", "sr", "subscribers"}.issubset(data):
+            data["display_name"] = data["sr"]
+            parser = self.parsers[self._reddit.config.kinds["subreddit"]]
         else:
             if "user" in data:
                 parser = self.parsers[self._reddit.config.kinds["redditor"]]
@@ -166,7 +169,10 @@ class Objector:
             return parser.parse(data, self._reddit)
         if {"kind", "data"}.issubset(data) and data["kind"] in self.parsers:
             parser = self.parsers[data["kind"]]
-            return parser.parse(data["data"], self._reddit)
+            if data["kind"] == "ModeratedList":
+                return parser.parse(data, self._reddit)
+            else:
+                return parser.parse(data["data"], self._reddit)
         if "json" in data and "data" in data["json"]:
             if "websocket_url" in data["json"]["data"]:
                 return data

@@ -457,6 +457,7 @@ class Reddit:
             "LiveUpdate": models.LiveUpdate,
             "LiveUpdateEvent": models.LiveThread,
             "MenuLink": models.MenuLink,
+            "ModeratedList": models.ModeratedList,
             "ModmailAction": models.ModmailAction,
             "ModmailConversation": models.ModmailConversation,
             "ModmailMessage": models.ModmailMessage,

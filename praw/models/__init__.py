@@ -3,6 +3,7 @@ from .auth import Auth
 from .front import Front
 from .helpers import LiveHelper, MultiredditHelper, SubredditHelper
 from .inbox import Inbox
+from .list.moderated import ModeratedList
 from .list.redditor import RedditorList
 from .list.trophy import TrophyList
 from .listing.domain import DomainListing
