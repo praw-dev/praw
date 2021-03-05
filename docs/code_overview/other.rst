@@ -105,6 +105,7 @@ them bound to an attribute of one of the PRAW models.
     other/inlinevideo
     other/menulink
     other/mod_action
+    other/moderatedlist
     other/modmail
     other/modmailmessage
     other/preferences

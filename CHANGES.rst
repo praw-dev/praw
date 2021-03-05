@@ -4,6 +4,10 @@ Change Log
 Unreleased
 ----------
 
+**Changed**
+
+- :meth:`.Redditor.moderated` will now objectify all data returned from the API.
+
 7.2.0 (2021/02/24)
 ------------------
 
