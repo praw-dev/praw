@@ -4,6 +4,7 @@ import pytest
 
 from praw import Reddit
 from praw.exceptions import APIException, WebSocketException
+from praw.models.reddit.user_subreddit import UserSubreddit
 
 from . import UnitTest
 
@@ -70,4 +71,19 @@ class TestDeprecation(UnitTest):
                 redirect_uri="dummy",
                 refresh_token="dummy",
                 user_agent="dummy",
+            )
+
+    def test_user_subreddit_as_dict(self):
+        user_subreddit = UserSubreddit(None, display_name="test")
+        with pytest.deprecated_call() as warning_info:
+            display_name = user_subreddit["display_name"]
+            assert display_name == "test"
+            assert (
+                warning_info.list[0].message.args[0]
+                == "`Redditor.subreddit` is no longer a dict and is now an `UserSubreddit` object. Accessing attributes using string indices is deprecated."
+            )
+            assert user_subreddit.keys() == user_subreddit.__dict__.keys()
+            assert (
+                warning_info.list[1].message.args[0]
+                == "`Redditor.subreddit` is no longer a dict and is now an `UserSubreddit` object. Using `keys` is deprecated and will be removed in PRAW 8."
             )

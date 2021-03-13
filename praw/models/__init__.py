@@ -26,6 +26,7 @@ from .reddit.removal_reasons import RemovalReason
 from .reddit.rules import Rule
 from .reddit.submission import Submission
 from .reddit.subreddit import Subreddit
+from .reddit.user_subreddit import UserSubreddit
 from .reddit.widgets import (
     Button,
     ButtonWidget,

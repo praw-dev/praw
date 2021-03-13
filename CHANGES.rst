@@ -4,9 +4,17 @@ Change Log
 Unreleased
 ----------
 
+**Added**
+
+- :class:`.UserSubreddit` for the ``subreddit`` attribute of :class:`.Redditor`.
+
 **Changed**
 
 - :meth:`.Redditor.moderated` will now objectify all data returned from the API.
+
+**Deprecated**
+
+- The ``subreddit`` attribute of :class:`.Redditor` is no longer a dict.
 
 7.2.0 (2021/02/24)
 ------------------

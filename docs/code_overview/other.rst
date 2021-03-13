@@ -44,6 +44,7 @@ them bound to an attribute of one of the PRAW models.
     other/subredditrulesmoderation
     other/subredditwidgetsmoderation
     other/thingmoderationmixin
+    other/usersubredditmoderation
     other/widgetmoderation
     other/wikipagemoderation
 
@@ -125,4 +126,5 @@ them bound to an attribute of one of the PRAW models.
     other/redditorstream
     other/token_manager
     other/trophy
+    other/usersubreddit
     other/util
