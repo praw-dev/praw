@@ -24,7 +24,7 @@ Documentation Contributors
 - xCROv `@xCROv <https://github.com/xCROv>`_
 - taq `@greentaquitos <https://github.com/greentaquitos>`_
 
-<!-- - Add "Name <email (optional)> and github profile link" above this line. -->
+.. Add "Name <email (optional)> and github profile link" above this line.
 
 Logo Creator
 ============
@@ -73,4 +73,4 @@ Source Contributors
 - Yash Chhabria `@Cyatos <https://github.com/Cyatos>`_
 - Justin Krejcha <justin@justinkrejcha.com> `@jkrejcha <https://github.com/jkrejcha>`_
 
-<!-- - Add "Name <email (optional)> and github profile link" above this line. -->
+.. Add "Name <email (optional)> and github profile link" above this line.
