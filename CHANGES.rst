@@ -7,6 +7,8 @@ Unreleased
 **Changed**
 
 - :meth:`.Redditor.moderated` will now objectify all data returned from the API.
+- The `wiki_edit` endpoint has been changed from `r/{subreddit}/api/wiki/edit/` to
+  `r/{subreddit}/api/wiki/edit`.
 
 7.2.0 (2021/02/24)
 ------------------
