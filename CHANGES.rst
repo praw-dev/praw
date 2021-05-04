@@ -10,6 +10,13 @@ Unreleased
 - The `wiki_edit` endpoint has been changed from `r/{subreddit}/api/wiki/edit/` to
   `r/{subreddit}/api/wiki/edit`.
 
+**Fixed**
+
+- Fixed bug where :meth:`.WikiPage.edit` and :meth:`.SubredditWiki.create` would always
+  fail when the size of the parameter `content` was over 500 KiB, even when attempting
+  to modify special wiki pages that allow `content` to be over 500 KiB, e.g.
+  `usernotes`.
+
 7.2.0 (2021/02/24)
 ------------------
 
