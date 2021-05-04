@@ -12,10 +12,10 @@ Unreleased
 
 **Fixed**
 
-- Fixed bug where :meth:`.WikiPage.edit` and :meth:`.SubredditWiki.create` would always
-  fail when the size of the parameter `content` was over 500 KiB, even when attempting
-  to modify special wiki pages that allow `content` to be over 500 KiB, e.g.
-  `usernotes`.
+- Fixed bug where :meth:`.WikiPage.edit` and :meth:`.SubredditWiki.create` would fail if
+  passed `content` and `reason` parameters that produced a request with a body greater
+  than 500 KiB, even when the parameters did not exceed their respective permitted
+  maximum lengths.
 
 7.2.0 (2021/02/24)
 ------------------
