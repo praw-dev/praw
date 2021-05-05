@@ -1,3 +1,4 @@
+from base64 import urlsafe_b64encode
 from unittest import mock
 
 import pytest
@@ -23,6 +24,16 @@ class TestWikiPage(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             page.edit("PRAW updated")
+
+    def test_edit__usernotes(self):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        page = WikiPage(self.reddit, subreddit, "usernotes")
+        with open("tests/integration/files/too_large.jpg", "rb") as fp:
+            large_content = urlsafe_b64encode(fp.read()).decode()
+
+        self.reddit.read_only = False
+        with self.use_cassette():
+            page.edit(large_content)
 
     def test_edit__with_reason(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)

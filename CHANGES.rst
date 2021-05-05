@@ -7,6 +7,15 @@ Unreleased
 **Changed**
 
 - :meth:`.Redditor.moderated` will now objectify all data returned from the API.
+- The `wiki_edit` endpoint has been changed from `r/{subreddit}/api/wiki/edit/` to
+  `r/{subreddit}/api/wiki/edit`.
+
+**Fixed**
+
+- Fixed bug where :meth:`.WikiPage.edit` and :meth:`.SubredditWiki.create` would fail if
+  passed `content` and `reason` parameters that produced a request with a body greater
+  than 500 KiB, even when the parameters did not exceed their respective permitted
+  maximum lengths.
 
 7.2.0 (2021/02/24)
 ------------------
