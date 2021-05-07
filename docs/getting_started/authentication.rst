@@ -227,7 +227,7 @@ behind this is that Reddit *can* trust these applications as coming from a given
 developer, however the application requires no logged-in user context.
 
 An installed application *cannot* use this flow, because Reddit requires a
-``client_secret`` to be given it this flow is being used. In other words, installed
+``client_secret`` to be given if this flow is being used. In other words, installed
 applications are not considered confidential clients.
 
 .. _application_only_installed_client_flow:
