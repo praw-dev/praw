@@ -17,6 +17,12 @@ Unreleased
   than 500 KiB, even when the parameters did not exceed their respective permitted
   maximum lengths.
 
+**Deprecated**
+
+- Legacy modmail is slated for deprecation by Reddit in June 2021. See
+  https://www.reddit.com/r/modnews/comments/mar9ha/even_more_modmail_improvements/ for
+  more info.
+
 7.2.0 (2021/02/24)
 ------------------
 
