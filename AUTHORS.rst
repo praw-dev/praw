@@ -23,6 +23,7 @@ Documentation Contributors
 - Tarak Oueriache <Igosad@protonmail.com> `@igosad <https://github.com/igosad>`_
 - xCROv `@xCROv <https://github.com/xCROv>`_
 - taq `@greentaquitos <https://github.com/greentaquitos>`_
+- Federico Gallo `@Karmavil <https://github.com/Karmavil>`_
 - Add "Name <email (optional)> and github profile link" above this line.
 
 Logo Creator
