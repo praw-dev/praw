@@ -872,8 +872,12 @@ class Reddit:
                 field = data["fields"][0]
             else:
                 field = None
+            if "explanation" in data:
+                explanation = data["explanation"]
+            else:
+                explanation = None
             raise RedditAPIException(
-                [data["reason"], data["explanation"], field]
+                [data["reason"], explanation, field]
             ) from exception
 
     def submission(  # pylint: disable=invalid-name,redefined-builtin
