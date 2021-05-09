@@ -21,10 +21,9 @@ class RedditErrorItem:
     @property
     def error_message(self) -> str:
         """Get the completed error message string."""
-        if not self.message:
-            error_str = f"{self.error_type!r}"
-        else:
-            error_str = f"{self.error_type}: {self.message!r}"
+        error_str = f"{self.error_type}"
+        if self.message:
+            error_str += f": {self.message!r}"
         if self.field:
             error_str += f" on field {self.field!r}"
         return error_str

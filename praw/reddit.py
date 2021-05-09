@@ -867,15 +867,12 @@ class Reddit:
                 ) from exception
             if set(data) == {"error", "message"}:
                 raise
+            explanation = data["explanation"] if "explanation" in data else None
             if "fields" in data:
                 assert len(data["fields"]) == 1
                 field = data["fields"][0]
             else:
                 field = None
-            if "explanation" in data:
-                explanation = data["explanation"]
-            else:
-                explanation = None
             raise RedditAPIException(
                 [data["reason"], explanation, field]
             ) from exception
