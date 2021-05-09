@@ -22,7 +22,7 @@ class RedditErrorItem:
     def error_message(self) -> str:
         """Get the completed error message string."""
         if not self.message:
-            error_str = f"{self.error_type}"
+            error_str = f"{self.error_type!r}"
         else:
             error_str = f"{self.error_type}: {self.message!r}"
         if self.field:
