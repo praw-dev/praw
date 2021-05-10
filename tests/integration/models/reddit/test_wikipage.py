@@ -23,8 +23,9 @@ class TestWikiPage(IntegrationTest):
         page = WikiPage(self.reddit, subreddit, "\\A")
 
         with self.use_cassette():
-            with pytest.raises(RedditAPIException):
+            with pytest.raises(RedditAPIException) as excinfo:
                 page.content_md
+            assert str(excinfo.value) == "INVALID_PAGE_NAME"
 
     def test_edit(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
