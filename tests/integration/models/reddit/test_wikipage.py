@@ -4,6 +4,7 @@ from unittest import mock
 import pytest
 from prawcore import NotFound
 
+from praw.exceptions import RedditAPIException
 from praw.models import Redditor, WikiPage
 
 from ... import IntegrationTest
@@ -16,6 +17,15 @@ class TestWikiPage(IntegrationTest):
 
         with self.use_cassette():
             assert page.content_md
+
+    def test_content_md__invalid_name(self):
+        subreddit = self.reddit.subreddit("reddit.com")
+        page = WikiPage(self.reddit, subreddit, "\\A")
+
+        with self.use_cassette():
+            with pytest.raises(RedditAPIException) as excinfo:
+                page.content_md
+            assert str(excinfo.value) == "INVALID_PAGE_NAME"
 
     def test_edit(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)

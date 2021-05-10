@@ -867,13 +867,14 @@ class Reddit:
                 ) from exception
             if set(data) == {"error", "message"}:
                 raise
+            explanation = data.get("explanation")
             if "fields" in data:
                 assert len(data["fields"]) == 1
                 field = data["fields"][0]
             else:
                 field = None
             raise RedditAPIException(
-                [data["reason"], data["explanation"], field]
+                [data["reason"], explanation, field]
             ) from exception
 
     def submission(  # pylint: disable=invalid-name,redefined-builtin

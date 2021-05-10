@@ -21,12 +21,19 @@ class RedditErrorItem:
     @property
     def error_message(self) -> str:
         """Get the completed error message string."""
-        error_str = f"{self.error_type}: {self.message!r}"
+        error_str = self.error_type
+        if self.message:
+            error_str += f": {self.message!r}"
         if self.field:
             error_str += f" on field {self.field!r}"
         return error_str
 
-    def __init__(self, error_type: str, message: str, field: Optional[str] = None):
+    def __init__(
+        self,
+        error_type: str,
+        message: Optional[str] = None,
+        field: Optional[str] = None,
+    ):
         """Initialize an error item.
 
         :param error_type: The error type set on Reddit's end.
@@ -78,7 +85,7 @@ class APIException(PRAWException):
             if isinstance(exception, RedditErrorItem)
             else RedditErrorItem(
                 exception[0],
-                exception[1],
+                exception[1] if bool(exception[1]) else "",
                 exception[2] if bool(exception[2]) else "",
             )
             for exception in exceptions
