@@ -867,7 +867,7 @@ class Reddit:
                 ) from exception
             if set(data) == {"error", "message"}:
                 raise
-            explanation = data["explanation"] if "explanation" in data else None
+            explanation = data.get("explanation")
             if "fields" in data:
                 assert len(data["fields"]) == 1
                 field = data["fields"][0]
