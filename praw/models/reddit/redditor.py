@@ -144,6 +144,12 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             self._fullname = fullname
         super().__init__(reddit, _data=_data, _extra_attribute_to_check="_fullname")
 
+    def __setattr__(self, attribute: str, value: Any):
+        """Objectify subreddit attribute."""
+        if attribute == "subreddit":
+            value = self._reddit.subreddit(value["display_name"])
+        super().__setattr__(attribute, value)
+
     def _fetch_username(self, fullname):
         return self._reddit.get(API_PATH["user_by_fullname"], params={"ids": fullname})[
             fullname
