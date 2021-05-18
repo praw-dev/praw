@@ -32,8 +32,8 @@ jobs:
       run: python ./tools/check_documentation.py
     - name: Run black
       run: black --check --verbose .
-    # - name: Run docstrfmt
-    #   run: docstrfmt -cvp pyproject.toml -e "docs/examples/*" .
+    - name: Run docstrfmt
+      run: docstrfmt -cvp pyproject.toml -e docs/examples .
     - name: Run flake8
       run: flake8 --exclude docs --statistics
     - name: Run flynt
