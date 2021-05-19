@@ -34,7 +34,12 @@ class TestReddit(IntegrationTest):
     def test_bad_request_without_json_text_html_response(self):
         with open("tests/integration/files/comment_ids.txt") as fp:
             ids = fp.read()[:8000]
-        with self.use_cassette():
+        with self.use_cassette(
+            placeholders=self.recorder.configure().default_cassette_options[
+                "placeholders"
+            ]
+            + [{"placeholder": "<COMMENT_IDS>", "replace": ids}]
+        ):
             with pytest.raises(RedditAPIException) as excinfo:
                 self.reddit.request(
                     "GET",
