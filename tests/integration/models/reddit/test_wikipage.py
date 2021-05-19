@@ -42,7 +42,12 @@ class TestWikiPage(IntegrationTest):
             large_content = urlsafe_b64encode(fp.read()).decode()
 
         self.reddit.read_only = False
-        with self.use_cassette():
+        with self.use_cassette(
+            placeholders=self.recorder.configure().default_cassette_options[
+                "placeholders"
+            ]
+            + [{"placeholder": "<CONTENT>", "replace": large_content}]
+        ):
             page.edit(large_content)
 
     def test_edit__with_reason(self):

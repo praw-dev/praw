@@ -1,9 +1,11 @@
 """Test praw.reddit."""
+from base64 import urlsafe_b64encode
 from unittest import mock
 
 import pytest
 from prawcore.exceptions import BadRequest
 
+from praw.exceptions import RedditAPIException
 from praw.models import LiveThread
 from praw.models.reddit.base import RedditBase
 from praw.models.reddit.submission import Submission
@@ -13,6 +15,41 @@ from . import IntegrationTest
 
 
 class TestReddit(IntegrationTest):
+    def test_bad_request_without_json_text_plain_response(self):
+        with open("tests/integration/files/too_large.jpg", "rb") as fp:
+            junk = urlsafe_b64encode(fp.read()).decode()
+        with self.use_cassette(
+            placeholders=self.recorder.configure().default_cassette_options[
+                "placeholders"
+            ]
+            + [{"placeholder": "<CONTENT>", "replace": junk}]
+        ):
+            with pytest.raises(RedditAPIException) as excinfo:
+                self.reddit.request(
+                    "GET",
+                    f"/api/morechildren?link_id=t3_n7r3uz&children={junk}",
+                )
+            assert str(excinfo.value) == "Bad Request"
+
+    def test_bad_request_without_json_text_html_response(self):
+        with open("tests/integration/files/comment_ids.txt") as fp:
+            ids = fp.read()[:8000]
+        with self.use_cassette(
+            placeholders=self.recorder.configure().default_cassette_options[
+                "placeholders"
+            ]
+            + [{"placeholder": "<COMMENT_IDS>", "replace": ids}]
+        ):
+            with pytest.raises(RedditAPIException) as excinfo:
+                self.reddit.request(
+                    "GET",
+                    f"/api/morechildren?link_id=t3_n7r3uz&children={ids}",
+                )
+            assert (
+                str(excinfo.value)
+                == "<html><body><h1>400 Bad request</h1>\nYour browser sent an invalid request.\n</body></html>\n"
+            )
+
     def test_bare_badrequest(self):
         data = {
             "sr": "AskReddit",
