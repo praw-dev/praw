@@ -9,11 +9,11 @@ on:
       days-before-stale:
         description: 'Number of days before marking as stale'
         default: '20'
-        required: true
+        required: false
       days-before-close:
         description: 'Number of days before closing after being marked as stale'
         default: '10'
-        required: true
+        required: false
 
 env:
   stale-close-label: 'Auto-closed - Stale'
