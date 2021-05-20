@@ -1,11 +1,3 @@
-name: 'Close stale issues and PRs'
-on:
-  workflow_dispatch:
-    inputs:
-      dry-run:
-        description: 'Dry run'
-        default: 'true'
-        required: true
 env:
   stale-close-label: 'Auto-closed - Stale'
   days-before-stale: 20
@@ -17,18 +9,15 @@ jobs:
       - uses: actions/stale@v3
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-
-          debug-only: ${{ env.dry-run }}
-          enable-statistics: true
-
           days-before-close: ${{ env.days-before-close }}
           days-before-stale: ${{ env.days-before-stale }}
-
           stale-issue-message: 'This issue is stale because it has been open for ${{ env.days-before-stale }} days with no activity. Remove the Stale label or comment or this will be closed in ${{ env.days-before-close }} days.'
           stale-pr-message: 'This PR is stale because it has been open for ${{ env.days-before-stale }} days with no activity. Remove the Stale label or comment or this will be closed in ${{ env.days-before-close }} days.'
-
           close-issue-message: 'This issue was closed because it has been stale for ${{ env.days-before-close }} days with no activity.'
           close-pr-message: 'This PR was closed because it has been stale for ${{ env.days-before-close }} days with no activity.'
-
           close-issue-label: ${{ env.stale-close-label }}
           close-pr-label: ${{ env.stale-close-label }}
+name: 'Close stale issues and PRs'
+on:
+  schedule:
+    - cron: '0 */6 * * *'
