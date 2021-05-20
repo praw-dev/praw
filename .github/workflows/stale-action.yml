@@ -32,6 +32,3 @@ jobs:
 
           close-issue-label: ${{ env.stale-close-label }}
           close-pr-label: ${{ env.stale-close-label }}
-
-          exempt-pr-labels: ${{ env.exempt-labels }}
-          exempt-issue-labels: ${{ env.exempt-labels }}
