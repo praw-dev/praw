@@ -4,6 +4,10 @@ Change Log
 Unreleased
 ----------
 
+**Added**
+
+- :class:`.UserSubreddit` for the ``subreddit`` attribute of :class:`.Redditor`.
+
 **Changed**
 
 - :meth:`.Redditor.moderated` will now objectify all data returned from the API.
@@ -26,6 +30,10 @@ Unreleased
 - Legacy modmail is slated for deprecation by Reddit in June 2021. See
   https://www.reddit.com/r/modnews/comments/mar9ha/even_more_modmail_improvements/ for
   more info.
+
+**Deprecated**
+
+- The ``subreddit`` attribute of :class:`.Redditor` is no longer a dict.
 
 7.2.0 (2021/02/24)
 ------------------
@@ -76,7 +84,7 @@ Unreleased
 **Added**
 
 - Add method :meth:`~.Subreddits.premium` to reflect the naming change in Reddit's API.
-- Ability to submit image galleries with :meth:`.submit_gallery`.
+- Ability to submit image galleries with :meth:`~.Subreddit.submit_gallery`.
 - Ability to pass a gallery url to :meth:`.Reddit.submission`.
 - Ability to specify modmail mute duration.
 - Add method :meth:`.invited` to get invited moderators of a subreddit.
@@ -94,8 +102,9 @@ Unreleased
 - Drop support for Python 3.5, which is end-of-life on 2020-09-13.
 - :class:`~.BoundedSet` will now utilize a Last-Recently-Used (LRU) storing mechanism,
   which will change the order in which elements are removed from the set.
-- Improved :meth:`.submit_image` and :meth:`.submit_video` performance in slow network
-  environments by removing a race condition when establishing a websocket connection.
+- Improved :meth:`~.Subreddit.submit_image` and :meth:`~.Subreddit.submit_video`
+  performance in slow network environments by removing a race condition when
+  establishing a websocket connection.
 
 **Deprecated**
 
@@ -117,7 +126,7 @@ Unreleased
 
 - :class:`.Rule` to represent one rule of a subreddit.
 - :class:`.SubredditRules` to get and add rules.
-- Ability to submit polls with :meth:`.submit_poll`.
+- Ability to submit polls with :meth:`~.Subreddit.submit_poll`.
 - :class:`.PollData` and :class:`.PollOption`.
 - Ability to view poll data and poll options via the ``.poll_data`` attribute on poll
   submissions.
@@ -149,8 +158,8 @@ Unreleased
   subreddit settings and send unmodified ones in the update request.
 - Instances of ``BadRequest``\ s captured by PRAW that do not contain any detailed JSON
   data are re-raised as the original ``BadRequest``.
-- :meth:`.submit_image` and :meth:`.submit_video` will throw :class:`.MediaPostFailed`
-  when Reddit fails to post an image or video post.
+- :meth:`~.Subreddit.submit_image` and :meth:`~.Subreddit.submit_video` will throw
+  :class:`.MediaPostFailed` when Reddit fails to post an image or video post.
 
 7.0.0 (2020/04/24)
 ------------------
@@ -363,8 +372,9 @@ Unreleased
 **Added**
 
 - Collections (:class:`.Collection` and helper classes).
-- :meth:`.submit`, :meth:`.submit_image`, and :meth:`.submit_video` can be used to
-  submit a post directly to a collection.
+- :meth:`~.Subreddit.submit`, :meth:`~.Subreddit.submit_image`, and
+  :meth:`~.Subreddit.submit_video` can be used to submit a post directly to a
+  collection.
 - ``praw.util.camel_to_snake`` and ``praw.util.snake_case_keys``.
 - Comments can now be locked and unlocked via ``comment.mod.lock()`` and
   ``comment.mod.unlock()``. See: (:meth:`.ThingModerationMixin.lock` and
@@ -441,8 +451,9 @@ Unreleased
 - Add method :meth:`~.SubredditWidgetsModeration.reorder` to reorder a subreddit's
   widgets.
 - Add :class:`.Redditors` (``reddit.redditors``) to provide Redditor listings.
-- Add :meth:`.submit_image` for submitting native images to Reddit.
-- Add :meth:`.submit_video` for submitting native videos and videogifs to Reddit.
+- Add :meth:`~.Subreddit.submit_image` for submitting native images to Reddit.
+- Add :meth:`~.Subreddit.submit_video` for submitting native videos and videogifs to
+  Reddit.
 
 **Changed**
 
@@ -684,7 +695,7 @@ as described below:
 
 **Changed**
 
-- :meth:`.submit` accepts ``selftext=''`` to create a title-only submission.
+- :meth:`~.Subreddit.submit` accepts ``selftext=''`` to create a title-only submission.
 - :class:`.Reddit` accepts ``requestor_class=cls`` for a customized requestor class and
   ``requestor_kwargs={"param": value}`` for passing arguments to requestor
   initialization.
@@ -732,7 +743,7 @@ as described below:
 - Uploading an image resulting in too large of a request (>500 KB) now raises
   ``prawcore.TooLarge`` instead of an ``AssertionError``.
 - Uploading an invalid image raises ``APIException``.
-- :class:`.Redditor` instances obtained via :attr:`.moderator` (e.g.,
+- :class:`.Redditor` instances obtained via :attr:`~.Subreddit.moderator` (e.g.,
   ``reddit.subreddit("subreddit").moderator()``) will contain attributes with the
   relationship metadata (e.g., ``mod_permissions``).
 - :class:`.Message` instances retrieved from the inbox now have attributes ``author``,

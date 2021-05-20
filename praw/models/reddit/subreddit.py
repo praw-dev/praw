@@ -937,10 +937,11 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. seealso::
 
-            - :meth:`.submit_image` to submit images
-            - :meth:`.submit_video` to submit videos and videogifs
-            - :meth:`.submit_poll` to submit polls
-            - :meth:`.submit_gallery`. to submit more than one image in the same post
+            - :meth:`~.Subreddit.submit_image` to submit images
+            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
+            - :meth:`~.Subreddit.submit_poll` to submit polls
+            - :meth:`~.Subreddit.submit_gallery`. to submit more than one image in the
+              same post
 
         """
         if (bool(selftext) or selftext == "") == bool(url):
@@ -1044,10 +1045,10 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. seealso::
 
-            - :meth:`.submit` to submit url posts and selftexts
-            - :meth:`.submit_image`. to submit single images
-            - :meth:`.submit_poll` to submit polls
-            - :meth:`.submit_video`. to submit videos and videogifs
+            - :meth:`~.Subreddit.submit` to submit url posts and selftexts
+            - :meth:`~.Subreddit.submit_image`. to submit single images
+            - :meth:`~.Subreddit.submit_poll` to submit polls
+            - :meth:`~.Subreddit.submit_video`. to submit videos and videogifs
 
         """
         self._validate_gallery(images)
@@ -1160,9 +1161,10 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. seealso::
 
-            - :meth:`.submit` to submit url posts and selftexts
-            - :meth:`.submit_video`. to submit videos and videogifs
-            - :meth:`.submit_gallery`. to submit more than one image in the same post
+            - :meth:`~.Subreddit.submit` to submit url posts and selftexts
+            - :meth:`~.Subreddit.submit_video`. to submit videos and videogifs
+            - :meth:`~.Subreddit.submit_gallery`. to submit more than one image in the
+              same post
 
         """
         data = {
@@ -1347,9 +1349,10 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. seealso::
 
-            - :meth:`.submit` to submit url posts and selftexts
-            - :meth:`.submit_image` to submit images
-            - :meth:`.submit_gallery`. to submit more than one image in the same post
+            - :meth:`~.Subreddit.submit` to submit url posts and selftexts
+            - :meth:`~.Subreddit.submit_image` to submit images
+            - :meth:`~.Subreddit.submit_gallery`. to submit more than one image in the
+              same post
 
         """
         data = {
@@ -2705,7 +2708,7 @@ class SubredditModerationStream:
 
         .. seealso::
 
-            :meth:`~.inbox` for all messages.
+            :meth:`~.SubredditModeration.inbox` for all messages.
 
         To print new mail in the unread modmail queue try:
 
