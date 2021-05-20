@@ -6,17 +6,10 @@ on:
         description: 'Dry run'
         default: 'true'
         required: true
-      days-before-stale:
-        description: 'Number of days before marking as stale'
-        default: '20'
-        required: false
-      days-before-close:
-        description: 'Number of days before closing after being marked as stale'
-        default: '10'
-        required: false
-
 env:
   stale-close-label: 'Auto-closed - Stale'
+  days-before-stale: 20
+  days-before-close: 10
 jobs:
   stale:
     runs-on: ubuntu-latest
@@ -39,6 +32,3 @@ jobs:
 
           close-issue-label: ${{ env.stale-close-label }}
           close-pr-label: ${{ env.stale-close-label }}
-
-          exempt-pr-labels: ${{ env.exempt-labels }}
-          exempt-issue-labels: ${{ env.exempt-labels }}
