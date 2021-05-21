@@ -2593,9 +2593,9 @@ class SubredditModerationStream:
             fetch conversations (default: None).
         :param sort: Can be one of: mod, recent, unread, user (default: recent).
         :param state: Can be one of: all, appeals, archived, default, highlighted,
-            inbox, inprogress, mod, new, notifications (default: all). "all" does not
-            include mod or archived conversations. "inbox" does not include appeals
-            conversations.
+            inbox, inprogress, join_requests, mod, new, notifications (default: all).
+            "all" does not include mod or archived conversations. "inbox" does not
+            include appeals conversations.
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
@@ -3192,9 +3192,9 @@ class Modmail:
 
         :param other_subreddits: A list of :class:`.Subreddit` instances for which to
             mark conversations (default: None).
-        :param state: Can be one of: all, archived, highlighted, inprogress, mod, new,
-            notifications, or appeals, (default: all). "all" does not include internal,
-            archived, or appeals conversations.
+        :param state: Can be one of: all, archived, highlighted, inprogress,
+            join_requests, mod, new, notifications, or appeals, (default: all). "all"
+            does not include internal, archived, or appeals conversations.
 
         :returns: A list of :class:`.ModmailConversation` instances that were marked
             read.
@@ -3234,9 +3234,9 @@ class Modmail:
         :param other_subreddits: A list of :class:`.Subreddit` instances for which to
             fetch conversations (default: None).
         :param sort: Can be one of: mod, recent, unread, user (default: recent).
-        :param state: Can be one of: all, archived, highlighted, inprogress, mod, new,
-            notifications, or appeals, (default: all). "all" does not include internal,
-            archived, or appeals conversations.
+        :param state: Can be one of: all, archived, highlighted, inprogress,
+            join_requests, mod, new, notifications, or appeals, (default: all). "all"
+            does not include internal, archived, or appeals conversations.
 
         For example:
 
@@ -3324,8 +3324,8 @@ class Modmail:
     def unread_count(self) -> Dict[str, int]:
         """Return unread conversation count by conversation state.
 
-        At time of writing, possible states are: archived, highlighted, inprogress, mod,
-        new, notifications, or appeals.
+        At time of writing, possible states are: archived, highlighted, inprogress,
+        join_requests, mod, new, notifications, or appeals.
 
         :returns: A dict mapping conversation states to unread counts.
 
