@@ -202,6 +202,7 @@ API_PATH = {
     "user_about":              "user/{user}/about/",
     "user_by_fullname":        "/api/user_data_by_account_ids",
     "user_flair":              "r/{subreddit}/api/user_flair_v2",
+    "username_available":      "api/username_available",
     "users_new":               "users/new",
     "users_popular":           "users/popular",
     "users_search":            "users/search",

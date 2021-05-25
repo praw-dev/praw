@@ -7,6 +7,7 @@ Unreleased
 **Added**
 
 - :class:`.UserSubreddit` for the ``subreddit`` attribute of :class:`.Redditor`.
+- :meth:`.Reddit.username_available` checks if a username is available.
 
 **Changed**
 

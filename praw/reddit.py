@@ -887,3 +887,17 @@ class Reddit:
 
         """
         return models.Submission(self, id=id, url=url)
+
+    def username_available(self, name: str) -> bool:
+        """Check to see if the username is available.
+
+        For example, to check if the username ``bboe`` is availible, try:
+
+        .. code-block:: python
+
+            reddit.redditor("bboe").available()
+
+        """
+        return self._objectify_request(
+            path=API_PATH["username_available"], params={"user": name}, method="GET"
+        )

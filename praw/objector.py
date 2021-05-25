@@ -142,8 +142,8 @@ class Objector:
         return parser.parse(data, self._reddit)
 
     def objectify(
-        self, data: Optional[Union[Dict[str, Any], List[Any]]]
-    ) -> Optional[Union[RedditBase, Dict[str, Any], List[Any]]]:
+        self, data: Optional[Union[Dict[str, Any], List[Any], bool]]
+    ) -> Optional[Union[RedditBase, Dict[str, Any], List[Any], bool]]:
         """Create RedditBase objects from data.
 
         :param data: The structured data.
@@ -157,6 +157,8 @@ class Objector:
             return None
         if isinstance(data, list):
             return [self.objectify(item) for item in data]
+        if isinstance(data, bool):  # Reddit.username_available
+            return data
         if "json" in data and "errors" in data["json"]:
             errors = data["json"]["errors"]
             if len(errors) > 0:
