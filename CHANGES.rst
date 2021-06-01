@@ -12,12 +12,18 @@ Unreleased
 - :meth:`.trust` to add a user to the trusted list.
 - :meth:`.distrust` to remove a user from the trusted list.
 - :class:`.SQLiteTokenManager` (may not work on Windows)
+- :meth:`~.WikiPageModeration.hide` to hide a specified WikiPage revision.
+- :meth:`~.WikiPageModeration.unhide` to unhide a specified WikiPage revision.
+- :meth:`.toggle_visibility` to toggle the public visibility of a WikiPage revision.
+- :meth:`.revert` to revert a WikiPage to a specified revision.
+- :meth:`~.WikiPage.discussions` to obtain site-wide link submissions that link to the
+  WikiPage.
 
 **Changed**
 
 - :meth:`.Redditor.moderated` will now objectify all data returned from the API.
-- The `wiki_edit` endpoint has been changed from `r/{subreddit}/api/wiki/edit/` to
-  `r/{subreddit}/api/wiki/edit`.
+- The ``wiki_edit`` endpoint has been changed from ``r/{subreddit}/api/wiki/edit/`` to
+  ``r/{subreddit}/api/wiki/edit``.
 - :meth:`.Redditor.block` no longer needs to retrieve a user's fullname.
 
 **Fixed**
@@ -604,8 +610,8 @@ Unreleased
 
 **Fixed**
 
-- Calls to :meth:`.hide()` and :meth:`.unhide()` properly batch into requests of 50
-  submissions at a time.
+- Calls to :meth:`~.Submission.hide()` and :meth:`~.Submission.unhide()` properly batch
+  into requests of 50 submissions at a time.
 - Lowered the average maximum delay between inactive stream checks by 4x to 16 seconds.
   It was previously 64 seconds, which was too long.
 
@@ -813,7 +819,8 @@ as described below:
 
 **Fixed**
 
-- :meth:`.hide()` and :meth:`.unhide()` now accept a list of additional submissions.
+- :meth:`~.Submission.hide()` and :meth:`~.Submission.unhide()` now accept a list of
+  additional submissions.
 - :meth:`.replace_more` is now recoverable. Previously, when an exception was raised
   during the work done by :meth:`.replace_more`, all unreplaced :class:`.MoreComments`
   instances were lost. Now :class:`.MoreComments` instances are only removed once their

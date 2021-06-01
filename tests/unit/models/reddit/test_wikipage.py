@@ -1,5 +1,8 @@
 import pickle
 
+import pytest
+
+from praw.exceptions import MissingRequiredAttributeException
 from praw.models import Subreddit, WikiPage
 
 from ... import UnitTest
@@ -49,3 +52,23 @@ class TestWikiPage(UnitTest):
     def test_str(self):
         page = WikiPage(self.reddit, subreddit=Subreddit(self.reddit, "a"), name="x")
         assert str(page) == "a/x"
+
+
+class TestWikiPageModeration(UnitTest):
+    def test_missing_revision_id(self):
+        page = WikiPage(self.reddit, subreddit=Subreddit(self.reddit, "a"), name="x")
+        with pytest.raises(MissingRequiredAttributeException) as exc1:
+            page.mod._check_status()
+        assert str(exc1.value) == "Please specify a revision id."
+        with pytest.raises(MissingRequiredAttributeException) as exc2:
+            page.mod.hide()
+        assert str(exc2.value) == "Please specify a revision id."
+        with pytest.raises(MissingRequiredAttributeException) as exc3:
+            page.mod.unhide()
+        assert str(exc3.value) == "Please specify a revision id."
+        with pytest.raises(MissingRequiredAttributeException) as exc4:
+            page.mod.toggle_visibility()
+        assert str(exc4.value) == "Please specify a revision id."
+        with pytest.raises(MissingRequiredAttributeException) as exc5:
+            page.revision_hidden = True
+        assert str(exc5.value) == "Please specify a revision id."

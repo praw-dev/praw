@@ -2,7 +2,7 @@ from base64 import urlsafe_b64encode
 from unittest import mock
 
 import pytest
-from prawcore import NotFound
+from prawcore import Forbidden, NotFound
 
 from praw.exceptions import RedditAPIException
 from praw.models import Redditor, WikiPage
@@ -17,6 +17,13 @@ class TestWikiPage(IntegrationTest):
 
         with self.use_cassette():
             assert page.content_md
+
+    def test_discussions(self):
+        subreddit = self.reddit.subreddit("reddit.com")
+        page = WikiPage(self.reddit, subreddit, "search")
+
+        with self.use_cassette():
+            assert len(list(page.discussions()))
 
     def test_content_md__invalid_name(self):
         subreddit = self.reddit.subreddit("reddit.com")
@@ -133,6 +140,44 @@ class TestWikiPageModeration(IntegrationTest):
         with self.use_cassette():
             page.mod.add("bboe")
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_hide_and_unhide_revision_without_check(self, _):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        page = WikiPage(self.reddit, subreddit, "test")
+
+        self.reddit.read_only = False
+        with self.use_cassette():
+            wiki_revision = next(page.revisions(limit=1))["page"]
+            assert wiki_revision.revision_hidden is not None
+            wiki_revision.mod.hide()
+            assert wiki_revision.revision_hidden is True
+            wiki_revision.mod.unhide()
+            assert wiki_revision.revision_hidden is False
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_hide_revision_with_check_latest_revision(self, _):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        page = WikiPage(self.reddit, subreddit, "test")
+
+        self.reddit.read_only = False
+        with self.use_cassette():
+            revision_id = next(page.revisions(limit=1))["id"]
+            wiki_revision = page.revision(revision_id)
+            wiki_revision.mod.hide()
+            assert wiki_revision.revision_hidden is True
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_hide_revision_with_check_not_latest_revision(self, _):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        page = WikiPage(self.reddit, subreddit, "test")
+
+        self.reddit.read_only = False
+        with self.use_cassette():
+            revision_id = list(page.revisions(limit=2))[1]["id"]
+            wiki_revision = page.revision(revision_id)
+            wiki_revision.mod.hide()
+            assert wiki_revision.revision_hidden is True
+
     def test_remove(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         page = WikiPage(self.reddit, subreddit, "test")
@@ -140,6 +185,38 @@ class TestWikiPageModeration(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             page.mod.remove("bboe")
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_revert(self, _):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        page = WikiPage(self.reddit, subreddit, "test")
+
+        self.reddit.read_only = False
+        with self.use_cassette():
+            revision_id = next(page.revisions(limit=1))["id"]
+            page.revision(revision_id).mod.revert()
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_revert_css_fail(self, _):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        page = WikiPage(self.reddit, subreddit, "config/stylesheet")
+
+        self.reddit.read_only = False
+        with self.use_cassette():
+            subreddit.stylesheet.upload(
+                name="css-revert-fail",
+                image_path="tests/integration/files/icon.jpg",
+            )
+            page.edit("div {background: url(%%css-revert-fail%%)}")
+            revision_id = next(page.revisions(limit=1))["id"]
+            subreddit.stylesheet.delete_image("css-revert-fail")
+            with pytest.raises(Forbidden) as exc:
+                page.revision(revision_id).mod.revert()
+            assert exc.value.response.json() == {
+                "reason": "INVALID_CSS",
+                "message": "Forbidden",
+                "explanation": "%(css_error)s",
+            }
 
     def test_settings(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -149,6 +226,30 @@ class TestWikiPageModeration(IntegrationTest):
         with self.use_cassette():
             settings = page.mod.settings()
         assert {"editors": [], "listed": True, "permlevel": 0} == settings
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_unhide_revision_with_check_latest_revision(self, _):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        page = WikiPage(self.reddit, subreddit, "test")
+
+        self.reddit.read_only = False
+        with self.use_cassette():
+            revision_id = next(page.revisions(limit=1))["id"]
+            wiki_revision = page.revision(revision_id)
+            wiki_revision.mod.unhide()
+            assert wiki_revision.revision_hidden is False
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_unhide_revision_with_check_not_latest_revision(self, _):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        page = WikiPage(self.reddit, subreddit, "test")
+
+        self.reddit.read_only = False
+        with self.use_cassette():
+            revision_id = list(page.revisions(limit=2))[1]["id"]
+            wiki_revision = page.revision(revision_id)
+            wiki_revision.mod.unhide()
+            assert wiki_revision.revision_hidden is False
 
     def test_update(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
