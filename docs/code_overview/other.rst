@@ -38,6 +38,7 @@ them bound to an attribute of one of the PRAW models.
     :caption: Moderation Helpers
 
     other/commentmoderation
+    other/fullnamemixin
     other/submissionmoderation
     other/rulemoderation
     other/subredditmoderation
