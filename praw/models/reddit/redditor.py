@@ -187,8 +187,32 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
 
             reddit.redditor("spez").block()
 
+        .. note::
+
+            Blocking a trusted user will remove that user from your trusted list.
+
+        .. seealso::
+
+            :meth:`.trust`
+
         """
         self._reddit.post(API_PATH["block_user"], params={"name": self.name})
+
+    def distrust(self):
+        """Remove the Redditor from your whitelist of trusted users.
+
+        For example, to remove Redditor ``spez`` from your whitelist:
+
+        .. code-block:: python
+
+            reddit.redditor("spez").distrust()
+
+        .. seealso::
+
+            :meth:`.trust`
+
+        """
+        self._reddit.post(API_PATH["remove_whitelisted"], data={"name": self.name})
 
     def friend(self, note: str = None):
         """Friend the Redditor.
@@ -300,6 +324,45 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
 
         """
         return list(self._reddit.get(API_PATH["trophies"].format(user=self)))
+
+    def trust(self):
+        """Add the Redditor to your whitelist of trusted users.
+
+        Trusted users will always be able to send you PMs.
+
+        Example usage:
+
+        .. code-block:: python
+
+            reddit.redditor("AaronSw").trust()
+
+        Use the ``accept_pms`` parameter of :meth:`.Preferences.update` to toggle your
+        ``accept_pms`` setting between ``"everyone"`` and ``"whitelisted"``. For
+        example:
+
+        .. code-block:: python
+
+            # Accept private messages from everyone:
+            reddit.user.preferences.update(accept_pms="everyone")
+            # Only accept private messages from trusted users:
+            reddit.user.preferences.update(accept_pms="whitelisted")
+
+        You may trust a user even if your ``accept_pms`` setting is switched to
+        ``"everyone"``.
+
+        .. note::
+
+            You are allowed to have a user on your blocked list and your friends list at
+            the same time. However, you cannot trust a user who is on your blocked list.
+
+        .. seealso::
+
+            - :meth:`.distrust`
+            - :meth:`.Preferences.update`
+            - :meth:`.trusted`
+
+        """
+        self._reddit.post(API_PATH["add_whitelisted"], data={"name": self.name})
 
     def unblock(self):
         """Unblock the Redditor.

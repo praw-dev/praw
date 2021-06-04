@@ -296,6 +296,22 @@ class TestRedditorListings(IntegrationTest):
             items = list(redditor.top())
         assert len(items) == 100
 
+    def test_trust_and_distrust(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            self.reddit.redditor("PyAPITestUser3").trust()
+            redditor = self.reddit.user.trusted()[0]
+            redditor.distrust()
+
+    def test_trust_blocked_user(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            redditor = self.reddit.redditor("kn0thing")
+            redditor.block()
+            with pytest.raises(RedditAPIException) as excinfo:
+                redditor.trust()
+            assert "CANT_WHITELIST_AN_ENEMY" == excinfo.value.error_type
+
     def test_upvoted(self):
         self.reddit.read_only = False
         with self.use_cassette():
