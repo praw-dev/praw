@@ -186,6 +186,26 @@ class TestReddit(IntegrationTest):
         with self.use_cassette():
             assert self.reddit.subreddit("random").display_name != "random"
 
+    def test_username_available__available(self):
+        fake_user = "prawtestuserabcd1234"
+        with self.use_cassette(
+            placeholders=self.recorder.configure().default_cassette_options[
+                "placeholders"
+            ]
+            + [{"placeholder": "<AVAILABLE_NAME>", "replace": fake_user}]
+        ):
+            assert self.reddit.username_available(fake_user)
+
+    def test_username_available__unavailable(self):
+        with self.use_cassette():
+            assert not self.reddit.username_available("bboe")
+
+    def test_username_available_exception(self):
+        with self.use_cassette():
+            with pytest.raises(RedditAPIException) as exc:
+                self.reddit.username_available("a")
+            assert str(exc.value) == "BAD_USERNAME: 'invalid user name' on field 'user'"
+
 
 class TestDomainListing(IntegrationTest):
     def test_controversial(self):
