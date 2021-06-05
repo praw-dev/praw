@@ -14,8 +14,7 @@ class TestRedditor(IntegrationTest):
     FRIEND = "PyAPITestUser3"
     FRIEND_FULLNAME = "t2_6c1xj"
 
-    @mock.patch("time.sleep", return_value=None)
-    def test_block(self, _):
+    def test_block(self):
         self.reddit.read_only = False
         with self.use_cassette():
             redditor = self.reddit.redditor(self.FRIEND)

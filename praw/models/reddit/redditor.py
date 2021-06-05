@@ -188,7 +188,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             reddit.redditor("spez").block()
 
         """
-        self._reddit.post(API_PATH["block_user"], params={"account_id": self.fullname})
+        self._reddit.post(API_PATH["block_user"], params={"name": self.name})
 
     def friend(self, note: str = None):
         """Friend the Redditor.
