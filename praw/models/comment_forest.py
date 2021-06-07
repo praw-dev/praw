@@ -124,6 +124,8 @@ class CommentForest:
 
         :returns: A list of :class:`.MoreComments` instances that were not replaced.
 
+        :raises: ``prawcore.TooManyRequests`` when used concurrently.
+
         For example, to replace up to 32 :class:`.MoreComments` instances of a
         submission try:
 
@@ -144,9 +146,8 @@ class CommentForest:
         .. note::
 
             This method can take a long time as each replacement will discover at most
-            20 new :class:`.Comment` or :class:`.MoreComments` instances. As a result,
-            consider looping and handling exceptions until the method returns
-            successfully. For example:
+            100 new :class:`.Comment` instances. As a result, consider looping and
+            handling exceptions until the method returns successfully. For example:
 
             .. code-block:: python
 
