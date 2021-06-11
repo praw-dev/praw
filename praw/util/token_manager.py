@@ -102,6 +102,11 @@ class SQLiteTokenManager(BaseTokenManager):
     ``refresh_tokens`` will need to be registered via :meth:`.register` prior to use.
     See :ref:`sqlite_token_manager` for an example of use.
 
+    .. warning::
+
+        This class is untested on Windows because we encountered file locking issues in
+        the test environment.
+
     """
 
     def __init__(self, database, key):
