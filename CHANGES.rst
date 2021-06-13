@@ -8,6 +8,9 @@ Unreleased
 
 - :class:`.UserSubreddit` for the ``subreddit`` attribute of :class:`.Redditor`.
 - :meth:`.Reddit.username_available` checks if a username is available.
+- :meth:`.trusted` to retrieve a :class:`.RedditorList` of trusted users.
+- :meth:`.trust` to add a user to the trusted list.
+- :meth:`.distrust` to remove a user from the trusted list.
 
 **Changed**
 
