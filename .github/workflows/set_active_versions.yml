@@ -1,0 +1,21 @@
+jobs:
+  set_active_docs:
+    name: Set Active Docs
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: pip install packaging requests
+    - env:
+        READTHEDOCS_TOKEN: ${{ secrets.READTHEDOCS_TOKEN }}
+      name: Set Active Docs
+      run: python tools/set_active_docs.py
+name: Set Active Docs
+on:
+  workflow_run:
+    workflows: ["Upload Python Package"]
+    types:
+      - completed
