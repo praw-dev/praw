@@ -11,6 +11,7 @@ Unreleased
 - :meth:`.trusted` to retrieve a :class:`.RedditorList` of trusted users.
 - :meth:`.trust` to add a user to the trusted list.
 - :meth:`.distrust` to remove a user from the trusted list.
+- :class:`.SQLiteTokenManager` (may not work on Windows)
 
 **Changed**
 
