@@ -3,8 +3,8 @@
 There should be a 1-to-1 mapping between an instance of a subclass of
 :class:`.BaseTokenManager` and a :class:`.Reddit` instance.
 
-A few trivial token manager classes are provided here, but it is expected that PRAW
-users will create their own token manager classes suitable for their needs.
+A few proof of concept token manager classes are provided here, but it is expected that
+PRAW users will create their own token manager classes suitable for their needs.
 
 See :ref:`using_refresh_tokens` for examples on how to leverage these classes.
 
@@ -59,7 +59,7 @@ class BaseTokenManager(ABC):
 
 
 class FileTokenManager(BaseTokenManager):
-    """Provides a trivial single-file based token manager.
+    """Provides a single-file based token manager.
 
     It is expected that the file with the initial ``refresh_token`` is created prior to
     use.
