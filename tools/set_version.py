@@ -5,7 +5,10 @@ from datetime import date
 
 import packaging.version
 
-CHANGELOG_HEADER = "Change Log\n==========\n\n"
+CHANGELOG_HEADER = (
+    "Change Log\n==========\n\n"
+    "PRAW follows `semantic versioning <http://semver.org/>`_.\n\n"
+)
 UNRELEASED_HEADER = "Unreleased\n----------\n\n"
 
 
