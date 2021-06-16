@@ -25,6 +25,7 @@ Documentation Contributors
 - taq `@greentaquitos <https://github.com/greentaquitos>`_
 - Federico Gallo `@Karmavil <https://github.com/Karmavil>`_
 - Aidan Welch `@AidanWelch <https://github.com/AidanWelch>`_
+- Tom Eagles `@deplorableword <https://github.com/deplorableword>`_
 - Add "Name <email (optional)> and github profile link" above this line.
 
 Logo Creator
