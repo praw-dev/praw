@@ -25,9 +25,9 @@ Unreleased
 **Fixed**
 
 - Fixed bug where :meth:`.WikiPage.edit` and :meth:`.SubredditWiki.create` would fail if
-  passed `content` and `reason` parameters that produced a request with a body greater
-  than 500 KiB, even when the parameters did not exceed their respective permitted
-  maximum lengths.
+  passed ``content`` and ``reason`` parameters that produced a request with a body
+  greater than 500 KiB, even when the parameters did not exceed their respective
+  permitted maximum lengths.
 - Fixed bug where :meth:`.Reddit.request` could not handle instances of ``BadRequest``\s
   when the JSON data contained only the keys "reason" and "message".
 - Fixed bug where :meth:`.Reddit.request` could not handle instances of ``BadRequest``\s
