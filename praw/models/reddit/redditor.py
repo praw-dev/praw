@@ -39,6 +39,8 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     ``comment_karma``                   The comment karma for the Redditor.
     ``comments``                        Provide an instance of :class:`.SubListing` for
                                         comment access.
+    ``submissions``                     Provide an instance of :class:`.SubListing` for
+                                        submission access.
     ``created_utc``                     Time the account was created, represented in
                                         `Unix Time`_.
     ``has_verified_email``              Whether or not the Redditor has verified their
