@@ -891,11 +891,11 @@ class Reddit:
     def username_available(self, name: str) -> bool:
         """Check to see if the username is available.
 
-        For example, to check if the username ``bboe`` is availible, try:
+        For example, to check if the username ``bboe`` is available, try:
 
         .. code-block:: python
 
-            reddit.redditor("bboe").available()
+            reddit.username_available("bboe")
 
         """
         return self._objectify_request(
