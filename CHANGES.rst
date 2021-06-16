@@ -22,6 +22,13 @@ Unreleased
   `r/{subreddit}/api/wiki/edit`.
 - :meth:`.Redditor.block` no longer needs to retrieve a user's fullname.
 
+**Deprecated**
+
+- The ``subreddit`` attribute of :class:`.Redditor` is no longer a dict.
+- Legacy modmail is slated for deprecation by Reddit in June 2021. See
+  https://www.reddit.com/r/modnews/comments/mar9ha/even_more_modmail_improvements/ for
+  more info.
+
 **Fixed**
 
 - Fixed bug where :meth:`.WikiPage.edit` and :meth:`.SubredditWiki.create` would fail if
@@ -33,16 +40,6 @@ Unreleased
 - Fixed bug where :meth:`.Reddit.request` could not handle instances of ``BadRequest``\s
   when the response did not contain valid JSON data.
 - Fixed bug where :meth:`.FullnameMixin.fullname` sometimes returned the wrong fullname.
-
-**Deprecated**
-
-- Legacy modmail is slated for deprecation by Reddit in June 2021. See
-  https://www.reddit.com/r/modnews/comments/mar9ha/even_more_modmail_improvements/ for
-  more info.
-
-**Deprecated**
-
-- The ``subreddit`` attribute of :class:`.Redditor` is no longer a dict.
 
 7.2.0 (2021/02/24)
 ------------------
