@@ -72,7 +72,7 @@ class InboxableMixin:
             :meth:`~.mark_unread`
 
         To mark the whole inbox as read with a single network request, use
-        :meth:`praw.models.Inbox.mark_read`
+        :meth:`praw.models.Inbox.mark_all_read`
 
         """
         self._reddit.inbox.mark_read([self])
@@ -100,6 +100,33 @@ class InboxableMixin:
 
         """
         self._reddit.inbox.mark_unread([self])
+
+    def unblock_subreddit(self):
+        """Unblock a subreddit.
+
+        .. note::
+
+            This method pertains only to objects which were retrieved via the inbox.
+
+        For example, to unblock all blocked subreddits that you can find by going
+        through your inbox:
+
+        .. code-block:: python
+
+            from praw.models import SubredditMessage
+
+            subs = set()
+            for item in reddit.inbox.messages(limit=None):
+                if isinstance(item, SubredditMessage):
+                    if (
+                        item.subject == "[message from blocked subreddit]"
+                        and str(item.subreddit) not in subs
+                    ):
+                        item.unblock_subreddit()
+                        subs.add(str(item.subreddit))
+
+        """
+        self._reddit.post(API_PATH["unblock_subreddit"], data={"id": self.fullname})
 
     def uncollapse(self):
         """Mark the item as uncollapsed.

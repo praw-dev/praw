@@ -80,6 +80,23 @@ class Inbox(PRAWBase):
             self._reddit, API_PATH["comment_replies"], **generator_kwargs
         )
 
+    def mark_all_read(self):
+        """Mark all messages as read with just one API call.
+
+        Example usage:
+
+        .. code-block:: python
+
+            reddit.inbox.mark_all_read()
+
+        .. note::
+
+            This method returns after Reddit acknowleges your request, instead of after
+            the request has been fulfilled.
+
+        """
+        self._reddit.post(API_PATH["read_all_messages"])
+
     def mark_read(
         self, items: List[Union["praw.models.Comment", "praw.models.Message"]]
     ):

@@ -46,6 +46,14 @@ class TestInbox(IntegrationTest):
             assert saved_id == comment.id
 
     @mock.patch("time.sleep", return_value=None)
+    def test_mark_all_read(self, _):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            self.reddit.inbox.mark_unread(list(self.reddit.inbox.all(limit=2)))
+            self.reddit.inbox.mark_all_read()
+            assert not list(self.reddit.inbox.unread())
+
+    @mock.patch("time.sleep", return_value=None)
     def test_mark_read(self, _):
         self.reddit.read_only = False
         with self.use_cassette(match_requests_on=["uri", "method", "body"]):

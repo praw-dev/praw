@@ -98,6 +98,22 @@ class TestMessage(IntegrationTest):
             assert reply.body == "Message reply"
             assert reply.first_message_name == message.fullname
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_unblock_subreddit(self, _):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            message1 = next(self.reddit.inbox.messages(limit=1))
+            assert isinstance(message1, SubredditMessage)
+            message_fullname = message1.fullname
+            message1.block()
+            message2 = next(self.reddit.inbox.messages(limit=1))
+            assert message2.fullname == message_fullname
+            assert message2.subject == "[message from blocked subreddit]"
+            message2.unblock_subreddit()
+            message3 = next(self.reddit.inbox.messages(limit=1))
+            assert message3.fullname == message_fullname
+            assert message3.subject != "[message from blocked subreddit]"
+
 
 class TestSubredditMessage(IntegrationTest):
     def test_mute(self):
