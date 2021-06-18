@@ -2,6 +2,7 @@
 import os
 import re
 import sys
+import time
 
 import packaging.version
 import requests
@@ -10,26 +11,48 @@ PROJECT = "praw"
 HEADERS = {"Authorization": f"token {os.environ.get('READTHEDOCS_TOKEN')}"}
 
 
-def main():
-    with open("praw/const.py") as fp:
-        current_version = packaging.version.parse(
-            re.search('__version__ = "([^"]+)"', fp.read()).group(1)
-        )
-
+def fetch_versions():
     response = requests.get(
         f"https://readthedocs.org/api/v3/projects/{PROJECT}/versions?active=true",
         headers=HEADERS,
     )
-
-    if response.status_code != 200:
+    versions = None
+    if response.status_code == 200:
+        active_versions = response.json()
+        versions = [
+            packaging.version.parse(slug["slug"].strip("v"))
+            for slug in active_versions["results"]
+            if not slug["hidden"] and not slug["slug"] in ["stable", "latest"]
+        ]
+    if versions is None:
         sys.stderr.write("Failed to get current active versions\n")
-        return True
-    active_versions = response.json()
-    versions = [current_version] + [
-        packaging.version.parse(slug["slug"].strip("v"))
-        for slug in active_versions["results"]
-        if not slug["hidden"] and not slug["slug"] in ["current", "latest"]
-    ]
+    return versions
+
+
+def main():
+    with open(f"{PROJECT}/const.py") as fp:
+        current_version = packaging.version.parse(
+            re.search('__version__ = "([^"]+)"', fp.read()).group(1)
+        )
+
+    versions = fetch_versions()
+    if versions is None:
+        return 1
+    max_retry_count = 5
+    retry_count = 0
+    while current_version not in versions:
+        versions = fetch_versions()
+        if versions is None:
+            return 1
+        if current_version in versions:
+            break
+        else:
+            if retry_count >= max_retry_count:
+                sys.stderr.write("Current version failed to build\n")
+                return 1
+            sys.stdout.write("Waiting 30 seconds for build to finish\n")
+            retry_count += 1
+            time.sleep(30)
     aggregated_versions = {}
     for version in versions:
         aggregated_versions.setdefault(version.major, [])
@@ -59,8 +82,7 @@ def main():
                 sys.stderr.write(f"Version {version!s} was hidden successfully\n")
             else:
                 sys.stderr.write(f"Failed to hide version {version}\n")
-                return True
-    return False
+                return 1
 
 
 if __name__ == "__main__":
