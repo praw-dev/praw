@@ -6,6 +6,12 @@ PRAW follows `semantic versioning <http://semver.org/>`_.
 Unreleased
 ----------
 
+**Added**
+
+- :meth:`~.WikiPage.discussions` to obtain site-wide link submissions that link to the
+  WikiPage.
+- :meth:`.revert` to revert a WikiPage to a specified revision.
+
 7.3.0 (2021/06/17)
 ------------------
 
@@ -21,8 +27,8 @@ Unreleased
 **Changed**
 
 - :meth:`.Redditor.moderated` will now objectify all data returned from the API.
-- The `wiki_edit` endpoint has been changed from `r/{subreddit}/api/wiki/edit/` to
-  `r/{subreddit}/api/wiki/edit`.
+- The ``wiki_edit`` endpoint has been changed from ``r/{subreddit}/api/wiki/edit/`` to
+  ``r/{subreddit}/api/wiki/edit``.
 - :meth:`.Redditor.block` no longer needs to retrieve a user's fullname.
 
 **Deprecated**

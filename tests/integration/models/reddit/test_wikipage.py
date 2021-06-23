@@ -2,7 +2,7 @@ from base64 import urlsafe_b64encode
 from unittest import mock
 
 import pytest
-from prawcore import NotFound
+from prawcore import Forbidden, NotFound
 
 from praw.exceptions import RedditAPIException
 from praw.models import Redditor, WikiPage
@@ -26,6 +26,13 @@ class TestWikiPage(IntegrationTest):
             with pytest.raises(RedditAPIException) as excinfo:
                 page.content_md
             assert str(excinfo.value) == "INVALID_PAGE_NAME"
+
+    def test_discussions(self):
+        subreddit = self.reddit.subreddit("reddit.com")
+        page = WikiPage(self.reddit, subreddit, "search")
+
+        with self.use_cassette():
+            assert list(page.discussions())
 
     def test_edit(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -140,6 +147,38 @@ class TestWikiPageModeration(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             page.mod.remove("bboe")
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_revert(self, _):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        page = WikiPage(self.reddit, subreddit, "test")
+
+        self.reddit.read_only = False
+        with self.use_cassette():
+            revision_id = next(page.revisions(limit=1))["id"]
+            page.revision(revision_id).mod.revert()
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_revert_css_fail(self, _):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        page = WikiPage(self.reddit, subreddit, "config/stylesheet")
+
+        self.reddit.read_only = False
+        with self.use_cassette():
+            subreddit.stylesheet.upload(
+                name="css-revert-fail",
+                image_path="tests/integration/files/icon.jpg",
+            )
+            page.edit("div {background: url(%%css-revert-fail%%)}")
+            revision_id = next(page.revisions(limit=1))["id"]
+            subreddit.stylesheet.delete_image("css-revert-fail")
+            with pytest.raises(Forbidden) as exc:
+                page.revision(revision_id).mod.revert()
+            assert exc.value.response.json() == {
+                "reason": "INVALID_CSS",
+                "message": "Forbidden",
+                "explanation": "%(css_error)s",
+            }
 
     def test_settings(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
