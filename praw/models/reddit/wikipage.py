@@ -1,5 +1,5 @@
 """Provide the WikiPage class."""
-from typing import TYPE_CHECKING, Any, Dict, Generator, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, Generator, Iterator, Optional, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
@@ -67,6 +67,53 @@ class WikiPageModeration:
             subreddit=self.wikipage.subreddit, method="del"
         )
         self.wikipage._reddit.post(url, data=data)
+
+    def revert(self):
+        """Revert a wikipage back to a specific revision.
+
+        To revert the page ``"praw_test"`` in ``r/test`` to revision ``[ID]``, try
+
+        .. code-block:: python
+
+            reddit.subreddit("test").wiki["praw_test"].revision("[ID]").mod.revert()
+
+        .. note::
+
+            When you attempt to revert the page ``config/stylesheet``, Reddit checks to
+            see if the revision being reverted to passes the CSS filter. If the check
+            fails, then the revision attempt will also fail, and a
+            ``prawcore.Forbidden`` exception will be raised. For example, you can't
+            revert to a revision that contains a link to ``url(%%PRAW%%)`` if there is
+            no image named ``PRAW`` on the current stylesheet.
+
+            Here is an example of how to look for this type of error:
+
+            .. code-block:: python
+
+                from prawcore.exceptions import Forbidden
+
+                try:
+                    reddit.subreddit("test").wiki["config/stylesheet"].revision("[ID]").mod.revert()
+                except Forbidden as exception:
+                    try:
+                        exception.response.json()
+                    except ValueError:
+                        exception.response.text
+
+            If the error occurs, the output will look something like
+
+            .. code-block:: python
+
+                {"reason": "INVALID_CSS", "message": "Forbidden", "explanation": "%(css_error)s"}
+
+        """
+        self.wikipage._reddit.post(
+            API_PATH["wiki_revert"].format(subreddit=self.wikipage.subreddit),
+            data={
+                "page": self.wikipage.name,
+                "revision": self.wikipage._revision,
+            },
+        )
 
     def settings(self) -> Dict[str, Any]:
         """Return the settings for this WikiPage."""
@@ -234,6 +281,33 @@ class WikiPage(RedditBase):
         self._reddit.post(
             API_PATH["wiki_edit"].format(subreddit=self.subreddit),
             data=other_settings,
+        )
+
+    def discussions(
+        self, **generator_kwargs: Any
+    ) -> Iterator["praw.models.Submission"]:
+        """Return a :class:`.ListingGenerator` for discussions of a wiki page.
+
+        Discussions are site-wide links to a wiki page.
+
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
+
+        To view the titles of discussions of the page ``"praw_test"`` in ``r/test``,
+        try:
+
+        .. code-block:: python
+
+            for submission in reddit.subreddit("test").wiki["praw_test"].discussions():
+                print(submission.title)
+
+        """
+        return ListingGenerator(
+            self._reddit,
+            API_PATH["wiki_discussions"].format(
+                subreddit=self.subreddit, page=self.name
+            ),
+            **generator_kwargs,
         )
 
     def revision(self, revision: str):

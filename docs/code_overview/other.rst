@@ -39,8 +39,8 @@ them bound to an attribute of one of the PRAW models.
 
     other/commentmoderation
     other/fullnamemixin
-    other/submissionmoderation
     other/rulemoderation
+    other/submissionmoderation
     other/subredditmoderation
     other/subredditrulesmoderation
     other/subredditwidgetsmoderation

@@ -215,11 +215,13 @@ API_PATH = {
     "widget_modify":           "r/{subreddit}/api/widget/{widget_id}",
     "widget_order":            "r/{subreddit}/api/widget_order/{section}",
     "widgets":                 "r/{subreddit}/api/widgets",
+    "wiki_discussions":        "r/{subreddit}/wiki/discussions/{page}",
     "wiki_edit":               "r/{subreddit}/api/wiki/edit",
     "wiki_page":               "r/{subreddit}/wiki/{page}",
     "wiki_page_editor":        "r/{subreddit}/api/wiki/alloweditor/{method}",
     "wiki_page_revisions":     "r/{subreddit}/wiki/revisions/{page}",
     "wiki_page_settings":      "r/{subreddit}/wiki/settings/{page}",
     "wiki_pages":              "r/{subreddit}/wiki/pages/",
+    "wiki_revert":             "r/{subreddit}/api/wiki/revert",
     "wiki_revisions":          "r/{subreddit}/wiki/revisions/",
 }
