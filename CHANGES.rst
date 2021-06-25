@@ -11,6 +11,8 @@ Unreleased
 - :meth:`~.WikiPage.discussions` to obtain site-wide link submissions that link to the
   WikiPage.
 - :meth:`.revert` to revert a WikiPage to a specified revision.
+- :meth:`.Inbox.mark_all_read` to mark all messages as read with one API call.
+- :meth:`~.InboxableMixin.unblock_subreddit` to unblock a subreddit.
 
 7.3.0 (2021/06/17)
 ------------------

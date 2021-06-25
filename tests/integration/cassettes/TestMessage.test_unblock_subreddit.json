@@ -1,0 +1,648 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2021-06-16T00:11:59",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "Content-Length": [
+            "152"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.2.1.dev0 prawcore/2.2.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "Content-Length": [
+            "121"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 16 Jun 2021 00:11:58 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=n9XVCmbR3ULpBqQ9k6; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Clacks-Overhead": [
+            "GNU Terry Pratchett"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "299"
+          ],
+          "x-ratelimit-reset": [
+            "482"
+          ],
+          "x-ratelimit-used": [
+            "1"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2021-06-16T00:11:59",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=n9XVCmbR3ULpBqQ9k6"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.2.1.dev0 prawcore/2.2.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/message/messages/?limit=1&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"Listing\", \"data\": {\"modhash\": null, \"dist\": null, \"children\": [{\"kind\": \"t4\", \"data\": {\"first_message\": null, \"first_message_name\": null, \"subreddit\": \"<TEST_SUBREDDIT>\", \"likes\": null, \"replies\": \"\", \"author_fullname\": null, \"id\": \"1234567\", \"subject\": \"invitation to moderate /r/<TEST_SUBREDDIT>\", \"associated_awarding_id\": null, \"score\": 0, \"author\": null, \"num_comments\": null, \"parent_id\": null, \"subreddit_name_prefixed\": \"r/<TEST_SUBREDDIT>\", \"new\": false, \"type\": \"unknown\", \"body\": \"gadzooks! **you are invited to become a moderator** of [/r/<TEST_SUBREDDIT>: DR8](/r/<TEST_SUBREDDIT>/about/moderators)!\\n\\n***to accept*, visit the [moderators page for /r/<TEST_SUBREDDIT>](/r/<TEST_SUBREDDIT>/about/moderators) and click \\\"accept\\\".**\\n\\n*otherwise,* if you did not expect to receive this, you can simply ignore this invitation or report it.\", \"dest\": \"<USERNAME>\", \"was_comment\": false, \"body_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Egadzooks! \\u003Cstrong\\u003Eyou are invited to become a moderator\\u003C/strong\\u003E of \\u003Ca href=\\\"/r/<TEST_SUBREDDIT>/about/moderators\\\"\\u003E/r/<TEST_SUBREDDIT>: DR8\\u003C/a\\u003E!\\u003C/p\\u003E\\n\\n\\u003Cp\\u003E\\u003Cstrong\\u003E\\u003Cem\\u003Eto accept\\u003C/em\\u003E, visit the \\u003Ca href=\\\"/r/<TEST_SUBREDDIT>/about/moderators\\\"\\u003Emoderators page for /r/<TEST_SUBREDDIT>\\u003C/a\\u003E and click \\u0026quot;accept\\u0026quot;.\\u003C/strong\\u003E\\u003C/p\\u003E\\n\\n\\u003Cp\\u003E\\u003Cem\\u003Eotherwise,\\u003C/em\\u003E if you did not expect to receive this, you can simply ignore this invitation or report it.\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"name\": \"t4_1234567\", \"created\": 1623824779.0, \"created_utc\": 1623795979.0, \"context\": \"\", \"distinguished\": \"moderator\"}}], \"after\": \"t4_1234567\", \"before\": null}}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "1687"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 16 Jun 2021 00:11:58 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "session_tracker=lzyqvmmlrkgfwagxix.0.1623802318821.Z0FBQUFBQmd5VUhPbXYzV1kyVmFMRkdzRFNCcmFtSFhtSC1DazBQNkVUUDFSS1FeZ1NVd0I3VmliV3VXUTNYUXRJcDJSRnVsS2xiLX9Vd2NHRHRjNlVRSTNsMDJ2cEdBalJ4Yjm1dGwzMzJXdDJTck8tUzFOdDJwZwNVMS15VEJVZ0htQ3FQMnFFZEY; Domain=reddit.com; Max-Age=7199; Path=/; expires=Wed, 16-Jun-2021 02:11:58 GMT; secure; SameSite=None; Secure",
+            "csv=1; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Clacks-Overhead": [
+            "GNU Terry Pratchett"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "599.0"
+          ],
+          "x-ratelimit-reset": [
+            "482"
+          ],
+          "x-ratelimit-used": [
+            "1"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/message/messages/?limit=1&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2021-06-16T00:11:59",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&id=t4_1234567"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "27"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "Cookie": [
+            "csv=1; edgebucket=n9XVCmbR3ULpBqQ9k6; session_tracker=lzyqvmmlrkgfwagxix.0.1623802318821.Z0FBQUFBQmd5VUhPbXYzV1kyVmFMRkdzRFNCcmFtSFhtSC1DazBQNkVUUDFSS1FeZ1NVd0I3VmliV3VXUTNYUXRJcDJSRnVsS2xiLX9Vd2NHRHRjNlVRSTNsMDJ2cEdBalJ4Yjm1dGwzMzJXdDJTck8tUzFOdDJwZwNVMS15VEJVZ0htQ3FQMnFFZEY"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.2.1.dev0 prawcore/2.2.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/api/block?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "2"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 16 Jun 2021 00:11:58 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Clacks-Overhead": [
+            "GNU Terry Pratchett"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=lzyqvmmlrkgfwagxix.0.1623802318923.Z0FBQUFBQmd5VUhPWFpreURRQmtuamt4OXB2SjhUQlRFaDRrOEo5aEw5NHQtfGFhd3FZalJmODlsRFFrTDYyS1RvSzZ0NlBnVXptUEl4S1dpd1Q5RElicFM3cHUyTHhjTHRkWkJMdkg2bE9FaGk5QW9oTjY5OE1PMFlfN0FSS2h0VDVqR1JNLWZsWmU; Domain=reddit.com; Max-Age=7199; Path=/; expires=Wed, 16-Jun-2021 02:11:58 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "598.0"
+          ],
+          "x-ratelimit-reset": [
+            "482"
+          ],
+          "x-ratelimit-used": [
+            "2"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/block?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2021-06-16T00:11:59",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "csv=1; edgebucket=n9XVCmbR3ULpBqQ9k6; session_tracker=lzyqvmmlrkgfwagxix.0.1623802318923.Z0FBQUFBQmd5VUhPWFpreURRQmtuamt4OXB2SjhUQlRFaDRrOEo5aEw5NHQtfGFhd3FZalJmODlsRFFrTDYyS1RvSzZ0NlBnVXptUEl4S1dpd1Q5RElicFM3cHUyTHhjTHRkWkJMdkg2bE9FaGk5QW9oTjY5OE1PMFlfN0FSS2h0VDVqR1JNLWZsWmU"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.2.1.dev0 prawcore/2.2.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/message/messages/?limit=1&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"Listing\", \"data\": {\"modhash\": null, \"dist\": null, \"children\": [{\"kind\": \"t4\", \"data\": {\"first_message\": null, \"first_message_name\": null, \"subreddit\": \"<TEST_SUBREDDIT>\", \"likes\": null, \"replies\": \"\", \"author_fullname\": null, \"id\": \"1234567\", \"subject\": \"[message from blocked subreddit]\", \"associated_awarding_id\": null, \"score\": 0, \"author\": null, \"num_comments\": null, \"parent_id\": null, \"subreddit_name_prefixed\": \"r/<TEST_SUBREDDIT>\", \"new\": false, \"type\": \"unknown\", \"body\": \"gadzooks! **you are invited to become a moderator** of [/r/<TEST_SUBREDDIT>: DR8](/r/<TEST_SUBREDDIT>/about/moderators)!\\n\\n***to accept*, visit the [moderators page for /r/<TEST_SUBREDDIT>](/r/<TEST_SUBREDDIT>/about/moderators) and click \\\"accept\\\".**\\n\\n*otherwise,* if you did not expect to receive this, you can simply ignore this invitation or report it.\", \"dest\": \"<USERNAME>\", \"was_comment\": false, \"body_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Egadzooks! \\u003Cstrong\\u003Eyou are invited to become a moderator\\u003C/strong\\u003E of \\u003Ca href=\\\"/r/<TEST_SUBREDDIT>/about/moderators\\\"\\u003E/r/<TEST_SUBREDDIT>: DR8\\u003C/a\\u003E!\\u003C/p\\u003E\\n\\n\\u003Cp\\u003E\\u003Cstrong\\u003E\\u003Cem\\u003Eto accept\\u003C/em\\u003E, visit the \\u003Ca href=\\\"/r/<TEST_SUBREDDIT>/about/moderators\\\"\\u003Emoderators page for /r/<TEST_SUBREDDIT>\\u003C/a\\u003E and click \\u0026quot;accept\\u0026quot;.\\u003C/strong\\u003E\\u003C/p\\u003E\\n\\n\\u003Cp\\u003E\\u003Cem\\u003Eotherwise,\\u003C/em\\u003E if you did not expect to receive this, you can simply ignore this invitation or report it.\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"name\": \"t4_1234567\", \"created\": 1623824779.0, \"created_utc\": 1623795979.0, \"context\": \"\", \"distinguished\": \"moderator\"}}], \"after\": \"t4_1234567\", \"before\": null}}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "1690"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 16 Jun 2021 00:11:59 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "session_tracker=lzyqvmmlrkgfwagxix.0.1623802318996.Z0FBQUFBQmd5VUhQZ3drb1pFd3RLcm9nYUpHdzFLN1ZudXZaMGRnRFhCZlV5ki1JR0ZzeHloazNYS2UwN29ZaEVEOFQwM1NQbS1WNjJGNGo1WDRIbXJNeG5ncy0yOUU1Qi1jdHNHOWZweVehSE96WVlSdXBlRWN5TndyNHBwRoAtdnFUcDIzVzJrZ2E; Domain=reddit.com; Max-Age=7199; Path=/; expires=Wed, 16-Jun-2021 02:11:59 GMT; secure; SameSite=None; Secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Clacks-Overhead": [
+            "GNU Terry Pratchett"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "597.0"
+          ],
+          "x-ratelimit-reset": [
+            "482"
+          ],
+          "x-ratelimit-used": [
+            "3"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/message/messages/?limit=1&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2021-06-16T00:11:59",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&id=t4_1234567"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "27"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "Cookie": [
+            "csv=1; edgebucket=n9XVCmbR3ULpBqQ9k6; session_tracker=lzyqvmmlrkgfwagxix.0.1623802318996.Z0FBQUFBQmd5VUhQZ3drb1pFd3RLcm9nYUpHdzFLN1ZudXZaMGRnRFhCZlV5ki1JR0ZzeHloazNYS2UwN29ZaEVEOFQwM1NQbS1WNjJGNGo1WDRIbXJNeG5ncy0yOUU1Qi1jdHNHOWZweVehSE96WVlSdXBlRWN5TndyNHBwRoAtdnFUcDIzVzJrZ2E"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.2.1.dev0 prawcore/2.2.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/api/unblock_subreddit?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "2"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 16 Jun 2021 00:11:59 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Clacks-Overhead": [
+            "GNU Terry Pratchett"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=lzyqvmmlrkgfwagxix.0.1623802319102.Z0FBQUFBQmd5VUhQWGlCQ201S3F2b1Y2NVhFMa0zZWVyWlNkenNRRl9WeWF0RlNZZkZldnlnZjlNQzJkOWlrOW1PUnNXQUNnSG5QZXNEQThlNGlhQm0xdDJSNWtKYnNVVWZvOFhUNqstOGI1NXhlWVAwb1UwNERaalfCSHZHSEIxcy1XVlVCcEh6cGY; Domain=reddit.com; Max-Age=7199; Path=/; expires=Wed, 16-Jun-2021 02:11:59 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "596.0"
+          ],
+          "x-ratelimit-reset": [
+            "481"
+          ],
+          "x-ratelimit-used": [
+            "4"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/unblock_subreddit?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2021-06-16T00:11:59",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "csv=1; edgebucket=n9XVCmbR3ULpBqQ9k6; session_tracker=lzyqvmmlrkgfwagxix.0.1623802319102.Z0FBQUFBQmd5VUhQWGlCQ201S3F2b1Y2NVhFMa0zZWVyWlNkenNRRl9WeWF0RlNZZkZldnlnZjlNQzJkOWlrOW1PUnNXQUNnSG5QZXNEQThlNGlhQm0xdDJSNWtKYnNVVWZvOFhUNqstOGI1NXhlWVAwb1UwNERaalfCSHZHSEIxcy1XVlVCcEh6cGY"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.2.1.dev0 prawcore/2.2.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/message/messages/?limit=1&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"Listing\", \"data\": {\"modhash\": null, \"dist\": null, \"children\": [{\"kind\": \"t4\", \"data\": {\"first_message\": null, \"first_message_name\": null, \"subreddit\": \"<TEST_SUBREDDIT>\", \"likes\": null, \"replies\": \"\", \"author_fullname\": null, \"id\": \"1234567\", \"subject\": \"invitation to moderate /r/<TEST_SUBREDDIT>\", \"associated_awarding_id\": null, \"score\": 0, \"author\": null, \"num_comments\": null, \"parent_id\": null, \"subreddit_name_prefixed\": \"r/<TEST_SUBREDDIT>\", \"new\": false, \"type\": \"unknown\", \"body\": \"gadzooks! **you are invited to become a moderator** of [/r/<TEST_SUBREDDIT>: DR8](/r/<TEST_SUBREDDIT>/about/moderators)!\\n\\n***to accept*, visit the [moderators page for /r/<TEST_SUBREDDIT>](/r/<TEST_SUBREDDIT>/about/moderators) and click \\\"accept\\\".**\\n\\n*otherwise,* if you did not expect to receive this, you can simply ignore this invitation or report it.\", \"dest\": \"<USERNAME>\", \"was_comment\": false, \"body_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Egadzooks! \\u003Cstrong\\u003Eyou are invited to become a moderator\\u003C/strong\\u003E of \\u003Ca href=\\\"/r/<TEST_SUBREDDIT>/about/moderators\\\"\\u003E/r/<TEST_SUBREDDIT>: DR8\\u003C/a\\u003E!\\u003C/p\\u003E\\n\\n\\u003Cp\\u003E\\u003Cstrong\\u003E\\u003Cem\\u003Eto accept\\u003C/em\\u003E, visit the \\u003Ca href=\\\"/r/<TEST_SUBREDDIT>/about/moderators\\\"\\u003Emoderators page for /r/<TEST_SUBREDDIT>\\u003C/a\\u003E and click \\u0026quot;accept\\u0026quot;.\\u003C/strong\\u003E\\u003C/p\\u003E\\n\\n\\u003Cp\\u003E\\u003Cem\\u003Eotherwise,\\u003C/em\\u003E if you did not expect to receive this, you can simply ignore this invitation or report it.\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"name\": \"t4_1234567\", \"created\": 1623824779.0, \"created_utc\": 1623795979.0, \"context\": \"\", \"distinguished\": \"moderator\"}}], \"after\": \"t4_1234567\", \"before\": null}}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "1687"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 16 Jun 2021 00:11:59 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "session_tracker=lzyqvmmlrkgfwagxix.0.1623802319231.Z0FBQUFBQmd5VUhQYmhkVUJHZTZSaUtqeGstSWYwflNGd0dRN3Rfa29uN3M3TFhnaktzdVo3OHw1WktzSFlSVVM1dm9KQkpNT3FNVGJZYUQ5NHRwVU5hc2hzSEd4U0pwVEZfjWhxaG9YTWliezlRUnZyYmNvUWRUSnktZ0Q0TFVlSVdzRGdMSXp6SmY; Domain=reddit.com; Max-Age=7199; Path=/; expires=Wed, 16-Jun-2021 02:11:59 GMT; secure; SameSite=None; Secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Clacks-Overhead": [
+            "GNU Terry Pratchett"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "595.0"
+          ],
+          "x-ratelimit-reset": [
+            "481"
+          ],
+          "x-ratelimit-used": [
+            "5"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/message/messages/?limit=1&raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}

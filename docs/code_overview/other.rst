@@ -38,7 +38,6 @@ them bound to an attribute of one of the PRAW models.
     :caption: Moderation Helpers
 
     other/commentmoderation
-    other/fullnamemixin
     other/rulemoderation
     other/submissionmoderation
     other/subredditmoderation
@@ -62,9 +61,9 @@ them bound to an attribute of one of the PRAW models.
     :caption: Subreddit Helpers
 
     other/subredditfilters
+    other/subredditmoderationstream
     other/subredditquarantine
     other/subredditstream
-    other/subredditmoderationstream
     other/subredditstylesheet
     other/subredditwidgets
     other/subredditwiki
@@ -97,23 +96,26 @@ them bound to an attribute of one of the PRAW models.
     other/config
     other/domainlisting
     other/emoji
+    other/fullnamemixin
     other/hover
-    other/listinggenerator
     other/image
     other/imagedata
-    other/inlinemedia
+    other/inboxablemixin
     other/inlinegif
     other/inlineimage
+    other/inlinemedia
     other/inlinevideo
+    other/listinggenerator
     other/menulink
     other/mod_action
     other/moderatedlist
     other/modmail
     other/modmailmessage
-    other/preferences
     other/poll
+    other/preferences
     other/redditbase
     other/redditorlist
+    other/redditorstream
     other/removalreason
     other/rule
     other/styles
@@ -124,7 +126,6 @@ them bound to an attribute of one of the PRAW models.
     other/subredditmessage
     other/subredditremovalreasons
     other/subredditrules
-    other/redditorstream
     other/token_manager
     other/trophy
     other/usersubreddit
