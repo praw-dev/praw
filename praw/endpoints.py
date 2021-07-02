@@ -200,6 +200,7 @@ API_PATH = {
     "unread_message":          "api/unread_message/",
     "unsave":                  "api/unsave/",
     "unspoiler":               "api/unspoiler/",
+    "update_crowd_control":    "api/update_crowd_control_level",
     "update_settings":         "api/v1/subreddit/update_settings",
     "update_subreddit_rule":   "api/update_subreddit_rule",
     "upload_image":            "r/{subreddit}/api/upload_sr_img",
