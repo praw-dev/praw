@@ -164,6 +164,7 @@ API_PATH = {
     "store_visits":            "api/store_visits",
     "structured_styles":       "api/v1/structured_styles/{subreddit}",
     "style_asset_lease":       "api/v1/style_asset_upload_s3/{subreddit}",
+    "sub_autocomplete":        "api/subreddit_autocomplete_v2",
     "sub_recommended":         "api/recommend/sr/{subreddits}",
     "submission":              "comments/{id}/",
     "submission_replies":      "message/selfreply/",

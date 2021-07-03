@@ -19,6 +19,48 @@ class Subreddits(PRAWBase):
     def _to_list(subreddit_list):
         return ",".join([str(x) for x in subreddit_list])
 
+    def autocomplete(
+        self,
+        query: str,
+        include_over_18: Optional[bool] = True,
+        include_profiles: Optional[bool] = True,
+        limit: Optional[int] = 10,
+        typeahead_active: Optional[bool] = True,
+    ) -> List[Union["praw.models.Subreddit", "praw.models.Redditor"]]:
+        """Return a list of subreddits whose names start with ``query``.
+
+        :param query: A string up to 25 characters long, consisting of printable
+            characters.
+        :param include_over_18: (boolean) Whether to include NSFW results (default:
+            True).
+        :param include_profiles: (boolean) Whether to include user profiles in the
+            results (default: True).
+        :param limit: An integer between 1 and 10 (default: 10).
+        :param typeahead_active: (boolean) Whether to use typeahead. Typeahead provides
+            exact matches, typo correction, fuzzy matching and boosts subreddits to the
+            top that the user is subscribed to (default: True).
+
+        :returns: Subreddits as :class:`.Subreddit` objects, and user profiles as
+            :class:`.Redditor` objects when the default arguments are used. If the
+            argument of ``include_profiles`` is ``False``, only :class:`.Subreddit`
+            objects are returned.
+
+        Example usage:
+
+        .. code-block:: python
+
+            reddit.subreddits.autocomplete("reddit dev")
+
+        """
+        params = {
+            "query": query,
+            "include_over_18": include_over_18,
+            "include_profiles": include_profiles,
+            "limit": limit,
+            "typeahead_active": typeahead_active,
+        }
+        return list(self._reddit.get(API_PATH["sub_autocomplete"], params=params))
+
     def default(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
     ) -> Iterator["praw.models.Subreddit"]:

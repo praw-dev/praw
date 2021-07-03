@@ -1,12 +1,18 @@
 """Test praw.models.subreddits."""
 from unittest import mock
 
-from praw.models import Subreddit
+from praw.models import Redditor, Subreddit
 
 from .. import IntegrationTest
 
 
 class TestSubreddits(IntegrationTest):
+    def test_autocomplete(self):
+        with self.use_cassette():
+            results = self.reddit.subreddits.autocomplete("nasa")
+        assert len(results) == 10
+        assert all(isinstance(x, (Redditor, Subreddit)) for x in results)
+
     def test_default(self):
         with self.use_cassette():
             subreddits = list(self.reddit.subreddits.default(limit=None))
