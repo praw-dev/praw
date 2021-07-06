@@ -537,3 +537,18 @@ class TestSubmissionModeration(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             Submission(self.reddit, "5ouli3").mod.unspoiler()
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_crowd_control_level(self, _):
+        self.reddit.read_only = False
+        submission = self.reddit.submission("4s2idz")
+        with self.use_cassette():
+            submission.mod.update_crowd_control_level(2)
+            modlog = next(
+                self.reddit.subreddit("mod").mod.log(
+                    action="adjust_post_crowd_control_level", limit=1
+                )
+            )
+            assert modlog.action == "adjust_post_crowd_control_level"
+            assert modlog.details == "medium"
+            assert modlog.target_fullname == submission.fullname

@@ -341,6 +341,43 @@ class SubmissionModeration(ThingModerationMixin):
         """
         self.thing._reddit.post(API_PATH["unspoiler"], data={"id": self.thing.fullname})
 
+    def update_crowd_control_level(self, level: int):
+        """Change the Crowd Control level of the submission.
+
+        :param level: An integer between 0 and 3.
+
+        **Level Descriptions**
+
+        ===== ======== ================================================================
+        Level Name     Description
+        ===== ======== ================================================================
+        0     Off      Crowd Control will not action any of the submission's commments.
+        1     Lenient  Comments from users who have negative karma in the subreddit are
+                       automatically collapsed.
+        2     Moderate Comments from new users and users with negative karma in the
+                       subreddit are automatically collapsed.
+        3     Strict   Comments from users who haven’t joined the subreddit, new users,
+                       and users with negative karma in the subreddit are automatically
+                       collapsed.
+        ===== ======== ================================================================
+
+        Example usage:
+
+        .. code-block:: python
+
+            submission = reddit.submission(id="745ryj")
+            submission.mod.update_crowd_control_level(2)
+
+        .. seealso::
+
+            :meth:`~.CommentModeration.show`
+
+        """
+        self.thing._reddit.post(
+            API_PATH["update_crowd_control"],
+            data={"id": self.thing.fullname, "level": level},
+        )
+
 
 class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, RedditBase):
     """A class for submissions to reddit.
