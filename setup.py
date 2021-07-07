@@ -26,7 +26,7 @@ extras = {
         "sphinx",
         "sphinx_rtd_theme",
     ],
-    "readthedocs": ["sphinx"],
+    "readthedocs": ["sphinx", "sphinx_rtd_theme"],
     "test": [
         "betamax >=0.8, <0.9",
         "betamax-matchers >=0.3.0, <0.5",
