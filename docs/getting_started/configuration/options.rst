@@ -35,7 +35,7 @@ OAuth Configuration Options
     application. See :ref:`oauth` for instructions on registering a Reddit application.
 :client_secret: The OAuth client secret associated with your registered Reddit
     application. This option is required for all application types, however, the value
-    must be set to ``None`` for **installed** applications.
+    must be set to ```` for **installed** applications.
 :redirect_uri: The redirect URI associated with your registered Reddit application. This
     field is unused for **script** applications and is only needed for both **web**
     applications, and **installed** applications when the :meth:`.url` method is used.
