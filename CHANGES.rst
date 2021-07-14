@@ -14,6 +14,8 @@ Unreleased
 - :meth:`.Inbox.mark_all_read` to mark all messages as read with one API call.
 - :meth:`~.InboxableMixin.unblock_subreddit` to unblock a subreddit.
 - :meth:`.update_crowd_control_level` to update the crowd control level of a post.
+- :meth:`.moderator_subreddits`, which returns information about the subreddits that the
+  authenticated user moderates, has been restored.
 
 7.3.0 (2021/06/17)
 ------------------

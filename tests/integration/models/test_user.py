@@ -80,6 +80,14 @@ class TestUser(IntegrationTest):
             me.praw_is_cached = True
             assert not hasattr(self.reddit.user.me(use_cache=False), "praw_is_cached")
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_moderator_subreddits(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestUser.test_moderator_subreddits"):
+            mod_subs = list(self.reddit.user.moderator_subreddits(limit=None))
+            assert mod_subs
+            assert all(isinstance(x, Subreddit) for x in mod_subs)
+
     def test_multireddits(self):
         self.reddit.read_only = False
         with self.use_cassette():
