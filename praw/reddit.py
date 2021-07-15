@@ -702,6 +702,7 @@ class Reddit:
         path: str,
         data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
         json=None,
+        params: Optional[Union[str, Dict[str, str]]] = None,
     ) -> Any:
         """Return parsed objects returned from a DELETE request to ``path``.
 
@@ -711,9 +712,12 @@ class Reddit:
         :param json: JSON-serializable object to send in the body of the request with a
             Content-Type header of application/json (default: None). If ``json`` is
             provided, ``data`` should not be.
+        :param params: The query parameters to add to the request (default: None).
 
         """
-        return self._objectify_request(data=data, json=json, method="DELETE", path=path)
+        return self._objectify_request(
+            data=data, json=json, method="DELETE", params=params, path=path
+        )
 
     def patch(
         self,
