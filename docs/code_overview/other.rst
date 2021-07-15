@@ -95,6 +95,7 @@ them bound to an attribute of one of the PRAW models.
     other/commenthelper
     other/config
     other/domainlisting
+    other/draftlist
     other/emoji
     other/fullnamemixin
     other/hover

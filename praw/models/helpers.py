@@ -4,11 +4,124 @@ from typing import TYPE_CHECKING, Generator, List, Optional, Union
 
 from ..const import API_PATH
 from .base import PRAWBase
+from .reddit.draft import Draft
 from .reddit.live import LiveThread
 from .reddit.multi import Multireddit, Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw
+
+
+class DraftHelper(PRAWBase):
+    """Provide a set of functions to interact with Drafts."""
+
+    def __call__(
+        self, *, draft_id: Optional[str] = None
+    ) -> Union[List["praw.models.Draft"], "praw.models.Draft"]:
+        """Return a list of the currently authenticated user's Drafts.
+
+        :param draft_id: When provided, return :class:`.Draft` instance (default:
+            ``None``).
+
+        :returns: A :class:`.Draft` instance if ``draft_id`` is provided. Otherwise, a
+            list of :class:`.Draft` objects.
+
+        .. note::
+
+            Drafts fetched using a specific draft ID are lazily loaded, so you might
+            have to access an attribute to get all the expected attributes.
+
+        This method is to be used to fetch a specific draft, like so:
+
+        .. code-block:: python
+
+            draft_id = "124862bc-e1e9-11eb-aa4f-e68667a77cbb"
+            draft = reddit.drafts(draft_id)
+            print(draft)
+
+        """
+        if draft_id is not None:
+            return Draft(self._reddit, id=draft_id)
+        return self._draft_list()
+
+    def _draft_list(self) -> List["praw.models.Draft"]:
+        """Get a list of Draft objects.
+
+        :returns: A list of instances of :class:`.Draft`.
+
+        """
+        return self._reddit.get(API_PATH["drafts"], params={"md_body": True})
+
+    def create(
+        self,
+        *,
+        flair_id: Optional[str] = None,
+        flair_text: Optional[str] = None,
+        is_public_link: bool = False,
+        nsfw: bool = False,
+        original_content: bool = False,
+        selftext: Optional[str] = None,
+        send_replies: bool = True,
+        spoiler: bool = False,
+        subreddit: Optional[
+            Union[str, "praw.models.Subreddit", "praw.models.UserSubreddit"]
+        ] = None,
+        title: Optional[str] = None,
+        url: Optional[str] = None,
+        **draft_kwargs,
+    ):
+        """Create a new Draft.
+
+        :param flair_id: The flair template to select (default: ``None``).
+        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
+            this value will set a custom text (default: ``None``). ``flair_id`` is
+            required when ``flair_text`` is provided.
+        :param is_public_link: Whether to enable public viewing of the draft before it
+            is submitted (default: ``False``).
+        :param nsfw: Whether the draft should be marked NSFW (default: ``False``).
+        :param original_content: Whether the submission should be marked as original
+            content (default: ``False``).
+        :param selftext: The Markdown formatted content for a text submission draft. Use
+            ``None`` to make a title-only submission draft (default: ``None``).
+            ``selftext`` can not be provided if ``url`` is provided.
+        :param send_replies: When ``True``, messages will be sent to the submission
+            author when comments are made to the submission (default: ``True``).
+        :param spoiler: Whether the submission should be marked as a spoiler (default:
+            ``False``).
+        :param subreddit: The subreddit to create the draft for. This accepts a
+            subreddit display name, :class:`.Subreddit` object, or
+            :class:`.UserSubreddit` object. If ``None``, the :class:`.UserSubreddit` of
+            currently authenticated user will be used (default: ``None``).
+        :param title: The title of the draft (default: ``None``).
+        :param url: The URL for a ``link`` submission draft (default: ``None``). ``url``
+            can not be provided if ``selftext`` is provided.
+
+        Additional keyword arguments can be provided to handle new parameters as Reddit
+        introduces them.
+
+        :returns: The new :class:`.Draft` object.
+
+        """
+        if selftext and url:
+            raise TypeError("Exactly one of `selftext` or `url` must be provided.")
+        if isinstance(subreddit, str):
+            subreddit = self._reddit.subreddit(subreddit)
+
+        data = Draft._prepare_data(
+            flair_id=flair_id,
+            flair_text=flair_text,
+            is_public_link=is_public_link,
+            nsfw=nsfw,
+            original_content=original_content,
+            selftext=selftext,
+            send_replies=send_replies,
+            spoiler=spoiler,
+            subreddit=subreddit,
+            title=title,
+            url=url,
+            **draft_kwargs,
+        )
+        return self._reddit.post(API_PATH["draft"], data=data)
 
 
 class LiveHelper(PRAWBase):

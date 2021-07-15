@@ -271,6 +271,25 @@ class Reddit:
 
         """
 
+        self.drafts = models.DraftHelper(self, None)
+        """An instance of :class:`.DraftHelper`.
+
+        Provides the interface for working with :class:`.Draft` instances.
+
+        For example, to list the currently authenticated user's drafts:
+
+        .. code-block:: python
+
+            drafts = reddit.drafts()
+
+        To create a draft on r/redditdev run:
+
+        .. code-block:: python
+
+            reddit.drafts.create(title="title", selftext="selftext", subreddit="redditdev")
+
+        """
+
         self.front = models.Front(self)
         """An instance of :class:`.Front`.
 
@@ -458,6 +477,8 @@ class Reddit:
             self.config.kinds["trophy"]: models.Trophy,
             "Button": models.Button,
             "Collection": models.Collection,
+            "Draft": models.Draft,
+            "DraftList": models.DraftList,
             "Image": models.Image,
             "LabeledMulti": models.Multireddit,
             "Listing": models.Listing,
@@ -471,6 +492,7 @@ class Reddit:
             "Submenu": models.Submenu,
             "TrophyList": models.TrophyList,
             "UserList": models.RedditorList,
+            "UserSubreddit": models.UserSubreddit,
             "button": models.ButtonWidget,
             "calendar": models.Calendar,
             "community-list": models.CommunityList,

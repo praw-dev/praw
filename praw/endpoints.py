@@ -44,6 +44,8 @@ API_PATH = {
     "delete_sr_image":         "r/{subreddit}/api/delete_sr_img",
     "deleteflair":             "r/{subreddit}/api/deleteflair",
     "distinguish":             "api/distinguish/",
+    "draft":                   "api/v1/draft",
+    "drafts":                  "api/v1/drafts",
     "domain":                  "domain/{domain}/",
     "duplicates":              "duplicates/{submission_id}/",
     "edit":                    "api/editusertext/",

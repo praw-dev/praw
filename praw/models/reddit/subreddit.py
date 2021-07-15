@@ -862,6 +862,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         collection_id: Optional[str] = None,
         discussion_type: Optional[str] = None,
         inline_media: Optional[Dict[str, "praw.models.InlineMedia"]] = None,
+        draft_id: Optional[str] = None,
     ) -> "praw.models.Submission":  # noqa: D301
         r"""Add a submission to the subreddit.
 
@@ -887,6 +888,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             traditional comments (default: None).
         :param inline_media: A dict of :class:`.InlineMedia` objects where the key is
             the placeholder name in ``selftext``.
+        :param draft_id: The ID of a draft to submit.
 
         :returns: A :class:`~.Submission` object for the newly created submission.
 
@@ -961,6 +963,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             ("flair_text", flair_text),
             ("collection_id", collection_id),
             ("discussion_type", discussion_type),
+            ("draft_id", draft_id),
         ):
             if value is not None:
                 data[key] = value
