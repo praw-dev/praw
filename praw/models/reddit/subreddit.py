@@ -589,6 +589,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
     def _parse_xml_response(self, response: Response):
         """Parse the XML from a response and raise any errors found."""
+        response.encoding = "utf-8"
         xml = response.text
         root = XML(xml)
         tags = [element.tag for element in root]
