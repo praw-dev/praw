@@ -420,9 +420,16 @@ class Reddit:
 
     def _prepare_common_authorizer(self, authenticator):
         if self._token_manager is not None:
-            if self.config._do_not_use_refresh_token != self.config.CONFIG_NOT_SET:
+            warn(
+                "Token managers have been depreciated and will be removed in the near"
+                " future. See https://www.reddit.com/r/redditdev/comments/olk5e6/"
+                "followup_oauth2_api_changes_regarding_refresh/ for more details.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
+            if self.config.refresh_token:
                 raise TypeError(
-                    "legacy ``refresh_token`` setting cannot be provided when providing"
+                    "``refresh_token`` setting cannot be provided when providing"
                     " ``token_manager``"
                 )
 
@@ -432,9 +439,9 @@ class Reddit:
                 post_refresh_callback=self._token_manager.post_refresh_callback,
                 pre_refresh_callback=self._token_manager.pre_refresh_callback,
             )
-        elif self.config._do_not_use_refresh_token != self.config.CONFIG_NOT_SET:
+        elif self.config.refresh_token:
             authorizer = Authorizer(
-                authenticator, refresh_token=self.config._do_not_use_refresh_token
+                authenticator, refresh_token=self.config.refresh_token
             )
         else:
             self._core = self._read_only_core

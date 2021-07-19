@@ -249,3 +249,29 @@ such as in installed applications where the end user could retrieve the ``client
     from each other (as the supplied device id *should* be a unique string per both
     device (in the case of a web app, server) and user (in the case of a web app,
     browser session).
+
+.. _using_refresh_tokens:
+
+Using a Saved Refresh Token
+---------------------------
+
+A saved refresh token can be used to immediately obtain an authorized instance of
+:class:`.Reddit` like so:
+
+.. code-block:: python
+
+    reddit = praw.Reddit(
+        client_id="SI8pN3DSbt0zor",
+        client_secret="xaxkj7HNh8kwg8e5t4m6KvSrbTI",
+        refresh_token="WeheY7PwgeCZj4S3QgUcLhKE5S2s4eAYdxM",
+        user_agent="testscript by u/fakebot3",
+    )
+    print(reddit.auth.scopes())
+
+The output from the above code displays which scopes are available on the
+:class:`.Reddit` instance.
+
+.. note::
+
+    Observe that ``redirect_uri`` does not need to be provided in such cases. It is only
+    needed when :meth:`.url` is used.

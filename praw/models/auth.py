@@ -105,19 +105,12 @@ class Auth(PRAWBase):
             whom the URL was generated for.
         :param duration: Either ``permanent`` or ``temporary`` (default: permanent).
             ``temporary`` authorizations generate access tokens that last only 1 hour.
-            ``permanent`` authorizations additionally generate a single-use refresh
-            token with a significantly longer expiration (~1 year) that is to be used to
-            fetch a new set of tokens. This value is ignored when ``implicit=True``.
+            ``permanent`` authorizations additionally generate a refresh token that
+            expires 1 year after the last use and can be used indefinitely to generate
+            new hour-long access tokens. This value is ignored when ``implicit=True``.
         :param implicit: For **installed** applications, this value can be set to use
             the implicit, rather than the code flow. When True, the ``duration``
             argument has no effect as only temporary tokens can be retrieved.
-
-        .. note::
-
-            Reddit's ``refresh_tokens`` currently are reusable, and do not expire.
-            However, that behavior is likely to change in the near future so it's best
-            to no longer rely upon it:
-            https://old.reddit.com/r/redditdev/comments/kvzaot/oauth2_api_changes_upcoming/
 
         """
         authenticator = self._reddit._read_only_core._authorizer._authenticator

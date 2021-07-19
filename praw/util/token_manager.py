@@ -6,7 +6,9 @@ There should be a 1-to-1 mapping between an instance of a subclass of
 A few proof of concept token manager classes are provided here, but it is expected that
 PRAW users will create their own token manager classes suitable for their needs.
 
-See :ref:`using_refresh_tokens` for examples on how to leverage these classes.
+.. deprecated:: 7.4.0
+
+    Tokens managers have been depreciated and will be removed in the near future.
 
 """
 import sqlite3
@@ -100,7 +102,6 @@ class SQLiteTokenManager(BaseTokenManager):
     Unlike, :class:`.FileTokenManager`, the initial database need not be created ahead
     of time, as it'll automatically be created on first use. However, initial
     ``refresh_tokens`` will need to be registered via :meth:`.register` prior to use.
-    See :ref:`sqlite_token_manager` for an example of use.
 
     .. warning::
 
