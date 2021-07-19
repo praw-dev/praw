@@ -6,7 +6,7 @@ from .listing.generator import ListingGenerator
 from .listing.mixins import SubredditListingMixin
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import praw
+    import praw
 
 
 class Front(SubredditListingMixin):

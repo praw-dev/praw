@@ -10,7 +10,7 @@ from .submission import Submission
 from .subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .... import praw
+    import praw
 
 
 class CollectionModeration(PRAWBase):

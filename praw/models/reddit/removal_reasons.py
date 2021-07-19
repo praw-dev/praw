@@ -8,7 +8,7 @@ from ...util.cache import cachedproperty
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .... import praw
+    import praw
 
 
 class RemovalReason(RedditBase):

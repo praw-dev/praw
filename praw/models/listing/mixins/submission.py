@@ -6,7 +6,7 @@ from ...base import PRAWBase
 from ..generator import ListingGenerator
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..... import praw
+    import praw
 
 
 class SubmissionListingMixin(PRAWBase):

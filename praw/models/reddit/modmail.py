@@ -6,7 +6,7 @@ from ...util import snake_case_keys
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .... import praw
+    import praw
 
 
 class ModmailConversation(RedditBase):
