@@ -6,7 +6,7 @@ from ...exceptions import InvalidURL
 from ..base import PRAWBase
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .... import praw
+    import praw
 
 
 class RedditBase(PRAWBase):

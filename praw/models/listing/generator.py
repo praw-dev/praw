@@ -6,7 +6,7 @@ from ..base import PRAWBase
 from .listing import FlairListing
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .... import praw
+    import praw
 
 
 class ListingGenerator(PRAWBase, Iterator):

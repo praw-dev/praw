@@ -7,7 +7,7 @@ from ...util.cache import cachedproperty
 from .subreddit import Subreddit, SubredditModeration
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .... import praw
+    import praw
 
 
 class UserSubreddit(Subreddit):

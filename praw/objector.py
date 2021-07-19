@@ -8,7 +8,7 @@ from .models.reddit.base import RedditBase
 from .util import snake_case_keys
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import praw
+    import praw
 
 
 class Objector:

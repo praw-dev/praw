@@ -6,7 +6,7 @@ from ..exceptions import DuplicateReplaceException
 from .reddit.more import MoreComments
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import praw
+    import praw
 
 
 class CommentForest:

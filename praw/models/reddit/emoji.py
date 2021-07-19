@@ -7,7 +7,7 @@ from ...exceptions import ClientException
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .... import praw
+    import praw
 
 
 class Emoji(RedditBase):

@@ -11,7 +11,7 @@ from .listing.generator import ListingGenerator
 from .util import stream_generator
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import praw
+    import praw
 
 
 class PartialRedditor(SimpleNamespace):

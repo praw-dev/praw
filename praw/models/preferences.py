@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Dict, Union
 from ..const import API_PATH
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import praw
+    import praw
 
 
 class Preferences:

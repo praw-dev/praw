@@ -8,7 +8,7 @@ from .base import RedditBase
 from .redditor import Redditor
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .... import praw
+    import praw
 
 
 class WikiPageModeration:

@@ -5,7 +5,7 @@ from ...const import API_PATH
 from .mixins import BaseListingMixin, RisingListingMixin
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .... import praw
+    import praw
 
 
 class DomainListing(BaseListingMixin, RisingListingMixin):

@@ -8,7 +8,7 @@ from .reddit.live import LiveThread
 from .reddit.multi import Multireddit, Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ... import praw
+    import praw
 
 
 class LiveHelper(PRAWBase):

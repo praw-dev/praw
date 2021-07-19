@@ -52,7 +52,7 @@ except ImportError:  # pragma: no cover
     UPDATE_CHECKER_MISSING = True
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .. import praw
+    import praw
 
 Comment = models.Comment
 Redditor = models.Redditor
