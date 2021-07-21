@@ -65,10 +65,17 @@ class User(PRAWBase):
     ) -> Iterator["praw.models.Subreddit"]:
         """Return a :class:`.ListingGenerator` of contributor subreddits.
 
-        These are subreddits that the user is a contributor of.
+        These are subreddits in which the user is an approved user.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
+        To print a list of the subreddits that you are an approved user in, try:
+
+        .. code-block:: python
+
+            for subreddit in reddit.user.contributor_subreddits(limit=None):
+                print(str(subreddit))
 
         """
         return ListingGenerator(
@@ -156,6 +163,30 @@ class User(PRAWBase):
             self._me = Redditor(self._reddit, _data=user_data)
         return self._me
 
+    def moderator_subreddits(
+        self, **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Iterator["praw.models.Subreddit"]:
+        """Return a :class:`.ListingGenerator` subreddits that the user moderates.
+
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
+
+        To print a list of the names of the subreddits you moderate, try:
+
+        .. code-block:: python
+
+            for subreddit in reddit.user.moderator_subreddits(limit=None):
+                print(str(subreddit))
+
+        .. seealso::
+
+            :meth:`.Redditor.moderated`
+
+        """
+        return ListingGenerator(
+            self._reddit, API_PATH["my_moderator"], **generator_kwargs
+        )
+
     def multireddits(self) -> List["praw.models.Multireddit"]:
         """Return a list of multireddits belonging to the user."""
         return self._reddit.get(API_PATH["my_multireddits"])
@@ -167,6 +198,13 @@ class User(PRAWBase):
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
+        To print a list of the subreddits that you are subscribed to, try:
+
+        .. code-block:: python
+
+            for subreddit in reddit.user.subreddits(limit=None):
+                print(str(subreddit))
 
         """
         return ListingGenerator(

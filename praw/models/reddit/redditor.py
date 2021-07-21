@@ -280,6 +280,8 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         :returns: A ``list`` of :class:`~.Subreddit` objects. Return ``[]`` if the
             redditor has no moderated subreddits.
 
+        :raises: ``prawcore.ServerError`` in certain cicumstances. See the note below.
+
         .. note::
 
             The redditor's own user profile subreddit will not be returned, but other
@@ -292,6 +294,29 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             for subreddit in reddit.redditor("spez").moderated():
                 print(subreddit.display_name)
                 print(subreddit.title)
+
+        .. note::
+
+            A ``prawcore.ServerError`` exception may be raised if the redditor moderates
+            a large number of subreddits. If that happens, try switching to
+            :ref:`read-only mode <read_only_application>`. For example,
+
+            .. code-block:: python
+
+                reddit.read_only = True
+                for subreddit in reddit.redditor("reddit").moderated():
+                    print(str(subreddit))
+
+            It is possible that requests made in read-only mode will also raise a
+            ``prawcore.ServerError`` exception.
+
+            When used in read-only mode, this method does not retrieve information about
+            subreddits that require certain special permissions to access, e.g., private
+            subreddits and premium-only subreddits.
+
+        .. seealso::
+
+            :meth:`.User.moderator_subreddits`
 
         """
         return self._reddit.get(API_PATH["moderated"].format(user=self)) or []
