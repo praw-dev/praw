@@ -3,14 +3,6 @@
 Working with Refresh Tokens
 ===========================
 
-.. note::
-
-    The process for using refresh tokens is in the process of changing on Reddit's end.
-    This documentation has been updated to be aligned with the future of how Reddit
-    handles refresh tokens, and will be the only supported method in PRAW 8+. For more
-    information please see:
-    https://old.reddit.com/r/redditdev/comments/kvzaot/oauth2_api_changes_upcoming/
-
 Reddit OAuth2 Scopes
 --------------------
 
@@ -81,34 +73,4 @@ Obtaining Refresh Tokens
 The following program can be used to obtain a refresh token with the desired scopes:
 
 .. literalinclude:: ../examples/obtain_refresh_token.py
-    :language: python
-
-.. _using_refresh_tokens:
-
-Using and Updating Refresh Tokens
----------------------------------
-
-Reddit refresh tokens can be used only once. When an authorization is refreshed the
-existing refresh token is consumed and a new access token and refresh token will be
-issued. While PRAW automatically handles refreshing tokens when needed, it does not
-automatically handle the storage of the refresh tokens. However, PRAW provides the
-facilities for you to manage your refresh tokens via custom subclasses of
-:class:`.BaseTokenManager`. For trivial examples, PRAW provides the
-:class:`.FileTokenManager`.
-
-The following program demonstrates how to prepare a file with an initial refresh token,
-and configure PRAW to both use that refresh token, and keep the file up-to-date with a
-valid refresh token.
-
-.. literalinclude:: ../examples/use_file_token_manager.py
-    :language: python
-
-.. _sqlite_token_manager:
-
-SQLiteTokenManager
-~~~~~~~~~~~~~~~~~~
-
-For more complex examples, PRAW provides the :class:`.SQLiteTokenManager`.
-
-.. literalinclude:: ../examples/use_sqlite_token_manager.py
     :language: python

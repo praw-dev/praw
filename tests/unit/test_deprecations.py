@@ -5,6 +5,7 @@ import pytest
 from praw import Reddit
 from praw.exceptions import APIException, WebSocketException
 from praw.models.reddit.user_subreddit import UserSubreddit
+from praw.util.token_manager import FileTokenManager
 
 from . import UnitTest
 
@@ -59,19 +60,19 @@ class TestDeprecation(UnitTest):
             self.reddit.submission("1234").gild()
             assert excinfo.value.args[0] == "`.gild` has been renamed to `.award`."
 
-    def test_reddit_user_me_read_only(self):
-        with pytest.raises(DeprecationWarning):
-            self.reddit.user.me()
-
-    def test_reddit_refresh_token(self):
+    def test_reddit_token_manager(self):
         with pytest.raises(DeprecationWarning):
             Reddit(
                 client_id="dummy",
                 client_secret=None,
                 redirect_uri="dummy",
-                refresh_token="dummy",
                 user_agent="dummy",
+                token_manager=FileTokenManager("name"),
             )
+
+    def test_reddit_user_me_read_only(self):
+        with pytest.raises(DeprecationWarning):
+            self.reddit.user.me()
 
     def test_user_subreddit_as_dict(self):
         user_subreddit = UserSubreddit(None, display_name="test")

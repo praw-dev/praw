@@ -16,6 +16,13 @@ Unreleased
 - :meth:`.update_crowd_control_level` to update the crowd control level of a post.
 - :meth:`.moderator_subreddits`, which returns information about the subreddits that the
   authenticated user moderates, has been restored.
+- The configuration setting ``refresh_token`` has been added back. See
+  https://www.reddit.com/r/redditdev/comments/olk5e6/followup_oauth2_api_changes_regarding_refresh/
+  for more info.
+
+**Deprecated**
+
+- :class:`.Reddit` keyword argument ``token_manager``.
 
 7.3.0 (2021/06/17)
 ------------------
