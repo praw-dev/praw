@@ -181,6 +181,6 @@ Earlier versions of PRAW were released under `GPLv3
 Sponsors
 --------
 
-.. image:: NucleiLogo.png
+.. image:: https://github.com/praw-dev/praw/blob/36fa3060b8938815feb45d07541877c8ce994cbb/docs/package_info/NucleiLogo.png
     :alt: Nuclei
     :target: https://nuclei.ai
