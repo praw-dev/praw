@@ -181,6 +181,6 @@ Earlier versions of PRAW were released under `GPLv3
 Sponsors
 --------
 
-.. raw:: html
-
-    <a alt="Nuclei" href="https://nuclei.ai" rel="nofollow"><img src="https://nuclei.ai/nuclei_logo_with_text.png" height="75px"></a>
+.. image:: NucleiLogo.png
+    :alt: Nuclei
+    :target: https://nuclei.ai
