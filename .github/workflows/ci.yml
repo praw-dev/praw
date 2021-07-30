@@ -92,14 +92,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install .[test]
         pip install .[ci]
-    - name: Test with pytest ${{ matrix.python-version }}
+    - name: Test with pytest
       run: coverage run --source praw --module pytest
-    - name: Coveralls Parallel
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        flag-name: run-${{ matrix.python-version }}
-        parallel: true
+    - env:
+        COVERALLS_PARALLEL: true
+        COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      name: Submit to coveralls
+      run: coveralls --service=github
     - name: Check coverage
       run: coverage report -m --fail-under=100
     strategy:
