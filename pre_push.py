@@ -52,7 +52,7 @@ def run_static():
     success &= do_process(["flynt", "-q", "-tc", "-ll", "1000", "."])
     # needs to be first because flynt is not black compliant
     success &= do_process(["black", "."])
-    success &= do_process(["docstrfmt", "-e", "docs/examples", "."])
+    success &= do_process(["docstrfmt", "."])
     success &= do_process(["isort", "."])
     # Linters
     success &= do_process(
