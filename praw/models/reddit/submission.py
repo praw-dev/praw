@@ -593,10 +593,11 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         elif attribute == "poll_data":
             value = PollData(self._reddit, value)
         elif (
-            self._reddit.config.warn_comment_sort
-            and attribute == "comment_sort"
+            attribute == "comment_sort"
             and hasattr(self, "_fetched")
             and self._fetched
+            and hasattr(self, "_reddit")
+            and self._reddit.config.warn_comment_sort
         ):
             warn(
                 "The comments for this submission have already been fetched, "
