@@ -117,6 +117,9 @@ class Config:
         self.check_for_updates = self._config_boolean(
             self._fetch_or_not_set("check_for_updates")
         )
+        self.warn_comment_sort = self._config_boolean(
+            self._fetch_default("warn_comment_sort", True)
+        )
         self.kinds = {
             x: self._fetch(f"{x}_kind")
             for x in [

@@ -6,6 +6,12 @@ PRAW follows `semantic versioning <http://semver.org/>`_.
 Unreleased
 ----------
 
+**Added**
+
+- Log a warning if a submissions ``comment_sort`` attribute is updated after the
+  submission has already been fetched and a ``warn_comment_sort`` config setting to turn
+  off the warning.
+
 7.4.0 (2021/07/30)
 ------------------
 
