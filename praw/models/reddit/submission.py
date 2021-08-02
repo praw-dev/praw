@@ -1,6 +1,7 @@
 """Provide the Submission class."""
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 from urllib.parse import urljoin
+from logging import getLogger
 
 from prawcore import Conflict
 
@@ -18,6 +19,8 @@ from .subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw
+
+logger = getLogger("praw")
 
 
 class SubmissionFlair:
@@ -591,6 +594,11 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             value = Subreddit(self._reddit, value)
         elif attribute == "poll_data":
             value = PollData(self._reddit, value)
+        elif attribute == "comment_sort" and self._fetched:
+            logger.warning(
+                "The comments for this submission have already been fetched, "
+                "so the updated comment_sort will not have any effect"
+            )
         super().__setattr__(attribute, value)
 
     def _chunk(self, other_submissions, chunk_size):
