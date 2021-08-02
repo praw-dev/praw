@@ -2030,6 +2030,23 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         for template in self.subreddit._reddit.get(url):
             yield template
 
+    def get(
+        self,
+    ) -> Generator[Dict[str, Union[str, int, bool, List[Dict[str, str]]]], None, None]:
+        """Iterate through the link flair templates.
+
+        For example:
+
+        .. code-block:: python
+
+            for template in reddit.subreddit("NAME").flair.link_templates.get():
+                print(template)
+
+        """
+        url = API_PATH["flairselector"].format(subreddit=self.subreddit)
+        for template in self.subreddit._reddit.post(url, data={"is_newlink": True})['choices']:
+            yield template
+
     def add(
         self,
         text: str,
