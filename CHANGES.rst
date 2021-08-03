@@ -8,7 +8,7 @@ Unreleased
 
 **Added**
 
-- Log a warning if a submissions ``comment_sort`` attribute is updated after the
+- Log a warning if a submission's ``comment_sort`` attribute is updated after the
   submission has already been fetched and a ``warn_comment_sort`` config setting to turn
   off the warning.
 

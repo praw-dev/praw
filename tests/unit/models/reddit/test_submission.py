@@ -49,6 +49,26 @@ class TestSubmission(UnitTest):
         with pytest.raises(ValueError):
             Submission(self.reddit, url="")
 
+    @pytest.mark.filterwarnings("error", category=UserWarning)
+    def test_comment_sort_warning(self):
+        with pytest.raises(UserWarning) as excinfo:
+            submission = self.reddit.submission("1234")
+            submission._fetched = True
+            submission.comment_sort = "new"
+        assert (
+            excinfo.value.args[0]
+            == "The comments for this submission have already been fetched, "
+            "so the updated comment_sort will not have any effect"
+        )
+
+    @pytest.mark.filterwarnings("error", category=UserWarning)
+    def test_comment_sort_warning__disabled(self, caplog):
+        self.reddit.config.warn_comment_sort = False
+        submission = self.reddit.submission("1234")
+        submission._fetched = True
+        submission.comment_sort = "new"
+        assert caplog.records == []
+
     def test_construct_from_url(self):
         assert Submission(self.reddit, url="http://my.it/2gmzqe") == "2gmzqe"
 
@@ -114,23 +134,3 @@ class TestSubmission(UnitTest):
     def test_shortlink(self):
         submission = Submission(self.reddit, _data={"id": "dummy"})
         assert submission.shortlink == "https://redd.it/dummy"
-
-    @pytest.mark.filterwarnings("error", category=UserWarning)
-    def test_comment_sort_warning(self):
-        with pytest.raises(UserWarning) as excinfo:
-            submission = self.reddit.submission("1234")
-            submission._fetched = True
-            submission.comment_sort = "new"
-        assert (
-            excinfo.value.args[0]
-            == "The comments for this submission have already been fetched, "
-            "so the updated comment_sort will not have any effect"
-        )
-
-    @pytest.mark.filterwarnings("error", category=UserWarning)
-    def test_comment_sort_warning__disabled(self, caplog):
-        self.reddit.config.warn_comment_sort = False
-        submission = self.reddit.submission("1234")
-        submission._fetched = True
-        submission.comment_sort = "new"
-        assert caplog.records == []
