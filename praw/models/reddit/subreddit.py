@@ -935,6 +935,17 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
                 inline
 
+        .. note::
+
+            To submit a post to a subreddit with the "news" flair, you can get
+            the flair id like this:
+
+            .. code-block::
+
+                choices = list(subreddit.link_templates.user_selectable())
+                template_id = next(x for x in choices if x["flair_text"] == "news")["flair_template_id"]
+                subreddit.submit("title", url="https://www.news.com/", flair_id=template_id)
+
         .. seealso::
 
             - :meth:`~.Subreddit.submit_image` to submit images
