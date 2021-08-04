@@ -2016,7 +2016,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
     def __iter__(
         self,
     ) -> Generator[Dict[str, Union[str, int, bool, List[Dict[str, str]]]], None, None]:
-        """Iterate through the link flair templates.
+        """Iterate through the link flair templates as a moderator.
 
         For example:
 
@@ -2028,23 +2028,6 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         """
         url = API_PATH["link_flair"].format(subreddit=self.subreddit)
         for template in self.subreddit._reddit.get(url):
-            yield template
-
-    def get(
-        self,
-    ) -> Generator[Dict[str, Union[str, int, bool, List[Dict[str, str]]]], None, None]:
-        """Iterate through the link flair templates.
-
-        For example:
-
-        .. code-block:: python
-
-            for template in reddit.subreddit("NAME").flair.link_templates.get():
-                print(template)
-
-        """
-        url = API_PATH["flairselector"].format(subreddit=self.subreddit)
-        for template in self.subreddit._reddit.post(url, data={"is_newlink": True})['choices']:
             yield template
 
     def add(
@@ -2106,6 +2089,25 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         """
         self._clear(is_link=True)
+
+    def user_selectable(
+        self,
+    ) -> Generator[Dict[str, Union[str, bool]], None, None]:
+        """Iterate through the link flair templates as a regular user.
+
+        For example:
+
+        .. code-block:: python
+
+            for template in reddit.subreddit("NAME").flair.link_templates.user_selectable():
+                print(template)
+
+        """
+        url = API_PATH["flairselector"].format(subreddit=self.subreddit)
+        for template in self.subreddit._reddit.post(url, data={"is_newlink": True})[
+            "choices"
+        ]:
+            yield template
 
 
 class SubredditModeration:
