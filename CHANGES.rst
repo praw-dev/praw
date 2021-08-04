@@ -8,8 +8,7 @@ Unreleased
 
 **Added**
 
-- :meth:`~.SubredditLinkFlairTemplates.user_selectable` to get available subreddit link
-  flairs
+- :meth:`~.user_selectable` to get available subreddit link flairs.
 
 7.4.0 (2021/07/30)
 ------------------
