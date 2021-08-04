@@ -1,6 +1,7 @@
 """Provide the Submission class."""
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 from urllib.parse import urljoin
+from warnings import warn
 
 from prawcore import Conflict
 
@@ -591,6 +592,17 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             value = Subreddit(self._reddit, value)
         elif attribute == "poll_data":
             value = PollData(self._reddit, value)
+        elif (
+            attribute == "comment_sort"
+            and hasattr(self, "_fetched")
+            and self._fetched
+            and hasattr(self, "_reddit")
+            and self._reddit.config.warn_comment_sort
+        ):
+            warn(
+                "The comments for this submission have already been fetched, "
+                "so the updated comment_sort will not have any effect"
+            )
         super().__setattr__(attribute, value)
 
     def _chunk(self, other_submissions, chunk_size):
