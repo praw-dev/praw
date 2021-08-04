@@ -1289,6 +1289,16 @@ class TestSubredditLinkFlairTemplates(IntegrationTest):
         with self.use_cassette():
             self.subreddit.flair.link_templates.clear()
 
+    def test_user_selectable(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            templates = list(self.subreddit.flair.link_templates.user_selectable())
+        assert len(templates) >= 2
+
+        for template in templates:
+            assert template["flair_template_id"]
+            assert template["flair_text"]
+
 
 class TestSubredditListings(IntegrationTest):
     def test_comments(self):

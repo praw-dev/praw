@@ -11,6 +11,7 @@ Unreleased
 - Log a warning if a submission's ``comment_sort`` attribute is updated after the
   submission has already been fetched and a ``warn_comment_sort`` config setting to turn
   off the warning.
+- :meth:`.user_selectable` to get available subreddit link flairs.
 
 7.4.0 (2021/07/30)
 ------------------
