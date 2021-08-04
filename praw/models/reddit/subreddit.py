@@ -937,8 +937,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. note::
 
-            To submit a post to a subreddit with the "news" flair, you can get
-            the flair id like this:
+            To submit a post to a subreddit with the "news" flair, you can get the flair
+            id like this:
 
             .. code-block::
 
