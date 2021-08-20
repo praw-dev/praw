@@ -74,3 +74,17 @@ The following program can be used to obtain a refresh token with the desired sco
 
 .. literalinclude:: ../examples/obtain_refresh_token.py
     :language: python
+
+This script assumes you have configured your application's ``redirect uri`` to ``localhost:8080``
+
+When you execute this script interactively:
+
+- You will be prompted for a comma-separated list of scopes
+- You will be given a URL that will take you through the auth follow
+- Reddit will ask you for user authentication and ask you to grant the application permissions
+- On completion, the user will have a new authorized application configured
+- A refresh token is displayed in the browser and on the command line
+
+You only have to run this script once for each refresh token. The refresh token
+(along with the application's client_id, client_secret) are valid credentials until 
+manually revoked by the user.
