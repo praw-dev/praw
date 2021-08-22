@@ -27,10 +27,10 @@ defines which application types can use which flows:
 .. warning::
 
     For the sake of brevity, the following examples pass authentication information via
-    arguments to :py:func:`praw.Reddit`. If you do this, you need to be careful not to
-    reveal this information to the outside world if you share your code. It is
-    recommended to use a :ref:`praw.ini file <praw.ini>` in order to keep your
-    authentication information separate from your code.
+    arguments to :class:`.Reddit`. If you do this, you need to be careful not to reveal
+    this information to the outside world if you share your code. It is recommended to
+    use a :ref:`praw.ini file <praw.ini>` in order to keep your authentication
+    information separate from your code.
 
 .. _password_flow:
 
