@@ -147,7 +147,81 @@ class TestReddit(UnitTest):
                     "errors": [
                         [
                             "RATELIMIT",
-                            "You are doing that too much. Try again in 5 seconds.",
+                            "Some unexpected error message",
+                            "ratelimit",
+                        ]
+                    ]
+                }
+            },
+        ],
+    )
+    @mock.patch("time.sleep", return_value=None)
+    def test_post_ratelimit__invalid_rate_limit_message(self, mock_sleep, _):
+        with pytest.raises(RedditAPIException) as exception:
+            self.reddit.post("test")
+        assert exception.value.message == "Some unexpected error message"
+        mock_sleep.assert_not_called()
+
+    @mock.patch(
+        "praw.Reddit.request",
+        side_effect=[
+            {
+                "json": {
+                    "errors": [
+                        [
+                            "RATELIMIT",
+                            "You are doing that too much. Try again in 6 seconds.",
+                            "ratelimit",
+                        ]
+                    ]
+                }
+            },
+        ],
+    )
+    @mock.patch("time.sleep", return_value=None)
+    def test_post_ratelimit__over_threshold__seconds(self, mock_sleep, _):
+        with pytest.raises(RedditAPIException) as exception:
+            self.reddit.post("test")
+        assert (
+            exception.value.message
+            == "You are doing that too much. Try again in 6 seconds."
+        )
+        mock_sleep.assert_not_called()
+
+    @mock.patch(
+        "praw.Reddit.request",
+        side_effect=[
+            {
+                "json": {
+                    "errors": [
+                        [
+                            "RATELIMIT",
+                            "You are doing that too much. Try again in 1 minute.",
+                            "ratelimit",
+                        ]
+                    ]
+                }
+            },
+        ],
+    )
+    @mock.patch("time.sleep", return_value=None)
+    def test_post_ratelimit__over_threshold__minutes(self, __, _):
+        with pytest.raises(RedditAPIException) as exception:
+            self.reddit.post("test")
+        assert (
+            exception.value.message
+            == "You are doing that too much. Try again in 1 minute."
+        )
+
+    @mock.patch(
+        "praw.Reddit.request",
+        side_effect=[
+            {
+                "json": {
+                    "errors": [
+                        [
+                            "RATELIMIT",
+                            "You are doing that too much. Try again in 2 milliseconds.",
                             "ratelimit",
                         ]
                     ]
@@ -158,29 +232,7 @@ class TestReddit(UnitTest):
                     "errors": [
                         [
                             "RATELIMIT",
-                            "You are doing that too much. Try again in 5 seconds.",
-                            "ratelimit",
-                        ]
-                    ]
-                }
-            },
-            {
-                "json": {
-                    "errors": [
-                        [
-                            "RATELIMIT",
-                            "You are doing that too much. Try again in 10 minutes.",
-                            "ratelimit",
-                        ]
-                    ]
-                }
-            },
-            {
-                "json": {
-                    "errors": [
-                        [
-                            "RATELIMIT",
-                            "APRIL FOOLS FROM REDDIT, TRY AGAIN",
+                            "You are doing that too much. Try again in 1 millisecond.",
                             "ratelimit",
                         ]
                     ]
@@ -190,22 +242,102 @@ class TestReddit(UnitTest):
         ],
     )
     @mock.patch("time.sleep", return_value=None)
-    def test_post_ratelimit(self, __, _):
-        with pytest.raises(RedditAPIException) as exc:
+    def test_post_ratelimit__under_threshold__milliseconds(self, mock_sleep, _):
+        self.reddit.post("test")
+        mock_sleep.assert_has_calls([mock.call(1), mock.call(1)])
+
+    @mock.patch(
+        "praw.Reddit.request",
+        side_effect=[
+            {
+                "json": {
+                    "errors": [
+                        [
+                            "RATELIMIT",
+                            "You are doing that too much. Try again in 1 minute.",
+                            "ratelimit",
+                        ]
+                    ]
+                }
+            },
+            {},
+        ],
+    )
+    @mock.patch("time.sleep", return_value=None)
+    def test_post_ratelimit__under_threshold__minutes(self, mock_sleep, _):
+        self.reddit.config.ratelimit_seconds = 60
+        self.reddit.post("test")
+        mock_sleep.assert_has_calls([mock.call(61)])
+
+    @mock.patch(
+        "praw.Reddit.request",
+        side_effect=[
+            {
+                "json": {
+                    "errors": [
+                        [
+                            "RATELIMIT",
+                            "You are doing that too much. Try again in 5 seconds.",
+                            "ratelimit",
+                        ]
+                    ]
+                }
+            },
+            {},
+        ],
+    )
+    @mock.patch("time.sleep", return_value=None)
+    def test_post_ratelimit__under_threshold__seconds(self, mock_sleep, _):
+        self.reddit.post("test")
+        mock_sleep.assert_has_calls([mock.call(6)])
+
+    @mock.patch(
+        "praw.Reddit.request",
+        side_effect=[
+            {
+                "json": {
+                    "errors": [
+                        [
+                            "RATELIMIT",
+                            "You are doing that too much. Try again in 5 seconds.",
+                            "ratelimit",
+                        ]
+                    ]
+                }
+            },
+            {
+                "json": {
+                    "errors": [
+                        [
+                            "RATELIMIT",
+                            "You are doing that too much. Try again in 3 seconds.",
+                            "ratelimit",
+                        ]
+                    ]
+                }
+            },
+            {
+                "json": {
+                    "errors": [
+                        [
+                            "RATELIMIT",
+                            "You are doing that too much. Try again in 1 second.",
+                            "ratelimit",
+                        ]
+                    ]
+                }
+            },
+        ],
+    )
+    @mock.patch("time.sleep", return_value=None)
+    def test_post_ratelimit__under_threshold__seconds_failure(self, mock_sleep, _):
+        with pytest.raises(RedditAPIException) as exception:
             self.reddit.post("test")
         assert (
-            exc.value.message == "You are doing that too much. Try again in 5 seconds."
+            exception.value.message
+            == "You are doing that too much. Try again in 1 second."
         )
-        with pytest.raises(RedditAPIException) as exc2:
-            self.reddit.post("test")
-        assert (
-            exc2.value.message
-            == "You are doing that too much. Try again in 10 minutes."
-        )
-        with pytest.raises(RedditAPIException) as exc3:
-            self.reddit.post("test")
-        assert exc3.value.message == "APRIL FOOLS FROM REDDIT, TRY AGAIN"
-        assert self.reddit.post("test") == {}
+        mock_sleep.assert_has_calls([mock.call(6), mock.call(4), mock.call(2)])
 
     def test_read_only__with_authenticated_core(self):
         with Reddit(

@@ -80,15 +80,13 @@ These are options that do not belong in another category, but still play a part 
 :check_for_async: When ``true``, check if PRAW is being ran in an asynchronous
     environment whenever a request is made. If so, a warning will be logged recommending
     the usage of `Async PRAW <https://asyncpraw.readthedocs.io/>`_. (default: ``true``)
-:ratelimit_seconds: Controls the maximum amount of seconds PRAW will capture ratelimits
-    returned in JSON data. Because this can be as high as 10 minutes, only ratelimits of
-    up to 5 seconds are captured and waited on by default. Should be a number
-    representing the amount of seconds to sleep.
+:ratelimit_seconds: Controls the maximum number of seconds PRAW will capture ratelimits
+    returned in JSON data. Because this can be as high as 14 minutes, only ratelimits of
+    up to 5 seconds are captured and waited on by default.
 
     .. note::
 
-        PRAW sleeps for the ratelimit plus either 1/10th of the ratelimit or 1 second,
-        whichever is smallest.
+        PRAW sleeps for the ratelimit value plus 1 second.
 
 :timeout: Controls the amount of time PRAW will wait for a request from Reddit to
     complete before throwing an exception. By default, PRAW waits 16 seconds before

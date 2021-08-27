@@ -12,6 +12,7 @@ Unreleased
   submission has already been fetched and a ``warn_comment_sort`` config setting to turn
   off the warning.
 - :meth:`.user_selectable` to get available subreddit link flairs.
+- Automatic RateLimit handling will support errors with millisecond resolution.
 
 7.4.0 (2021/07/30)
 ------------------
