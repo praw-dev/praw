@@ -83,7 +83,7 @@ class Reddit:
     """
 
     update_checked = False
-    _ratelimit_regex = re.compile(r"([0-9]{1,2}) (seconds?|minutes?)")
+    _ratelimit_regex = re.compile(r"([0-9]{1,3}) (milliseconds?|seconds?|minutes?)")
 
     @property
     def _next_unique(self) -> int:
@@ -692,6 +692,8 @@ class Reddit:
                 seconds = int(amount_search.group(1))
                 if amount_search.group(2).startswith("minute"):
                     seconds *= 60
+                elif amount_search.group(2).startswith("millisecond"):
+                    seconds = 0
                 if seconds <= int(self.config.ratelimit_seconds):
                     sleep_seconds = seconds + 1
                     return sleep_seconds
