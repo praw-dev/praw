@@ -690,10 +690,10 @@ class Reddit:
                 if not amount_search:
                     break
                 seconds = int(amount_search.group(1))
-                if "minute" in amount_search.group(2):
+                if amount_search.group(2).startswith("minute"):
                     seconds *= 60
                 if seconds <= int(self.config.ratelimit_seconds):
-                    sleep_seconds = seconds + min(seconds / 10, 1)
+                    sleep_seconds = seconds + 1
                     return sleep_seconds
         return None
 
@@ -756,28 +756,29 @@ class Reddit:
         """
         if json is None:
             data = data or {}
-        try:
-            return self._objectify_request(
-                data=data,
-                files=files,
-                json=json,
-                method="POST",
-                params=params,
-                path=path,
-            )
-        except RedditAPIException as exception:
-            seconds = self._handle_rate_limit(exception=exception)
-            if seconds is not None:
-                logger.debug(f"Rate limit hit, sleeping for {seconds:.2f} seconds")
-                time.sleep(seconds)
+
+        attempts = 3
+        last_exception = None
+        while attempts > 0:
+            attempts -= 1
+            try:
                 return self._objectify_request(
                     data=data,
                     files=files,
+                    json=json,
                     method="POST",
                     params=params,
                     path=path,
                 )
-            raise
+            except RedditAPIException as exception:
+                last_exception = exception
+                seconds = self._handle_rate_limit(exception=exception)
+                if seconds is None:
+                    break
+                second_string = "second" if seconds == 1 else "seconds"
+                logger.debug(f"Rate limit hit, sleeping for {seconds} {second_string}")
+                time.sleep(seconds)
+        raise last_exception
 
     def put(
         self,
