@@ -26,6 +26,7 @@ Documentation Contributors
 - Federico Gallo `@Karmavil <https://github.com/Karmavil>`_
 - Aidan Welch `@AidanWelch <https://github.com/AidanWelch>`_
 - Tom Eagles `@deplorableword <https://github.com/deplorableword>`_
+- Mohammad Ghalayini `@mghalayini <https://github.com/mghalayini>`_
 - Add "Name <email (optional)> and github profile link" above this line.
 
 Logo Creator
