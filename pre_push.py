@@ -3,12 +3,8 @@
 
 import argparse
 import sys
-from os import path
-from shutil import rmtree
 from subprocess import CalledProcessError, check_call
-from tempfile import mkdtemp
-
-current_directory = path.abspath(path.join(__file__, ".."))
+from tempfile import TemporaryDirectory
 
 
 def do_process(args, shell=False):
@@ -41,35 +37,10 @@ def run_static():
 
     """
     success = True
-    # Formatters
-    success &= do_process(
-        [
-            sys.executable,
-            path.join(current_directory, "tools", "static_word_checks.py"),
-            "--replace",
-        ]
-    )
-    success &= do_process(["flynt", "-q", "-tc", "-ll", "1000", "."])
-    # needs to be first because flynt is not black compliant
-    success &= do_process(["black", "."])
-    success &= do_process(["docstrfmt", "."])
-    success &= do_process(["isort", "."])
-    # Linters
-    success &= do_process(
-        [
-            sys.executable,
-            path.join(current_directory, "tools", "check_documentation.py"),
-        ]
-    )
-    success &= do_process(["flake8"])
-    success &= do_process(["pydocstyle", "praw"])
-    # success &= do_process(["pylint", "--rcfile=.pylintrc", "praw"])
+    success &= do_process(["pre-commit", "run", "--all-files"])
 
-    tmp_dir = mkdtemp()
-    try:
+    with TemporaryDirectory() as tmp_dir:
         success &= do_process(["sphinx-build", "-W", "--keep-going", "docs", tmp_dir])
-    finally:
-        rmtree(tmp_dir)
 
     return success
 
