@@ -11,7 +11,6 @@ PRAW users will create their own token manager classes suitable for their needs.
     Tokens managers have been depreciated and will be removed in the near future.
 
 """
-import sqlite3
 from abc import ABC, abstractmethod
 
 
@@ -121,6 +120,8 @@ class SQLiteTokenManager(BaseTokenManager):
 
         """
         super().__init__()
+        import sqlite3
+
         self._connection = sqlite3.connect(database)
         self._connection.execute(
             "CREATE TABLE IF NOT EXISTS tokens (id, refresh_token, updated_at)"
