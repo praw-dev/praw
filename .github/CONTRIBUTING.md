@@ -26,16 +26,24 @@ One of the simplest ways to help with PRAW is by answering others'
 questions. When responding, always be positive. While something may be obvious
 to you, it likely is not to the person asking the question.
 
-## Pull Request Creation
+## Creating Pull Requests
 
 0. If you are fixing an already filed issue, please indicate your intentions by
    commenting on the issue. This act will hopefully minimize any duplicate
    work.
 
-0. Prior to creating a pull request run the `pre_push.py` script. This script
-   depends on the tools `black` `flake8`, `pylint`, `pydocstyle`, `sphinx` and `sphinx_rtd_theme`. They can
-   be installed via `pip install black flake8 pydocstyle pylint sphinx sphinx_rtd_theme` or via
-   `pip install praw[lint]`.
+0. Before commiting, make sure to install [Pre-Commit](https://pre-commit.com/)
+   and the pre-commit hooks, which ensure any new code conforms to PRAW's
+   quality and style guidelines. To do so, install the linting dependencies
+   with `pip install praw[lint]`, then by the hooks with `pre-commit install`.
+   They will now run automatically every time you commit. If one of the formatters
+   (e.g. Black, isort) changes one or more files, the commit will automatically abort
+   so you can double-check the changes. If everything looks good, just `git add .` and
+   commit again.
+
+0. Prior to creating a pull request, run the `pre_push.py` script.
+   This runs the pre-commit suite on all files, as well as builds the docs.
+   You'll need to have installed the linting dependencies first (see previous).
 
 0. Add yourself as a contributor to the ``AUTHORS.rst``.
 

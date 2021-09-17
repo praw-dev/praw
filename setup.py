@@ -15,14 +15,9 @@ with open(path.join(HERE, PACKAGE_NAME, "const.py"), encoding="utf-8") as fp:
 
 extras = {
     "ci": ["coveralls"],
-    "dev": ["packaging", "pre-commit"],
+    "dev": ["packaging"],
     "lint": [
-        "black",
-        "docstrfmt",
-        "flake8",
-        "flynt",
-        "isort",
-        "pydocstyle",
+        "pre-commit",
         "sphinx",
         "sphinx_rtd_theme",
     ],

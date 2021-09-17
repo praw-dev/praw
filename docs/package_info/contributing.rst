@@ -5,22 +5,21 @@ PRAW gladly welcomes new contributions. As with most larger projects, we have an
 established consistent way of doing things. A consistent style increases readability,
 decreases bug-potential and makes it faster to understand how everything works together.
 
-PRAW follows :PEP:`8` and :PEP:`257`. The ``pre_push.py`` script can be used to test for
-compliance with these PEPs in addition to providing a few other checks. The following
-are PRAW-specific guidelines in addition to those PEP's.
+PRAW follows :PEP:`8` and :PEP:`257`. `Pre-Commit <https://pre-commit.com>` is used to
+manage a suite of pre-commit hooks that enforce conformance with these PEPs along with
+several other checks. Additionally, the ``pre_push.py`` script can be used to run the
+full pre-commit suite and the docs build prior to submitting a Pull Request. The
+following are PRAW-specific guidelines in addition to those PEPs.
 
 .. note::
 
-    Python 3.6+ is needed to run the script.
-
-.. note::
-
-    In order to install the dependencies needed to run the script, you can install the
-    ``[dev]`` package of praw, like so:
+    In order to use the pre-commit hooks and the ``pre_push.py`` dependencies, install
+    PRAW's ``[lint]`` extra, followed by the appropriate Pre-Commit command:
 
     .. code-block:: bash
 
-        pip install praw[dev]
+        pip install praw[lint]
+        pre-commit install
 
 Code
 ----
@@ -78,9 +77,9 @@ The environment variables are (listed in bash export format):
     export prawtest_username=myusername
     export prawtest_user_agent=praw_pytest
 
-By setting these environment variables prior to running ``python setup.py test``, when
-adding or updating cassettes, instances of ``mypassword`` will be replaced by the
-placeholder text ``<PASSWORD>`` and similar for the other environment variables.
+By setting these environment variables prior to running ``pytest``, when adding or
+updating cassettes, instances of ``mypassword`` will be replaced by the placeholder text
+``<PASSWORD>`` and similar for the other environment variables.
 
 To use tokens instead of username/password set ``prawtest_refresh_token`` instead of
 ``prawtest_password`` and ``prawtest_username``.
@@ -104,8 +103,9 @@ Static Checker
 ~~~~~~~~~~~~~~
 
 PRAW's test suite comes with a checker tool that can warn you of using incorrect
-documentation styles (using ``.. code-block::`` instead of ``.. code::``, using ``/r/``
-instead of ``r/``, etc.).
+documentation styles (using ``.. code::`` instead of ``.. code-block::``, using ``/r/``
+instead of ``r/``, etc.). This is run automatically by the pre-commit hooks and the
+``pre_push.py`` script.
 
 .. autoclass:: tools.static_word_checks.StaticChecker
     :inherited-members:
