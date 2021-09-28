@@ -14,6 +14,11 @@ Unreleased
 - :meth:`.user_selectable` to get available subreddit link flairs.
 - Automatic RateLimit handling will support errors with millisecond resolution.
 
+**Fixed**
+
+- An import error when using PRAW in environments where ``libsqlite3-dev`` is needed to
+  utilize the ``sqlite3`` builtin.
+
 7.4.0 (2021/07/30)
 ------------------
 
