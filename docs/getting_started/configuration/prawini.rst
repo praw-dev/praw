@@ -85,21 +85,21 @@ you have three separate bots, you might create a site for each:
 .. code-block:: ini
 
     [bot1]
-    client_id=Y4PJOclpDQy3xZ
-    client_secret=UkGLTe6oqsMk5nHCJTHLrwgvHpr
-    password=pni9ubeht4wd50gk
+    client_id=revokedpDQy3xZ
+    client_secret=revokedoqsMk5nHCJTHLrwgvHpr
+    password=invalidht4wd50gk
     username=fakebot1
 
     [bot2]
-    client_id=6abrJJdcIqbclb
-    client_secret=Kcn6Bj8CClyu4FjVO77MYlTynfj
-    password=mi1ky2qzpiq8s59j
+    client_id=revokedcIqbclb
+    client_secret=revokedCClyu4FjVO77MYlTynfj
+    password=invalidzpiq8s59j
     username=fakebot2
 
     [bot3]
-    client_id=SI8pN3DSbt0zor
-    client_secret=xaxkj7HNh8kwg8e5t4m6KvSrbTI
-    password=1guiwevlfo00esyy
+    client_id=revokedSbt0zor
+    client_secret=revokedNh8kwg8e5t4m6KvSrbTI
+    password=invalidlfo00esyy
     username=fakebot3
 
 Choosing a Site
