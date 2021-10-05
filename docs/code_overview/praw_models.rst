@@ -6,6 +6,7 @@ Working with PRAW's Models
     :caption: Models
 
     models/comment
+    models/draft
     models/livethread
     models/liveupdate
     models/message

@@ -1,5 +1,5 @@
 UserSubreddit
 =============
 
-.. autoclass:: praw.models.reddit.user_subreddit.UserSubreddit
+.. autoclass:: praw.models.UserSubreddit
     :inherited-members:

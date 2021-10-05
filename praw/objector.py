@@ -1,5 +1,5 @@
 """Provides the Objector class."""
-
+from datetime import datetime
 from json import loads
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
@@ -134,6 +134,22 @@ class Objector:
         elif {"mod_permissions", "name", "sr", "subscribers"}.issubset(data):
             data["display_name"] = data["sr"]
             parser = self.parsers[self._reddit.config.kinds["subreddit"]]
+        elif {"drafts", "subreddits"}.issubset(data):  # Draft list
+            subreddit_parser = self.parsers[self._reddit.config.kinds["subreddit"]]
+            user_subreddit_parser = self.parsers["UserSubreddit"]
+            subreddits = {
+                subreddit["name"]: user_subreddit_parser.parse(subreddit, self._reddit)
+                if subreddit["display_name_prefixed"].startswith("u/")
+                else subreddit_parser.parse(subreddit, self._reddit)
+                for subreddit in data.pop("subreddits")
+            }
+            for draft in data["drafts"]:
+                if draft["subreddit"]:
+                    draft["subreddit"] = subreddits[draft["subreddit"]]
+                draft["modified"] = datetime.fromtimestamp(
+                    draft["modified"] / 1000
+                ).astimezone()
+            parser = self.parsers["DraftList"]
         else:
             if "user" in data:
                 parser = self.parsers[self._reddit.config.kinds["redditor"]]
@@ -182,6 +198,11 @@ class Objector:
                 return self.objectify(data["json"]["data"]["things"])
             if "rules" in data["json"]["data"]:
                 return self.objectify(loads(data["json"]["data"]["rules"]))
+            if "drafts_count" in data["json"]["data"] and all(
+                [key not in data["json"]["data"] for key in ["name", "url"]]
+            ):  # Draft
+                data["json"]["data"].pop("drafts_count")
+                return self.parsers["Draft"].parse(data["json"]["data"], self._reddit)
             if "url" in data["json"]["data"]:  # Subreddit.submit
                 # The URL is the URL to the submission, so it's removed.
                 del data["json"]["data"]["url"]
@@ -197,6 +218,9 @@ class Objector:
             else:
                 parser = self.parsers["LiveUpdateEvent"]
             return parser.parse(data["json"]["data"], self._reddit)
+        if {"is_public_link", "title", "body"}.issubset(data):
+            parser = self.parsers["Draft"]
+            return parser.parse(data, self._reddit)
         if "rules" in data:
             return self.objectify(data["rules"])
         elif isinstance(data, dict):

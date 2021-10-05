@@ -271,6 +271,25 @@ class Reddit:
 
         """
 
+        self.drafts = models.DraftHelper(self, None)
+        """An instance of :class:`.DraftHelper`.
+
+        Provides the interface for working with :class:`.Draft` instances.
+
+        For example, to list the currently authenticated user's drafts:
+
+        .. code-block:: python
+
+            drafts = reddit.drafts()
+
+        To create a draft on r/redditdev run:
+
+        .. code-block:: python
+
+            reddit.drafts.create(title="title", selftext="selftext", subreddit="redditdev")
+
+        """
+
         self.front = models.Front(self)
         """An instance of :class:`.Front`.
 
@@ -458,6 +477,8 @@ class Reddit:
             self.config.kinds["trophy"]: models.Trophy,
             "Button": models.Button,
             "Collection": models.Collection,
+            "Draft": models.Draft,
+            "DraftList": models.DraftList,
             "Image": models.Image,
             "LabeledMulti": models.Multireddit,
             "Listing": models.Listing,
@@ -471,6 +492,7 @@ class Reddit:
             "Submenu": models.Submenu,
             "TrophyList": models.TrophyList,
             "UserList": models.RedditorList,
+            "UserSubreddit": models.UserSubreddit,
             "button": models.ButtonWidget,
             "calendar": models.Calendar,
             "community-list": models.CommunityList,
@@ -704,6 +726,7 @@ class Reddit:
         path: str,
         data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
         json=None,
+        params: Optional[Union[str, Dict[str, str]]] = None,
     ) -> Any:
         """Return parsed objects returned from a DELETE request to ``path``.
 
@@ -713,9 +736,12 @@ class Reddit:
         :param json: JSON-serializable object to send in the body of the request with a
             Content-Type header of application/json (default: None). If ``json`` is
             provided, ``data`` should not be.
+        :param params: The query parameters to add to the request (default: None).
 
         """
-        return self._objectify_request(data=data, json=json, method="DELETE", path=path)
+        return self._objectify_request(
+            data=data, json=json, method="DELETE", params=params, path=path
+        )
 
     def patch(
         self,
