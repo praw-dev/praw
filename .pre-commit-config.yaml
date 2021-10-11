@@ -47,6 +47,7 @@ repos:
           - '-ll'
           - '1000'
           - '-tc'
+        language_version: python3.9
     rev: '0.69'
 
   - repo: https://github.com/pycqa/isort
