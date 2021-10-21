@@ -26,7 +26,7 @@ features as PRAW.
 
     By default, PRAW will check to see if it is in an asynchronous environment every
     time a network request is made. To disable this check, set the ``check_for_async``
-    configuration option to ``false``. For example:
+    configuration option to ``False``. For example:
 
     .. code-block:: python
 
