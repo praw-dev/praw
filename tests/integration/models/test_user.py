@@ -4,7 +4,7 @@ from unittest import mock
 import pytest
 
 from praw.exceptions import RedditAPIException
-from praw.models import Multireddit, Redditor, Subreddit
+from praw.models import Multireddit, Redditor, Submission, Subreddit
 
 from .. import IntegrationTest
 
@@ -95,6 +95,38 @@ class TestUser(IntegrationTest):
             assert isinstance(multireddits, list)
             assert multireddits
             assert all(isinstance(x, Multireddit) for x in multireddits)
+
+    def test_pin(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            self.reddit.user.pin(Submission(self.reddit, "ixh12s"))
+
+    def test_pin__removed(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            self.reddit.user.pin(Submission(self.reddit, "ixh12s"), state=False)
+
+    def test_pin__num(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            self.reddit.user.pin(Submission(self.reddit, "irr9zz"), num=1)
+
+    def test_pin__num_outside_range(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            self.reddit.user.pin(Submission(self.reddit, "ic9toq"), num=7)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_pin__ignore_conflicts(self, _):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            self.reddit.user.pin(Submission(self.reddit, "q9lvkd"), num=7)
+            self.reddit.user.pin(Submission(self.reddit, "q9lvkd"), num=7)
+
+    def test_pin__ignore_bad_request(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            self.reddit.user.pin(Submission(self.reddit, "i55jqj"), num=7)
 
     def test_subreddits(self):
         self.reddit.read_only = False

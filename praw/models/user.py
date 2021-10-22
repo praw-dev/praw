@@ -2,6 +2,8 @@
 from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Union
 from warnings import warn
 
+from prawcore import BadRequest, Conflict
+
 from ..const import API_PATH
 from ..exceptions import ReadOnlyException
 from ..models import Preferences
@@ -190,6 +192,47 @@ class User(PRAWBase):
     def multireddits(self) -> List["praw.models.Multireddit"]:
         """Return a list of multireddits belonging to the user."""
         return self._reddit.get(API_PATH["my_multireddits"])
+
+    def pin(
+        self, submission: "praw.models.Submission", num: int = -1, state: bool = True
+    ):
+        """Set the submission's sticky state on user's profile.
+
+        :param submission: The submission that will get pinned/unpinned.
+        :param num: (int) The number to specify the slot in which the submission will
+            get pinned, and if there is already a submission stickied in that slot it
+            will be replaced. Valid input range is from 1 to 4. If If there is no post
+            in the specified slot to replace, or ``num`` isn't specified the bottom-most
+            slot will be used (default: -1).
+        :param state: (bool) True sets the sticky for the submission, false unsets
+            (default: True).
+
+        .. note::
+
+            When a submission is stickied two or more times, the Reddit API responds
+            with a 409 error that is raises as a ``Conflict`` by prawcore. The
+            submissions that have been removed by the respective subreddit moderators
+            cannot be pinned, and the Reddit API responds with a 400 error that is
+            raised as ``BadRequest``. In both cases, the method will suppress the
+            exception.
+
+        .. code-block:: python
+
+            submission = reddit.submission(id="qc3i1n")
+            reddit.user.sticky(submission)
+
+        """
+        num = None if num not in range(1, 5) else num
+        data = {
+            "id": submission.fullname,
+            "num": num,
+            "state": state,
+            "to_profile": True,
+        }
+        try:
+            return self._reddit.post(API_PATH["sticky_submission"], data=data)
+        except (BadRequest, Conflict):
+            pass
 
     def subreddits(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
