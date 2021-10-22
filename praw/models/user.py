@@ -201,8 +201,8 @@ class User(PRAWBase):
         :param submission: The submission that will get pinned/unpinned.
         :param num: (int) The number to specify the slot in which the submission will
             get pinned, and if there is already a submission stickied in that slot it
-            will be replaced. Valid input range is from 1 to 4. If If there is no post
-            in the specified slot to replace, or ``num`` isn't specified the bottom-most
+            will be replaced. Valid input range is from 1 to 4. If there is no post in
+            the specified slot to replace, or ``num`` isn't specified the bottom-most
             slot will be used (default: -1).
         :param state: (bool) True sets the sticky for the submission, false unsets
             (default: True).
@@ -213,13 +213,13 @@ class User(PRAWBase):
             with a 409 error that is raises as a ``Conflict`` by prawcore. The
             submissions that have been removed by the respective subreddit moderators
             cannot be pinned, and the Reddit API responds with a 400 error that is
-            raised as ``BadRequest``. In both cases, the method will suppress the
-            exception.
+            raised as ``BadRequest`` by prawcore. In both cases, the method will
+            suppress the exception.
 
         .. code-block:: python
 
             submission = reddit.submission(id="qc3i1n")
-            reddit.user.sticky(submission)
+            reddit.user.pin(submission)
 
         """
         num = None if num not in range(1, 5) else num
