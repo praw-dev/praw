@@ -16,6 +16,7 @@ Unreleased
   off the warning.
 - :meth:`.user_selectable` to get available subreddit link flairs.
 - Automatic RateLimit handling will support errors with millisecond resolution.
+- :meth:`.pin` to manage pinned submissions on the authenticated user's profile.
 
 **Fixed**
 
