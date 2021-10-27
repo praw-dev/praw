@@ -5,7 +5,7 @@ PRAW gladly welcomes new contributions. As with most larger projects, we have an
 established consistent way of doing things. A consistent style increases readability,
 decreases bug-potential and makes it faster to understand how everything works together.
 
-PRAW follows :PEP:`8` and :PEP:`257`. `Pre-Commit <https://pre-commit.com>` is used to
+PRAW follows :PEP:`8` and :PEP:`257`. `Pre-Commit <https://pre-commit.com>`_ is used to
 manage a suite of pre-commit hooks that enforce conformance with these PEPs along with
 several other checks. Additionally, the ``pre_push.py`` script can be used to run the
 full pre-commit suite and the docs build prior to submitting a Pull Request. The
