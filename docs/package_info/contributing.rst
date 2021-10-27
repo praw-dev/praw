@@ -132,4 +132,4 @@ See Also
 --------
 
 Please also read through:
-https://github.com/praw-dev/praw/blob/master/.github/CONTRIBUTING.md
+https://github.com/praw-dev/praw/blob/master/.github/CONTRIBUTING.rst
