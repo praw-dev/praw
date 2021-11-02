@@ -76,7 +76,7 @@ class DraftHelper(PRAWBase):
         title: Optional[str] = None,
         url: Optional[str] = None,
         **draft_kwargs,
-    ):
+    ) -> "praw.models.Draft":
         """Create a new :class:`.Draft`.
 
         :param flair_id: The flair template to select (default: ``None``).
