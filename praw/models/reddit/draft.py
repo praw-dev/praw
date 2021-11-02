@@ -289,17 +289,18 @@ class Draft(RedditBase):
             raise ValueError(
                 "`subreddit` must be set on the Draft or passed as a keyword argument."
             )
-        for key in [
-            "flair_id",
-            "flair_text",
-            "nsfw",
-            "selftext",
-            "spoiler",
-            "title",
-            "url",
+        for key, attribute in [
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+            ("nsfw", nsfw),
+            ("selftext", selftext),
+            ("spoiler", spoiler),
+            ("title", title),
+            ("url", url),
         ]:
-            if getattr(self, key, None) is not None:
-                submit_kwargs[key] = getattr(self, key)
+            value = attribute or getattr(self, key, None)
+            if value is not None:
+                submit_kwargs[key] = value
         if isinstance(subreddit, str):
             _subreddit = self._reddit.subreddit(subreddit)
         elif isinstance(subreddit, (Subreddit, UserSubreddit)):

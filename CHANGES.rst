@@ -18,6 +18,8 @@ Unreleased
 
 - An import error when using PRAW in environments where ``libsqlite3-dev`` is needed to
   utilize the ``sqlite3`` builtin.
+- Fixed bug where some keyword arguments that are passed to :meth:`.Draft.submit` would
+  not have an effect.
 
 7.4.0 (2021/07/30)
 ------------------
