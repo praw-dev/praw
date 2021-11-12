@@ -61,9 +61,10 @@ class CommentForest:
     ):
         """Initialize a CommentForest instance.
 
-        :param submission: An instance of :class:`~.Subreddit` that is the parent of the
+        :param submission: An instance of :class:`.Submission` that is the parent of the
             comments.
-        :param comments: Initialize the Forest with a list of comments (default: None).
+        :param comments: Initialize the forest with a list of comments (default:
+            ``None``).
 
         """
         self._comments = comments
@@ -93,7 +94,7 @@ class CommentForest:
             comment.submission = self._submission
 
     def list(self) -> List[Union["praw.models.Comment", "praw.models.MoreComments"]]:
-        """Return a flattened list of all Comments.
+        """Return a flattened list of all comments.
 
         This list may contain :class:`.MoreComments` instances if :meth:`.replace_more`
         was not called first.
@@ -111,7 +112,7 @@ class CommentForest:
     def replace_more(
         self, limit: int = 32, threshold: int = 0
     ) -> List["praw.models.MoreComments"]:
-        """Update the comment forest by resolving instances of MoreComments.
+        """Update the comment forest by resolving instances of :class:`.MoreComments`.
 
         :param limit: The maximum number of :class:`.MoreComments` instances to replace.
             Each replacement requires 1 API request. Set to ``None`` to have no limit,
