@@ -12,7 +12,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Draft(RedditBase):
-    """A class for submissions to reddit.
+    """A class that represents a Reddit submission draft.
 
     **Typical Attributes**
 
@@ -25,7 +25,8 @@ class Draft(RedditBase):
     Attribute                  Description
     ========================== ======================================================
     ``link_flair_template_id`` The link flair's ID.
-    ``link_flair_text``        The link flair's text content, or None if not flaired.
+    ``link_flair_text``        The link flair's text content, or ``None`` if not
+                               flaired.
     ``modified``               Time the submission draft was modified, represented in
                                `Unix Time`_.
     ``original_content``       Whether the submission draft will be set as original
@@ -36,7 +37,7 @@ class Draft(RedditBase):
     ``subreddit``              Provides an instance of :class:`.Subreddit` or
                                :class:`.UserSubreddit` (if set).
     ``title``                  The title of the submission draft.
-    ``url``                    The URL the submission draft links to. Will b
+    ``url``                    The URL the submission draft links to.
     ========================== ======================================================
 
     .. _unix time: https://en.wikipedia.org/wiki/Unix_time
@@ -239,9 +240,9 @@ class Draft(RedditBase):
         """Submit a draft.
 
         :param flair_id: The flair template to select (default: ``None``).
-        :param flair_text: If the template's ``flair_text_editable`` value is True, this
-            value will set a custom text (default: ``None``). ``flair_id`` is required
-            when ``flair_text`` is provided.
+        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
+            this value will set a custom text (default: ``None``). ``flair_id`` is
+            required when ``flair_text`` is provided.
         :param nsfw: Whether or not the submission should be marked NSFW (default:
             ``None``).
         :param selftext: The Markdown formatted content for a ``text`` submission. Use
@@ -249,6 +250,8 @@ class Draft(RedditBase):
             ``None``).
         :param spoiler: Whether or not the submission should be marked as a spoiler
             (default: ``None``).
+        :param subreddit: The subreddit to submit the draft to. This accepts a subreddit
+            display name, :class:`.Subreddit` object, or :class:`.UserSubreddit` object.
         :param title: The title of the submission (default: ``None``).
         :param url: The URL for a ``link`` submission (default: ``None``).
 
@@ -289,17 +292,18 @@ class Draft(RedditBase):
             raise ValueError(
                 "`subreddit` must be set on the Draft or passed as a keyword argument."
             )
-        for key in [
-            "flair_id",
-            "flair_text",
-            "nsfw",
-            "selftext",
-            "spoiler",
-            "title",
-            "url",
+        for key, attribute in [
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+            ("nsfw", nsfw),
+            ("selftext", selftext),
+            ("spoiler", spoiler),
+            ("title", title),
+            ("url", url),
         ]:
-            if getattr(self, key, None) is not None:
-                submit_kwargs[key] = getattr(self, key)
+            value = attribute or getattr(self, key, None)
+            if value is not None:
+                submit_kwargs[key] = value
         if isinstance(subreddit, str):
             _subreddit = self._reddit.subreddit(subreddit)
         elif isinstance(subreddit, (Subreddit, UserSubreddit)):

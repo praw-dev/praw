@@ -13,12 +13,19 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class DraftHelper(PRAWBase):
-    """Provide a set of functions to interact with Drafts."""
+    r"""Provide a set of functions to interact with :class:`Draft` instances.
+
+    .. note::
+
+        The methods provided by this class will only work on the currently authenticated
+        user's :class:`Draft`\ s.
+
+    """
 
     def __call__(
         self, *, draft_id: Optional[str] = None
     ) -> Union[List["praw.models.Draft"], "praw.models.Draft"]:
-        """Return a list of the currently authenticated user's Drafts.
+        """Return a list of :class:`.Draft` instances.
 
         :param draft_id: When provided, return :class:`.Draft` instance (default:
             ``None``).
@@ -31,12 +38,12 @@ class DraftHelper(PRAWBase):
             Drafts fetched using a specific draft ID are lazily loaded, so you might
             have to access an attribute to get all the expected attributes.
 
-        This method is to be used to fetch a specific draft, like so:
+        This method can be used to fetch a specific draft by ID, like so:
 
         .. code-block:: python
 
             draft_id = "124862bc-e1e9-11eb-aa4f-e68667a77cbb"
-            draft = reddit.drafts(draft_id)
+            draft = reddit.drafts(draft_id=draft_id)
             print(draft)
 
         """
@@ -45,9 +52,9 @@ class DraftHelper(PRAWBase):
         return self._draft_list()
 
     def _draft_list(self) -> List["praw.models.Draft"]:
-        """Get a list of Draft objects.
+        """Get a list of :class:`.Draft` instances.
 
-        :returns: A list of instances of :class:`.Draft`.
+        :returns: A list of :class:`.Draft` instances.
 
         """
         return self._reddit.get(API_PATH["drafts"], params={"md_body": True})
@@ -69,8 +76,8 @@ class DraftHelper(PRAWBase):
         title: Optional[str] = None,
         url: Optional[str] = None,
         **draft_kwargs,
-    ):
-        """Create a new Draft.
+    ) -> "praw.models.Draft":
+        """Create a new :class:`.Draft`.
 
         :param flair_id: The flair template to select (default: ``None``).
         :param flair_text: If the template's ``flair_text_editable`` value is ``True``,

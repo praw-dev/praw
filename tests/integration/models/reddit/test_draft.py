@@ -100,11 +100,12 @@ class TestDraft(IntegrationTest):
         with self.use_cassette():
             total_drafts = len(self.reddit.drafts())
 
-            draft = self.reddit.drafts(draft_id="b18b58c2-f0d3-11eb-bacf-e6c32a1c4986")
-            submission = draft.submit(title="new title")
-            assert submission.title == draft.title
+            draft = self.reddit.drafts(draft_id="582b870e-3b72-11ec-b79b-4e8a1c42f3ae")
+            new_title = "new title"
+            submission = draft.submit(title=new_title)
+            assert submission.title == new_title != draft.title
             assert submission.selftext == draft.selftext
-            assert submission.subreddit == draft.subreddit
+            assert str(submission.subreddit) == str(draft.subreddit)
             remaining_drafts = len(self.reddit.drafts())
             assert remaining_drafts < total_drafts
 
