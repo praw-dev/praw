@@ -88,6 +88,7 @@ These are options that do not belong in another category, but still play a part 
 
         PRAW sleeps for the ratelimit value plus 1 second.
 
+    See :ref:`ratelimits` for more info.
 :timeout: Controls the amount of time PRAW will wait for a request from Reddit to
     complete before throwing an exception. By default, PRAW waits 16 seconds before
     throwing an exception.
