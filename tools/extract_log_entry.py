@@ -15,7 +15,7 @@ def get_entry_slice(doc):
             end_line = section.children[0].line - 2
             break
         header = section.children[0]
-        if current_version in header.rawsource:
+        if current_version in getattr(header, "rawsource", ""):
             start_line = header.line - 2
     return slice(start_line, end_line)
 
