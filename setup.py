@@ -64,7 +64,7 @@ setup(
     keywords="reddit api wrapper",
     license="Simplified BSD License",
     long_description=README,
-    package_data={"": ["LICENSE.txt"], PACKAGE_NAME: ["*.ini", "images/*.jpg"]},
+    package_data={"": ["LICENSE.txt"], PACKAGE_NAME: ["*.ini", "images/*.png"]},
     packages=find_packages(exclude=["tests", "tests.*", "tools", "tools.*"]),
     project_urls={
         "Change Log": "https://praw.readthedocs.io/en/latest/package_info/change_log.html",
