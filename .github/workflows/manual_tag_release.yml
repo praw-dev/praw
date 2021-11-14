@@ -1,10 +1,11 @@
 jobs:
   release_tag:
-    name: Tag Release
+    name: Manual Tag Release
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
+        ref: ${{ github.event.inputs.commit }}
         ssh-key: ${{ secrets.SSH_DEPLOY_KEY }}
     - uses: actions/setup-python@v2
       with:
@@ -13,7 +14,6 @@ jobs:
       run: pip install packaging docutils
     - name: Extract Version
       run: |
-        git checkout ${{ github.event.inputs.commit }}
         echo "commit=$(git rev-parse HEAD)" >> $GITHUB_ENV
         git log --format=%B -n 1 | ./tools/bump_version.py > tmp_version
         echo "version=$(cat tmp_version)" >> $GITHUB_ENV
@@ -33,7 +33,7 @@ jobs:
         prerelease: ${{ env.is_prerelease == '1' }}
         release_name: v${{ env.version }}
         tag_name: v${{ env.version }}
-name: Tag Release
+name: Manual Tag Release
 on:
   workflow_dispatch:
     inputs:
