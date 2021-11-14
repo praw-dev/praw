@@ -26,6 +26,7 @@ extras = {
         "betamax >=0.8, <0.9",
         "betamax-matchers >=0.3.0, <0.5",
         "pytest >=2.7.3",
+        "requests >=2.20.1, <3",
     ],
 }
 extras["dev"] += extras["lint"] + extras["test"]
