@@ -5,7 +5,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        ref: ${{ github.event.inputs.commit }}
+        fetch-depth: 0
         ssh-key: ${{ secrets.SSH_DEPLOY_KEY }}
     - uses: actions/setup-python@v2
       with:
@@ -14,11 +14,13 @@ jobs:
       run: pip install packaging docutils
     - name: Extract Version
       run: |
+        git checkout ${{ github.event.inputs.commit }}
         echo "commit=$(git rev-parse HEAD)" >> $GITHUB_ENV
         git log --format=%B -n 1 | ./tools/bump_version.py > tmp_version
         echo "version=$(cat tmp_version)" >> $GITHUB_ENV
         cat tmp_version | python -c 'import sys; from packaging import version; print(int(version.Version(sys.stdin.readline()).is_prerelease))' > tmp_is_prerelease
         echo "is_prerelease=$(cat tmp_is_prerelease)" >> $GITHUB_ENV
+        git switch -
     - name: Extract Change Log
       run: |
         echo ${{ env.version }} | ./tools/extract_log_entry.py > version_changelog
