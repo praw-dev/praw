@@ -34,7 +34,10 @@ def main():
         current_version = packaging.version.parse(
             re.search('__version__ = "([^"]+)"', fp.read()).group(1)
         )
-
+    if current_version.is_devrelease:
+        current_version = packaging.version.parse(
+            f"{current_version.major}.{current_version.minor}.{current_version.micro - 1}"
+        )
     versions = fetch_versions()
     if versions is None:
         return 1
@@ -48,7 +51,9 @@ def main():
             break
         else:
             if retry_count >= max_retry_count:
-                sys.stderr.write("Current version failed to build\n")
+                sys.stderr.write(
+                    f"Current version {current_version!s} failed to build\n"
+                )
                 return 1
             sys.stdout.write("Waiting 30 seconds for build to finish\n")
             retry_count += 1
@@ -81,7 +86,7 @@ def main():
             if response.status_code == 204:
                 sys.stderr.write(f"Version {version!s} was hidden successfully\n")
             else:
-                sys.stderr.write(f"Failed to hide version {version}\n")
+                sys.stderr.write(f"Failed to hide version {version!s}\n")
                 return 1
 
 
