@@ -19,7 +19,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
-    """A class that represents a reddit comment.
+    """A class that represents a Reddit comment.
 
     **Typical Attributes**
 

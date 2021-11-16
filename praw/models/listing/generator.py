@@ -31,9 +31,9 @@ class ListingGenerator(PRAWBase, Iterator):
         """Initialize a ListingGenerator instance.
 
         :param reddit: An instance of :class:`.Reddit`.
-        :param url: A URL returning a reddit listing.
+        :param url: A URL returning a Reddit listing.
         :param limit: The number of content entries to fetch. If ``limit`` is None, then
-            fetch as many entries as possible. Most of reddit's listings contain a
+            fetch as many entries as possible. Most of Reddit's listings contain a
             maximum of 1000 items, and are returned 100 at a time. This class will
             automatically issue all necessary requests (default: 100).
         :param params: A dictionary containing additional query string parameters to

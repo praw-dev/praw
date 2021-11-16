@@ -18,7 +18,7 @@ Glossary
   and its base-36 id. An example would be ``t3_1h4f3``, where the ``t3`` signals that it
   is a :class:`.Submission`, and the submission ID is ``1h4f3``.
 
-  Here is a list of the six different types of objects returned from reddit:
+  Here is a list of the six different types of objects returned from Reddit:
 
   .. _fullname_t1:
 
@@ -54,7 +54,7 @@ Glossary
 .. _websocket:
 
 - ``Websocket``: A special connection type that supports both a client and a server (the
-  running program and reddit respectively) sending multiple messages to each other.
+  running program and Reddit respectively) sending multiple messages to each other.
   Reddit uses websockets to notify clients when an image or video submission is
   completed, as well as certain types of asset uploads, such as subreddit banners. If a
   client does not connect to the websocket in time, the client will not be notified of

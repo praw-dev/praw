@@ -72,7 +72,7 @@ class Preferences:
         :param email_upvote_post: Send post upvote updates as emails (boolean).
         :param email_user_new_follower: Send new follower alerts as emails (boolean).
         :param email_username_mention: Send username mentions as emails (boolean).
-        :param enable_default_themes: Use reddit theme (boolean).
+        :param enable_default_themes: Use Reddit theme (boolean).
         :param feed_recommendations_enabled: Enable feed recommendations (boolean).
         :param geopopular: Location (one of ``"GLOBAL"``, ``"AR"``, ``"AU"``, ``"BG"``,
             ``"CA"``, ``"CL"``, ``"CO"``, ``"CZ"``, ``"FI"``, ``"GB"``, ``"GR"``,

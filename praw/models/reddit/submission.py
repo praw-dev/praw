@@ -381,7 +381,7 @@ class SubmissionModeration(ThingModerationMixin):
 
 
 class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, RedditBase):
-    """A class for submissions to reddit.
+    """A class for submissions to Reddit.
 
     **Typical Attributes**
 

@@ -163,7 +163,7 @@ To obtain a :class:`.Subreddit` instance, pass the subreddit's name when calling
 
 .. code-block:: python
 
-    # assume you have a reddit instance bound to variable `reddit`
+    # assume you have a Reddit instance bound to variable `reddit`
     subreddit = reddit.subreddit("redditdev")
 
     print(subreddit.display_name)

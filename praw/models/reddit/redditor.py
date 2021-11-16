@@ -14,7 +14,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase):
-    """A class representing the users of reddit.
+    """A class representing the users of Reddit.
 
     **Typical Attributes**
 

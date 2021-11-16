@@ -464,7 +464,7 @@ class SubredditWidgetsModeration:
                     "kind": "image",
                     "text": a string no longer than 30 characters,
                     "linkUrl": a valid URL,
-                    "url": a valid URL of a reddit-hosted image,
+                    "url": a valid URL of a Reddit-hosted image,
                     "height": an integer,
                     "width": an integer,
                     "hoverState": {...}
@@ -490,7 +490,7 @@ class SubredditWidgetsModeration:
 
                 {
                     "kind": "image",
-                    "url": a valid URL of a reddit-hosted image,
+                    "url": a valid URL of a Reddit-hosted image,
                     "height": an integer,
                     "width": an integer
                 }

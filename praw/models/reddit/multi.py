@@ -59,7 +59,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         :param title: The title to make a slug of.
 
-        Adapted from reddit's utils.py.
+        Adapted from Reddit's utils.py.
 
         """
         title = Multireddit.RE_INVALID.sub("_", title).strip("_").lower()

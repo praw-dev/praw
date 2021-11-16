@@ -19,7 +19,7 @@ class _NotSet:
 
 
 class Config:
-    """A class containing the configuration for a reddit site."""
+    """A class containing the configuration for a Reddit site."""
 
     CONFIG = None
     CONFIG_NOT_SET = _NotSet()  # Represents a config value that is not set.
