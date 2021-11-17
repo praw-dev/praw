@@ -131,3 +131,4 @@ them bound to an attribute of one of the PRAW models.
     other/trophy
     other/usersubreddit
     other/util
+    other/widget

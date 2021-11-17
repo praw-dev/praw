@@ -927,7 +927,8 @@ class SubredditWidgetsModeration:
         """Reorder the widgets.
 
         :param new_order: A list of widgets. Represented as a ``list`` that contains
-            ``Widget`` objects, or widget IDs as strings. These types may be mixed.
+            :class:`.Widget` objects, or widget IDs as strings. These types may be
+            mixed.
         :param section: The section to reorder. (default: ``"sidebar"``)
 
         Example usage:
