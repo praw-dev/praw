@@ -1,0 +1,84 @@
+body:
+  - type: textarea
+    attributes:
+      label: Describe the Bug
+      placeholder: A clear and concise description of what the bug is.
+    id: bug-description
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Desired Result
+      placeholder: Describe the desired result.
+    id: desired-result
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      description: Copy and paste any relevant log/stacktrace output.
+      label: Relevant Logs
+      render: shell
+    id: logs
+  - type: textarea
+    attributes:
+      description: Provide your [Minimal, Complete, and Verifiable](https://stackoverflow.com/help/mcve) code example here, without the Reddit() initialization, so as to not leak private credentials.
+      label: Code to reproduce the bug
+      placeholder: "# Insert code here"
+      render: python
+    id: code
+  - type: dropdown
+    attributes:
+      label: My code example does not include the `Reddit()` initialization to prevent credential leakage.
+      options:
+        - "Yes"
+    id: credential-check
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: This code has previously worked as intended.
+      multiple: false
+      options:
+        - "Yes"
+        - "No"
+    id: previously-worked
+    validations:
+      required: true
+  - type: input
+    attributes:
+      description: What operating system, version, and environment are you working with.
+      label: Operating System/Environment
+      placeholder: macOS Monterey 12.0.0
+    id: environment
+    validations:
+      required: true
+  - type: input
+    attributes:
+      description: What implementation and version of Python are you working with. CPython is assumed unless indicated otherwise.
+      label: Python Version
+      placeholder: Python 3.9.1
+    id: python-version
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: PRAW Version
+      placeholder: 7.4.0
+    id: praw-version
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Prawcore Version
+      placeholder: 2.3.0
+    id: prawcore-version
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      description: Links or references? Anything that will give us more context about the issue you are encountering!
+      label: Anything else?
+    id: anything-else
+description: File a bug report
+labels: ["bug", "unverified"]
+name: Bug Report
