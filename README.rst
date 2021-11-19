@@ -21,6 +21,10 @@ PRAW: The Python Reddit API Wrapper
     :alt: Github Actions Coverage
     :target: https://github.com/praw-dev/praw/actions?query=branch%3Amaster
 
+.. image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+    :target: https://github.com/pre-commit/pre-commit
+    :alt: pre-commit
+
 .. image:: https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg
     :alt: Contributor Covenant
     :target: https://github.com/praw-dev/.github/blob/main/CODE_OF_CONDUCT.md
