@@ -230,13 +230,7 @@ class Collection(RedditBase):
             permalink="https://reddit.com/r/SUBREDDIT/collection/some_uuid"
         )
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor that they will be the only attributes
-    present.
+    .. include:: ../../typical_attributes.rst
 
     =================== =============================================================
     Attribute           Description

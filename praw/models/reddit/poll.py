@@ -20,12 +20,7 @@ class PollOption(PRAWBase):
         # By ID -- print the option with ID "576797"
         print(poll_data.option("576797"))
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============== =================================================
     Attribute      Description
@@ -60,12 +55,7 @@ class PollData(PRAWBase):
             print(f"{option} ({option.vote_count} votes)")
         print(f"I voted for {poll_data.user_selection}.")
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ======================== =========================================================
     Attribute                Description

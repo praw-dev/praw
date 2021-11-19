@@ -265,12 +265,7 @@ class LiveContributorRelationship:
 class LiveThread(RedditBase):
     """An individual :class:`.LiveThread` object.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ==================== =========================================================
     Attribute            Description
@@ -660,12 +655,7 @@ class LiveThreadStream:
 class LiveUpdate(FullnameMixin, RedditBase):
     """An individual :class:`.LiveUpdate` object.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     =============== ===================================================================
     Attribute       Description

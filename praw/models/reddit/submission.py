@@ -384,12 +384,7 @@ class SubmissionModeration(ThingModerationMixin):
 class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, RedditBase):
     """A class for submissions to Reddit.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ========================== =========================================================
     Attribute                  Description

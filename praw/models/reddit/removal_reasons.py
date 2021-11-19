@@ -14,12 +14,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class RemovalReason(RedditBase):
     """An individual Removal Reason object.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     =========== ==================================
     Attribute   Description

@@ -112,7 +112,8 @@ them bound to an attribute of one of the PRAW models.
     other/moderatedlist
     other/modmail
     other/modmailmessage
-    other/poll
+    other/polldata
+    other/polloption
     other/preferences
     other/redditbase
     other/redditorlist

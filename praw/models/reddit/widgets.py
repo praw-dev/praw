@@ -12,12 +12,7 @@ from ..list.base import BaseList
 class Button(PRAWBase):
     """Class to represent a single button inside a :class:`.ButtonWidget`.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============== =====================================================================
     Attribute      Description
@@ -44,12 +39,7 @@ class Button(PRAWBase):
 class CalendarConfiguration(PRAWBase):
     """Class to represent the configuration of a :class:`.Calendar`.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     =================== ==================================================
     Attribute           Description
@@ -71,12 +61,7 @@ class Hover(PRAWBase):
     These values will take effect when the button is hovered over (the user moves their
     cursor so it's on top of the button).
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list comprehensive in any way.
+    .. include:: ../../typical_attributes.rst
 
     ============= =====================================================================
     Attribute     Description
@@ -99,12 +84,7 @@ class Hover(PRAWBase):
 class Image(PRAWBase):
     """Class to represent an image that's part of a :class:`.ImageWidget`.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     =========== =================================================
     Attribute   Description
@@ -121,12 +101,7 @@ class Image(PRAWBase):
 class ImageData(PRAWBase):
     """Class for image data that's part of a :class:`.CustomWidget`.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ========== =========================================
     Attribute  Description
@@ -143,12 +118,7 @@ class ImageData(PRAWBase):
 class MenuLink(PRAWBase):
     """Class to represent a single link inside a :class:`.Menu` or :class:`.Submenu`.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ========= ====================================
     Attribute Description
@@ -163,12 +133,7 @@ class MenuLink(PRAWBase):
 class Styles(PRAWBase):
     """Class to represent the style information of a widget.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list comprehensive in any way.
+    .. include:: ../../typical_attributes.rst
 
     =================== ========================================================
     Attribute           Description
@@ -185,12 +150,7 @@ class Styles(PRAWBase):
 class Submenu(BaseList):
     r"""Class to represent a submenu of links inside a :class:`.Menu`.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============ =====================================================================
     Attribute    Description
@@ -1091,12 +1051,7 @@ class ButtonWidget(Widget, BaseList):
 
         button_widget.mod.delete()
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ==================== =============================================================
     Attribute            Description
@@ -1167,12 +1122,7 @@ class Calendar(Widget):
 
         calendar.mod.delete()
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ================= =====================================================
     Attribute         Description
@@ -1233,12 +1183,7 @@ class CommunityList(Widget, BaseList):
 
         community_list.mod.delete()
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============= =====================================================================
     Attribute     Description
@@ -1300,12 +1245,7 @@ class CustomWidget(Widget):
 
         custom.mod.delete()
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ================= ============================================================
     Attribute         Description
@@ -1349,12 +1289,7 @@ class IDCard(Widget):
 
         widgets.id_card.mod.update(currentlyViewingText="Bots")
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ========================= =======================================================
     Attribute                 Description
@@ -1427,12 +1362,7 @@ class ImageWidget(Widget, BaseList):
 
         image_widget.mod.delete()
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============= =====================================================================
     Attribute     Description
@@ -1505,12 +1435,7 @@ class Menu(Widget, BaseList):
 
         menu.mod.delete()
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============= ====================================================================
     Attribute     Description
@@ -1543,12 +1468,7 @@ class ModeratorsWidget(Widget, BaseList):
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         widgets.moderators_widget.mod.update(styles=new_styles)
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============= =====================================================================
     Attribute     Description
@@ -1618,12 +1538,7 @@ class PostFlairWidget(Widget, BaseList):
 
         post_flair.mod.delete()
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============= =====================================================================
     Attribute     Description
@@ -1667,12 +1582,7 @@ class RulesWidget(Widget, BaseList):
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         rules_widget.mod.update(display="compact", shortName="The LAWS", styles=new_styles)
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============= =====================================================================
     Attribute     Description
@@ -1737,12 +1647,7 @@ class TextArea(Widget):
 
         text_area.mod.delete()
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============= =====================================================================
     Attribute     Description

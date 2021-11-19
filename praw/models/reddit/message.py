@@ -14,12 +14,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
     """A class for private messages.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     =============== ================================================================
     Attribute       Description
@@ -100,12 +95,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
 class SubredditMessage(Message):
     """A class for messages to a subreddit.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     =============== =================================================================
     Attribute       Description
