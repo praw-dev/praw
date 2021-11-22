@@ -8,7 +8,7 @@ PRAW users will create their own token manager classes suitable for their needs.
 
 .. deprecated:: 7.4.0
 
-    Tokens managers have been depreciated and will be removed in the near future.
+    Tokens managers have been deprecated and will be removed in the near future.
 
 """
 from abc import ABC, abstractmethod

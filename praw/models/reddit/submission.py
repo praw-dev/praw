@@ -101,8 +101,7 @@ class SubmissionModeration(ThingModerationMixin):
     def contest_mode(self, state: bool = True):
         """Set contest mode for the comments of this submission.
 
-        :param state: (boolean) True enables contest mode, False, disables (default:
-            True).
+        :param state: True enables contest mode and False disables (default: True).
 
         Contest mode have the following effects:
 
@@ -136,7 +135,7 @@ class SubmissionModeration(ThingModerationMixin):
         :param text: The flair text to associate with the :class:`.Submission` (default:
             "").
         :param css_class: The css class to associate with the flair html (default: "").
-        :param flair_template_id: The flair template id to use when flairing (Optional).
+        :param flair_template_id: The flair template ID to use when flairing.
 
         This method can only be used by an authenticated user who is a moderator of the
         submission's :class:`.Subreddit`.
@@ -253,10 +252,10 @@ class SubmissionModeration(ThingModerationMixin):
     def sticky(self, state: bool = True, bottom: bool = True):
         """Set the submission's sticky state in its subreddit.
 
-        :param state: (boolean) True sets the sticky for the submission, false unsets
-            (default: True).
-        :param bottom: (boolean) When true, set the submission as the bottom sticky. If
-            no top sticky exists, this submission will become the top sticky regardless
+        :param state: True sets the sticky for the submission, false unsets (default:
+            True).
+        :param bottom: When true, set the submission as the bottom sticky. If no top
+            sticky exists, this submission will become the top sticky regardless
             (default: True).
 
         .. note::
@@ -287,7 +286,7 @@ class SubmissionModeration(ThingModerationMixin):
         """Set the suggested sort for the comments of the submission.
 
         :param sort: Can be one of: confidence, top, new, controversial, old, random,
-            qa, blank (default: blank).
+            qa, or blank (default: blank).
 
         """
         self.thing._reddit.post(
@@ -353,7 +352,7 @@ class SubmissionModeration(ThingModerationMixin):
         ===== ======== ================================================================
         Level Name     Description
         ===== ======== ================================================================
-        0     Off      Crowd Control will not action any of the submission's commments.
+        0     Off      Crowd Control will not action any of the submission's comments.
         1     Lenient  Comments from users who have negative karma in the subreddit are
                        automatically collapsed.
         2     Moderate Comments from new users and users with negative karma in the
@@ -458,7 +457,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             submission_id = parts[parts.index("gallery") + 1]
 
         elif parts[-1] == "comments":
-            raise InvalidURL(url, message="Invalid URL (submission id not present): {}")
+            raise InvalidURL(url, message="Invalid URL (submission ID not present): {}")
 
         else:
             submission_id = parts[parts.index("comments") + 1]

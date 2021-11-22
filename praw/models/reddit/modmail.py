@@ -174,8 +174,8 @@ class ModmailConversation(RedditBase):
     def mute(self, num_days=3):
         """Mute the non-mod user associated with the conversation.
 
-        :param num_days: Duration of mute in days. Valid options are 3, 7, or 28.
-            (default: 3)
+        :param num_days: Duration of mute in days. Valid options are 3, 7, or 28
+            (default: 3).
 
         For example:
 

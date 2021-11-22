@@ -889,7 +889,7 @@ class SubredditWidgetsModeration:
         :param new_order: A list of widgets. Represented as a ``list`` that contains
             :class:`.Widget` objects, or widget IDs as strings. These types may be
             mixed.
-        :param section: The section to reorder. (default: ``"sidebar"``)
+        :param section: The section to reorder (default: ``"sidebar"``).
 
         Example usage:
 
@@ -1001,7 +1001,7 @@ class ButtonWidget(Widget, BaseList):
         for button in button_widget:
             print(button.text, button.url)
 
-    Create one (requires proper moderator permissions):
+    Create one:
 
     .. code-block:: python
 
@@ -1038,14 +1038,14 @@ class ButtonWidget(Widget, BaseList):
 
     For more information on creation, see :meth:`.add_button_widget`.
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         button_widget = button_widget.mod.update(shortName="My fav buttons", styles=new_styles)
 
-    Delete one (requires proper moderator permissions):
+    Delete one:
 
     .. code-block:: python
 
@@ -1090,7 +1090,7 @@ class Calendar(Widget):
 
         print(calendar.googleCalendarId)
 
-    Create one (requires proper moderator permissions):
+    Create one:
 
     .. code-block:: python
 
@@ -1109,14 +1109,14 @@ class Calendar(Widget):
 
     For more information on creation, see :meth:`.add_calendar`.
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         calendar = calendar.mod.update(shortName="My fav events", styles=new_styles)
 
-    Delete one (requires proper moderator permissions):
+    Delete one:
 
     .. code-block:: python
 
@@ -1157,7 +1157,7 @@ class CommunityList(Widget, BaseList):
 
         print(community_list)
 
-    Create one (requires proper moderator permissions):
+    Create one:
 
     .. code-block:: python
 
@@ -1170,14 +1170,14 @@ class CommunityList(Widget, BaseList):
 
     For more information on creation, see :meth:`.add_community_list`.
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         community_list = community_list.mod.update(shortName="My fav subs", styles=new_styles)
 
-    Delete one (requires proper moderator permissions):
+    Delete one:
 
     .. code-block:: python
 
@@ -1220,7 +1220,7 @@ class CustomWidget(Widget):
         print(custom.text)
         print(custom.css)
 
-    Create one (requires proper moderator permissions):
+    Create one:
 
     .. code-block:: python
 
@@ -1232,14 +1232,14 @@ class CustomWidget(Widget):
 
     For more information on creation, see :meth:`.add_custom_widget`.
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         custom = custom.mod.update(shortName="My fav customization", styles=new_styles)
 
-    Delete one (requires proper moderator permissions):
+    Delete one:
 
     .. code-block:: python
 
@@ -1283,7 +1283,7 @@ class IDCard(Widget):
         id_card = widgets.id_card
         print(id_card.subscribersText)
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
@@ -1329,7 +1329,7 @@ class ImageWidget(Widget, BaseList):
         for image in image_widget:
             print(image.url)
 
-    Create one (requires proper moderator permissions):
+    Create one:
 
     .. code-block:: python
 
@@ -1349,14 +1349,14 @@ class ImageWidget(Widget, BaseList):
 
     For more information on creation, see :meth:`.add_image_widget`.
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         image_widget = image_widget.mod.update(shortName="My fav images", styles=new_styles)
 
-    Delete one (requires proper moderator permissions):
+    Delete one:
 
     .. code-block:: python
 
@@ -1401,7 +1401,7 @@ class Menu(Widget, BaseList):
                 else:  # MenuLink
                     print(item.text, item.url)
 
-    Create one (requires proper moderator permissions):
+    Create one:
 
     .. code-block:: python
 
@@ -1421,7 +1421,7 @@ class Menu(Widget, BaseList):
 
     For more information on creation, see :meth:`.add_menu`.
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
@@ -1429,7 +1429,7 @@ class Menu(Widget, BaseList):
         menu_items.reverse()
         menu = menu.mod.update(data=menu_items)
 
-    Delete one (requires proper moderator permissions):
+    Delete one:
 
     .. code-block:: python
 
@@ -1461,7 +1461,7 @@ class ModeratorsWidget(Widget, BaseList):
         widgets = reddit.subreddit("redditdev").widgets
         print(widgets.moderators_widget)
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
@@ -1513,7 +1513,7 @@ class PostFlairWidget(Widget, BaseList):
             print(flair)
             print(post_flair_widget.templates[flair])
 
-    Create one (requires proper moderator permissions):
+    Create one:
 
     .. code-block:: python
 
@@ -1525,14 +1525,14 @@ class PostFlairWidget(Widget, BaseList):
 
     For more information on creation, see :meth:`.add_post_flair_widget`.
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         post_flair = post_flair.mod.update(shortName="My fav flairs", styles=new_styles)
 
-    Delete one (requires proper moderator permissions):
+    Delete one:
 
     .. code-block:: python
 
@@ -1575,7 +1575,7 @@ class RulesWidget(Widget, BaseList):
 
         pprint(rules_widget.data)
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
@@ -1624,7 +1624,7 @@ class TextArea(Widget):
                 break
         print(text_area.text)
 
-    Create one (requires proper moderator permissions):
+    Create one:
 
     .. code-block:: python
 
@@ -1634,14 +1634,14 @@ class TextArea(Widget):
 
     For more information on creation, see :meth:`.add_text_area`.
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         text_area = text_area.mod.update(shortName="My fav text", styles=new_styles)
 
-    Delete one (requires proper moderator permissions):
+    Delete one:
 
     .. code-block:: python
 

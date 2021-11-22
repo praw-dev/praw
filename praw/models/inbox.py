@@ -182,7 +182,7 @@ class Inbox(PRAWBase):
     def message(self, message_id: str) -> "praw.models.Message":
         """Return a :class:`.Message` corresponding to ``message_id``.
 
-        :param message_id: The base36 id of a message.
+        :param message_id: The base36 ID of a message.
 
         For example:
 

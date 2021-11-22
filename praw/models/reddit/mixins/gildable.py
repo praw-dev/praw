@@ -63,8 +63,10 @@ class GildableMixin:
                 }
 
 
-        Requires the authenticated user to own Reddit Coins. Calling this method will
-        consume Reddit Coins.
+        .. warning::
+
+            Requires the authenticated user to own Reddit Coins. Calling this method
+            will consume Reddit Coins.
 
         To award the gold award anonymously do:
 

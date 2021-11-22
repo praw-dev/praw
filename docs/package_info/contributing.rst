@@ -5,16 +5,16 @@ PRAW gladly welcomes new contributions. As with most larger projects, we have an
 established consistent way of doing things. A consistent style increases readability,
 decreases bug-potential and makes it faster to understand how everything works together.
 
-PRAW follows :PEP:`8` and :PEP:`257`. `Pre-Commit <https://pre-commit.com>`_ is used to
+PRAW follows :PEP:`8` and :PEP:`257`. `pre-commit <https://pre-commit.com>`_ is used to
 manage a suite of pre-commit hooks that enforce conformance with these PEPs along with
 several other checks. Additionally, the ``pre_push.py`` script can be used to run the
-full pre-commit suite and the docs build prior to submitting a Pull Request. The
+full pre-commit suite and the docs build prior to submitting a pull request. The
 following are PRAW-specific guidelines in addition to those PEPs.
 
 .. note::
 
     In order to use the pre-commit hooks and the ``pre_push.py`` dependencies, install
-    PRAW's ``[lint]`` extra, followed by the appropriate Pre-Commit command:
+    PRAW's ``[lint]`` extra, followed by the appropriate pre-commit command:
 
     .. code-block:: bash
 
@@ -41,13 +41,13 @@ Testing
 
 Contributions to PRAW requires 100% test coverage as reported by `Coveralls
 <https://coveralls.io/github/praw-dev/praw>`_. If you know how to add a feature, but
-aren't sure how to write the necessary tests, please open a PR anyway so we can work
-with you to write the necessary tests.
+aren't sure how to write the necessary tests, please open a pull request anyway so we
+can work with you to write the necessary tests.
 
 Running the Test Suite
 ~~~~~~~~~~~~~~~~~~~~~~
 
-`Github Actions <https://github.com/praw-dev/praw/actions>`_ automatically runs all
+`GitHub Actions <https://github.com/praw-dev/praw/actions>`_ automatically runs all
 updates to known branches and pull requests. However, it's useful to be able to run the
 tests locally. The simplest way is via:
 
@@ -55,7 +55,8 @@ tests locally. The simplest way is via:
 
     pytest
 
-Without any configuration or modification, all the tests should pass.
+Without any configuration or modification, all the tests should pass. If they do not,
+please file a bug report.
 
 Adding and Updating Integration Tests
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -81,8 +82,8 @@ By setting these environment variables prior to running ``pytest``, when adding 
 updating cassettes, instances of ``mypassword`` will be replaced by the placeholder text
 ``<PASSWORD>`` and similar for the other environment variables.
 
-To use tokens instead of username/password set ``prawtest_refresh_token`` instead of
-``prawtest_password`` and ``prawtest_username``.
+To use a refresh token instead of username/password set ``prawtest_refresh_token``
+instead of ``prawtest_password`` and ``prawtest_username``.
 
 When adding or updating a cassette, you will likely want to force requests to occur
 again rather than using an existing cassette. The simplest way to rebuild a cassette is
@@ -94,7 +95,9 @@ your cassette.
 Documentation
 -------------
 
-- All publicly available functions, classes and modules should have a docstring.
+- All publicly available functions, classes, and modules should have a docstring.
+- All documentation files and docstrings should be linted and formatted by
+  ``docstrfmt``.
 - Use correct terminology. A subreddit's fullname is something like ``t5_xyfc7``. The
   correct term for a subreddit's "name" like `python <https://www.reddit.com/r/python>`_
   is its display name.

@@ -45,7 +45,7 @@ class CommentHelper(PRAWBase):
 
 
 class SubredditListingMixin(BaseListingMixin, GildedListingMixin, RisingListingMixin):
-    """Adds additional methods pertaining to Subreddit-like instances."""
+    """Adds additional methods pertaining to subreddit-like instances."""
 
     @cachedproperty
     def comments(self) -> CommentHelper:

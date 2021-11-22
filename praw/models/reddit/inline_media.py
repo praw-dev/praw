@@ -10,7 +10,7 @@ class InlineMedia:
         """Initialize an :class:`.InlineMedia` instance.
 
         :param path: The path to a media file.
-        :param caption: An optional caption to add to the image. (default: None)
+        :param caption: An optional caption to add to the image (default: None).
 
         """
         self.path = path

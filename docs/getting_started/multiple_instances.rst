@@ -53,7 +53,7 @@ Multiple Threads
 
 In a nutshell, instances of :class:`.Reddit` are not thread-safe for a number of reasons
 in its own code and each instance depends on an instance of ``requests.Session``, which
-is not thread-safe [`ref <https://github.com/kennethreitz/requests/issues/2766>`_].
+is not thread-safe [`ref <https://github.com/psf/requests/issues/2766>`_].
 
 In theory, having a unique :class:`.Reddit` instance for each thread, and making sure
 that the instances are used in their respective threads only, will work.

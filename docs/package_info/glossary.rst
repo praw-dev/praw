@@ -56,6 +56,4 @@ Glossary
 - ``Websocket``: A special connection type that supports both a client and a server (the
   running program and Reddit respectively) sending multiple messages to each other.
   Reddit uses websockets to notify clients when an image or video submission is
-  completed, as well as certain types of asset uploads, such as subreddit banners. If a
-  client does not connect to the websocket in time, the client will not be notified of
-  the completion of such uploads.
+  completed, as well as certain types of asset uploads, such as subreddit banners.

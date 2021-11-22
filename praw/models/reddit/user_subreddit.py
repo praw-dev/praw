@@ -166,7 +166,7 @@ class UserSubredditModeration(SubredditModeration):
             thematic color for your subreddit on mobile.
         :param lang: A valid IETF language tag (underscore separated).
         :param link_type: The types of submissions users can make. One of ``any``,
-            ``link``, ``self``.
+            ``link``, or ``self``.
         :param original_content_tag_enabled: Enables the use of the ``original content``
             label for submissions.
         :param over_18: Viewers must be over 18 years old (i.e. NSFW).
@@ -180,11 +180,11 @@ class UserSubredditModeration(SubredditModeration):
         :param show_media: Show thumbnails on submissions.
         :param show_media_preview: Expand media previews on comments pages.
         :param spam_comments: Spam filter strength for comments. One of ``all``,
-            ``low``, ``high``.
-        :param spam_links: Spam filter strength for links. One of ``all``, ``low``,
+            ``low``, or ``high``.
+        :param spam_links: Spam filter strength for links. One of ``all``, ``low``, or
             ``high``.
         :param spam_selfposts: Spam filter strength for selfposts. One of ``all``,
-            ``low``, ``high``.
+            ``low``, or ``high``.
         :param spoilers_enabled: Enable marking posts as containing spoilers.
         :param submit_link_label: Custom label for submit link button (None for
             default).
@@ -194,7 +194,7 @@ class UserSubredditModeration(SubredditModeration):
         :param subreddit_type: The string ``user``.
         :param suggested_comment_sort: All comment threads will use this sorting method
             by default. Leave None, or choose one of ``confidence``, ``controversial``,
-            ``live``, ``new``, ``old``, ``qa``, ``random``, ``top``.
+            ``live``, ``new``, ``old``, ``qa``, ``random``, or ``top``.
         :param title: The title of the subreddit.
         :param welcome_message_enabled: Enables the subreddit welcome message.
         :param welcome_message_text: The text to be used as a welcome message. A welcome
@@ -202,7 +202,7 @@ class UserSubredditModeration(SubredditModeration):
         :param wiki_edit_age: Account age, in days, required to edit and create wiki
             pages.
         :param wiki_edit_karma: Subreddit karma required to edit and create wiki pages.
-        :param wikimode: One of ``anyone``, ``disabled``, ``modonly``.
+        :param wikimode: One of ``anyone``, ``disabled``, or ``modonly``.
 
         Additional keyword arguments can be provided to handle new settings as Reddit
         introduces them.

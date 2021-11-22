@@ -436,7 +436,7 @@ class Reddit:
     def _prepare_common_authorizer(self, authenticator):
         if self._token_manager is not None:
             warn(
-                "Token managers have been depreciated and will be removed in the near"
+                "Token managers have been deprecated and will be removed in the near"
                 " future. See https://www.reddit.com/r/redditdev/comments/olk5e6/"
                 "followup_oauth2_api_changes_regarding_refresh/ for more details.",
                 category=DeprecationWarning,
@@ -877,7 +877,7 @@ class Reddit:
         if self.config.check_for_async:
             self._check_for_async()
         if data and json:
-            raise ClientException("At most one of `data` and `json` is supported.")
+            raise ClientException("At most one of `data` or `json` is supported.")
         try:
             return self._core.request(
                 method,

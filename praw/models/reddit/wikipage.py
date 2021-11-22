@@ -127,10 +127,10 @@ class WikiPageModeration:
     ) -> Dict[str, Any]:
         """Update the settings for this :class:`.WikiPage`.
 
-        :param listed: (boolean) Show this page on page list.
-        :param permlevel: (int) Who can edit this page? (0) use subreddit wiki
-            permissions, (1) only approved wiki contributors for this page may edit (see
-            :meth:`.WikiPageModeration.add`), (2) only mods may edit and view
+        :param listed: Show this page on page list.
+        :param permlevel: Who can edit this page? ``0`` use subreddit wiki permissions,
+            ``1`` only approved wiki contributors for this page may edit (see
+            :meth:`.WikiPageModeration.add`), ``2`` only mods may edit and view.
         :param other_settings: Additional keyword arguments to pass.
 
         :returns: The updated WikiPage settings.
@@ -260,7 +260,7 @@ class WikiPage(RedditBase):
         """Edit this WikiPage's contents.
 
         :param content: The updated Markdown content of the page.
-        :param reason: (Optional) The reason for the revision.
+        :param reason: The reason for the revision.
         :param other_settings: Additional keyword arguments to pass.
 
         For example, to replace the first wiki page of ``r/test`` with the phrase ``test

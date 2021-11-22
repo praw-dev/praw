@@ -197,11 +197,11 @@ class LiveHelper(PRAWBase):
         r"""Create a new :class:`.LiveThread`.
 
         :param title: The title of the new LiveThread.
-        :param description: (Optional) The new LiveThread's description.
-        :param nsfw: (boolean) Indicate whether this thread is not safe for work
-            (default: ``False``).
-        :param resources: (Optional) Markdown formatted information that is useful for
-            the :class:`.LiveThread`.
+        :param description: The new LiveThread's description.
+        :param nsfw: Indicate whether this thread is not safe for work (default:
+            ``False``).
+        :param resources: Markdown formatted information that is useful for the
+            :class:`.LiveThread`.
 
         :returns: The new :class`.LiveThread` object.
 
@@ -233,7 +233,7 @@ class LiveHelper(PRAWBase):
 
 
 class MultiredditHelper(PRAWBase):
-    """Provide a set of functions to interact with Multireddits."""
+    """Provide a set of functions to interact with multireddits."""
 
     def __call__(
         self, redditor: Union[str, "praw.models.Redditor"], name: str
@@ -261,21 +261,22 @@ class MultiredditHelper(PRAWBase):
         """Create a new :class:`.Multireddit`.
 
         :param display_name: The display name for the new multireddit.
-        :param subreddits: Subreddits to add to the new multireddit.
-        :param description_md: (Optional) Description for the new multireddit, formatted
-            in markdown.
-        :param icon_name: (Optional) Can be one of: ``art and design``, ``ask``,
-            ``books``, ``business``, ``cars``, ``comics``, ``cute animals``, ``diy``,
+        :param subreddits: Subreddits to add to the new multireddit. Can be a list of
+            either :class:`.Subreddit` instances or subreddit display names.
+        :param description_md: Description for the new multireddit, formatted in
+            markdown.
+        :param icon_name: Can be one of: ``art and design``, ``ask``, ``books``,
+            ``business``, ``cars``, ``comics``, ``cute animals``, ``diy``,
             ``entertainment``, ``food and drink``, ``funny``, ``games``, ``grooming``,
             ``health``, ``life advice``, ``military``, ``models pinup``, ``music``,
             ``news``, ``philosophy``, ``pictures and gifs``, ``science``, ``shopping``,
             ``sports``, ``style``, ``tech``, ``travel``, ``unusual stories``, ``video``,
-            or ``None``.
-        :param key_color: (Optional) RGB hex color code of the form ``"#FFFFFF"``.
-        :param visibility: (Optional) Can be one of: ``hidden``, ``private``, ``public``
+            or ``None`` (default ``None``).
+        :param key_color: RGB hex color code of the form ``"#FFFFFF"``.
+        :param visibility: Can be one of: ``hidden``, ``private``, or ``public``
             (default: private).
-        :param weighting_scheme: (Optional) Can be one of: ``classic``, ``fresh``
-            (default: classic).
+        :param weighting_scheme: Can be one of: ``classic`` or ``fresh`` (default:
+            classic).
 
         :returns: The new :class:`.Multireddit` object.
 
@@ -327,11 +328,12 @@ class SubredditHelper(PRAWBase):
         :param title: The title of the subreddit. When ``None`` or ``""`` use the value
             of ``name``.
         :param link_type: The types of submissions users can make. One of ``any``,
-            ``link``, ``self`` (default: any).
+            ``link``, or ``self`` (default: any).
         :param subreddit_type: One of ``archived``, ``employees_only``, ``gold_only``,
-            ``gold_restricted``, ``private``, ``public``, ``restricted`` (default:
+            ``gold_restricted``, ``private``, ``public``, or ``restricted`` (default:
             public).
-        :param wikimode: One of ``anyone``, ``disabled``, ``modonly``.
+        :param wikimode: One of ``anyone``, ``disabled``, or ``modonly`` (default:
+            ``disabled``).
 
         Any keyword parameters not provided, or set explicitly to None, will take on a
         default value assigned by the Reddit server.

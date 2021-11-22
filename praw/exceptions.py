@@ -185,12 +185,12 @@ class DuplicateReplaceException(ClientException):
 
 
 class InvalidFlairTemplateID(ClientException):
-    """Indicate exceptions where an invalid flair template id is given."""
+    """Indicate exceptions where an invalid flair template ID is given."""
 
     def __init__(self, template_id: str):
         """Initialize an :class:`.InvalidFlairTemplateID` instance."""
         super().__init__(
-            f"The flair template id ``{template_id}`` is invalid. If you are trying to"
+            f"The flair template ID ``{template_id}`` is invalid. If you are trying to"
             " create a flair, please use the ``add`` method."
         )
 
@@ -211,7 +211,7 @@ class InvalidURL(ClientException):
 
         :param url: The invalid URL.
         :param message: The message to display. Must contain a format identifier (``{}``
-            or ``{0}``). (default: ``"Invalid URL: {}"``)
+            or ``{0}``) (default: ``"Invalid URL: {}"``).
 
         """
         super().__init__(message.format(url))

@@ -15,9 +15,9 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Multireddit(SubredditListingMixin, RedditBase):
-    r"""A class for users' Multireddits.
+    r"""A class for users' multireddits.
 
-    This is referred to as a Custom Feed on the Reddit UI.
+    This is referred to as a "Custom Feed" on the Reddit UI.
 
     .. include:: ../../typical_attributes.rst
 
@@ -139,10 +139,9 @@ class Multireddit(SubredditListingMixin, RedditBase):
     def copy(self, display_name: Optional[str] = None) -> "praw.models.Multireddit":
         """Copy this multireddit and return the new multireddit.
 
-        :param display_name: (optional) The display name for the copied multireddit.
-            Reddit will generate the ``name`` field from this display name. When not
-            provided the copy will use the same display name and name as this
-            multireddit.
+        :param display_name: The display name for the copied multireddit. Reddit will
+            generate the ``name`` field from this display name. When not provided the
+            copy will use the same display name and name as this multireddit.
 
         To copy the multireddit ``bboe/test`` with a name of ``testing``:
 
@@ -222,8 +221,8 @@ class Multireddit(SubredditListingMixin, RedditBase):
             ``sports``, ``style``, ``tech``, ``travel``, ``unusual stories``, ``video``,
             or ``None``.
         :param key_color: RGB hex color code of the form ``"#FFFFFF"``.
-        :param visibility: Can be one of: ``hidden``, ``private``, ``public``.
-        :param weighting_scheme: Can be one of: ``classic``, ``fresh``.
+        :param visibility: Can be one of: ``hidden``, ``private``, or ``public``.
+        :param weighting_scheme: Can be one of: ``classic`` or ``fresh``.
 
         For example, to rename multireddit ``bboe/test`` to ``bboe/testing``:
 

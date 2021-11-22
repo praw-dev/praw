@@ -1,7 +1,7 @@
-"""A test that is run only by Github Actions
+"""A test that is run only by GitHub Actions
 
 This test makes real network requests, so environment variables should be specified in
-Github Actions.
+GitHub Actions.
 
 """
 import os
@@ -20,6 +20,6 @@ def test_github_actions():
     reddit = Reddit(
         client_id=os.getenv("NETWORK_TEST_CLIENT_ID"),
         client_secret=os.getenv("NETWORK_TEST_CLIENT_SECRET"),
-        user_agent="Github Actions CI Testing",
+        user_agent="GitHub Actions CI Testing",
     )
     assert isinstance(next(reddit.subreddit("all").hot()), Submission)

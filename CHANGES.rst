@@ -82,7 +82,7 @@ Unreleased
 - :meth:`.trusted` to retrieve a :class:`.RedditorList` of trusted users.
 - :meth:`.trust` to add a user to the trusted list.
 - :meth:`.distrust` to remove a user from the trusted list.
-- :class:`.SQLiteTokenManager` (may not work on Windows)
+- :class:`.SQLiteTokenManager` (may not work on Windows).
 
 **Changed**
 
@@ -349,7 +349,7 @@ Unreleased
 
 - :meth:`.set_original_content` supports marking a submission as original content.
 - :meth:`.unset_original_content` supports unmarking a submission as original content.
-- :meth:`.moderated` to get a list of a Redditor's moderated subreddits.
+- :meth:`.moderated` to get a list of a redditor's moderated subreddits.
 - Parameter ``without_websockets`` to :meth:`~.Subreddit.submit_image` and
   :meth:`~.Subreddit.submit_video` to submit without using WebSockets.
 - :meth:`.Reddit.redditor` supports ``fullname`` param to fetch a :class:`.Redditor` by
@@ -617,7 +617,7 @@ Unreleased
 
 **Added**
 
-- :attr:`.Multireddit.stream`, to stream submissions and comments from a Multireddit.
+- :attr:`.Multireddit.stream`, to stream submissions and comments from a multireddit.
 - :meth:`.Redditor.block`
 
 **Fixed**
@@ -630,7 +630,7 @@ Unreleased
 
 **Changed**
 
-- An attribute on :class:`.LiveUpdate` now works as lazy attribute (i.e. populate an
+- An attribute on :class:`.LiveUpdate` now works as lazy attribute (i.e., populate an
   attribute when the attribute is first accessed).
 
 **Deprecated**

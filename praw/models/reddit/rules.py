@@ -380,7 +380,7 @@ class SubredditRulesModeration:
         :param short_name: The name of the rule.
         :param kind: The kind of item that the rule applies to. One of ``"link"``,
             ``"comment"``, or ``"all"``.
-        :param description: The description for the rule. Optional.
+        :param description: The description for the rule.
         :param violation_reason: The reason that is shown on the report menu. If a
             violation reason is not specified, the short name will be used as the
             violation reason.

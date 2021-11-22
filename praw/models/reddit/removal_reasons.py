@@ -19,7 +19,7 @@ class RemovalReason(RedditBase):
     =========== ==================================
     Attribute   Description
     =========== ==================================
-    ``id``      The id of the removal reason.
+    ``id``      The ID of the removal reason.
     ``message`` The message of the removal reason.
     ``title``   The title of the removal reason.
     =========== ==================================
@@ -30,7 +30,7 @@ class RemovalReason(RedditBase):
 
     @staticmethod
     def _warn_reason_id(reason_id_value: Optional[str], id_value: Optional[str]):
-        """Reason id param is deprecated. Warns if it's used.
+        """Reason ID param is deprecated. Warns if it's used.
 
         :param reason_id_value: The value passed as parameter ``reason_id``.
         :param id_value: Returns the actual value of parameter ``id`` is parameter
@@ -71,9 +71,9 @@ class RemovalReason(RedditBase):
 
         :param reddit: An instance of :class:`.Reddit`.
         :param subreddit: An instance of :class:`.Subreddit`.
-        :param id: The id of the removal reason.
-        :param reason_id: (Deprecated) The original name of the ``id`` parameter. Used
-            for backwards compatibility. This parameter should not be used.
+        :param id: The ID of the removal reason.
+        :param reason_id: The original name of the ``id`` parameter. Used for backwards
+            compatibility. This parameter should not be used.
 
         """
         id = self._warn_reason_id(reason_id, id)

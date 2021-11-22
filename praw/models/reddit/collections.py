@@ -242,7 +242,7 @@ class Collection(RedditBase):
     ``display_layout``  The collection display layout.
     ``last_update_utc`` Time the collection was last updated, represented in `Unix
                         Time`_.
-    ``link_ids``        A ``list`` of :class:`.Submission` fullnames.
+    ``link_ids``        A list of :class:`.Submission` fullnames.
     ``permalink``       The collection's permalink (to view on the web).
     ``sorted_links``    An iterable listing of the posts in this collection.
     ``title``           The title of the collection.
@@ -297,9 +297,9 @@ class Collection(RedditBase):
         """Initialize a :class:`.Collection` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
-        :param _data: Any data associated with the :class:`.Collection` (optional).
-        :param collection_id: The ID of the :class:`.Collection` (optional).
-        :param permalink: The permalink of the :class:`.Collection` (optional).
+        :param _data: Any data associated with the :class:`.Collection`.
+        :param collection_id: The ID of the :class:`.Collection`.
+        :param permalink: The permalink of the :class:`.Collection`.
 
         """
         if (_data, collection_id, permalink).count(None) != 2:
@@ -512,7 +512,7 @@ class SubredditCollections(PRAWBase):
 
         :returns: The specified :class:`.Collection`.
 
-        Exactly one of ``collection_id`` and ``permalink`` is required.
+        Exactly one of ``collection_id`` or ``permalink`` is required.
 
         Example usage:
 

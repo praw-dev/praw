@@ -29,7 +29,7 @@ Creating Pull Requests
 
 1. If you are fixing an already filed issue, please indicate your intentions by
    commenting on the issue. This act will hopefully minimize any duplicate work.
-2. Before committing, make sure to install Pre-Commit_ and the pre-commit hooks, which
+2. Before committing, make sure to install pre-commit_ and the pre-commit hooks, which
    ensures any new code conforms to our quality and style guidelines. To do so, install
    the linting dependencies with ``pip install praw[lint]``, then by the hooks with
    ``pre-commit install``. They will now run automatically every time you commit. If one

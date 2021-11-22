@@ -31,7 +31,7 @@ Basic Configuration Options
 OAuth Configuration Options
 ---------------------------
 
-:client_id: (Required) The OAuth client id associated with your registered Reddit
+:client_id: (Required) The OAuth client ID associated with your registered Reddit
     application. See :ref:`oauth` for instructions on registering a Reddit application.
 :client_secret: The OAuth client secret associated with your registered Reddit
     application. This option is required for all application types, however, the value
@@ -82,7 +82,7 @@ These are options that do not belong in another category, but still play a part 
 
 :check_for_async: When ``true``, check if PRAW is being ran in an asynchronous
     environment whenever a request is made. If so, a warning will be logged recommending
-    the usage of `Async PRAW <https://asyncpraw.readthedocs.io/>`_. (default: ``true``)
+    the usage of `Async PRAW <https://asyncpraw.readthedocs.io/>`_ (default: ``true``).
 :ratelimit_seconds: Controls the maximum number of seconds PRAW will capture ratelimits
     returned in JSON data. Because this can be as high as 14 minutes, only ratelimits of
     up to 5 seconds are captured and waited on by default.

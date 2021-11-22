@@ -439,7 +439,7 @@ class LiveThread(RedditBase):
         """Report the thread violating the Reddit rules.
 
         :param type: One of ``"spam"``, ``"vote-manipulation"``, ``"personal-
-            information"``, ``"sexualizing-minors"``, ``"site-breaking"``.
+            information"``, ``"sexualizing-minors"``, or ``"site-breaking"``.
 
         Usage:
 
@@ -541,12 +541,11 @@ class LiveThreadContribution:
     ):
         """Update settings of the live thread.
 
-        :param title: (Optional) The title of the live thread (default: None).
-        :param description: (Optional) The live thread's description (default: None).
-        :param nsfw: (Optional) Indicate whether this thread is not safe for work
-            (default: None).
-        :param resources: (Optional) Markdown formatted information that is useful for
-            the live thread (default: None).
+        :param title: The title of the live thread (default: None).
+        :param description: The live thread's description (default: None).
+        :param nsfw: Indicate whether this thread is not safe for work (default: None).
+        :param resources: Markdown formatted information that is useful for the live
+            thread (default: None).
 
         Does nothing if no arguments are provided.
 

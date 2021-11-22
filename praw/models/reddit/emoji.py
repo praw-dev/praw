@@ -84,12 +84,12 @@ class Emoji(RedditBase):
     ):
         """Update the permissions of an emoji in this subreddit.
 
-        :param mod_flair_only: (boolean) Indicate whether the emoji is restricted to mod
-            use only. Respects pre-existing settings if not provided.
-        :param post_flair_allowed: (boolean) Indicate whether the emoji may appear in
-            post flair. Respects pre-existing settings if not provided.
-        :param user_flair_allowed: (boolean) Indicate whether the emoji may appear in
-            user flair. Respects pre-existing settings if not provided.
+        :param mod_flair_only: Indicate whether the emoji is restricted to mod use only.
+            Respects pre-existing settings if not provided.
+        :param post_flair_allowed: Indicate whether the emoji may appear in post flair.
+            Respects pre-existing settings if not provided.
+        :param user_flair_allowed: Indicate whether the emoji may appear in user flair.
+            Respects pre-existing settings if not provided.
 
         .. note::
 
@@ -133,7 +133,7 @@ class SubredditEmoji:
     def __getitem__(self, name: str) -> Emoji:
         """Lazily return the :class:`.Emoji` for the subreddit named ``name``.
 
-        :param name: The name of the emoji
+        :param name: The name of the emoji.
 
         This method is to be used to fetch a specific emoji url, like so:
 
@@ -187,14 +187,14 @@ class SubredditEmoji:
     ) -> Emoji:
         """Add an emoji to this subreddit.
 
-        :param name: The name of the emoji
+        :param name: The name of the emoji.
         :param image_path: A path to a jpeg or png image.
-        :param mod_flair_only: (boolean) When provided, indicate whether the emoji is
-            restricted to mod use only. (Default: ``None``)
-        :param post_flair_allowed: (boolean) When provided, indicate whether the emoji
-            may appear in post flair. (Default: ``None``)
-        :param user_flair_allowed: (boolean) When provided, indicate whether the emoji
-            may appear in user flair. (Default: ``None``)
+        :param mod_flair_only: When provided, indicate whether the emoji is restricted
+            to mod use only (Default: ``None``).
+        :param post_flair_allowed: When provided, indicate whether the emoji may appear
+            in post flair (Default: ``None``).
+        :param user_flair_allowed: When provided, indicate whether the emoji may appear
+            in user flair (Default: ``None``).
 
         :returns: The :class:`.Emoji` added.
 

@@ -10,8 +10,8 @@ class SavableMixin:
     def save(self, category: Optional[str] = None):
         """Save the object.
 
-        :param category: (Premium) The category to save to. If your user does not have
-            Reddit Premium this value is ignored by Reddit (default: ``None``).
+        :param category: The category to save to. If the authenticated user does not
+            have Reddit Premium this value is ignored by Reddit (default: ``None``).
 
         Example usage:
 
