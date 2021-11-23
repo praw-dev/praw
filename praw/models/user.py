@@ -2,6 +2,8 @@
 from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Union
 from warnings import warn
 
+from prawcore import Conflict
+
 from ..const import API_PATH
 from ..exceptions import ReadOnlyException
 from ..models import Preferences
@@ -190,6 +192,67 @@ class User(PRAWBase):
     def multireddits(self) -> List["praw.models.Multireddit"]:
         """Return a list of multireddits belonging to the user."""
         return self._reddit.get(API_PATH["my_multireddits"])
+
+    def pin(
+        self,
+        submission: "praw.models.Submission",
+        *,
+        num: int = None,
+        state: bool = True
+    ):
+        """Set the pin state of a submission on the authenticated user's profile.
+
+        :param submission: An instance of :class:`.Submission` that will be
+            pinned/unpinned.
+        :param num: If specified, the slot in which the submission will be pinned into.
+            If there is a submission already in the specified slot, it will be replaced.
+            If ``None`` or there is not a submission in the specified slot, the first
+            available slot will be used (default: ``None``). If all slots are used the
+            following will occur:
+
+            - Old Reddit:
+
+              1. The submission in the last slot will be unpinned.
+              2. The remaining pinned submissions will be shifted down a slot.
+              3. The new submission will be pinned in the first slot.
+
+            - New Reddit:
+
+              1. The submission in the first slot will be unpinned.
+              2. The remaining pinned submissions will be shifted up a slot.
+              3. The new submission will be pinned in the last slot.
+
+            .. note::
+
+                At the time of writing (10/22/2021), there are 4 pin slots available and
+                pins are in reverse order on old Reddit. If ``num`` is an invalid value,
+                Reddit will ignore it and the same behavior will occur as if ``num`` is
+                ``None``.
+
+        :param state: ``True`` pins the submission, ``False`` unpins (default:
+            ``True``).
+
+        :raises: ``prawcore.BadRequest`` when pinning a removed or deleted submission.
+
+        :raises: ``prawcore.Forbidden`` when pinning a submission the authenticated user
+            is not the author of.
+
+        .. code-block:: python
+
+            submission = next(reddit.user.me().submissions.new())
+            reddit.user.pin(submission)
+
+        """
+        data = {
+            "id": submission.fullname,
+            "num": num,
+            "state": state,
+            "to_profile": True,
+        }
+        try:
+            return self._reddit.post(API_PATH["sticky_submission"], data=data)
+        except Conflict:
+            pass
 
     def subreddits(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
