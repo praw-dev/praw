@@ -1,11 +1,11 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2021-11-18T21:16:41",
+      "recorded_at": "2021-11-23T00:28:08",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+          "string": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>"
         },
         "headers": {
           "Accept": [
@@ -21,13 +21,13 @@
             "close"
           ],
           "Content-Length": [
-            "68"
+            "75"
           ],
           "Content-Type": [
             "application/x-www-form-urlencoded"
           ],
           "User-Agent": [
-            "<USER_AGENT> PRAW/7.4.1.dev0 prawcore/2.3.0"
+            "<USER_AGENT> PRAW/7.5.1.dev0 prawcore/2.3.0"
           ]
         },
         "method": "POST",
@@ -36,7 +36,7 @@
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"refresh_token\": \"<REFRESH_TOKEN>\", \"scope\": \"account creddits edit flair history identity livemanage modconfig modcontributors modflair modlog modmail modothers modposts modself modtraffic modwiki mysubreddits privatemessages read report save structuredstyles submit subscribe vote wikiedit wikiread\"}"
         },
         "headers": {
           "Accept-Ranges": [
@@ -46,19 +46,19 @@
             "close"
           ],
           "Content-Length": [
-            "121"
+            "427"
           ],
           "Content-Type": [
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Thu, 18 Nov 2021 21:16:41 GMT"
+            "Tue, 23 Nov 2021 00:28:08 GMT"
           ],
           "Server": [
             "snooserv"
           ],
           "Set-Cookie": [
-            "edgebucket=3lw6UyKiOMj9dUtLkz; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+            "edgebucket=1uy2zyoFYugqArPgh6; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
           ],
           "Strict-Transport-Security": [
             "max-age=15552000; includeSubDomains; preload"
@@ -85,7 +85,7 @@
             "295"
           ],
           "x-ratelimit-reset": [
-            "200"
+            "112"
           ],
           "x-ratelimit-used": [
             "5"
@@ -102,11 +102,11 @@
       }
     },
     {
-      "recorded_at": "2021-11-18T21:16:41",
+      "recorded_at": "2021-11-23T00:28:08",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&id=t3_i55jqj&state=True&to_profile=True"
+          "string": "api_type=json&id=t3_qzztxz&state=True&to_profile=True"
         },
         "headers": {
           "Accept": [
@@ -128,10 +128,10 @@
             "application/x-www-form-urlencoded"
           ],
           "Cookie": [
-            "edgebucket=3lw6UyKiOMj9dUtLkz"
+            "edgebucket=1uy2zyoFYugqArPgh6"
           ],
           "User-Agent": [
-            "<USER_AGENT> PRAW/7.4.1.dev0 prawcore/2.3.0"
+            "<USER_AGENT> PRAW/7.5.1.dev0 prawcore/2.3.0"
           ]
         },
         "method": "POST",
@@ -156,7 +156,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Thu, 18 Nov 2021 21:16:41 GMT"
+            "Tue, 23 Nov 2021 00:28:08 GMT"
           ],
           "Server": [
             "snooserv"
@@ -180,10 +180,11 @@
             "-1"
           ],
           "set-cookie": [
-            "loid=00000000003f0r70yc.2.1552683570128.Z0FBQUFBQmhsc0s1UkdSYnBzLVJMWThsRGk1RnhEVl9lV0w3Zk1MNEhjX1dsdGRvdURMU0hOcEJRWHk5NUFYT013dHFhVmJTNWhrdEZrUHNLcExLTHlINGc2RXNoNzlFLXpQNlRjM0lQMUFxbDU1YjRQRzBGTWhzdjVrQldjLWxqZ0s3WTlIZ041ZS0; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Sat, 18-Nov-2023 21:16:41 GMT; secure",
-            "session_tracker=fmomhcmnhlhmooeqbg.0.1637270201405.Z0FBQUFBQmhsc0s1OHc3ZFpWRGlLbktHTmtBcF94dU5kbGJQZUh2T2N1SmlmZlV6QTRpQ3lwbnBVb3dza1RkMEJvOGVBQ2ZsWm1yZFNFOGktcXREX3hyZWdjM2wwSklZVjNneWxKNWRtWVk2VnVQd25Ra2ctSnlXSnl0cnFTc0FvbGFFWVNsYXFLV0I; Domain=reddit.com; Max-Age=7199; Path=/; expires=Thu, 18-Nov-2021 23:16:41 GMT; secure",
-            "loid=0000000000gop045ry.2.1637270201418.Z0FBQUFBQmhsc0s1ekJNcDMxMGhLcUZ1M3VVRWVUUzRaYkFGdGhPM2F2cjdNN05RVXRLV3VlZHpYd1hLN1NoMEFjS2NlSmViNkxNMFZRUHdOVjBvSWdVTHE5YXBkNXRwNWJYbEl1NUR4MElSdnpRLXdwNzZrZjRTM2dtQ0tKeWJuNmtzQUNRMFZzMHg; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Sat, 18-Nov-2023 21:16:41 GMT; secure",
-            "session_tracker=3rqMhUvDd2bqxJ9o1w.0.1637270201418.Z0FBQUFBQmhsc0s1SFM3R2hoLWFyT0pOT2NxWjRGS3NsNk5VU1k2c3M2SDhqTERKRVhnUmNNdkhuUG1Sd1EwTnB1cGFtMEUza2M2UE80bTBNVDFoelhsTXM3UXFKdjFyNlNxZ3BIZXItNzdOT2wxYXpSSExzZElOSjV6dEc4LWRKVkltSmh4Nkl2dy0; Domain=reddit.com; Max-Age=7199; Path=/; expires=Thu, 18-Nov-2021 23:16:41 GMT; secure"
+            "loid=0000000000000o77bz.2.1434669370561.Z0FBQUFBQmhuRFdZZVdROEstZmFUS0FDaTZhalEya1N5RGIzb2FRT3l5TnVMWjctQU9ZZVFrMm1rUUdpdkFfOW44S0plSEpmVHRiU29HVTJ3d0J1QTdhRVFlb3VqS3ZxSGVJYnRHODNOckY1YTFiR0o5UmhOc2N5ZzZYT1g4aGRNN1JjWXh6UElkN2o; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Thu, 23-Nov-2023 00:28:08 GMT; secure",
+            "redesign_optout=true; Domain=reddit.com; Max-Age=94607999; Path=/; expires=Fri, 22-Nov-2024 00:28:08 GMT; secure",
+            "session_tracker=arkapfpakpppbmrrfg.0.1637627288283.Z0FBQUFBQmhuRFdZTTBncUluX2Rjend1MXg1eFRBYng0SHdZWHVOX2EwY1JxTmNLSnZlMjJkR3g3Xy1Id29wc2xUQkNPVF9YdzRZaURqZkdGb19NVVdlMFV0VEhkMy1SM1NSUXl2d1c2RXFQZ1pCNk52WHIyYUdOM2VrQjQ1ZjBPQlVSNGE4M3Zqdjc; Domain=reddit.com; Max-Age=7199; Path=/; expires=Tue, 23-Nov-2021 02:28:08 GMT; secure",
+            "loid=0000000000gtqit4wd.2.1637627288296.Z0FBQUFBQmhuRFdZeE5yQWdzSmtTSkhwWFVkbU9mRTV4bVlqLWhBanEwRUVfWUxVZ0dDNGRtMDNCZVZVN2tUUlBKNEJkMnhmVVI3VkxON1B0N1BCQkV3RVZBanNydFBCNHRyOVlzamZhOUoxaUZ6NXpGTmxINnBReDRrajZOMV9OX1A4eV9Bd3JrTms; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Thu, 23-Nov-2023 00:28:08 GMT; secure",
+            "session_tracker=xe15aSS7JvHjRmfDrD.0.1637627288296.Z0FBQUFBQmhuRFdZVzdhOUtpT2E1WGprMXQ3VnYtZzdMM2NIUFZWNTE0Um9iQUxnRUdHZGhva3RmT3R1OUVWSEljYm5SWUhGZHo4aWNpdmxpbjVvZ2ExLWZMWW1Va0JzMU1FbUNYSUVoTUE1VjM1TlR0M3FSY0Jyb1JHc0pTV3FOQ25WZ0pBRXFkOUo; Domain=reddit.com; Max-Age=7199; Path=/; expires=Tue, 23-Nov-2021 02:28:08 GMT; secure"
           ],
           "x-content-type-options": [
             "nosniff"
@@ -192,13 +193,13 @@
             "SAMEORIGIN"
           ],
           "x-ratelimit-remaining": [
-            "585.0"
+            "154.0"
           ],
           "x-ratelimit-reset": [
-            "199"
+            "112"
           ],
           "x-ratelimit-used": [
-            "15"
+            "446"
           ],
           "x-ua-compatible": [
             "IE=edge"

@@ -97,7 +97,7 @@ class TestUser(IntegrationTest):
             assert multireddits
             assert all(isinstance(x, Multireddit) for x in multireddits)
 
-    def test_pin__without_nums(self):
+    def test_pin(self):
         self.reddit.read_only = False
         self.reddit.validate_on_submit = True
         with self.use_cassette():
@@ -114,30 +114,55 @@ class TestUser(IntegrationTest):
                 subreddit.submit(
                     title=f"PRAW Test {i}", selftext=f"Testing .pin method {i}"
                 )
-
-            new_posts = [
-                submission for submission in self.reddit.user.me().new(limit=4)
-            ]
+            new_posts = list(self.reddit.user.me().new(limit=4))
             new_posts.reverse()
-            assert all(map(lambda x, y: x == y, new_posts, submission_list))
+            assert new_posts == submission_list
 
-    def test_pin__remove(self):
+    def test_pin__comment(self):
         self.reddit.read_only = False
         with self.use_cassette():
-            new_posts = [
-                submission for submission in self.reddit.user.me().new(limit=4)
-            ]
-            for post in new_posts:
-                self.reddit.user.pin(post, state=False)
+            comment = self.reddit.comment(id="hjaga35")
+            self.reddit.user.pin(comment)
+            new_content = next(self.reddit.user.me().new(limit=1))
+            assert new_content != comment
 
-            new_posts = [
-                submission.title for submission in self.reddit.user.me().new(limit=4)
-            ]
-            expected_new_posts = [f"PRAW Test {i}" for i in range(5, 9)]
-            expected_new_posts.reverse()
-            assert all(map(lambda x, y: x == y, new_posts, expected_new_posts))
+    def test_pin__deleted_submission(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            with pytest.raises(prawcore.exceptions.BadRequest):
+                self.reddit.user.pin(Submission(self.reddit, "qzztxz"))
 
-    def test_pin__nums(self):
+    def test_pin__empty_slot(self):
+        self.reddit.read_only = False
+        self.reddit.validate_on_submit = True
+        with self.use_cassette():
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+            new_posts = list(self.reddit.user.me().new(limit=4))
+            new_posts.reverse()
+            for i in range(2, 4):
+                self.reddit.user.pin(new_posts[i], state=False)
+            submission = subreddit.submit(
+                title="PRAW Test 5", selftext="Testing .pin method 5"
+            )
+            self.reddit.user.pin(submission, num=4)
+            new_posts = list(self.reddit.user.me().new(limit=4))
+            new_posts.reverse()
+            assert new_posts[-1] == submission
+
+    def test_pin__ignore_conflicts(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            self.reddit.user.pin(Submission(self.reddit, "q9lvkd"))
+            self.reddit.user.pin(Submission(self.reddit, "q9lvkd"))
+
+    def test_pin__invalid_num(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            self.reddit.user.pin(Submission(self.reddit, "qzzset"), num=7)
+            submission = next(self.reddit.user.me().new(limit=1))
+            assert submission.id == "qzzset"
+
+    def test_pin__num(self):
         self.reddit.read_only = False
         self.reddit.validate_on_submit = True
         with self.use_cassette():
@@ -149,34 +174,39 @@ class TestUser(IntegrationTest):
                 )
                 submission_list.append(submission)
             submission_list.reverse()
-            list(map(self.reddit.user.pin, submission_list, range(1, 5)))
+            for num, submission in enumerate(submission_list, 1):
+                self.reddit.user.pin(submission, num=num)
 
-            new_posts = [
-                submission for submission in self.reddit.user.me().new(limit=4)
-            ]
+            new_posts = list(self.reddit.user.me().new(limit=4))
             new_posts.reverse()
-            assert all(map(lambda x, y: x == y, new_posts, submission_list))
+            assert new_posts == submission_list
 
-    def test_pin__empty_slot(self):
+    def test_pin__remove(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            new_posts = list(self.reddit.user.me().new(limit=4))
+            for post in new_posts:
+                self.reddit.user.pin(post, state=False)
+            new_posts = [
+                submission.title for submission in self.reddit.user.me().new(limit=4)
+            ]
+            expected_new_posts = [f"PRAW Test {i}" for i in range(5, 9)]
+            expected_new_posts.reverse()
+            assert new_posts == expected_new_posts
+
+    def test_pin__remove_num(self):
         self.reddit.read_only = False
         self.reddit.validate_on_submit = True
         with self.use_cassette():
-            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-            new_posts = [
-                submission for submission in self.reddit.user.me().new(limit=4)
-            ]
-            new_posts.reverse()
-            for i in range(2, 4):
-                self.reddit.user.pin(new_posts[i], state=False)
-            submission = subreddit.submit(
-                title="PRAW Test 5", selftext="Testing .pin method 5"
-            )
-            self.reddit.user.pin(submission, num=4)
-            new_posts = [
-                submission for submission in self.reddit.user.me().new(limit=4)
-            ]
-            new_posts.reverse()
-            assert new_posts[-1] == submission
+            self.reddit.user.pin(Submission(self.reddit, "qzzset"), num=1, state=False)
+            submission = next(self.reddit.user.me().new(limit=1))
+            assert submission.id != "qzzset"
+
+    def test_pin__removed_submission(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            with pytest.raises(prawcore.exceptions.BadRequest):
+                self.reddit.user.pin(Submission(self.reddit, "qzztxz"))
 
     def test_pin__replace_slot(self):
         self.reddit.read_only = False
@@ -187,31 +217,9 @@ class TestUser(IntegrationTest):
                 title="PRAW Test replace slot 1", selftext="Testing .pin method 1"
             )
             self.reddit.user.pin(submission, num=1)
-            new_posts = [
-                submission for submission in self.reddit.user.me().new(limit=4)
-            ]
+            new_posts = list(self.reddit.user.me().new(limit=4))
             new_posts.reverse()
             assert new_posts[-1] == submission
-
-    def test_pin__ignore_conflicts(self):
-        self.reddit.read_only = False
-        with self.use_cassette():
-            self.reddit.user.pin(Submission(self.reddit, "q9lvkd"), num=7)
-            self.reddit.user.pin(Submission(self.reddit, "q9lvkd"), num=7)
-
-    def test_pin__bad_request(self):
-        self.reddit.read_only = False
-        with self.use_cassette():
-            with pytest.raises(prawcore.exceptions.BadRequest):
-                self.reddit.user.pin(Submission(self.reddit, "i55jqj"), num=7)
-
-    def test_pin__comment(self):
-        self.reddit.read_only = False
-        with self.use_cassette():
-            comment = self.reddit.comment(id="hlczc77")
-            self.reddit.user.pin(comment)
-            new_content = next(self.reddit.user.me().new(limit=1))
-            assert not new_content == comment
 
     def test_subreddits(self):
         self.reddit.read_only = False

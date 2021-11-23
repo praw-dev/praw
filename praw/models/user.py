@@ -194,31 +194,48 @@ class User(PRAWBase):
         return self._reddit.get(API_PATH["my_multireddits"])
 
     def pin(
-        self, submission: "praw.models.Submission", num: int = None, state: bool = True
+        self,
+        submission: "praw.models.Submission",
+        *,
+        num: int = None,
+        state: bool = True
     ):
         """Set the pin state of a submission on the authenticated user's profile.
 
-        :param submission: An instance of :class:`.Subreddit` that will be
+        :param submission: An instance of :class:`.Submission` that will be
             pinned/unpinned.
-        :param num: (int) If specified, the slot in which the submission will be pinned
-            into. If there is a submission already in the specified slot, it will be
-            replaced. If ``None`` or there is not a submission in the specified slot,
-            the first available slot will be used (default: ``None``). If all slots are
-            used, the following will occur:
+        :param num: If specified, the slot in which the submission will be pinned into.
+            If there is a submission already in the specified slot, it will be replaced.
+            If ``None`` or there is not a submission in the specified slot, the first
+            available slot will be used (default: ``None``). If all slots are used the
+            following will occur:
 
-            - the submission in the first slot will be unpinned
-            - the remaining pinned submissions will be shifted up a slot
-            - The new submission will be pinned in the last slot
+            - Old Reddit:
 
-        .. note::
+              1. The submission in the last slot will be unpinned.
+              2. The remaining pinned submissions will be shifted down a slot.
+              3. The new submission will be pinned in the first slot.
 
-            At the time of writing (10/22/2021), there are 4 pin slots available and
-            pins are in reverse order on old Reddit.
+            - New Reddit:
+
+              1. The submission in the first slot will be unpinned.
+              2. The remaining pinned submissions will be shifted up a slot.
+              3. The new submission will be pinned in the last slot.
+
+            .. note::
+
+                At the time of writing (10/22/2021), there are 4 pin slots available and
+                pins are in reverse order on old Reddit. If ``num`` is an invalid value,
+                Reddit will ignore it and the same behavior will occur as if ``num`` is
+                ``None``.
+
+        :param state: ``True`` pins the submission, ``False`` unpins (default:
+            ``True``).
 
         :raises: ``prawcore.BadRequest`` when pinning a removed or deleted submission.
 
         :raises: ``prawcore.Forbidden`` when pinning a submission the authenticated user
-            is not an author of the submission.
+            is not the author of.
 
         .. code-block:: python
 
@@ -228,11 +245,10 @@ class User(PRAWBase):
         """
         data = {
             "id": submission.fullname,
+            "num": num,
             "state": state,
             "to_profile": True,
         }
-        if state:
-            data["num"] = num
         try:
             return self._reddit.post(API_PATH["sticky_submission"], data=data)
         except Conflict:
