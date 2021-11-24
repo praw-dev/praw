@@ -60,9 +60,12 @@ them bound to an attribute of one of the PRAW models.
     :maxdepth: 2
     :caption: Subreddit Helpers
 
+    other/subredditemoji
     other/subredditfilters
     other/subredditmoderationstream
     other/subredditquarantine
+    other/subredditremovalreasons
+    other/subredditrules
     other/subredditstream
     other/subredditstylesheet
     other/subredditwidgets
@@ -125,10 +128,7 @@ them bound to an attribute of one of the PRAW models.
     other/rule
     other/stylesheet
     other/sublisting
-    other/subredditemoji
     other/subredditmessage
-    other/subredditremovalreasons
-    other/subredditrules
     other/token_manager
     other/trophy
     other/usersubreddit
