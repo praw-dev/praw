@@ -72,25 +72,32 @@ them bound to an attribute of one of the PRAW models.
     :maxdepth: 2
     :caption: Widgets
 
+    other/button
     other/buttonwidget
     other/calendar
+    other/calendarconfiguration
     other/communitylist
     other/customwidget
+    other/hover
     other/idcard
+    other/image
+    other/imagedata
     other/imagewidget
     other/menu
+    other/menulink
     other/moderatorswidget
     other/postflairwidget
     other/ruleswidget
+    other/styles
+    other/submenu
     other/textarea
+    other/widget
 
 .. toctree::
     :maxdepth: 2
     :caption: Others
 
     other/auth
-    other/button
-    other/calendarconfiguration
     other/commentforest
     other/commenthelper
     other/config
@@ -98,16 +105,12 @@ them bound to an attribute of one of the PRAW models.
     other/draftlist
     other/emoji
     other/fullnamemixin
-    other/hover
-    other/image
-    other/imagedata
     other/inboxablemixin
     other/inlinegif
     other/inlineimage
     other/inlinemedia
     other/inlinevideo
     other/listinggenerator
-    other/menulink
     other/mod_action
     other/moderatedlist
     other/modmail
@@ -120,10 +123,8 @@ them bound to an attribute of one of the PRAW models.
     other/redditorstream
     other/removalreason
     other/rule
-    other/styles
     other/stylesheet
     other/sublisting
-    other/submenu
     other/subredditemoji
     other/subredditmessage
     other/subredditremovalreasons
@@ -132,4 +133,3 @@ them bound to an attribute of one of the PRAW models.
     other/trophy
     other/usersubreddit
     other/util
-    other/widget
