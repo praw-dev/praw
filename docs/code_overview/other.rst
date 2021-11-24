@@ -26,15 +26,6 @@ them bound to an attribute of one of the PRAW models.
 
 .. toctree::
     :maxdepth: 2
-    :caption: Reddit Live Helpers
-
-    other/livecontributorrelationship
-    other/livethreadcontribution
-    other/livethreadstream
-    other/liveupdatecontribution
-
-.. toctree::
-    :maxdepth: 2
     :caption: Moderation Helpers
 
     other/commentmoderation
@@ -47,6 +38,15 @@ them bound to an attribute of one of the PRAW models.
     other/usersubredditmoderation
     other/widgetmoderation
     other/wikipagemoderation
+
+.. toctree::
+    :maxdepth: 2
+    :caption: Reddit Live Helpers
+
+    other/livecontributorrelationship
+    other/livethreadcontribution
+    other/livethreadstream
+    other/liveupdatecontribution
 
 .. toctree::
     :maxdepth: 2
