@@ -26,6 +26,15 @@ them bound to an attribute of one of the PRAW models.
 
 .. toctree::
     :maxdepth: 2
+    :caption: Inline Media
+
+    other/inlinegif
+    other/inlineimage
+    other/inlinemedia
+    other/inlinevideo
+
+.. toctree::
+    :maxdepth: 2
     :caption: Moderation Helpers
 
     other/commentmoderation
@@ -109,10 +118,6 @@ them bound to an attribute of one of the PRAW models.
     other/emoji
     other/fullnamemixin
     other/inboxablemixin
-    other/inlinegif
-    other/inlineimage
-    other/inlinemedia
-    other/inlinevideo
     other/listinggenerator
     other/mod_action
     other/moderatedlist
