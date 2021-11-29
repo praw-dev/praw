@@ -42,7 +42,7 @@ class LiveContributorRelationship:
         return temp if isinstance(temp, RedditorList) else temp[0]
 
     def __init__(self, thread: "praw.models.LiveThread"):
-        """Create a :class:`.LiveContributorRelationship` instance.
+        """Initialize a :class:`.LiveContributorRelationship` instance.
 
         :param thread: An instance of :class:`.LiveThread`.
 
@@ -388,7 +388,7 @@ class LiveThread(RedditBase):
         id: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,  # pylint: disable=redefined-builtin
     ):
-        """Initialize a lazy :class:`.LiveThread` instance.
+        """Initialize a :class:`.LiveThread` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
         :param id: A live thread ID, e.g., ``"ukaeu1ik4sw5"``
@@ -492,7 +492,7 @@ class LiveThreadContribution:
     """Provides a set of contribution functions to a LiveThread."""
 
     def __init__(self, thread: "praw.models.LiveThread"):
-        """Create an instance of :class:`.LiveThreadContribution`.
+        """Initialize a :class:`.LiveThreadContribution` instance.
 
         :param thread: An instance of :class:`.LiveThread`.
 
@@ -614,7 +614,7 @@ class LiveThreadStream:
     """
 
     def __init__(self, live_thread: "praw.models.LiveThread"):
-        """Create a LiveThreadStream instance.
+        """Initialize a LiveThreadStream instance.
 
         :param live_thread: The live thread associated with the stream.
 
@@ -713,7 +713,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
         update_id: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
     ):
-        """Initialize a lazy :class:`.LiveUpdate` instance.
+        """Initialize a :class:`.LiveUpdate` instance.
 
         Either ``thread_id`` and ``update_id``, or ``_data`` must be provided.
 
@@ -763,7 +763,7 @@ class LiveUpdateContribution:
     """Provides a set of contribution functions to LiveUpdate."""
 
     def __init__(self, update: "praw.models.LiveUpdate"):
-        """Create an instance of :class:`.LiveUpdateContribution`.
+        """Initialize a :class:`.LiveUpdateContribution` instance.
 
         :param update: An instance of :class:`.LiveUpdate`.
 

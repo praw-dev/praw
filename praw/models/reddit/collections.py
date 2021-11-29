@@ -44,7 +44,7 @@ class CollectionModeration(PRAWBase):
             return self._reddit.submission(id=post).fullname
 
     def __init__(self, reddit: "praw.Reddit", collection_id: str):
-        """Initialize an instance of CollectionModeration.
+        """Initialize a CollectionModeration instance.
 
         :param collection_id: The ID of a collection.
 
@@ -443,7 +443,7 @@ class SubredditCollectionsModeration(PRAWBase):
         sub_fullname: str,
         _data: Optional[Dict[str, Any]] = None,
     ):
-        """Initialize the SubredditCollectionsModeration instance."""
+        """Initialize a SubredditCollectionsModeration instance."""
         super().__init__(reddit, _data)
         self.subreddit_fullname = sub_fullname
 
@@ -551,7 +551,7 @@ class SubredditCollections(PRAWBase):
         subreddit: "praw.models.Subreddit",
         _data: Optional[Dict[str, Any]] = None,
     ):
-        """Initialize an instance of SubredditCollections."""
+        """Initialize a SubredditCollections instance."""
         super().__init__(reddit, _data)
         self.subreddit = subreddit
 

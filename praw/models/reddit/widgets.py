@@ -358,7 +358,7 @@ class SubredditWidgets(PRAWBase):
         )
 
     def __init__(self, subreddit):
-        """Initialize the class.
+        """Initialize a :class:`.SubredditWidgets` instance.
 
         :param subreddit: The :class:`.Subreddit` the widgets belong to.
 
@@ -419,7 +419,7 @@ class SubredditWidgetsModeration:
     """
 
     def __init__(self, subreddit, reddit):
-        """Initialize the class."""
+        """Initialize a :class:`.SubredditWidgetsModeration` instance."""
         self._subreddit = subreddit
         self._reddit = reddit
 
@@ -1015,7 +1015,7 @@ class Widget(PRAWBase):
 
     # pylint: disable=invalid-name
     def __init__(self, reddit, _data):
-        """Initialize an instance of the class."""
+        """Initialize a :class:`.Widget` instance."""
         self.subreddit = ""  # in case it isn't in _data
         self.id = ""  # in case it isn't in _data
         super().__init__(reddit, _data=_data)
@@ -1325,7 +1325,7 @@ class CustomWidget(Widget):
     """
 
     def __init__(self, reddit, _data):
-        """Initialize the class."""
+        """Initialize a :class:`.CustomWidget` instance."""
         _data["imageData"] = [
             ImageData(reddit, data) for data in _data.pop("imageData")
         ]
@@ -1566,7 +1566,7 @@ class ModeratorsWidget(Widget, BaseList):
     CHILD_ATTRIBUTE = "mods"
 
     def __init__(self, reddit, _data):
-        """Initialize the moderators widget."""
+        """Initialize a :class:`.ModeratorsWidget` instance."""
         if self.CHILD_ATTRIBUTE not in _data:
             # .mod.update() sometimes returns payload without "mods" field
             _data[self.CHILD_ATTRIBUTE] = []
@@ -1690,7 +1690,7 @@ class RulesWidget(Widget, BaseList):
     CHILD_ATTRIBUTE = "data"
 
     def __init__(self, reddit, _data):
-        """Initialize the rules widget."""
+        """Initialize a :class:`.RulesWidget` instance."""
         if self.CHILD_ATTRIBUTE not in _data:
             # .mod.update() sometimes returns payload without "data" field
             _data[self.CHILD_ATTRIBUTE] = []
@@ -1783,7 +1783,7 @@ class WidgetModeration:
     """
 
     def __init__(self, widget, subreddit, reddit):
-        """Initialize the widget moderation object."""
+        """Initialize a :class:`.WidgetModeration` instance."""
         self.widget = widget
         self._reddit = reddit
         self._subreddit = subreddit

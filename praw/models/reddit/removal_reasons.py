@@ -72,7 +72,7 @@ class RemovalReason(RedditBase):
         reason_id: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
     ):
-        """Construct an instance of the Removal Reason object.
+        """Initialize a :class:`.RemovalReason` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
         :param subreddit: An instance of :class:`.Subreddit`.
@@ -192,7 +192,7 @@ class SubredditRemovalReasons:
         return RemovalReason(self._reddit, self.subreddit, reason_id)
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Create a SubredditRemovalReasons instance.
+        """Initialize a SubredditRemovalReasons instance.
 
         :param subreddit: The subreddit whose removal reasons to work with.
 

@@ -20,7 +20,7 @@ class cachedproperty:
     """
 
     def __init__(self, func: Callable[[Any], Any], doc: Optional[str] = None):
-        """Initialize the descriptor."""
+        """Initialize a :class:`.cachedproperty` instance."""
         self.func = self.__wrapped__ = func
 
         if doc is None:

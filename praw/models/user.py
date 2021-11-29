@@ -51,7 +51,7 @@ class User(PRAWBase):
         return Preferences(self._reddit)
 
     def __init__(self, reddit: "praw.Reddit"):
-        """Initialize a User instance.
+        """Initialize an User instance.
 
         This class is intended to be interfaced with through ``reddit.user``.
 

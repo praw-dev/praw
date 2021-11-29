@@ -33,7 +33,7 @@ class Preferences:
         return self._reddit.get(API_PATH["preferences"])
 
     def __init__(self, reddit: "praw.Reddit"):
-        """Create a Preferences instance.
+        """Initialize a Preferences instance.
 
         :param reddit: The Reddit instance.
 

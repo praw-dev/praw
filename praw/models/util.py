@@ -13,7 +13,7 @@ class BoundedSet:
     """
 
     def __init__(self, max_items: int):
-        """Construct an instance of the BoundedSet."""
+        """Initialize a BoundedSet instance."""
         self.max_items = max_items
         self._set = OrderedDict()
 
@@ -38,7 +38,7 @@ class ExponentialCounter:
     """A class to provide an exponential counter with jitter."""
 
     def __init__(self, max_counter: int):
-        """Initialize an instance of ExponentialCounter.
+        """Initialize an ExponentialCounter instance.
 
         :param max_counter: The maximum base value.
 

@@ -7,7 +7,7 @@ class InlineMedia:
     TYPE = None
 
     def __init__(self, path: str, caption: str = None):
-        """Create an InlineMedia instance.
+        """Initialize an InlineMedia instance.
 
         :param path: The path to a media file.
         :param caption: An optional caption to add to the image. (default: None)

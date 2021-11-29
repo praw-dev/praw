@@ -94,7 +94,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         return SubredditStream(self)
 
     def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
-        """Construct an instance of the Multireddit object."""
+        """Initialize a Multireddit instance."""
         self.path = None
         super().__init__(reddit, _data=_data)
         self._author = Redditor(reddit, self.path.split("/", 3)[2])

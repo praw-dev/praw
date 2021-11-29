@@ -12,7 +12,7 @@ class MoreComments(PRAWBase):
     """A class indicating there are more comments."""
 
     def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
-        """Construct an instance of the MoreComments object."""
+        """Initialize a MoreComments instance."""
         self.count = self.parent_id = None
         self.children = []
         super().__init__(reddit, _data=_data)

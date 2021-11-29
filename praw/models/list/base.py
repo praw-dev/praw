@@ -13,7 +13,7 @@ class BaseList(PRAWBase):
     CHILD_ATTRIBUTE = None
 
     def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
-        """Initialize a BaseList instance.
+        """Initialize a :class:`.BaseList` instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
 

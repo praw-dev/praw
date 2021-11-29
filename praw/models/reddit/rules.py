@@ -71,7 +71,7 @@ class Rule(RedditBase):
         short_name: Optional[str] = None,
         _data: Optional[Dict[str, str]] = None,
     ):
-        """Construct an instance of the Rule object."""
+        """Initialize a Rule instance."""
         if (short_name, _data).count(None) != 1:
             raise ValueError("Either short_name or _data needs to be given.")
         if short_name:
@@ -220,7 +220,7 @@ class SubredditRules:
         return Rule(self._reddit, subreddit=self.subreddit, short_name=short_name)
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Create a SubredditRules instance.
+        """Initialize a SubredditRules instance.
 
         :param subreddit: The subreddit whose rules to work with.
 
@@ -278,7 +278,7 @@ class RuleModeration:
     """
 
     def __init__(self, rule: "praw.models.Rule"):
-        """Initialize the RuleModeration class."""
+        """Initialize a RuleModeration instance."""
         self.rule = rule
 
     def delete(self):
@@ -370,7 +370,7 @@ class SubredditRulesModeration:
     """
 
     def __init__(self, subreddit_rules: SubredditRules):
-        """Initialize the SubredditRulesModeration class."""
+        """Initialize a SubredditRulesModeration instance."""
         self.subreddit_rules = subreddit_rules
 
     def add(

@@ -95,7 +95,7 @@ class Draft(RedditBase):
         id: Optional[str] = None,  # pylint: disable=redefined-builtin
         _data: Dict[str, Any] = None,
     ):
-        """Construct an instance of the Draft object."""
+        """Initialize a Draft instance."""
         if (id, _data).count(None) != 1:
             raise TypeError("Exactly one of `id` or `_data` must be provided.")
         fetched = False

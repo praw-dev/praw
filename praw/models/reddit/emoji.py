@@ -53,7 +53,7 @@ class Emoji(RedditBase):
         name: str,
         _data: Optional[Dict[str, Any]] = None,
     ):
-        """Construct an instance of the Emoji object."""
+        """Initialize an Emoji instance."""
         self.name = name
         self.subreddit = subreddit
         super().__init__(reddit, _data=_data)
@@ -151,7 +151,7 @@ class SubredditEmoji:
         return Emoji(self._reddit, self.subreddit, name)
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Create a SubredditEmoji instance.
+        """Initialize a SubredditEmoji instance.
 
         :param subreddit: The subreddit whose emoji are affected.
 

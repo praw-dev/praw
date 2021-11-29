@@ -118,7 +118,7 @@ class ModmailConversation(RedditBase):
         mark_read: bool = False,
         _data: Optional[Dict[str, Any]] = None,
     ):
-        """Construct an instance of the ModmailConversation object.
+        """Initialize a ModmailConversation instance.
 
         :param mark_read: If True, conversation is marked as read (default: False).
 

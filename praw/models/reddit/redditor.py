@@ -426,7 +426,7 @@ class RedditorStream:
     """Provides submission and comment streams."""
 
     def __init__(self, redditor: "praw.models.Redditor"):
-        """Create a RedditorStream instance.
+        """Initialize a RedditorStream instance.
 
         :param redditor: The redditor associated with the streams.
 

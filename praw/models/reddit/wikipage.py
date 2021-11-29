@@ -23,7 +23,7 @@ class WikiPageModeration:
     """
 
     def __init__(self, wikipage: "WikiPage"):
-        """Create a WikiPageModeration instance.
+        """Initialize a WikiPageModeration instance.
 
         :param wikipage: The wikipage to moderate.
 
@@ -217,7 +217,7 @@ class WikiPage(RedditBase):
         revision: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
     ):
-        """Construct an instance of the WikiPage object.
+        """Initialize a WikiPage instance.
 
         :param revision: A specific revision ID to fetch. By default, fetches the most
             recent revision.

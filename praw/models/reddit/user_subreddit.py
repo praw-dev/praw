@@ -55,7 +55,7 @@ class UserSubreddit(Subreddit):
     """
 
     def __init__(self, reddit: "praw.Reddit", *args, **kwargs):
-        """Initialize a UserSubreddit instance.
+        """Initialize an UserSubreddit instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
 

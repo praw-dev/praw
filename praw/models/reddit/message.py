@@ -76,7 +76,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
         return self._reddit.config.kinds["message"]
 
     def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
-        """Construct an instance of the Message object."""
+        """Initialize a Message instance."""
         super().__init__(reddit, _data=_data, _fetched=True)
 
     def delete(self):

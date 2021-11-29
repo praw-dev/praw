@@ -25,7 +25,7 @@ class SubmissionFlair:
     """Provide a set of functions pertaining to Submission flair."""
 
     def __init__(self, submission: "praw.models.Submission"):
-        """Create a SubmissionFlair instance.
+        """Initialize a SubmissionFlair instance.
 
         :param submission: The submission associated with the flair functions.
 
@@ -91,7 +91,7 @@ class SubmissionModeration(ThingModerationMixin):
     REMOVAL_MESSAGE_API = "removal_link_message"
 
     def __init__(self, submission: "praw.models.Submission"):
-        """Create a SubmissionModeration instance.
+        """Initialize a SubmissionModeration instance.
 
         :param submission: The submission to moderate.
 
