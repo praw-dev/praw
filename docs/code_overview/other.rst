@@ -110,6 +110,7 @@ them bound to an attribute of one of the PRAW models.
     :caption: Others
 
     other/auth
+    other/baselist
     other/commentforest
     other/commenthelper
     other/config
@@ -125,6 +126,7 @@ them bound to an attribute of one of the PRAW models.
     other/modmailmessage
     other/polldata
     other/polloption
+    other/prawbase
     other/preferences
     other/redditbase
     other/redditorlist
