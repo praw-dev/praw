@@ -13,16 +13,13 @@ class ReplyableMixin:
         :returns: A :class:`.Comment` object for the newly created comment or ``None``
             if Reddit doesn't provide one.
 
+        :raises: ``prawcore.exceptions.Forbidden`` when attempting to reply to some
+            items, such as locked submissions/comments or non-replyable messages.
+
         A ``None`` value can be returned if the target is a comment or submission in a
         quarantined subreddit and the authenticated user has not opt-ed into viewing the
         content. When this happens the comment will be successfully created on Reddit
         and can be retried by drawing the comment from the user's comment history.
-
-        .. note::
-
-            Some items, such as locked submissions/comments or non-replyable messages
-            will throw ``prawcore.exceptions.Forbidden`` when attempting to reply to
-            them.
 
         Example usage:
 

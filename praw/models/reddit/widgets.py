@@ -1124,19 +1124,20 @@ class Calendar(Widget):
 
     .. include:: ../../typical_attributes.rst
 
-    ================= =====================================================
+    ================= ============================================================
     Attribute         Description
-    ================= =====================================================
+    ================= ============================================================
     ``configuration`` A ``dict`` describing the calendar configuration.
     ``data``          A list of ``dict``\ s that represent events.
     ``id``            The widget ID.
     ``kind``          The widget kind (always ``"calendar"``).
-    ``requiresSync``  A ``bool``.
+    ``requiresSync``  A ``bool`` representing whether or not the calendar requires
+                      synchronization.
     ``shortName``     The short name of the widget.
     ``styles``        A ``dict`` with the keys ``"backgroundColor"`` and
                       ``"headerColor"``.
     ``subreddit``     The :class:`.Subreddit` the button widget belongs to.
-    ================= =====================================================
+    ================= ============================================================
 
     """
 

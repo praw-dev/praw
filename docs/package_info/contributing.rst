@@ -21,6 +21,14 @@ following are PRAW-specific guidelines in addition to those PEPs.
         pip install praw[lint]
         pre-commit install
 
+    If you are using ``zsh`` for your shell, you will need to double-quote
+    ``"praw[lint]"`` like so:
+
+    .. code-block:: zsh
+
+        pip install "praw[lint]"
+        pre-commit install
+
 Code
 ----
 
@@ -30,6 +38,7 @@ Code
 
   - Static methods
   - Class methods
+  - Cached properties
   - Properties
   - Instance Methods
 

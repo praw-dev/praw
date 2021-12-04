@@ -30,7 +30,12 @@ Q: Some options (like getting moderator logs from r/mod) keep on timing out. How
 extend the timeout?
 
 A: Set the timeout config option or initialize :class:`.Reddit` with a timeout of your
-choosing.
+choosing. Another option is to construct a :class:`.Subreddit` instance with a subset of
+subreddits (concatenated with ``+``) that you want logs from like so:
+
+.. code-block:: python
+
+    reddit.subreddit("pics+LifeProTips")
 
 .. _faq4:
 
