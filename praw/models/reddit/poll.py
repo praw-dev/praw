@@ -36,7 +36,7 @@ class PollOption(PRAWBase):
         """Make a string representation of the :class:`.PollData`."""
         return f"PollOption(id={self.id!r})"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return a string version of the PollData, its text."""
         return self.text
 

@@ -2,11 +2,15 @@
 
 import os.path
 from json import JSONEncoder, dumps
+from typing import TYPE_CHECKING
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
 from ..base import PRAWBase
 from ..list.base import BaseList
+
+if TYPE_CHECKING:  # pragma: no cover
+    import praw
 
 
 class Button(PRAWBase):
@@ -262,7 +266,7 @@ class SubredditWidgets(PRAWBase):
         return items
 
     @cachedproperty
-    def mod(self):
+    def mod(self) -> "praw.models.SubredditWidgetsModeration":
         """Get an instance of :class:`.SubredditWidgetsModeration`.
 
         .. note::
@@ -957,7 +961,7 @@ class Widget(PRAWBase):
     """Base class to represent a :class:`.Widget`."""
 
     @cachedproperty
-    def mod(self):
+    def mod(self) -> "praw.models.WidgetModeration":
         """Get an instance of :class:`.WidgetModeration` for this widget.
 
         .. note::
