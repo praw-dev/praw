@@ -106,7 +106,7 @@ class Draft(RedditBase):
         super().__init__(reddit, _data=_data, _fetched=fetched)
 
     def __repr__(self) -> str:
-        """Return a string representation of the :class:`.Draft` instance."""
+        """Return an object initialization representation of the instance."""
         if self._fetched:
             subreddit = (
                 f" subreddit={self.subreddit.display_name!r}" if self.subreddit else ""

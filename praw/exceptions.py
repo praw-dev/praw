@@ -55,8 +55,8 @@ class RedditErrorItem:
             )
         return super().__eq__(other)
 
-    def __repr__(self):
-        """Return repr(self)."""
+    def __repr__(self) -> str:
+        """Return an object initialization representation of the instance."""
         return (
             f"{self.__class__.__name__}(error_type={self.error_type!r},"
             f" message={self.message!r}, field={self.field!r})"

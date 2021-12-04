@@ -335,8 +335,8 @@ class SubredditWidgets(PRAWBase):
 
         super().__init__(subreddit._reddit, {})
 
-    def __repr__(self):
-        """Return an object initialization representation of the object."""
+    def __repr__(self) -> str:
+        """Return an object initialization representation of the instance."""
         return f"SubredditWidgets(subreddit={self.subreddit!r})"
 
     def _fetch(self):

@@ -45,5 +45,5 @@ class cachedproperty:
         return value
 
     def __repr__(self) -> str:
-        """Return repr(self)."""
+        """Return an object initialization representation of the instance."""
         return f"<{self.__class__.__name__} {self.func}>"

@@ -27,7 +27,7 @@ class InlineMedia:
         )
 
     def __repr__(self) -> str:
-        """Return a string representation of the :class:`.InlineMedia` instance."""
+        """Return an object initialization representation of the instance."""
         return f"<{self.__class__.__name__} caption={self.caption!r}>"
 
     def __str__(self):

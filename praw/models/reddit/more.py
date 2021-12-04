@@ -33,7 +33,7 @@ class MoreComments(PRAWBase):
         return self.count > other.count
 
     def __repr__(self) -> str:
-        """Return a string representation of the :class:`.MoreComments` instance."""
+        """Return an object initialization representation of the instance."""
         children = self.children[:4]
         if len(self.children) > 4:
             children[-1] = "..."

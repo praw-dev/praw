@@ -50,5 +50,5 @@ class Trophy(PRAWBase):
         return self.name  # pylint: disable=no-member
 
     def __repr__(self) -> str:
-        """Return the object's REPR status."""
+        """Return an object initialization representation of the instance."""
         return f"{self.__class__.__name__}(name={self.name!r})"

@@ -32,8 +32,8 @@ class PollOption(PRAWBase):
 
     """
 
-    def __repr__(self):
-        """Make a string representation of the :class:`.PollData`."""
+    def __repr__(self) -> str:
+        """Return an object initialization representation of the instance."""
         return f"PollOption(id={self.id!r})"
 
     def __str__(self) -> str:
