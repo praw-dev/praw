@@ -46,7 +46,7 @@ or with the submission's ID which comes after ``comments/`` in the URL:
 
 .. code-block:: python
 
-    submission = reddit.submission(id="3g1jfi")
+    submission = reddit.submission("3g1jfi")
 
 With a submission object we can then interact with its :class:`.CommentForest` through
 the submission's :attr:`.Submission.comments` attribute. A :class:`.CommentForest` is a

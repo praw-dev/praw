@@ -17,10 +17,10 @@ class ReportableMixin:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.report("report reason")
 
-            comment = reddit.comment(id="dxolpyc")
+            comment = reddit.comment("dxolpyc")
             comment.report("report reason")
 
         """

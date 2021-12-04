@@ -56,7 +56,7 @@ class ThingModerationMixin:
             comment = reddit.comment("dkk4qjd")
             comment.mod.approve()
             # approve a submission:
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.approve()
 
         """
@@ -80,7 +80,7 @@ class ThingModerationMixin:
             comment = reddit.comment("dkk4qjd")
             comment.mod.distinguish(how="yes", sticky=True)
             # undistinguish a submission:
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.distinguish(how="no")
 
         .. seealso::
@@ -109,7 +109,7 @@ class ThingModerationMixin:
             comment = reddit.comment("dkk4qjd")
             comment.mod.ignore_reports()
             # ignore future reports on a submission:
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.ignore_reports()
 
         .. seealso::
@@ -132,7 +132,7 @@ class ThingModerationMixin:
             comment = reddit.comment("dkk4qjd")
             comment.mod.lock()
             # lock a submission:
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.lock()
 
         .. seealso::
@@ -161,11 +161,11 @@ class ThingModerationMixin:
             comment = reddit.comment("dkk4qjd")
             comment.mod.remove(spam=True)
             # remove a submission
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.remove()
             # remove a submission with a removal reason
             reason = reddit.subreddit.mod.removal_reasons["110ni21zo23ql"]
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.remove(reason_id=reason.id)
 
         """
@@ -231,7 +231,7 @@ class ThingModerationMixin:
             comment = reddit.comment("dkk4qjd")
             comment.mod.undistinguish()
             # undistinguish a submission:
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.undistinguish()
 
         .. seealso::
@@ -255,7 +255,7 @@ class ThingModerationMixin:
             comment = reddit.comment("dkk4qjd")
             comment.mod.unignore_reports()
             # accept future reports on a submission:
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.unignore_reports()
 
         .. seealso::
@@ -278,7 +278,7 @@ class ThingModerationMixin:
             comment = reddit.comment("dkk4qjd")
             comment.mod.unlock()
             # unlock a submission:
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.unlock()
 
         .. seealso::

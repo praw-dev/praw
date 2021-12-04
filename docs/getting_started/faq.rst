@@ -9,9 +9,9 @@ A: Directly calling the constructors will refresh the value:
 
 .. code-block:: python
 
-    reddit.comment(id=comment.id)
+    reddit.comment(comment.id)
     reddit.subreddit(display_name=subreddit.display_name)
-    reddit.submission(id=submission.id)
+    reddit.submission(submission.id)
 
 .. _faq2:
 

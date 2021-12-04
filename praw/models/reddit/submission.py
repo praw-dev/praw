@@ -83,7 +83,7 @@ class SubmissionModeration(ThingModerationMixin):
 
     .. code-block:: python
 
-        submission = reddit.submission(id="8dmv8z")
+        submission = reddit.submission("8dmv8z")
         submission.mod.approve()
 
     """
@@ -116,7 +116,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.contest_mode(state=True)
 
         """
@@ -146,7 +146,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.flair(text="PRAW", css_class="bot")
 
         """
@@ -219,7 +219,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.sfw()
 
         .. seealso::
@@ -241,7 +241,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.spoiler()
 
         .. seealso::
@@ -272,7 +272,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.sticky()
 
         """
@@ -369,7 +369,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-            submission = reddit.submission(id="745ryj")
+            submission = reddit.submission("745ryj")
             submission.mod.update_crowd_control_level(2)
 
         .. seealso::
@@ -535,7 +535,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. code-block:: python
 
-            submission = reddit.submission(id="8dmv8z")
+            submission = reddit.submission("8dmv8z")
             submission.mod.approve()
 
         """
@@ -649,7 +649,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mark_visited()
 
         """
@@ -667,7 +667,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.hide()
 
         .. seealso::
@@ -691,7 +691,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.unhide()
 
         .. seealso::
@@ -738,7 +738,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             cross_post = submission.crosspost(subreddit="learnprogramming", send_replies=False)
 
         .. seealso::

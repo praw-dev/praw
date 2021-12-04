@@ -41,7 +41,7 @@ class CollectionModeration(PRAWBase):
         try:
             return self._reddit.submission(url=post).fullname
         except ClientException:
-            return self._reddit.submission(id=post).fullname
+            return self._reddit.submission(post).fullname
 
     def __init__(self, reddit: "praw.Reddit", collection_id: str):
         """Initialize a :class:`.CollectionModeration` instance.

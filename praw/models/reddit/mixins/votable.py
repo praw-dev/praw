@@ -25,10 +25,10 @@ class VotableMixin:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.clear_vote()
 
-            comment = reddit.comment(id="dxolpyc")
+            comment = reddit.comment("dxolpyc")
             comment.clear_vote()
 
         """
@@ -49,10 +49,10 @@ class VotableMixin:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.downvote()
 
-            comment = reddit.comment(id="dxolpyc")
+            comment = reddit.comment("dxolpyc")
             comment.downvote()
 
         .. seealso::
@@ -77,10 +77,10 @@ class VotableMixin:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.upvote()
 
-            comment = reddit.comment(id="dxolpyc")
+            comment = reddit.comment("dxolpyc")
             comment.upvote()
 
         .. seealso::

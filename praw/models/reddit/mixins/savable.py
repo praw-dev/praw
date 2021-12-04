@@ -17,10 +17,10 @@ class SavableMixin:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.save(category="view later")
 
-            comment = reddit.comment(id="dxolpyc")
+            comment = reddit.comment("dxolpyc")
             comment.save()
 
         .. seealso::
@@ -39,10 +39,11 @@ class SavableMixin:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.unsave()
 
-        comment = reddit.comment(id="dxolpyc") comment.unsave()
+            comment = reddit.comment("dxolpyc")
+            comment.unsave()
 
         .. seealso::
 
