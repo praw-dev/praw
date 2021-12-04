@@ -35,7 +35,7 @@ setup(
     name=PACKAGE_NAME,
     author="Bryce Boe",
     author_email="bbzbryce@gmail.com",
-    python_requires="~=3.6",
+    python_requires="~=3.7",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
@@ -45,7 +45,6 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",

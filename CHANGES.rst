@@ -10,6 +10,10 @@ Unreleased
 
 - :meth:`.pin` to manage pinned submissions on the authenticated user's profile.
 
+**Changed**
+
+- Drop support for Python 3.6, which is end-of-life on 2021-12-23.
+
 7.5.0 (2021/11/13)
 ------------------
 
