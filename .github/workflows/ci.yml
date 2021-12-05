@@ -89,7 +89,7 @@ jobs:
       run: coverage report -m --fail-under=100
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9, '3.10']
+        python-version: [3.7, 3.8, 3.9, '3.10']
   test-network:
     name: Test Network Request
     runs-on: ubuntu-latest

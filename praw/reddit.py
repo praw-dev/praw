@@ -3,7 +3,6 @@ import asyncio
 import configparser
 import os
 import re
-import sys
 import time
 from itertools import islice
 from logging import getLogger
@@ -414,11 +413,8 @@ class Reddit:
                 pass
             in_async = False
             try:
-                if sys.version_info >= (3, 7, 0):
-                    asyncio.get_running_loop()
-                    in_async = True
-                else:
-                    in_async = asyncio.get_event_loop().is_running()
+                asyncio.get_running_loop()
+                in_async = True
             except Exception:  # Quietly fail if any exception occurs during the check
                 pass
             if in_async:

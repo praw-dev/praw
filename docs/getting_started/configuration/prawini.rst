@@ -7,8 +7,8 @@ PRAW comes with a ``praw.ini`` file in the package directory, and looks for user
 ``praw.ini`` files in a few other locations:
 
 1. In the `current working directory
-   <https://docs.python.org/3.6/library/os.html#os.getcwd>`_ at the time
-   :class:`.Reddit` is initialized.
+   <https://docs.python.org/3/library/os.html#os.getcwd>`_ at the time :class:`.Reddit`
+   is initialized.
 2. In the launching user's config directory. This directory, if available, is detected
    in order as one of the following:
 
