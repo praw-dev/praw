@@ -56,11 +56,11 @@ class ModmailConversation(RedditBase):
     def _convert_conversation_objects(data, reddit):
         """Convert messages and mod actions to PRAW objects."""
         result = {"messages": [], "modActions": []}
-        for thing in data["conversation"]["objIds"]:
+        for thing in data["objIds"]:
             key = thing["key"]
             thing_data = data[key][thing["id"]]
             result[key].append(reddit._objector.objectify(thing_data))
-        return result
+        data.update(result)
 
     @staticmethod
     def _convert_user_summary(data, reddit):
@@ -97,23 +97,19 @@ class ModmailConversation(RedditBase):
             objects (default: True).
 
         """
-        conversation = data["conversation"]
-
-        conversation["authors"] = [
-            reddit._objector.objectify(author) for author in conversation["authors"]
+        data["authors"] = [
+            reddit._objector.objectify(author) for author in data["authors"]
         ]
         for entity in "owner", "participant":
-            conversation[entity] = reddit._objector.objectify(conversation[entity])
+            data[entity] = reddit._objector.objectify(data[entity])
 
         if data.get("user"):
             cls._convert_user_summary(data["user"], reddit)
-            conversation["user"] = reddit._objector.objectify(data["user"])
-        if convert_objects:
-            conversation.update(cls._convert_conversation_objects(data, reddit))
+            data["user"] = reddit._objector.objectify(data["user"])
 
-        conversation = snake_case_keys(conversation)
+        data = snake_case_keys(data)
 
-        return cls(reddit, _data=conversation)
+        return cls(reddit, _data=data)
 
     def __init__(
         self,

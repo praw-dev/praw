@@ -39,3 +39,17 @@ class ModeratorListing(Listing):
     """Special Listing for handling moderator lists."""
 
     CHILD_ATTRIBUTE = "moderators"
+
+
+class ModmailConversationsListing(Listing):
+    """Special Listing for handling :class:`.ModmailConversation` lists."""
+
+    CHILD_ATTRIBUTE = "conversations"
+
+    @property
+    def after(self) -> Optional[str]:
+        """Return the next attribute or ``None``."""
+        try:
+            return self.conversations[-1].id
+        except IndexError:
+            return None

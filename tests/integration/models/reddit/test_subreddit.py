@@ -1588,29 +1588,33 @@ class TestSubredditModmail(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_conversations(self, _):
         self.reddit.read_only = False
-        conversations = self.reddit.subreddit("all").modmail.conversations()
         with self.use_cassette():
+            conversations = self.reddit.subreddit("all").modmail.conversations()
             for conversation in conversations:
                 assert isinstance(conversation, ModmailConversation)
                 assert isinstance(conversation.authors[0], Redditor)
 
     @mock.patch("time.sleep", return_value=None)
-    def test_conversations__params(self, _):
-        self.reddit.read_only = False
-        conversations = self.reddit.subreddit("all").modmail.conversations(state="mod")
-        with self.use_cassette():
-            for conversation in conversations:
-                assert conversation.is_internal
-
-    @mock.patch("time.sleep", return_value=None)
     def test_conversations__other_subreddits(self, _):
         self.reddit.read_only = False
-        subreddit = self.reddit.subreddit("modmailtestA")
-        conversations = subreddit.modmail.conversations(
-            other_subreddits=["modmailtestB"]
-        )
         with self.use_cassette():
-            assert len(set(conversation.owner for conversation in conversations)) > 1
+            subreddit = self.reddit.subreddit("pics")
+            conversations = subreddit.modmail.conversations(
+                other_subreddits=["LifeProTips"]
+            )
+            assert (
+                len(set(list(conversation.owner for conversation in conversations))) > 1
+            )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_conversations__params(self, _):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            conversations = self.reddit.subreddit("all").modmail.conversations(
+                state="mod"
+            )
+            for conversation in conversations:
+                assert conversation.is_internal
 
     @mock.patch("time.sleep", return_value=None)
     def test_create(self, _):
@@ -1890,7 +1894,7 @@ class TestSubredditModerationStreams(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             generator = self.reddit.subreddit("mod").mod.stream.modmail_conversations()
-            for i in range(10):
+            for i in range(101):
                 assert isinstance(next(generator), ModmailConversation)
 
     @mock.patch("time.sleep", return_value=None)

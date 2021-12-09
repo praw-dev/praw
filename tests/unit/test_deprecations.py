@@ -30,6 +30,10 @@ class TestDeprecation(UnitTest):
         with pytest.raises(DeprecationWarning):
             exc.field
 
+    def test_conversations_after_argument(self):
+        with pytest.deprecated_call():
+            self.reddit.subreddit("all").modmail.conversations(after="after")
+
     def test_subreddit_rules_call(self):
         with pytest.raises(DeprecationWarning) as excinfo:
             self.reddit.subreddit("test").rules()

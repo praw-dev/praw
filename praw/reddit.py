@@ -484,6 +484,7 @@ class Reddit:
             "ModeratedList": models.ModeratedList,
             "ModmailAction": models.ModmailAction,
             "ModmailConversation": models.ModmailConversation,
+            "ModmailConversations-list": models.ModmailConversationsListing,
             "ModmailMessage": models.ModmailMessage,
             "Submenu": models.Submenu,
             "TrophyList": models.TrophyList,

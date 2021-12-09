@@ -13,6 +13,13 @@ Unreleased
 **Changed**
 
 - Drop support for Python 3.6, which is end-of-life on 2021-12-23.
+- :meth:`.conversations` now returns a :class:`.ListingGenerator` allowing you to page
+  through more than 100 conversations.
+
+**Deprecated**
+
+- The ``after`` argument for :meth:`.conversations` will now have to be included in
+  ``params`` keyword argument.
 
 7.5.0 (2021/11/13)
 ------------------
