@@ -9,7 +9,7 @@ from .list.redditor import RedditorList
 from .list.trophy import TrophyList
 from .listing.domain import DomainListing
 from .listing.generator import ListingGenerator
-from .listing.listing import Listing, ModeratorListing
+from .listing.listing import Listing, ModeratorListing, ModmailConversationsListing
 from .mod_action import ModAction
 from .preferences import Preferences
 from .reddit.collections import Collection

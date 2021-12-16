@@ -1,4 +1,4 @@
-"""Test praw.models.front."""
+"""Test praw.models.listing.generator."""
 from praw.models.listing.generator import ListingGenerator
 
 from ... import UnitTest

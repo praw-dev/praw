@@ -15,9 +15,6 @@ from xml.etree.ElementTree import XML
 import websocket
 from prawcore import Redirect
 
-if TYPE_CHECKING:  # pragma: no cover
-    from requests import Response
-
 from ...const import API_PATH, JPEG_HEADER
 from ...exceptions import (
     ClientException,
@@ -41,6 +38,8 @@ from .widgets import SubredditWidgets, WidgetEncoder
 from .wikipage import WikiPage
 
 if TYPE_CHECKING:  # pragma: no cover
+    from requests import Response
+
     import praw
 
 
@@ -3255,23 +3254,37 @@ class Modmail:
     def conversations(
         self,
         after: Optional[str] = None,
-        limit: Optional[int] = None,
         other_subreddits: Optional[List["praw.models.Subreddit"]] = None,
         sort: Optional[str] = None,
         state: Optional[str] = None,
-    ) -> Generator[ModmailConversation, None, None]:  # noqa: D207, D301
+        **generator_kwargs,
+    ) -> Iterator[ModmailConversation]:  # noqa: D207, D301
         """Generate :class:`.ModmailConversation` objects for subreddit(s).
 
         :param after: A base36 modmail conversation id. When provided, the listing
             begins after this conversation (default: None).
-        :param limit: The maximum number of conversations to fetch. If None, the
-            server-side default is 25 at the time of writing (default: None).
+
+            .. deprecated:: 7.4.0
+
+                This parameter is deprecated and will be removed in PRAW 8.0. This
+                method will automatically fetch the next batch. Please pass it in the
+                ``params`` argument like so:
+
+                .. code-block:: python
+
+                    for convo in subreddit.modmail.conversations(params={"after": "qovbn"}):
+                        # process conversation
+                        ...
+
         :param other_subreddits: A list of :class:`.Subreddit` instances for which to
             fetch conversations (default: None).
         :param sort: Can be one of: mod, recent, unread, user (default: recent).
         :param state: Can be one of: all, archived, highlighted, inprogress,
             join_requests, mod, new, notifications, or appeals, (default: all). "all"
             does not include internal, archived, or appeals conversations.
+
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         For example:
 
@@ -3281,29 +3294,28 @@ class Modmail:
 
         """
         params = {}
+        if after:
+            warn(
+                "The `after` argument is deprecated and should be moved to the `params`"
+                " dictionary argument.",
+                category=DeprecationWarning,
+                stacklevel=3,
+            )
+            params["after"] = after
         if self.subreddit != "all":
             params["entity"] = self._build_subreddit_list(other_subreddits)
-
-        for name, value in {
-            "after": after,
-            "limit": limit,
-            "sort": sort,
-            "state": state,
-        }.items():
-            if value:
-                params[name] = value
-
-        response = self.subreddit._reddit.get(
-            API_PATH["modmail_conversations"], params=params
+        Subreddit._safely_add_arguments(
+            generator_kwargs,
+            "params",
+            sort=sort,
+            state=state,
+            **params,
         )
-        for conversation_id in response["conversationIds"]:
-            data = {
-                "conversation": response["conversations"][conversation_id],
-                "messages": response["messages"],
-            }
-            yield ModmailConversation.parse(
-                data, self.subreddit._reddit, convert_objects=False
-            )
+        return ListingGenerator(
+            self.subreddit._reddit,
+            API_PATH["modmail_conversations"],
+            **generator_kwargs,
+        )
 
     def create(
         self,

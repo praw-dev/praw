@@ -63,8 +63,44 @@ class Objector:
         :returns: An instance of :class:`~.RedditBase`.
 
         """
-        if {"conversation", "messages", "modActions"}.issubset(data):
+        if {"messages", "modActions"}.issubset(data) and {
+            "conversations",
+            "conversation",
+        }.intersection(data):
+            data.update(
+                data.pop("conversation")
+                if "conversation" in data
+                else data.pop("conversations")
+            )
+            parser: "praw.models.ModmailConversation" = self.parsers[
+                "ModmailConversation"
+            ]
+            parser._convert_conversation_objects(data, self._reddit)
+        elif {"messages", "modActions"}.issubset(data):
             parser = self.parsers["ModmailConversation"]
+        elif {"conversationIds", "conversations", "messages"}.issubset(data):
+            conversations = []
+            temp_data = {
+                thing_type: data.pop(thing_type, {})
+                for thing_type in ["messages", "modActions"]
+            }
+            for conversation_id in data["conversationIds"]:
+                conversation_data = {
+                    **data["conversations"][conversation_id],
+                    "messages": [],
+                    "modActions": [],
+                }
+                for object_id in conversation_data["objIds"]:
+                    conversation_data[object_id["key"]].append(
+                        self._objectify_dict(
+                            temp_data[object_id["key"]].pop(object_id["id"])
+                        )
+                    )
+                conversations.append(conversation_data)
+            data["conversations"] = conversations
+            del temp_data
+            data = snake_case_keys(data)
+            parser = self.parsers["ModmailConversations-list"]
         elif {"actionTypeId", "author", "date"}.issubset(data):
             # Modmail mod action
             data = snake_case_keys(data)
