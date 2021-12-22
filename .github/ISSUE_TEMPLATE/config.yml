@@ -1,6 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: Documentation
+    about: PRAW's documentation.
     url: https://praw.readthedocs.io
   - name: r/redditdev subreddit
     about: For general help using PRAW, please ask here.
