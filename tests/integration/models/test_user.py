@@ -178,21 +178,19 @@ class TestUser(IntegrationTest):
                 self.reddit.user.pin(submission, num=num)
 
             new_posts = list(self.reddit.user.me().new(limit=4))
-            new_posts.reverse()
             assert new_posts == submission_list
 
     def test_pin__remove(self):
         self.reddit.read_only = False
         with self.use_cassette():
-            new_posts = list(self.reddit.user.me().new(limit=4))
-            for post in new_posts:
+            unpinned_posts = set()
+            for post in self.reddit.user.me().new(limit=4):
                 self.reddit.user.pin(post, state=False)
-            new_posts = [
-                submission.title for submission in self.reddit.user.me().new(limit=4)
-            ]
-            expected_new_posts = [f"PRAW Test {i}" for i in range(5, 9)]
-            expected_new_posts.reverse()
-            assert new_posts == expected_new_posts
+                unpinned_posts.add(post.title)
+            new_posts = set(
+                [submission.title for submission in self.reddit.user.me().new(limit=4)]
+            )
+            assert unpinned_posts != new_posts
 
     def test_pin__remove_num(self):
         self.reddit.read_only = False
