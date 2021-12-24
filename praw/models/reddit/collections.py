@@ -165,6 +165,31 @@ class CollectionModeration(PRAWBase):
             data={"collection_id": self.collection_id, "description": description},
         )
 
+    def update_display_layout(self, display_layout: str):
+        """Update the collection's display layout.
+
+        :param display_layout: Either ``"TIMELINE"`` for events or discussions or
+            ``"GALLERY"`` for images or memes. Passing ``""`` or ``None`` will clear the
+            set layout and ``collection.display_layout`` will be ``None``, however, the
+            collection will appear on Reddit as if ``display_layout`` is set to
+            ``"TIMELINE"``.
+
+        Example usage:
+
+        .. code-block:: python
+
+            collection = reddit.subreddit("test").collections("some_uuid")
+            collection.mod.update_display_layout("GALLERY")
+
+        """
+        self._reddit.post(
+            API_PATH["collection_layout"],
+            data={
+                "collection_id": self.collection_id,
+                "display_layout": display_layout,
+            },
+        )
+
     def update_title(self, title: str):
         """Update the collection's title.
 
@@ -220,6 +245,7 @@ class Collection(RedditBase):
     ``collection_id``   The UUID of the collection.
     ``created_at_utc``  Time the collection was created, represented in `Unix Time`_.
     ``description``     The collection description.
+    ``display_layout``  The collection display layout.
     ``last_update_utc`` Time the collection was last updated, represented in `Unix
                         Time`_.
     ``link_ids``        A ``list`` of :class:`.Submission` fullnames.
