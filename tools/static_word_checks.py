@@ -8,7 +8,7 @@ class StaticChecker:
     """Run simple checks on the entire document or specific lines."""
 
     def __init__(self, replace: bool):
-        """Initializes the class.
+        """Initialize a :class:`.StaticChecker` instance.
 
         :param replace: Whether or not to make replacements.
 
@@ -88,7 +88,7 @@ class StaticChecker:
 
           - :meth:`.check_for_double_syntax`
 
-        - Line checks
+        - Line checks:
 
           - :meth:`.check_for_noreturn`
 

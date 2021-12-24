@@ -42,15 +42,14 @@ class LiveContributorRelationship:
         return temp if isinstance(temp, RedditorList) else temp[0]
 
     def __init__(self, thread: "praw.models.LiveThread"):
-        """Create a :class:`.LiveContributorRelationship` instance.
+        """Initialize a :class:`.LiveContributorRelationship` instance.
 
         :param thread: An instance of :class:`.LiveThread`.
 
         .. note::
 
             This class should not be initialized directly. Instead obtain an instance
-            via: ``thread.contributor`` where ``thread`` is a :class:`.LiveThread`
-            instance.
+            via: :meth:`.LiveThread.contributor`.
 
         """
         self.thread = thread
@@ -76,7 +75,7 @@ class LiveContributorRelationship:
     ):
         """Invite a redditor to be a contributor of the live thread.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant. An empty list
@@ -126,8 +125,8 @@ class LiveContributorRelationship:
     def remove(self, redditor: Union[str, "praw.models.Redditor"]):
         """Remove the redditor from the live thread contributors.
 
-        :param redditor: A redditor fullname (e.g., ``"t2_1w72"``) or
-            :class:`~.Redditor` instance.
+        :param redditor: A redditor fullname (e.g., ``"t2_1w72"``) or :class:`.Redditor`
+            instance.
 
         Usage:
 
@@ -150,8 +149,8 @@ class LiveContributorRelationship:
     def remove_invite(self, redditor: Union[str, "praw.models.Redditor"]):
         """Remove the invite for redditor.
 
-        :param redditor: A redditor fullname (e.g., ``"t2_1w72"``) or
-            :class:`~.Redditor` instance.
+        :param redditor: A redditor fullname (e.g., ``"t2_1w72"``) or :class:`.Redditor`
+            instance.
 
         Usage:
 
@@ -183,7 +182,7 @@ class LiveContributorRelationship:
     ):
         """Update the contributor permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant (other
@@ -226,7 +225,7 @@ class LiveContributorRelationship:
     ):
         """Update the contributor invite permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`~.Redditor`
+        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
             instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant (other
@@ -240,8 +239,8 @@ class LiveContributorRelationship:
             thread = reddit.live("ukaeu1ik4sw5")
             thread.contributor.update_invite("spez")
 
-        To set "access" and "edit" permissions (and to remove other permissions) to the
-        invitation, try:
+        To set ``"access"`` and ``"edit"`` permissions (and to remove other permissions)
+        to the invitation, try:
 
         .. code-block:: python
 
@@ -264,14 +263,9 @@ class LiveContributorRelationship:
 
 
 class LiveThread(RedditBase):
-    """An individual LiveThread object.
+    """An individual :class:`.LiveThread` object.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ==================== =========================================================
     Attribute            Description
@@ -310,7 +304,7 @@ class LiveThread(RedditBase):
 
         You can call the instance to get a list of contributors which is represented as
         :class:`.RedditorList` instance consists of :class:`.Redditor` instances. Those
-        Redditor instances have ``permissions`` attributes as contributors:
+        :class:`.Redditor` instances have ``permissions`` attributes as contributors:
 
         .. code-block:: python
 
@@ -388,7 +382,7 @@ class LiveThread(RedditBase):
         id: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,  # pylint: disable=redefined-builtin
     ):
-        """Initialize a lazy :class:`.LiveThread` instance.
+        """Initialize a :class:`.LiveThread` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
         :param id: A live thread ID, e.g., ``"ukaeu1ik4sw5"``
@@ -445,7 +439,7 @@ class LiveThread(RedditBase):
         """Report the thread violating the Reddit rules.
 
         :param type: One of ``"spam"``, ``"vote-manipulation"``, ``"personal-
-            information"``, ``"sexualizing-minors"``, ``"site-breaking"``.
+            information"``, ``"sexualizing-minors"``, or ``"site-breaking"``.
 
         Usage:
 
@@ -489,10 +483,10 @@ class LiveThread(RedditBase):
 
 
 class LiveThreadContribution:
-    """Provides a set of contribution functions to a LiveThread."""
+    """Provides a set of contribution functions to a :class:`.LiveThread`."""
 
     def __init__(self, thread: "praw.models.LiveThread"):
-        """Create an instance of :class:`.LiveThreadContribution`.
+        """Initialize a :class:`.LiveThreadContribution` instance.
 
         :param thread: An instance of :class:`.LiveThread`.
 
@@ -547,12 +541,12 @@ class LiveThreadContribution:
     ):
         """Update settings of the live thread.
 
-        :param title: (Optional) The title of the live thread (default: None).
-        :param description: (Optional) The live thread's description (default: None).
-        :param nsfw: (Optional) Indicate whether this thread is not safe for work
-            (default: None).
-        :param resources: (Optional) Markdown formatted information that is useful for
-            the live thread (default: None).
+        :param title: The title of the live thread (default: ``None``).
+        :param description: The live thread's description (default: ``None``).
+        :param nsfw: Indicate whether this thread is not safe for work (default:
+            ``None``).
+        :param resources: Markdown formatted information that is useful for the live
+            thread (default: ``None``).
 
         Does nothing if no arguments are provided.
 
@@ -614,7 +608,7 @@ class LiveThreadStream:
     """
 
     def __init__(self, live_thread: "praw.models.LiveThread"):
-        """Create a LiveThreadStream instance.
+        """Initialize a :class:`.LiveThreadStream` instance.
 
         :param live_thread: The live thread associated with the stream.
 
@@ -661,12 +655,7 @@ class LiveThreadStream:
 class LiveUpdate(FullnameMixin, RedditBase):
     """An individual :class:`.LiveUpdate` object.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     =============== ===================================================================
     Attribute       Description
@@ -713,7 +702,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
         update_id: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
     ):
-        """Initialize a lazy :class:`.LiveUpdate` instance.
+        """Initialize a :class:`.LiveUpdate` instance.
 
         Either ``thread_id`` and ``update_id``, or ``_data`` must be provided.
 
@@ -760,10 +749,10 @@ class LiveUpdate(FullnameMixin, RedditBase):
 
 
 class LiveUpdateContribution:
-    """Provides a set of contribution functions to LiveUpdate."""
+    """Provides a set of contribution functions to :class:`.LiveUpdate`."""
 
     def __init__(self, update: "praw.models.LiveUpdate"):
-        """Create an instance of :class:`.LiveUpdateContribution`.
+        """Initialize a :class:`.LiveUpdateContribution` instance.
 
         :param update: An instance of :class:`.LiveUpdate`.
 

@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Inbox(PRAWBase):
-    """Inbox is a Listing class that represents the Inbox."""
+    """Inbox is a Listing class that represents the inbox."""
 
     def all(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
@@ -122,7 +122,8 @@ class Inbox(PRAWBase):
 
         .. seealso::
 
-            :meth:`.Comment.mark_read` and :meth:`.Message.mark_read`
+            - :meth:`.Comment.mark_read`
+            - :meth:`.Message.mark_read`
 
         """
         while items:
@@ -150,7 +151,8 @@ class Inbox(PRAWBase):
 
         .. seealso::
 
-            :meth:`.Comment.mark_unread` and :meth:`.Message.mark_unread`
+            - :meth:`.Comment.mark_unread`
+            - :meth:`.Message.mark_unread`
 
         """
         while items:
@@ -164,7 +166,7 @@ class Inbox(PRAWBase):
         r"""Return a :class:`.ListingGenerator` for mentions.
 
         A mention is :class:`.Comment` in which the authorized redditor is named in its
-        body like ``u/redditor_name``.
+        body like u/spez.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -180,9 +182,9 @@ class Inbox(PRAWBase):
         return ListingGenerator(self._reddit, API_PATH["mentions"], **generator_kwargs)
 
     def message(self, message_id: str) -> "praw.models.Message":
-        """Return a Message corresponding to ``message_id``.
+        """Return a :class:`.Message` corresponding to ``message_id``.
 
-        :param message_id: The base36 id of a message.
+        :param message_id: The base36 ID of a message.
 
         For example:
 
@@ -310,7 +312,7 @@ class Inbox(PRAWBase):
     ) -> Iterator[Union["praw.models.Comment", "praw.models.Message"]]:
         """Return a :class:`.ListingGenerator` for unread comments and messages.
 
-        :param mark_read: Marks the inbox as read (default: False).
+        :param mark_read: Marks the inbox as read (default: ``False``).
 
         .. note::
 

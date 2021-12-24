@@ -14,12 +14,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class Draft(RedditBase):
     """A class that represents a Reddit submission draft.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ========================== ======================================================
     Attribute                  Description
@@ -95,7 +90,7 @@ class Draft(RedditBase):
         id: Optional[str] = None,  # pylint: disable=redefined-builtin
         _data: Dict[str, Any] = None,
     ):
-        """Construct an instance of the Draft object."""
+        """Initialize a :class:`.Draft` instance."""
         if (id, _data).count(None) != 1:
             raise TypeError("Exactly one of `id` or `_data` must be provided.")
         fetched = False
@@ -111,7 +106,7 @@ class Draft(RedditBase):
         super().__init__(reddit, _data=_data, _fetched=fetched)
 
     def __repr__(self) -> str:
-        """Return a string representation of the Draft instance."""
+        """Return an object initialization representation of the instance."""
         if self._fetched:
             subreddit = (
                 f" subreddit={self.subreddit.display_name!r}" if self.subreddit else ""
@@ -132,7 +127,7 @@ class Draft(RedditBase):
         )
 
     def delete(self):
-        """Delete the Draft.
+        """Delete the :class:`.Draft`.
 
         Example usage:
 
@@ -162,7 +157,7 @@ class Draft(RedditBase):
         url: Optional[str] = None,
         **draft_kwargs,
     ):
-        """Update the Draft.
+        """Update the :class:`.Draft`.
 
         .. note::
 
@@ -259,7 +254,8 @@ class Draft(RedditBase):
 
         .. note::
 
-            Parameters set here will override their respective Draft attributes.
+            Parameters set here will override their respective :class:`.Draft`
+            attributes.
 
         Additional keyword arguments are passed to the :meth:`.Subreddit.submit` method.
 

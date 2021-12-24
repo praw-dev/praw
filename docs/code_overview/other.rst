@@ -26,12 +26,12 @@ them bound to an attribute of one of the PRAW models.
 
 .. toctree::
     :maxdepth: 2
-    :caption: Reddit Live Helpers
+    :caption: Inline Media
 
-    other/livecontributorrelationship
-    other/livethreadcontribution
-    other/livethreadstream
-    other/liveupdatecontribution
+    other/inlinegif
+    other/inlineimage
+    other/inlinemedia
+    other/inlinevideo
 
 .. toctree::
     :maxdepth: 2
@@ -50,6 +50,15 @@ them bound to an attribute of one of the PRAW models.
 
 .. toctree::
     :maxdepth: 2
+    :caption: Reddit Live Helpers
+
+    other/livecontributorrelationship
+    other/livethreadcontribution
+    other/livethreadstream
+    other/liveupdatecontribution
+
+.. toctree::
+    :maxdepth: 2
     :caption: Relationship Helpers
 
     other/contributorrelationship
@@ -60,9 +69,12 @@ them bound to an attribute of one of the PRAW models.
     :maxdepth: 2
     :caption: Subreddit Helpers
 
+    other/subredditemoji
     other/subredditfilters
     other/subredditmoderationstream
     other/subredditquarantine
+    other/subredditremovalreasons
+    other/subredditrules
     other/subredditstream
     other/subredditstylesheet
     other/subredditwidgets
@@ -72,25 +84,33 @@ them bound to an attribute of one of the PRAW models.
     :maxdepth: 2
     :caption: Widgets
 
+    other/button
     other/buttonwidget
     other/calendar
+    other/calendarconfiguration
     other/communitylist
     other/customwidget
+    other/hover
     other/idcard
+    other/image
+    other/imagedata
     other/imagewidget
     other/menu
+    other/menulink
     other/moderatorswidget
     other/postflairwidget
     other/ruleswidget
+    other/styles
+    other/submenu
     other/textarea
+    other/widget
 
 .. toctree::
     :maxdepth: 2
     :caption: Others
 
     other/auth
-    other/button
-    other/calendarconfiguration
+    other/baselist
     other/commentforest
     other/commenthelper
     other/config
@@ -98,35 +118,24 @@ them bound to an attribute of one of the PRAW models.
     other/draftlist
     other/emoji
     other/fullnamemixin
-    other/hover
-    other/image
-    other/imagedata
     other/inboxablemixin
-    other/inlinegif
-    other/inlineimage
-    other/inlinemedia
-    other/inlinevideo
     other/listinggenerator
-    other/menulink
     other/mod_action
     other/moderatedlist
     other/modmail
     other/modmailmessage
-    other/poll
+    other/polldata
+    other/polloption
+    other/prawbase
     other/preferences
     other/redditbase
     other/redditorlist
     other/redditorstream
     other/removalreason
     other/rule
-    other/styles
     other/stylesheet
     other/sublisting
-    other/submenu
-    other/subredditemoji
     other/subredditmessage
-    other/subredditremovalreasons
-    other/subredditrules
     other/token_manager
     other/trophy
     other/usersubreddit

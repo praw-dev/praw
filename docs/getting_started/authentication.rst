@@ -47,8 +47,8 @@ requires that you provide one when registering your script application --
 In order to use a **password flow** application with PRAW you need four pieces of
 information:
 
-:client_id: The client ID is the 14-character string listed just under "personal use
-    script" for the desired `developed application
+:client_id: The client ID is at least a 14-character string listed just under "personal
+    use script" for the desired `developed application
     <https://www.reddit.com/prefs/apps/>`_
 :client_secret: The client secret is at least a 27-character string listed adjacent to
     ``secret`` for the application.
@@ -172,9 +172,9 @@ to the specified ``redirect_uri``. After verifying the ``state`` and extracting 
 The first line of output is the ``refresh_token``. You can save this for later use (see
 :ref:`using_refresh_tokens`).
 
-The second line of output reveals the name of the Redditor that completed the code flow.
-It also indicates that the :class:`.Reddit` instance is now associated with that
-account.
+The second line of output reveals the name of the :class:`.Redditor` that completed the
+code flow. It also indicates that the :class:`.Reddit` instance is now associated with
+that account.
 
 The code flow can be used with an **installed** application just as described above with
 one change: set the value of ``client_secret`` to ``None`` when initializing
@@ -202,7 +202,7 @@ Read-Only Mode
 --------------
 
 All application types support a read-only mode. Read-only mode provides access to Reddit
-like a logged out user would see including the default Subreddits in the
+like a logged out user would see including the default subreddits in the
 ``reddit.front`` listings.
 
 In the absence of a ``refresh_token`` both :ref:`code_flow` and :ref:`implicit_flow`
@@ -254,7 +254,7 @@ such as in installed applications where the end user could retrieve the ``client
     No benefit is really gained from this in script or web apps. The one exception is
     for when a script or web app has multiple end users, this will allow you to give
     Reddit the information needed in order to distinguish different users of your app
-    from each other (as the supplied device id *should* be a unique string per both
+    from each other (as the supplied device ID *should* be a unique string per both
     device (in the case of a web app, server) and user (in the case of a web app,
     browser session).
 

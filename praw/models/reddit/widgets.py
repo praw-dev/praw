@@ -2,22 +2,21 @@
 
 import os.path
 from json import JSONEncoder, dumps
+from typing import TYPE_CHECKING
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
 from ..base import PRAWBase
 from ..list.base import BaseList
 
+if TYPE_CHECKING:  # pragma: no cover
+    import praw
+
 
 class Button(PRAWBase):
     """Class to represent a single button inside a :class:`.ButtonWidget`.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============== =====================================================================
     Attribute      Description
@@ -44,12 +43,7 @@ class Button(PRAWBase):
 class CalendarConfiguration(PRAWBase):
     """Class to represent the configuration of a :class:`.Calendar`.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     =================== ==================================================
     Attribute           Description
@@ -71,12 +65,7 @@ class Hover(PRAWBase):
     These values will take effect when the button is hovered over (the user moves their
     cursor so it's on top of the button).
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list comprehensive in any way.
+    .. include:: ../../typical_attributes.rst
 
     ============= =====================================================================
     Attribute     Description
@@ -99,12 +88,7 @@ class Hover(PRAWBase):
 class Image(PRAWBase):
     """Class to represent an image that's part of a :class:`.ImageWidget`.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     =========== =================================================
     Attribute   Description
@@ -121,12 +105,7 @@ class Image(PRAWBase):
 class ImageData(PRAWBase):
     """Class for image data that's part of a :class:`.CustomWidget`.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ========== =========================================
     Attribute  Description
@@ -141,14 +120,9 @@ class ImageData(PRAWBase):
 
 
 class MenuLink(PRAWBase):
-    """Class to represent a single link inside a menu or submenu.
+    """Class to represent a single link inside a :class:`.Menu` or :class:`.Submenu`.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ========= ====================================
     Attribute Description
@@ -163,12 +137,7 @@ class MenuLink(PRAWBase):
 class Styles(PRAWBase):
     """Class to represent the style information of a widget.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list comprehensive in any way.
+    .. include:: ../../typical_attributes.rst
 
     =================== ========================================================
     Attribute           Description
@@ -183,14 +152,9 @@ class Styles(PRAWBase):
 
 
 class Submenu(BaseList):
-    r"""Class to represent a submenu of links inside a menu.
+    r"""Class to represent a submenu of links inside a :class:`.Menu`.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============ =====================================================================
     Attribute    Description
@@ -207,7 +171,7 @@ class Submenu(BaseList):
 
 
 class SubredditWidgets(PRAWBase):
-    """Class to represent a subreddit's widgets.
+    """Class to represent a :class:`.Subreddit`'s widgets.
 
     Create an instance like so:
 
@@ -216,9 +180,9 @@ class SubredditWidgets(PRAWBase):
         widgets = reddit.subreddit("redditdev").widgets
 
     Data will be lazy-loaded. By default, PRAW will not request progressively loading
-    images from Reddit. To enable this, instantiate a SubredditWidgets object, then set
-    the attribute ``progressive_images`` to ``True`` before performing any action that
-    would result in a network request.
+    images from Reddit. To enable this, instantiate a :class:`.SubredditWidgets` object
+    via :meth:`~.Subreddit.widgets`, then set the attribute ``progressive_images`` to
+    ``True`` before performing any action that would result in a network request.
 
     .. code-block:: python
 
@@ -228,7 +192,7 @@ class SubredditWidgets(PRAWBase):
             # do something
             ...
 
-    Access a subreddit's widgets with the following attributes:
+    Access a :class:`.Subreddit`'s widgets with the following attributes:
 
     .. code-block:: python
 
@@ -237,11 +201,11 @@ class SubredditWidgets(PRAWBase):
         print(widgets.sidebar)
         print(widgets.topbar)
 
-    The attribute :attr:`.id_card` contains the subreddit's ID card, which displays
-    information like the number of subscribers.
+    The attribute :attr:`.id_card` contains the :class:`.Subreddit`'s ID card, which
+    displays information like the number of subscribers.
 
-    The attribute :attr:`.moderators_widget` contains the subreddit's moderators widget,
-    which lists the moderators of the subreddit.
+    The attribute :attr:`.moderators_widget` contains the :class:`.Subreddit`'s
+    moderators widget, which lists the moderators of the subreddit.
 
     The attribute :attr:`.sidebar` contains a list of widgets which make up the sidebar
     of the subreddit.
@@ -249,7 +213,8 @@ class SubredditWidgets(PRAWBase):
     The attribute :attr:`.topbar` contains a list of widgets which make up the top bar
     of the subreddit.
 
-    To edit a subreddit's widgets, use :attr:`~.SubredditWidgets.mod`. For example:
+    To edit a :class:`.Subreddit`'s widgets, use :attr:`~.SubredditWidgets.mod`. For
+    example:
 
     .. code-block:: python
 
@@ -288,12 +253,12 @@ class SubredditWidgets(PRAWBase):
 
     @cachedproperty
     def id_card(self):
-        """Get this subreddit's :class:`.IDCard` widget."""
+        """Get this :class:`.Subreddit`'s :class:`.IDCard` widget."""
         return self.items[self.layout["idCardWidget"]]
 
     @cachedproperty
     def items(self):
-        """Get this subreddit's widgets as a dict from ID to widget."""
+        """Get this :class:`.Subreddit`'s widgets as a dict from ID to widget."""
         items = {}
         for item_name, data in self._raw_items.items():
             data["subreddit"] = self.subreddit
@@ -301,7 +266,7 @@ class SubredditWidgets(PRAWBase):
         return items
 
     @cachedproperty
-    def mod(self):
+    def mod(self) -> "praw.models.SubredditWidgetsModeration":
         """Get an instance of :class:`.SubredditWidgetsModeration`.
 
         .. note::
@@ -315,7 +280,7 @@ class SubredditWidgets(PRAWBase):
 
     @cachedproperty
     def moderators_widget(self):
-        """Get this subreddit's :class:`.ModeratorsWidget`."""
+        """Get this :class:`.Subreddit`'s :class:`.ModeratorsWidget`."""
         return self.items[self.layout["moderatorWidget"]]
 
     @cachedproperty
@@ -333,7 +298,7 @@ class SubredditWidgets(PRAWBase):
         ]
 
     def refresh(self):
-        """Refresh the subreddit's widgets.
+        """Refresh the :class:`.Subreddit`'s widgets.
 
         By default, PRAW will not request progressively loading images from Reddit. To
         enable this, set the attribute ``progressive_images`` to ``True`` prior to
@@ -358,7 +323,7 @@ class SubredditWidgets(PRAWBase):
         )
 
     def __init__(self, subreddit):
-        """Initialize the class.
+        """Initialize a :class:`.SubredditWidgets` instance.
 
         :param subreddit: The :class:`.Subreddit` the widgets belong to.
 
@@ -370,8 +335,8 @@ class SubredditWidgets(PRAWBase):
 
         super().__init__(subreddit._reddit, {})
 
-    def __repr__(self):
-        """Return an object initialization representation of the object."""
+    def __repr__(self) -> str:
+        """Return an object initialization representation of the instance."""
         return f"SubredditWidgets(subreddit={self.subreddit!r})"
 
     def _fetch(self):
@@ -398,7 +363,7 @@ class SubredditWidgets(PRAWBase):
 
 
 class SubredditWidgetsModeration:
-    """Class for moderating a subreddit's widgets.
+    """Class for moderating a :class:`.Subreddit`'s widgets.
 
     Get an instance of this class from :attr:`.SubredditWidgets.mod`.
 
@@ -419,7 +384,7 @@ class SubredditWidgetsModeration:
     """
 
     def __init__(self, subreddit, reddit):
-        """Initialize the class."""
+        """Initialize a :class:`.SubredditWidgetsModeration` instance."""
         self._subreddit = subreddit
         self._reddit = reddit
 
@@ -438,7 +403,7 @@ class SubredditWidgetsModeration:
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param description: Markdown text to describe the widget.
-        :param buttons: A ``list`` of ``dict``\ s describing buttons, as specified in
+        :param buttons: A list of ``dict``\ s describing buttons, as specified in
             `Reddit docs`_. As of this writing, the format is:
 
             Each button is either a text button or an image button. A text button looks
@@ -464,7 +429,7 @@ class SubredditWidgetsModeration:
                     "kind": "image",
                     "text": a string no longer than 30 characters,
                     "linkUrl": a valid URL,
-                    "url": a valid URL of a reddit-hosted image,
+                    "url": a valid URL of a Reddit-hosted image,
                     "height": an integer,
                     "width": an integer,
                     "hoverState": {...}
@@ -472,7 +437,7 @@ class SubredditWidgetsModeration:
 
             Both types of buttons have the field ``hoverState``. The field does not have
             to be included (it is optional). If it is included, it can be one of two
-            types: text or image. A text ``hoverState`` looks like this:
+            types: ``"text"`` or ``"image"``. A text ``hoverState`` looks like this:
 
             .. code-block:: text
 
@@ -490,7 +455,7 @@ class SubredditWidgetsModeration:
 
                 {
                     "kind": "image",
-                    "url": a valid URL of a reddit-hosted image,
+                    "url": a valid URL of a Reddit-hosted image,
                     "height": an integer,
                     "width": an integer
                 }
@@ -630,12 +595,12 @@ class SubredditWidgetsModeration:
         """Add and return a :class:`.CommunityList` widget.
 
         :param short_name: A name for the widget, no longer than 30 characters.
-        :param data: A ``list`` of subreddits. Subreddits can be represented as ``str``
+        :param data: A list of subreddits. Subreddits can be represented as ``str``
             (e.g. the string ``"redditdev"``) or as :class:`.Subreddit` (e.g.
             ``reddit.subreddit("redditdev")``). These types may be mixed within the
             list.
-        :param styles: A ``dict`` with keys ``backgroundColor`` and ``headerColor``, and
-            values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
+        :param styles: A ``dict`` with keys ``"backgroundColor"`` and ``"headerColor"``,
+            and values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
             "headerColor": "#3333EE"}``.
         :param description: A ``str`` containing Markdown (default: ``""``).
 
@@ -677,10 +642,10 @@ class SubredditWidgetsModeration:
                 comment) as your CSS.
 
         :param height: The height of the widget, between 50 and 500.
-        :param image_data: A ``list`` of ``dict``\ s as specified in `Reddit docs`_.
-            Each ``dict`` represents an image and has the key ``"url"`` which maps to
-            the URL of an image hosted on Reddit's servers. Images should be uploaded
-            using :meth:`.upload_image`.
+        :param image_data: A list of ``dict``\ s as specified in `Reddit docs`_. Each
+            ``dict`` represents an image and has the key ``"url"`` which maps to the URL
+            of an image hosted on Reddit's servers. Images should be uploaded using
+            :meth:`.upload_image`.
 
             For example:
 
@@ -740,9 +705,9 @@ class SubredditWidgetsModeration:
         r"""Add and return an :class:`.ImageWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
-        :param data: A ``list`` of ``dict``\ s as specified in `Reddit docs`_. Each
-            ``dict`` has the key ``"url"`` which maps to the URL of an image hosted on
-            Reddit's servers. Images should be uploaded using :meth:`.upload_image`.
+        :param data: A list of ``dict``\ s as specified in `Reddit docs`_. Each ``dict``
+            has the key ``"url"`` which maps to the URL of an image hosted on Reddit's
+            servers. Images should be uploaded using :meth:`.upload_image`.
 
             For example:
 
@@ -800,7 +765,7 @@ class SubredditWidgetsModeration:
     def add_menu(self, data, **other_settings):
         r"""Add and return a :class:`.Menu` widget.
 
-        :param data: A ``list`` of ``dict``\ s describing menu contents, as specified in
+        :param data: A list of ``dict``\ s describing menu contents, as specified in
             `Reddit docs`_. As of this writing, the format is:
 
             .. code-block:: text
@@ -859,8 +824,8 @@ class SubredditWidgetsModeration:
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param display: Display style. Either ``"cloud"`` or ``"list"``.
-        :param order: A ``list`` of flair template IDs. You can get all flair template
-            IDs in a subreddit with:
+        :param order: A list of flair template IDs. You can get all flair template IDs
+            in a subreddit with:
 
             .. code-block:: python
 
@@ -926,8 +891,9 @@ class SubredditWidgetsModeration:
         """Reorder the widgets.
 
         :param new_order: A list of widgets. Represented as a ``list`` that contains
-            ``Widget`` objects, or widget IDs as strings. These types may be mixed.
-        :param section: The section to reorder. (default: ``"sidebar"``)
+            :class:`.Widget` objects, or widget IDs as strings. These types may be
+            mixed.
+        :param section: The section to reorder (default: ``"sidebar"``).
 
         Example usage:
 
@@ -992,10 +958,10 @@ class SubredditWidgetsModeration:
 
 
 class Widget(PRAWBase):
-    """Base class to represent a Widget."""
+    """Base class to represent a :class:`.Widget`."""
 
     @cachedproperty
-    def mod(self):
+    def mod(self) -> "praw.models.WidgetModeration":
         """Get an instance of :class:`.WidgetModeration` for this widget.
 
         .. note::
@@ -1015,7 +981,7 @@ class Widget(PRAWBase):
 
     # pylint: disable=invalid-name
     def __init__(self, reddit, _data):
-        """Initialize an instance of the class."""
+        """Initialize a :class:`.Widget` instance."""
         self.subreddit = ""  # in case it isn't in _data
         self.id = ""  # in case it isn't in _data
         super().__init__(reddit, _data=_data)
@@ -1039,7 +1005,7 @@ class ButtonWidget(Widget, BaseList):
         for button in button_widget:
             print(button.text, button.url)
 
-    Create one (requires proper moderator permissions):
+    Create one:
 
     .. code-block:: python
 
@@ -1076,32 +1042,27 @@ class ButtonWidget(Widget, BaseList):
 
     For more information on creation, see :meth:`.add_button_widget`.
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         button_widget = button_widget.mod.update(shortName="My fav buttons", styles=new_styles)
 
-    Delete one (requires proper moderator permissions):
+    Delete one:
 
     .. code-block:: python
 
         button_widget.mod.delete()
 
-    **Typical Attributes**
+    .. include:: ../../typical_attributes.rst
 
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
-
-    ==================== =============================================================
+    ==================== ===============================================================
     Attribute            Description
-    ==================== =============================================================
-    ``buttons``          A ``list`` of :class:`.Button`\ s. These can also be accessed
-                         just by iterating over the :class:`.ButtonWidget` (e.g. ``for
-                         button in button_widget``).
+    ==================== ===============================================================
+    ``buttons``          A list of :class:`.Button`\ s. These can also be accessed just
+                         by iterating over the :class:`.ButtonWidget` (e.g. ``for button
+                         in button_widget``).
     ``description``      The description, in Markdown.
     ``description_html`` The description, in HTML.
     ``id``               The widget ID.
@@ -1110,7 +1071,7 @@ class ButtonWidget(Widget, BaseList):
     ``styles``           A ``dict`` with the keys ``"backgroundColor"`` and
                          ``"headerColor"``.
     ``subreddit``        The :class:`.Subreddit` the button widget belongs to.
-    ==================== =============================================================
+    ==================== ===============================================================
 
     """
 
@@ -1133,7 +1094,7 @@ class Calendar(Widget):
 
         print(calendar.googleCalendarId)
 
-    Create one (requires proper moderator permissions):
+    Create one:
 
     .. code-block:: python
 
@@ -1152,39 +1113,35 @@ class Calendar(Widget):
 
     For more information on creation, see :meth:`.add_calendar`.
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         calendar = calendar.mod.update(shortName="My fav events", styles=new_styles)
 
-    Delete one (requires proper moderator permissions):
+    Delete one:
 
     .. code-block:: python
 
         calendar.mod.delete()
 
-    **Typical Attributes**
+    .. include:: ../../typical_attributes.rst
 
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
-
-    ================= =====================================================
+    ================= ============================================================
     Attribute         Description
-    ================= =====================================================
+    ================= ============================================================
     ``configuration`` A ``dict`` describing the calendar configuration.
-    ``data``          A ``list`` of ``dict``\ s that represent events.
+    ``data``          A list of ``dict``\ s that represent events.
     ``id``            The widget ID.
     ``kind``          The widget kind (always ``"calendar"``).
-    ``requiresSync``  A ``bool``.
+    ``requiresSync``  A ``bool`` representing whether or not the calendar requires
+                      synchronization.
     ``shortName``     The short name of the widget.
     ``styles``        A ``dict`` with the keys ``"backgroundColor"`` and
                       ``"headerColor"``.
     ``subreddit``     The :class:`.Subreddit` the button widget belongs to.
-    ================= =====================================================
+    ================= ============================================================
 
     """
 
@@ -1205,7 +1162,7 @@ class CommunityList(Widget, BaseList):
 
         print(community_list)
 
-    Create one (requires proper moderator permissions):
+    Create one:
 
     .. code-block:: python
 
@@ -1218,31 +1175,26 @@ class CommunityList(Widget, BaseList):
 
     For more information on creation, see :meth:`.add_community_list`.
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         community_list = community_list.mod.update(shortName="My fav subs", styles=new_styles)
 
-    Delete one (requires proper moderator permissions):
+    Delete one:
 
     .. code-block:: python
 
         community_list.mod.delete()
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============= =====================================================================
     Attribute     Description
     ============= =====================================================================
-    ``data``      A ``list`` of :class:`.Subreddit`\ s. These can also be iterated over
-                  by iterating over the :class:`.CommunityList` (e.g. ``for sub in
+    ``data``      A list of :class:`.Subreddit`\ s. These can also be iterated over by
+                  iterating over the :class:`.CommunityList` (e.g. ``for sub in
                   community_list``).
     ``id``        The widget ID.
     ``kind``      The widget kind (always ``"community-list"``).
@@ -1273,7 +1225,7 @@ class CustomWidget(Widget):
         print(custom.text)
         print(custom.css)
 
-    Create one (requires proper moderator permissions):
+    Create one:
 
     .. code-block:: python
 
@@ -1285,25 +1237,20 @@ class CustomWidget(Widget):
 
     For more information on creation, see :meth:`.add_custom_widget`.
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         custom = custom.mod.update(shortName="My fav customization", styles=new_styles)
 
-    Delete one (requires proper moderator permissions):
+    Delete one:
 
     .. code-block:: python
 
         custom.mod.delete()
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ================= ============================================================
     Attribute         Description
@@ -1325,7 +1272,7 @@ class CustomWidget(Widget):
     """
 
     def __init__(self, reddit, _data):
-        """Initialize the class."""
+        """Initialize a :class:`.CustomWidget` instance."""
         _data["imageData"] = [
             ImageData(reddit, data) for data in _data.pop("imageData")
         ]
@@ -1341,25 +1288,20 @@ class IDCard(Widget):
         id_card = widgets.id_card
         print(id_card.subscribersText)
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
         widgets.id_card.mod.update(currentlyViewingText="Bots")
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ========================= =======================================================
     Attribute                 Description
     ========================= =======================================================
-    ``currentlyViewingCount`` The number of Redditors viewing the subreddit.
+    ``currentlyViewingCount`` The number of redditors viewing the subreddit.
     ``currentlyViewingText``  The text displayed next to the view count. For example,
-                              "users online".
+                              ``"users online"``.
     ``description``           The subreddit description.
     ``id``                    The widget ID.
     ``kind``                  The widget kind (always ``"id-card"``).
@@ -1392,7 +1334,7 @@ class ImageWidget(Widget, BaseList):
         for image in image_widget:
             print(image.url)
 
-    Create one (requires proper moderator permissions):
+    Create one:
 
     .. code-block:: python
 
@@ -1412,25 +1354,20 @@ class ImageWidget(Widget, BaseList):
 
     For more information on creation, see :meth:`.add_image_widget`.
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         image_widget = image_widget.mod.update(shortName="My fav images", styles=new_styles)
 
-    Delete one (requires proper moderator permissions):
+    Delete one:
 
     .. code-block:: python
 
         image_widget.mod.delete()
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============= =====================================================================
     Attribute     Description
@@ -1451,9 +1388,9 @@ class ImageWidget(Widget, BaseList):
 
 
 class Menu(Widget, BaseList):
-    r"""Class to represent the top menu widget of a subreddit.
+    r"""Class to represent the top menu widget of a :class:`.Subreddit`.
 
-    Menus can generally be found as the first item in a subreddit's top bar.
+    Menus can generally be found as the first item in a :class:`.Subreddit`'s top bar.
 
     .. code-block:: python
 
@@ -1469,7 +1406,7 @@ class Menu(Widget, BaseList):
                 else:  # MenuLink
                     print(item.text, item.url)
 
-    Create one (requires proper moderator permissions):
+    Create one:
 
     .. code-block:: python
 
@@ -1489,7 +1426,7 @@ class Menu(Widget, BaseList):
 
     For more information on creation, see :meth:`.add_menu`.
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
@@ -1497,18 +1434,13 @@ class Menu(Widget, BaseList):
         menu_items.reverse()
         menu = menu.mod.update(data=menu_items)
 
-    Delete one (requires proper moderator permissions):
+    Delete one:
 
     .. code-block:: python
 
         menu.mod.delete()
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============= ====================================================================
     Attribute     Description
@@ -1534,19 +1466,14 @@ class ModeratorsWidget(Widget, BaseList):
         widgets = reddit.subreddit("redditdev").widgets
         print(widgets.moderators_widget)
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         widgets.moderators_widget.mod.update(styles=new_styles)
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============= =====================================================================
     Attribute     Description
@@ -1566,7 +1493,7 @@ class ModeratorsWidget(Widget, BaseList):
     CHILD_ATTRIBUTE = "mods"
 
     def __init__(self, reddit, _data):
-        """Initialize the moderators widget."""
+        """Initialize a :class:`.ModeratorsWidget` instance."""
         if self.CHILD_ATTRIBUTE not in _data:
             # .mod.update() sometimes returns payload without "mods" field
             _data[self.CHILD_ATTRIBUTE] = []
@@ -1591,7 +1518,7 @@ class PostFlairWidget(Widget, BaseList):
             print(flair)
             print(post_flair_widget.templates[flair])
 
-    Create one (requires proper moderator permissions):
+    Create one:
 
     .. code-block:: python
 
@@ -1603,25 +1530,20 @@ class PostFlairWidget(Widget, BaseList):
 
     For more information on creation, see :meth:`.add_post_flair_widget`.
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         post_flair = post_flair.mod.update(shortName="My fav flairs", styles=new_styles)
 
-    Delete one (requires proper moderator permissions):
+    Delete one:
 
     .. code-block:: python
 
         post_flair.mod.delete()
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============= =====================================================================
     Attribute     Description
@@ -1658,19 +1580,14 @@ class RulesWidget(Widget, BaseList):
 
         pprint(rules_widget.data)
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         rules_widget.mod.update(display="compact", shortName="The LAWS", styles=new_styles)
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============= =====================================================================
     Attribute     Description
@@ -1690,7 +1607,7 @@ class RulesWidget(Widget, BaseList):
     CHILD_ATTRIBUTE = "data"
 
     def __init__(self, reddit, _data):
-        """Initialize the rules widget."""
+        """Initialize a :class:`.RulesWidget` instance."""
         if self.CHILD_ATTRIBUTE not in _data:
             # .mod.update() sometimes returns payload without "data" field
             _data[self.CHILD_ATTRIBUTE] = []
@@ -1712,7 +1629,7 @@ class TextArea(Widget):
                 break
         print(text_area.text)
 
-    Create one (requires proper moderator permissions):
+    Create one:
 
     .. code-block:: python
 
@@ -1722,25 +1639,20 @@ class TextArea(Widget):
 
     For more information on creation, see :meth:`.add_text_area`.
 
-    Update one (requires proper moderator permissions):
+    Update one:
 
     .. code-block:: python
 
         new_styles = {"backgroundColor": "#FFFFFF", "headerColor": "#FF9900"}
         text_area = text_area.mod.update(shortName="My fav text", styles=new_styles)
 
-    Delete one (requires proper moderator permissions):
+    Delete one:
 
     .. code-block:: python
 
         text_area.mod.delete()
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ============= =====================================================================
     Attribute     Description
@@ -1783,7 +1695,7 @@ class WidgetModeration:
     """
 
     def __init__(self, widget, subreddit, reddit):
-        """Initialize the widget moderation object."""
+        """Initialize a :class:`.WidgetModeration` instance."""
         self.widget = widget
         self._reddit = reddit
         self._subreddit = subreddit

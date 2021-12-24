@@ -7,10 +7,10 @@ class InlineMedia:
     TYPE = None
 
     def __init__(self, path: str, caption: str = None):
-        """Create an InlineMedia instance.
+        """Initialize an :class:`.InlineMedia` instance.
 
         :param path: The path to a media file.
-        :param caption: An optional caption to add to the image. (default: None)
+        :param caption: An optional caption to add to the image (default: ``None``).
 
         """
         self.path = path
@@ -27,7 +27,7 @@ class InlineMedia:
         )
 
     def __repr__(self) -> str:
-        """Return a string representation of the InlineMedia instance."""
+        """Return an object initialization representation of the instance."""
         return f"<{self.__class__.__name__} caption={self.caption!r}>"
 
     def __str__(self):

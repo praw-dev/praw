@@ -20,7 +20,7 @@ class cachedproperty:
     """
 
     def __init__(self, func: Callable[[Any], Any], doc: Optional[str] = None):
-        """Initialize the descriptor."""
+        """Initialize a :class:`.cachedproperty` instance."""
         self.func = self.__wrapped__ = func
 
         if doc is None:
@@ -45,5 +45,5 @@ class cachedproperty:
         return value
 
     def __repr__(self) -> str:
-        """Return repr(self)."""
+        """Return an object initialization representation of the instance."""
         return f"<{self.__class__.__name__} {self.func}>"

@@ -82,12 +82,12 @@ When you execute this script interactively:
 
 1. You will be prompted to provide a comma-separated list of scopes.
 2. You will be given a URL that will take you through the auth flow on Reddit.
-3. Open the provided link in your browser and Reddit will ask you for permission to
-   grant the application permissions to the scopes requested.
+3. When you open the provided link in your browser, Reddit will ask you for permission
+   to grant the application permissions to the scopes requested.
 4. After clicking allow, you will have a new authorized application configured.
-5. You will be redirected to another page where your refresh token will be displayed and
-   will be printed to the command line.
+5. You will be redirected to another page (the application's ``redirect uri``) where
+   your refresh token will be displayed and will be printed to the command line.
 
 You only have to run this script once for each refresh token. The refresh token (along
-with the application's client_id, client_secret) are valid credentials until manually
-revoked by the user.
+with the application's ``client_id``, ``client_secret``) are valid credentials until
+manually revoked by the user.

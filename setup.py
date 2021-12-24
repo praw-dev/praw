@@ -53,7 +53,7 @@ setup(
     ],
     description=(
         "PRAW, an acronym for `Python Reddit API Wrapper`, is a python package that"
-        " allows for simple access to reddit's API."
+        " allows for simple access to  Reddit's API."
     ),
     extras_require=extras,
     install_requires=[

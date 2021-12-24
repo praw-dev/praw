@@ -10,7 +10,7 @@ from tempfile import TemporaryDirectory
 def do_process(args, shell=False):
     """Run program provided by args.
 
-    Return True on success.
+    Return ``True`` on success.
 
     Output failed message on non-zero exit and return False.
 

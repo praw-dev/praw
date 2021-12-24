@@ -16,11 +16,11 @@ class MessageableMixin:
         message: str,
         from_subreddit: Optional[Union["praw.models.Subreddit", str]] = None,
     ):
-        """Send a message to a redditor or a subreddit's moderators (mod mail).
+        """Send a message to a :class:`.Redditor` or a :class:`.Subreddit`'s moderators (modmail).
 
         :param subject: The subject of the message.
         :param message: The message content.
-        :param from_subreddit: A :class:`~.Subreddit` instance or string to send the
+        :param from_subreddit: A :class:`.Subreddit` instance or string to send the
             message from. When provided, messages are sent from the subreddit rather
             than from the authenticated user.
 
@@ -30,13 +30,13 @@ class MessageableMixin:
                 ``mail`` moderator permission.
 
 
-        For example, to send a private message to ``u/spez``, try:
+        For example, to send a private message to u/spez, try:
 
         .. code-block:: python
 
             reddit.redditor("spez").message("TEST", "test message from PRAW")
 
-        To send a message to ``u/spez`` from the moderators of ``r/test`` try:
+        To send a message to u/spez from the moderators of r/test try:
 
         .. code-block:: python
 
@@ -44,7 +44,7 @@ class MessageableMixin:
                 "TEST", "test message from r/test", from_subreddit="test"
             )
 
-        To send a message to the moderators of ``r/test``, try:
+        To send a message to the moderators of r/test, try:
 
         .. code-block:: python
 

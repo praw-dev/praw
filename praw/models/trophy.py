@@ -1,4 +1,4 @@
-"""Represent the Trophy class."""
+"""Represent the :class:`.Trophy` class."""
 from typing import TYPE_CHECKING, Any, Dict, Union
 
 from .base import PRAWBase
@@ -13,12 +13,7 @@ class Trophy(PRAWBase):
     End users should not instantiate this class directly. :meth:`.Redditor.trophies` can
     be used to get a list of the redditor's trophies.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     =============== ===================================================
     Attribute       Description
@@ -34,7 +29,7 @@ class Trophy(PRAWBase):
     """
 
     def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
-        """Initialize a Trophy instance.
+        """Initialize a :class:`.Trophy` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
         :param _data: The structured data, assumed to be a dict and key ``"name"`` must
@@ -55,5 +50,5 @@ class Trophy(PRAWBase):
         return self.name  # pylint: disable=no-member
 
     def __repr__(self) -> str:
-        """Return the object's REPR status."""
+        """Return an object initialization representation of the instance."""
         return f"{self.__class__.__name__}(name={self.name!r})"

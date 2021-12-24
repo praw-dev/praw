@@ -28,7 +28,7 @@ list. In the example code below, observe how attributes are accessed.
     except APIException as exception:
         print(exception.error_type)
 
-This can generally be changed to
+This can generally be changed to:
 
 .. code-block:: python
 

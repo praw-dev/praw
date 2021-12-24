@@ -19,7 +19,7 @@ class _NotSet:
 
 
 class Config:
-    """A class containing the configuration for a reddit site."""
+    """A class containing the configuration for a Reddit site."""
 
     CONFIG = None
     CONFIG_NOT_SET = _NotSet()  # Represents a config value that is not set.
@@ -75,7 +75,7 @@ class Config:
         config_interpolation: Optional[str] = None,
         **settings: str,
     ):
-        """Initialize a Config instance."""
+        """Initialize a :class:`.Config` instance."""
         with Config.LOCK:
             if Config.CONFIG is None:
                 self._load_config(config_interpolation)

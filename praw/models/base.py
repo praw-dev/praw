@@ -33,7 +33,7 @@ class PRAWBase:
         return cls(reddit, _data=data)
 
     def __init__(self, reddit: "praw.Reddit", _data: Optional[Dict[str, Any]]):
-        """Initialize a PRAWModel instance.
+        """Initialize a :class:`.PRAWBase` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
 

@@ -1,1 +1,1 @@
-"""Provide all models that map to reddit objects."""
+"""Provide all models that map to Reddit objects."""

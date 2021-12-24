@@ -1,1 +1,1 @@
-"""Package providing models and mixins pertaining to reddit listings."""
+"""Package providing models and mixins pertaining to Reddit listings."""

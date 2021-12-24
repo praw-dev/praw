@@ -7,7 +7,7 @@ from ..generator import ListingGenerator
 
 
 def _prepare(praw_object, arguments_dict, target):
-    """Fix for Redditor methods that use a query param rather than subpath."""
+    """Fix for :class:`.Redditor` methods that use a query param rather than subpath."""
     if praw_object.__dict__.get("_listing_use_sort"):
         PRAWBase._safely_add_arguments(arguments_dict, "params", sort=target)
         return praw_object._path
@@ -35,12 +35,12 @@ class BaseListingMixin(PRAWBase):
         time_filter: str = "all",
         **generator_kwargs: Union[str, int, Dict[str, str]],
     ) -> Iterator[Any]:
-        """Return a :class:`.ListingGenerator` for controversial submissions.
+        """Return a :class:`.ListingGenerator` for controversial items.
 
-        :param time_filter: Can be one of: all, day, hour, month, week, year (default:
-            all).
+        :param time_filter: Can be one of: ``"all"``, ``"day"``, ``"hour"``,
+            ``"month"``, ``"week"``, or ``"year"`` (default: ``"all"``).
 
-        :raises: :py:class:`.ValueError` if ``time_filter`` is invalid.
+        :raises: :py:class:`ValueError` if ``time_filter`` is invalid.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -111,12 +111,12 @@ class BaseListingMixin(PRAWBase):
         time_filter: str = "all",
         **generator_kwargs: Union[str, int, Dict[str, str]],
     ) -> Iterator[Any]:
-        """Return a :class:`.ListingGenerator` for top submissions.
+        """Return a :class:`.ListingGenerator` for top items.
 
-        :param time_filter: Can be one of: all, day, hour, month, week, year (default:
-            all).
+        :param time_filter: Can be one of: ``"all"``, ``"day"``, ``"hour"``,
+            ``"month"``, ``"week"``, or ``"year"`` (default: ``"all"``).
 
-        :raises: :py:class:`.ValueError` if ``time_filter`` is invalid.
+        :raises: :py:class:`ValueError` if ``time_filter`` is invalid.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.

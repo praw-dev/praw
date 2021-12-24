@@ -204,7 +204,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             subreddit = pytest.placeholders.test_subreddit
-            crosspost_parent = self.reddit.submission(id="6vx01b")
+            crosspost_parent = self.reddit.submission("6vx01b")
 
             submission = crosspost_parent.crosspost(subreddit)
             assert submission.author == self.reddit.config.username
@@ -216,7 +216,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-            crosspost_parent = self.reddit.submission(id="6vx01b")
+            crosspost_parent = self.reddit.submission("6vx01b")
 
             submission = crosspost_parent.crosspost(subreddit)
             assert submission.author == self.reddit.config.username
@@ -228,7 +228,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-            crosspost_parent = self.reddit.submission(id="6vx01b")
+            crosspost_parent = self.reddit.submission("6vx01b")
 
             submission = crosspost_parent.crosspost(subreddit, "my title")
             assert submission.author == self.reddit.config.username
@@ -243,7 +243,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             subreddit = pytest.placeholders.test_subreddit
-            crosspost_parent = self.reddit.submission(id="6vx01b")
+            crosspost_parent = self.reddit.submission("6vx01b")
 
             submission = crosspost_parent.crosspost(
                 subreddit, flair_id=flair_id, flair_text=flair_text
@@ -257,7 +257,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             subreddit = pytest.placeholders.test_subreddit
-            crosspost_parent = self.reddit.submission(id="6vx01b")
+            crosspost_parent = self.reddit.submission("6vx01b")
 
             submission = crosspost_parent.crosspost(subreddit, nsfw=True)
             assert submission.over_18 is True
@@ -268,7 +268,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             subreddit = pytest.placeholders.test_subreddit
-            crosspost_parent = self.reddit.submission(id="6vx01b")
+            crosspost_parent = self.reddit.submission("6vx01b")
 
             submission = crosspost_parent.crosspost(subreddit, spoiler=True)
             assert submission.spoiler is True

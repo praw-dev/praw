@@ -12,7 +12,7 @@ than or equal to PRAW's |ratelimit_seconds|_, PRAW will wait for the requested t
 1 second. If the requested wait time exceeds the set value of ``ratelimit_seconds``,
 PRAW will raise :class:`.RedditAPIException`.
 
-For example, given the following Reddit instance:
+For example, given the following :class:`.Reddit` instance:
 
 .. code-block:: python
 

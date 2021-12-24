@@ -121,7 +121,7 @@ class TestUser(IntegrationTest):
     def test_pin__comment(self):
         self.reddit.read_only = False
         with self.use_cassette():
-            comment = self.reddit.comment(id="hjaga35")
+            comment = self.reddit.comment("hjaga35")
             self.reddit.user.pin(comment)
             new_content = next(self.reddit.user.me().new(limit=1))
             assert new_content != comment

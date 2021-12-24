@@ -1,4 +1,4 @@
-"""Provide CommentForest for Submission comments."""
+"""Provide CommentForest for submission comments."""
 from heapq import heappop, heappush
 from typing import TYPE_CHECKING, List, Optional, Union
 
@@ -18,7 +18,7 @@ class CommentForest:
 
     @staticmethod
     def _gather_more_comments(tree, parent_tree=None):
-        """Return a list of MoreComments objects obtained from tree."""
+        """Return a list of :class:`.MoreComments` objects obtained from tree."""
         more_comments = []
         queue = [(None, x) for x in tree]
         while queue:
@@ -59,7 +59,7 @@ class CommentForest:
         submission: "praw.models.Submission",
         comments: Optional[List["praw.models.Comment"]] = None,
     ):
-        """Initialize a CommentForest instance.
+        """Initialize a :class:`.CommentForest` instance.
 
         :param submission: An instance of :class:`.Submission` that is the parent of the
             comments.
@@ -117,11 +117,11 @@ class CommentForest:
         :param limit: The maximum number of :class:`.MoreComments` instances to replace.
             Each replacement requires 1 API request. Set to ``None`` to have no limit,
             or to ``0`` to remove all :class:`.MoreComments` instances without
-            additional requests (default: 32).
+            additional requests (default: ``32``).
         :param threshold: The minimum number of children comments a
             :class:`.MoreComments` instance must have in order to be replaced.
             :class:`.MoreComments` instances that represent "continue this thread" links
-            unfortunately appear to have 0 children. (default: 0).
+            unfortunately appear to have 0 children (default: ``0``).
 
         :returns: A list of :class:`.MoreComments` instances that were not replaced.
 

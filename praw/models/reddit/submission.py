@@ -22,12 +22,12 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class SubmissionFlair:
-    """Provide a set of functions pertaining to Submission flair."""
+    """Provide a set of functions pertaining to :class:`.Submission` flair."""
 
     def __init__(self, submission: "praw.models.Submission"):
-        """Create a SubmissionFlair instance.
+        """Initialize a :class:`.SubmissionFlair` instance.
 
-        :param submission: The submission associated with the flair functions.
+        :param submission: The :class:`.Submission` associated with the flair functions.
 
         """
         self.submission = submission
@@ -54,8 +54,8 @@ class SubmissionFlair:
 
         :param flair_template_id: The flair template to select. The possible
             ``flair_template_id`` values can be discovered through :meth:`.choices`.
-        :param text: If the template's ``flair_text_editable`` value is True, this value
-            will set a custom text (default: None).
+        :param text: If the template's ``flair_text_editable`` value is ``True``, this
+            value will set a custom text (default: ``None``).
 
         For example, to select an arbitrary editable flair text (assuming there is one)
         and set a custom value try:
@@ -77,13 +77,13 @@ class SubmissionFlair:
 
 
 class SubmissionModeration(ThingModerationMixin):
-    """Provide a set of functions pertaining to Submission moderation.
+    """Provide a set of functions pertaining to :class:`.Submission` moderation.
 
     Example usage:
 
     .. code-block:: python
 
-        submission = reddit.submission(id="8dmv8z")
+        submission = reddit.submission("8dmv8z")
         submission.mod.approve()
 
     """
@@ -91,7 +91,7 @@ class SubmissionModeration(ThingModerationMixin):
     REMOVAL_MESSAGE_API = "removal_link_message"
 
     def __init__(self, submission: "praw.models.Submission"):
-        """Create a SubmissionModeration instance.
+        """Initialize a :class:`.SubmissionModeration` instance.
 
         :param submission: The submission to moderate.
 
@@ -101,8 +101,8 @@ class SubmissionModeration(ThingModerationMixin):
     def contest_mode(self, state: bool = True):
         """Set contest mode for the comments of this submission.
 
-        :param state: (boolean) True enables contest mode, False, disables (default:
-            True).
+        :param state: ``True`` enables contest mode and ``False`` disables (default:
+            ``True``).
 
         Contest mode have the following effects:
 
@@ -116,7 +116,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.contest_mode(state=True)
 
         """
@@ -133,18 +133,20 @@ class SubmissionModeration(ThingModerationMixin):
     ):
         """Set flair for the submission.
 
-        :param text: The flair text to associate with the Submission (default: "").
-        :param css_class: The css class to associate with the flair html (default: "").
-        :param flair_template_id: The flair template id to use when flairing (Optional).
+        :param text: The flair text to associate with the :class:`.Submission` (default:
+            ``""``).
+        :param css_class: The css class to associate with the flair html (default:
+            ``""``).
+        :param flair_template_id: The flair template ID to use when flairing.
 
         This method can only be used by an authenticated user who is a moderator of the
-        Submission's Subreddit.
+        submission's :class:`.Subreddit`.
 
         Example usage:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.flair(text="PRAW", css_class="bot")
 
         """
@@ -174,7 +176,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. seealso::
 
-            :meth:`~.sfw`
+            :meth:`.sfw`
 
         """
         self.thing._reddit.post(API_PATH["marknsfw"], data={"id": self.thing.fullname})
@@ -217,12 +219,12 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.sfw()
 
         .. seealso::
 
-            :meth:`~.nsfw`
+            :meth:`.nsfw`
 
         """
         self.thing._reddit.post(
@@ -239,12 +241,12 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.spoiler()
 
         .. seealso::
 
-            :meth:`~.unspoiler`
+            :meth:`.unspoiler`
 
         """
         self.thing._reddit.post(API_PATH["spoiler"], data={"id": self.thing.fullname})
@@ -252,11 +254,11 @@ class SubmissionModeration(ThingModerationMixin):
     def sticky(self, state: bool = True, bottom: bool = True):
         """Set the submission's sticky state in its subreddit.
 
-        :param state: (boolean) True sets the sticky for the submission, false unsets
-            (default: True).
-        :param bottom: (boolean) When true, set the submission as the bottom sticky. If
-            no top sticky exists, this submission will become the top sticky regardless
-            (default: True).
+        :param state: ``True`` sets the sticky for the submission and ``False`` unsets
+            (default: ``True``).
+        :param bottom: When ``True``, set the submission as the bottom sticky. If no top
+            sticky exists, this submission will become the top sticky regardless
+            (default: ``True``).
 
         .. note::
 
@@ -270,7 +272,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.sticky()
 
         """
@@ -285,8 +287,9 @@ class SubmissionModeration(ThingModerationMixin):
     def suggested_sort(self, sort: str = "blank"):
         """Set the suggested sort for the comments of the submission.
 
-        :param sort: Can be one of: confidence, top, new, controversial, old, random,
-            qa, blank (default: blank).
+        :param sort: Can be one of: ``"confidence"``, ``"top"``, ``"new"``,
+            ``"controversial"``, ``"old"``, ``"random"``, ``"qa"``, or ``"blank"``
+            (default: ``"blank"``).
 
         """
         self.thing._reddit.post(
@@ -337,7 +340,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. seealso::
 
-            :meth:`~.spoiler`
+            :meth:`.spoiler`
 
         """
         self.thing._reddit.post(API_PATH["unspoiler"], data={"id": self.thing.fullname})
@@ -352,7 +355,7 @@ class SubmissionModeration(ThingModerationMixin):
         ===== ======== ================================================================
         Level Name     Description
         ===== ======== ================================================================
-        0     Off      Crowd Control will not action any of the submission's commments.
+        0     Off      Crowd Control will not action any of the submission's comments.
         1     Lenient  Comments from users who have negative karma in the subreddit are
                        automatically collapsed.
         2     Moderate Comments from new users and users with negative karma in the
@@ -366,7 +369,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-            submission = reddit.submission(id="745ryj")
+            submission = reddit.submission("745ryj")
             submission.mod.update_crowd_control_level(2)
 
         .. seealso::
@@ -381,14 +384,9 @@ class SubmissionModeration(ThingModerationMixin):
 
 
 class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, RedditBase):
-    """A class for submissions to reddit.
+    """A class for submissions to Reddit.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ========================== =========================================================
     Attribute                  Description
@@ -406,7 +404,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
                                content.
     ``is_self``                Whether or not the submission is a selfpost (text-only).
     ``link_flair_template_id`` The link flair's ID.
-    ``link_flair_text``        The link flair's text content, or None if not flaired.
+    ``link_flair_text``        The link flair's text content, or ``None`` if not
+                               flaired.
     ``locked``                 Whether or not the submission has been locked.
     ``name``                   Fullname of the submission.
     ``num_comments``           The number of comments on the submission.
@@ -442,12 +441,12 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         :param url: A url to a submission in one of the following formats (http urls
             will also work):
 
-            - https://redd.it/2gmzqe
-            - https://reddit.com/comments/2gmzqe/
-            - https://www.reddit.com/r/redditdev/comments/2gmzqe/praw_https/
-            - https://www.reddit.com/gallery/2gmzqe
+            - ``"https://redd.it/2gmzqe"``
+            - ``"https://reddit.com/comments/2gmzqe/"``
+            - ``"https://www.reddit.com/r/redditdev/comments/2gmzqe/praw_https/"``
+            - ``"https://www.reddit.com/gallery/2gmzqe"``
 
-        :raises: :class:`.InvalidURL` if URL is not a valid submission URL.
+        :raises: :class:`.InvalidURL` if ``url`` is not a valid submission URL.
 
         """
         parts = RedditBase._url_parts(url)
@@ -462,7 +461,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             submission_id = parts[parts.index("gallery") + 1]
 
         elif parts[-1] == "comments":
-            raise InvalidURL(url, message="Invalid URL (submission id not present): {}")
+            raise InvalidURL(url, message="Invalid URL (submission ID not present): {}")
 
         else:
             submission_id = parts[parts.index("comments") + 1]
@@ -499,8 +498,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. note::
 
-            The appropriate values for ``comment_sort`` include ``confidence``,
-            ``controversial``, ``new``, ``old``, ``q&a``, and ``top``
+            The appropriate values for ``"comment_sort"`` include ``"confidence"``,
+            ``"controversial"``, ``"new"``, ``"old"``, ``"q&a"``, and ``"top"``
 
         See :ref:`extracting_comments` for more on working with a
         :class:`.CommentForest`.
@@ -536,7 +535,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. code-block:: python
 
-            submission = reddit.submission(id="8dmv8z")
+            submission = reddit.submission("8dmv8z")
             submission.mod.approve()
 
         """
@@ -559,11 +558,11 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         url: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
     ):
-        """Initialize a Submission instance.
+        """Initialize a :class:`.Submission` instance.
 
-        :param reddit: An instance of :class:`~.Reddit`.
-        :param id: A reddit base36 submission ID, e.g., ``2gmzqe``.
-        :param url: A URL supported by :meth:`~.id_from_url`.
+        :param reddit: An instance of :class:`.Reddit`.
+        :param id: A reddit base36 submission ID, e.g., ``"2gmzqe"``.
+        :param url: A URL supported by :meth:`.id_from_url`.
 
         Either ``id`` or ``url`` can be provided, but not both.
 
@@ -650,7 +649,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mark_visited()
 
         """
@@ -658,21 +657,22 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         self._reddit.post(API_PATH["store_visits"], data=data)
 
     def hide(self, other_submissions: Optional[List["praw.models.Submission"]] = None):
-        """Hide Submission.
+        """Hide :class:`.Submission`.
 
         :param other_submissions: When provided, additionally hide this list of
-            :class:`.Submission` instances as part of a single request (default: None).
+            :class:`.Submission` instances as part of a single request (default:
+            ``None``).
 
         Example usage:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.hide()
 
         .. seealso::
 
-            :meth:`~.unhide`
+            :meth:`.unhide`
 
         """
         for submissions in self._chunk(other_submissions, 50):
@@ -681,21 +681,22 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
     def unhide(
         self, other_submissions: Optional[List["praw.models.Submission"]] = None
     ):
-        """Unhide Submission.
+        """Unhide :class:`.Submission`.
 
         :param other_submissions: When provided, additionally unhide this list of
-            :class:`.Submission` instances as part of a single request (default: None).
+            :class:`.Submission` instances as part of a single request (default:
+            ``None``).
 
         Example usage:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.unhide()
 
         .. seealso::
 
-            :meth:`~.hide`
+            :meth:`.hide`
 
         """
         for submissions in self._chunk(other_submissions, 50):
@@ -717,32 +718,32 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
             Be aware you have to be subscribed to the target subreddit.
 
-        :param subreddit: Name of the subreddit or :class:`~.Subreddit` object to
+        :param subreddit: Name of the subreddit or :class:`.Subreddit` object to
             crosspost into.
         :param title: Title of the submission. Will use this submission's title if
-            `None` (default: None).
-        :param flair_id: The flair template to select (default: None).
+            `None` (default: ``None``).
+        :param flair_id: The flair template to select (default: ``None``).
         :param flair_text: If the template's ``flair_text_editable`` value is True, this
-            value will set a custom text (default: None).
-        :param send_replies: When True, messages will be sent to the submission author
-            when comments are made to the submission (default: True).
+            value will set a custom text (default: ``None``).
+        :param send_replies: When ``True``, messages will be sent to the submission
+            author when comments are made to the submission (default: ``True``).
         :param nsfw: Whether or not the submission should be marked NSFW (default:
-            False).
+            ``False``).
         :param spoiler: Whether or not the submission should be marked as a spoiler
-            (default: False).
+            (default: ``False``).
 
-        :returns: A :class:`~.Submission` object for the newly created submission.
+        :returns: A :class:`.Submission` object for the newly created submission.
 
         Example usage:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             cross_post = submission.crosspost(subreddit="learnprogramming", send_replies=False)
 
         .. seealso::
 
-            :meth:`~.hide`
+            :meth:`.hide`
 
         """
         if title is None:

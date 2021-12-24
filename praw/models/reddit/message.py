@@ -14,12 +14,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
     """A class for private messages.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     =============== ================================================================
     Attribute       Description
@@ -44,7 +39,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
 
     @classmethod
     def parse(cls, data: Dict[str, Any], reddit: "praw.Reddit"):
-        """Return an instance of Message or SubredditMessage from ``data``.
+        """Return an instance of :class:`.Message` or :class:`.SubredditMessage` from ``data``.
 
         :param data: The structured data.
         :param reddit: An instance of :class:`.Reddit`.
@@ -76,7 +71,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
         return self._reddit.config.kinds["message"]
 
     def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
-        """Construct an instance of the Message object."""
+        """Initialize a :class:`.Message` instance."""
         super().__init__(reddit, _data=_data, _fetched=True)
 
     def delete(self):
@@ -100,12 +95,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
 class SubredditMessage(Message):
     """A class for messages to a subreddit.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     =============== =================================================================
     Attribute       Description
@@ -129,9 +119,9 @@ class SubredditMessage(Message):
     """
 
     def mute(self):
-        """Mute the sender of this SubredditMessage.
+        """Mute the sender of this :class:`.SubredditMessage`.
 
-        For example, to mute the sender of the first SubredditMessage in the
+        For example, to mute the sender of the first :class:`.SubredditMessage` in the
         authenticated users' inbox:
 
         .. code-block:: python
@@ -147,9 +137,9 @@ class SubredditMessage(Message):
         self._reddit.post(API_PATH["mute_sender"], data={"id": self.fullname})
 
     def unmute(self):
-        """Unmute the sender of this SubredditMessage.
+        """Unmute the sender of this :class:`.SubredditMessage`.
 
-        For example, to unmute the sender of the first SubredditMessage in the
+        For example, to unmute the sender of the first :class:`.SubredditMessage` in the
         authenticated users' inbox:
 
         .. code-block:: python

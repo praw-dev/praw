@@ -21,7 +21,7 @@ class IntegrationTest:
         self.setup_betamax()
 
     def setup_betamax(self):
-        """Configure betamax instance based off of the reddit instance."""
+        """Configure betamax instance based off of the Reddit instance."""
         http = self.reddit._core._requestor._http
         self.recorder = Betamax(http)
 

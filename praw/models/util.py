@@ -13,12 +13,12 @@ class BoundedSet:
     """
 
     def __init__(self, max_items: int):
-        """Construct an instance of the BoundedSet."""
+        """Initialize a :class:`.BoundedSet` instance."""
         self.max_items = max_items
         self._set = OrderedDict()
 
     def __contains__(self, item: Any) -> bool:
-        """Test if the BoundedSet contains item."""
+        """Test if the :class:`.BoundedSet` contains item."""
         self._access(item)
         return item in self._set
 
@@ -38,7 +38,7 @@ class ExponentialCounter:
     """A class to provide an exponential counter with jitter."""
 
     def __init__(self, max_counter: int):
-        """Initialize an instance of ExponentialCounter.
+        """Initialize an :class:`.ExponentialCounter` instance.
 
         :param max_counter: The maximum base value.
 
@@ -96,20 +96,20 @@ def stream_generator(
 ) -> Generator[Any, None, None]:
     """Yield new items from ListingGenerators and ``None`` when paused.
 
-    :param function: A callable that returns a ListingGenerator, e.g.
-        ``subreddit.comments`` or ``subreddit.new``.
+    :param function: A callable that returns a :class:`.ListingGenerator`, e.g.,
+        :meth:`.Subreddit.comments` or :meth:`.Subreddit.new`.
     :param pause_after: An integer representing the number of requests that result in no
         new items before this function yields ``None``, effectively introducing a pause
         into the stream. A negative value yields ``None`` after items from a single
         response have been yielded, regardless of number of new items obtained in that
         response. A value of ``0`` yields ``None`` after every response resulting in no
-        new items, and a value of ``None`` never introduces a pause (default: None).
-    :param skip_existing: When True does not yield any results from the first request
-        thereby skipping any items that existed in the stream prior to starting the
-        stream (default: False).
-    :param attribute_name: The field to use as an id (default: "fullname").
-    :param exclude_before: When True does not pass ``params`` to ``functions`` (default:
-        False).
+        new items, and a value of ``None`` never introduces a pause (default: ``None``).
+    :param skip_existing: When ``True`` does not yield any results from the first
+        request thereby skipping any items that existed in the stream prior to starting
+        the stream (default: ``False``).
+    :param attribute_name: The field to use as an ID (default: ``"fullname"``).
+    :param exclude_before: When ``True`` does not pass ``params`` to ``functions``
+        (default: ``False``).
 
     Additional keyword arguments will be passed to ``function``.
 
@@ -117,7 +117,7 @@ def stream_generator(
 
         This function internally uses an exponential delay with jitter between
         subsequent responses that contain no new results, up to a maximum delay of just
-        over a 16 seconds. In practice that means that the time before pause for
+        over 16 seconds. In practice, that means that the time before pause for
         ``pause_after=N+1`` is approximately twice the time before pause for
         ``pause_after=N``.
 
@@ -157,9 +157,9 @@ def stream_generator(
             print(comment)
 
     To bypass the internal exponential backoff, try the following. This approach is
-    useful if you are monitoring a subreddit with infrequent activity, and you want the
-    to consistently learn about new items from the stream as soon as possible, rather
-    than up to a delay of just over sixteen seconds.
+    useful if you are monitoring a subreddit with infrequent activity, and you want to
+    consistently learn about new items from the stream as soon as possible, rather than
+    up to a delay of just over sixteen seconds.
 
     .. code-block:: python
 
