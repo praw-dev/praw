@@ -26,6 +26,7 @@ API_PATH = {
     "collection_create":       "api/v1/collections/create_collection",
     "collection_delete":       "api/v1/collections/delete_collection",
     "collection_desc":         "api/v1/collections/update_collection_description",
+    "collection_layout":       "api/v1/collections/update_collection_display_layout",
     "collection_follow":       "api/v1/collections/follow_collection",
     "collection_remove_post":  "api/v1/collections/remove_post_in_collection",
     "collection_reorder":      "api/v1/collections/reorder_collection",

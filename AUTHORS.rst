@@ -77,4 +77,5 @@ Source Contributors
 - Yash Chhabria `@Cyatos <https://github.com/Cyatos>`_
 - Justin Krejcha <justin@justinkrejcha.com> `@jkrejcha <https://github.com/jkrejcha>`_
 - Dio Brando `@isFakeAccount <https://github.com/isFakeAccount>`_
+- Josh Kim `@jsk56143 <https://github.com/jsk56143>`_
 - Add "Name <email (optional)> and github profile link" above this line.
