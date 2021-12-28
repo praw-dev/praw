@@ -794,7 +794,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :param syntax: Can be one of: ``"cloudsearch"``, ``"lucene"``, or ``"plain"``
             (default: ``"lucene"``).
         :param time_filter: Can be one of: ``"all"``, ``"day"``, ``"hour"``,
-            ``"month"``, ``"week"``, or ``"year"`` (default: "all").
+            ``"month"``, ``"week"``, or ``"year"`` (default: ``"all"``).
 
         For more information on building a search query see:
         https://www.reddit.com/wiki/search
@@ -3419,7 +3419,7 @@ class SubredditStream:
             While PRAW tries to catch all new comments, some high-volume streams,
             especially the r/all stream, may drop some comments.
 
-        For example, to retrieve all new comments made to the ``iama`` subreddit, try:
+        For example, to retrieve all new comments made to r/test, try:
 
         .. code-block:: python
 
@@ -3727,7 +3727,7 @@ class SubredditStylesheet:
         """Upload an image for the :class:`.Subreddit` 's (redesign) additional image.
 
         :param image_path: A path to a jpeg or png image.
-        :param align: Either ``left``, ``centered``, or ``right``. (default:
+        :param align: Either ``"left"``, ``"centered"``, or ``"right"``. (default:
             ``"left"``).
 
         :raises: ``prawcore.TooLarge`` if the overall request body is too large.
@@ -3918,7 +3918,7 @@ class SubredditWiki:
         :param reason: The reason for the creation.
         :param other_settings: Additional keyword arguments to pass.
 
-        To create the wiki page ``praw_test`` in r/test try:
+        To create the wiki page ``"praw_test"`` in r/test try:
 
         .. code-block:: python
 

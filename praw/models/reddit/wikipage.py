@@ -14,7 +14,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class WikiPageModeration:
     """Provides a set of moderation functions for a :class:`.WikiPage`.
 
-    For example, to add ``spez`` as an editor on the wikipage ``praw_test`` try:
+    For example, to add u/spez as an editor on the wikipage ``"praw_test"`` try:
 
     .. code-block:: python
 
@@ -93,7 +93,7 @@ class WikiPageModeration:
                 from prawcore.exceptions import Forbidden
 
                 try:
-                    reddit.subreddit("test").wiki["config/stylesheet"].revision("[ID]").mod.revert()
+                    reddit.subreddit("test").wiki["config/stylesheet"].revision("1234abc").mod.revert()
                 except Forbidden as exception:
                     try:
                         exception.response.json()
@@ -135,7 +135,7 @@ class WikiPageModeration:
 
         :returns: The updated WikiPage settings.
 
-        To set the wikipage ``praw_test`` in r/test to mod only and disable it from
+        To set the wikipage ``"praw_test"`` in r/test to mod only and disable it from
         showing in the page list, try:
 
         .. code-block:: python
@@ -195,7 +195,7 @@ class WikiPage(RedditBase):
     def mod(self) -> WikiPageModeration:
         """Provide an instance of :class:`.WikiPageModeration`.
 
-        For example, to add ``spez`` as an editor on the wikipage ``praw_test`` try:
+        For example, to add u/spez as an editor on the wikipage ``"praw_test"`` try:
 
         .. code-block:: python
 

@@ -64,11 +64,11 @@ class Emoji(RedditBase):
     def delete(self):
         """Delete an emoji from this subreddit by :class:`.Emoji`.
 
-        To delete ``"test"`` as an emoji on the subreddit ``"praw_test"`` try:
+        To delete ``"emoji"`` as an emoji on r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("praw_test").emoji["test"].delete()
+            reddit.subreddit("test").emoji["emoji"].delete()
 
         """
         url = API_PATH["emoji_delete"].format(
@@ -97,11 +97,11 @@ class Emoji(RedditBase):
             passed, a network request is issued. To avoid that network request,
             explicitly provide all values.
 
-        To restrict the emoji ``test`` in subreddit ``wowemoji`` to mod use only, try:
+        To restrict the emoji ``"emoji"`` in r/test to mod use only, try:
 
         .. code-block:: python
 
-            reddit.subreddit("wowemoji").emoji["test"].update(mod_flair_only=True)
+            reddit.subreddit("test").emoji["emoji"].update(mod_flair_only=True)
 
         """
         locals_reference = locals()
@@ -198,11 +198,11 @@ class SubredditEmoji:
 
         :returns: The :class:`.Emoji` added.
 
-        To add ``test`` to the subreddit ``praw_test`` try:
+        To add ``"emoji"`` to r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("praw_test").emoji.add("test", "test.png")
+            reddit.subreddit("test").emoji.add("emoji", "emoji.png")
 
         """
         data = {
