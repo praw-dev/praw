@@ -14,7 +14,7 @@ class ListingGenerator(PRAWBase, Iterator):
 
     .. warning::
 
-        This class should not be directly utilized. Instead you will find a number of
+        This class should not be directly utilized. Instead, you will find a number of
         methods that return instances of the class here_.
 
     .. _here: https://praw.readthedocs.io/en/latest/search.html?q=ListingGenerator

@@ -83,7 +83,7 @@ The environment variables are (listed in bash export format):
     export prawtest_client_id=myclientid
     export prawtest_client_secret=myclientsecret
     export prawtest_password=mypassword
-    export prawtest_test_subreddit=reddit_api_test
+    export prawtest_test_subreddit=test
     export prawtest_username=myusername
     export prawtest_user_agent=praw_pytest
 

@@ -33,8 +33,7 @@ class WikiPageModeration:
     def add(self, redditor: "praw.models.Redditor"):
         """Add an editor to this :class:`.WikiPage`.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
-            instance.
+        :param redditor: A redditor name or :class:`.Redditor` instance.
 
         To add ``"spez"`` as an editor on the wikipage ``"praw_test"`` try:
 
@@ -52,8 +51,7 @@ class WikiPageModeration:
     def remove(self, redditor: "praw.models.Redditor"):
         """Remove an editor from this :class:`.WikiPage`.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
-            instance.
+        :param redditor: A redditor name or :class:`.Redditor` instance.
 
         To remove ``"spez"`` as an editor on the wikipage ``"praw_test"`` try:
 

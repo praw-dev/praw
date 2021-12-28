@@ -139,7 +139,7 @@ class SubredditEmoji:
 
         .. code-block:: python
 
-            emoji = reddit.subreddit("praw_test").emoji["test"]
+            emoji = reddit.subreddit("test").emoji["emoji"]
             print(emoji)
 
         """
@@ -161,7 +161,7 @@ class SubredditEmoji:
 
         .. code-block:: python
 
-            for emoji in reddit.subreddit("praw_test").emoji:
+            for emoji in reddit.subreddit("test").emoji:
                 print(emoji)
 
         """

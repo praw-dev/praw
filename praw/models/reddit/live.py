@@ -48,7 +48,7 @@ class LiveContributorRelationship:
 
         .. note::
 
-            This class should not be initialized directly. Instead obtain an instance
+            This class should not be initialized directly. Instead, obtain an instance
             via: :meth:`.LiveThread.contributor`.
 
         """
@@ -75,8 +75,7 @@ class LiveContributorRelationship:
     ):
         """Invite a redditor to be a contributor of the live thread.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
-            instance.
+        :param redditor: A redditor name or :class:`.Redditor` instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant. An empty list
             ``[]`` indicates no permissions, and when not provided (``None``), indicates
@@ -182,8 +181,7 @@ class LiveContributorRelationship:
     ):
         """Update the contributor permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
-            instance.
+        :param redditor: A redditor name or :class:`.Redditor` instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant (other
             permissions are removed). An empty list ``[]`` indicates no permissions, and
@@ -225,8 +223,7 @@ class LiveContributorRelationship:
     ):
         """Update the contributor invite permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
-            instance.
+        :param redditor: A redditor name or :class:`.Redditor` instance.
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant (other
             permissions are removed). An empty list ``[]`` indicates no permissions, and

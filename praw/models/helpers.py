@@ -240,8 +240,8 @@ class MultiredditHelper(PRAWBase):
     ) -> "praw.models.Multireddit":
         """Return a lazy instance of :class:`.Multireddit`.
 
-        :param redditor: A redditor name (e.g., ``"spez"``) or :class:`.Redditor`
-            instance who owns the multireddit.
+        :param redditor: A redditor name or :class:`.Redditor` instance who owns the
+            multireddit.
         :param name: The name of the multireddit.
 
         """

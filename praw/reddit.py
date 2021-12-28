@@ -366,7 +366,7 @@ class Reddit:
 
         .. code-block:: python
 
-            reddit.subreddit("redditdev")
+            reddit.subreddit("test")
 
         Multiple subreddits can be combined and filtered views of r/all can also be used
         just like a subreddit:

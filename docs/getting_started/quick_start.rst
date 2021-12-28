@@ -97,7 +97,7 @@ With a read-only instance, you can do something like obtaining 10 "hot" submissi
 
     # continued from code above
 
-    for submission in reddit.subreddit("learnpython").hot(limit=10):
+    for submission in reddit.subreddit("test").hot(limit=10):
         print(submission.title)
 
     # Output: 10 submissions

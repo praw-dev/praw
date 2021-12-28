@@ -508,7 +508,7 @@ class SubredditCollections(PRAWBase):
         """Return the :class:`.Collection` with the specified ID.
 
         :param collection_id: The ID of a :class:`.Collection` (default: ``None``).
-        :param permalink: The permalink of a Collection (default: ``None``).
+        :param permalink: The permalink of a collection (default: ``None``).
 
         :returns: The specified :class:`.Collection`.
 

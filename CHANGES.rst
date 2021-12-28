@@ -309,7 +309,7 @@ Unreleased
 
 **Changed**
 
-- ``prawcore.BadRequest`` should no longer be raised. Instead a more useful
+- ``prawcore.BadRequest`` should no longer be raised. Instead, a more useful
   :class:`.RedditAPIException` instance will be raised.
 - Set the default comment sort to ``confidence`` instead of ``best`` because it turns
   out ``best`` isn't actually the correct value for the parameter.
@@ -783,7 +783,7 @@ as described below:
 **Deprecated**
 
 - ``cloudsearch`` will no longer be the default syntax for :meth:`.Subreddit.search` in
-  PRAW 5. Instead ``lucene`` will be the default syntax so that PRAW's default is
+  PRAW 5. Instead, ``lucene`` will be the default syntax so that PRAW's default is
   aligned with Reddit's default.
 
 **Fixed**
@@ -821,7 +821,7 @@ as described below:
   ``prawcore.TooLarge`` instead of an :py:class:`AssertionError`.
 - Uploading an invalid image raises ``APIException``.
 - :class:`.Redditor` instances obtained via :attr:`~.Subreddit.moderator` (e.g.,
-  ``reddit.subreddit("subreddit").moderator()``) will contain attributes with the
+  ``reddit.subreddit("test").moderator()``) will contain attributes with the
   relationship metadata (e.g., ``mod_permissions``).
 - :class:`.Message` instances retrieved from the inbox now have attributes ``author``,
   ``dest`` ``replies`` and ``subreddit`` properly converted to their appropriate PRAW
