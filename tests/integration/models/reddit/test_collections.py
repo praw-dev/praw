@@ -64,6 +64,7 @@ class TestCollection(IntegrationTest):
 
 class TestCollectionModeration(IntegrationTest):
     NONEMPTY_REAL_UUID = "847e4548-a3b5-4ad7-afb4-edbfc2ed0a6b"
+    UPDATE_LAYOUT_UUID = "accd53cf-6f76-49fd-8ca5-5ad2036b4693"
 
     @property
     def subreddit(self):
@@ -100,7 +101,9 @@ class TestCollectionModeration(IntegrationTest):
     def test_delete(self, _):
         self.reddit.read_only = False
         with self.use_cassette():
-            collection = self.subreddit.collections.mod.create("Title", "")
+            collection = self.subreddit.collections.mod.create(
+                "Title", "Description", "GALLERY"
+            )
             collection.mod.delete()
 
     @mock.patch("time.sleep", return_value=None)
@@ -141,7 +144,7 @@ class TestCollectionModeration(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_update_display_layout__empty_string(self, _):
         self.reddit.read_only = False
-        uuid = "accd53cf-6f76-49fd-8ca5-5ad2036b4693"
+        uuid = self.UPDATE_LAYOUT_UUID
         empty_string = ""
         with self.use_cassette():
             collection = self.subreddit.collections(uuid)
@@ -152,7 +155,7 @@ class TestCollectionModeration(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_update_display_layout__gallery(self, _):
         self.reddit.read_only = False
-        uuid = "accd53cf-6f76-49fd-8ca5-5ad2036b4693"
+        uuid = self.UPDATE_LAYOUT_UUID
         gallery_layout = "GALLERY"
         with self.use_cassette():
             collection = self.subreddit.collections(uuid)
@@ -162,29 +165,27 @@ class TestCollectionModeration(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_update_display_layout__invalid_layout(self, _):
         self.reddit.read_only = False
-        uuid = "accd53cf-6f76-49fd-8ca5-5ad2036b4693"
+        uuid = self.UPDATE_LAYOUT_UUID
         invalid_layout = "colossal atom cake"
         with self.use_cassette():
             collection = self.subreddit.collections(uuid)
             with pytest.raises(RedditAPIException):
                 collection.mod.update_display_layout(invalid_layout)
-            assert collection.display_layout is None
 
     @mock.patch("time.sleep", return_value=None)
     def test_update_display_layout__lowercase(self, _):
         self.reddit.read_only = False
-        uuid = "accd53cf-6f76-49fd-8ca5-5ad2036b4693"
+        uuid = self.UPDATE_LAYOUT_UUID
         lowercase_gallery_layout = "gallery"
         with self.use_cassette():
             collection = self.subreddit.collections(uuid)
             with pytest.raises(RedditAPIException):
                 collection.mod.update_display_layout(lowercase_gallery_layout)
-            assert collection.display_layout is None
 
     @mock.patch("time.sleep", return_value=None)
     def test_update_display_layout__none(self, _):
         self.reddit.read_only = False
-        uuid = "accd53cf-6f76-49fd-8ca5-5ad2036b4693"
+        uuid = self.UPDATE_LAYOUT_UUID
         with self.use_cassette():
             collection = self.subreddit.collections(uuid)
             collection.mod.update_display_layout(None)
@@ -193,7 +194,7 @@ class TestCollectionModeration(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_update_display_layout__timeline(self, _):
         self.reddit.read_only = False
-        uuid = "accd53cf-6f76-49fd-8ca5-5ad2036b4693"
+        uuid = self.UPDATE_LAYOUT_UUID
         timeline_layout = "TIMELINE"
         with self.use_cassette():
             collection = self.subreddit.collections(uuid)
@@ -251,4 +252,84 @@ class TestSubredditCollectionsModeration(IntegrationTest):
             collection = self.subreddit.collections.mod.create(title, description)
             assert collection.title == title
             assert collection.description == description
+            assert len(collection) == 0
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_create__empty_layout(self, _):
+        title = "The title!"
+        description = "The description."
+        layout = ""
+        self.reddit.read_only = False
+        with self.use_cassette():
+            collection = self.subreddit.collections.mod.create(
+                title, description, layout
+            )
+            assert collection.title == title
+            assert collection.description == description
+            assert collection.display_layout is None
+            assert len(collection) == 0
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_create__gallery_layout(self, _):
+        title = "The title!"
+        description = "The description."
+        layout = "GALLERY"
+        self.reddit.read_only = False
+        with self.use_cassette():
+            collection = self.subreddit.collections.mod.create(
+                title, description, layout
+            )
+            assert collection.title == title
+            assert collection.description == description
+            assert collection.display_layout == layout
+            assert len(collection) == 0
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_create__invalid_layout(self, _):
+        title = "The title!"
+        description = "The description."
+        layout = "milk before cereal"
+        self.reddit.read_only = False
+        with self.use_cassette():
+            with pytest.raises(RedditAPIException):
+                self.subreddit.collections.mod.create(title, description, layout)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_create__lowercase_layout(self, _):
+        title = "The title!"
+        description = "The description."
+        layout = "gallery"
+        self.reddit.read_only = False
+        with self.use_cassette():
+            with pytest.raises(RedditAPIException):
+                self.subreddit.collections.mod.create(title, description, layout)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_create__none_layout(self, _):
+        title = "The title!"
+        description = "The description."
+        layout = None
+        self.reddit.read_only = False
+        with self.use_cassette():
+            collection = self.subreddit.collections.mod.create(
+                title, description, layout
+            )
+            assert collection.title == title
+            assert collection.description == description
+            assert collection.display_layout is None
+            assert len(collection) == 0
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_create__timeline_layout(self, _):
+        title = "The title!"
+        description = "The description."
+        layout = "TIMELINE"
+        self.reddit.read_only = False
+        with self.use_cassette():
+            collection = self.subreddit.collections.mod.create(
+                title, description, layout
+            )
+            assert collection.title == title
+            assert collection.description == description
+            assert collection.display_layout == layout
             assert len(collection) == 0
