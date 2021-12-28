@@ -176,7 +176,7 @@ class Inbox(PRAWBase):
         .. code-block:: python
 
             for mention in reddit.inbox.mentions(limit=25):
-                print(f"{mention.author}\n{mention.body}\n")
+                print(f"{mention.author}\\n{mention.body}\\n")
 
         """
         return ListingGenerator(self._reddit, API_PATH["mentions"], **generator_kwargs)
