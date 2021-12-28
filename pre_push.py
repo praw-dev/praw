@@ -84,7 +84,7 @@ def main():
         "--all",
         action="store_true",
         default=False,
-        help="Run all of the tests (static and unit). Overrides the unstatic argument.",
+        help="Run all the tests (static and unit). Overrides the unstatic argument.",
     )
     args = parser.parse_args()
     success = True

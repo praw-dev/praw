@@ -104,7 +104,7 @@ class SubredditRules:
 
     .. code-block:: python
 
-        for rule in reddit.subreddit("AskReddit").rules:
+        for rule in reddit.subreddit("test").rules:
             print(rule)
 
     Moderators can also add rules to the subreddit. For example, to make a rule called
@@ -180,7 +180,7 @@ class SubredditRules:
         .. note::
 
             Rules fetched using a specific rule name are lazily loaded, so you might
-            have to access an attribute to get all of the expected attributes.
+            have to access an attribute to get all the expected attributes.
 
         This method is to be used to fetch a specific rule, like so:
 
@@ -207,7 +207,7 @@ class SubredditRules:
 
         .. code-block:: python
 
-            rule = reddit.subreddit("AskReddit").rules[1]
+            rule = reddit.subreddit("test").rules[1]
 
         """
         if not isinstance(short_name, str):
@@ -226,7 +226,7 @@ class SubredditRules:
     def __iter__(self) -> Iterator["praw.models.Rule"]:
         """Iterate through the rules of the subreddit.
 
-        :returns: An iterator containing all of the rules of a subreddit.
+        :returns: An iterator containing all the rules of a subreddit.
 
         This method is used to discover all rules for a subreddit.
 

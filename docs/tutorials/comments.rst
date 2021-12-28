@@ -52,7 +52,7 @@ With a submission object we can then interact with its :class:`.CommentForest` t
 the submission's :attr:`.Submission.comments` attribute. A :class:`.CommentForest` is a
 list of top-level comments each of which contains a :class:`.CommentForest` of replies.
 
-If we wanted to output only the ``body`` of the top level comments in the thread we
+If we wanted to output only the ``body`` of the top-level comments in the thread we
 could do:
 
 .. code-block:: python

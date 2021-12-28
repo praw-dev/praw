@@ -56,7 +56,7 @@ class UserSubreddit(Subreddit):
 
         .. note::
 
-            This class should not be initialized directly. Instead obtain an instance
+            This class should not be initialized directly. Instead, obtain an instance
             via: ``reddit.user.me().subreddit`` or
             ``reddit.redditor("redditor_name").subreddit``.
 
@@ -119,7 +119,7 @@ class UserSubreddit(Subreddit):
 class UserSubredditModeration(SubredditModeration):
     """Provides a set of moderation functions to a :class:`.UserSubreddit`.
 
-    For example, to accept a moderation invite from r/test:
+    For example, to accept a moderation invite from the user subreddit of u/spez:
 
     .. code-block:: python
 
@@ -162,14 +162,14 @@ class UserSubredditModeration(SubredditModeration):
         :param header_hover_text: The text seen when hovering over the snoo.
         :param hide_ads: Don't show ads within this subreddit. Only applies to
             Premium-user only subreddits.
-        :param key_color: A 6-digit rgb hex color (e.g. ``"#AABBCC"``), used as a
+        :param key_color: A 6-digit rgb hex color (e.g., ``"#AABBCC"``), used as a
             thematic color for your subreddit on mobile.
         :param lang: A valid IETF language tag (underscore separated).
         :param link_type: The types of submissions users can make. One of ``"any"``,
             ``"link"``, or ``"self"``.
         :param original_content_tag_enabled: Enables the use of the ``original content``
             label for submissions.
-        :param over_18: Viewers must be over 18 years old (i.e. NSFW).
+        :param over_18: Viewers must be over 18 years old (i.e., NSFW).
         :param public_description: Public description blurb. Appears in search results
             and on the landing page for private subreddits.
         :param public_traffic: Make the traffic stats page public.

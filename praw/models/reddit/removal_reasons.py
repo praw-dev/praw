@@ -146,7 +146,7 @@ class SubredditRemovalReasons:
         .. note::
 
             Removal reasons fetched using a specific rule name are lazily loaded, so you
-            might have to access an attribute to get all of the expected attributes.
+            might have to access an attribute to get all the expected attributes.
 
         This method is to be used to fetch a specific removal reason, like so:
 

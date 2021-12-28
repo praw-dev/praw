@@ -51,7 +51,7 @@ iterator.
             print(subexception.error_type)
 
 Alternatively, the exceptions are provided to the exception constructor, so printing the
-exception directly will also allow you to see all of the exceptions.
+exception directly will also allow you to see all the exceptions.
 
 .. code-block:: python
 

@@ -92,7 +92,7 @@ class Reddit:
 
     @property
     def read_only(self) -> bool:
-        """Return ``True`` when using the ReadOnlyAuthorizer."""
+        """Return ``True`` when using the ``ReadOnlyAuthorizer``."""
         return self._core == self._read_only_core
 
     @read_only.setter
@@ -366,7 +366,7 @@ class Reddit:
 
         .. code-block:: python
 
-            reddit.subreddit("redditdev")
+            reddit.subreddit("test")
 
         Multiple subreddits can be combined and filtered views of r/all can also be used
         just like a subreddit:
@@ -913,7 +913,7 @@ class Reddit:
     ) -> "praw.models.Submission":
         """Return a lazy instance of :class:`.Submission`.
 
-        :param id: A Reddit base36 submission ID, e.g., ``2gmzqe``.
+        :param id: A Reddit base36 submission ID, e.g., ``"2gmzqe"``.
         :param url: A URL supported by :meth:`.Submission.id_from_url`.
 
         Either ``id`` or ``url`` can be provided, but not both.

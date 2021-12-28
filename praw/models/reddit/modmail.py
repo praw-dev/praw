@@ -157,7 +157,7 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-            reddit.subreddit("redditdev").modmail("2gmz").archive()
+            reddit.subreddit("test").modmail("2gmz").archive()
 
         """
         self._reddit.post(API_PATH["modmail_archive"].format(id=self.id))
@@ -169,7 +169,7 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-            reddit.subreddit("redditdev").modmail("2gmz").highlight()
+            reddit.subreddit("test").modmail("2gmz").highlight()
 
         """
         self._reddit.post(API_PATH["modmail_highlight"].format(id=self.id))
@@ -184,13 +184,13 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-            reddit.subreddit("redditdev").modmail("2gmz").mute()
+            reddit.subreddit("test").modmail("2gmz").mute()
 
         To mute for 7 days:
 
         .. code-block:: python
 
-            reddit.subreddit("redditdev").modmail("2gmz").mute(7)
+            reddit.subreddit("test").modmail("2gmz").mute(7)
 
         """
         if num_days != 3:  # no need to pass params if it's the default
@@ -214,7 +214,7 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-            subreddit = reddit.subreddit("redditdev")
+            subreddit = reddit.subreddit("test")
             conversation = subreddit.modmail.conversation("2gmz")
             conversation.read(other_conversations=conversation.user.recent_convos)
 
@@ -237,7 +237,7 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-            conversation = reddit.subreddit("redditdev").modmail("2gmz")
+            conversation = reddit.subreddit("test").modmail("2gmz")
             conversation.reply("Message body", author_hidden=True)
 
         To create a private moderator note on the conversation:
@@ -266,7 +266,7 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-            reddit.subreddit("redditdev").modmail("2gmz").unarchive()
+            reddit.subreddit("test").modmail("2gmz").unarchive()
 
         """
         self._reddit.post(API_PATH["modmail_unarchive"].format(id=self.id))
@@ -278,7 +278,7 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-            reddit.subreddit("redditdev").modmail("2gmz").unhighlight()
+            reddit.subreddit("test").modmail("2gmz").unhighlight()
 
         """
         self._reddit.delete(API_PATH["modmail_highlight"].format(id=self.id))
@@ -290,7 +290,7 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-            reddit.subreddit("redditdev").modmail("2gmz").unmute()
+            reddit.subreddit("test").modmail("2gmz").unmute()
 
         """
         self._reddit.request("POST", API_PATH["modmail_unmute"].format(id=self.id))
@@ -308,7 +308,7 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-            subreddit = reddit.subreddit("redditdev")
+            subreddit = reddit.subreddit("test")
             conversation = subreddit.modmail.conversation("2gmz")
             conversation.unread(other_conversations=conversation.user.recent_convos)
 
