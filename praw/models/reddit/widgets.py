@@ -2,7 +2,7 @@
 
 import os.path
 from json import JSONEncoder, dumps
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
@@ -11,6 +11,21 @@ from ..list.base import BaseList
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw
+
+WidgetType = Union[
+    "praw.models.ButtonWidget",
+    "praw.models.Calendar",
+    "praw.models.CommunityList",
+    "praw.models.CustomWidget",
+    "praw.models.IDCard",
+    "praw.models.ImageWidget",
+    "praw.models.Menu",
+    "praw.models.ModeratorsWidget",
+    "praw.models.PostFlairWidget",
+    "praw.models.RulesWidget",
+    "praw.models.TextArea",
+    "praw.models.Widget",
+]
 
 
 class Button(PRAWBase):
@@ -235,7 +250,7 @@ class SubredditWidgets(PRAWBase):
 
     For more information, see :class:`.WidgetModeration`.
 
-    **Currently available Widgets**:
+    **Currently available widgets**:
 
     - :class:`.ButtonWidget`
     - :class:`.Calendar`
@@ -252,12 +267,12 @@ class SubredditWidgets(PRAWBase):
     """
 
     @cachedproperty
-    def id_card(self):
+    def id_card(self) -> "praw.models.IDCard":
         """Get this :class:`.Subreddit`'s :class:`.IDCard` widget."""
         return self.items[self.layout["idCardWidget"]]
 
     @cachedproperty
-    def items(self):
+    def items(self) -> Dict[str, "praw.models.Widget"]:
         """Get this :class:`.Subreddit`'s widgets as a dict from ID to widget."""
         items = {}
         for item_name, data in self._raw_items.items():
@@ -279,20 +294,20 @@ class SubredditWidgets(PRAWBase):
         return SubredditWidgetsModeration(self.subreddit, self._reddit)
 
     @cachedproperty
-    def moderators_widget(self):
+    def moderators_widget(self) -> "praw.models.ModeratorsWidget":
         """Get this :class:`.Subreddit`'s :class:`.ModeratorsWidget`."""
         return self.items[self.layout["moderatorWidget"]]
 
     @cachedproperty
-    def sidebar(self):
-        """Get a list of Widgets that make up the sidebar."""
+    def sidebar(self) -> List["praw.models.Widget"]:
+        r"""Get a list of :class:`.Widget`\ s that make up the sidebar."""
         return [
             self.items[widget_name] for widget_name in self.layout["sidebar"]["order"]
         ]
 
     @cachedproperty
-    def topbar(self):
-        """Get a list of Widgets that make up the top bar."""
+    def topbar(self) -> List["praw.models.Menu"]:
+        r"""Get a list of :class:`.Widget`\ s that make up the top bar."""
         return [
             self.items[widget_name] for widget_name in self.layout["topbar"]["order"]
         ]
@@ -313,16 +328,16 @@ class SubredditWidgets(PRAWBase):
         """
         self._fetch()
 
-    def __getattr__(self, attr):
+    def __getattr__(self, attribute: str) -> Any:
         """Return the value of `attr`."""
-        if not attr.startswith("_") and not self._fetched:
+        if not attribute.startswith("_") and not self._fetched:
             self._fetch()
-            return getattr(self, attr)
+            return getattr(self, attribute)
         raise AttributeError(
-            f"{self.__class__.__name__!r} object has no attribute {attr!r}"
+            f"{self.__class__.__name__!r} object has no attribute {attribute!r}"
         )
 
-    def __init__(self, subreddit):
+    def __init__(self, subreddit: "praw.models.Subreddit"):
         """Initialize a :class:`.SubredditWidgets` instance.
 
         :param subreddit: The :class:`.Subreddit` the widgets belong to.
@@ -381,12 +396,12 @@ class SubredditWidgetsModeration:
 
     """
 
-    def __init__(self, subreddit, reddit):
+    def __init__(self, subreddit: "praw.models.Subreddit", reddit: "praw.Reddit"):
         """Initialize a :class:`.SubredditWidgetsModeration` instance."""
         self._subreddit = subreddit
         self._reddit = reddit
 
-    def _create_widget(self, payload):
+    def _create_widget(self, payload: Dict[str, Any]) -> WidgetType:
         path = API_PATH["widget_create"].format(subreddit=self._subreddit)
         widget = self._reddit.post(
             path, data={"json": dumps(payload, cls=WidgetEncoder)}
@@ -395,8 +410,15 @@ class SubredditWidgetsModeration:
         return widget
 
     def add_button_widget(
-        self, short_name, description, buttons, styles, **other_settings
-    ):
+        self,
+        short_name: str,
+        description: str,
+        buttons: List[
+            Dict[str, Union[Dict[str, str], str, int, Dict[str, Union[str, int]]]]
+        ],
+        styles: Dict[str, str],
+        **other_settings,
+    ) -> "praw.models.ButtonWidget":
         r"""Add and return a :class:`.ButtonWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
@@ -472,6 +494,8 @@ class SubredditWidgetsModeration:
             values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
             "headerColor": "#3333EE"}``.
 
+        :returns: The created :class:`.ButtonWidget`.
+
         .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
 
         Example usage:
@@ -524,13 +548,13 @@ class SubredditWidgetsModeration:
 
     def add_calendar(
         self,
-        short_name,
-        google_calendar_id,
-        requires_sync,
-        configuration,
-        styles,
+        short_name: str,
+        google_calendar_id: str,
+        requires_sync: bool,
+        configuration: Dict[str, Union[bool, int]],
+        styles: Dict[str, str],
         **other_settings,
-    ):
+    ) -> "praw.models.Calendar":
         """Add and return a :class:`.Calendar` widget.
 
         :param short_name: A name for the widget, no longer than 30 characters.
@@ -553,6 +577,8 @@ class SubredditWidgetsModeration:
         :param styles: A ``dict`` with keys ``backgroundColor`` and ``headerColor``, and
             values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
             "headerColor": "#3333EE"}``.
+
+        :returns: The created :class:`.Calendar`.
 
         .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
 
@@ -588,8 +614,13 @@ class SubredditWidgetsModeration:
         return self._create_widget(calendar)
 
     def add_community_list(
-        self, short_name, data, styles, description="", **other_settings
-    ):
+        self,
+        short_name: str,
+        data: List[Union[str, "praw.models.Subreddit"]],
+        styles: Dict[str, str],
+        description: str = "",
+        **other_settings,
+    ) -> "praw.models.CommunityList":
         """Add and return a :class:`.CommunityList` widget.
 
         :param short_name: A name for the widget, no longer than 30 characters.
@@ -599,6 +630,8 @@ class SubredditWidgetsModeration:
             and values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
             "headerColor": "#3333EE"}``.
         :param description: A ``str`` containing Markdown (default: ``""``).
+
+        :returns: The created :class:`.CommunityList`.
 
         Example usage:
 
@@ -623,8 +656,15 @@ class SubredditWidgetsModeration:
         return self._create_widget(community_list)
 
     def add_custom_widget(
-        self, short_name, text, css, height, image_data, styles, **other_settings
-    ):
+        self,
+        short_name: str,
+        text: str,
+        css: str,
+        height: int,
+        image_data: List[Dict[str, Union[str, int]]],
+        styles: Dict[str, str],
+        **other_settings,
+    ) -> "praw.models.CustomWidget":
         r"""Add and return a :class:`.CustomWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
@@ -666,6 +706,8 @@ class SubredditWidgetsModeration:
             values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
             "headerColor": "#3333EE"}``.
 
+        :returns: The created :class:`.CustomWidget`.
+
         .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
 
         Example usage:
@@ -697,7 +739,13 @@ class SubredditWidgetsModeration:
         custom_widget.update(other_settings)
         return self._create_widget(custom_widget)
 
-    def add_image_widget(self, short_name, data, styles, **other_settings):
+    def add_image_widget(
+        self,
+        short_name: str,
+        data: List[Dict[str, Union[str, int]]],
+        styles: Dict[str, str],
+        **other_settings,
+    ) -> "praw.models.ImageWidget":
         r"""Add and return an :class:`.ImageWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
@@ -727,6 +775,8 @@ class SubredditWidgetsModeration:
         :param styles: A ``dict`` with keys ``backgroundColor`` and ``headerColor``, and
             values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
             "headerColor": "#3333EE"}``.
+
+        :returns: The created :class:`.ImageWidget`.
 
         .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
 
@@ -758,7 +808,9 @@ class SubredditWidgetsModeration:
         image_widget.update(other_settings)
         return self._create_widget(image_widget)
 
-    def add_menu(self, data, **other_settings):
+    def add_menu(
+        self, data: List[Dict[str, Union[List[Dict[str, str]], str]]], **other_settings
+    ) -> "praw.models.Menu":
         r"""Add and return a :class:`.Menu` widget.
 
         :param data: A list of ``dict``\ s describing menu contents, as specified in
@@ -788,6 +840,8 @@ class SubredditWidgetsModeration:
                 ]
 
 
+        :returns: The created :class:`.Menu`.
+
         .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
 
         Example usage:
@@ -801,7 +855,7 @@ class SubredditWidgetsModeration:
                     "text": "Python packages",
                     "children": [
                         {"text": "PRAW", "url": "https://praw.readthedocs.io/"},
-                        {"text": "requests", "url": "http://python-requests.org"},
+                        {"text": "requests", "url": "https://docs.python-requests.org/"},
                     ],
                 },
                 {"text": "Reddit homepage", "url": "https://reddit.com"},
@@ -814,8 +868,13 @@ class SubredditWidgetsModeration:
         return self._create_widget(menu)
 
     def add_post_flair_widget(
-        self, short_name, display, order, styles, **other_settings
-    ):
+        self,
+        short_name: str,
+        display: str,
+        order: List[str],
+        styles: Dict[str, str],
+        **other_settings,
+    ) -> "praw.models.PostFlairWidget":
         """Add and return a :class:`.PostFlairWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
@@ -830,6 +889,8 @@ class SubredditWidgetsModeration:
         :param styles: A ``dict`` with keys ``backgroundColor`` and ``headerColor``, and
             values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
             "headerColor": "#3333EE"}``.
+
+        :returns: The created :class:`.PostFlairWidget`.
 
         Example usage:
 
@@ -854,7 +915,9 @@ class SubredditWidgetsModeration:
         post_flair.update(other_settings)
         return self._create_widget(post_flair)
 
-    def add_text_area(self, short_name, text, styles, **other_settings):
+    def add_text_area(
+        self, short_name: str, text: str, styles: Dict[str, str], **other_settings
+    ) -> "praw.models.TextArea":
         """Add and return a :class:`.TextArea` widget.
 
         :param short_name: A name for the widget, no longer than 30 characters.
@@ -862,6 +925,8 @@ class SubredditWidgetsModeration:
         :param styles: A ``dict`` with keys ``backgroundColor`` and ``headerColor``, and
             values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
             "headerColor": "#3333EE"}``.
+
+        :returns: The created :class:`.TextArea`.
 
         Example usage:
 
@@ -883,7 +948,11 @@ class SubredditWidgetsModeration:
         text_area.update(other_settings)
         return self._create_widget(text_area)
 
-    def reorder(self, new_order, section="sidebar"):
+    def reorder(
+        self,
+        new_order: List[Union[WidgetType, str]],
+        section: str = "sidebar",
+    ):
         """Reorder the widgets.
 
         :param new_order: A list of widgets. Represented as a ``list`` that contains
@@ -909,7 +978,7 @@ class SubredditWidgetsModeration:
         )
         self._reddit.patch(path, data={"json": dumps(order), "section": section})
 
-    def upload_image(self, file_path):
+    def upload_image(self, file_path: str) -> str:
         """Upload an image to Reddit and get the URL.
 
         :param file_path: The path to the local file.
@@ -969,14 +1038,14 @@ class Widget(PRAWBase):
         """
         return WidgetModeration(self, self.subreddit, self._reddit)
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """Check equality against another object."""
         if isinstance(other, Widget):
             return self.id.lower() == other.id.lower()
         return str(other).lower() == self.id.lower()
 
     # pylint: disable=invalid-name
-    def __init__(self, reddit, _data):
+    def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
         """Initialize a :class:`.Widget` instance."""
         self.subreddit = ""  # in case it isn't in _data
         self.id = ""  # in case it isn't in _data
@@ -1267,7 +1336,7 @@ class CustomWidget(Widget):
 
     """
 
-    def __init__(self, reddit, _data):
+    def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
         """Initialize a :class:`.CustomWidget` instance."""
         _data["imageData"] = [
             ImageData(reddit, data) for data in _data.pop("imageData")
@@ -1488,7 +1557,7 @@ class ModeratorsWidget(Widget, BaseList):
 
     CHILD_ATTRIBUTE = "mods"
 
-    def __init__(self, reddit, _data):
+    def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
         """Initialize a :class:`.ModeratorsWidget` instance."""
         if self.CHILD_ATTRIBUTE not in _data:
             # .mod.update() sometimes returns payload without "mods" field
@@ -1602,7 +1671,7 @@ class RulesWidget(Widget, BaseList):
 
     CHILD_ATTRIBUTE = "data"
 
-    def __init__(self, reddit, _data):
+    def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
         """Initialize a :class:`.RulesWidget` instance."""
         if self.CHILD_ATTRIBUTE not in _data:
             # .mod.update() sometimes returns payload without "data" field
@@ -1668,7 +1737,7 @@ class TextArea(Widget):
 class WidgetEncoder(JSONEncoder):
     """Class to encode widget-related objects."""
 
-    def default(self, o):  # pylint: disable=E0202
+    def default(self, o: Any) -> Any:  # pylint: disable=E0202
         """Serialize ``PRAWBase`` objects."""
         if isinstance(o, self._subreddit_class):
             return str(o)
@@ -1690,7 +1759,12 @@ class WidgetModeration:
 
     """
 
-    def __init__(self, widget, subreddit, reddit):
+    def __init__(
+        self,
+        widget: "praw.models.Widget",
+        subreddit: Union["praw.models.Subreddit", str],
+        reddit: "praw.Reddit",
+    ):
         """Initialize a :class:`.WidgetModeration` instance."""
         self.widget = widget
         self._reddit = reddit
@@ -1711,12 +1785,14 @@ class WidgetModeration:
         )
         self._reddit.delete(path)
 
-    def update(self, **kwargs):
+    def update(self, **kwargs) -> WidgetType:
         """Update the widget. Returns the updated widget.
 
         Parameters differ based on the type of widget. See `Reddit documentation
         <https://www.reddit.com/dev/api#PUT_api_widget_{widget_id}>`_ or the document of
         the particular type of widget.
+
+        :returns: The updated :class:`.Widget`.
 
         For example, update a text widget like so:
 
