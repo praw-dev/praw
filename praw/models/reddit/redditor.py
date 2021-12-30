@@ -92,7 +92,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
                 print(comment)
 
         Additionally, new submissions can be retrieved via the stream. In the following
-        example all submissions are fetched via the redditor ``spez``:
+        example all submissions are fetched via the redditor u/spez:
 
         .. code-block:: python
 
@@ -179,7 +179,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def block(self):
         """Block the :class:`.Redditor`.
 
-        For example, to block :class:`.Redditor` ``spez``:
+        For example, to block :class:`.Redditor` u/spez:
 
         .. code-block:: python
 
@@ -199,7 +199,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def distrust(self):
         """Remove the :class:`.Redditor` from your whitelist of trusted users.
 
-        For example, to remove :class:`.Redditor` ``spez`` from your whitelist:
+        For example, to remove :class:`.Redditor` u/spez from your whitelist:
 
         .. code-block:: python
 
@@ -220,7 +220,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
 
         Calling this method subsequent times will update the note.
 
-        For example, to friend :class:`.Redditor` ``spez``:
+        For example, to friend :class:`.Redditor` u/spez:
 
         .. code-block:: python
 
@@ -241,7 +241,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         :returns: A :class:`.Redditor` instance with fields ``date``, ``id``, and
             possibly ``note`` if the authenticated user has Reddit Premium.
 
-        For example, to get the friendship information of :class:`.Redditor` ``spez``:
+        For example, to get the friendship information of :class:`.Redditor` u/spez:
 
         .. code-block:: python
 
@@ -256,7 +256,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
 
         :param months: Specifies the number of months to gild up to 36 (default: ``1``).
 
-        For example, to gild :class:`.Redditor` ``spez`` for 1 month:
+        For example, to gild :class:`.Redditor` u/spez for 1 month:
 
         .. code-block:: python
 
@@ -320,7 +320,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def multireddits(self) -> List["praw.models.Multireddit"]:
         """Return a list of the redditor's public multireddits.
 
-        For example, to to get :class:`.Redditor` ``spez``'s multireddits:
+        For example, to to get :class:`.Redditor` u/spez's multireddits:
 
         .. code-block:: python
 
@@ -390,7 +390,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def unblock(self):
         """Unblock the :class:`.Redditor`.
 
-        For example, to unblock :class:`.Redditor` ``spez``:
+        For example, to unblock :class:`.Redditor` u/spez:
 
         .. code-block:: python
 
@@ -408,7 +408,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def unfriend(self):
         """Unfriend the :class:`.Redditor`.
 
-        For example, to unfriend :class:`.Redditor` ``spez``:
+        For example, to unfriend :class:`.Redditor` u/spez:
 
         .. code-block:: python
 
@@ -439,7 +439,7 @@ class RedditorStream:
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
-        For example, to retrieve all new comments made by redditor ``spez``, try:
+        For example, to retrieve all new comments made by redditor u/spez, try:
 
         .. code-block:: python
 
@@ -459,7 +459,7 @@ class RedditorStream:
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
-        For example, to retrieve all new submissions made by redditor ``spez``, try:
+        For example, to retrieve all new submissions made by redditor u/spez, try:
 
         .. code-block:: python
 
