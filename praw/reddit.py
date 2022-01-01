@@ -41,6 +41,7 @@ from .exceptions import (
     RedditAPIException,
 )
 from .objector import Objector
+from .util import _deprecate_args
 from .util.token_manager import BaseTokenManager
 
 try:
@@ -144,15 +145,22 @@ class Reddit:
     def __exit__(self, *_args):
         """Handle the context manager close."""
 
+    @_deprecate_args(
+        "site_name",
+        "config_interpolation",
+        "requestor_class",
+        "requestor_kwargs",
+        "token_manager",
+    )
     def __init__(
         self,
-        site_name: str = None,
+        site_name: Optional[str] = None,
+        *,
         config_interpolation: Optional[str] = None,
         requestor_class: Optional[Type[Requestor]] = None,
-        requestor_kwargs: Dict[str, Any] = None,
-        *,
+        requestor_kwargs: Optional[Dict[str, Any]] = None,
         token_manager: Optional[BaseTokenManager] = None,
-        **config_settings: Union[str, bool],
+        **config_settings: Optional[Union[str, bool]],
     ):  # noqa: D207, D301
         """Initialize a :class:`.Reddit` instance.
 
@@ -162,7 +170,9 @@ class Reddit:
             credentials for different applications, or communicate with other servers
             running Reddit. If ``site_name`` is ``None``, then the site name will be
             looked for in the environment variable ``praw_site``. If it is not found
-            there, the ``DEFAULT`` site will be used.
+            there, the ``DEFAULT`` site will be used (default: ``None``).
+        :param config_interpolation: Config parser interpolation type that will be
+            passed to :class:`.Config` (default: ``None``).
         :param requestor_class: A class that will be used to create a requestor. If not
             set, use ``prawcore.Requestor`` (default: ``None``).
         :param requestor_kwargs: Dictionary with additional keyword arguments used to
@@ -179,9 +189,9 @@ class Reddit:
 
         Required settings are:
 
-        - client_id
-        - client_secret (for installed applications set this value to ``None``)
-        - user_agent
+        - ``client_id``
+        - ``client_secret`` (for installed applications set this value to ``None``)
+        - ``user_agent``
 
         The ``requestor_class`` and ``requestor_kwargs`` allow for customization of the
         requestor :class:`.Reddit` will use. This allows, e.g., easily adding behavior

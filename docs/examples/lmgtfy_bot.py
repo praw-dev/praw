@@ -9,11 +9,11 @@ REPLY_TEMPLATE = "[Let me google that for you](https://lmgtfy.com/?q={})"
 
 def main():
     reddit = praw.Reddit(
-        user_agent="LMGTFY (by u/USERNAME)",
         client_id="CLIENT_ID",
         client_secret="CLIENT_SECRET",
-        username="USERNAME",
         password="PASSWORD",
+        user_agent="LMGTFY (by u/USERNAME)",
+        username="USERNAME",
     )
 
     subreddit = reddit.subreddit("AskReddit")

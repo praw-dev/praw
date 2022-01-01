@@ -134,9 +134,9 @@ Again, you may choose to provide these by passing in keyword arguments ``usernam
     reddit = praw.Reddit(
         client_id="my client id",
         client_secret="my client secret",
+        password="my password",
         user_agent="my user agent",
         username="my username",
-        password="my password",
     )
 
     print(reddit.read_only)
