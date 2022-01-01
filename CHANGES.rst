@@ -24,6 +24,11 @@ Unreleased
 
 - The ``after`` argument for :meth:`.conversations` will now have to be included in
   ``params`` keyword argument.
+- Positional keyword arguments for applicable functions and methods. Starting with PRAW
+  8, most functions and methods will no longer support positional arguments. It will
+  encourage more explicit argument passing, enable arguments to be sorted
+  alphabetically, and prevent breaking changes when adding new arguments to existing
+  methods.
 
 7.5.0 (2021/11/13)
 ------------------
