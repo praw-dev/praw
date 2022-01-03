@@ -285,7 +285,7 @@ class Collection(RedditBase):
             subreddit = collection.subreddit
 
         """
-        return next(self._reddit.info([self.subreddit_id]))
+        return next(self._reddit.info(fullnames=[self.subreddit_id]))
 
     def __init__(
         self,

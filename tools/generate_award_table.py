@@ -77,7 +77,7 @@ def get_request_params(client_id, redirect_uri, thing):
         return
 
     reddit.auth.authorize(params["code"])
-    thing = list(reddit.info([thing]))[0]
+    thing = list(reddit.info(fullnames=[thing]))[0]
     subreddit = thing.subreddit_id
     return reddit._authorized_core._authorizer.access_token, thing.fullname, subreddit
 

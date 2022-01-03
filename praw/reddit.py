@@ -605,11 +605,13 @@ class Reddit:
         """
         return self._objectify_request(method="GET", params=params, path=path)
 
+    @_deprecate_args("fullnames", "url", "subreddits")
     def info(
         self,
+        *,
         fullnames: Optional[Iterable[str]] = None,
-        url: Optional[str] = None,
         subreddits: Optional[Iterable[Union["praw.models.Subreddit", str]]] = None,
+        url: Optional[str] = None,
     ) -> Generator[
         Union["praw.models.Subreddit", "praw.models.Comment", "praw.models.Submission"],
         None,
@@ -619,9 +621,9 @@ class Reddit:
 
         :param fullnames: A list of fullnames for comments, submissions, and/or
             subreddits.
-        :param url: A url (as a string) to retrieve lists of link submissions from.
         :param subreddits: A list of subreddit names or :class:`.Subreddit` objects to
             retrieve subreddits from.
+        :param url: A url (as a string) to retrieve lists of link submissions from.
 
         :returns: A generator that yields found items in their relative order.
 

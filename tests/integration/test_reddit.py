@@ -71,7 +71,7 @@ class TestReddit(IntegrationTest):
             for base in bases:
                 items.append(f"{base}{i:02d}")
 
-        item_generator = self.reddit.info(items)
+        item_generator = self.reddit.info(fullnames=items)
         with self.use_cassette():
             results = list(item_generator)
         assert len(results) > 100
