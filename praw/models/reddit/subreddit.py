@@ -568,7 +568,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         """
         text_data = {"output_mode": "rtjson", "markdown_text": markdown_text}
-        return self._reddit.post(API_PATH["convert_rte_body"], text_data)["output"]
+        return self._reddit.post(API_PATH["convert_rte_body"], data=text_data)["output"]
 
     def _fetch_info(self):
         return "subreddit_about", {"subreddit": self}, None

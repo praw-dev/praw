@@ -24,7 +24,7 @@ class EditableMixin:
             submission.delete()
 
         """
-        self._reddit.post(API_PATH["del"], {"id": self.fullname})
+        self._reddit.post(API_PATH["del"], data={"id": self.fullname})
 
     def edit(self, body: str) -> Union["praw.models.Comment", "praw.models.Submission"]:
         """Replace the body of the object with ``body``.

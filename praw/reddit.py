@@ -779,13 +779,15 @@ class Reddit:
         """
         return self._objectify_request(data=data, json=json, method="PATCH", path=path)
 
+    @_deprecate_args("path", "data", "files", "params", "json")
     def post(
         self,
         path: str,
+        *,
         data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
         files: Optional[Dict[str, IO]] = None,
+        json: Optional[Dict[Any, Any]] = None,
         params: Optional[Union[str, Dict[str, str]]] = None,
-        json=None,
     ) -> Any:
         """Return parsed objects returned from a POST request to ``path``.
 
@@ -794,10 +796,10 @@ class Reddit:
             request (default: ``None``).
         :param files: Dictionary, filename to file (like) object mapping (default:
             ``None``).
-        :param params: The query parameters to add to the request (default: ``None``).
         :param json: JSON-serializable object to send in the body of the request with a
             Content-Type header of application/json (default: ``None``). If ``json`` is
             provided, ``data`` should not be.
+        :param params: The query parameters to add to the request (default: ``None``).
 
         """
         if json is None:

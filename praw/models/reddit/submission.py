@@ -121,8 +121,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         """
         self.thing._reddit.post(
-            API_PATH["contest_mode"],
-            data={"id": self.thing.fullname, "state": state},
+            API_PATH["contest_mode"], data={"id": self.thing.fullname, "state": state}
         )
 
     def flair(
@@ -293,8 +292,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         """
         self.thing._reddit.post(
-            API_PATH["suggested_sort"],
-            data={"id": self.thing.fullname, "sort": sort},
+            API_PATH["suggested_sort"], data={"id": self.thing.fullname, "sort": sort}
         )
 
     def unset_original_content(self):
