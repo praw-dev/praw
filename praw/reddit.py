@@ -735,11 +735,13 @@ class Reddit:
                     return sleep_seconds
         return None
 
+    @_deprecate_args("path", "data", "json", "params")
     def delete(
         self,
         path: str,
+        *,
         data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
-        json=None,
+        json: Optional[Dict[Any, Any]] = None,
         params: Optional[Union[str, Dict[str, str]]] = None,
     ) -> Any:
         """Return parsed objects returned from a DELETE request to ``path``.
