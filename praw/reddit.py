@@ -562,9 +562,11 @@ class Reddit:
         self._read_only_core = session(read_only_authorizer)
         self._prepare_common_authorizer(authenticator)
 
+    @_deprecate_args("id", "url")
     def comment(
         self,  # pylint: disable=invalid-name
         id: Optional[str] = None,  # pylint: disable=redefined-builtin
+        *,
         url: Optional[str] = None,
     ):
         """Return a lazy instance of :class:`.Comment`.
