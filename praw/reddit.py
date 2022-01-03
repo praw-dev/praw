@@ -863,8 +863,9 @@ class Reddit:
             path = redirect.path
         return models.Subreddit(self, path.split("/")[2])
 
+    @_deprecate_args("name", "fullname")
     def redditor(
-        self, name: Optional[str] = None, fullname: Optional[str] = None
+        self, name: Optional[str] = None, *, fullname: Optional[str] = None
     ) -> "praw.models.Redditor":
         """Return a lazy instance of :class:`.Redditor`.
 
