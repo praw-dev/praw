@@ -828,11 +828,13 @@ class Reddit:
                 time.sleep(seconds)
         raise last_exception
 
+    @_deprecate_args("path", "data", "json")
     def put(
         self,
         path: str,
+        *,
         data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
-        json=None,
+        json: Optional[Dict[Any, Any]] = None,
     ):
         """Return parsed objects returned from a PUT request to ``path``.
 
