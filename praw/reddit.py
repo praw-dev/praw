@@ -759,11 +759,13 @@ class Reddit:
             data=data, json=json, method="DELETE", params=params, path=path
         )
 
+    @_deprecate_args("path", "data", "json")
     def patch(
         self,
         path: str,
+        *,
         data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
-        json=None,
+        json: Optional[Dict[Any, Any]] = None,
     ) -> Any:
         """Return parsed objects returned from a PATCH request to ``path``.
 
