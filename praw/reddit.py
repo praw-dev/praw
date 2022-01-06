@@ -935,8 +935,9 @@ class Reddit:
                 [data["reason"], explanation, field]
             ) from exception
 
+    @_deprecate_args("id", "url")
     def submission(  # pylint: disable=invalid-name,redefined-builtin
-        self, id: Optional[str] = None, url: Optional[str] = None
+        self, id: Optional[str] = None, *, url: Optional[str] = None
     ) -> "praw.models.Submission":
         """Return a lazy instance of :class:`.Submission`.
 
