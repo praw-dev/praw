@@ -2,6 +2,7 @@
 from typing import Any, Dict, Iterator, Union
 from urllib.parse import urljoin
 
+from ....util import _deprecate_args
 from ...base import PRAWBase
 from ..generator import ListingGenerator
 
@@ -30,8 +31,10 @@ class BaseListingMixin(PRAWBase):
             valid_time_filters = ", ".join(BaseListingMixin.VALID_TIME_FILTERS)
             raise ValueError(f"time_filter must be one of: {valid_time_filters}")
 
+    @_deprecate_args("time_filter")
     def controversial(
         self,
+        *,
         time_filter: str = "all",
         **generator_kwargs: Union[str, int, Dict[str, str]],
     ) -> Iterator[Any]:
@@ -49,12 +52,12 @@ class BaseListingMixin(PRAWBase):
 
         .. code-block:: python
 
-            reddit.domain("imgur.com").controversial("week")
-            reddit.multireddit("samuraisam", "programming").controversial("day")
-            reddit.redditor("spez").controversial("month")
-            reddit.redditor("spez").comments.controversial("year")
-            reddit.redditor("spez").submissions.controversial("all")
-            reddit.subreddit("all").controversial("hour")
+            reddit.domain("imgur.com").controversial(time_filter="week")
+            reddit.multireddit("samuraisam", "programming").controversial(time_filter="day")
+            reddit.redditor("spez").controversial(time_filter="month")
+            reddit.redditor("spez").comments.controversial(time_filter="year")
+            reddit.redditor("spez").submissions.controversial(time_filter="all")
+            reddit.subreddit("all").controversial(time_filter="hour")
 
         """
         self._validate_time_filter(time_filter)
