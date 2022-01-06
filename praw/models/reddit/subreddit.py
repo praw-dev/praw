@@ -66,7 +66,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
     .. code-block:: python
 
-        for submission in reddit.subreddit("redditdev+learnpython").top("all"):
+        for submission in reddit.subreddit("redditdev+learnpython").top(time_filter="all"):
             print(submission)
 
     Subreddits can be filtered from combined listings as follows.
@@ -576,7 +576,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def _fetch_data(self) -> dict:
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
-        return self._reddit.request(method="GET", path=path, params=params)
+        return self._reddit.request(method="GET", params=params, path=path)
 
     def _fetch(self):
         data = self._fetch_data()
@@ -1104,7 +1104,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                 }
             )
         response = self._reddit.request(
-            method="POST", path=API_PATH["submit_gallery_post"], json=data
+            json=data, method="POST", path=API_PATH["submit_gallery_post"]
         )["json"]
         if response["errors"]:
             raise RedditAPIException(response["errors"])

@@ -109,8 +109,10 @@ class BaseListingMixin(PRAWBase):
         url = _prepare(self, generator_kwargs, "new")
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
+    @_deprecate_args("time_filter")
     def top(
         self,
+        *,
         time_filter: str = "all",
         **generator_kwargs: Union[str, int, Dict[str, str]],
     ) -> Iterator[Any]:
@@ -128,12 +130,12 @@ class BaseListingMixin(PRAWBase):
 
         .. code-block:: python
 
-            reddit.domain("imgur.com").top("week")
-            reddit.multireddit("samuraisam", "programming").top("day")
-            reddit.redditor("spez").top("month")
-            reddit.redditor("spez").comments.top("year")
-            reddit.redditor("spez").submissions.top("all")
-            reddit.subreddit("all").top("hour")
+            reddit.domain("imgur.com").top(time_filter="week")
+            reddit.multireddit("samuraisam", "programming").top(time_filter="day")
+            reddit.redditor("spez").top(time_filter="month")
+            reddit.redditor("spez").comments.top(time_filter="year")
+            reddit.redditor("spez").submissions.top(time_filter="all")
+            reddit.subreddit("all").top(time_filter="hour")
 
         """
         self._validate_time_filter(time_filter)
