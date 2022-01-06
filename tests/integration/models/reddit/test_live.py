@@ -107,19 +107,19 @@ class TestLiveContributorRelationship(IntegrationTest):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, "xyu8kmjvfrww")
         with self.use_cassette():
-            thread.contributor.invite("nmtake", [])
+            thread.contributor.invite("nmtake", permissions=[])
 
     def test_invite__limited(self):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, "xyu8kmjvfrww")
         with self.use_cassette():
-            thread.contributor.invite("nmtake", ["manage", "edit"])
+            thread.contributor.invite("nmtake", permissions=["manage", "edit"])
 
     def test_invite__none(self):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, "xyu8kmjvfrww")
         with self.use_cassette():
-            thread.contributor.invite("nmtake", None)
+            thread.contributor.invite("nmtake", permissions=None)
 
     def test_invite__redditor(self):
         self.reddit.read_only = False

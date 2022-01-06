@@ -2,6 +2,7 @@
 from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Union
 
 from ...const import API_PATH
+from ...util import _deprecate_args
 from ...util.cache import cachedproperty
 from ..list.redditor import RedditorList
 from ..listing.generator import ListingGenerator
@@ -68,9 +69,11 @@ class LiveContributorRelationship:
         url = API_PATH["live_accept_invite"].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
+    @_deprecate_args("redditor", "permissions")
     def invite(
         self,
         redditor: Union[str, "praw.models.Redditor"],
+        *,
         permissions: Optional[List[str]] = None,
     ):
         """Invite a redditor to be a contributor of the live thread.
@@ -91,7 +94,7 @@ class LiveContributorRelationship:
             redditor = reddit.redditor("spez")
 
             # "manage" and "settings" permissions
-            thread.contributor.invite(redditor, ["manage", "settings"])
+            thread.contributor.invite(redditor, permissions=["manage", "settings"])
 
         .. seealso::
 
