@@ -142,7 +142,7 @@ class ModmailConversation(RedditBase):
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
-        return self._reddit.request("GET", path, params)
+        return self._reddit.request(method="GET", params=params, path=path)
 
     def _fetch(self):
         data = self._fetch_data()
@@ -198,7 +198,9 @@ class ModmailConversation(RedditBase):
         else:
             params = {}
         self._reddit.request(
-            "POST", API_PATH["modmail_mute"].format(id=self.id), params=params
+            method="POST",
+            params=params,
+            path=API_PATH["modmail_mute"].format(id=self.id),
         )
 
     def read(
@@ -293,7 +295,9 @@ class ModmailConversation(RedditBase):
             reddit.subreddit("test").modmail("2gmz").unmute()
 
         """
-        self._reddit.request("POST", API_PATH["modmail_unmute"].format(id=self.id))
+        self._reddit.request(
+            method="POST", path=API_PATH["modmail_unmute"].format(id=self.id)
+        )
 
     def unread(
         self, other_conversations: Optional[List["ModmailConversation"]] = None

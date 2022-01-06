@@ -877,20 +877,19 @@ class Reddit:
         """
         return models.Redditor(self, name=name, fullname=fullname)
 
+    @_deprecate_args("method", "path", "params", "data", "files", "json")
     def request(
         self,
-        method: str,
-        path: str,
-        params: Optional[Union[str, Dict[str, Union[str, int]]]] = None,
+        *,
         data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
         files: Optional[Dict[str, IO]] = None,
-        json=None,
+        json: Optional[Dict[Any, Any]] = None,
+        method: str,
+        params: Optional[Union[str, Dict[str, Union[str, int]]]] = None,
+        path: str,
     ) -> Any:
         """Return the parsed JSON data returned from a request to URL.
 
-        :param method: The HTTP method (e.g., GET, POST, PUT, DELETE).
-        :param path: The path to fetch.
-        :param params: The query parameters to add to the request (default: ``None``).
         :param data: Dictionary, bytes, or file-like object to send in the body of the
             request (default: ``None``).
         :param files: Dictionary, filename to file (like) object mapping (default:
@@ -898,6 +897,9 @@ class Reddit:
         :param json: JSON-serializable object to send in the body of the request with a
             Content-Type header of application/json (default: ``None``). If ``json`` is
             provided, ``data`` should not be.
+        :param method: The HTTP method (e.g., GET, POST, PUT, DELETE).
+        :param params: The query parameters to add to the request (default: ``None``).
+        :param path: The path to fetch.
 
         """
         if self.config.check_for_async:
@@ -906,13 +908,12 @@ class Reddit:
             raise ClientException("At most one of `data` or `json` is supported.")
         try:
             return self._core.request(
-                method,
-                path,
                 data=data,
                 files=files,
-                params=params,
-                timeout=self.config.timeout,
                 json=json,
+                method=method,
+                params=params,
+                path=path,
             )
         except BadRequest as exception:
             try:

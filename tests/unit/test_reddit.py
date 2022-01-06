@@ -31,7 +31,7 @@ class TestReddit(UnitTest):
 
     @staticmethod
     async def check_async(reddit):
-        reddit.request("GET", "path")
+        reddit.request(method="GET", path="path")
 
     @staticmethod
     def patch_request(*args, **kwargs):
@@ -466,17 +466,14 @@ class TestReddit(UnitTest):
 
         reddit = Reddit(client_id="dummy", client_secret="dummy", user_agent="dummy")
         with pytest.raises(Exception) as excinfo:
-            reddit.request("POST", "/")
+            reddit.request(method="POST", path="/")
         assert str(excinfo.value) == "received 400 HTTP response"
 
     def test_request__json_and_body(self):
         reddit = Reddit(client_id="dummy", client_secret="dummy", user_agent="dummy")
         with pytest.raises(ClientException) as excinfo:
             reddit.request(
-                method="POST",
-                path="/",
-                data={"key": "value"},
-                json={"key": "value"},
+                data={"key": "value"}, json={"key": "value"}, method="POST", path="/"
             )
         assert str(excinfo.value).startswith(
             "At most one of `data` or `json` is supported."
