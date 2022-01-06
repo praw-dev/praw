@@ -2,13 +2,19 @@
 from warnings import warn
 
 from ....const import API_PATH
+from ....util import _deprecate_args
 
 
 class GildableMixin:
     """Interface for classes that can be gilded."""
 
+    @_deprecate_args("gild_type", "is_anonymous", "message")
     def award(
-        self, gild_type: str = "gid_2", is_anonymous: bool = True, message: str = None
+        self,
+        *,
+        gild_type: str = "gid_2",
+        is_anonymous: bool = True,
+        message: str = None
     ) -> dict:
         """Award the author of the item.
 
