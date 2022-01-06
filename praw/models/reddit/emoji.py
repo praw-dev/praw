@@ -182,18 +182,19 @@ class SubredditEmoji:
 
     def add(
         self,
-        name: str,
+        *,
         image_path: str,
         mod_flair_only: Optional[bool] = None,
+        name: str,
         post_flair_allowed: Optional[bool] = None,
         user_flair_allowed: Optional[bool] = None,
     ) -> Emoji:
         """Add an emoji to this subreddit.
 
-        :param name: The name of the emoji.
         :param image_path: A path to a jpeg or png image.
         :param mod_flair_only: When provided, indicate whether the emoji is restricted
             to mod use only (default: ``None``).
+        :param name: The name of the emoji.
         :param post_flair_allowed: When provided, indicate whether the emoji may appear
             in post flair (default: ``None``).
         :param user_flair_allowed: When provided, indicate whether the emoji may appear
@@ -205,7 +206,7 @@ class SubredditEmoji:
 
         .. code-block:: python
 
-            reddit.subreddit("test").emoji.add("emoji", "emoji.png")
+            reddit.subreddit("test").emoji.add(name="emoji", image_path="emoji.png")
 
         """
         data = {
