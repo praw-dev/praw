@@ -11,11 +11,11 @@ from typing import TYPE_CHECKING, Any, Dict, Generator, Iterator, List, Optional
 from urllib.parse import urljoin
 from warnings import warn
 from xml.etree.ElementTree import XML
-from requests.exceptions import HTTPError
-from prawcore.exceptions import ServerError
 
 import websocket
 from prawcore import Redirect
+from prawcore.exceptions import ServerError
+from requests.exceptions import HTTPError
 
 from ...const import API_PATH, JPEG_HEADER
 from ...exceptions import (
