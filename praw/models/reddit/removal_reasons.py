@@ -224,11 +224,12 @@ class SubredditRemovalReasons:
             for id, reason_data in response["data"].items()
         ]
 
-    def add(self, message: str, title: str) -> RemovalReason:
+    @_deprecate_args("message", "title")
+    def add(self, *, message: str, title: str) -> RemovalReason:
         """Add a removal reason to this subreddit.
 
         :param message: The message associated with the removal reason.
-        :param title: The title of the removal reason
+        :param title: The title of the removal reason.
 
         :returns: The :class:`.RemovalReason` added.
 
@@ -238,7 +239,7 @@ class SubredditRemovalReasons:
 
         .. code-block:: python
 
-            reddit.subreddit("test").mod.removal_reasons.add(message="Foobar", title="Test")
+            reddit.subreddit("test").mod.removal_reasons.add(title="Test", message="Foobar")
 
         """
         data = {"message": message, "title": title}
