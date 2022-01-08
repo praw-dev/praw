@@ -125,19 +125,21 @@ class SubmissionModeration(ThingModerationMixin):
             API_PATH["contest_mode"], data={"id": self.thing.fullname, "state": state}
         )
 
+    @_deprecate_args("text", "css_class", "flair_template_id")
     def flair(
         self,
-        text: str = "",
+        *,
         css_class: str = "",
         flair_template_id: Optional[str] = None,
+        text: str = "",
     ):
         """Set flair for the submission.
 
-        :param text: The flair text to associate with the :class:`.Submission` (default:
-            ``""``).
         :param css_class: The css class to associate with the flair html (default:
             ``""``).
         :param flair_template_id: The flair template ID to use when flairing.
+        :param text: The flair text to associate with the :class:`.Submission` (default:
+            ``""``).
 
         This method can only be used by an authenticated user who is a moderator of the
         submission's :class:`.Subreddit`.
