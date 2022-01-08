@@ -3086,9 +3086,11 @@ class ModeratorRelationship(SubredditRelationship):
         url = API_PATH["unfriend"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
 
+    @_deprecate_args("redditor", "permissions")
     def update(
         self,
         redditor: Union[str, "praw.models.Redditor"],
+        *,
         permissions: Optional[List[str]] = None,
     ):
         """Update the moderator permissions for ``redditor``.
@@ -3097,7 +3099,7 @@ class ModeratorRelationship(SubredditRelationship):
         :param permissions: When provided (not ``None``), permissions should be a list
             of strings specifying which subset of permissions to grant. An empty list
             ``[]`` indicates no permissions, and when not provided, ``None``, indicates
-            full permissions.
+            full permissions (default: ``None``).
 
         For example, to add all permissions to the moderator, try:
 
@@ -3109,7 +3111,7 @@ class ModeratorRelationship(SubredditRelationship):
 
         .. code-block:: python
 
-            subreddit.moderator.update("spez", [])
+            subreddit.moderator.update("spez", permissions=[])
 
         """
         url = API_PATH["setpermissions"].format(subreddit=self.subreddit)
