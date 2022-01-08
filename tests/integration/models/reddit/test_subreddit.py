@@ -1621,7 +1621,7 @@ class TestSubredditModmail(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             conversation = self.subreddit.modmail.create(
-                "Subject", "Body", self.redditor
+                subject="Subject", body="Body", recipient=self.redditor
             )
         assert isinstance(conversation, ModmailConversation)
 

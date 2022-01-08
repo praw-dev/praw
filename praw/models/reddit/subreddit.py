@@ -391,7 +391,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-            reddit.subreddit("test").modmail.create("test", "hello", "spez")
+            reddit.subreddit("test").modmail.create(subject="test", body="hello", recipient="spez")
 
         """
         return Modmail(self)
@@ -3169,7 +3169,7 @@ class Modmail:
 
     .. code-block:: python
 
-        reddit.subreddit("test").modmail.create("test", "hello", "spez")
+        reddit.subreddit("test").modmail.create(subject="test", body="hello", recipient="spez")
 
     """
 
@@ -3343,21 +3343,23 @@ class Modmail:
             **generator_kwargs,
         )
 
+    @_deprecate_args("subject", "body", "recipient", "author_hidden")
     def create(
         self,
-        subject: str,
+        *,
+        author_hidden: bool = False,
         body: str,
         recipient: Union[str, "praw.models.Redditor"],
-        author_hidden: bool = False,
+        subject: str,
     ) -> ModmailConversation:
         """Create a new :class:`.ModmailConversation`.
 
-        :param subject: The message subject. Cannot be empty.
+        :param author_hidden: When ``True``, author is hidden from non-moderators
+            (default: ``False``).
         :param body: The message body. Cannot be empty.
         :param recipient: The recipient; a username or an instance of
             :class:`.Redditor`.
-        :param author_hidden: When ``True``, author is hidden from non-moderators
-            (default: ``False``).
+        :param subject: The message subject. Cannot be empty.
 
         :returns: A :class:`.ModmailConversation` object for the newly created
             conversation.
@@ -3366,7 +3368,7 @@ class Modmail:
 
             subreddit = reddit.subreddit("test")
             redditor = reddit.redditor("bboe")
-            subreddit.modmail.create("Subject", "Body", redditor)
+            subreddit.modmail.create(subject="Subject", body="Body", recipient=redditor)
 
         """
         data = {
