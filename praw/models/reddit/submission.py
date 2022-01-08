@@ -7,7 +7,7 @@ from prawcore import Conflict
 
 from ...const import API_PATH
 from ...exceptions import InvalidURL
-from ...util.cache import cachedproperty
+from ...util import _deprecate_args, cachedproperty
 from ..comment_forest import CommentForest
 from ..listing.listing import Listing
 from ..listing.mixins import SubmissionListingMixin
@@ -700,15 +700,25 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         for submissions in self._chunk(other_submissions, 50):
             self._reddit.post(API_PATH["unhide"], data={"id": submissions})
 
+    @_deprecate_args(
+        "subreddit",
+        "title",
+        "send_replies",
+        "flair_id",
+        "flair_text",
+        "nsfw",
+        "spoiler",
+    )
     def crosspost(
         self,
         subreddit: "praw.models.Subreddit",
-        title: Optional[str] = None,
-        send_replies: bool = True,
+        *,
         flair_id: Optional[str] = None,
         flair_text: Optional[str] = None,
         nsfw: bool = False,
+        send_replies: bool = True,
         spoiler: bool = False,
+        title: Optional[str] = None,
     ) -> "praw.models.Submission":
         """Crosspost the submission to a subreddit.
 
@@ -718,17 +728,17 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         :param subreddit: Name of the subreddit or :class:`.Subreddit` object to
             crosspost into.
-        :param title: Title of the submission. Will use this submission's title if
-            `None` (default: ``None``).
         :param flair_id: The flair template to select (default: ``None``).
-        :param flair_text: If the template's ``flair_text_editable`` value is True, this
-            value will set a custom text (default: ``None``).
-        :param send_replies: When ``True``, messages will be sent to the submission
-            author when comments are made to the submission (default: ``True``).
-        :param nsfw: Whether or not the submission should be marked NSFW (default:
+        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
+            this value will set a custom text (default: ``None``).
+        :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
+        :param send_replies: When ``True``, messages will be sent to the created
+            submission's author when comments are made to the submission (default:
+            ``True``).
+        :param spoiler: Whether the submission should be marked as a spoiler (default:
             ``False``).
-        :param spoiler: Whether or not the submission should be marked as a spoiler
-            (default: ``False``).
+        :param title: Title of the submission. Will use this submission's title if
+            ``None`` (default: ``None``).
 
         :returns: A :class:`.Submission` object for the newly created submission.
 
@@ -737,7 +747,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         .. code-block:: python
 
             submission = reddit.submission("5or86n")
-            cross_post = submission.crosspost(subreddit="learnprogramming", send_replies=False)
+            cross_post = submission.crosspost("learnprogramming", send_replies=False)
 
         .. seealso::
 

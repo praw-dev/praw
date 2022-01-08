@@ -230,7 +230,7 @@ class TestSubmission(IntegrationTest):
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             crosspost_parent = self.reddit.submission("6vx01b")
 
-            submission = crosspost_parent.crosspost(subreddit, "my title")
+            submission = crosspost_parent.crosspost(subreddit, title="my title")
             assert submission.author == self.reddit.config.username
             assert submission.title == "my title"
             assert submission.crosspost_parent == "t3_6vx01b"
