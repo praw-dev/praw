@@ -5,7 +5,7 @@ from warnings import warn
 
 from ...const import API_PATH
 from ...exceptions import ClientException
-from ...util.cache import cachedproperty
+from ...util import _deprecate_args, cachedproperty
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -292,8 +292,10 @@ class RuleModeration:
         }
         self.rule._reddit.post(API_PATH["remove_subreddit_rule"], data=data)
 
+    @_deprecate_args("description", "kind", "short_name", "violation_reason")
     def update(
         self,
+        *,
         description: Optional[str] = None,
         kind: Optional[str] = None,
         short_name: Optional[str] = None,
