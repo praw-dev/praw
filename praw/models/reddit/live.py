@@ -535,22 +535,24 @@ class LiveThreadContribution:
         url = API_PATH["live_close"].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
+    @_deprecate_args("title", "description", "nsfw", "resources")
     def update(
         self,
-        title: Optional[str] = None,
+        *,
         description: Optional[str] = None,
         nsfw: Optional[bool] = None,
         resources: Optional[str] = None,
+        title: Optional[str] = None,
         **other_settings: Optional[str],
     ):
         """Update settings of the live thread.
 
-        :param title: The title of the live thread (default: ``None``).
         :param description: The live thread's description (default: ``None``).
         :param nsfw: Indicate whether this thread is not safe for work (default:
             ``None``).
         :param resources: Markdown formatted information that is useful for the live
             thread (default: ``None``).
+        :param title: The title of the live thread (default: ``None``).
 
         Does nothing if no arguments are provided.
 
