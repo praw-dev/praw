@@ -17,8 +17,8 @@ class TestRule(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             rule = self.subreddit.rules.mod.add(
-                "PRAW Test",
-                "all",
+                short_name="PRAW Test",
+                kind="all",
                 description="Test by PRAW",
                 violation_reason="PTest",
             )
@@ -30,7 +30,9 @@ class TestRule(IntegrationTest):
     def test_add_rule_without_violation_reason(self):
         self.reddit.read_only = False
         with self.use_cassette():
-            rule = self.subreddit.rules.mod.add("PRAW Test 2", "comment")
+            rule = self.subreddit.rules.mod.add(
+                short_name="PRAW Test 2", kind="comment"
+            )
             assert rule.short_name == "PRAW Test 2"
             assert rule.kind == "comment"
             assert rule.description == ""
