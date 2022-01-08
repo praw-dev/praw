@@ -77,7 +77,7 @@ class TestModmailConversation(IntegrationTest):
         self.reddit.read_only = False
         conversation = self.reddit.subreddit("all").modmail("ik72")
         with self.use_cassette():
-            reply = conversation.reply("A message")
+            reply = conversation.reply(body="A message")
         assert isinstance(reply, ModmailMessage)
 
     @mock.patch("time.sleep", return_value=None)

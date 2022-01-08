@@ -2,7 +2,7 @@
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from ...const import API_PATH
-from ...util import snake_case_keys
+from ...util import _deprecate_args, snake_case_keys
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -224,12 +224,15 @@ class ModmailConversation(RedditBase):
         data = {"conversationIds": self._build_conversation_list(other_conversations)}
         self._reddit.post(API_PATH["modmail_read"], data=data)
 
-    def reply(self, body: str, author_hidden: bool = False, internal: bool = False):
+    @_deprecate_args("body", "author_hidden", "internal")
+    def reply(
+        self, *, author_hidden: bool = False, body: str, internal: bool = False
+    ) -> "ModmailMessage":
         """Reply to the conversation.
 
-        :param body: The Markdown formatted content for a message.
         :param author_hidden: When ``True``, author is hidden from non-moderators
             (default: ``False``).
+        :param body: The Markdown formatted content for a message.
         :param internal: When ``True``, message is a private moderator note, hidden from
             non-moderators (default: ``False``).
 
@@ -240,13 +243,13 @@ class ModmailConversation(RedditBase):
         .. code-block:: python
 
             conversation = reddit.subreddit("test").modmail("2gmz")
-            conversation.reply("Message body", author_hidden=True)
+            conversation.reply(body="Message body", author_hidden=True)
 
         To create a private moderator note on the conversation:
 
         .. code-block:: python
 
-            conversation.reply("Message body", internal=True)
+            conversation.reply(body="Message body", internal=True)
 
         """
         data = {
