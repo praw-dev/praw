@@ -3273,8 +3273,10 @@ class Modmail:
             self(conversation_id) for conversation_id in response["conversation_ids"]
         ]
 
+    @_deprecate_args("after", "other_subreddits", "sort", "state")
     def conversations(
         self,
+        *,
         after: Optional[str] = None,
         other_subreddits: Optional[List["praw.models.Subreddit"]] = None,
         sort: Optional[str] = None,
@@ -3284,7 +3286,7 @@ class Modmail:
         """Generate :class:`.ModmailConversation` objects for subreddit(s).
 
         :param after: A base36 modmail conversation id. When provided, the listing
-            begins after this conversation (default: None).
+            begins after this conversation (default: ``None``).
 
             .. deprecated:: 7.4.0
 
