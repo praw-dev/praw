@@ -221,9 +221,11 @@ class LiveContributorRelationship:
         }
         self.thread._reddit.post(url, data=data)
 
+    @_deprecate_args("redditor", "permissions")
     def update_invite(
         self,
         redditor: Union[str, "praw.models.Redditor"],
+        *,
         permissions: Optional[List[str]] = None,
     ):
         """Update the contributor invite permissions for ``redditor``.
@@ -246,13 +248,13 @@ class LiveContributorRelationship:
 
         .. code-block:: python
 
-            thread.contributor.update_invite("spez", ["access", "edit"])
+            thread.contributor.update_invite("spez", permissions=["access", "edit"])
 
         To remove all permissions from the invitation, try:
 
         .. code-block:: python
 
-            thread.contributor.update_invite("spez", [])
+            thread.contributor.update_invite("spez", permissions=[])
 
         """
         url = API_PATH["live_update_perms"].format(id=self.thread.id)
