@@ -11,6 +11,8 @@ from typing import TYPE_CHECKING, Any, Dict, Generator, Iterator, List, Optional
 from urllib.parse import urljoin
 from warnings import warn
 from xml.etree.ElementTree import XML
+from requests.exceptions import HTTPError
+from prawcore.exceptions import ServerError
 
 import websocket
 from prawcore import Redirect
@@ -694,7 +696,10 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             )
         if not response.ok:
             self._parse_xml_response(response)
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except HTTPError as err:
+            raise ServerError(response=err.response)
 
         websocket_url = upload_response["asset"]["websocket_url"]
 
