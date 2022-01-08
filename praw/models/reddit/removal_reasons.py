@@ -4,7 +4,7 @@ from warnings import warn
 
 from ...const import API_PATH
 from ...exceptions import ClientException
-from ...util.cache import cachedproperty
+from ...util import _deprecate_args, cachedproperty
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -108,7 +108,8 @@ class RemovalReason(RedditBase):
         url = API_PATH["removal_reason"].format(subreddit=self.subreddit, id=self.id)
         self._reddit.delete(url)
 
-    def update(self, message: Optional[str] = None, title: Optional[str] = None):
+    @_deprecate_args("message", "title")
+    def update(self, *, message: Optional[str] = None, title: Optional[str] = None):
         """Update the removal reason from this subreddit.
 
         .. note::
@@ -123,7 +124,7 @@ class RemovalReason(RedditBase):
         .. code-block:: python
 
             reddit.subreddit("test").mod.removal_reasons["141vv5c16py7d"].update(
-                message="New message", title="New title"
+                title="New title", message="New message"
             )
 
         """

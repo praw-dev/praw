@@ -52,7 +52,7 @@ class TestRemovalReason(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             reason = self.subreddit.mod.removal_reasons["110nhk2cgmaxy"]
-            reason.update(message="New Message", title="New Title")
+            reason.update(title="New Title", message="New Message")
 
     @mock.patch("time.sleep", return_value=None)
     def test_update_empty(self, _):
