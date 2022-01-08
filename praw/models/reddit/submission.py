@@ -49,11 +49,12 @@ class SubmissionFlair:
             url, data={"link": self.submission.fullname}
         )["choices"]
 
-    def select(self, flair_template_id: str, text: Optional[str] = None):
+    @_deprecate_args("flair_template_id", "text")
+    def select(self, flair_template_id: str, *, text: Optional[str] = None):
         """Select flair for submission.
 
-        :param flair_template_id: The flair template to select. The possible
-            ``flair_template_id`` values can be discovered through :meth:`.choices`.
+        :param flair_template_id: The flair template to select. The possible values can
+            be discovered through :meth:`.choices`.
         :param text: If the template's ``flair_text_editable`` value is ``True``, this
             value will set a custom text (default: ``None``).
 
@@ -64,7 +65,7 @@ class SubmissionFlair:
 
             choices = submission.flair.choices()
             template_id = next(x for x in choices if x["flair_text_editable"])["flair_template_id"]
-            submission.flair.select(template_id, "my custom value")
+            submission.flair.select(template_id, text="my custom value")
 
         """
         data = {
@@ -520,7 +521,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
             choices = submission.flair.choices()
             template_id = next(x for x in choices if x["flair_text_editable"])["flair_template_id"]
-            submission.flair.select(template_id, "my custom value")
+            submission.flair.select(template_id, text="my custom value")
 
         """
         return SubmissionFlair(self)
