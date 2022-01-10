@@ -46,7 +46,7 @@ repos:
         args:
           - '-ll'
           - '1000'
-    rev: '0.69'
+    rev: '0.76'
 
   - repo: https://github.com/pycqa/isort
     hooks:
