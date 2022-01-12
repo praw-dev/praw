@@ -83,13 +83,13 @@ class TestSubreddit(UnitTest):
         from prawcore.exceptions import ServerError
         from requests.exceptions import HTTPError
 
-        httpResponse = mock.Mock()
-        httpResponse.status_code = 500
+        http_response = mock.Mock()
+        http_response.status_code = 500
 
         response = mock.Mock()
         response.ok = True
         response.raise_for_status = mock.Mock(
-            side_effect=HTTPError(response=httpResponse)
+            side_effect=HTTPError(response=http_response)
         )
         mock_method.return_value = response
         with pytest.raises(ServerError):
