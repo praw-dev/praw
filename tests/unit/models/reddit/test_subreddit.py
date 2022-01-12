@@ -70,6 +70,31 @@ class TestSubreddit(UnitTest):
         with pytest.raises(MediaPostFailed):
             self.reddit.subreddit("test").submit_image("Test", "dummy path")
 
+    @mock.patch("praw.models.Subreddit._read_and_post_media")
+    @mock.patch(
+        "praw.Reddit.post",
+        return_value={
+            "json": {"data": {"websocket_url": ""}},
+            "args": {"action": "", "fields": []},
+        },
+    )
+    @mock.patch("websocket.create_connection")
+    def test_media_upload_500(self, connection_mock, _mock_post, mock_method):
+        from prawcore.exceptions import ServerError
+        from requests.exceptions import HTTPError
+
+        http_response = mock.Mock()
+        http_response.status_code = 500
+
+        response = mock.Mock()
+        response.ok = True
+        response.raise_for_status = mock.Mock(
+            side_effect=HTTPError(response=http_response)
+        )
+        mock_method.return_value = response
+        with pytest.raises(ServerError):
+            self.reddit.subreddit("test").submit_image("Test", "/dev/null")
+
     def test_pickle(self):
         subreddit = Subreddit(
             self.reddit, _data={"display_name": "name", "id": "dummy"}

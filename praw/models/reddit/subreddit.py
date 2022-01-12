@@ -14,6 +14,8 @@ from xml.etree.ElementTree import XML
 
 import websocket
 from prawcore import Redirect
+from prawcore.exceptions import ServerError
+from requests.exceptions import HTTPError
 
 from ...const import API_PATH, JPEG_HEADER
 from ...exceptions import (
@@ -636,6 +638,13 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         url = ws_update["payload"]["redirect"]
         return self._reddit.submission(url=url)
 
+    def _read_and_post_media(self, media_path, upload_url, upload_data):
+        with open(media_path, "rb") as media:
+            response = self._reddit._core._requestor._http.post(
+                upload_url, data=upload_data, files={"file": media}
+            )
+        return response
+
     def _upload_media(
         self,
         media_path: str,
@@ -688,13 +697,13 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         upload_url = f"https:{upload_lease['action']}"
         upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
 
-        with open(media_path, "rb") as media:
-            response = self._reddit._core._requestor._http.post(
-                upload_url, data=upload_data, files={"file": media}
-            )
+        response = self._read_and_post_media(media_path, upload_url, upload_data)
         if not response.ok:
             self._parse_xml_response(response)
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except HTTPError as err:
+            raise ServerError(response=err.response)
 
         websocket_url = upload_response["asset"]["websocket_url"]
 
