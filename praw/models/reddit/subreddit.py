@@ -2159,40 +2159,55 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         for template in self.subreddit._reddit.get(url):
             yield template
 
+    @_deprecate_args(
+        "text",
+        "css_class",
+        "text_editable",
+        "background_color",
+        "text_color",
+        "mod_only",
+        "allowable_content",
+        "max_emojis",
+    )
     def add(
         self,
         text: str,
-        css_class: str = "",
-        text_editable: bool = False,
-        background_color: Optional[str] = None,
-        text_color: Optional[str] = None,
-        mod_only: Optional[bool] = None,
+        *,
         allowable_content: Optional[str] = None,
+        background_color: Optional[str] = None,
+        css_class: str = "",
         max_emojis: Optional[int] = None,
+        mod_only: Optional[bool] = None,
+        text_color: Optional[str] = None,
+        text_editable: bool = False,
     ):
         """Add a link flair template to the associated subreddit.
 
         :param text: The flair template's text.
-        :param css_class: The flair template's css_class (default: ``""``).
-        :param text_editable: Indicate if the flair text can be modified for each
-            :class:`.Redditor` that sets it (default: ``False``).
-        :param background_color: The flair template's new background color, as a hex
-            color.
-        :param text_color: The flair template's new text color, either ``"light"`` or
-            ``"dark"``.
-        :param mod_only: Indicate if the flair can only be used by moderators.
         :param allowable_content: If specified, most be one of ``"all"``, ``"emoji"``,
             or ``"text"`` to restrict content to that type. If set to ``"emoji"`` then
             the ``"text"`` param must be a valid emoji string, for example,
             ``":snoo:"``.
+        :param background_color: The flair template's new background color, as a hex
+            color.
+        :param css_class: The flair template's css_class (default: ``""``).
         :param max_emojis: Maximum emojis in the flair (Reddit defaults this value to
             ``10``).
+        :param mod_only: Indicate if the flair can only be used by moderators.
+        :param text_color: The flair template's new text color, either ``"light"`` or
+            ``"dark"``.
+        :param text_editable: Indicate if the flair text can be modified for each
+            redditor that sets it (default: ``False``).
 
         For example, to add an editable link flair try:
 
         .. code-block:: python
 
-            reddit.subreddit("test").flair.link_templates.add(css_class="praw", text_editable=True)
+            reddit.subreddit("test").flair.templates.add(
+                "PRAW",
+                css_class="praw",
+                text_editable=True,
+            )
 
         """
         self._add(
