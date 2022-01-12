@@ -221,7 +221,7 @@ class TestSubreddit(IntegrationTest):
         with self.use_cassette():
             subreddit = self.reddit.subreddit("all")
             for item in subreddit.search(
-                "praw oauth search", limit=None, syntax="cloudsearch"
+                "praw oauth search", syntax="cloudsearch", limit=None
             ):
                 assert isinstance(item, Submission)
 
