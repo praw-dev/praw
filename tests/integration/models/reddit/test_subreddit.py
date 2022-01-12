@@ -2174,7 +2174,7 @@ class TestSubredditWiki(IntegrationTest):
 
         with self.use_cassette():
             wikipage = subreddit.wiki.create(
-                "PRAW New Page", "This is the new wiki page"
+                name="PRAW New Page", content="This is the new wiki page"
             )
             assert wikipage.name == "praw_new_page"
             assert wikipage.content_md == "This is the new wiki page"
