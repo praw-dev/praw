@@ -1138,46 +1138,60 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         else:
             return self._reddit.submission(url=response["data"]["url"])
 
+    @_deprecate_args(
+        "title",
+        "image_path",
+        "flair_id",
+        "flair_text",
+        "resubmit",
+        "send_replies",
+        "nsfw",
+        "spoiler",
+        "timeout",
+        "collection_id",
+        "without_websockets",
+        "discussion_type",
+    )
     def submit_image(
         self,
         title: str,
         image_path: str,
+        *,
+        collection_id: Optional[str] = None,
+        discussion_type: Optional[str] = None,
         flair_id: Optional[str] = None,
         flair_text: Optional[str] = None,
+        nsfw: bool = False,
         resubmit: bool = True,
         send_replies: bool = True,
-        nsfw: bool = False,
         spoiler: bool = False,
         timeout: int = 10,
-        collection_id: Optional[str] = None,
         without_websockets: bool = False,
-        discussion_type: Optional[str] = None,
     ):
         """Add an image submission to the subreddit.
 
-        :param title: The title of the submission.
-        :param image_path: The path to an image, to upload and post.
         :param collection_id: The UUID of a :class:`.Collection` to add the
             newly-submitted post to.
+        :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
+            traditional comments (default: ``None``).
         :param flair_id: The flair template to select (default: ``None``).
-        :param flair_text: If the template's ``flair_text_editable`` value is True, this
-            value will set a custom text (default: ``None``). ``flair_id`` is required
-            when ``flair_text`` is provided.
+        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
+            this value will set a custom text (default: ``None``). ``flair_id`` is
+            required when ``flair_text`` is provided.
+        :param image_path: The path to an image, to upload and post.
+        :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
         :param resubmit: When ``False``, an error will occur if the URL has already been
             submitted (default: ``True``).
         :param send_replies: When ``True``, messages will be sent to the submission
             author when comments are made to the submission (default: ``True``).
-        :param nsfw: Whether or not the submission should be marked NSFW (default:
+        :param spoiler: Whether the submission should be marked as a spoiler (default:
             ``False``).
-        :param spoiler: Whether or not the submission should be marked as a spoiler
-            (default: ``False``).
         :param timeout: Specifies a particular timeout, in seconds. Use to avoid
             "Websocket error" exceptions (default: ``10``).
+        :param title: The title of the submission.
         :param without_websockets: Set to ``True`` to disable use of WebSockets (see
             note below for an explanation). If ``True``, this method doesn't return
             anything (default: ``False``).
-        :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
-            traditional comments (default: ``None``).
 
         :returns: A :class:`.Submission` object for the newly created submission, unless
             ``without_websockets`` is ``True``.
@@ -1209,9 +1223,10 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         .. seealso::
 
             - :meth:`~.Subreddit.submit` to submit url posts and selftexts
-            - :meth:`~.Subreddit.submit_video`. to submit videos and videogifs
-            - :meth:`~.Subreddit.submit_gallery`. to submit more than one image in the
+            - :meth:`~.Subreddit.submit_gallery` to submit more than one image in the
               same post
+            - :meth:`~.Subreddit.submit_poll` to submit polls
+            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
 
         """
         data = {
