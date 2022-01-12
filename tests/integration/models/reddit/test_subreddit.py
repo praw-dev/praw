@@ -1134,7 +1134,7 @@ class TestSubredditFlairTemplates(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             self.subreddit.flair.templates.add(
-                "PRAW", css_class="myCSS", background_color="#ABCDEF"
+                "PRAW", background_color="#ABCDEF", css_class="myCSS"
             )
 
     def test_clear(self):
