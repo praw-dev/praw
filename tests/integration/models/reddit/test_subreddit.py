@@ -1044,7 +1044,7 @@ class TestSubredditFlair(IntegrationTest):
             redditor = self.reddit.redditor(self.reddit.config.username)
             flair = "11c32eee-1482-11e9-bfc0-0efc81a5e8e8"
             self.subreddit.flair.set(
-                redditor, "redditor flair", flair_template_id=flair
+                redditor, flair_template_id=flair, text="redditor flair"
             )
 
     def test_set__flair_id_default_text(self):
@@ -1058,7 +1058,7 @@ class TestSubredditFlair(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             redditor = self.subreddit._reddit.redditor(self.reddit.config.username)
-            self.subreddit.flair.set(redditor, "redditor flair")
+            self.subreddit.flair.set(redditor, text="redditor flair")
 
     def test_set__redditor_css_only(self):
         self.reddit.read_only = False
@@ -1071,7 +1071,7 @@ class TestSubredditFlair(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             self.subreddit.flair.set(
-                self.reddit.config.username, "new flair", "some class"
+                self.reddit.config.username, css_class="some class", text="new flair"
             )
 
     def test_update(self):
