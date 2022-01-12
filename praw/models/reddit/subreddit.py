@@ -1019,6 +1019,17 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         return self._reddit.post(API_PATH["submit"], data=data)
 
+    @_deprecate_args(
+        "title",
+        "images",
+        "collection_id",
+        "discussion_type",
+        "flair_id",
+        "flair_text",
+        "nsfw",
+        "send_replies",
+        "spoiler",
+    )
     def submit_gallery(
         self,
         title: str,
@@ -1043,15 +1054,14 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
             traditional comments (default: ``None``).
         :param flair_id: The flair template to select (default: ``None``).
-        :param flair_text: If the template's ``flair_text_editable`` value isTrue, this
-            value will set a custom text (default: ``None``). ``flair_id`` is required
-            when ``flair_text`` is provided.
-        :param nsfw: Whether or not the submission should be marked NSFW (default:
-            ``False``).
+        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
+            this value will set a custom text (default: ``None``). ``flair_id`` is
+            required when ``flair_text`` is provided.
+        :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
         :param send_replies: When ``True``, messages will be sent to the submission
             author when comments are made to the submission (default: ``True``).
-        :param spoiler: Whether or not the submission should be marked asa spoiler
-            (default: ``False``).
+        :param spoiler: Whether the submission should be marked asa spoiler (default:
+            ``False``).
 
         :returns: A :class:`.Submission` object for the newly created submission.
 
@@ -1083,9 +1093,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         .. seealso::
 
             - :meth:`~.Subreddit.submit` to submit url posts and selftexts
-            - :meth:`~.Subreddit.submit_image`. to submit single images
+            - :meth:`~.Subreddit.submit_image` to submit single images
             - :meth:`~.Subreddit.submit_poll` to submit polls
-            - :meth:`~.Subreddit.submit_video`. to submit videos and videogifs
+            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
 
         """
         self._validate_gallery(images)
