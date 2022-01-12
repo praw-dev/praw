@@ -1108,7 +1108,7 @@ class TestSubredditFlair(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             response = self.subreddit.flair.update(
-                [self.reddit.user.me()], text='"testing"', css_class="testing"
+                [self.reddit.user.me()], css_class="testing", text='"testing"'
             )
             assert all(x["ok"] for x in response)
             flair = next(self.subreddit.flair(self.reddit.user.me()))

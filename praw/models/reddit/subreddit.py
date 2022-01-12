@@ -1831,6 +1831,7 @@ class SubredditFlair:
             url = API_PATH["flair"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
 
+    @_deprecate_args("flair_list", "text", "css_class")
     def update(
         self,
         flair_list: Iterator[
@@ -1840,37 +1841,41 @@ class SubredditFlair:
                 Dict[str, Union[str, "praw.models.Redditor"]],
             ]
         ],
+        *,
         text: str = "",
         css_class: str = "",
     ) -> List[Dict[str, Union[str, bool, Dict[str, str]]]]:
         """Set or clear the flair for many redditors at once.
 
-        :param flair_list: Each item in this list should be either: the name of a
-            Redditor, an instance of :class:`.Redditor`, or a dictionary mapping keys
-            ``user``, ``flair_text``, and ``flair_css_class`` to their respective
-            values. The ``user`` key should map to a Redditor, as described above. When
-            a dictionary isn't provided, or the dictionary is missing one of
-            ``flair_text``, or ``flair_css_class`` attributes the default values will
-            come from the the following arguments.
-        :param text: The flair text to use when not explicitly provided in
-            ``flair_list`` (default: ``""``).
+        :param flair_list: Each item in this list should be either:
+
+            - The name of a redditor.
+            - An instance of :class:`.Redditor`.
+            - A dictionary mapping keys ``"user"``, ``"flair_text"``, and
+              ``"flair_css_class"`` to their respective values. The ``"user"`` key
+              should map to a redditor, as described above. When a dictionary isn't
+              provided, or the dictionary is missing either ``"flair_text"`` or
+              ``"flair_css_class"`` keys, the default values will come from the other
+              arguments.
         :param css_class: The css class to use when not explicitly provided in
+            ``flair_list`` (default: ``""``).
+        :param text: The flair text to use when not explicitly provided in
             ``flair_list`` (default: ``""``).
 
         :returns: List of dictionaries indicating the success or failure of each update.
 
-        For example, to clear the flair text, and set the ``praw`` flair css class on a
-        few users try:
+        For example, to clear the flair text, and set the ``"praw"`` flair css class on
+        a few users try:
 
         .. code-block:: python
 
             subreddit.flair.update(["bboe", "spez", "spladug"], css_class="praw")
 
         """
-        templines = StringIO()
+        temp_lines = StringIO()
         for item in flair_list:
             if isinstance(item, dict):
-                writer(templines).writerow(
+                writer(temp_lines).writerow(
                     [
                         str(item["user"]),
                         item.get("flair_text", text),
@@ -1878,10 +1883,10 @@ class SubredditFlair:
                     ]
                 )
             else:
-                writer(templines).writerow([str(item), text, css_class])
+                writer(temp_lines).writerow([str(item), text, css_class])
 
-        lines = templines.getvalue().splitlines()
-        templines.close()
+        lines = temp_lines.getvalue().splitlines()
+        temp_lines.close()
         response = []
         url = API_PATH["flaircsv"].format(subreddit=self.subreddit)
         while lines:
