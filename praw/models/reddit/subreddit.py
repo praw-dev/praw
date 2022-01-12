@@ -1722,23 +1722,30 @@ class SubredditFlair:
         """
         self.subreddit = subreddit
 
+    @_deprecate_args("position", "self_assign", "link_position", "link_self_assign")
     def configure(
         self,
-        position: str = "right",
-        self_assign: bool = False,
+        *,
         link_position: str = "left",
         link_self_assign: bool = False,
+        position: str = "right",
+        self_assign: bool = False,
         **settings: Any,
     ):
         """Update the :class:`.Subreddit`'s flair configuration.
 
-        :param position: One of ``"left"``, ``"right"``, or ``False`` to disable
-            (default: ``"right"``).
-        :param self_assign: Permit self assignment of user flair (default: ``False``).
         :param link_position: One of ``"left"``, ``"right"``, or ``False`` to disable
             (default: ``"left"``).
         :param link_self_assign: Permit self assignment of link flair (default:
             ``False``).
+        :param position: One of ``"left"``, ``"right"``, or ``False`` to disable
+            (default: ``"right"``).
+        :param self_assign: Permit self assignment of user flair (default: ``False``).
+
+        .. code-block:: python
+
+            subreddit = reddit.subreddit("test")
+            subreddit.flair.configure(link_position="right", self_assign=True)
 
         Additional keyword arguments can be provided to handle new settings as Reddit
         introduces them.
