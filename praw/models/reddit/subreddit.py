@@ -1259,45 +1259,59 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             websocket_url=websocket_url,
         )
 
+    @_deprecate_args(
+        "title",
+        "selftext",
+        "options",
+        "duration",
+        "flair_id",
+        "flair_text",
+        "resubmit",
+        "send_replies",
+        "nsfw",
+        "spoiler",
+        "collection_id",
+        "discussion_type",
+    )
     def submit_poll(
         self,
         title: str,
-        selftext: str,
-        options: List[str],
+        *,
+        collection_id: Optional[str] = None,
+        discussion_type: Optional[str] = None,
         duration: int,
         flair_id: Optional[str] = None,
         flair_text: Optional[str] = None,
-        resubmit: bool = True,
-        send_replies: bool = True,
         nsfw: bool = False,
+        options: List[str],
+        resubmit: bool = True,
+        selftext: str,
+        send_replies: bool = True,
         spoiler: bool = False,
-        collection_id: Optional[str] = None,
-        discussion_type: Optional[str] = None,
     ):
         """Add a poll submission to the subreddit.
 
         :param title: The title of the submission.
-        :param selftext: The Markdown formatted content for the submission. Use an empty
-            string, ``""``, to make a submission with no text contents.
-        :param options: A list of two to six poll options as ``str``.
-        :param duration: The number of days the poll should accept votes, as an ``int``.
-            Valid values are between ``1`` and ``7``, inclusive.
         :param collection_id: The UUID of a :class:`.Collection` to add the
             newly-submitted post to.
-        :param flair_id: The flair template to select (default: ``None``).
-        :param flair_text: If the template's ``flair_text_editable`` value is True, this
-            value will set a custom text (default: ``None``). ``flair_id`` is required
-            when ``flair_text`` is provided.
-        :param resubmit: When ``False``, an error will occur if the URL has already been
-            submitted (default: ``True``).
-        :param send_replies: When ``True``, messages will be sent to the submission
-            author when comments are made to the submission (default: ``True``).
-        :param nsfw: Whether or not the submission should be marked NSFW (default:
-            ``False``).
-        :param spoiler: Whether or not the submission should be marked as a spoiler
-            (default: ``False``).
         :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
             traditional comments (default: ``None``).
+        :param duration: The number of days the poll should accept votes, as an ``int``.
+            Valid values are between ``1`` and ``7``, inclusive.
+        :param flair_id: The flair template to select (default: ``None``).
+        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
+            this value will set a custom text (default: ``None``). ``flair_id`` is
+            required when ``flair_text`` is provided.
+        :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
+        :param options: A list of two to six poll options as ``str``.
+        :param resubmit: When ``False``, an error will occur if the URL has already been
+            submitted (default: ``True``).
+        :param selftext: The Markdown formatted content for the submission. Use an empty
+            string, ``""``, to make a submission with no text contents.
+        :param send_replies: When ``True``, messages will be sent to the submission
+            author when comments are made to the submission (default: ``True``).
+        :param spoiler: Whether the submission should be marked as a spoiler (default:
+            ``False``).
 
         :returns: A :class:`.Submission` object for the newly created submission.
 
@@ -1309,6 +1323,14 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             reddit.subreddit("test").submit_poll(
                 title, selftext="", options=["Yes", "No"], duration=3
             )
+
+        .. seealso::
+
+            - :meth:`~.Subreddit.submit` to submit url posts and selftexts
+            - :meth:`~.Subreddit.submit_gallery` to submit more than one image in the
+              same post
+            - :meth:`~.Subreddit.submit_image` to submit single images
+            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
 
         """
         data = {

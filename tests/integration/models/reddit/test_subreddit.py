@@ -353,10 +353,7 @@ class TestSubreddit(IntegrationTest):
         with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit_poll(
-                "Test Poll",
-                selftext="Test poll text.",
-                options=options,
-                duration=6,
+                "Test Poll", duration=6, options=options, selftext="Test poll text."
             )
             assert submission.author == self.reddit.config.username
             assert submission.selftext.startswith("Test poll text.")
@@ -375,11 +372,11 @@ class TestSubreddit(IntegrationTest):
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit_poll(
                 "Test Poll",
-                selftext="Test poll text.",
+                duration=6,
                 flair_id=flair_id,
                 flair_text=flair_text,
                 options=options,
-                duration=6,
+                selftext="Test poll text.",
             )
             assert submission.link_flair_text == flair_text
             assert submission.link_flair_css_class == flair_class
@@ -392,10 +389,10 @@ class TestSubreddit(IntegrationTest):
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit_poll(
                 "Test Poll",
-                selftext="",
                 discussion_type="CHAT",
-                options=options,
                 duration=2,
+                options=options,
+                selftext="",
             )
             assert submission.discussion_type == "CHAT"
 
