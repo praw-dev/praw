@@ -3875,7 +3875,7 @@ class SubredditStylesheet:
         return self._upload_image(image_path, {"name": name, "upload_type": "img"})
 
     def upload_banner(self, image_path: str):
-        """Upload an image for the :class:`.Subreddit` 's (redesign) banner image.
+        """Upload an image for the :class:`.Subreddit`'s (redesign) banner image.
 
         :param image_path: A path to a jpeg or png image.
 
@@ -3897,10 +3897,14 @@ class SubredditStylesheet:
         image_url = self._upload_style_asset(image_path, image_type)
         self._update_structured_styles({image_type: image_url})
 
+    @_deprecate_args("image_path", "align")
     def upload_banner_additional_image(
-        self, image_path: str, align: Optional[str] = None
+        self,
+        image_path: str,
+        *,
+        align: Optional[str] = None,
     ):
-        """Upload an image for the :class:`.Subreddit` 's (redesign) additional image.
+        """Upload an image for the :class:`.Subreddit`'s (redesign) additional image.
 
         :param image_path: A path to a jpeg or png image.
         :param align: Either ``"left"``, ``"centered"``, or ``"right"``. (default:
@@ -3937,7 +3941,7 @@ class SubredditStylesheet:
         self._update_structured_styles(style_data)
 
     def upload_banner_hover_image(self, image_path: str):
-        """Upload an image for the :class:`.Subreddit` 's (redesign) additional image.
+        """Upload an image for the :class:`.Subreddit`'s (redesign) additional image.
 
         :param image_path: A path to a jpeg or png image.
 
