@@ -175,7 +175,7 @@ class TestSubreddit(UnitTest):
         selftext = "Text with {gif1}, {image1}, and {video1} inline"
         media = {"gif1": gif, "image1": image, "video1": video}
         with pytest.raises(ValueError) as excinfo:
-            subreddit.submit("title", selftext=selftext, inline_media=media)
+            subreddit.submit("title", inline_media=media, selftext=selftext)
         assert str(excinfo.value) == message
 
     def test_upload_banner_additional_image(self):

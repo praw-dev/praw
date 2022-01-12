@@ -235,9 +235,9 @@ class TestSubreddit(IntegrationTest):
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit(
                 "Test Title",
-                selftext="Test text.",
                 flair_id=flair_id,
                 flair_text=flair_text,
+                selftext="Test text.",
             )
             assert submission.link_flair_css_class == flair_class
             assert submission.link_flair_text == flair_text
@@ -277,12 +277,16 @@ class TestSubreddit(IntegrationTest):
             )
             media = {"gif1": gif, "image1": image, "video1": video}
             submission = subreddit.submit(
-                "title", selftext=selftext, inline_media=media
+                "title", inline_media=media, selftext=selftext
             )
             assert submission.author == pytest.placeholders.username
             assert (
-                submission.selftext
-                == "Text with a gif\n\n[optional caption](https://i.redd.it/3vwgfvq3tyq51.gif)\n\nan image\n\n[optional caption](https://preview.redd.it/9147est3tyq51.png?width=128&format=png&auto=webp&s=54d1a865a9339dcca9ec19eb1e357079c81e5100)\n\nand a video\n\n[optional caption](https://reddit.com/link/j4p2rk/video/vsie20v3tyq51/player)\n\ninline"
+                submission.selftext == "Text with a gif\n\n[optional"
+                " caption](https://i.redd.it/3vwgfvq3tyq51.gif)\n\nan"
+                " image\n\n[optional"
+                " caption](https://preview.redd.it/9147est3tyq51.png?width=128&format=png&auto=webp&s=54d1a865a9339dcca9ec19eb1e357079c81e5100)\n\nand"
+                " a video\n\n[optional"
+                " caption](https://reddit.com/link/j4p2rk/video/vsie20v3tyq51/player)\n\ninline"
             )
             assert submission.title == "title"
 
@@ -292,7 +296,7 @@ class TestSubreddit(IntegrationTest):
         with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit(
-                "Test Title", selftext="", discussion_type="CHAT"
+                "Test Title", discussion_type="CHAT", selftext=""
             )
             assert submission.discussion_type == "CHAT"
 
@@ -315,7 +319,7 @@ class TestSubreddit(IntegrationTest):
                 pytest.placeholders.test_subreddit
             )
             submission = subreddit.submit(
-                "Test Title", selftext="Test text.", nsfw=True
+                "Test Title", nsfw=True, selftext="Test text."
             )
             assert submission.over_18 is True
 

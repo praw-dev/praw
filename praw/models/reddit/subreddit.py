@@ -856,47 +856,62 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             self._reddit, url=urljoin(self._reddit.config.reddit_url, path)
         )
 
+    @_deprecate_args(
+        "title",
+        "selftext",
+        "url",
+        "flair_id",
+        "flair_text",
+        "resubmit",
+        "send_replies",
+        "nsfw",
+        "spoiler",
+        "collection_id",
+        "discussion_type",
+        "inline_media",
+        "draft_id",
+    )
     def submit(
         self,
         title: str,
-        selftext: Optional[str] = None,
-        url: Optional[str] = None,
-        flair_id: Optional[str] = None,
-        flair_text: Optional[str] = None,
-        resubmit: bool = True,
-        send_replies: bool = True,
-        nsfw: bool = False,
-        spoiler: bool = False,
+        *,
         collection_id: Optional[str] = None,
         discussion_type: Optional[str] = None,
-        inline_media: Optional[Dict[str, "praw.models.InlineMedia"]] = None,
         draft_id: Optional[str] = None,
+        flair_id: Optional[str] = None,
+        flair_text: Optional[str] = None,
+        inline_media: Optional[Dict[str, "praw.models.InlineMedia"]] = None,
+        nsfw: bool = False,
+        resubmit: bool = True,
+        selftext: Optional[str] = None,
+        send_replies: bool = True,
+        spoiler: bool = False,
+        url: Optional[str] = None,
     ) -> "praw.models.Submission":  # noqa: D301
         r"""Add a submission to the :class:`.Subreddit`.
 
         :param title: The title of the submission.
-        :param selftext: The Markdown formatted content for a ``text`` submission. Use
-            an empty string, ``""``, to make a title-only submission.
-        :param url: The URL for a ``link`` submission.
         :param collection_id: The UUID of a :class:`.Collection` to add the
             newly-submitted post to.
-        :param flair_id: The flair template to select (default: ``None``).
-        :param flair_text: If the template's ``flair_text_editable`` value is True, this
-            value will set a custom text (default: ``None``). ``flair_id`` is required
-            when ``flair_text`` is provided.
-        :param resubmit: When ``False``, an error will occur if the URL has already been
-            submitted (default: ``True``).
-        :param send_replies: When ``True``, messages will be sent to the submission
-            author when comments are made to the submission (default: ``True``).
-        :param nsfw: Whether or not the submission should be marked NSFW (default:
-            ``False``).
-        :param spoiler: Whether or not the submission should be marked as a spoiler
-            (default: ``False``).
         :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
             traditional comments (default: ``None``).
+        :param draft_id: The ID of a draft to submit.
+        :param flair_id: The flair template to select (default: ``None``).
+        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
+            this value will set a custom text (default: ``None``). ``flair_id`` is
+            required when ``flair_text`` is provided.
         :param inline_media: A dict of :class:`.InlineMedia` objects where the key is
             the placeholder name in ``selftext``.
-        :param draft_id: The ID of a draft to submit.
+        :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
+        :param resubmit: When ``False``, an error will occur if the URL has already been
+            submitted (default: ``True``).
+        :param selftext: The Markdown formatted content for a ``text`` submission. Use
+            an empty string, ``""``, to make a title-only submission.
+        :param send_replies: When ``True``, messages will be sent to the submission
+            author when comments are made to the submission (default: ``True``).
+        :param spoiler: Whether the submission should be marked as a spoiler (default:
+            ``False``).
+        :param url: The URL for a ``link`` submission.
 
         :returns: A :class:`.Submission` object for the newly created submission.
 
@@ -921,7 +936,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             video = InlineVideo("path/to/video.mp4", "optional caption")
             selftext = "Text with a gif {gif1} an image {image1} and a video {video1} inline"
             media = {"gif1": gif, "image1": image, "video1": video}
-            reddit.subreddit("test").submit("title", selftext=selftext, inline_media=media)
+            reddit.subreddit("test").submit("title", inline_media=media, selftext=selftext)
 
         .. note::
 
@@ -947,22 +962,22 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. note::
 
-            To submit a post to a subreddit with the "news" flair, you can get the flair
-            id like this:
+            To submit a post to a subreddit with the ``"news"`` flair, you can get the
+            flair id like this:
 
             .. code-block::
 
                 choices = list(subreddit.flair.link_templates.user_selectable())
                 template_id = next(x for x in choices if x["flair_text"] == "news")["flair_template_id"]
-                subreddit.submit("title", url="https://www.news.com/", flair_id=template_id)
+                subreddit.submit("title", flair_id=template_id, url="https://www.news.com/")
 
         .. seealso::
 
-            - :meth:`~.Subreddit.submit_image` to submit images
-            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
-            - :meth:`~.Subreddit.submit_poll` to submit polls
-            - :meth:`~.Subreddit.submit_gallery`. to submit more than one image in the
+            - :meth:`~.Subreddit.submit_gallery` to submit more than one image in the
               same post
+            - :meth:`~.Subreddit.submit_image` to submit images
+            - :meth:`~.Subreddit.submit_poll` to submit polls
+            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
 
         """
         if (bool(selftext) or selftext == "") == bool(url):
