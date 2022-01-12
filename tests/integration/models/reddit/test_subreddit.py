@@ -1156,10 +1156,10 @@ class TestSubredditFlairTemplates(IntegrationTest):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
                 template["id"],
-                "PRAW updated",
-                css_class="myCSS",
-                text_color="dark",
                 background_color="#00FFFF",
+                css_class="myCSS",
+                text="PRAW updated",
+                text_color="dark",
             )
 
     @mock.patch("time.sleep", return_value=None)
@@ -1169,11 +1169,11 @@ class TestSubredditFlairTemplates(IntegrationTest):
             with pytest.raises(InvalidFlairTemplateID):
                 self.subreddit.flair.templates.update(
                     "fake id",
-                    "PRAW updated",
-                    css_class="myCSS",
-                    text_color="dark",
                     background_color="#00FFFF",
+                    css_class="myCSS",
                     fetch=True,
+                    text="PRAW updated",
+                    text_color="dark",
                 )
 
     @mock.patch("time.sleep", return_value=None)
@@ -1183,11 +1183,11 @@ class TestSubredditFlairTemplates(IntegrationTest):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
                 template["id"],
-                "PRAW updated",
-                css_class="myCSS",
-                text_color="dark",
                 background_color="#00FFFF",
+                css_class="myCSS",
                 fetch=True,
+                text="PRAW updated",
+                text_color="dark",
             )
 
     @mock.patch("time.sleep", return_value=None)
@@ -1197,10 +1197,10 @@ class TestSubredditFlairTemplates(IntegrationTest):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
                 template["id"],
-                "PRAW updated",
-                text_color="dark",
                 background_color="#00FFFF",
                 fetch=True,
+                text="PRAW updated",
+                text_color="dark",
             )
 
     @mock.patch("time.sleep", return_value=None)
@@ -1210,10 +1210,10 @@ class TestSubredditFlairTemplates(IntegrationTest):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
                 template["id"],
-                css_class="myCSS",
-                text_color="dark",
                 background_color="#00FFFF",
+                css_class="myCSS",
                 fetch=True,
+                text_color="dark",
             )
 
     @mock.patch("time.sleep", return_value=None)
@@ -1223,9 +1223,9 @@ class TestSubredditFlairTemplates(IntegrationTest):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
                 template["id"],
-                text_color="dark",
                 background_color="#00FFFF",
                 fetch=True,
+                text_color="dark",
             )
 
     @mock.patch("time.sleep", return_value=None)
@@ -1248,10 +1248,10 @@ class TestSubredditFlairTemplates(IntegrationTest):
         with self.use_cassette():
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
-                template["id"], text_editable=True, fetch=True
+                template["id"], fetch=True, text_editable=True
             )
             self.subreddit.flair.templates.update(
-                template["id"], text_editable=False, fetch=True
+                template["id"], fetch=True, text_editable=False
             )
             newtemplate = list(
                 filter(

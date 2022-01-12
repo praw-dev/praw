@@ -1966,53 +1966,68 @@ class SubredditFlairTemplates:
         url = API_PATH["flairtemplatedelete"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data={"flair_template_id": template_id})
 
+    @_deprecate_args(
+        "template_id",
+        "text",
+        "css_class",
+        "text_editable",
+        "background_color",
+        "text_color",
+        "mod_only",
+        "allowable_content",
+        "max_emojis",
+        "fetch",
+    )
     def update(
         self,
         template_id: str,
-        text: Optional[str] = None,
-        css_class: Optional[str] = None,
-        text_editable: Optional[bool] = None,
-        background_color: Optional[str] = None,
-        text_color: Optional[str] = None,
-        mod_only: Optional[bool] = None,
+        *,
         allowable_content: Optional[str] = None,
-        max_emojis: Optional[int] = None,
+        background_color: Optional[str] = None,
+        css_class: Optional[str] = None,
         fetch: bool = True,
+        max_emojis: Optional[int] = None,
+        mod_only: Optional[bool] = None,
+        text: Optional[str] = None,
+        text_color: Optional[str] = None,
+        text_editable: Optional[bool] = None,
     ):
         """Update the flair template provided by ``template_id``.
 
         :param template_id: The flair template to update. If not valid then an exception
             will be thrown.
-        :param text: The flair template's new text.
-        :param css_class: The flair template's new css_class (default: ``""``).
-        :param text_editable: Indicate if the flair text can be modified for each
-            :class:`.Redditor` that sets it (default: ``False``).
-        :param background_color: The flair template's new background color, as a hex
-            color.
-        :param text_color: The flair template's new text color, either ``"light"`` or
-            ``"dark"``.
-        :param mod_only: Indicate if the flair can only be used by moderators.
         :param allowable_content: If specified, most be one of ``"all"``, ``"emoji"``,
             or ``"text"`` to restrict content to that type. If set to ``"emoji"`` then
             the ``"text"`` param must be a valid emoji string, for example,
             ``":snoo:"``.
+        :param background_color: The flair template's new background color, as a hex
+            color.
+        :param css_class: The flair template's new css_class (default: ``""``).
+        :param fetch: Whether PRAW will fetch existing information on the existing flair
+            before updating (default: ``True``).
         :param max_emojis: Maximum emojis in the flair (Reddit defaults this value to
             ``10``).
-        :param fetch: Whether or not PRAW will fetch existing information on the
-            existing flair before updating (default: ``True``).
+        :param mod_only: Indicate if the flair can only be used by moderators.
+        :param text: The flair template's new text.
+        :param text_color: The flair template's new text color, either ``"light"`` or
+            ``"dark"``.
+        :param text_editable: Indicate if the flair text can be modified for each
+            redditor that sets it (default: ``False``).
 
         .. warning::
 
             If parameter ``fetch`` is set to ``False``, all parameters not provided will
-            be reset to default (``None`` or ``False``) values.
+            be reset to their default (``None`` or ``False``) values.
 
-        For example, to make a user flair template text_editable, try:
+        For example, to make a user flair template text editable, try:
 
         .. code-block:: python
 
             template_info = list(subreddit.flair.templates)[0]
             subreddit.flair.templates.update(
-                template_info["id"], template_info["flair_text"], text_editable=True
+                template_info["id"],
+                text=template_info["flair_text"],
+                text_editable=True,
             )
 
         """
