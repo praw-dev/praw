@@ -2005,7 +2005,7 @@ class TestSubredditStylesheet(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             response = self.subreddit.stylesheet.upload(
-                "praw", self.image_path("white-square.png")
+                name="praw", image_path=self.image_path("white-square.png")
             )
         assert response["img_src"].endswith(".png")
 
@@ -2013,7 +2013,9 @@ class TestSubredditStylesheet(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             with pytest.raises(RedditAPIException) as excinfo:
-                self.subreddit.stylesheet.upload("praw", self.image_path("invalid.jpg"))
+                self.subreddit.stylesheet.upload(
+                    name="praw", image_path=self.image_path("invalid.jpg")
+                )
         assert excinfo.value.items[0].error_type == "IMAGE_ERROR"
 
     def test_upload__invalid_ext(self):
@@ -2021,7 +2023,7 @@ class TestSubredditStylesheet(IntegrationTest):
         with self.use_cassette():
             with pytest.raises(RedditAPIException) as excinfo:
                 self.subreddit.stylesheet.upload(
-                    "praw.png", self.image_path("white-square.png")
+                    name="praw.png", image_path=self.image_path("white-square.png")
                 )
         assert excinfo.value.items[0].error_type == "BAD_CSS_NAME"
 
@@ -2030,7 +2032,7 @@ class TestSubredditStylesheet(IntegrationTest):
         with self.use_cassette():
             with pytest.raises(TooLarge):
                 self.subreddit.stylesheet.upload(
-                    "praw", self.image_path("too_large.jpg")
+                    name="praw", image_path=self.image_path("too_large.jpg")
                 )
 
     @mock.patch("time.sleep", return_value=None)
