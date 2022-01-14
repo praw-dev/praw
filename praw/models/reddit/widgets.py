@@ -984,14 +984,13 @@ class SubredditWidgetsModeration:
         text_area.update(other_settings)
         return self._create_widget(text_area)
 
+    @_deprecate_args("new_order", "section")
     def reorder(
-        self,
-        new_order: List[Union[WidgetType, str]],
-        section: str = "sidebar",
+        self, new_order: List[Union[WidgetType, str]], *, section: str = "sidebar"
     ):
         """Reorder the widgets.
 
-        :param new_order: A list of widgets. Represented as a ``list`` that contains
+        :param new_order: A list of widgets. Represented as a list that contains
             :class:`.Widget` objects, or widget IDs as strings. These types may be
             mixed.
         :param section: The section to reorder (default: ``"sidebar"``).
