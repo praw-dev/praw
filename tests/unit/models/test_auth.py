@@ -47,13 +47,17 @@ def web_app():
 class TestAuth(UnitTest):
     def test_implicit__from_script_app(self):
         with pytest.raises(ClientException):
-            script_app().auth.implicit("dummy token", 10, "")
+            script_app().auth.implicit(
+                access_token="dummy token", expires_in=10, scope=""
+            )
         with pytest.raises(ClientException):
-            script_app_with_password().auth.implicit("dummy token", 10, "")
+            script_app_with_password().auth.implicit(
+                access_token="dummy token", expires_in=10, scope=""
+            )
 
     def test_implicit__from_web_app(self):
         with pytest.raises(ClientException):
-            web_app().auth.implicit("dummy token", 10, "")
+            web_app().auth.implicit(access_token="dummy token", expires_in=10, scope="")
 
     def test_limits(self):
         expected = {"remaining": None, "reset_timestamp": None, "used": None}
