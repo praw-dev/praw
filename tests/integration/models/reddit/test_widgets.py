@@ -107,10 +107,10 @@ class TestButtonWidget(IntegrationTest):
                 },
             ]
             widget = widgets.mod.add_button_widget(
-                "Things to click",
-                "Click some of these *cool* links!",
-                buttons,
-                styles,
+                short_name="Things to click",
+                description="Click some of these *cool* links!",
+                buttons=buttons,
+                styles=styles,
             )
 
             assert isinstance(widget, ButtonWidget)

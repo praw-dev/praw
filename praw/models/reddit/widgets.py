@@ -5,6 +5,7 @@ from json import JSONEncoder, dumps
 from typing import TYPE_CHECKING, Any, Dict, List, Union
 
 from ...const import API_PATH
+from ...util import _deprecate_args
 from ...util.cache import cachedproperty
 from ..base import PRAWBase
 from ..list.base import BaseList
@@ -60,16 +61,16 @@ class CalendarConfiguration(PRAWBase):
 
     .. include:: ../../typical_attributes.rst
 
-    =================== ==================================================
+    =================== ================================================
     Attribute           Description
-    =================== ==================================================
+    =================== ================================================
     ``numEvents``       The number of events to display on the calendar.
-    ``showDate``        Whether or not to show the dates of events.
-    ``showDescription`` Whether or not to show the descriptions of events.
-    ``showLocation``    Whether or not to show the locations of events.
-    ``showTime``        Whether or not to show the times of events.
-    ``showTitle``       Whether or not to show the titles of events.
-    =================== ==================================================
+    ``showDate``        Whether to show the dates of events.
+    ``showDescription`` Whether to show the descriptions of events.
+    ``showLocation``    Whether to show the locations of events.
+    ``showTime``        Whether to show the times of events.
+    ``showTitle``       Whether to show the titles of events.
+    =================== ================================================
 
     """
 
@@ -409,21 +410,21 @@ class SubredditWidgetsModeration:
         widget.subreddit = self._subreddit
         return widget
 
+    @_deprecate_args("short_name", "description", "buttons", "styles")
     def add_button_widget(
         self,
-        short_name: str,
-        description: str,
+        *,
         buttons: List[
             Dict[str, Union[Dict[str, str], str, int, Dict[str, Union[str, int]]]]
         ],
+        description: str,
+        short_name: str,
         styles: Dict[str, str],
         **other_settings,
     ) -> "praw.models.ButtonWidget":
-        r"""Add and return a :class:`.ButtonWidget`.
+        """Add and return a :class:`.ButtonWidget`.
 
-        :param short_name: A name for the widget, no longer than 30 characters.
-        :param description: Markdown text to describe the widget.
-        :param buttons: A list of ``dict``\ s describing buttons, as specified in
+        :param buttons: A list of dictionaries describing buttons, as specified in
             `Reddit docs`_. As of this writing, the format is:
 
             Each button is either a text button or an image button. A text button looks
@@ -490,9 +491,11 @@ class SubredditWidgetsModeration:
                 An image ``hoverState`` may be paired with a text widget, and a text
                 ``hoverState`` may be paired with an image widget.
 
-        :param styles: A ``dict`` with keys ``backgroundColor`` and ``headerColor``, and
-            values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
-            "headerColor": "#3333EE"}``.
+        :param description: Markdown text to describe the widget.
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
 
         :returns: The created :class:`.ButtonWidget`.
 
@@ -532,7 +535,10 @@ class SubredditWidgetsModeration:
             ]
             styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
             new_widget = widget_moderation.add_button_widget(
-                "Things to click", "Click some of these *cool* links!", buttons, styles
+                short_name="Things to click",
+                description="Click some of these *cool* links!",
+                buttons=buttons,
+                styles=styles,
             )
 
         """
@@ -1193,20 +1199,20 @@ class Calendar(Widget):
 
     .. include:: ../../typical_attributes.rst
 
-    ================= ============================================================
+    ================= =====================================================
     Attribute         Description
-    ================= ============================================================
+    ================= =====================================================
     ``configuration`` A ``dict`` describing the calendar configuration.
     ``data``          A list of ``dict``\ s that represent events.
     ``id``            The widget ID.
     ``kind``          The widget kind (always ``"calendar"``).
-    ``requiresSync``  A ``bool`` representing whether or not the calendar requires
+    ``requiresSync``  A ``bool`` representing whether the calendar requires
                       synchronization.
     ``shortName``     The short name of the widget.
     ``styles``        A ``dict`` with the keys ``"backgroundColor"`` and
                       ``"headerColor"``.
     ``subreddit``     The :class:`.Subreddit` the button widget belongs to.
-    ================= ============================================================
+    ================= =====================================================
 
     """
 
