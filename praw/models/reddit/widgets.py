@@ -627,23 +627,25 @@ class SubredditWidgetsModeration:
         calendar.update(other_settings)
         return self._create_widget(calendar)
 
+    @_deprecate_args("short_name", "data", "styles", "description")
     def add_community_list(
         self,
-        short_name: str,
+        *,
         data: List[Union[str, "praw.models.Subreddit"]],
-        styles: Dict[str, str],
         description: str = "",
+        short_name: str,
+        styles: Dict[str, str],
         **other_settings,
     ) -> "praw.models.CommunityList":
         """Add and return a :class:`.CommunityList` widget.
 
-        :param short_name: A name for the widget, no longer than 30 characters.
         :param data: A list of subreddits. Subreddits can be represented as ``str`` or
             as :class:`.Subreddit`. These types may be mixed within the list.
-        :param styles: A ``dict`` with keys ``"backgroundColor"`` and ``"headerColor"``,
-            and values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
-            "headerColor": "#3333EE"}``.
-        :param description: A ``str`` containing Markdown (default: ``""``).
+        :param description: A string containing Markdown (default: ``""``).
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
 
         :returns: The created :class:`.CommunityList`.
 
@@ -655,7 +657,7 @@ class SubredditWidgetsModeration:
             styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
             subreddits = ["learnpython", reddit.subreddit("redditdev")]
             new_widget = widget_moderation.add_community_list(
-                "My fav subs", subreddits, styles, "description"
+                short_name="My fav subs", data=subreddits, styles=styles, description="description"
             )
 
         """
@@ -1255,7 +1257,10 @@ class CommunityList(Widget, BaseList):
         styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
         subreddits = ["learnpython", reddit.subreddit("test")]
         community_list = widgets.mod.add_community_list(
-            "Related subreddits", subreddits, styles, "description"
+            short_name="Related subreddits",
+            data=subreddits,
+            styles=styles,
+            description="description",
         )
 
     For more information on creation, see :meth:`.add_community_list`.

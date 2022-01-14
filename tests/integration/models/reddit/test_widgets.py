@@ -280,7 +280,10 @@ class TestCommunityList(IntegrationTest):
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
             subreddits = ["learnpython", self.reddit.subreddit("redditdev")]
             widget = widgets.mod.add_community_list(
-                "My fav subs", subreddits, styles, "My description"
+                short_name="My fav subs",
+                data=subreddits,
+                styles=styles,
+                description="My description",
             )
 
             assert isinstance(widget, CommunityList)
