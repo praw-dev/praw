@@ -835,8 +835,12 @@ class SubredditWidgetsModeration:
         image_widget.update(other_settings)
         return self._create_widget(image_widget)
 
+    @_deprecate_args("data")
     def add_menu(
-        self, data: List[Dict[str, Union[List[Dict[str, str]], str]]], **other_settings
+        self,
+        *,
+        data: List[Dict[str, Union[List[Dict[str, str]], str]]],
+        **other_settings,
     ) -> "praw.models.Menu":
         r"""Add and return a :class:`.Menu` widget.
 
@@ -887,7 +891,7 @@ class SubredditWidgetsModeration:
                 },
                 {"text": "Reddit homepage", "url": "https://reddit.com"},
             ]
-            new_widget = widget_moderation.add_menu(menu_contents)
+            new_widget = widget_moderation.add_menu(data=menu_contents)
 
         """
         menu = {"data": data, "kind": "menu"}
@@ -1532,7 +1536,7 @@ class Menu(Widget, BaseList):
             },
             {"text": "Reddit homepage", "url": "https://reddit.com"},
         ]
-        menu = widgets.mod.add_menu(menu_contents)
+        menu = widgets.mod.add_menu(data=menu_contents)
 
     For more information on creation, see :meth:`.add_menu`.
 

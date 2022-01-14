@@ -523,7 +523,7 @@ class TestMenu(IntegrationTest):
         ]
 
         with self.use_cassette():
-            widget = widgets.mod.add_menu(menu_contents)
+            widget = widgets.mod.add_menu(data=menu_contents)
 
             assert isinstance(widget, Menu)
             assert len(widget) == 3
