@@ -3,6 +3,7 @@ from json import dumps
 from typing import TYPE_CHECKING, Generator, List, Optional, Union
 
 from ..const import API_PATH
+from ..util import _deprecate_args
 from .base import PRAWBase
 from .reddit.draft import Draft
 from .reddit.live import LiveThread
@@ -187,14 +188,16 @@ class LiveHelper(PRAWBase):
 
         return generator()
 
+    @_deprecate_args("title", "description", "nsfw", "resources")
     def create(
         self,
         title: str,
+        *,
         description: Optional[str] = None,
         nsfw: bool = False,
         resources: str = None,
     ) -> "praw.models.LiveThread":
-        r"""Create a new :class:`.LiveThread`.
+        """Create a new :class:`.LiveThread`.
 
         :param title: The title of the new :class:`.LiveThread`.
         :param description: The new :class:`.LiveThread`'s description.
