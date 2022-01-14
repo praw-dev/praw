@@ -40,7 +40,7 @@ class TestWikiPage(IntegrationTest):
 
         self.reddit.read_only = False
         with self.use_cassette():
-            page.edit("PRAW updated")
+            page.edit(content="PRAW updated")
 
     def test_edit__usernotes(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -55,7 +55,7 @@ class TestWikiPage(IntegrationTest):
             ]
             + [{"placeholder": "<CONTENT>", "replace": large_content}]
         ):
-            page.edit(large_content)
+            page.edit(content=large_content)
 
     def test_edit__with_reason(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -63,7 +63,7 @@ class TestWikiPage(IntegrationTest):
 
         self.reddit.read_only = False
         with self.use_cassette():
-            page.edit("PRAW updated with reason", reason="PRAW testing")
+            page.edit(content="PRAW updated with reason", reason="PRAW testing")
 
     def test_init__with_revision(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -169,7 +169,7 @@ class TestWikiPageModeration(IntegrationTest):
                 name="css-revert-fail",
                 image_path="tests/integration/files/icon.jpg",
             )
-            page.edit("div {background: url(%%css-revert-fail%%)}")
+            page.edit(content="div {background: url(%%css-revert-fail%%)}")
             revision_id = next(page.revisions(limit=1))["id"]
             subreddit.stylesheet.delete_image("css-revert-fail")
             with pytest.raises(Forbidden) as exc:
