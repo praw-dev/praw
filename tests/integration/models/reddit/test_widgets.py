@@ -449,7 +449,7 @@ class TestImageWidget(IntegrationTest):
 
         with self.use_cassette():
             image_paths = (self.image_path(name) for name in ("test.jpg", "test.png"))
-            image_dicts = [
+            image_data = [
                 {
                     "width": 0,
                     "height": 0,
@@ -461,7 +461,7 @@ class TestImageWidget(IntegrationTest):
 
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
             widget = widgets.mod.add_image_widget(
-                short_name="My new pics!", data=image_dicts, styles=styles
+                short_name="My new pics!", data=image_data, styles=styles
             )
 
             assert isinstance(widget, ImageWidget)
@@ -470,7 +470,7 @@ class TestImageWidget(IntegrationTest):
             assert len(widget) == 2
             assert all(isinstance(img, Image) for img in widget)
 
-            widget = widget.mod.update(shortName="My old pics :(", data=image_dicts[:1])
+            widget = widget.mod.update(shortName="My old pics :(", data=image_data[:1])
 
             assert isinstance(widget, ImageWidget)
             assert widget.shortName == "My old pics :("
