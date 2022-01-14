@@ -19,7 +19,7 @@ class TestMultireddit(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_copy(self, _):
         self.reddit.read_only = False
-        multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
+        multi = self.reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         with self.use_cassette():
             new = multi.copy()
         assert new.name == multi.name
@@ -29,7 +29,7 @@ class TestMultireddit(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_copy__with_display_name(self, _):
         self.reddit.read_only = False
-        multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
+        multi = self.reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         name = "A--B\n" * 10
         with self.use_cassette():
             new = multi.copy(display_name=name)
@@ -63,7 +63,7 @@ class TestMultireddit(IntegrationTest):
             assert "redditdev" not in multi.subreddits
 
     def test_subreddits(self):
-        multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
+        multi = self.reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         with self.use_cassette():
             assert multi.subreddits
         assert all(isinstance(x, Subreddit) for x in multi.subreddits)
@@ -83,31 +83,31 @@ class TestMultireddit(IntegrationTest):
 
 class TestMultiredditListings(IntegrationTest):
     def test_comments(self):
-        multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
+        multi = self.reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         with self.use_cassette():
             comments = list(multi.comments())
         assert len(comments) == 100
 
     def test_controversial(self):
-        multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
+        multi = self.reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         with self.use_cassette():
             submissions = list(multi.controversial())
         assert len(submissions) == 100
 
     def test_gilded(self):
-        multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
+        multi = self.reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         with self.use_cassette():
             submissions = list(multi.gilded())
         assert len(submissions) == 100
 
     def test_hot(self):
-        multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
+        multi = self.reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         with self.use_cassette():
             submissions = list(multi.hot())
         assert len(submissions) == 100
 
     def test_new(self):
-        multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
+        multi = self.reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         with self.use_cassette():
             submissions = list(multi.new())
         assert len(submissions) == 100
@@ -121,19 +121,19 @@ class TestMultiredditListings(IntegrationTest):
         assert len(submissions) == 100
 
     def test_random_rising(self):
-        multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
+        multi = self.reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         with self.use_cassette():
             submissions = list(multi.random_rising())
         assert len(submissions) > 0
 
     def test_rising(self):
-        multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
+        multi = self.reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         with self.use_cassette():
             submissions = list(multi.rising())
         assert len(submissions) > 0
 
     def test_top(self):
-        multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
+        multi = self.reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         with self.use_cassette():
             submissions = list(multi.top())
         assert len(submissions) == 100
@@ -142,7 +142,7 @@ class TestMultiredditListings(IntegrationTest):
 class TestMultiredditStreams(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_comments(self, _):
-        multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
+        multi = self.reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         with self.use_cassette():
             generator = multi.stream.comments()
             for i in range(110):
@@ -150,7 +150,7 @@ class TestMultiredditStreams(IntegrationTest):
 
     @mock.patch("time.sleep", return_value=None)
     def test_comments__with_pause(self, _):
-        multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
+        multi = self.reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         with self.use_cassette():
             comment_stream = multi.stream.comments(pause_after=0)
             comment_count = 1
@@ -167,7 +167,7 @@ class TestMultiredditStreams(IntegrationTest):
 
     @mock.patch("time.sleep", return_value=None)
     def test_submissions(self, _):
-        multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
+        multi = self.reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         with self.use_cassette():
             generator = multi.stream.submissions()
             for i in range(102):
@@ -175,7 +175,7 @@ class TestMultiredditStreams(IntegrationTest):
 
     @mock.patch("time.sleep", return_value=None)
     def test_submissions__with_pause(self, _):
-        multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
+        multi = self.reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         with self.use_cassette("TestMultiredditStreams.test_submissions"):
             generator = multi.stream.submissions(pause_after=-1)
             submission = next(generator)

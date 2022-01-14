@@ -238,14 +238,15 @@ class LiveHelper(PRAWBase):
 class MultiredditHelper(PRAWBase):
     """Provide a set of functions to interact with multireddits."""
 
+    @_deprecate_args("redditor", "name")
     def __call__(
-        self, redditor: Union[str, "praw.models.Redditor"], name: str
+        self, *, name: str, redditor: Union[str, "praw.models.Redditor"]
     ) -> "praw.models.Multireddit":
         """Return a lazy instance of :class:`.Multireddit`.
 
+        :param name: The name of the multireddit.
         :param redditor: A redditor name or :class:`.Redditor` instance who owns the
             multireddit.
-        :param name: The name of the multireddit.
 
         """
         path = f"/user/{redditor}/m/{name}"

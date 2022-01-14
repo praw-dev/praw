@@ -53,7 +53,9 @@ class BaseListingMixin(PRAWBase):
         .. code-block:: python
 
             reddit.domain("imgur.com").controversial(time_filter="week")
-            reddit.multireddit("samuraisam", "programming").controversial(time_filter="day")
+            reddit.multireddit(redditor="samuraisam", name="programming").controversial(
+                time_filter="day"
+            )
             reddit.redditor("spez").controversial(time_filter="month")
             reddit.redditor("spez").comments.controversial(time_filter="year")
             reddit.redditor("spez").submissions.controversial(time_filter="all")
@@ -76,7 +78,7 @@ class BaseListingMixin(PRAWBase):
         .. code-block:: python
 
             reddit.domain("imgur.com").hot()
-            reddit.multireddit("samuraisam", "programming").hot()
+            reddit.multireddit(redditor="samuraisam", name="programming").hot()
             reddit.redditor("spez").hot()
             reddit.redditor("spez").comments.hot()
             reddit.redditor("spez").submissions.hot()
@@ -98,7 +100,7 @@ class BaseListingMixin(PRAWBase):
         .. code-block:: python
 
             reddit.domain("imgur.com").new()
-            reddit.multireddit("samuraisam", "programming").new()
+            reddit.multireddit(redditor="samuraisam", name="programming").new()
             reddit.redditor("spez").new()
             reddit.redditor("spez").comments.new()
             reddit.redditor("spez").submissions.new()
@@ -131,7 +133,7 @@ class BaseListingMixin(PRAWBase):
         .. code-block:: python
 
             reddit.domain("imgur.com").top(time_filter="week")
-            reddit.multireddit("samuraisam", "programming").top(time_filter="day")
+            reddit.multireddit(redditor="samuraisam", name="programming").top(time_filter="day")
             reddit.redditor("spez").top(time_filter="month")
             reddit.redditor("spez").comments.top(time_filter="year")
             reddit.redditor("spez").submissions.top(time_filter="all")

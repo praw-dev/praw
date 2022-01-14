@@ -341,11 +341,11 @@ class Reddit:
         """An instance of :class:`.MultiredditHelper`.
 
         Provides the interface to working with :class:`.Multireddit` instances. For
-        example you can obtain a :class:`.Multireddit` instance via:
+        example, you can obtain a :class:`.Multireddit` instance via:
 
         .. code-block:: python
 
-            reddit.multireddit("samuraisam", "programming")
+            reddit.multireddit(redditor="samuraisam", name="programming")
 
         """
 

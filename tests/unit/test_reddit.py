@@ -137,7 +137,10 @@ class TestReddit(UnitTest):
         assert str(excinfo.value) == "ids must be a list"
 
     def test_multireddit(self):
-        assert self.reddit.multireddit("bboe", "aa").path == "/user/bboe/m/aa"
+        assert (
+            self.reddit.multireddit(redditor="bboe", name="aa").path
+            == "/user/bboe/m/aa"
+        )
 
     @mock.patch(
         "praw.Reddit.request",
