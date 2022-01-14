@@ -121,8 +121,9 @@ class WikiPageModeration:
         )
         return self.wikipage._reddit.get(url)["data"]
 
+    @_deprecate_args("listed", "permlevel")
     def update(
-        self, listed: bool, permlevel: int, **other_settings: Any
+        self, *, listed: bool, permlevel: int, **other_settings: Any
     ) -> Dict[str, Any]:
         """Update the settings for this :class:`.WikiPage`.
 
