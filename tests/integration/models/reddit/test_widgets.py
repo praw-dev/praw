@@ -646,7 +646,7 @@ class TestPostFlairWidget(IntegrationTest):
 
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
             widget = widgets.mod.add_post_flair_widget(
-                "Some flairs", "list", flairs, styles
+                display="Some flairs", order="list", short_name=flairs, styles=styles
             )
 
             assert isinstance(widget, PostFlairWidget)

@@ -842,9 +842,9 @@ class SubredditWidgetsModeration:
         data: List[Dict[str, Union[List[Dict[str, str]], str]]],
         **other_settings,
     ) -> "praw.models.Menu":
-        r"""Add and return a :class:`.Menu` widget.
+        """Add and return a :class:`.Menu` widget.
 
-        :param data: A list of ``dict``\ s describing menu contents, as specified in
+        :param data: A list of dictionaries describing menu contents, as specified in
             `Reddit docs`_. As of this writing, the format is:
 
             .. code-block:: text
@@ -898,17 +898,18 @@ class SubredditWidgetsModeration:
         menu.update(other_settings)
         return self._create_widget(menu)
 
+    @_deprecate_args("short_name", "display", "order", "styles")
     def add_post_flair_widget(
         self,
-        short_name: str,
+        *,
         display: str,
         order: List[str],
+        short_name: str,
         styles: Dict[str, str],
         **other_settings,
     ) -> "praw.models.PostFlairWidget":
         """Add and return a :class:`.PostFlairWidget`.
 
-        :param short_name: A name for the widget, no longer than 30 characters.
         :param display: Display style. Either ``"cloud"`` or ``"list"``.
         :param order: A list of flair template IDs. You can get all flair template IDs
             in a subreddit with:
@@ -917,9 +918,10 @@ class SubredditWidgetsModeration:
 
                 flairs = [f["id"] for f in subreddit.flair.link_templates]
 
-        :param styles: A ``dict`` with keys ``backgroundColor`` and ``headerColor``, and
-            values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
-            "headerColor": "#3333EE"}``.
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
 
         :returns: The created :class:`.PostFlairWidget`.
 
@@ -932,7 +934,7 @@ class SubredditWidgetsModeration:
             flairs = [f["id"] for f in subreddit.flair.link_templates]
             styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
             new_widget = widget_moderation.add_post_flair_widget(
-                "Some flairs", "list", flairs, styles
+                short_name="Some flairs", display="list", order=flairs, styles=styles
             )
 
         """
@@ -1615,7 +1617,7 @@ class ModeratorsWidget(Widget, BaseList):
 
 
 class PostFlairWidget(Widget, BaseList):
-    r"""Class to represent a post flair widget.
+    """Class to represent a post flair widget.
 
     Find an existing one:
 
@@ -1640,7 +1642,9 @@ class PostFlairWidget(Widget, BaseList):
         widgets = subreddit.widgets
         flairs = [f["id"] for f in subreddit.flair.link_templates]
         styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-        post_flair = widgets.mod.add_post_flair_widget("Some flairs", "list", flairs, styles)
+        post_flair = widgets.mod.add_post_flair_widget(
+            short_name="Some flairs", display="list", order=flairs, styles=styles
+        )
 
     For more information on creation, see :meth:`.add_post_flair_widget`.
 
@@ -1671,7 +1675,7 @@ class PostFlairWidget(Widget, BaseList):
     ``shortName`` The short name of the widget.
     ``styles``    A ``dict`` with the keys ``"backgroundColor"`` and ``"headerColor"``.
     ``subreddit`` The :class:`.Subreddit` the button widget belongs to.
-    ``templates`` A ``dict`` that maps flair IDs to ``dict``\ s that describe flairs.
+    ``templates`` A ``dict`` that maps flair IDs to dictionaries that describe flairs.
     ============= =====================================================================
 
     """
