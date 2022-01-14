@@ -552,22 +552,22 @@ class SubredditWidgetsModeration:
         button_widget.update(other_settings)
         return self._create_widget(button_widget)
 
+    @_deprecate_args(
+        "short_name", "google_calendar_id", "requires_sync", "configuration", "styles"
+    )
     def add_calendar(
         self,
-        short_name: str,
+        *,
+        configuration: Dict[str, Union[bool, int]],
         google_calendar_id: str,
         requires_sync: bool,
-        configuration: Dict[str, Union[bool, int]],
+        short_name: str,
         styles: Dict[str, str],
         **other_settings,
     ) -> "praw.models.Calendar":
         """Add and return a :class:`.Calendar` widget.
 
-        :param short_name: A name for the widget, no longer than 30 characters.
-        :param google_calendar_id: An email-style calendar ID. To share a Google
-            Calendar, make it public, then find the "Calendar ID".
-        :param requires_sync: A ``bool``.
-        :param configuration: A ``dict`` as specified in `Reddit docs`_. For example:
+        :param configuration: A dictionary as specified in `Reddit docs`_. For example:
 
             .. code-block:: python
 
@@ -580,9 +580,13 @@ class SubredditWidgetsModeration:
                     "showTitle": True,
                 }
 
-        :param styles: A ``dict`` with keys ``backgroundColor`` and ``headerColor``, and
-            values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
-            "headerColor": "#3333EE"}``.
+        :param google_calendar_id: An email-style calendar ID. To share a Google
+            Calendar, make it public, then find the "Calendar ID".
+        :param requires_sync: Whether the calendar needs synchronization.
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
 
         :returns: The created :class:`.Calendar`.
 
@@ -602,9 +606,13 @@ class SubredditWidgetsModeration:
                 "showTime": True,
                 "showTitle": True,
             }
-            cal_id = "y6nm89jy427drk8l71w75w9wjn@group.calendar.google.com"
+            calendar_id = "y6nm89jy427drk8l71w75w9wjn@group.calendar.google.com"
             new_widget = widget_moderation.add_calendar(
-                "Upcoming Events", cal_id, True, config, styles
+                short_name="Upcoming Events",
+                google_calendar_id=calendar_id,
+                requires_sync=True,
+                configuration=config,
+                styles=styles,
             )
 
         """
@@ -1150,7 +1158,7 @@ class ButtonWidget(Widget, BaseList):
 
 
 class Calendar(Widget):
-    r"""Class to represent a calendar widget.
+    """Class to represent a calendar widget.
 
     Find an existing one:
 
@@ -1180,7 +1188,13 @@ class Calendar(Widget):
             "showTitle": True,
         }
         cal_id = "y6nm89jy427drk8l71w75w9wjn@group.calendar.google.com"
-        calendar = widgets.mod.add_calendar("Upcoming Events", cal_id, True, config, styles)
+        calendar = widgets.mod.add_calendar(
+            short_name="Upcoming Events",
+            google_calendar_id=cal_id,
+            requires_sync=True,
+            configuration=config,
+            styles=styles,
+        )
 
     For more information on creation, see :meth:`.add_calendar`.
 
@@ -1203,7 +1217,7 @@ class Calendar(Widget):
     Attribute         Description
     ================= =====================================================
     ``configuration`` A ``dict`` describing the calendar configuration.
-    ``data``          A list of ``dict``\ s that represent events.
+    ``data``          A list of dictionaries that represent events.
     ``id``            The widget ID.
     ``kind``          The widget kind (always ``"calendar"``).
     ``requiresSync``  A ``bool`` representing whether the calendar requires

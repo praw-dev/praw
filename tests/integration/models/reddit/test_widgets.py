@@ -217,7 +217,11 @@ class TestCalendar(IntegrationTest):
             }
             cal_id = "ccahu0rstno2jrvioq4ccffn78@group.calendar.google.com"
             widget = widgets.mod.add_calendar(
-                "Upcoming Events", cal_id, True, config, styles
+                short_name="Upcoming Events",
+                google_calendar_id=cal_id,
+                requires_sync=True,
+                configuration=config,
+                styles=styles,
             )
 
             assert isinstance(widget, Calendar)
