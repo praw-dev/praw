@@ -92,19 +92,17 @@ class Auth(PRAWBase):
             authorizer.refresh()
         return authorizer.scopes
 
+    @_deprecate_args("scopes", "state", "duration", "implicit")
     def url(
         self,
-        scopes: List[str],
-        state: str,
+        *,
         duration: str = "permanent",
         implicit: bool = False,
+        scopes: List[str],
+        state: str,
     ) -> str:
         """Return the URL used out-of-band to grant access to your application.
 
-        :param scopes: A list of OAuth scopes to request authorization for.
-        :param state: A string that will be reflected in the callback to
-            ``redirect_uri``. This value should be temporarily unique to the client for
-            whom the URL was generated for.
         :param duration: Either ``"permanent"`` or ``"temporary"`` (default:
             ``"permanent"``). ``"temporary"`` authorizations generate access tokens that
             last only 1 hour. ``"permanent"`` authorizations additionally generate a
@@ -114,6 +112,10 @@ class Auth(PRAWBase):
         :param implicit: For **installed** applications, this value can be set to use
             the implicit, rather than the code flow. When ``True``, the ``duration``
             argument has no effect as only temporary tokens can be retrieved.
+        :param scopes: A list of OAuth scopes to request authorization for.
+        :param state: A string that will be reflected in the callback to
+            ``redirect_uri``. This value should be temporarily unique to the client for
+            whom the URL was generated for.
 
         """
         authenticator = self._reddit._read_only_core._authorizer._authenticator

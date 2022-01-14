@@ -55,7 +55,7 @@ def get_request_params(client_id, redirect_uri, thing):
         user_agent="Award fetcher by u/Lil_SpazJoekp",
     )
     state = str(random.randint(0, 65000))
-    url = reddit.auth.url(scopes, state, "temporary")
+    url = reddit.auth.url(duration="temporary", scopes=scopes, state=state)
     print(f"Open this url in your browser: {url}")
     sys.stdout.flush()
 
