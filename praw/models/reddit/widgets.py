@@ -671,20 +671,20 @@ class SubredditWidgetsModeration:
         community_list.update(other_settings)
         return self._create_widget(community_list)
 
+    @_deprecate_args("short_name", "text", "css", "height", "image_data", "styles")
     def add_custom_widget(
         self,
-        short_name: str,
-        text: str,
+        *,
         css: str,
         height: int,
         image_data: List[Dict[str, Union[str, int]]],
+        short_name: str,
         styles: Dict[str, str],
+        text: str,
         **other_settings,
     ) -> "praw.models.CustomWidget":
-        r"""Add and return a :class:`.CustomWidget`.
+        """Add and return a :class:`.CustomWidget`.
 
-        :param short_name: A name for the widget, no longer than 30 characters.
-        :param text: The Markdown text displayed in the widget.
         :param css: The CSS for the widget, no longer than 100000 characters.
 
             .. note::
@@ -694,9 +694,9 @@ class SubredditWidgetsModeration:
                 comment) as your CSS.
 
         :param height: The height of the widget, between 50 and 500.
-        :param image_data: A list of ``dict``\ s as specified in `Reddit docs`_. Each
-            ``dict`` represents an image and has the key ``"url"`` which maps to the URL
-            of an image hosted on Reddit's servers. Images should be uploaded using
+        :param image_data: A list of dictionaries as specified in `Reddit docs`_. Each
+            dictionary represents an image and has the key ``"url"`` which maps to the
+            URL of an image hosted on Reddit's servers. Images should be uploaded using
             :meth:`.upload_image`.
 
             For example:
@@ -718,9 +718,11 @@ class SubredditWidgetsModeration:
                     },
                 ]
 
-        :param styles: A ``dict`` with keys ``backgroundColor`` and ``headerColor``, and
-            values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
-            "headerColor": "#3333EE"}``.
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
+        :param text: The Markdown text displayed in the widget.
 
         :returns: The created :class:`.CustomWidget`.
 
@@ -733,13 +735,18 @@ class SubredditWidgetsModeration:
             widget_moderation = reddit.subreddit("test").widgets.mod
             image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
             image_urls = [widget_moderation.upload_image(img_path) for img_path in image_paths]
-            image_dicts = [
+            image_data = [
                 {"width": 600, "height": 450, "name": "logo", "url": image_urls[0]},
                 {"width": 450, "height": 600, "name": "icon", "url": image_urls[1]},
             ]
             styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
             new_widget = widget_moderation.add_custom_widget(
-                "My widget", "# Hello world!", "/**/", 200, image_dicts, styles
+                image_short_name="My widget",
+                text="# Hello world!",
+                css="/**/",
+                height=200,
+                image_data=image_data,
+                styles=styles,
             )
 
         """
@@ -1322,7 +1329,12 @@ class CustomWidget(Widget):
         widgets = reddit.subreddit("test").widgets
         styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
         custom = widgets.mod.add_custom_widget(
-            "My custom widget", "# Hello world!", "/**/", 200, [], styles
+            short_name="My custom widget",
+            text="# Hello world!",
+            css="/**/",
+            height=200,
+            image_data=[],
+            styles=styles,
         )
 
     For more information on creation, see :meth:`.add_custom_widget`.
