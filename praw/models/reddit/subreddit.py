@@ -3084,7 +3084,7 @@ class ModeratorRelationship(SubredditRelationship):
     ):
         other_settings = deepcopy(other_settings) if other_settings else {}
         other_settings["permissions"] = permissions_string(
-            permissions, ModeratorRelationship.PERMISSIONS
+            known_permissions=ModeratorRelationship.PERMISSIONS, permissions=permissions
         )
         return other_settings
 

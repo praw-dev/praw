@@ -101,16 +101,26 @@ class TestPermissionsString(UnitTest):
     PERMISSIONS = {"a", "b", "c"}
 
     def test_permissions_string__all_explicit(self):
-        assert "-all,+b,+a,+c" == permissions_string(["b", "a", "c"], self.PERMISSIONS)
+        assert "-all,+b,+a,+c" == permissions_string(
+            known_permissions=self.PERMISSIONS, permissions=["b", "a", "c"]
+        )
 
     def test_permissions_string__empty_list(self):
-        assert "-all" == permissions_string([], set())
-        assert "-all,-a,-b,-c" == permissions_string([], self.PERMISSIONS)
+        assert "-all" == permissions_string(known_permissions=set(), permissions=[])
+        assert "-all,-a,-b,-c" == permissions_string(
+            known_permissions=self.PERMISSIONS, permissions=[]
+        )
 
     def test_permissions_string__none(self):
-        assert "+all" == permissions_string(None, set())
-        assert "+all" == permissions_string(None, self.PERMISSIONS)
+        assert "+all" == permissions_string(known_permissions=set(), permissions=None)
+        assert "+all" == permissions_string(
+            known_permissions=self.PERMISSIONS, permissions=None
+        )
 
     def test_permissions_string__with_additional_permissions(self):
-        assert "-all,+d" == permissions_string(["d"], set())
-        assert "-all,-a,-b,-c,+d" == permissions_string(["d"], self.PERMISSIONS)
+        assert "-all,+d" == permissions_string(
+            known_permissions=set(), permissions=["d"]
+        )
+        assert "-all,-a,-b,-c,+d" == permissions_string(
+            known_permissions=self.PERMISSIONS, permissions=["d"]
+        )
