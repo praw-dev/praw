@@ -104,10 +104,10 @@ class TestSubreddit(IntegrationTest):
         new_name = "PRAW_rrldkyrfln"
         with self.use_cassette():
             subreddit = self.reddit.subreddit.create(
-                name=new_name,
-                title="Sub",
+                new_name,
                 link_type="any",
                 subreddit_type="public",
+                title="Sub",
                 wikimode="disabled",
             )
             assert subreddit.display_name == new_name
@@ -119,9 +119,9 @@ class TestSubreddit(IntegrationTest):
             with pytest.raises(RedditAPIException) as excinfo:
                 self.reddit.subreddit.create(
                     "redditdev",
-                    title="redditdev",
                     link_type="any",
                     subreddit_type="public",
+                    title="redditdev",
                     wikimode="disabled",
                 )
             assert excinfo.value.items[0].error_type == "SUBREDDIT_EXISTS"
@@ -132,10 +132,10 @@ class TestSubreddit(IntegrationTest):
             with pytest.raises(RedditAPIException) as excinfo:
                 # Supplying invalid setting for link_type
                 self.reddit.subreddit.create(
-                    name="PRAW_iavynavffv",
-                    title="sub",
+                    "PRAW_iavynavffv",
                     link_type="abcd",
                     subreddit_type="public",
+                    title="sub",
                     wikimode="disabled",
                 )
             assert excinfo.value.items[0].error_type == "INVALID_OPTION"
@@ -146,10 +146,10 @@ class TestSubreddit(IntegrationTest):
             with pytest.raises(RedditAPIException) as excinfo:
                 # Not supplying required field title.
                 self.reddit.subreddit.create(
-                    name="PRAW_iavynavffv",
-                    title=None,
+                    "PRAW_iavynavffv",
                     link_type="any",
                     subreddit_type="public",
+                    title=None,
                     wikimode="disabled",
                 )
             assert excinfo.value.items[0].error_type == "NO_TEXT"

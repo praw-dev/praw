@@ -370,7 +370,7 @@ class Reddit:
 
         .. code-block:: python
 
-            reddit.subreddit.create("coolnewsubname")
+            reddit.subreddit.create(name="coolnewsubname")
 
         To obtain a lazy :class:`.Subreddit` instance run:
 

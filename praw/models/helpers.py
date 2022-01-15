@@ -327,27 +327,29 @@ class SubredditHelper(PRAWBase):
 
         return Subreddit(self._reddit, display_name=display_name)
 
+    @_deprecate_args("name", "title", "link_type", "subreddit_type", "wikimode")
     def create(
         self,
         name: str,
-        title: Optional[str] = None,
+        *,
         link_type: str = "any",
         subreddit_type: str = "public",
+        title: Optional[str] = None,
         wikimode: str = "disabled",
         **other_settings: Optional[str],
     ) -> "praw.models.Subreddit":
         """Create a new :class:`.Subreddit`.
 
         :param name: The name for the new subreddit.
-        :param title: The title of the subreddit. When ``None`` or ``""`` use the value
-            of ``"name"``.
         :param link_type: The types of submissions users can make. One of ``"any"``,
             ``"link"``, or ``"self"`` (default: ``"any"``).
         :param subreddit_type: One of ``"archived"``, ``"employees_only"``,
             ``"gold_only"``, ``"gold_restricted"``, ``"private"``, ``"public"``, or
-            ``"restricted"`` (default: "public").
+            ``"restricted"`` (default: ``"public"``).
+        :param title: The title of the subreddit. When ``None`` or ``""`` use the value
+            of ``name``.
         :param wikimode: One of ``"anyone"``, ``"disabled"``, or ``"modonly"`` (default:
-            ``disabled``).
+            ``"disabled"``).
 
         Any keyword parameters not provided, or set explicitly to ``None``, will take on
         a default value assigned by the Reddit server.
