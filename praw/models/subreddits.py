@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Union
 from warnings import warn
 
 from ..const import API_PATH
+from ..util import _deprecate_args
 from . import Subreddit
 from .base import PRAWBase
 from .listing.generator import ListingGenerator
@@ -127,14 +128,19 @@ class Subreddits(PRAWBase):
             self._reddit, API_PATH["subreddits_search"], **generator_kwargs
         )
 
+    @_deprecate_args("query", "include_nsfw", "exact")
     def search_by_name(
-        self, query: str, include_nsfw: bool = True, exact: bool = False
+        self,
+        query: str,
+        *,
+        include_nsfw: bool = True,
+        exact: bool = False,
     ) -> List["praw.models.Subreddit"]:
-        """Return list of Subreddits whose names begin with ``query``.
+        r"""Return list of :class:`.Subreddit`\ s whose names begin with ``query``.
 
         :param query: Search for subreddits beginning with this string.
-        :param include_nsfw: Include subreddits labeled NSFW (default: ``True``).
         :param exact: Return only exact matches to ``query`` (default: ``False``).
+        :param include_nsfw: Include subreddits labeled NSFW (default: ``True``).
 
         """
         result = self._reddit.post(
