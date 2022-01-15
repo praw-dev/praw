@@ -593,7 +593,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         if tags[:4] == ["Code", "Message", "ProposedSize", "MaxSizeAllowed"]:
             # Returned if image is too big
             code, message, actual, maximum_size = [element.text for element in root[:4]]
-            raise TooLargeMediaException(int(maximum_size), int(actual))
+            raise TooLargeMediaException(
+                actual=int(actual), maximum_size=int(maximum_size)
+            )
 
     def _submit_media(self, data: dict, timeout: int, websocket_url: str = None):
         """Submit and return an `image`, `video`, or `videogif`.

@@ -10,6 +10,8 @@ All other exceptions are subclassed from :class:`.ClientException`.
 from typing import List, Optional, Union
 from warnings import warn
 
+from .util import _deprecate_args
+
 
 class PRAWException(Exception):
     """The base PRAW Exception that all other exception classes extend."""
@@ -28,17 +30,19 @@ class RedditErrorItem:
             error_str += f" on field {self.field!r}"
         return error_str
 
+    @_deprecate_args("error_type", "message", "field")
     def __init__(
         self,
         error_type: str,
-        message: Optional[str] = None,
+        *,
         field: Optional[str] = None,
+        message: Optional[str] = None,
     ):
         """Initialize a :class:`.RedditErrorItem` instance.
 
         :param error_type: The error type set on Reddit's end.
-        :param message: The associated message for the error.
         :param field: The input field associated with the error, if available.
+        :param message: The associated message for the error.
 
         """
         self.error_type = error_type
@@ -84,9 +88,9 @@ class APIException(PRAWException):
             exception
             if isinstance(exception, RedditErrorItem)
             else RedditErrorItem(
-                exception[0],
-                exception[1] if bool(exception[1]) else "",
-                exception[2] if bool(exception[2]) else "",
+                error_type=exception[0],
+                field=exception[2] if bool(exception[2]) else "",
+                message=exception[1] if bool(exception[1]) else "",
             )
             for exception in exceptions
         ]
@@ -228,11 +232,12 @@ class ReadOnlyException(ClientException):
 class TooLargeMediaException(ClientException):
     """Indicate exceptions from uploading media that's too large."""
 
-    def __init__(self, maximum_size: int, actual: int):
+    @_deprecate_args("maximum_size", "actual")
+    def __init__(self, *, actual: int, maximum_size: int):
         """Initialize a :class:`.TooLargeMediaException` instance.
 
-        :param maximum_size: The maximum_size size of the uploaded media.
         :param actual: The actual size of the uploaded media.
+        :param maximum_size: The maximum size of the uploaded media.
 
         """
         self.maximum_size = maximum_size
