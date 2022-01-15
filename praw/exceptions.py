@@ -210,7 +210,8 @@ class InvalidImplicitAuth(ClientException):
 class InvalidURL(ClientException):
     """Indicate exceptions where an invalid URL is entered."""
 
-    def __init__(self, url: str, message: str = "Invalid URL: {}"):
+    @_deprecate_args("url", "message")
+    def __init__(self, url: str, *, message: str = "Invalid URL: {}"):
         """Initialize an :class:`.InvalidURL` instance.
 
         :param url: The invalid URL.
