@@ -252,13 +252,23 @@ class MultiredditHelper(PRAWBase):
         path = f"/user/{redditor}/m/{name}"
         return Multireddit(self._reddit, _data={"name": name, "path": path})
 
+    @_deprecate_args(
+        "display_name",
+        "subreddits",
+        "description_md",
+        "icon_name",
+        "key_color",
+        "visibility",
+        "weighting_scheme",
+    )
     def create(
         self,
-        display_name: str,
-        subreddits: Union[str, "praw.models.Subreddit"],
+        *,
         description_md: Optional[str] = None,
+        display_name: str,
         icon_name: Optional[str] = None,
         key_color: Optional[str] = None,
+        subreddits: Union[str, "praw.models.Subreddit"],
         visibility: str = "private",
         weighting_scheme: str = "classic",
     ) -> "praw.models.Multireddit":

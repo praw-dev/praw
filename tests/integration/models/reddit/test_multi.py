@@ -42,7 +42,7 @@ class TestMultireddit(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             multireddit = self.reddit.multireddit.create(
-                "PRAW create test", subreddits=["redditdev"]
+                display_name="PRAW create test", subreddits=["redditdev"]
             )
         assert multireddit.display_name == "PRAW create test"
         assert multireddit.name == "praw_create_test"
