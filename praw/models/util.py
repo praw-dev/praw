@@ -2,7 +2,7 @@
 import random
 import time
 from collections import OrderedDict
-from typing import Any, Callable, Generator, List, Optional, Set
+from typing import Any, Callable, Generator, List, Optional, Set, Union
 
 from ..util import _deprecate_args
 
@@ -89,30 +89,34 @@ def permissions_string(
     return ",".join(to_set)
 
 
+@_deprecate_args(
+    "function", "pause_after", "skip_existing", "attribute_name", "exclude_before"
+)
 def stream_generator(
-    function: Callable[[Any], Any],
-    pause_after: Optional[int] = None,
-    skip_existing: bool = False,
+    function: Callable,
+    *,
     attribute_name: str = "fullname",
     exclude_before: bool = False,
+    pause_after: Optional[int] = None,
+    skip_existing: bool = False,
     **function_kwargs: Any,
 ) -> Generator[Any, None, None]:
-    """Yield new items from ListingGenerators and ``None`` when paused.
+    """Yield new items from ``function`` as they become available.
 
     :param function: A callable that returns a :class:`.ListingGenerator`, e.g.,
         :meth:`.Subreddit.comments` or :meth:`.Subreddit.new`.
+    :param attribute_name: The field to use as an ID (default: ``"fullname"``).
+    :param exclude_before: When ``True`` does not pass ``params`` to ``function``
+        (default: ``False``).
     :param pause_after: An integer representing the number of requests that result in no
         new items before this function yields ``None``, effectively introducing a pause
         into the stream. A negative value yields ``None`` after items from a single
         response have been yielded, regardless of number of new items obtained in that
         response. A value of ``0`` yields ``None`` after every response resulting in no
         new items, and a value of ``None`` never introduces a pause (default: ``None``).
-    :param skip_existing: When ``True`` does not yield any results from the first
+    :param skip_existing: When ``True``, this does not yield any results from the first
         request thereby skipping any items that existed in the stream prior to starting
         the stream (default: ``False``).
-    :param attribute_name: The field to use as an ID (default: ``"fullname"``).
-    :param exclude_before: When ``True`` does not pass ``params`` to ``functions``
-        (default: ``False``).
 
     Additional keyword arguments will be passed to ``function``.
 
