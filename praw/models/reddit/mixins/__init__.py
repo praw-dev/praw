@@ -149,8 +149,9 @@ class ThingModerationMixin:
         """
         self.thing._reddit.post(API_PATH["lock"], data={"id": self.thing.fullname})
 
+    @_deprecate_args("spam", "mod_note", "reason_id")
     def remove(
-        self, spam: bool = False, mod_note: str = "", reason_id: Optional[str] = None
+        self, *, mod_note: str = "", spam: bool = False, reason_id: Optional[str] = None
     ):
         """Remove a :class:`.Comment` or :class:`.Submission`.
 
