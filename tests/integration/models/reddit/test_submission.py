@@ -446,7 +446,7 @@ class TestSubmissionModeration(IntegrationTest):
             mod.remove()
             message = "message"
             res = [
-                mod.send_removal_message(type, "title", message)
+                mod.send_removal_message(message=type, title="title", type=message)
                 for type in ("public", "private", "private_exposed")
             ]
             assert isinstance(res[0], Comment)
