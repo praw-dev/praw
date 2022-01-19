@@ -24,7 +24,9 @@ class ThingModerationMixin:
 
     REMOVAL_MESSAGE_API = None
 
-    def _add_removal_reason(self, mod_note: str = "", reason_id: Optional[str] = None):
+    def _add_removal_reason(
+        self, *, mod_note: str = "", reason_id: Optional[str] = None
+    ):
         """Add a removal reason for a :class:`.Comment` or :class:`.Submission`.
 
         :param mod_note: A message for the other moderators.
@@ -182,7 +184,7 @@ class ThingModerationMixin:
         data = {"id": self.thing.fullname, "spam": bool(spam)}
         self.thing._reddit.post(API_PATH["remove"], data=data)
         if any([reason_id, mod_note]):
-            self._add_removal_reason(mod_note, reason_id)
+            self._add_removal_reason(mod_note=mod_note, reason_id=reason_id)
 
     @_deprecate_args("message", "title", "type")
     def send_removal_message(
