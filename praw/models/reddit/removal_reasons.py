@@ -29,12 +29,12 @@ class RemovalReason(RedditBase):
     STR_FIELD = "id"
 
     @staticmethod
-    def _warn_reason_id(reason_id_value: Optional[str], id_value: Optional[str]):
+    def _warn_reason_id(*, id_value: Optional[str], reason_id_value: Optional[str]):
         """Reason ID param is deprecated. Warns if it's used.
 
-        :param reason_id_value: The value passed as parameter ``reason_id``.
         :param id_value: Returns the actual value of parameter ``id`` is parameter
             ``reason_id`` is not used.
+        :param reason_id_value: The value passed as parameter ``reason_id``.
 
         """
         if reason_id_value is not None:
@@ -76,7 +76,7 @@ class RemovalReason(RedditBase):
             compatibility. This parameter should not be used.
 
         """
-        id = self._warn_reason_id(reason_id, id)
+        id = self._warn_reason_id(id_value=id, reason_id_value=reason_id)
         if (id, _data).count(None) != 1:
             raise ValueError("Either id or _data needs to be given.")
 
