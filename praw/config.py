@@ -94,7 +94,7 @@ class Config:
         del self.custom[key]
         return value
 
-    def _fetch_default(self, key, default=None):
+    def _fetch_default(self, key, *, default=None):
         if key not in self.custom:
             return default
         return self._fetch(key)
@@ -112,13 +112,13 @@ class Config:
     def _initialize_attributes(self):
         self._short_url = self._fetch_default("short_url") or self.CONFIG_NOT_SET
         self.check_for_async = self._config_boolean(
-            self._fetch_default("check_for_async", True)
+            self._fetch_default("check_for_async", default=True)
         )
         self.check_for_updates = self._config_boolean(
             self._fetch_or_not_set("check_for_updates")
         )
         self.warn_comment_sort = self._config_boolean(
-            self._fetch_default("warn_comment_sort", True)
+            self._fetch_default("warn_comment_sort", default=True)
         )
         self.kinds = {
             x: self._fetch(f"{x}_kind")
