@@ -172,7 +172,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
-    def _friend(self, method, data):
+    def _friend(self, *, data, method):
         url = API_PATH["friend_v1"].format(user=self)
         self._reddit.request(data=dumps(data), method=method, path=url)
 
@@ -233,7 +233,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             reddit.redditor("spez").friend(note="My favorite admin")
 
         """
-        self._friend("PUT", data={"note": note} if note else {})
+        self._friend(data={"note": note} if note else {}, method="PUT")
 
     def friend_info(self) -> "praw.models.Redditor":
         """Return a :class:`.Redditor` instance with specific friend-related attributes.
@@ -414,7 +414,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             reddit.redditor("spez").unfriend()
 
         """
-        self._friend(method="DELETE", data={"id": str(self)})
+        self._friend(data={"id": str(self)}, method="DELETE")
 
 
 class RedditorStream:
