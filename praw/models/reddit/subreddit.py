@@ -3701,7 +3701,7 @@ class SubredditStylesheet:
         self.subreddit._reddit.patch(url, data=style_data)
 
     def _upload_image(
-        self, image_path: str, data: Dict[str, Union[str, Any]]
+        self, *, data: Dict[str, Union[str, Any]], image_path: str
     ) -> Dict[str, Any]:
         with open(image_path, "rb") as image:
             header = image.read(len(JPEG_HEADER))
@@ -3891,7 +3891,9 @@ class SubredditStylesheet:
             reddit.subreddit("test").stylesheet.upload(name="smile", image_path="img.png")
 
         """
-        return self._upload_image(image_path, {"name": name, "upload_type": "img"})
+        return self._upload_image(
+            data={"name": name, "upload_type": "img"}, image_path=image_path
+        )
 
     def upload_banner(self, image_path: str):
         """Upload an image for the :class:`.Subreddit`'s (redesign) banner image.
@@ -4007,7 +4009,7 @@ class SubredditStylesheet:
             reddit.subreddit("test").stylesheet.upload_header("header.png")
 
         """
-        return self._upload_image(image_path, {"upload_type": "header"})
+        return self._upload_image(data={"upload_type": "header"}, image_path=image_path)
 
     def upload_mobile_header(self, image_path: str) -> Dict[str, str]:
         """Upload an image to be used as the :class:`.Subreddit`'s mobile header.
@@ -4031,7 +4033,7 @@ class SubredditStylesheet:
             reddit.subreddit("test").stylesheet.upload_mobile_header("header.png")
 
         """
-        return self._upload_image(image_path, {"upload_type": "banner"})
+        return self._upload_image(data={"upload_type": "banner"}, image_path=image_path)
 
     def upload_mobile_icon(self, image_path: str) -> Dict[str, str]:
         """Upload an image to be used as the :class:`.Subreddit`'s mobile icon.
@@ -4055,7 +4057,7 @@ class SubredditStylesheet:
             reddit.subreddit("test").stylesheet.upload_mobile_icon("icon.png")
 
         """
-        return self._upload_image(image_path, {"upload_type": "icon"})
+        return self._upload_image(data={"upload_type": "icon"}, image_path=image_path)
 
 
 class SubredditWiki:
