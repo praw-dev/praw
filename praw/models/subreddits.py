@@ -123,7 +123,7 @@ class Subreddits(PRAWBase):
             :meth:`.search_by_name` to search by subreddit names
 
         """
-        self._safely_add_arguments(generator_kwargs, "params", q=query)
+        self._safely_add_arguments(arguments=generator_kwargs, key="params", q=query)
         return ListingGenerator(
             self._reddit, API_PATH["subreddits_search"], **generator_kwargs
         )

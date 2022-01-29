@@ -827,8 +827,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         self._validate_time_filter(time_filter)
         not_all = self.display_name.lower() != "all"
         self._safely_add_arguments(
-            generator_kwargs,
-            "params",
+            arguments=generator_kwargs,
+            key="params",
             q=query,
             restrict_sr=not_all,
             sort=sort,
@@ -1715,7 +1715,9 @@ class SubredditFlair:
                 print(flair)
 
         """
-        Subreddit._safely_add_arguments(generator_kwargs, "params", name=redditor)
+        Subreddit._safely_add_arguments(
+            arguments=generator_kwargs, key="params", name=redditor
+        )
         generator_kwargs.setdefault("limit", None)
         url = API_PATH["flairlist"].format(subreddit=self.subreddit)
         return ListingGenerator(self.subreddit._reddit, url, **generator_kwargs)
@@ -2292,7 +2294,9 @@ class SubredditModeration:
         if only is not None:
             if only == "submissions":
                 only = "links"
-            RedditBase._safely_add_arguments(generator_kwargs, "params", only=only)
+            RedditBase._safely_add_arguments(
+                arguments=generator_kwargs, key="params", only=only
+            )
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
         """Initialize a :class:`.SubredditModeration` instance.
@@ -2401,7 +2405,9 @@ class SubredditModeration:
 
         """
         params = {"mod": str(mod) if mod else mod, "type": action}
-        Subreddit._safely_add_arguments(generator_kwargs, "params", **params)
+        Subreddit._safely_add_arguments(
+            arguments=generator_kwargs, key="params", **params
+        )
         return ListingGenerator(
             self.subreddit._reddit,
             API_PATH["about_log"].format(subreddit=self.subreddit),
@@ -3005,7 +3011,9 @@ class SubredditRelationship:
         :class:`.ListingGenerator`.
 
         """
-        Subreddit._safely_add_arguments(generator_kwargs, "params", user=redditor)
+        Subreddit._safely_add_arguments(
+            arguments=generator_kwargs, key="params", user=redditor
+        )
         url = API_PATH[f"list_{self.relationship}"].format(subreddit=self.subreddit)
         return ListingGenerator(self.subreddit._reddit, url, **generator_kwargs)
 
@@ -3486,11 +3494,7 @@ class Modmail:
         if self.subreddit != "all":
             params["entity"] = self._build_subreddit_list(other_subreddits)
         Subreddit._safely_add_arguments(
-            generator_kwargs,
-            "params",
-            sort=sort,
-            state=state,
-            **params,
+            arguments=generator_kwargs, key="params", sort=sort, state=state, **params
         )
         return ListingGenerator(
             self.subreddit._reddit,

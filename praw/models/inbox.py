@@ -333,5 +333,7 @@ class Inbox(PRAWBase):
                     print(item.author)
 
         """
-        self._safely_add_arguments(generator_kwargs, "params", mark=mark_read)
+        self._safely_add_arguments(
+            arguments=generator_kwargs, key="params", mark=mark_read
+        )
         return ListingGenerator(self._reddit, API_PATH["unread"], **generator_kwargs)

@@ -62,7 +62,7 @@ class Redditors(PRAWBase):
         :class:`.ListingGenerator`.
 
         """
-        self._safely_add_arguments(generator_kwargs, "params", q=query)
+        self._safely_add_arguments(arguments=generator_kwargs, key="params", q=query)
         return ListingGenerator(
             self._reddit, API_PATH["users_search"], **generator_kwargs
         )

@@ -26,7 +26,7 @@ class BaseListingMixin(PRAWBase):
     def _prepare(self, *, arguments, sort):
         """Fix for :class:`.Redditor` methods that use a query param rather than subpath."""
         if self.__dict__.get("_listing_use_sort"):
-            self._safely_add_arguments(arguments, "params", sort=sort)
+            self._safely_add_arguments(arguments=arguments, key="params", sort=sort)
             return self._path
         return urljoin(self._path, sort)
 
@@ -62,7 +62,9 @@ class BaseListingMixin(PRAWBase):
 
         """
         self._validate_time_filter(time_filter)
-        self._safely_add_arguments(generator_kwargs, "params", t=time_filter)
+        self._safely_add_arguments(
+            arguments=generator_kwargs, key="params", t=time_filter
+        )
         url = self._prepare(arguments=generator_kwargs, sort="controversial")
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
@@ -140,6 +142,8 @@ class BaseListingMixin(PRAWBase):
 
         """
         self._validate_time_filter(time_filter)
-        self._safely_add_arguments(generator_kwargs, "params", t=time_filter)
+        self._safely_add_arguments(
+            arguments=generator_kwargs, key="params", t=time_filter
+        )
         url = self._prepare(arguments=generator_kwargs, sort="top")
         return ListingGenerator(self._reddit, url, **generator_kwargs)
