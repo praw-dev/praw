@@ -177,7 +177,10 @@ class WikiPage(RedditBase):
 
     @staticmethod
     def _revision_generator(
-        subreddit: "praw.models.Subreddit", url: str, generator_kwargs: Dict[str, Any]
+        *,
+        generator_kwargs: Dict[str, Any],
+        subreddit: "praw.models.Subreddit",
+        url: str,
     ) -> Generator[
         Dict[str, Optional[Union[Redditor, "WikiPage", str, int, bool]]], None, None
     ]:
@@ -344,4 +347,6 @@ class WikiPage(RedditBase):
         url = API_PATH["wiki_page_revisions"].format(
             subreddit=self.subreddit, page=self.name
         )
-        return self._revision_generator(self.subreddit, url, generator_kwargs)
+        return self._revision_generator(
+            generator_kwargs=generator_kwargs, subreddit=self.subreddit, url=url
+        )

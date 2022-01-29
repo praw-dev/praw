@@ -4138,4 +4138,6 @@ class SubredditWiki:
 
         """
         url = API_PATH["wiki_revisions"].format(subreddit=self.subreddit)
-        return WikiPage._revision_generator(self.subreddit, url, generator_kwargs)
+        return WikiPage._revision_generator(
+            generator_kwargs=generator_kwargs, subreddit=self.subreddit, url=url
+        )
