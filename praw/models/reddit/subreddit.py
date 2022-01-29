@@ -123,6 +123,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
     @staticmethod
     def _create_or_update(
+        *,
         _reddit,
         allow_images=None,
         allow_post_crossposts=None,
