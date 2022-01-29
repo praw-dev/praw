@@ -202,7 +202,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         _reddit.post(API_PATH["site_admin"], data=model)
 
     @staticmethod
-    def _subreddit_list(subreddit, other_subreddits):
+    def _subreddit_list(*, other_subreddits, subreddit):
         if other_subreddits:
             return ",".join([str(subreddit)] + [str(x) for x in other_subreddits])
         return str(subreddit)
@@ -1511,7 +1511,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         data = {
             "action": "sub",
             "skip_inital_defaults": True,
-            "sr_name": self._subreddit_list(self, other_subreddits),
+            "sr_name": self._subreddit_list(
+                other_subreddits=other_subreddits, subreddit=self
+            ),
         }
         self._reddit.post(API_PATH["subscribe"], data=data)
 
@@ -1560,7 +1562,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         """
         data = {
             "action": "unsub",
-            "sr_name": self._subreddit_list(self, other_subreddits),
+            "sr_name": self._subreddit_list(
+                other_subreddits=other_subreddits, subreddit=self
+            ),
         }
         self._reddit.post(API_PATH["subscribe"], data=data)
 
