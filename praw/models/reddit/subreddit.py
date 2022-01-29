@@ -1926,15 +1926,16 @@ class SubredditFlairTemplates:
 
     def _add(
         self,
-        text: str,
-        css_class: str = "",
-        text_editable: bool = False,
-        is_link: Optional[bool] = None,
-        background_color: Optional[str] = None,
-        text_color: Optional[str] = None,
-        mod_only: Optional[bool] = None,
+        *,
         allowable_content: Optional[str] = None,
+        background_color: Optional[str] = None,
+        css_class: str = "",
+        is_link: Optional[bool] = None,
         max_emojis: Optional[int] = None,
+        mod_only: Optional[bool] = None,
+        text: str,
+        text_color: Optional[str] = None,
+        text_editable: bool = False,
     ):
         url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
         data = {
@@ -2132,15 +2133,15 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
 
         """
         self._add(
-            text,
-            css_class=css_class,
-            text_editable=text_editable,
-            is_link=False,
-            background_color=background_color,
-            text_color=text_color,
-            mod_only=mod_only,
             allowable_content=allowable_content,
+            background_color=background_color,
+            css_class=css_class,
+            is_link=False,
             max_emojis=max_emojis,
+            mod_only=mod_only,
+            text=text,
+            text_color=text_color,
+            text_editable=text_editable,
         )
 
     def clear(self):
@@ -2228,15 +2229,15 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         """
         self._add(
-            text,
-            css_class=css_class,
-            text_editable=text_editable,
-            is_link=True,
-            background_color=background_color,
-            text_color=text_color,
-            mod_only=mod_only,
             allowable_content=allowable_content,
+            background_color=background_color,
+            css_class=css_class,
+            is_link=True,
             max_emojis=max_emojis,
+            mod_only=mod_only,
+            text=text,
+            text_color=text_color,
+            text_editable=text_editable,
         )
 
     def clear(self):
