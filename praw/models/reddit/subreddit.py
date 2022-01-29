@@ -3095,7 +3095,9 @@ class ModeratorRelationship(SubredditRelationship):
 
     @staticmethod
     def _handle_permissions(
-        other_settings: Optional[dict] = None, permissions: Optional[List[str]] = None
+        *,
+        other_settings: Optional[dict] = None,
+        permissions: Optional[List[str]] = None,
     ):
         other_settings = deepcopy(other_settings) if other_settings else {}
         other_settings["permissions"] = permissions_string(
@@ -3164,7 +3166,9 @@ class ModeratorRelationship(SubredditRelationship):
             reddit.subreddit("test").moderator.add("spez", permissions=["posts", "mail"])
 
         """
-        other_settings = self._handle_permissions(other_settings, permissions)
+        other_settings = self._handle_permissions(
+            other_settings=other_settings, permissions=permissions
+        )
         super().add(redditor, **other_settings)
 
     # pylint: enable=arguments-differ
@@ -3192,7 +3196,9 @@ class ModeratorRelationship(SubredditRelationship):
             reddit.subreddit("test").moderator.invite("spez", permissions=["posts", "mail"])
 
         """
-        data = self._handle_permissions(other_settings, permissions)
+        data = self._handle_permissions(
+            other_settings=other_settings, permissions=permissions
+        )
         data.update({"name": str(redditor), "type": "moderator_invite"})
         url = API_PATH["friend"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
@@ -3290,7 +3296,8 @@ class ModeratorRelationship(SubredditRelationship):
         """
         url = API_PATH["setpermissions"].format(subreddit=self.subreddit)
         data = self._handle_permissions(
-            {"name": str(redditor), "type": "moderator"}, permissions
+            other_settings={"name": str(redditor), "type": "moderator"},
+            permissions=permissions,
         )
         self.subreddit._reddit.post(url, data=data)
 
@@ -3319,7 +3326,8 @@ class ModeratorRelationship(SubredditRelationship):
         """
         url = API_PATH["setpermissions"].format(subreddit=self.subreddit)
         data = self._handle_permissions(
-            {"name": str(redditor), "type": "moderator_invite"}, permissions
+            other_settings={"name": str(redditor), "type": "moderator_invite"},
+            permissions=permissions,
         )
         self.subreddit._reddit.post(url, data=data)
 
