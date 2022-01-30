@@ -937,9 +937,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
             from praw.models import InlineGif, InlineImage, InlineVideo
 
-            gif = InlineGif("path/to/image.gif", "optional caption")
-            image = InlineImage("path/to/image.jpg", "optional caption")
-            video = InlineVideo("path/to/video.mp4", "optional caption")
+            gif = InlineGif(path="path/to/image.gif", caption="optional caption")
+            image = InlineImage(path="path/to/image.jpg", caption="optional caption")
+            video = InlineVideo(path="path/to/video.mp4", caption="optional caption")
             selftext = "Text with a gif {gif1} an image {image1} and a video {video1} inline"
             media = {"gif1": gif, "image1": image, "video1": video}
             reddit.subreddit("test").submit("title", inline_media=media, selftext=selftext)
