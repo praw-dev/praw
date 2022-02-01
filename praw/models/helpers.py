@@ -24,7 +24,7 @@ class DraftHelper(PRAWBase):
     """
 
     def __call__(
-        self, *, draft_id: Optional[str] = None
+        self, draft_id: Optional[str] = None
     ) -> Union[List["praw.models.Draft"], "praw.models.Draft"]:
         """Return a list of :class:`.Draft` instances.
 
@@ -44,7 +44,7 @@ class DraftHelper(PRAWBase):
         .. code-block:: python
 
             draft_id = "124862bc-e1e9-11eb-aa4f-e68667a77cbb"
-            draft = reddit.drafts(draft_id=draft_id)
+            draft = reddit.drafts(draft_id)
             print(draft)
 
         """
