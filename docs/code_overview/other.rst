@@ -126,6 +126,7 @@ them bound to an attribute of one of the PRAW models.
     other/modmailmessage
     other/polldata
     other/polloption
+    other/partialredditor
     other/prawbase
     other/preferences
     other/redditbase

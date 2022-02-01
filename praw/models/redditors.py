@@ -87,7 +87,7 @@ class Redditors(PRAWBase):
 
         :param ids: An iterable of redditor fullname IDs.
 
-        :returns: A iterator producing types.SimpleNamespace objects.
+        :returns: A iterator producing :class:`.PartialRedditor` objects.
 
         Each ID must be prefixed with ``t2_``.
 
