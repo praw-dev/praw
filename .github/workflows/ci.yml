@@ -33,7 +33,7 @@ jobs:
       run: sphinx-build -W --keep-going docs/ /tmp/foo
     strategy:
       matrix:
-        os: [macOS-latest, ubuntu-latest, windows-latest]
+        os: [macOS-latest, ubuntu-latest]
   test-multi-os:
     name: Test ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
