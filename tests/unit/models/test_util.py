@@ -17,8 +17,8 @@ class TestExponentialCounter(UnitTest):
 
     def test_exponential_counter__counter(self):
         def assert_range(number, exponent):
-            assert number >= 2 ** exponent * (1 - self.MAX_DELTA)
-            assert number <= 2 ** exponent * (1 + self.MAX_DELTA)
+            assert number >= 2**exponent * (1 - self.MAX_DELTA)
+            assert number <= 2**exponent * (1 + self.MAX_DELTA)
 
         counter = ExponentialCounter(1024)
         prev_value = counter.counter()
