@@ -7,6 +7,7 @@ from prawcore import Conflict
 from ..const import API_PATH
 from ..exceptions import ReadOnlyException
 from ..models import Preferences
+from ..util import _deprecate_args
 from ..util.cache import cachedproperty
 from .base import PRAWBase
 from .listing.generator import ListingGenerator
@@ -128,8 +129,9 @@ class User(PRAWBase):
             karma_map[subreddit] = row
         return karma_map
 
+    @_deprecate_args("use_cache")
     def me(
-        self, use_cache: bool = True
+        self, *, use_cache: bool = True
     ) -> Optional["praw.models.Redditor"]:  # pylint: disable=invalid-name
         """Return a :class:`.Redditor` instance for the authenticated user.
 
