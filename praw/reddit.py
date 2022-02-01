@@ -703,7 +703,8 @@ class Reddit:
         :param json: JSON-serializable object to send in the body of the request with a
             Content-Type header of application/json (default: ``None``). If ``json`` is
             provided, ``data`` should not be.
-        :param method: The HTTP method (e.g., GET, POST, PUT, DELETE).
+        :param method: The HTTP method (e.g., ``"GET"``, ``"POST"``, ``"PUT"``,
+            ``"DELETE"``).
         :param params: The query parameters to add to the request (default: ``None``).
         :param path: The path to fetch.
 
@@ -900,7 +901,8 @@ class Reddit:
         :param json: JSON-serializable object to send in the body of the request with a
             Content-Type header of application/json (default: ``None``). If ``json`` is
             provided, ``data`` should not be.
-        :param method: The HTTP method (e.g., GET, POST, PUT, DELETE).
+        :param method: The HTTP method (e.g., ``"GET"``, ``"POST"``, ``"PUT"``,
+            ``"DELETE"``).
         :param params: The query parameters to add to the request (default: ``None``).
         :param path: The path to fetch.
 

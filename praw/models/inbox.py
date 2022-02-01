@@ -91,7 +91,7 @@ class Inbox(PRAWBase):
 
         .. note::
 
-            This method returns after Reddit acknowleges your request, instead of after
+            This method returns after Reddit acknowledges your request, instead of after
             the request has been fulfilled.
 
         """
@@ -103,7 +103,7 @@ class Inbox(PRAWBase):
         """Mark Comments or Messages as read.
 
         :param items: A list containing instances of :class:`.Comment` and/or
-            :class:`.Message` to be be marked as read relative to the authorized user's
+            :class:`.Message` to be marked as read relative to the authorized user's
             inbox.
 
         Requests are batched at 25 items (reddit limit).
@@ -137,10 +137,10 @@ class Inbox(PRAWBase):
         """Unmark Comments or Messages as read.
 
         :param items: A list containing instances of :class:`.Comment` and/or
-            :class:`.Message` to be be marked as unread relative to the authorized
-            user's inbox.
+            :class:`.Message` to be marked as unread relative to the authorized user's
+            inbox.
 
-        Requests are batched at 25 items (reddit limit).
+        Requests are batched at 25 items (Reddit limit).
 
         For example, to mark the first 10 items as unread try:
 

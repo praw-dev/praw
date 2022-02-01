@@ -314,7 +314,7 @@ class LiveThread(RedditBase):
 
             thread = reddit.live("ukaeu1ik4sw5")
             for contributor in thread.contributor():
-                # prints `(Redditor(name="Acidtwist"), ["all"])`
+                # prints `Redditor(name="Acidtwist") ["all"]`
                 print(contributor, contributor.permissions)
 
         """
