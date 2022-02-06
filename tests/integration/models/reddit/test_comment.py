@@ -244,7 +244,7 @@ class TestComment(IntegrationTest):
     def test_save(self):
         self.reddit.read_only = False
         with self.use_cassette():
-            Comment(self.reddit, "d1680wu").save("foo")
+            Comment(self.reddit, "d1680wu").save(category="foo")
 
     def test_unsave(self):
         self.reddit.read_only = False
