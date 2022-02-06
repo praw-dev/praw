@@ -36,7 +36,7 @@ class Config:
         return item.lower() in {"1", "yes", "true", "on"}
 
     @classmethod
-    def _load_config(cls, config_interpolation: Optional[str] = None):
+    def _load_config(cls, *, config_interpolation: Optional[str] = None):
         """Attempt to load settings from various praw.ini files."""
         if config_interpolation is not None:
             interpolator_class = cls.INTERPOLATION_LEVEL[config_interpolation]()
@@ -78,7 +78,7 @@ class Config:
         """Initialize a :class:`.Config` instance."""
         with Config.LOCK:
             if Config.CONFIG is None:
-                self._load_config(config_interpolation)
+                self._load_config(config_interpolation=config_interpolation)
 
         self._settings = settings
         self.custom = dict(Config.CONFIG.items(site_name), **settings)
