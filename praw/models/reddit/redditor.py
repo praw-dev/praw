@@ -3,6 +3,7 @@ from json import dumps
 from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Union
 
 from ...const import API_PATH
+from ...util import _deprecate_args
 from ...util.cache import cachedproperty
 from ..listing.mixins import RedditorListingMixin
 from ..util import stream_generator
@@ -212,7 +213,8 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         self._reddit.post(API_PATH["remove_whitelisted"], data={"name": self.name})
 
-    def friend(self, note: str = None):
+    @_deprecate_args("note")
+    def friend(self, *, note: str = None):
         """Friend the :class:`.Redditor`.
 
         :param note: A note to save along with the relationship. Requires Reddit Premium
@@ -220,7 +222,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
 
         Calling this method subsequent times will update the note.
 
-        For example, to friend :class:`.Redditor` u/spez:
+        For example, to friend u/spez:
 
         .. code-block:: python
 
