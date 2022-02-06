@@ -2,6 +2,7 @@
 from typing import TYPE_CHECKING, Dict, Iterator, List, Union
 
 from ..const import API_PATH
+from ..util import _deprecate_args
 from .base import PRAWBase
 from .listing.generator import ListingGenerator
 from .util import stream_generator
@@ -305,8 +306,10 @@ class Inbox(PRAWBase):
             self._reddit.post(API_PATH["uncollapse"], data=data)
             items = items[25:]
 
+    @_deprecate_args("mark_read")
     def unread(
         self,
+        *,
         mark_read: bool = False,
         **generator_kwargs: Union[str, int, Dict[str, str]]
     ) -> Iterator[Union["praw.models.Comment", "praw.models.Message"]]:
