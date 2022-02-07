@@ -1960,7 +1960,7 @@ class SubredditFlairTemplates:
         }
         self.subreddit._reddit.post(url, data=data)
 
-    def _clear(self, is_link: Optional[bool] = None):
+    def _clear(self, *, is_link: Optional[bool] = None):
         url = API_PATH["flairtemplateclear"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data={"flair_type": self.flair_type(is_link)})
 
