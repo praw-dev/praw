@@ -931,7 +931,9 @@ class TestSubreddit(IntegrationTest):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         with self.use_cassette():
-            subreddit.unsubscribe(["redditdev", self.reddit.subreddit("iama")])
+            subreddit.unsubscribe(
+                other_subreddits=["redditdev", self.reddit.subreddit("iama")]
+            )
 
 
 class TestSubredditFilters(IntegrationTest):
