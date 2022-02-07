@@ -2851,8 +2851,9 @@ class SubredditModerationStream:
             self.subreddit.mod.modqueue, only=only, **stream_options
         )
 
+    @_deprecate_args("only")
     def reports(
-        self, only: Optional[str] = None, **stream_options: Any
+        self, *, only: Optional[str] = None, **stream_options: Any
     ) -> Generator[Union["praw.models.Comment", "praw.models.Submission"], None, None]:
         r"""Yield reported :class:`.Comment`\ s and :class:`.Submission`\ s as they become available.
 
