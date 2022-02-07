@@ -4,6 +4,7 @@ from json import dumps
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from ...const import API_PATH
+from ...util import _deprecate_args
 from ...util.cache import cachedproperty
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
@@ -137,7 +138,8 @@ class Multireddit(SubredditListingMixin, RedditBase):
         self._reddit.put(url, data={"model": dumps({"name": str(subreddit)})})
         self._reset_attributes("subreddits")
 
-    def copy(self, display_name: Optional[str] = None) -> "praw.models.Multireddit":
+    @_deprecate_args("display_name")
+    def copy(self, *, display_name: Optional[str] = None) -> "praw.models.Multireddit":
         """Copy this multireddit and return the new multireddit.
 
         :param display_name: The display name for the copied multireddit. Reddit will
@@ -148,7 +150,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         .. code-block:: python
 
-            reddit.multireddit(redditor="bboe", name="test").copy("testing")
+            reddit.multireddit(redditor="bboe", name="test").copy(display_name="testing")
 
         """
         if display_name:
