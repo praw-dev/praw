@@ -2418,8 +2418,9 @@ class SubredditModeration:
             **generator_kwargs,
         )
 
+    @_deprecate_args("only")
     def modqueue(
-        self, only: Optional[str] = None, **generator_kwargs: Any
+        self, *, only: Optional[str] = None, **generator_kwargs: Any
     ) -> Iterator[Union["praw.models.Submission", "praw.models.Comment"]]:
         """Return a :class:`.ListingGenerator` for modqueue items.
 
