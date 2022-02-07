@@ -1494,8 +1494,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             data=data, timeout=timeout, websocket_url=websocket_url
         )
 
+    @_deprecate_args("other_subreddits")
     def subscribe(
-        self, other_subreddits: Optional[List["praw.models.Subreddit"]] = None
+        self, *, other_subreddits: Optional[List["praw.models.Subreddit"]] = None
     ):
         """Subscribe to the subreddit.
 

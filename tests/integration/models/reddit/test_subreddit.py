@@ -905,7 +905,9 @@ class TestSubreddit(IntegrationTest):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         with self.use_cassette():
-            subreddit.subscribe(["redditdev", self.reddit.subreddit("iama")])
+            subreddit.subscribe(
+                other_subreddits=["redditdev", self.reddit.subreddit("iama")]
+            )
 
     def test_traffic(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
