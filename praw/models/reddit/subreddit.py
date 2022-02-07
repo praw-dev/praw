@@ -2872,8 +2872,9 @@ class SubredditModerationStream:
         """
         return stream_generator(self.subreddit.mod.reports, only=only, **stream_options)
 
+    @_deprecate_args("only")
     def spam(
-        self, only: Optional[str] = None, **stream_options: Any
+        self, *, only: Optional[str] = None, **stream_options: Any
     ) -> Generator[Union["praw.models.Comment", "praw.models.Submission"], None, None]:
         r"""Yield spam :class:`.Comment`\ s and :class:`.Submission`\ s as they become available.
 
