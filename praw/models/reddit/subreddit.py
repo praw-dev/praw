@@ -2487,8 +2487,9 @@ class SubredditModeration:
         """
         return SubredditRemovalReasons(self.subreddit)
 
+    @_deprecate_args("only")
     def reports(
-        self, only: Optional[str] = None, **generator_kwargs: Any
+        self, *, only: Optional[str] = None, **generator_kwargs: Any
     ) -> Iterator[Union["praw.models.Submission", "praw.models.Comment"]]:
         """Return a :class:`.ListingGenerator` for reported comments and submissions.
 
