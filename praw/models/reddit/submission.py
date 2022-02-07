@@ -687,8 +687,9 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         ):
             self._reddit.post(API_PATH["hide"], data={"id": submissions})
 
+    @_deprecate_args("other_submissions")
     def unhide(
-        self, other_submissions: Optional[List["praw.models.Submission"]] = None
+        self, *, other_submissions: Optional[List["praw.models.Submission"]] = None
     ):
         """Unhide :class:`.Submission`.
 

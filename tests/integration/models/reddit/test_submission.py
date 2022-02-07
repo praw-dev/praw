@@ -179,7 +179,7 @@ class TestSubmission(IntegrationTest):
             Submission(self.reddit, "c625v"),
         ]
         with self.use_cassette():
-            Submission(self.reddit, "1eipl7").unhide(submissions)
+            Submission(self.reddit, "1eipl7").unhide(other_submissions=submissions)
 
     @mock.patch("time.sleep", return_value=None)
     def test_unhide_multiple_in_batches(self, _):
@@ -187,7 +187,7 @@ class TestSubmission(IntegrationTest):
         with self.use_cassette():
             submissions = list(self.reddit.subreddit("popular").hot(limit=100))
             assert len(submissions) == 100
-            submissions[0].unhide(submissions[1:])
+            submissions[0].unhide(other_submissions=submissions[1:])
 
     def test_unsave(self):
         self.reddit.read_only = False
