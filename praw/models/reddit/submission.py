@@ -660,7 +660,10 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         data = {"links": self.fullname}
         self._reddit.post(API_PATH["store_visits"], data=data)
 
-    def hide(self, other_submissions: Optional[List["praw.models.Submission"]] = None):
+    @_deprecate_args("other_submissions")
+    def hide(
+        self, *, other_submissions: Optional[List["praw.models.Submission"]] = None
+    ):
         """Hide :class:`.Submission`.
 
         :param other_submissions: When provided, additionally hide this list of
