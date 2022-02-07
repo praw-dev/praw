@@ -33,7 +33,7 @@ repos:
     hooks:
       - id: docstrfmt
         require_serial: true
-    rev: v1.4.3
+    rev: v1.4.4
 
   - repo: https://github.com/pycqa/flake8
     hooks:
