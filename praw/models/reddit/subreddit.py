@@ -2828,8 +2828,9 @@ class SubredditModerationStream:
             **stream_options,
         )
 
+    @_deprecate_args("only")
     def modqueue(
-        self, only: Optional[str] = None, **stream_options: Any
+        self, *, only: Optional[str] = None, **stream_options: Any
     ) -> Generator[Union["praw.models.Comment", "praw.models.Submission"], None, None]:
         r"""Yield :class:`.Comment`\ s and :class:`.Submission`\ s in the modqueue as they become available.
 
