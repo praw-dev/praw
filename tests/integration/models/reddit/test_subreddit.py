@@ -215,7 +215,7 @@ class TestSubreddit(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         with self.use_cassette():
             with pytest.raises(NotFound):
-                subreddit.sticky(2)
+                subreddit.sticky(number=2)
 
     def test_search(self):
         with self.use_cassette():
