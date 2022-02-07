@@ -3214,8 +3214,10 @@ class ModeratorRelationship(SubredditRelationship):
         url = API_PATH["friend"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
 
+    @_deprecate_args("redditor")
     def invited(
         self,
+        *,
         redditor: Optional[Union[str, "praw.models.Redditor"]] = None,
         **generator_kwargs: Any,
     ) -> Iterator["praw.models.Redditor"]:
