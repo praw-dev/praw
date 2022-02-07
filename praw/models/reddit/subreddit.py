@@ -2731,8 +2731,9 @@ class SubredditModerationStream:
         """
         self.subreddit = subreddit
 
+    @_deprecate_args("only")
     def edited(
-        self, only: Optional[str] = None, **stream_options: Any
+        self, *, only: Optional[str] = None, **stream_options: Any
     ) -> Generator[Union["praw.models.Comment", "praw.models.Submission"], None, None]:
         """Yield edited comments and submissions as they become available.
 
