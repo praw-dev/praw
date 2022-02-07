@@ -79,4 +79,5 @@ Source Contributors
 - Dio Brando `@isFakeAccount <https://github.com/isFakeAccount>`_
 - Josh Kim `@jsk56143 <https://github.com/jsk56143>`_
 - Rolf Campbell `@endlisnis <https://github.com/endlisnis>`_
+- zacc `@zacc <https://github.com/zacc>`_
 - Add "Name <email (optional)> and github profile link" above this line.

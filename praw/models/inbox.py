@@ -194,11 +194,12 @@ class Inbox(PRAWBase):
 
         """
         listing = self._reddit.get(API_PATH["message"].format(id=message_id))
-        messages = [listing[0]] + listing[0].replies
-        while messages:
-            message = messages.pop(0)
-            if message.id == message_id:
-                return message
+        messages = {
+            message.fullname: message for message in [listing[0]] + listing[0].replies
+        }
+        for fullname, message in messages.items():
+            message.parent = messages.get(message.parent_id, None)
+        return messages[f"t4_{message_id.lower()}"]
 
     def messages(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
@@ -308,7 +309,7 @@ class Inbox(PRAWBase):
     def unread(
         self,
         mark_read: bool = False,
-        **generator_kwargs: Union[str, int, Dict[str, str]]
+        **generator_kwargs: Union[str, int, Dict[str, str]],
     ) -> Iterator[Union["praw.models.Comment", "praw.models.Message"]]:
         """Return a :class:`.ListingGenerator` for unread comments and messages.
 

@@ -13,6 +13,7 @@ Unreleased
   :class:`.Collection`.
 - :meth:`.SubredditCollectionsModeration.create` keyword argument ``display_layout`` for
   specifying a display layout when creating a :class:`.Collection`.
+- :attr:`~.Message.parent` to get the parent of a :class:`.Message`.
 
 **Changed**
 
