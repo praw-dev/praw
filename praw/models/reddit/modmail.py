@@ -204,8 +204,9 @@ class ModmailConversation(RedditBase):
             path=API_PATH["modmail_mute"].format(id=self.id),
         )
 
+    @_deprecate_args("other_conversations")
     def read(
-        self, other_conversations: Optional[List["ModmailConversation"]] = None
+        self, *, other_conversations: Optional[List["ModmailConversation"]] = None
     ):  # noqa: D207, D301
         """Mark the conversation(s) as read.
 
