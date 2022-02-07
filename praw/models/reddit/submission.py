@@ -99,7 +99,8 @@ class SubmissionModeration(ThingModerationMixin):
         """
         self.thing = submission
 
-    def contest_mode(self, state: bool = True):
+    @_deprecate_args("state")
+    def contest_mode(self, *, state: bool = True):
         """Set contest mode for the comments of this submission.
 
         :param state: ``True`` enables contest mode and ``False`` disables (default:
@@ -118,7 +119,7 @@ class SubmissionModeration(ThingModerationMixin):
         .. code-block:: python
 
             submission = reddit.submission("5or86n")
-            submission.mod.contest_mode(state=True)
+            submission.mod.contest_mode()
 
         """
         self.thing._reddit.post(
