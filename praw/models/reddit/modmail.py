@@ -304,8 +304,9 @@ class ModmailConversation(RedditBase):
             method="POST", path=API_PATH["modmail_unmute"].format(id=self.id)
         )
 
+    @_deprecate_args("other_conversations")
     def unread(
-        self, other_conversations: Optional[List["ModmailConversation"]] = None
+        self, *, other_conversations: Optional[List["ModmailConversation"]] = None
     ):  # noqa: D207, D301
         """Mark the conversation(s) as unread.
 
