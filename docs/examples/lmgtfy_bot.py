@@ -32,7 +32,7 @@ def process_submission(submission):
             url_title = quote_plus(submission.title)
             reply_text = REPLY_TEMPLATE.format(url_title)
             print(f"Replying to: {submission.title}")
-            submission.reply(reply_text)
+            submission.reply(body=reply_text)
             # A reply has been made so do not attempt to match other phrases.
             break
 

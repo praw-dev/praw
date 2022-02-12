@@ -140,7 +140,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             submission = Submission(self.reddit, "4b1tfm")
-            comment = submission.reply("Test reply")
+            comment = submission.reply(body="Test reply")
             assert comment.author == self.reddit.config.username
             assert comment.body == "Test reply"
             assert comment.parent_id == submission.fullname
@@ -149,7 +149,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         submission = Submission(self.reddit, "ah19vv")
         with self.use_cassette():
-            reply = submission.reply("TEST")
+            reply = submission.reply(body="TEST")
         assert reply is None
 
     def test_report(self):
