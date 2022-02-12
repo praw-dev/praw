@@ -2,6 +2,7 @@
 from typing import TYPE_CHECKING, Union
 
 from ....const import API_PATH
+from ...util import _deprecate_args
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw
@@ -26,7 +27,10 @@ class EditableMixin:
         """
         self._reddit.post(API_PATH["del"], data={"id": self.fullname})
 
-    def edit(self, body: str) -> Union["praw.models.Comment", "praw.models.Submission"]:
+    @_deprecate_args("body")
+    def edit(
+        self, *, body: str
+    ) -> Union["praw.models.Comment", "praw.models.Submission"]:
         """Replace the body of the object with ``body``.
 
         :param body: The Markdown formatted content for the updated object.
@@ -42,7 +46,7 @@ class EditableMixin:
             # construct the text of an edited comment
             # by appending to the old body:
             edited_body = comment.body + "Edit: thanks for the gold!"
-            comment.edit(edited_body)
+            comment.edit(body=edited_body)
 
         """
         data = {
