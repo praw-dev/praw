@@ -55,7 +55,7 @@ mysubreddits     Access the list of subreddits I moderate, contribute to, and su
                  to.
 privatemessages  Access my inbox and send private messages to other users.
 read             Access posts and comments through my account.
-report           Report content for rules violations. Hide &amp; show individual
+report           Report content for rules violations. Hide & show individual
                  submissions.
 save             Save and unsave comments and submissions.
 structuredstyles Edit structured styles for a subreddit I moderate.
