@@ -1,0 +1,209 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2022-02-19T06:44:36",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "Content-Length": [
+            "74"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.5.1.dev0 prawcore/2.3.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "Content-Length": [
+            "121"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 19 Feb 2022 06:44:36 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=DHUvdtoe9pBhljI6ZV; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "297"
+          ],
+          "x-ratelimit-reset": [
+            "325"
+          ],
+          "x-ratelimit-used": [
+            "3"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2022-02-19T06:44:36",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=DHUvdtoe9pBhljI6ZV"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.5.1.dev0 prawcore/2.3.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/message/messages/1ay4xyu/?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"Listing\", \"data\": {\"after\": null, \"dist\": null, \"modhash\": null, \"geo_filter\": \"\", \"children\": [{\"kind\": \"t4\", \"data\": {\"first_message\": null, \"first_message_name\": null, \"subreddit\": null, \"likes\": null, \"replies\": {\"kind\": \"Listing\", \"data\": {\"after\": null, \"dist\": null, \"modhash\": null, \"geo_filter\": \"\", \"children\": [{\"kind\": \"t4\", \"data\": {\"first_message\": 2838778686, \"first_message_name\": \"t4_1ay4vni\", \"subreddit\": null, \"likes\": null, \"replies\": \"\", \"author_fullname\": \"t2_7eoamiii\", \"id\": \"1ay4xyu\", \"subject\": \"re: main screen turn on.\", \"associated_awarding_id\": null, \"score\": 0, \"author\": \"<USERNAME>\", \"num_comments\": null, \"parent_id\": \"t4_1ay4vni\", \"subreddit_name_prefixed\": null, \"new\": false, \"type\": \"unknown\", \"body\": \"I'm still learning\", \"dest\": \"tateisukannanirase\", \"was_comment\": false, \"body_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EI\\u0026#39;m still learning\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"name\": \"t4_1ay4xyu\", \"created\": 1645083674.0, \"created_utc\": 1645083674.0, \"context\": \"\", \"distinguished\": null}}, {\"kind\": \"t4\", \"data\": {\"first_message\": 2838778686, \"first_message_name\": \"t4_1ay4vni\", \"subreddit\": null, \"likes\": null, \"replies\": \"\", \"author_fullname\": \"t2_52c72tch\", \"id\": \"1ay51rz\", \"subject\": \"re: main screen turn on.\", \"associated_awarding_id\": null, \"score\": 0, \"author\": \"tateisukannanirase\", \"num_comments\": null, \"parent_id\": \"t4_1ay4xyu\", \"subreddit_name_prefixed\": null, \"new\": false, \"type\": \"unknown\", \"body\": \"all your base are belong to us!!\", \"dest\": \"<USERNAME>\", \"was_comment\": false, \"body_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Eall your base are belong to us!!\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"name\": \"t4_1ay51rz\", \"created\": 1645084015.0, \"created_utc\": 1645084015.0, \"context\": \"\", \"distinguished\": null}}, {\"kind\": \"t4\", \"data\": {\"first_message\": 2838778686, \"first_message_name\": \"t4_1ay4vni\", \"subreddit\": null, \"likes\": null, \"replies\": \"\", \"author_fullname\": \"t2_7eoamiii\", \"id\": \"1ay52ry\", \"subject\": \"re: main screen turn on.\", \"associated_awarding_id\": null, \"score\": 0, \"author\": \"<USERNAME>\", \"num_comments\": null, \"parent_id\": \"t4_1ay51rz\", \"subreddit_name_prefixed\": null, \"new\": false, \"type\": \"unknown\", \"body\": \"There's no need to talk about it\", \"dest\": \"tateisukannanirase\", \"was_comment\": false, \"body_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThere\\u0026#39;s no need to talk about it\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"name\": \"t4_1ay52ry\", \"created\": 1645084168.0, \"created_utc\": 1645084168.0, \"context\": \"\", \"distinguished\": null}}], \"before\": null}}, \"author_fullname\": \"t2_52c72tch\", \"id\": \"1ay4vni\", \"subject\": \"main screen turn on.\", \"associated_awarding_id\": null, \"score\": 0, \"author\": \"tateisukannanirase\", \"num_comments\": null, \"parent_id\": null, \"subreddit_name_prefixed\": null, \"new\": false, \"type\": \"unknown\", \"body\": \"how are you gentlemen?\", \"dest\": \"<USERNAME>\", \"was_comment\": false, \"body_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Ehow are you gentlemen?\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"name\": \"t4_1ay4vni\", \"created\": 1645083502.0, \"created_utc\": 1645083502.0, \"context\": \"\", \"distinguished\": null}}], \"before\": null}}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "3392"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 19 Feb 2022 06:44:36 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "loid=00000000007eoamiii.2.1595676888480.Z0FBQUFBQmlFSkhVQjI1RFNmbF9KTkVlMEhlMXktTWVwNVVDU2JBbC1BOUVhSG9jWGdtUkllNmVyaHdyVXNjbURlQ2NjWkhIa3ltMnJQTktxRTBwS0hLczVOTnFiNEJlZUdvdG9pbDU4VEd1THV6ZGZmNVlXNFdpN1pKTUtONDhHUXFkUDAxUVNrYng; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Mon, 19-Feb-2024 06:44:36 GMT; secure; SameSite=None; Secure",
+            "session_tracker=qfkkkqdldjpdgjnqci.0.1645253076513.Z0FBQUFBQmlFSkhVSjNRblVtQlQ0RlUtdlkzWnRYWVB5Nk01eFJPcWtPaGdtWDFGTEZDQlE4YmVETVFRSnZCUlg1QmVjYm4wS3NYWmlkZTJTVkhWb1R0bHgxRVEzeU1zTG82dUlYajF5MUhuMFl0cnZwWDJkTHhxeVFNUWIxVTBDbC03aHMxWnNtek4; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 19-Feb-2022 08:44:36 GMT; secure; SameSite=None; Secure",
+            "csv=2; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "586.0"
+          ],
+          "x-ratelimit-reset": [
+            "324"
+          ],
+          "x-ratelimit-used": [
+            "14"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/message/messages/1ay4xyu/?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}
