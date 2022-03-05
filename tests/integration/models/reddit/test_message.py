@@ -109,7 +109,7 @@ class TestMessage(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             message = next(self.reddit.inbox.messages())
-            reply = message.reply("Message reply")
+            reply = message.reply(body="Message reply")
             assert reply.author == self.reddit.config.username
             assert reply.body == "Message reply"
             assert reply.first_message_name == message.fullname

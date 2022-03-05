@@ -4,7 +4,7 @@ from warnings import warn
 
 from ...const import API_PATH
 from ...exceptions import ClientException
-from ...util.cache import cachedproperty
+from ...util import _deprecate_args, cachedproperty
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -29,12 +29,12 @@ class RemovalReason(RedditBase):
     STR_FIELD = "id"
 
     @staticmethod
-    def _warn_reason_id(reason_id_value: Optional[str], id_value: Optional[str]):
+    def _warn_reason_id(*, id_value: Optional[str], reason_id_value: Optional[str]):
         """Reason ID param is deprecated. Warns if it's used.
 
-        :param reason_id_value: The value passed as parameter ``reason_id``.
         :param id_value: Returns the actual value of parameter ``id`` is parameter
             ``reason_id`` is not used.
+        :param reason_id_value: The value passed as parameter ``reason_id``.
 
         """
         if reason_id_value is not None:
@@ -76,7 +76,7 @@ class RemovalReason(RedditBase):
             compatibility. This parameter should not be used.
 
         """
-        id = self._warn_reason_id(reason_id, id)
+        id = self._warn_reason_id(id_value=id, reason_id_value=reason_id)
         if (id, _data).count(None) != 1:
             raise ValueError("Either id or _data needs to be given.")
 
@@ -108,7 +108,8 @@ class RemovalReason(RedditBase):
         url = API_PATH["removal_reason"].format(subreddit=self.subreddit, id=self.id)
         self._reddit.delete(url)
 
-    def update(self, message: Optional[str] = None, title: Optional[str] = None):
+    @_deprecate_args("message", "title")
+    def update(self, *, message: Optional[str] = None, title: Optional[str] = None):
         """Update the removal reason from this subreddit.
 
         .. note::
@@ -123,7 +124,7 @@ class RemovalReason(RedditBase):
         .. code-block:: python
 
             reddit.subreddit("test").mod.removal_reasons["141vv5c16py7d"].update(
-                message="New message", title="New title"
+                title="New title", message="New message"
             )
 
         """
@@ -223,11 +224,12 @@ class SubredditRemovalReasons:
             for id, reason_data in response["data"].items()
         ]
 
-    def add(self, message: str, title: str) -> RemovalReason:
+    @_deprecate_args("message", "title")
+    def add(self, *, message: str, title: str) -> RemovalReason:
         """Add a removal reason to this subreddit.
 
         :param message: The message associated with the removal reason.
-        :param title: The title of the removal reason
+        :param title: The title of the removal reason.
 
         :returns: The :class:`.RemovalReason` added.
 
@@ -237,7 +239,7 @@ class SubredditRemovalReasons:
 
         .. code-block:: python
 
-            reddit.subreddit("test").mod.removal_reasons.add(message="Foobar", title="Test")
+            reddit.subreddit("test").mod.removal_reasons.add(title="Test", message="Foobar")
 
         """
         data = {"message": message, "title": title}

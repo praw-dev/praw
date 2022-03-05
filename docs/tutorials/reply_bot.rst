@@ -54,11 +54,11 @@ an instance of :class:`.Reddit`:
     import praw
 
     reddit = praw.Reddit(
-        user_agent="LMGTFY (by u/USERNAME)",
         client_id="CLIENT_ID",
         client_secret="CLIENT_SECRET",
-        username="USERNAME",
         password="PASSWORD",
+        user_agent="LMGTFY (by u/USERNAME)",
+        username="USERNAME",
     )
 
 In addition to the OAuth2 credentials, the username and password of the Reddit account

@@ -11,11 +11,11 @@ As always, you need to begin by creating an instance of :class:`.Reddit`:
     import praw
 
     reddit = praw.Reddit(
-        user_agent="Comment Extraction (by u/USERNAME)",
         client_id="CLIENT_ID",
         client_secret="CLIENT_SECRET",
-        username="USERNAME",
         password="PASSWORD",
+        user_agent="Comment Extraction (by u/USERNAME)",
+        username="USERNAME",
     )
 
 .. note::

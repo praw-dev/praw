@@ -85,7 +85,7 @@ class TestCollectionModeration(IntegrationTest):
             collection.mod.add_post(posts[3].id)  # id
 
             posts.append(
-                self.subreddit.submit("Post #4", selftext="", collection_id=uuid)
+                self.subreddit.submit("Post #4", collection_id=uuid, selftext="")
             )
 
             with pytest.raises(TypeError):
@@ -102,7 +102,7 @@ class TestCollectionModeration(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             collection = self.subreddit.collections.mod.create(
-                "Title", "Description", "GALLERY"
+                title="Title", description=""
             )
             collection.mod.delete()
 
@@ -111,7 +111,7 @@ class TestCollectionModeration(IntegrationTest):
         self.reddit.read_only = False
         uuid = self.NONEMPTY_REAL_UUID
         with self.use_cassette():
-            post = self.subreddit.submit("The title", selftext="", collection_id=uuid)
+            post = self.subreddit.submit("The title", collection_id=uuid, selftext="")
             collection = self.subreddit.collections(uuid)
             collection.mod.remove_post(post)
 
@@ -249,7 +249,9 @@ class TestSubredditCollectionsModeration(IntegrationTest):
         description = "The description."
         self.reddit.read_only = False
         with self.use_cassette():
-            collection = self.subreddit.collections.mod.create(title, description)
+            collection = self.subreddit.collections.mod.create(
+                title=title, description=description
+            )
             assert collection.title == title
             assert collection.description == description
             assert len(collection) == 0
@@ -262,7 +264,7 @@ class TestSubredditCollectionsModeration(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             collection = self.subreddit.collections.mod.create(
-                title, description, layout
+                title=title, description=description, display_layout=layout
             )
             assert collection.title == title
             assert collection.description == description
@@ -277,7 +279,7 @@ class TestSubredditCollectionsModeration(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             collection = self.subreddit.collections.mod.create(
-                title, description, layout
+                title=title, description=description, display_layout=layout
             )
             assert collection.title == title
             assert collection.description == description
@@ -292,7 +294,9 @@ class TestSubredditCollectionsModeration(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             with pytest.raises(RedditAPIException):
-                self.subreddit.collections.mod.create(title, description, layout)
+                self.subreddit.collections.mod.create(
+                    title=title, description=description, display_layout=layout
+                )
 
     @mock.patch("time.sleep", return_value=None)
     def test_create__lowercase_layout(self, _):
@@ -302,7 +306,9 @@ class TestSubredditCollectionsModeration(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             with pytest.raises(RedditAPIException):
-                self.subreddit.collections.mod.create(title, description, layout)
+                self.subreddit.collections.mod.create(
+                    title=title, description=description, display_layout=layout
+                )
 
     @mock.patch("time.sleep", return_value=None)
     def test_create__none_layout(self, _):
@@ -312,7 +318,7 @@ class TestSubredditCollectionsModeration(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             collection = self.subreddit.collections.mod.create(
-                title, description, layout
+                title=title, description=description, display_layout=layout
             )
             assert collection.title == title
             assert collection.description == description
@@ -327,7 +333,7 @@ class TestSubredditCollectionsModeration(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             collection = self.subreddit.collections.mod.create(
-                title, description, layout
+                title=title, description=description, display_layout=layout
             )
             assert collection.title == title
             assert collection.description == description

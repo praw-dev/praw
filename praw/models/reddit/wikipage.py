@@ -2,6 +2,7 @@
 from typing import TYPE_CHECKING, Any, Dict, Generator, Iterator, Optional, Union
 
 from ...const import API_PATH
+from ...util import _deprecate_args
 from ...util.cache import cachedproperty
 from ..listing.generator import ListingGenerator
 from .base import RedditBase
@@ -120,8 +121,9 @@ class WikiPageModeration:
         )
         return self.wikipage._reddit.get(url)["data"]
 
+    @_deprecate_args("listed", "permlevel")
     def update(
-        self, listed: bool, permlevel: int, **other_settings: Any
+        self, *, listed: bool, permlevel: int, **other_settings: Any
     ) -> Dict[str, Any]:
         """Update the settings for this :class:`.WikiPage`.
 
@@ -175,7 +177,10 @@ class WikiPage(RedditBase):
 
     @staticmethod
     def _revision_generator(
-        subreddit: "praw.models.Subreddit", url: str, generator_kwargs: Dict[str, Any]
+        *,
+        generator_kwargs: Dict[str, Any],
+        subreddit: "praw.models.Subreddit",
+        url: str,
     ) -> Generator[
         Dict[str, Optional[Union[Redditor, "WikiPage", str, int, bool]]], None, None
     ]:
@@ -242,7 +247,7 @@ class WikiPage(RedditBase):
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
-        return self._reddit.request("GET", path, params)
+        return self._reddit.request(method="GET", params=params, path=path)
 
     def _fetch(self):
         data = self._fetch_data()
@@ -254,8 +259,11 @@ class WikiPage(RedditBase):
         self.__dict__.update(data)
         self._fetched = True
 
-    def edit(self, content: str, reason: Optional[str] = None, **other_settings: Any):
-        """Edit this WikiPage's contents.
+    @_deprecate_args("content", "reason")
+    def edit(
+        self, *, content: str, reason: Optional[str] = None, **other_settings: Any
+    ):
+        """Edit this wiki page's contents.
 
         :param content: The updated Markdown content of the page.
         :param reason: The reason for the revision.
@@ -272,8 +280,7 @@ class WikiPage(RedditBase):
         """
         other_settings.update({"content": content, "page": self.name, "reason": reason})
         self._reddit.post(
-            API_PATH["wiki_edit"].format(subreddit=self.subreddit),
-            data=other_settings,
+            API_PATH["wiki_edit"].format(subreddit=self.subreddit), data=other_settings
         )
 
     def discussions(
@@ -340,4 +347,6 @@ class WikiPage(RedditBase):
         url = API_PATH["wiki_page_revisions"].format(
             subreddit=self.subreddit, page=self.name
         )
-        return self._revision_generator(self.subreddit, url, generator_kwargs)
+        return self._revision_generator(
+            generator_kwargs=generator_kwargs, subreddit=self.subreddit, url=url
+        )

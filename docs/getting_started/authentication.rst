@@ -152,7 +152,7 @@ can do that as follows:
         redirect_uri="http://localhost:8080",
         user_agent="testscript by u/fakebot3",
     )
-    print(reddit.auth.url(["identity"], "...", "permanent"))
+    print(reddit.auth.url(scopes=["identity"], state="...", duration="permanent"))
 
 The above will output an authorization URL for a permanent token (i.e., the resulting
 authorization will include both a short-lived ``access_token``, and a longer-lived,
@@ -191,7 +191,7 @@ redirect. For the implicit flow call :meth:`.url` like so:
 
 .. code-block:: python
 
-    print(reddit.auth.url(["identity"], "...", implicit=True))
+    print(reddit.auth.url(scopes=["identity"], state="...", implicit=True))
 
 Then use :meth:`.implicit` to provide the authorization to the :class:`.Reddit`
 instance.

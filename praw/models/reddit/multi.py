@@ -4,6 +4,7 @@ from json import dumps
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from ...const import API_PATH
+from ...util import _deprecate_args
 from ...util.cache import cachedproperty
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
@@ -73,7 +74,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         .. code-block:: python
 
-            for comment in reddit.multireddit("spez", "fun").stream.comments():
+            for comment in reddit.multireddit(redditor="spez", name="fun").stream.comments():
                 print(comment)
 
         Additionally, new submissions can be retrieved via the stream. In the following
@@ -81,7 +82,9 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         .. code-block:: python
 
-            for submission in reddit.multireddit("bboe", "games").stream.submissions():
+            for submission in reddit.multireddit(
+                redditor="bboe", name="games"
+            ).stream.submissions():
                 print(submission)
 
         """
@@ -107,7 +110,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
-        return self._reddit.request("GET", path, params)
+        return self._reddit.request(method="GET", params=params, path=path)
 
     def _fetch(self):
         data = self._fetch_data()
@@ -126,7 +129,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         .. code-block:: python
 
             subreddit = reddit.subreddit("test")
-            reddit.multireddit("bboe", "test").add(subreddit)
+            reddit.multireddit(redditor="bboe", name="test").add(subreddit)
 
         """
         url = API_PATH["multireddit_update"].format(
@@ -135,7 +138,8 @@ class Multireddit(SubredditListingMixin, RedditBase):
         self._reddit.put(url, data={"model": dumps({"name": str(subreddit)})})
         self._reset_attributes("subreddits")
 
-    def copy(self, display_name: Optional[str] = None) -> "praw.models.Multireddit":
+    @_deprecate_args("display_name")
+    def copy(self, *, display_name: Optional[str] = None) -> "praw.models.Multireddit":
         """Copy this multireddit and return the new multireddit.
 
         :param display_name: The display name for the copied multireddit. Reddit will
@@ -146,7 +150,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         .. code-block:: python
 
-            reddit.multireddit("bboe", "test").copy("testing")
+            reddit.multireddit(redditor="bboe", name="test").copy(display_name="testing")
 
         """
         if display_name:
@@ -170,7 +174,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         .. code-block:: python
 
-            reddit.multireddit("bboe", "test").delete()
+            reddit.multireddit(redditor="bboe", name="test").delete()
 
         """
         path = API_PATH["multireddit_api"].format(
@@ -188,7 +192,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         .. code-block:: python
 
             subreddit = reddit.subreddit("test")
-            reddit.multireddit("bboe", "test").remove(subreddit)
+            reddit.multireddit(redditor="bboe", name="test").remove(subreddit)
 
         """
         url = API_PATH["multireddit_update"].format(
@@ -227,7 +231,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         .. code-block:: python
 
-            reddit.multireddit("bboe", "test").update(display_name="testing")
+            reddit.multireddit(redditor="bboe", name="test").update(display_name="testing")
 
         """
         if "subreddits" in updated_settings:

@@ -41,11 +41,11 @@ class TestDeprecation(UnitTest):
     def test_reddit_token_manager(self):
         with pytest.raises(DeprecationWarning):
             Reddit(
+                token_manager=FileTokenManager("name"),
                 client_id="dummy",
                 client_secret=None,
                 redirect_uri="dummy",
                 user_agent="dummy",
-                token_manager=FileTokenManager("name"),
             )
 
     def test_reddit_user_me_read_only(self):

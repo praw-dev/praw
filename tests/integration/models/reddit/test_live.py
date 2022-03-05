@@ -40,7 +40,7 @@ class TestLiveThread(IntegrationTest):
         thread = LiveThread(self.reddit, "xyu8kmjvfrww")
         url = API_PATH["live_contributors"].format(id=thread.id)
         with self.use_cassette():
-            data = thread._reddit.request("GET", url)
+            data = thread._reddit.request(method="GET", path=url)
             contributors = thread.contributor()
         assert isinstance(data, list)
         assert isinstance(contributors, RedditorList)
@@ -107,19 +107,19 @@ class TestLiveContributorRelationship(IntegrationTest):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, "xyu8kmjvfrww")
         with self.use_cassette():
-            thread.contributor.invite("nmtake", [])
+            thread.contributor.invite("nmtake", permissions=[])
 
     def test_invite__limited(self):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, "xyu8kmjvfrww")
         with self.use_cassette():
-            thread.contributor.invite("nmtake", ["manage", "edit"])
+            thread.contributor.invite("nmtake", permissions=["manage", "edit"])
 
     def test_invite__none(self):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, "xyu8kmjvfrww")
         with self.use_cassette():
-            thread.contributor.invite("nmtake", None)
+            thread.contributor.invite("nmtake", permissions=None)
 
     def test_invite__redditor(self):
         self.reddit.read_only = False
@@ -164,37 +164,37 @@ class TestLiveContributorRelationship(IntegrationTest):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, "ydwwxneu7vsa")
         with self.use_cassette():
-            thread.contributor.update("nmtake", [])
+            thread.contributor.update("nmtake", permissions=[])
 
     def test_update__limited(self):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, "ydwwxneu7vsa")
         with self.use_cassette():
-            thread.contributor.update("nmtake", ["manage", "edit"])
+            thread.contributor.update("nmtake", permissions=["manage", "edit"])
 
     def test_update__none(self):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, "ydwwxneu7vsa")
         with self.use_cassette():
-            thread.contributor.update("nmtake", None)
+            thread.contributor.update("nmtake", permissions=None)
 
     def test_update_invite__empty_list(self):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, "ydwwxneu7vsa")
         with self.use_cassette():
-            thread.contributor.update_invite("nmtake", [])
+            thread.contributor.update_invite("nmtake", permissions=[])
 
     def test_update_invite__limited(self):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, "ydwwxneu7vsa")
         with self.use_cassette():
-            thread.contributor.update_invite("nmtake", ["manage", "edit"])
+            thread.contributor.update_invite("nmtake", permissions=["manage", "edit"])
 
     def test_update_invite__none(self):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, "ydwwxneu7vsa")
         with self.use_cassette():
-            thread.contributor.update_invite("nmtake", None)
+            thread.contributor.update_invite("nmtake", permissions=None)
 
 
 class TestLiveThreadContribution(IntegrationTest):

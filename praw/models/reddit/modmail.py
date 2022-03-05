@@ -2,7 +2,7 @@
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from ...const import API_PATH
-from ...util import snake_case_keys
+from ...util import _deprecate_args, snake_case_keys
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -142,7 +142,7 @@ class ModmailConversation(RedditBase):
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
-        return self._reddit.request("GET", path, params)
+        return self._reddit.request(method="GET", params=params, path=path)
 
     def _fetch(self):
         data = self._fetch_data()
@@ -174,7 +174,8 @@ class ModmailConversation(RedditBase):
         """
         self._reddit.post(API_PATH["modmail_highlight"].format(id=self.id))
 
-    def mute(self, num_days=3):
+    @_deprecate_args("num_days")
+    def mute(self, *, num_days=3):
         """Mute the non-mod user associated with the conversation.
 
         :param num_days: Duration of mute in days. Valid options are ``3``, ``7``, or
@@ -190,7 +191,7 @@ class ModmailConversation(RedditBase):
 
         .. code-block:: python
 
-            reddit.subreddit("test").modmail("2gmz").mute(7)
+            reddit.subreddit("test").modmail("2gmz").mute(num_days=7)
 
         """
         if num_days != 3:  # no need to pass params if it's the default
@@ -198,11 +199,14 @@ class ModmailConversation(RedditBase):
         else:
             params = {}
         self._reddit.request(
-            "POST", API_PATH["modmail_mute"].format(id=self.id), params=params
+            method="POST",
+            params=params,
+            path=API_PATH["modmail_mute"].format(id=self.id),
         )
 
+    @_deprecate_args("other_conversations")
     def read(
-        self, other_conversations: Optional[List["ModmailConversation"]] = None
+        self, *, other_conversations: Optional[List["ModmailConversation"]] = None
     ):  # noqa: D207, D301
         """Mark the conversation(s) as read.
 
@@ -222,12 +226,15 @@ class ModmailConversation(RedditBase):
         data = {"conversationIds": self._build_conversation_list(other_conversations)}
         self._reddit.post(API_PATH["modmail_read"], data=data)
 
-    def reply(self, body: str, author_hidden: bool = False, internal: bool = False):
+    @_deprecate_args("body", "author_hidden", "internal")
+    def reply(
+        self, *, author_hidden: bool = False, body: str, internal: bool = False
+    ) -> "ModmailMessage":
         """Reply to the conversation.
 
-        :param body: The Markdown formatted content for a message.
         :param author_hidden: When ``True``, author is hidden from non-moderators
             (default: ``False``).
+        :param body: The Markdown formatted content for a message.
         :param internal: When ``True``, message is a private moderator note, hidden from
             non-moderators (default: ``False``).
 
@@ -238,13 +245,13 @@ class ModmailConversation(RedditBase):
         .. code-block:: python
 
             conversation = reddit.subreddit("test").modmail("2gmz")
-            conversation.reply("Message body", author_hidden=True)
+            conversation.reply(body="Message body", author_hidden=True)
 
         To create a private moderator note on the conversation:
 
         .. code-block:: python
 
-            conversation.reply("Message body", internal=True)
+            conversation.reply(body="Message body", internal=True)
 
         """
         data = {
@@ -293,10 +300,13 @@ class ModmailConversation(RedditBase):
             reddit.subreddit("test").modmail("2gmz").unmute()
 
         """
-        self._reddit.request("POST", API_PATH["modmail_unmute"].format(id=self.id))
+        self._reddit.request(
+            method="POST", path=API_PATH["modmail_unmute"].format(id=self.id)
+        )
 
+    @_deprecate_args("other_conversations")
     def unread(
-        self, other_conversations: Optional[List["ModmailConversation"]] = None
+        self, *, other_conversations: Optional[List["ModmailConversation"]] = None
     ):  # noqa: D207, D301
         """Mark the conversation(s) as unread.
 

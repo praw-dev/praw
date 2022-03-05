@@ -42,7 +42,7 @@ def main():
         user_agent="obtain_refresh_token/v0 by u/bboe",
     )
     state = str(random.randint(0, 65000))
-    url = reddit.auth.url(scopes, state, "permanent")
+    url = reddit.auth.url(duration="permanent", scopes=scopes, state=state)
     print(f"Now open this url in your browser: {url}")
 
     client = receive_connection()

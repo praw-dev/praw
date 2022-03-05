@@ -107,10 +107,10 @@ class TestButtonWidget(IntegrationTest):
                 },
             ]
             widget = widgets.mod.add_button_widget(
-                "Things to click",
-                "Click some of these *cool* links!",
-                buttons,
-                styles,
+                short_name="Things to click",
+                description="Click some of these *cool* links!",
+                buttons=buttons,
+                styles=styles,
             )
 
             assert isinstance(widget, ButtonWidget)
@@ -217,7 +217,11 @@ class TestCalendar(IntegrationTest):
             }
             cal_id = "ccahu0rstno2jrvioq4ccffn78@group.calendar.google.com"
             widget = widgets.mod.add_calendar(
-                "Upcoming Events", cal_id, True, config, styles
+                short_name="Upcoming Events",
+                google_calendar_id=cal_id,
+                requires_sync=True,
+                configuration=config,
+                styles=styles,
             )
 
             assert isinstance(widget, Calendar)
@@ -276,7 +280,10 @@ class TestCommunityList(IntegrationTest):
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
             subreddits = ["learnpython", self.reddit.subreddit("redditdev")]
             widget = widgets.mod.add_community_list(
-                "My fav subs", subreddits, styles, "My description"
+                short_name="My fav subs",
+                data=subreddits,
+                styles=styles,
+                description="My description",
             )
 
             assert isinstance(widget, CommunityList)
@@ -326,7 +333,12 @@ class TestCustomWidget(IntegrationTest):
 
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
             widget = widgets.mod.add_custom_widget(
-                "My widget", "# Hello world!", "/**/", 200, image_dicts, styles
+                short_name="My widget",
+                text="# Hello world!",
+                css="/**/",
+                height=200,
+                image_data=image_dicts,
+                styles=styles,
             )
 
             assert isinstance(widget, CustomWidget)
@@ -437,7 +449,7 @@ class TestImageWidget(IntegrationTest):
 
         with self.use_cassette():
             image_paths = (self.image_path(name) for name in ("test.jpg", "test.png"))
-            image_dicts = [
+            image_data = [
                 {
                     "width": 0,
                     "height": 0,
@@ -449,7 +461,7 @@ class TestImageWidget(IntegrationTest):
 
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
             widget = widgets.mod.add_image_widget(
-                short_name="My new pics!", data=image_dicts, styles=styles
+                short_name="My new pics!", data=image_data, styles=styles
             )
 
             assert isinstance(widget, ImageWidget)
@@ -458,7 +470,7 @@ class TestImageWidget(IntegrationTest):
             assert len(widget) == 2
             assert all(isinstance(img, Image) for img in widget)
 
-            widget = widget.mod.update(shortName="My old pics :(", data=image_dicts[:1])
+            widget = widget.mod.update(shortName="My old pics :(", data=image_data[:1])
 
             assert isinstance(widget, ImageWidget)
             assert widget.shortName == "My old pics :("
@@ -511,7 +523,7 @@ class TestMenu(IntegrationTest):
         ]
 
         with self.use_cassette():
-            widget = widgets.mod.add_menu(menu_contents)
+            widget = widgets.mod.add_menu(data=menu_contents)
 
             assert isinstance(widget, Menu)
             assert len(widget) == 3
@@ -634,7 +646,7 @@ class TestPostFlairWidget(IntegrationTest):
 
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
             widget = widgets.mod.add_post_flair_widget(
-                "Some flairs", "list", flairs, styles
+                display="Some flairs", order="list", short_name=flairs, styles=styles
             )
 
             assert isinstance(widget, PostFlairWidget)

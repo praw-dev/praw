@@ -55,7 +55,7 @@ def get_request_params(client_id, redirect_uri, thing):
         user_agent="Award fetcher by u/Lil_SpazJoekp",
     )
     state = str(random.randint(0, 65000))
-    url = reddit.auth.url(scopes, state, "temporary")
+    url = reddit.auth.url(duration="temporary", scopes=scopes, state=state)
     print(f"Open this url in your browser: {url}")
     sys.stdout.flush()
 
@@ -77,7 +77,7 @@ def get_request_params(client_id, redirect_uri, thing):
         return
 
     reddit.auth.authorize(params["code"])
-    thing = list(reddit.info([thing]))[0]
+    thing = list(reddit.info(fullnames=[thing]))[0]
     subreddit = thing.subreddit_id
     return reddit._authorized_core._authorizer.access_token, thing.fullname, subreddit
 

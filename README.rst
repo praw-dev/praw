@@ -86,7 +86,7 @@ With the ``reddit`` instance you can then interact with Reddit:
     submission.reply("Super rad!")
 
     # Reply to the first comment of a weekly top thread of a moderated community
-    submission = next(reddit.subreddit("mod").top("week"))
+    submission = next(reddit.subreddit("mod").top(time_filter="week"))
     submission.comments[0].reply("An automated reply")
 
     # Output score for the first 256 items on the frontpage

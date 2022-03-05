@@ -1,4 +1,5 @@
 """Provide classes related to inline media."""
+from ..util import _deprecate_args
 
 
 class InlineMedia:
@@ -6,11 +7,12 @@ class InlineMedia:
 
     TYPE = None
 
-    def __init__(self, path: str, caption: str = None):
+    @_deprecate_args("path", "caption")
+    def __init__(self, *, caption: str = None, path: str):
         """Initialize an :class:`.InlineMedia` instance.
 
-        :param path: The path to a media file.
         :param caption: An optional caption to add to the image (default: ``None``).
+        :param path: The path to a media file.
 
         """
         self.path = path

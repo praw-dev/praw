@@ -13,6 +13,8 @@ PRAW users will create their own token manager classes suitable for their needs.
 """
 from abc import ABC, abstractmethod
 
+from . import _deprecate_args
+
 
 class BaseTokenManager(ABC):
     """An abstract class for all token managers."""
@@ -99,8 +101,8 @@ class SQLiteTokenManager(BaseTokenManager):
     """Provides a SQLite3 based token manager.
 
     Unlike, :class:`.FileTokenManager`, the initial database need not be created ahead
-    of time, as it'll automatically be created on first use. However, initial
-    ``refresh_tokens`` will need to be registered via :meth:`.register` prior to use.
+    of time, as it'll automatically be created on first use. However, initial refresh
+    tokens will need to be registered via :meth:`.register` prior to use.
 
     .. warning::
 
@@ -109,14 +111,15 @@ class SQLiteTokenManager(BaseTokenManager):
 
     """
 
-    def __init__(self, database, key):
+    @_deprecate_args("database", "key")
+    def __init__(self, *, database, key):
         """Initialize a :class:`.SQLiteTokenManager` instance.
 
         :param database: The path to the SQLite database.
-        :param key: The key used to locate the ``refresh_token``. This ``key`` can be
-            anything. You might use the ``client_id`` if you expect to have unique
-            ``refresh_tokens`` for each ``client_id``, or you might use a Redditor's
-            ``username`` if you're manage multiple users' authentications.
+        :param key: The key used to locate the refresh token. This ``key`` can be
+            anything. You might use the ``client_id`` if you expect to have unique a
+            refresh token for each ``client_id``, or you might use a redditor's
+            ``username`` if you're managing multiple users' authentications.
 
         """
         super().__init__()

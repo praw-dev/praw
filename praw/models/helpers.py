@@ -3,6 +3,7 @@ from json import dumps
 from typing import TYPE_CHECKING, Generator, List, Optional, Union
 
 from ..const import API_PATH
+from ..util import _deprecate_args
 from .base import PRAWBase
 from .reddit.draft import Draft
 from .reddit.live import LiveThread
@@ -23,7 +24,7 @@ class DraftHelper(PRAWBase):
     """
 
     def __call__(
-        self, *, draft_id: Optional[str] = None
+        self, draft_id: Optional[str] = None
     ) -> Union[List["praw.models.Draft"], "praw.models.Draft"]:
         """Return a list of :class:`.Draft` instances.
 
@@ -43,7 +44,7 @@ class DraftHelper(PRAWBase):
         .. code-block:: python
 
             draft_id = "124862bc-e1e9-11eb-aa4f-e68667a77cbb"
-            draft = reddit.drafts(draft_id=draft_id)
+            draft = reddit.drafts(draft_id)
             print(draft)
 
         """
@@ -187,14 +188,16 @@ class LiveHelper(PRAWBase):
 
         return generator()
 
+    @_deprecate_args("title", "description", "nsfw", "resources")
     def create(
         self,
         title: str,
+        *,
         description: Optional[str] = None,
         nsfw: bool = False,
         resources: str = None,
     ) -> "praw.models.LiveThread":
-        r"""Create a new :class:`.LiveThread`.
+        """Create a new :class:`.LiveThread`.
 
         :param title: The title of the new :class:`.LiveThread`.
         :param description: The new :class:`.LiveThread`'s description.
@@ -235,26 +238,37 @@ class LiveHelper(PRAWBase):
 class MultiredditHelper(PRAWBase):
     """Provide a set of functions to interact with multireddits."""
 
+    @_deprecate_args("redditor", "name")
     def __call__(
-        self, redditor: Union[str, "praw.models.Redditor"], name: str
+        self, *, name: str, redditor: Union[str, "praw.models.Redditor"]
     ) -> "praw.models.Multireddit":
         """Return a lazy instance of :class:`.Multireddit`.
 
+        :param name: The name of the multireddit.
         :param redditor: A redditor name or :class:`.Redditor` instance who owns the
             multireddit.
-        :param name: The name of the multireddit.
 
         """
         path = f"/user/{redditor}/m/{name}"
         return Multireddit(self._reddit, _data={"name": name, "path": path})
 
+    @_deprecate_args(
+        "display_name",
+        "subreddits",
+        "description_md",
+        "icon_name",
+        "key_color",
+        "visibility",
+        "weighting_scheme",
+    )
     def create(
         self,
-        display_name: str,
-        subreddits: Union[str, "praw.models.Subreddit"],
+        *,
         description_md: Optional[str] = None,
+        display_name: str,
         icon_name: Optional[str] = None,
         key_color: Optional[str] = None,
+        subreddits: Union[str, "praw.models.Subreddit"],
         visibility: str = "private",
         weighting_scheme: str = "classic",
     ) -> "praw.models.Multireddit":
@@ -313,27 +327,29 @@ class SubredditHelper(PRAWBase):
 
         return Subreddit(self._reddit, display_name=display_name)
 
+    @_deprecate_args("name", "title", "link_type", "subreddit_type", "wikimode")
     def create(
         self,
         name: str,
-        title: Optional[str] = None,
+        *,
         link_type: str = "any",
         subreddit_type: str = "public",
+        title: Optional[str] = None,
         wikimode: str = "disabled",
         **other_settings: Optional[str],
     ) -> "praw.models.Subreddit":
         """Create a new :class:`.Subreddit`.
 
         :param name: The name for the new subreddit.
-        :param title: The title of the subreddit. When ``None`` or ``""`` use the value
-            of ``"name"``.
         :param link_type: The types of submissions users can make. One of ``"any"``,
             ``"link"``, or ``"self"`` (default: ``"any"``).
         :param subreddit_type: One of ``"archived"``, ``"employees_only"``,
             ``"gold_only"``, ``"gold_restricted"``, ``"private"``, ``"public"``, or
-            ``"restricted"`` (default: "public").
+            ``"restricted"`` (default: ``"public"``).
+        :param title: The title of the subreddit. When ``None`` or ``""`` use the value
+            of ``name``.
         :param wikimode: One of ``"anyone"``, ``"disabled"``, or ``"modonly"`` (default:
-            ``disabled``).
+            ``"disabled"``).
 
         Any keyword parameters not provided, or set explicitly to ``None``, will take on
         a default value assigned by the Reddit server.
@@ -346,8 +362,8 @@ class SubredditHelper(PRAWBase):
         """
         Subreddit._create_or_update(
             _reddit=self._reddit,
-            name=name,
             link_type=link_type,
+            name=name,
             subreddit_type=subreddit_type,
             title=title or name,
             wikimode=wikimode,

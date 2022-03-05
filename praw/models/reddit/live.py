@@ -2,6 +2,7 @@
 from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Union
 
 from ...const import API_PATH
+from ...util import _deprecate_args
 from ...util.cache import cachedproperty
 from ..list.redditor import RedditorList
 from ..listing.generator import ListingGenerator
@@ -68,9 +69,11 @@ class LiveContributorRelationship:
         url = API_PATH["live_accept_invite"].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
+    @_deprecate_args("redditor", "permissions")
     def invite(
         self,
         redditor: Union[str, "praw.models.Redditor"],
+        *,
         permissions: Optional[List[str]] = None,
     ):
         """Invite a redditor to be a contributor of the live thread.
@@ -91,7 +94,7 @@ class LiveContributorRelationship:
             redditor = reddit.redditor("spez")
 
             # "manage" and "settings" permissions
-            thread.contributor.invite(redditor, ["manage", "settings"])
+            thread.contributor.invite(redditor, permissions=["manage", "settings"])
 
         .. seealso::
 
@@ -174,9 +177,11 @@ class LiveContributorRelationship:
         url = API_PATH["live_remove_invite"].format(id=self.thread.id)
         self.thread._reddit.post(url, data=data)
 
+    @_deprecate_args("redditor", "permissions")
     def update(
         self,
         redditor: Union[str, "praw.models.Redditor"],
+        *,
         permissions: Optional[List[str]] = None,
     ):
         """Update the contributor permissions for ``redditor``.
@@ -199,13 +204,13 @@ class LiveContributorRelationship:
 
         .. code-block:: python
 
-            thread.contributor.update("spez", ["access", "edit"])
+            thread.contributor.update("spez", permissions=["access", "edit"])
 
         To remove all permissions from the contributor, try:
 
         .. code-block:: python
 
-            subreddit.moderator.update("spez", [])
+            subreddit.moderator.update("spez", permissions=[])
 
         """
         url = API_PATH["live_update_perms"].format(id=self.thread.id)
@@ -216,9 +221,11 @@ class LiveContributorRelationship:
         }
         self.thread._reddit.post(url, data=data)
 
+    @_deprecate_args("redditor", "permissions")
     def update_invite(
         self,
         redditor: Union[str, "praw.models.Redditor"],
+        *,
         permissions: Optional[List[str]] = None,
     ):
         """Update the contributor invite permissions for ``redditor``.
@@ -241,13 +248,13 @@ class LiveContributorRelationship:
 
         .. code-block:: python
 
-            thread.contributor.update_invite("spez", ["access", "edit"])
+            thread.contributor.update_invite("spez", permissions=["access", "edit"])
 
         To remove all permissions from the invitation, try:
 
         .. code-block:: python
 
-            thread.contributor.update_invite("spez", [])
+            thread.contributor.update_invite("spez", permissions=[])
 
         """
         url = API_PATH["live_update_perms"].format(id=self.thread.id)
@@ -307,7 +314,7 @@ class LiveThread(RedditBase):
 
             thread = reddit.live("ukaeu1ik4sw5")
             for contributor in thread.contributor():
-                # prints `(Redditor(name="Acidtwist"), ["all"])`
+                # prints `Redditor(name="Acidtwist") ["all"]`
                 print(contributor, contributor.permissions)
 
         """
@@ -397,7 +404,7 @@ class LiveThread(RedditBase):
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
-        return self._reddit.request("GET", path, params)
+        return self._reddit.request(method="GET", params=params, path=path)
 
     def _fetch(self):
         data = self._fetch_data()
@@ -528,22 +535,24 @@ class LiveThreadContribution:
         url = API_PATH["live_close"].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
+    @_deprecate_args("title", "description", "nsfw", "resources")
     def update(
         self,
-        title: Optional[str] = None,
+        *,
         description: Optional[str] = None,
         nsfw: Optional[bool] = None,
         resources: Optional[str] = None,
+        title: Optional[str] = None,
         **other_settings: Optional[str],
     ):
         """Update settings of the live thread.
 
-        :param title: The title of the live thread (default: ``None``).
         :param description: The live thread's description (default: ``None``).
         :param nsfw: Indicate whether this thread is not safe for work (default:
             ``None``).
         :param resources: Markdown formatted information that is useful for the live
             thread (default: ``None``).
+        :param title: The title of the live thread (default: ``None``).
 
         Does nothing if no arguments are provided.
 

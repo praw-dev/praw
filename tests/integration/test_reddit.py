@@ -26,8 +26,8 @@ class TestReddit(IntegrationTest):
         ):
             with pytest.raises(RedditAPIException) as excinfo:
                 self.reddit.request(
-                    "GET",
-                    f"/api/morechildren?link_id=t3_n7r3uz&children={junk}",
+                    method="GET",
+                    path=f"/api/morechildren?link_id=t3_n7r3uz&children={junk}",
                 )
             assert str(excinfo.value) == "Bad Request"
 
@@ -42,8 +42,8 @@ class TestReddit(IntegrationTest):
         ):
             with pytest.raises(RedditAPIException) as excinfo:
                 self.reddit.request(
-                    "GET",
-                    f"/api/morechildren?link_id=t3_n7r3uz&children={ids}",
+                    method="GET",
+                    path=f"/api/morechildren?link_id=t3_n7r3uz&children={ids}",
                 )
             assert (
                 str(excinfo.value)
@@ -71,7 +71,7 @@ class TestReddit(IntegrationTest):
             for base in bases:
                 items.append(f"{base}{i:02d}")
 
-        item_generator = self.reddit.info(items)
+        item_generator = self.reddit.info(fullnames=items)
         with self.use_cassette():
             results = list(item_generator)
         assert len(results) > 100

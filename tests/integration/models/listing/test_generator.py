@@ -19,5 +19,5 @@ class TestListingGenerator(IntegrationTest):
 
     def test_no_items(self):
         with self.use_cassette():
-            submissions = list(self.reddit.redditor("spez").top("hour"))
+            submissions = list(self.reddit.redditor("spez").top(time_filter="hour"))
         assert len(submissions) == 0

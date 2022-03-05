@@ -5,6 +5,7 @@ from json import JSONEncoder, dumps
 from typing import TYPE_CHECKING, Any, Dict, List, Union
 
 from ...const import API_PATH
+from ...util import _deprecate_args
 from ...util.cache import cachedproperty
 from ..base import PRAWBase
 from ..list.base import BaseList
@@ -60,16 +61,16 @@ class CalendarConfiguration(PRAWBase):
 
     .. include:: ../../typical_attributes.rst
 
-    =================== ==================================================
+    =================== ================================================
     Attribute           Description
-    =================== ==================================================
+    =================== ================================================
     ``numEvents``       The number of events to display on the calendar.
-    ``showDate``        Whether or not to show the dates of events.
-    ``showDescription`` Whether or not to show the descriptions of events.
-    ``showLocation``    Whether or not to show the locations of events.
-    ``showTime``        Whether or not to show the times of events.
-    ``showTitle``       Whether or not to show the titles of events.
-    =================== ==================================================
+    ``showDate``        Whether to show the dates of events.
+    ``showDescription`` Whether to show the descriptions of events.
+    ``showLocation``    Whether to show the locations of events.
+    ``showTime``        Whether to show the times of events.
+    ``showTitle``       Whether to show the titles of events.
+    =================== ================================================
 
     """
 
@@ -234,9 +235,9 @@ class SubredditWidgets(PRAWBase):
     .. code-block:: python
 
         widgets.mod.add_text_area(
-            "My title",
-            "**bold text**",
-            {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"},
+            short_name="My title",
+            text="**bold text**",
+            styles={"backgroundColor": "#FFFF66", "headerColor": "#3333EE"},
         )
 
     For more information, see :class:`.SubredditWidgetsModeration`.
@@ -387,7 +388,9 @@ class SubredditWidgetsModeration:
     .. code-block:: python
 
         styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-        reddit.subreddit("test").widgets.mod.add_text_area("My title", "**bold text**", styles)
+        reddit.subreddit("test").widgets.mod.add_text_area(
+            short_name="My title", text="**bold text**", styles=styles
+        )
 
     .. note::
 
@@ -409,21 +412,21 @@ class SubredditWidgetsModeration:
         widget.subreddit = self._subreddit
         return widget
 
+    @_deprecate_args("short_name", "description", "buttons", "styles")
     def add_button_widget(
         self,
-        short_name: str,
-        description: str,
+        *,
         buttons: List[
             Dict[str, Union[Dict[str, str], str, int, Dict[str, Union[str, int]]]]
         ],
+        description: str,
+        short_name: str,
         styles: Dict[str, str],
         **other_settings,
     ) -> "praw.models.ButtonWidget":
-        r"""Add and return a :class:`.ButtonWidget`.
+        """Add and return a :class:`.ButtonWidget`.
 
-        :param short_name: A name for the widget, no longer than 30 characters.
-        :param description: Markdown text to describe the widget.
-        :param buttons: A list of ``dict``\ s describing buttons, as specified in
+        :param buttons: A list of dictionaries describing buttons, as specified in
             `Reddit docs`_. As of this writing, the format is:
 
             Each button is either a text button or an image button. A text button looks
@@ -490,9 +493,11 @@ class SubredditWidgetsModeration:
                 An image ``hoverState`` may be paired with a text widget, and a text
                 ``hoverState`` may be paired with an image widget.
 
-        :param styles: A ``dict`` with keys ``backgroundColor`` and ``headerColor``, and
-            values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
-            "headerColor": "#3333EE"}``.
+        :param description: Markdown text to describe the widget.
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
 
         :returns: The created :class:`.ButtonWidget`.
 
@@ -532,7 +537,10 @@ class SubredditWidgetsModeration:
             ]
             styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
             new_widget = widget_moderation.add_button_widget(
-                "Things to click", "Click some of these *cool* links!", buttons, styles
+                short_name="Things to click",
+                description="Click some of these *cool* links!",
+                buttons=buttons,
+                styles=styles,
             )
 
         """
@@ -546,22 +554,22 @@ class SubredditWidgetsModeration:
         button_widget.update(other_settings)
         return self._create_widget(button_widget)
 
+    @_deprecate_args(
+        "short_name", "google_calendar_id", "requires_sync", "configuration", "styles"
+    )
     def add_calendar(
         self,
-        short_name: str,
+        *,
+        configuration: Dict[str, Union[bool, int]],
         google_calendar_id: str,
         requires_sync: bool,
-        configuration: Dict[str, Union[bool, int]],
+        short_name: str,
         styles: Dict[str, str],
         **other_settings,
     ) -> "praw.models.Calendar":
         """Add and return a :class:`.Calendar` widget.
 
-        :param short_name: A name for the widget, no longer than 30 characters.
-        :param google_calendar_id: An email-style calendar ID. To share a Google
-            Calendar, make it public, then find the "Calendar ID".
-        :param requires_sync: A ``bool``.
-        :param configuration: A ``dict`` as specified in `Reddit docs`_. For example:
+        :param configuration: A dictionary as specified in `Reddit docs`_. For example:
 
             .. code-block:: python
 
@@ -574,9 +582,13 @@ class SubredditWidgetsModeration:
                     "showTitle": True,
                 }
 
-        :param styles: A ``dict`` with keys ``backgroundColor`` and ``headerColor``, and
-            values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
-            "headerColor": "#3333EE"}``.
+        :param google_calendar_id: An email-style calendar ID. To share a Google
+            Calendar, make it public, then find the "Calendar ID".
+        :param requires_sync: Whether the calendar needs synchronization.
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
 
         :returns: The created :class:`.Calendar`.
 
@@ -596,9 +608,13 @@ class SubredditWidgetsModeration:
                 "showTime": True,
                 "showTitle": True,
             }
-            cal_id = "y6nm89jy427drk8l71w75w9wjn@group.calendar.google.com"
+            calendar_id = "y6nm89jy427drk8l71w75w9wjn@group.calendar.google.com"
             new_widget = widget_moderation.add_calendar(
-                "Upcoming Events", cal_id, True, config, styles
+                short_name="Upcoming Events",
+                google_calendar_id=calendar_id,
+                requires_sync=True,
+                configuration=config,
+                styles=styles,
             )
 
         """
@@ -613,23 +629,25 @@ class SubredditWidgetsModeration:
         calendar.update(other_settings)
         return self._create_widget(calendar)
 
+    @_deprecate_args("short_name", "data", "styles", "description")
     def add_community_list(
         self,
-        short_name: str,
+        *,
         data: List[Union[str, "praw.models.Subreddit"]],
-        styles: Dict[str, str],
         description: str = "",
+        short_name: str,
+        styles: Dict[str, str],
         **other_settings,
     ) -> "praw.models.CommunityList":
         """Add and return a :class:`.CommunityList` widget.
 
-        :param short_name: A name for the widget, no longer than 30 characters.
         :param data: A list of subreddits. Subreddits can be represented as ``str`` or
             as :class:`.Subreddit`. These types may be mixed within the list.
-        :param styles: A ``dict`` with keys ``"backgroundColor"`` and ``"headerColor"``,
-            and values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
-            "headerColor": "#3333EE"}``.
-        :param description: A ``str`` containing Markdown (default: ``""``).
+        :param description: A string containing Markdown (default: ``""``).
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
 
         :returns: The created :class:`.CommunityList`.
 
@@ -641,7 +659,7 @@ class SubredditWidgetsModeration:
             styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
             subreddits = ["learnpython", reddit.subreddit("redditdev")]
             new_widget = widget_moderation.add_community_list(
-                "My fav subs", subreddits, styles, "description"
+                short_name="My fav subs", data=subreddits, styles=styles, description="description"
             )
 
         """
@@ -655,20 +673,20 @@ class SubredditWidgetsModeration:
         community_list.update(other_settings)
         return self._create_widget(community_list)
 
+    @_deprecate_args("short_name", "text", "css", "height", "image_data", "styles")
     def add_custom_widget(
         self,
-        short_name: str,
-        text: str,
+        *,
         css: str,
         height: int,
         image_data: List[Dict[str, Union[str, int]]],
+        short_name: str,
         styles: Dict[str, str],
+        text: str,
         **other_settings,
     ) -> "praw.models.CustomWidget":
-        r"""Add and return a :class:`.CustomWidget`.
+        """Add and return a :class:`.CustomWidget`.
 
-        :param short_name: A name for the widget, no longer than 30 characters.
-        :param text: The Markdown text displayed in the widget.
         :param css: The CSS for the widget, no longer than 100000 characters.
 
             .. note::
@@ -678,9 +696,9 @@ class SubredditWidgetsModeration:
                 comment) as your CSS.
 
         :param height: The height of the widget, between 50 and 500.
-        :param image_data: A list of ``dict``\ s as specified in `Reddit docs`_. Each
-            ``dict`` represents an image and has the key ``"url"`` which maps to the URL
-            of an image hosted on Reddit's servers. Images should be uploaded using
+        :param image_data: A list of dictionaries as specified in `Reddit docs`_. Each
+            dictionary represents an image and has the key ``"url"`` which maps to the
+            URL of an image hosted on Reddit's servers. Images should be uploaded using
             :meth:`.upload_image`.
 
             For example:
@@ -702,9 +720,11 @@ class SubredditWidgetsModeration:
                     },
                 ]
 
-        :param styles: A ``dict`` with keys ``backgroundColor`` and ``headerColor``, and
-            values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
-            "headerColor": "#3333EE"}``.
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
+        :param text: The Markdown text displayed in the widget.
 
         :returns: The created :class:`.CustomWidget`.
 
@@ -717,13 +737,18 @@ class SubredditWidgetsModeration:
             widget_moderation = reddit.subreddit("test").widgets.mod
             image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
             image_urls = [widget_moderation.upload_image(img_path) for img_path in image_paths]
-            image_dicts = [
+            image_data = [
                 {"width": 600, "height": 450, "name": "logo", "url": image_urls[0]},
                 {"width": 450, "height": 600, "name": "icon", "url": image_urls[1]},
             ]
             styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
             new_widget = widget_moderation.add_custom_widget(
-                "My widget", "# Hello world!", "/**/", 200, image_dicts, styles
+                image_short_name="My widget",
+                text="# Hello world!",
+                css="/**/",
+                height=200,
+                image_data=image_data,
+                styles=styles,
             )
 
         """
@@ -739,19 +764,20 @@ class SubredditWidgetsModeration:
         custom_widget.update(other_settings)
         return self._create_widget(custom_widget)
 
+    @_deprecate_args("short_name", "data", "styles")
     def add_image_widget(
         self,
-        short_name: str,
+        *,
         data: List[Dict[str, Union[str, int]]],
+        short_name: str,
         styles: Dict[str, str],
         **other_settings,
     ) -> "praw.models.ImageWidget":
-        r"""Add and return an :class:`.ImageWidget`.
+        """Add and return an :class:`.ImageWidget`.
 
-        :param short_name: A name for the widget, no longer than 30 characters.
-        :param data: A list of ``dict``\ s as specified in `Reddit docs`_. Each ``dict``
-            has the key ``"url"`` which maps to the URL of an image hosted on Reddit's
-            servers. Images should be uploaded using :meth:`.upload_image`.
+        :param data: A list of dictionaries as specified in `Reddit docs`_. Each
+            dictionary has the key ``"url"`` which maps to the URL of an image hosted on
+            Reddit's servers. Images should be uploaded using :meth:`.upload_image`.
 
             For example:
 
@@ -772,9 +798,10 @@ class SubredditWidgetsModeration:
                     },
                 ]
 
-        :param styles: A ``dict`` with keys ``backgroundColor`` and ``headerColor``, and
-            values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
-            "headerColor": "#3333EE"}``.
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
 
         :returns: The created :class:`.ImageWidget`.
 
@@ -786,7 +813,7 @@ class SubredditWidgetsModeration:
 
             widget_moderation = reddit.subreddit("test").widgets.mod
             image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
-            image_dicts = [
+            image_data = [
                 {
                     "width": 600,
                     "height": 450,
@@ -796,7 +823,9 @@ class SubredditWidgetsModeration:
                 for img_path in image_paths
             ]
             styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-            new_widget = widget_moderation.add_image_widget("My cool pictures", image_dicts, styles)
+            new_widget = widget_moderation.add_image_widget(
+                short_name="My cool pictures", data=image_data, styles=styles
+            )
 
         """
         image_widget = {
@@ -808,12 +837,16 @@ class SubredditWidgetsModeration:
         image_widget.update(other_settings)
         return self._create_widget(image_widget)
 
+    @_deprecate_args("data")
     def add_menu(
-        self, data: List[Dict[str, Union[List[Dict[str, str]], str]]], **other_settings
+        self,
+        *,
+        data: List[Dict[str, Union[List[Dict[str, str]], str]]],
+        **other_settings,
     ) -> "praw.models.Menu":
-        r"""Add and return a :class:`.Menu` widget.
+        """Add and return a :class:`.Menu` widget.
 
-        :param data: A list of ``dict``\ s describing menu contents, as specified in
+        :param data: A list of dictionaries describing menu contents, as specified in
             `Reddit docs`_. As of this writing, the format is:
 
             .. code-block:: text
@@ -860,24 +893,25 @@ class SubredditWidgetsModeration:
                 },
                 {"text": "Reddit homepage", "url": "https://reddit.com"},
             ]
-            new_widget = widget_moderation.add_menu(menu_contents)
+            new_widget = widget_moderation.add_menu(data=menu_contents)
 
         """
         menu = {"data": data, "kind": "menu"}
         menu.update(other_settings)
         return self._create_widget(menu)
 
+    @_deprecate_args("short_name", "display", "order", "styles")
     def add_post_flair_widget(
         self,
-        short_name: str,
+        *,
         display: str,
         order: List[str],
+        short_name: str,
         styles: Dict[str, str],
         **other_settings,
     ) -> "praw.models.PostFlairWidget":
         """Add and return a :class:`.PostFlairWidget`.
 
-        :param short_name: A name for the widget, no longer than 30 characters.
         :param display: Display style. Either ``"cloud"`` or ``"list"``.
         :param order: A list of flair template IDs. You can get all flair template IDs
             in a subreddit with:
@@ -886,9 +920,10 @@ class SubredditWidgetsModeration:
 
                 flairs = [f["id"] for f in subreddit.flair.link_templates]
 
-        :param styles: A ``dict`` with keys ``backgroundColor`` and ``headerColor``, and
-            values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
-            "headerColor": "#3333EE"}``.
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
 
         :returns: The created :class:`.PostFlairWidget`.
 
@@ -901,7 +936,7 @@ class SubredditWidgetsModeration:
             flairs = [f["id"] for f in subreddit.flair.link_templates]
             styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
             new_widget = widget_moderation.add_post_flair_widget(
-                "Some flairs", "list", flairs, styles
+                short_name="Some flairs", display="list", order=flairs, styles=styles
             )
 
         """
@@ -915,16 +950,17 @@ class SubredditWidgetsModeration:
         post_flair.update(other_settings)
         return self._create_widget(post_flair)
 
+    @_deprecate_args("short_name", "text", "styles")
     def add_text_area(
-        self, short_name: str, text: str, styles: Dict[str, str], **other_settings
+        self, *, short_name: str, styles: Dict[str, str], text: str, **other_settings
     ) -> "praw.models.TextArea":
         """Add and return a :class:`.TextArea` widget.
 
         :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
         :param text: The Markdown text displayed in the widget.
-        :param styles: A ``dict`` with keys ``backgroundColor`` and ``headerColor``, and
-            values of hex colors. For example, ``{"backgroundColor": "#FFFF66",
-            "headerColor": "#3333EE"}``.
 
         :returns: The created :class:`.TextArea`.
 
@@ -935,7 +971,7 @@ class SubredditWidgetsModeration:
             widget_moderation = reddit.subreddit("test").widgets.mod
             styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
             new_widget = widget_moderation.add_text_area(
-                "My cool title", "*Hello* **world**!", styles
+                short_name="My cool title", text="*Hello* **world**!", styles=styles
             )
 
         """
@@ -948,14 +984,13 @@ class SubredditWidgetsModeration:
         text_area.update(other_settings)
         return self._create_widget(text_area)
 
+    @_deprecate_args("new_order", "section")
     def reorder(
-        self,
-        new_order: List[Union[WidgetType, str]],
-        section: str = "sidebar",
+        self, new_order: List[Union[WidgetType, str]], *, section: str = "sidebar"
     ):
         """Reorder the widgets.
 
-        :param new_order: A list of widgets. Represented as a ``list`` that contains
+        :param new_order: A list of widgets. Represented as a list that contains
             :class:`.Widget` objects, or widget IDs as strings. These types may be
             mixed.
         :param section: The section to reorder (default: ``"sidebar"``).
@@ -995,9 +1030,11 @@ class SubredditWidgetsModeration:
 
             my_sub = reddit.subreddit("test")
             image_url = my_sub.widgets.mod.upload_image("/path/to/image.jpg")
-            images = [{"width": 300, "height": 300, "url": image_url, "linkUrl": ""}]
+            image_data = [{"width": 300, "height": 300, "url": image_url, "linkUrl": ""}]
             styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-            my_sub.widgets.mod.add_image_widget("My cool pictures", images, styles)
+            my_sub.widgets.mod.add_image_widget(
+                short_name="My cool pictures", data=image_data, styles=styles
+            )
 
         """
         img_data = {
@@ -1144,7 +1181,7 @@ class ButtonWidget(Widget, BaseList):
 
 
 class Calendar(Widget):
-    r"""Class to represent a calendar widget.
+    """Class to represent a calendar widget.
 
     Find an existing one:
 
@@ -1174,7 +1211,13 @@ class Calendar(Widget):
             "showTitle": True,
         }
         cal_id = "y6nm89jy427drk8l71w75w9wjn@group.calendar.google.com"
-        calendar = widgets.mod.add_calendar("Upcoming Events", cal_id, True, config, styles)
+        calendar = widgets.mod.add_calendar(
+            short_name="Upcoming Events",
+            google_calendar_id=cal_id,
+            requires_sync=True,
+            configuration=config,
+            styles=styles,
+        )
 
     For more information on creation, see :meth:`.add_calendar`.
 
@@ -1193,20 +1236,20 @@ class Calendar(Widget):
 
     .. include:: ../../typical_attributes.rst
 
-    ================= ============================================================
+    ================= =====================================================
     Attribute         Description
-    ================= ============================================================
+    ================= =====================================================
     ``configuration`` A ``dict`` describing the calendar configuration.
-    ``data``          A list of ``dict``\ s that represent events.
+    ``data``          A list of dictionaries that represent events.
     ``id``            The widget ID.
     ``kind``          The widget kind (always ``"calendar"``).
-    ``requiresSync``  A ``bool`` representing whether or not the calendar requires
+    ``requiresSync``  A ``bool`` representing whether the calendar requires
                       synchronization.
     ``shortName``     The short name of the widget.
     ``styles``        A ``dict`` with the keys ``"backgroundColor"`` and
                       ``"headerColor"``.
     ``subreddit``     The :class:`.Subreddit` the button widget belongs to.
-    ================= ============================================================
+    ================= =====================================================
 
     """
 
@@ -1235,7 +1278,10 @@ class CommunityList(Widget, BaseList):
         styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
         subreddits = ["learnpython", reddit.subreddit("test")]
         community_list = widgets.mod.add_community_list(
-            "Related subreddits", subreddits, styles, "description"
+            short_name="Related subreddits",
+            data=subreddits,
+            styles=styles,
+            description="description",
         )
 
     For more information on creation, see :meth:`.add_community_list`.
@@ -1297,7 +1343,12 @@ class CustomWidget(Widget):
         widgets = reddit.subreddit("test").widgets
         styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
         custom = widgets.mod.add_custom_widget(
-            "My custom widget", "# Hello world!", "/**/", 200, [], styles
+            short_name="My custom widget",
+            text="# Hello world!",
+            css="/**/",
+            height=200,
+            image_data=[],
+            styles=styles,
         )
 
     For more information on creation, see :meth:`.add_custom_widget`.
@@ -1405,7 +1456,7 @@ class ImageWidget(Widget, BaseList):
 
         widgets = reddit.subreddit("test").widgets
         image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
-        image_dicts = [
+        image_data = [
             {
                 "width": 600,
                 "height": 450,
@@ -1415,7 +1466,9 @@ class ImageWidget(Widget, BaseList):
             for img_path in image_paths
         ]
         styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-        image_widget = widgets.mod.add_image_widget("My cool pictures", image_dicts, styles)
+        image_widget = widgets.mod.add_image_widget(
+            short_name="My cool pictures", data=image_data, styles=styles
+        )
 
     For more information on creation, see :meth:`.add_image_widget`.
 
@@ -1487,7 +1540,7 @@ class Menu(Widget, BaseList):
             },
             {"text": "Reddit homepage", "url": "https://reddit.com"},
         ]
-        menu = widgets.mod.add_menu(menu_contents)
+        menu = widgets.mod.add_menu(data=menu_contents)
 
     For more information on creation, see :meth:`.add_menu`.
 
@@ -1566,7 +1619,7 @@ class ModeratorsWidget(Widget, BaseList):
 
 
 class PostFlairWidget(Widget, BaseList):
-    r"""Class to represent a post flair widget.
+    """Class to represent a post flair widget.
 
     Find an existing one:
 
@@ -1591,7 +1644,9 @@ class PostFlairWidget(Widget, BaseList):
         widgets = subreddit.widgets
         flairs = [f["id"] for f in subreddit.flair.link_templates]
         styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-        post_flair = widgets.mod.add_post_flair_widget("Some flairs", "list", flairs, styles)
+        post_flair = widgets.mod.add_post_flair_widget(
+            short_name="Some flairs", display="list", order=flairs, styles=styles
+        )
 
     For more information on creation, see :meth:`.add_post_flair_widget`.
 
@@ -1622,7 +1677,7 @@ class PostFlairWidget(Widget, BaseList):
     ``shortName`` The short name of the widget.
     ``styles``    A ``dict`` with the keys ``"backgroundColor"`` and ``"headerColor"``.
     ``subreddit`` The :class:`.Subreddit` the button widget belongs to.
-    ``templates`` A ``dict`` that maps flair IDs to ``dict``\ s that describe flairs.
+    ``templates`` A ``dict`` that maps flair IDs to dictionaries that describe flairs.
     ============= =====================================================================
 
     """
@@ -1700,7 +1755,9 @@ class TextArea(Widget):
 
         widgets = reddit.subreddit("test").widgets
         styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-        text_area = widgets.mod.add_text_area("My cool title", "*Hello* **world**!", styles)
+        text_area = widgets.mod.add_text_area(
+            short_name="My cool title", text="*Hello* **world**!", styles=styles
+        )
 
     For more information on creation, see :meth:`.add_text_area`.
 

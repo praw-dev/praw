@@ -44,6 +44,58 @@ Code
 
 - Use descriptive names for the catch-all keyword argument. E.g., ``**other_options``
   rather than ``**kwargs``.
+- Methods with more than one argument should have all its arguments sorted
+  alphabetically and marked as keyword only with the ``*`` argument. For example:
+
+  .. code-block:: python
+
+      class ExampleClass:
+          def example_method(
+              self,
+              *,
+              arg1,
+              arg2,
+              optional_arg1=None,
+          ):
+              ...
+
+  There is some exceptions to this:
+
+  - If it’s clear without reading documentation what the mandatory positional arguments
+    would be and their order, then they can be positional arguments. For example:
+
+    .. code-block:: python
+
+        class ExampleClass:
+            def pair(self, left, right):
+                ...
+
+  - If there is one or two mandatory arguments and some optional arguments, then the
+    mandatory arguments may be positional (as long as it adheres to the previous point),
+    however, the optional arguments must be made keyword only and sorted alphabetically.
+    For example:
+
+    .. code-block:: python
+
+        class Subreddit:
+            def submit(
+                self,
+                title,
+                *,
+                collection_id=None,
+                discussion_type=None,
+                draft_id=None,
+                flair_id=None,
+                flair_text=None,
+                inline_media=None,
+                nsfw=False,
+                resubmit=True,
+                selftext=None,
+                send_replies=True,
+                spoiler=False,
+                url=None,
+            ):
+                ...
 
 Testing
 -------

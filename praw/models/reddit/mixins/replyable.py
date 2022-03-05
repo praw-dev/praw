@@ -1,11 +1,13 @@
 """Provide the ReplyableMixin class."""
 from ....const import API_PATH
+from ...util import _deprecate_args
 
 
 class ReplyableMixin:
     """Interface for :class:`.RedditBase` classes that can be replied to."""
 
-    def reply(self, body: str):
+    @_deprecate_args("body")
+    def reply(self, *, body: str):
         """Reply to the object.
 
         :param body: The Markdown formatted content for a comment.

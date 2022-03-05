@@ -3,6 +3,7 @@ from json import dumps
 from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Union
 
 from ...const import API_PATH
+from ...util import _deprecate_args
 from ...util.cache import cachedproperty
 from ..listing.mixins import RedditorListingMixin
 from ..util import stream_generator
@@ -163,7 +164,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
-        return self._reddit.request("GET", path, params)
+        return self._reddit.request(method="GET", params=params, path=path)
 
     def _fetch(self):
         data = self._fetch_data()
@@ -172,9 +173,9 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
-    def _friend(self, method, data):
+    def _friend(self, *, data, method):
         url = API_PATH["friend_v1"].format(user=self)
-        self._reddit.request(method, url, data=dumps(data))
+        self._reddit.request(data=dumps(data), method=method, path=url)
 
     def block(self):
         """Block the :class:`.Redditor`.
@@ -212,7 +213,8 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         self._reddit.post(API_PATH["remove_whitelisted"], data={"name": self.name})
 
-    def friend(self, note: str = None):
+    @_deprecate_args("note")
+    def friend(self, *, note: str = None):
         """Friend the :class:`.Redditor`.
 
         :param note: A note to save along with the relationship. Requires Reddit Premium
@@ -220,7 +222,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
 
         Calling this method subsequent times will update the note.
 
-        For example, to friend :class:`.Redditor` u/spez:
+        For example, to friend u/spez:
 
         .. code-block:: python
 
@@ -233,7 +235,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             reddit.redditor("spez").friend(note="My favorite admin")
 
         """
-        self._friend("PUT", data={"note": note} if note else {})
+        self._friend(data={"note": note} if note else {}, method="PUT")
 
     def friend_info(self) -> "praw.models.Redditor":
         """Return a :class:`.Redditor` instance with specific friend-related attributes.
@@ -251,7 +253,8 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         return self._reddit.get(API_PATH["friend_v1"].format(user=self))
 
-    def gild(self, months: int = 1):
+    @_deprecate_args("months")
+    def gild(self, *, months: int = 1):
         """Gild the :class:`.Redditor`.
 
         :param months: Specifies the number of months to gild up to 36 (default: ``1``).
@@ -266,8 +269,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         if months < 1 or months > 36:
             raise TypeError("months must be between 1 and 36")
         self._reddit.post(
-            API_PATH["gild_user"].format(username=self),
-            data={"months": months},
+            API_PATH["gild_user"].format(username=self), data={"months": months}
         )
 
     def moderated(self) -> List["praw.models.Subreddit"]:
@@ -415,7 +417,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             reddit.redditor("spez").unfriend()
 
         """
-        self._friend(method="DELETE", data={"id": str(self)})
+        self._friend(data={"id": str(self)}, method="DELETE")
 
 
 class RedditorStream:

@@ -60,7 +60,7 @@ class TestComment(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             comment = Comment(self.reddit, "d1616q2")
-            comment.edit("New text")
+            comment.edit(body="New text")
             assert comment.body == "New text"
 
     def test_enable_inbox_replies(self):
@@ -223,7 +223,7 @@ class TestComment(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             parent_comment = Comment(self.reddit, "d1616q2")
-            comment = parent_comment.reply("Comment reply")
+            comment = parent_comment.reply(body="Comment reply")
             assert comment.author == self.reddit.config.username
             assert comment.body == "Comment reply"
             assert not comment.is_root
@@ -233,7 +233,7 @@ class TestComment(IntegrationTest):
         self.reddit.read_only = False
         comment = Comment(self.reddit, "eear2ml")
         with self.use_cassette():
-            reply = comment.reply("TEST")
+            reply = comment.reply(body="TEST")
         assert reply is None
 
     def test_report(self):
@@ -244,7 +244,7 @@ class TestComment(IntegrationTest):
     def test_save(self):
         self.reddit.read_only = False
         with self.use_cassette():
-            Comment(self.reddit, "d1680wu").save("foo")
+            Comment(self.reddit, "d1680wu").save(category="foo")
 
     def test_unsave(self):
         self.reddit.read_only = False
@@ -340,7 +340,7 @@ class TestCommentModeration(IntegrationTest):
             mod.remove()
             message = "message"
             res = [
-                mod.send_removal_message(message, "title", type)
+                mod.send_removal_message(message=message, title="title", type=type)
                 for type in ("public", "private", "private_exposed")
             ]
             assert isinstance(res[0], Comment)
@@ -356,7 +356,7 @@ class TestCommentModeration(IntegrationTest):
             comment = self.reddit.comment("fkmrn4a")
             comment.mod.remove()
             with pytest.raises(RedditAPIException) as excinfo:
-                comment.mod.send_removal_message("message", "a" * 51)
+                comment.mod.send_removal_message(message="message", title="a" * 51)
             exception = excinfo.value
             assert "title" == exception.field
             assert "TOO_LONG" == exception.error_type
