@@ -122,6 +122,15 @@ class TestComment(IntegrationTest):
             comment = next(self.reddit.inbox.comment_replies())
             comment.mark_unread()
 
+    def test_notes(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            comment = self.reddit.comment("i6yklz7")
+            note = comment.mod.create_note(label="HELPFUL_USER", note="test note")
+            notes = list(comment.mod.author_notes())
+            assert note in notes
+            assert notes[notes.index(note)].user == comment.author
+
     def test_parent__comment(self):
         comment = Comment(self.reddit, "cklhv0f")
         with self.use_cassette():

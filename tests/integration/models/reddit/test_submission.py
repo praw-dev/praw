@@ -388,6 +388,15 @@ class TestSubmissionModeration(IntegrationTest):
         with self.use_cassette():
             self.reddit.submission("31ybt2").mod.ignore_reports()
 
+    def test_notes(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            submission = self.reddit.submission("uflrmv")
+            note = submission.mod.create_note(label="HELPFUL_USER", note="test note")
+            notes = list(submission.mod.author_notes())
+            assert note in notes
+            assert notes[notes.index(note)].user == submission.author
+
     def test_nsfw(self):
         self.reddit.read_only = False
         with self.use_cassette():

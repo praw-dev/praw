@@ -35,6 +35,17 @@ them bound to an attribute of one of the PRAW models.
 
 .. toctree::
     :maxdepth: 2
+    :caption: ModNotes
+
+    other/base_mod_notes
+    other/mod_note
+    other/mod_note_mixin
+    other/reddit_mod_notes
+    other/redditor_mod_notes
+    other/subreddit_mod_notes
+
+.. toctree::
+    :maxdepth: 2
     :caption: Moderation Helpers
 
     other/commentmoderation
@@ -121,6 +132,7 @@ them bound to an attribute of one of the PRAW models.
     other/inboxablemixin
     other/listinggenerator
     other/mod_action
+    other/mod_note
     other/moderatedlist
     other/modmail
     other/modmailmessage

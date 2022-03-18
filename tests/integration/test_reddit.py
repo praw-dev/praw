@@ -169,6 +169,32 @@ class TestReddit(IntegrationTest):
         with self.use_cassette():
             assert self.reddit.live.now() is None
 
+    def test_notes__call__(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            notes = list(
+                self.reddit.notes(
+                    pairs=[
+                        (self.reddit.subreddit("SubTestBot1"), "Watchful1"),
+                        ("SubTestBot1", self.reddit.redditor("watchful12")),
+                        ("SubTestBot1", "spez"),
+                    ],
+                    things=[self.reddit.submission("jlbw48")],
+                )
+            )
+            assert len(notes) == 4
+            assert notes[0].user.name.lower() == "watchful1"
+            assert notes[1].user.name.lower() == "watchful12"
+            assert notes[2] is None
+
+    def test_notes__things(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            thing = self.reddit.submission("tpbemz")
+            notes = list(self.reddit.notes.things(thing))
+            assert len(notes) == 10
+            assert notes[0].user == thing.author
+
     def test_random_subreddit(self):
         names = set()
         with self.use_cassette():
