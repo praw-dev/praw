@@ -3,7 +3,7 @@ from ....const import API_PATH
 
 
 class ReportableMixin:
-    """Interface for RedditBase classes that can be reported."""
+    """Interface for :class:`.RedditBase` classes that can be reported."""
 
     def report(self, reason: str):
         """Report this object to the moderators of its subreddit.
@@ -17,10 +17,10 @@ class ReportableMixin:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.report("report reason")
 
-            comment = reddit.comment(id="dxolpyc")
+            comment = reddit.comment("dxolpyc")
             comment.report("report reason")
 
         """

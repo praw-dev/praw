@@ -3,7 +3,8 @@ jobs:
     needs: test-multi-python
     runs-on: ubuntu-latest
     steps:
-    - uses: coverallsapp/github-action@57daa114ba54fd8e1c8563e8027325c0bf2f5e80
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         parallel-finished: true
@@ -12,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@v1
+    - uses: actions/setup-python@v2
       with:
         python-version: 3.x
     - uses: actions/cache@v1
@@ -24,24 +25,11 @@ jobs:
           v0-${{ runner.os }}-pip-
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install .[lint]
-    - name: Check other phrase usages
-      run: python ./tools/static_word_checks.py
-    - name: Check documentation
-      run: python ./tools/check_documentation.py
-    - name: Run black
-      run: black --check --verbose .
-    - name: Run docstrfmt
-      run: docstrfmt -cvp pyproject.toml -e docs/examples .
-    - name: Run flake8
-      run: flake8 --exclude docs --statistics
-    - name: Run flynt
-      run: flynt -vdf -tc -ll 1000 .
-    - name: Run isort
-      run: isort -cv .
-    - name: Run pydocstyle
-      run: pydocstyle praw
+        # Pin pip to 21.x for now to avoid error in pre-commit action on Win
+        python -m pip install --upgrade pip==21.* setuptools wheel
+        pip install --upgrade .[lint]
+    - name: Run pre-commit hooks
+      uses: pre-commit/action@v2.0.3
     - name: Run sphinx
       run: sphinx-build -W --keep-going docs/ /tmp/foo
     strategy:
@@ -52,7 +40,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@v1
+    - uses: actions/setup-python@v2
       with:
         python-version: 3.x
     - uses: actions/cache@v1
@@ -76,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@v1
+    - uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
     - uses: actions/cache@v1
@@ -90,25 +78,25 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install .[test]
-        pip install https://github.com/bboe/coveralls-python/archive/github_actions.zip
+        pip install .[ci]
     - name: Test with pytest
       run: coverage run --source praw --module pytest
     - env:
         COVERALLS_PARALLEL: true
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       name: Submit to coveralls
-      run: coveralls
+      run: coveralls --service=github
     - name: Check coverage
       run: coverage report -m --fail-under=100
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: [3.7, 3.8, 3.9, '3.10']
   test-network:
     name: Test Network Request
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@v1
+    - uses: actions/setup-python@v2
       with:
         python-version: 3.x
     - uses: actions/cache@v1

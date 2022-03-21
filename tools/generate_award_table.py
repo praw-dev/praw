@@ -55,7 +55,7 @@ def get_request_params(client_id, redirect_uri, thing):
         user_agent="Award fetcher by u/Lil_SpazJoekp",
     )
     state = str(random.randint(0, 65000))
-    url = reddit.auth.url(scopes, state, "temporary")
+    url = reddit.auth.url(duration="temporary", scopes=scopes, state=state)
     print(f"Open this url in your browser: {url}")
     sys.stdout.flush()
 
@@ -77,7 +77,7 @@ def get_request_params(client_id, redirect_uri, thing):
         return
 
     reddit.auth.authorize(params["code"])
-    thing = list(reddit.info([thing]))[0]
+    thing = list(reddit.info(fullnames=[thing]))[0]
     subreddit = thing.subreddit_id
     return reddit._authorized_core._authorizer.access_token, thing.fullname, subreddit
 
@@ -109,7 +109,7 @@ def main():
     Grabs the awards available to award a submission or comment.
 
     :param --type [-t]: One of ``a`` for all, ``g`` for global, ``s`` for subreddit, or
-        ``m`` for moderator. Determines the types of awards to give. (default: g).
+        ``m`` for moderator. Determines the types of awards to give (default: ``g``).
     :param --format [-f]: One of ``j`` for json or ``r`` for rst.
     :param --client_id [-c]: Used to fetch the awards. Must be a 1st party client id.
         Note: If this is passed [redirect_uri] and [thing] must be provided. If not
@@ -136,7 +136,7 @@ def main():
         default="g",
         help=(
             "One of ``a`` for all, ``g`` for global, ``s`` for subreddit, or ``m`` for"
-            " moderator. Determines the types of awards to give. (default: g)"
+            " moderator. Determines the types of awards to give (default: ``g``)."
         ),
     )
     parser.add_argument(
@@ -145,7 +145,7 @@ def main():
         action="store",
         choices=["j", "r"],
         default="r",
-        help="One of ``j`` for json or ``r`` for rst. (default: r)",
+        help="One of ``j`` for json or ``r`` for rst (default: ``r``).",
     )
     parser.add_argument(
         "-c",

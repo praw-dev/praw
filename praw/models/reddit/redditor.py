@@ -3,6 +3,7 @@ from json import dumps
 from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Union
 
 from ...const import API_PATH
+from ...util import _deprecate_args
 from ...util.cache import cachedproperty
 from ..listing.mixins import RedditorListingMixin
 from ..util import stream_generator
@@ -14,14 +15,9 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase):
-    """A class representing the users of reddit.
+    """A class representing the users of Reddit.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     .. note::
 
@@ -36,31 +32,32 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     =================================== ================================================
     Attribute                           Description
     =================================== ================================================
-    ``comment_karma``                   The comment karma for the Redditor.
+    ``comment_karma``                   The comment karma for the :class:`.Redditor`.
     ``comments``                        Provide an instance of :class:`.SubListing` for
                                         comment access.
     ``submissions``                     Provide an instance of :class:`.SubListing` for
                                         submission access.
     ``created_utc``                     Time the account was created, represented in
                                         `Unix Time`_.
-    ``has_verified_email``              Whether or not the Redditor has verified their
-                                        email.
+    ``has_verified_email``              Whether or not the :class:`.Redditor` has
+                                        verified their email.
     ``icon_img``                        The url of the Redditors' avatar.
-    ``id``                              The ID of the Redditor.
-    ``is_employee``                     Whether or not the Redditor is a Reddit
-                                        employee.
-    ``is_friend``                       Whether or not the Redditor is friends with the
-                                        authenticated user.
-    ``is_mod``                          Whether or not the Redditor mods any subreddits.
-    ``is_gold``                         Whether or not the Redditor has active Reddit
-                                        Premium status.
-    ``is_suspended``                    Whether or not the Redditor is currently
-                                        suspended.
-    ``link_karma``                      The link karma for the Redditor.
+    ``id``                              The ID of the :class:`.Redditor`.
+    ``is_employee``                     Whether or not the :class:`.Redditor` is a
+                                        Reddit employee.
+    ``is_friend``                       Whether or not the :class:`.Redditor` is friends
+                                        with the authenticated user.
+    ``is_mod``                          Whether or not the :class:`.Redditor` mods any
+                                        subreddits.
+    ``is_gold``                         Whether or not the :class:`.Redditor` has active
+                                        Reddit Premium status.
+    ``is_suspended``                    Whether or not the :class:`.Redditor` is
+                                        currently suspended.
+    ``link_karma``                      The link karma for the :class:`.Redditor`.
     ``name``                            The Redditor's username.
-    ``subreddit``                       If the Redditor has created a user-subreddit,
-                                        provides a dictionary of additional attributes.
-                                        See below.
+    ``subreddit``                       If the :class:`.Redditor` has created a
+                                        user-subreddit, provides a dictionary of
+                                        additional attributes. See below.
     ``subreddit["banner_img"]``         The URL of the user-subreddit banner.
     ``subreddit["name"]``               The fullname of the user-subreddit.
     ``subreddit["over_18"]``            Whether or not the user-subreddit is NSFW.
@@ -78,7 +75,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
 
     @classmethod
     def from_data(cls, reddit, data):
-        """Return an instance of Redditor, or None from ``data``."""
+        """Return an instance of :class:`.Redditor`, or ``None`` from ``data``."""
         if data == "[deleted]":
             return None
         return cls(reddit, data)
@@ -96,7 +93,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
                 print(comment)
 
         Additionally, new submissions can be retrieved via the stream. In the following
-        example all submissions are fetched via the redditor ``spez``:
+        example all submissions are fetched via the redditor u/spez:
 
         .. code-block:: python
 
@@ -122,9 +119,9 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         fullname: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
     ):
-        """Initialize a Redditor instance.
+        """Initialize a :class:`.Redditor` instance.
 
-        :param reddit: An instance of :class:`~.Reddit`.
+        :param reddit: An instance of :class:`.Reddit`.
         :param name: The name of the redditor.
         :param fullname: The fullname of the redditor, starting with ``t2_``.
 
@@ -167,7 +164,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
-        return self._reddit.request("GET", path, params)
+        return self._reddit.request(method="GET", params=params, path=path)
 
     def _fetch(self):
         data = self._fetch_data()
@@ -176,14 +173,14 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
-    def _friend(self, method, data):
+    def _friend(self, *, data, method):
         url = API_PATH["friend_v1"].format(user=self)
-        self._reddit.request(method, url, data=dumps(data))
+        self._reddit.request(data=dumps(data), method=method, path=url)
 
     def block(self):
-        """Block the Redditor.
+        """Block the :class:`.Redditor`.
 
-        For example, to block Redditor ``spez``:
+        For example, to block :class:`.Redditor` u/spez:
 
         .. code-block:: python
 
@@ -201,9 +198,9 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         self._reddit.post(API_PATH["block_user"], params={"name": self.name})
 
     def distrust(self):
-        """Remove the Redditor from your whitelist of trusted users.
+        """Remove the :class:`.Redditor` from your whitelist of trusted users.
 
-        For example, to remove Redditor ``spez`` from your whitelist:
+        For example, to remove :class:`.Redditor` u/spez from your whitelist:
 
         .. code-block:: python
 
@@ -216,15 +213,16 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         self._reddit.post(API_PATH["remove_whitelisted"], data={"name": self.name})
 
-    def friend(self, note: str = None):
-        """Friend the Redditor.
+    @_deprecate_args("note")
+    def friend(self, *, note: str = None):
+        """Friend the :class:`.Redditor`.
 
         :param note: A note to save along with the relationship. Requires Reddit Premium
-            (default: None).
+            (default: ``None``).
 
         Calling this method subsequent times will update the note.
 
-        For example, to friend Redditor ``spez``:
+        For example, to friend u/spez:
 
         .. code-block:: python
 
@@ -237,15 +235,15 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             reddit.redditor("spez").friend(note="My favorite admin")
 
         """
-        self._friend("PUT", data={"note": note} if note else {})
+        self._friend(data={"note": note} if note else {}, method="PUT")
 
     def friend_info(self) -> "praw.models.Redditor":
-        """Return a Redditor instance with specific friend-related attributes.
+        """Return a :class:`.Redditor` instance with specific friend-related attributes.
 
         :returns: A :class:`.Redditor` instance with fields ``date``, ``id``, and
             possibly ``note`` if the authenticated user has Reddit Premium.
 
-        For example, to get the friendship information of Redditor ``spez``:
+        For example, to get the friendship information of :class:`.Redditor` u/spez:
 
         .. code-block:: python
 
@@ -255,12 +253,13 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         return self._reddit.get(API_PATH["friend_v1"].format(user=self))
 
-    def gild(self, months: int = 1):
-        """Gild the Redditor.
+    @_deprecate_args("months")
+    def gild(self, *, months: int = 1):
+        """Gild the :class:`.Redditor`.
 
-        :param months: Specifies the number of months to gild up to 36 (default: 1).
+        :param months: Specifies the number of months to gild up to 36 (default: ``1``).
 
-        For example, to gild Redditor ``spez`` for 1 month:
+        For example, to gild :class:`.Redditor` u/spez for 1 month:
 
         .. code-block:: python
 
@@ -270,17 +269,16 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         if months < 1 or months > 36:
             raise TypeError("months must be between 1 and 36")
         self._reddit.post(
-            API_PATH["gild_user"].format(username=self),
-            data={"months": months},
+            API_PATH["gild_user"].format(username=self), data={"months": months}
         )
 
     def moderated(self) -> List["praw.models.Subreddit"]:
         """Return a list of the redditor's moderated subreddits.
 
-        :returns: A ``list`` of :class:`~.Subreddit` objects. Return ``[]`` if the
-            redditor has no moderated subreddits.
+        :returns: A list of :class:`.Subreddit` objects. Return ``[]`` if the redditor
+            has no moderated subreddits.
 
-        :raises: ``prawcore.ServerError`` in certain cicumstances. See the note below.
+        :raises: ``prawcore.ServerError`` in certain circumstances. See the note below.
 
         .. note::
 
@@ -324,7 +322,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def multireddits(self) -> List["praw.models.Multireddit"]:
         """Return a list of the redditor's public multireddits.
 
-        For example, to to get Redditor ``spez``'s multireddits:
+        For example, to to get :class:`.Redditor` u/spez's multireddits:
 
         .. code-block:: python
 
@@ -336,8 +334,8 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def trophies(self) -> List["praw.models.Trophy"]:
         """Return a list of the redditor's trophies.
 
-        :returns: A ``list`` of :class:`.Trophy` objects. Return an empty list (``[]``)
-            if the redditor has no trophies.
+        :returns: A list of :class:`.Trophy` objects. Return ``[]`` if the redditor has
+            no trophies.
 
         :raises: :class:`.RedditAPIException` if the redditor doesn't exist.
 
@@ -353,7 +351,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         return list(self._reddit.get(API_PATH["trophies"].format(user=self)))
 
     def trust(self):
-        """Add the Redditor to your whitelist of trusted users.
+        """Add the :class:`.Redditor` to your whitelist of trusted users.
 
         Trusted users will always be able to send you PMs.
 
@@ -392,9 +390,9 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         self._reddit.post(API_PATH["add_whitelisted"], data={"name": self.name})
 
     def unblock(self):
-        """Unblock the Redditor.
+        """Unblock the :class:`.Redditor`.
 
-        For example, to unblock Redditor ``spez``:
+        For example, to unblock :class:`.Redditor` u/spez:
 
         .. code-block:: python
 
@@ -410,23 +408,23 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         self._reddit.post(url, data=data)
 
     def unfriend(self):
-        """Unfriend the Redditor.
+        """Unfriend the :class:`.Redditor`.
 
-        For example, to unfriend Redditor ``spez``:
+        For example, to unfriend :class:`.Redditor` u/spez:
 
         .. code-block:: python
 
             reddit.redditor("spez").unfriend()
 
         """
-        self._friend(method="DELETE", data={"id": str(self)})
+        self._friend(data={"id": str(self)}, method="DELETE")
 
 
 class RedditorStream:
     """Provides submission and comment streams."""
 
     def __init__(self, redditor: "praw.models.Redditor"):
-        """Create a RedditorStream instance.
+        """Initialize a :class:`.RedditorStream` instance.
 
         :param redditor: The redditor associated with the streams.
 
@@ -443,7 +441,7 @@ class RedditorStream:
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
-        For example, to retrieve all new comments made by redditor ``spez``, try:
+        For example, to retrieve all new comments made by redditor u/spez, try:
 
         .. code-block:: python
 
@@ -463,7 +461,7 @@ class RedditorStream:
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
-        For example, to retrieve all new submissions made by redditor ``spez``, try:
+        For example, to retrieve all new submissions made by redditor u/spez, try:
 
         .. code-block:: python
 

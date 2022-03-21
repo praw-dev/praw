@@ -88,12 +88,28 @@ class TestMessage(IntegrationTest):
             message = next(self.reddit.inbox.messages())
             message.uncollapse()
 
+    def test_parent(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            message = self.reddit.inbox.message("1ay4xyu")
+            parent = message.parent
+            assert isinstance(parent, Message)
+            assert parent.fullname == message.parent_id
+
+    def test_parent__from_inbox_listing(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            message = next(self.reddit.inbox.sent(limit=1))
+            parent = message.parent
+            assert isinstance(parent, Message)
+            assert parent.fullname == message.parent_id
+
     @mock.patch("time.sleep", return_value=None)
     def test_reply(self, _):
         self.reddit.read_only = False
         with self.use_cassette():
             message = next(self.reddit.inbox.messages())
-            reply = message.reply("Message reply")
+            reply = message.reply(body="Message reply")
             assert reply.author == self.reddit.config.username
             assert reply.body == "Message reply"
             assert reply.first_message_name == message.fullname

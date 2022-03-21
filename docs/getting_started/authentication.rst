@@ -24,6 +24,14 @@ defines which application types can use which flows:
 
 .. include:: authentication_flow_table.txt
 
+.. warning::
+
+    For the sake of brevity, the following examples pass authentication information via
+    arguments to :class:`.Reddit`. If you do this, you need to be careful not to reveal
+    this information to the outside world if you share your code. It is recommended to
+    use a :ref:`praw.ini file <praw.ini>` in order to keep your authentication
+    information separate from your code.
+
 .. _password_flow:
 
 Password Flow
@@ -39,8 +47,8 @@ requires that you provide one when registering your script application --
 In order to use a **password flow** application with PRAW you need four pieces of
 information:
 
-:client_id: The client ID is the 14-character string listed just under "personal use
-    script" for the desired `developed application
+:client_id: The client ID is at least a 14-character string listed just under "personal
+    use script" for the desired `developed application
     <https://www.reddit.com/prefs/apps/>`_
 :client_secret: The client secret is at least a 27-character string listed adjacent to
     ``secret`` for the application.
@@ -144,7 +152,7 @@ can do that as follows:
         redirect_uri="http://localhost:8080",
         user_agent="testscript by u/fakebot3",
     )
-    print(reddit.auth.url(["identity"], "...", "permanent"))
+    print(reddit.auth.url(scopes=["identity"], state="...", duration="permanent"))
 
 The above will output an authorization URL for a permanent token (i.e., the resulting
 authorization will include both a short-lived ``access_token``, and a longer-lived,
@@ -164,9 +172,9 @@ to the specified ``redirect_uri``. After verifying the ``state`` and extracting 
 The first line of output is the ``refresh_token``. You can save this for later use (see
 :ref:`using_refresh_tokens`).
 
-The second line of output reveals the name of the Redditor that completed the code flow.
-It also indicates that the :class:`.Reddit` instance is now associated with that
-account.
+The second line of output reveals the name of the :class:`.Redditor` that completed the
+code flow. It also indicates that the :class:`.Reddit` instance is now associated with
+that account.
 
 The code flow can be used with an **installed** application just as described above with
 one change: set the value of ``client_secret`` to ``None`` when initializing
@@ -183,7 +191,7 @@ redirect. For the implicit flow call :meth:`.url` like so:
 
 .. code-block:: python
 
-    print(reddit.auth.url(["identity"], "...", implicit=True))
+    print(reddit.auth.url(scopes=["identity"], state="...", implicit=True))
 
 Then use :meth:`.implicit` to provide the authorization to the :class:`.Reddit`
 instance.
@@ -194,7 +202,7 @@ Read-Only Mode
 --------------
 
 All application types support a read-only mode. Read-only mode provides access to Reddit
-like a logged out user would see including the default Subreddits in the
+like a logged out user would see including the default subreddits in the
 ``reddit.front`` listings.
 
 In the absence of a ``refresh_token`` both :ref:`code_flow` and :ref:`implicit_flow`
@@ -246,7 +254,7 @@ such as in installed applications where the end user could retrieve the ``client
     No benefit is really gained from this in script or web apps. The one exception is
     for when a script or web app has multiple end users, this will allow you to give
     Reddit the information needed in order to distinguish different users of your app
-    from each other (as the supplied device id *should* be a unique string per both
+    from each other (as the supplied device ID *should* be a unique string per both
     device (in the case of a web app, server) and user (in the case of a web app,
     browser session).
 

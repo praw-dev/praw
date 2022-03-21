@@ -3,7 +3,7 @@ from .base import BaseList
 
 
 class TrophyList(BaseList):
-    """A list of trophies.
+    """A list of :class:`.Trophy` objects. Works just like a regular list.
 
     This class is solely used to parse responses from reddit, so end users should not
     use this class directly.

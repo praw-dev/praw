@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    about: PRAW's documentation.
+    url: https://praw.readthedocs.io
+  - name: r/redditdev subreddit
+    about: For general help using PRAW, please ask here.
+    url: https://redditdev.reddit.com
+  - name: Official praw-dev Slack
+    about: For more real-time help, feel free to join our Slack.
+    url: https://join.slack.com/t/praw/shared_invite/enQtOTUwMDcxOTQ0NzY5LWVkMGQ3ZDk5YmQ5MDEwYTZmMmJkMTJkNjBkNTY3OTU0Y2E2NGRlY2ZhZTAzMWZmMWRiMTMwYjdjODkxOGYyZjY

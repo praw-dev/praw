@@ -27,6 +27,7 @@ application. See :ref:`oauth` for information on using **installed** application
     getting_started/configuration
     getting_started/multiple_instances
     getting_started/logging
+    getting_started/ratelimits
     getting_started/faq
 
 .. _code_overview:

@@ -5,7 +5,7 @@ from warnings import warn
 
 from ...const import API_PATH
 from ...exceptions import ClientException
-from ...util.cache import cachedproperty
+from ...util import _deprecate_args, cachedproperty
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -13,14 +13,9 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Rule(RedditBase):
-    """An individual Rule object.
+    """An individual :class:`.Rule` object.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily comprehensive.
+    .. include:: ../../typical_attributes.rst
 
     ==================== =============================================================
     Attribute            Description
@@ -47,17 +42,17 @@ class Rule(RedditBase):
     def mod(self) -> "praw.models.reddit.rules.RuleModeration":
         """Contain methods used to moderate rules.
 
-        To delete ``"No spam"`` from the subreddit ``"NAME"`` try:
+        To delete ``"No spam"`` from r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("NAME").rules["No spam"].mod.delete()
+            reddit.subreddit("test").rules["No spam"].mod.delete()
 
-        To update ``"No spam"`` from the subreddit ``"NAME"`` try:
+        To update ``"No spam"`` from r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("NAME").removal_reasons["No spam"].mod.update(
+            reddit.subreddit("test").removal_reasons["No spam"].mod.update(
                 description="Don't do this!", violation_reason="Spam post"
             )
 
@@ -71,7 +66,7 @@ class Rule(RedditBase):
         short_name: Optional[str] = None,
         _data: Optional[Dict[str, str]] = None,
     ):
-        """Construct an instance of the Rule object."""
+        """Initialize a :class:`.Rule` instance."""
         if (short_name, _data).count(None) != 1:
             raise ValueError("Either short_name or _data needs to be given.")
         if short_name:
@@ -103,21 +98,21 @@ class Rule(RedditBase):
 
 
 class SubredditRules:
-    """Provide a set of functions to access a Subreddit's rules.
+    """Provide a set of functions to access a :class:`.Subreddit`'s rules.
 
     For example, to list all the rules for a subreddit:
 
     .. code-block:: python
 
-        for rule in reddit.subreddit("AskReddit").rules:
+        for rule in reddit.subreddit("test").rules:
             print(rule)
 
     Moderators can also add rules to the subreddit. For example, to make a rule called
-    ``"No spam"`` in the subreddit ``"NAME"``:
+    ``"No spam"`` in r/test:
 
     .. code-block:: python
 
-        reddit.subreddit("NAME").rules.mod.add(
+        reddit.subreddit("test").rules.mod.add(
             short_name="No spam", kind="all", description="Do not spam. Spam bad"
         )
 
@@ -127,20 +122,20 @@ class SubredditRules:
     def mod(self) -> "SubredditRulesModeration":
         """Contain methods to moderate subreddit rules as a whole.
 
-        To add rule ``"No spam"`` to the subreddit ``"NAME"`` try:
+        To add rule ``"No spam"`` to r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("NAME").rules.mod.add(
+            reddit.subreddit("test").rules.mod.add(
                 short_name="No spam", kind="all", description="Do not spam. Spam bad"
             )
 
         To move the fourth rule to the first position, and then to move the prior first
-        rule to where the third rule originally was in the subreddit ``"NAME"``:
+        rule to where the third rule originally was in r/test:
 
         .. code-block:: python
 
-            subreddit = reddit.subreddit("NAME")
+            subreddit = reddit.subreddit("test")
             rules = list(subreddit.rules)
             new_rules = rules[3:4] + rules[1:3] + rules[0:1] + rules[4:]
             # Alternate: [rules[3]] + rules[1:3] + [rules[0]] + rules[4:]
@@ -174,25 +169,25 @@ class SubredditRules:
             stacklevel=2,
         )
         return self._reddit.request(
-            "GET", API_PATH["rules"].format(subreddit=self.subreddit)
+            method="GET", path=API_PATH["rules"].format(subreddit=self.subreddit)
         )
 
     def __getitem__(self, short_name: Union[str, int, slice]) -> "praw.models.Rule":
-        """Return the Rule for the subreddit with short_name ``short_name``.
+        """Return the :class:`.Rule` for the subreddit with short_name ``short_name``.
 
         :param short_name: The short_name of the rule, or the rule number.
 
         .. note::
 
             Rules fetched using a specific rule name are lazily loaded, so you might
-            have to access an attribute to get all of the expected attributes.
+            have to access an attribute to get all the expected attributes.
 
         This method is to be used to fetch a specific rule, like so:
 
         .. code-block:: python
 
             rule_name = "No spam"
-            rule = reddit.subreddit("NAME").rules[rule_name]
+            rule = reddit.subreddit("test").rules[rule_name]
             print(rule)
 
         You can also fetch a numbered rule of a subreddit.
@@ -212,7 +207,7 @@ class SubredditRules:
 
         .. code-block:: python
 
-            rule = reddit.subreddit("AskReddit").rules[1]
+            rule = reddit.subreddit("test").rules[1]
 
         """
         if not isinstance(short_name, str):
@@ -220,7 +215,7 @@ class SubredditRules:
         return Rule(self._reddit, subreddit=self.subreddit, short_name=short_name)
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Create a SubredditRules instance.
+        """Initialize a :class:`.SubredditRules` instance.
 
         :param subreddit: The subreddit whose rules to work with.
 
@@ -231,15 +226,15 @@ class SubredditRules:
     def __iter__(self) -> Iterator["praw.models.Rule"]:
         """Iterate through the rules of the subreddit.
 
-        :returns: An iterator containing all of the rules of a subreddit.
+        :returns: An iterator containing all the rules of a subreddit.
 
         This method is used to discover all rules for a subreddit.
 
-        For example, to get the rules for the subreddit ``"NAME"``:
+        For example, to get the rules for r/test:
 
         .. code-block:: python
 
-            for rule in reddit.subreddit("NAME").rules:
+            for rule in reddit.subreddit("test").rules:
                 print(rule)
 
         """
@@ -247,7 +242,7 @@ class SubredditRules:
 
     @cachedproperty
     def _rule_list(self) -> List[Rule]:
-        """Get a list of Rule objects.
+        """Get a list of :class:`.Rule` objects.
 
         :returns: A list of instances of :class:`.Rule`.
 
@@ -261,34 +256,34 @@ class SubredditRules:
 class RuleModeration:
     """Contain methods used to moderate rules.
 
-    To delete ``"No spam"`` from the subreddit ``"NAME"`` try:
+    To delete ``"No spam"`` from r/test try:
 
     .. code-block:: python
 
-        reddit.subreddit("NAME").rules["No spam"].mod.delete()
+        reddit.subreddit("test").rules["No spam"].mod.delete()
 
-    To update ``"No spam"`` from the subreddit ``"NAME"`` try:
+    To update ``"No spam"`` from r/test try:
 
     .. code-block:: python
 
-        reddit.subreddit("NAME").removal_reasons["No spam"].mod.update(
+        reddit.subreddit("test").removal_reasons["No spam"].mod.update(
             description="Don't do this!", violation_reason="Spam post"
         )
 
     """
 
     def __init__(self, rule: "praw.models.Rule"):
-        """Initialize the RuleModeration class."""
+        """Initialize a :class:`.RuleModeration` instance."""
         self.rule = rule
 
     def delete(self):
         """Delete a rule from this subreddit.
 
-        To delete ``"No spam"`` from the subreddit ``"NAME"`` try:
+        To delete ``"No spam"`` from r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("NAME").rules["No spam"].mod.delete()
+            reddit.subreddit("test").rules["No spam"].mod.delete()
 
         """
         data = {
@@ -297,8 +292,10 @@ class RuleModeration:
         }
         self.rule._reddit.post(API_PATH["remove_subreddit_rule"], data=data)
 
+    @_deprecate_args("description", "kind", "short_name", "violation_reason")
     def update(
         self,
+        *,
         description: Optional[str] = None,
         kind: Optional[str] = None,
         short_name: Optional[str] = None,
@@ -318,11 +315,11 @@ class RuleModeration:
 
         :returns: A Rule object containing the updated values.
 
-        To update ``"No spam"`` from the subreddit ``"NAME"`` try:
+        To update ``"No spam"`` from r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("NAME").removal_reasons["No spam"].mod.update(
+            reddit.subreddit("test").removal_reasons["No spam"].mod.update(
                 description="Don't do this!", violation_reason="Spam post"
             )
 
@@ -348,20 +345,20 @@ class RuleModeration:
 class SubredditRulesModeration:
     """Contain methods to moderate subreddit rules as a whole.
 
-    To add rule ``"No spam"`` to the subreddit ``"NAME"`` try:
+    To add rule ``"No spam"`` to r/test try:
 
     .. code-block:: python
 
-        reddit.subreddit("NAME").rules.mod.add(
+        reddit.subreddit("test").rules.mod.add(
             short_name="No spam", kind="all", description="Do not spam. Spam bad"
         )
 
     To move the fourth rule to the first position, and then to move the prior first rule
-    to where the third rule originally was in the subreddit ``"NAME"``:
+    to where the third rule originally was in r/test:
 
     .. code-block:: python
 
-        subreddit = reddit.subreddit("NAME")
+        subreddit = reddit.subreddit("test")
         rules = list(subreddit.rules)
         new_rules = rules[3:4] + rules[1:3] + rules[0:1] + rules[4:]
         # Alternate: [rules[3]] + rules[1:3] + [rules[0]] + rules[4:]
@@ -370,33 +367,35 @@ class SubredditRulesModeration:
     """
 
     def __init__(self, subreddit_rules: SubredditRules):
-        """Initialize the SubredditRulesModeration class."""
+        """Initialize a :class:`.SubredditRulesModeration` instance."""
         self.subreddit_rules = subreddit_rules
 
+    @_deprecate_args("short_name", "kind", "description", "violation_reason")
     def add(
         self,
-        short_name: str,
-        kind: str,
+        *,
         description: str = "",
+        kind: str,
+        short_name: str,
         violation_reason: Optional[str] = None,
     ) -> "praw.models.Rule":
         """Add a removal reason to this subreddit.
 
-        :param short_name: The name of the rule.
+        :param description: The description for the rule.
         :param kind: The kind of item that the rule applies to. One of ``"link"``,
             ``"comment"``, or ``"all"``.
-        :param description: The description for the rule. Optional.
+        :param short_name: The name of the rule.
         :param violation_reason: The reason that is shown on the report menu. If a
             violation reason is not specified, the short name will be used as the
             violation reason.
 
-        :returns: The Rule added.
+        :returns: The added :class:`.Rule`.
 
-        To add rule ``"No spam"`` to the subreddit ``"NAME"`` try:
+        To add rule ``"No spam"`` to r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("NAME").rules.mod.add(
+            reddit.subreddit("test").rules.mod.add(
                 short_name="No spam", kind="all", description="Do not spam. Spam bad"
             )
 
@@ -425,12 +424,11 @@ class SubredditRulesModeration:
         :returns: A list containing the rules in the specified order.
 
         For example, to move the fourth rule to the first position, and then to move the
-        prior first rule to where the third rule originally was in the subreddit
-        ``"NAME"``:
+        prior first rule to where the third rule originally was in r/test:
 
         .. code-block:: python
 
-            subreddit = reddit.subreddit("NAME")
+            subreddit = reddit.subreddit("test")
             rules = list(subreddit.rules)
             new_rules = rules[3:4] + rules[1:3] + rules[0:1] + rules[4:]
             # Alternate: [rules[3]] + rules[1:3] + [rules[0]] + rules[4:]

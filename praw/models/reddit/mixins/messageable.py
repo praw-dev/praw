@@ -2,6 +2,7 @@
 from typing import TYPE_CHECKING, Optional, Union
 
 from ....const import API_PATH
+from ....util import _deprecate_args
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw
@@ -10,17 +11,17 @@ if TYPE_CHECKING:  # pragma: no cover
 class MessageableMixin:
     """Interface for classes that can be messaged."""
 
+    @_deprecate_args("subject", "message", "from_subreddit")
     def message(
         self,
-        subject: str,
-        message: str,
+        *,
         from_subreddit: Optional[Union["praw.models.Subreddit", str]] = None,
+        message: str,
+        subject: str,
     ):
-        """Send a message to a redditor or a subreddit's moderators (mod mail).
+        """Send a message to a :class:`.Redditor` or a :class:`.Subreddit`'s moderators (modmail).
 
-        :param subject: The subject of the message.
-        :param message: The message content.
-        :param from_subreddit: A :class:`~.Subreddit` instance or string to send the
+        :param from_subreddit: A :class:`.Subreddit` instance or string to send the
             message from. When provided, messages are sent from the subreddit rather
             than from the authenticated user.
 
@@ -29,26 +30,28 @@ class MessageableMixin:
                 The authenticated user must be a moderator of the subreddit and have the
                 ``mail`` moderator permission.
 
+        :param message: The message content.
+        :param subject: The subject of the message.
 
-        For example, to send a private message to ``u/spez``, try:
+        For example, to send a private message to u/spez, try:
 
         .. code-block:: python
 
-            reddit.redditor("spez").message("TEST", "test message from PRAW")
+            reddit.redditor("spez").message(subject="TEST", message="test message from PRAW")
 
-        To send a message to ``u/spez`` from the moderators of ``r/test`` try:
+        To send a message to u/spez from the moderators of r/test try:
 
         .. code-block:: python
 
             reddit.redditor("spez").message(
-                "TEST", "test message from r/test", from_subreddit="test"
+                subject="TEST", message="test message from r/test", from_subreddit="test"
             )
 
-        To send a message to the moderators of ``r/test``, try:
+        To send a message to the moderators of r/test, try:
 
         .. code-block:: python
 
-            reddit.subreddit("test").message("TEST", "test PM from PRAW")
+            reddit.subreddit("test").message(subject="TEST", message="test PM from PRAW")
 
         """
         data = {

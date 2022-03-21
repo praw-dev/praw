@@ -9,9 +9,9 @@ A: Directly calling the constructors will refresh the value:
 
 .. code-block:: python
 
-    reddit.comment(id=comment.id)
-    reddit.subreddit(display_name=subreddit.display_name)
-    reddit.submission(id=submission.id)
+    reddit.comment(comment.id)
+    reddit.subreddit(subreddit.display_name)
+    reddit.submission(submission.id)
 
 .. _faq2:
 
@@ -30,7 +30,12 @@ Q: Some options (like getting moderator logs from r/mod) keep on timing out. How
 extend the timeout?
 
 A: Set the timeout config option or initialize :class:`.Reddit` with a timeout of your
-choosing.
+choosing. Another option is to construct a :class:`.Subreddit` instance with a subset of
+subreddits (concatenated with ``+``) that you want logs from like so:
+
+.. code-block:: python
+
+    reddit.subreddit("pics+LifeProTips")
 
 .. _faq4:
 
@@ -44,8 +49,8 @@ Q2: I keep on getting this exception:
 
 A: PRAW is most likely in read-only mode. This normally occurs when PRAW is
 authenticated without a username and password or a refresh token. In order to perform
-this action, the Reddit instance needs to be authenticated. See :ref:`oauth_options` to
-see the available authentication methods.
+this action, the :class:`.Reddit` instance needs to be authenticated. See
+:ref:`oauth_options` to see the available authentication methods.
 
 .. _faq5:
 

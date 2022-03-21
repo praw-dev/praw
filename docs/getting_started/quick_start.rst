@@ -8,7 +8,7 @@ Prerequisites
 -------------
 
 :Python Knowledge: You need to know at least a little Python to use PRAW. PRAW supports
-    `Python 3.6+`_. If you are stuck on a problem, `r/learnpython`_ is a great place to
+    `Python 3.7+`_. If you are stuck on a problem, `r/learnpython`_ is a great place to
     ask for help.
 :Reddit Knowledge: A basic understanding of how Reddit works is a must. In the event you
     are not already familiar with Reddit start at `Reddit Help`_.
@@ -26,7 +26,7 @@ Prerequisites
 
 .. _first steps guide: https://github.com/reddit/reddit/wiki/OAuth2-Quick-Start-Example#first-steps
 
-.. _python 3.6+: https://docs.python.org/3/tutorial/index.html
+.. _python 3.7+: https://docs.python.org/3/tutorial/index.html
 
 .. _r/learnpython: https://www.reddit.com/r/learnpython/
 
@@ -48,7 +48,7 @@ Obtain a :class:`.Reddit` Instance
 .. warning::
 
     For the sake of brevity, the following examples pass authentication information via
-    arguments to :py:func:`praw.Reddit`. If you do this, you need to be careful not to
+    arguments to :meth:`praw.Reddit`. If you do this, you need to be careful not to
     reveal this information to the outside world if you share your code. It is
     recommended to use a :ref:`praw.ini file <praw.ini>` in order to keep your
     authentication information separate from your code.
@@ -97,7 +97,7 @@ With a read-only instance, you can do something like obtaining 10 "hot" submissi
 
     # continued from code above
 
-    for submission in reddit.subreddit("learnpython").hot(limit=10):
+    for submission in reddit.subreddit("test").hot(limit=10):
         print(submission.title)
 
     # Output: 10 submissions
@@ -107,7 +107,7 @@ authorized :class:`.Reddit` instance.
 
 .. note::
 
-    In the above example we are limiting the results to 10. Without the ``limit``
+    In the above example we are limiting the results to ``10``. Without the ``limit``
     parameter PRAW should yield as many results as it can with a single request. For
     most endpoints this results in 100 items per request. If you want to retrieve as
     many as possible pass in ``limit=None``.
@@ -134,9 +134,9 @@ Again, you may choose to provide these by passing in keyword arguments ``usernam
     reddit = praw.Reddit(
         client_id="my client id",
         client_secret="my client secret",
+        password="my password",
         user_agent="my user agent",
         username="my username",
-        password="my password",
     )
 
     print(reddit.read_only)
@@ -163,7 +163,7 @@ To obtain a :class:`.Subreddit` instance, pass the subreddit's name when calling
 
 .. code-block:: python
 
-    # assume you have a reddit instance bound to variable `reddit`
+    # assume you have a praw.Reddit instance bound to variable `reddit`
     subreddit = reddit.subreddit("redditdev")
 
     print(subreddit.display_name)
@@ -216,8 +216,8 @@ You can create :class:`.Submission` instances in other ways too:
 
 .. code-block:: python
 
-    # assume you have a Reddit instance bound to variable `reddit`
-    submission = reddit.submission(id="39zje0")
+    # assume you have a praw.Reddit instance bound to variable `reddit`
+    submission = reddit.submission("39zje0")
     print(submission.title)
     # Output: reddit will soon only be available ...
 
@@ -242,7 +242,7 @@ For example:
     print(redditor1.name)
     # Output: name of the redditor
 
-    # assume you have a Reddit instance bound to variable `reddit`
+    # assume you have a praw.Reddit instance bound to variable `reddit`
     redditor2 = reddit.redditor("bboe")
     print(redditor2.link_karma)
     # Output: u/bboe's karma
@@ -258,7 +258,7 @@ comments as a flattened list you can call the :meth:`.list` method on a
 
 .. code-block:: python
 
-    # assume you have a Reddit instance bound to variable `reddit`
+    # assume you have a praw.Reddit instance bound to variable `reddit`
     top_level_comments = list(submission.comments)
     all_comments = submission.comments.list()
 
@@ -272,8 +272,8 @@ comments as a flattened list you can call the :meth:`.list` method on a
 
     .. code-block:: python
 
-        # assume you have a Reddit instance bound to variable `reddit`
-        submission = reddit.submission(id="39zje0")
+        # assume you have a praw.Reddit instance bound to variable `reddit`
+        submission = reddit.submission("39zje0")
         submission.comment_sort = "new"
         top_level_comments = list(submission.comments)
 
@@ -297,8 +297,8 @@ For example:
 
     import pprint
 
-    # assume you have a Reddit instance bound to variable `reddit`
-    submission = reddit.submission(id="39zje0")
+    # assume you have a praw.Reddit instance bound to variable `reddit`
+    submission = reddit.submission("39zje0")
     print(submission.title)  # to make it non-lazy
     pprint.pprint(vars(submission))
 

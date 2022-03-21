@@ -14,21 +14,21 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class CommentHelper(PRAWBase):
-    """Provide a set of functions to interact with a subreddit's comments."""
+    """Provide a set of functions to interact with a :class:`.Subreddit`'s comments."""
 
     @property
     def _path(self) -> str:
         return urljoin(self.subreddit._path, "comments/")
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Initialize a CommentHelper instance."""
+        """Initialize a :class:`.CommentHelper` instance."""
         super().__init__(subreddit._reddit, _data=None)
         self.subreddit = subreddit
 
     def __call__(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
     ) -> Iterator["praw.models.Comment"]:
-        """Return a :class:`.ListingGenerator` for the Subreddit's comments.
+        """Return a :class:`.ListingGenerator` for the :class:`.Subreddit`'s comments.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -37,7 +37,7 @@ class CommentHelper(PRAWBase):
 
         .. code-block:: python
 
-            for comment in reddit.subreddit("redditdev").comments(limit=25):
+            for comment in reddit.subreddit("test").comments(limit=25):
                 print(comment.author)
 
         """
@@ -45,25 +45,25 @@ class CommentHelper(PRAWBase):
 
 
 class SubredditListingMixin(BaseListingMixin, GildedListingMixin, RisingListingMixin):
-    """Adds additional methods pertaining to Subreddit-like instances."""
+    """Adds additional methods pertaining to subreddit-like instances."""
 
     @cachedproperty
     def comments(self) -> CommentHelper:
         """Provide an instance of :class:`.CommentHelper`.
 
-        For example, to output the author of the 25 most recent comments of
-        ``r/redditdev`` execute:
+        For example, to output the author of the 25 most recent comments of r/test
+        execute:
 
         .. code-block:: python
 
-            for comment in reddit.subreddit("redditdev").comments(limit=25):
+            for comment in reddit.subreddit("test").comments(limit=25):
                 print(comment.author)
 
         """
         return CommentHelper(self)
 
     def __init__(self, reddit: "praw.Reddit", _data: Optional[Dict[str, Any]]):
-        """Initialize a SubredditListingMixin instance.
+        """Initialize a :class:`.SubredditListingMixin` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
 

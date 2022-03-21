@@ -18,12 +18,16 @@ PRAW: The Python Reddit API Wrapper
     :target: https://coveralls.io/github/praw-dev/praw?branch=master
 
 .. image:: https://github.com/praw-dev/praw/workflows/CI/badge.svg
-    :alt: Github Actions Coverage
+    :alt: GitHub Actions Status
     :target: https://github.com/praw-dev/praw/actions?query=branch%3Amaster
 
 .. image:: https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg
     :alt: Contributor Covenant
     :target: https://github.com/praw-dev/.github/blob/main/CODE_OF_CONDUCT.md
+
+.. image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+    :target: https://github.com/pre-commit/pre-commit
+    :alt: pre-commit
 
 PRAW, an acronym for "Python Reddit API Wrapper", is a Python package that allows for
 simple access to Reddit's API. PRAW aims to be easy to use and internally follows all of
@@ -36,7 +40,7 @@ agent and you're set.
 Installation
 ------------
 
-PRAW is supported on Python 3.6+. The recommended way to install PRAW is via `pip
+PRAW is supported on Python 3.7+. The recommended way to install PRAW is via `pip
 <https://pypi.python.org/pypi/pip>`_.
 
 .. code-block:: bash
@@ -82,15 +86,15 @@ With the ``reddit`` instance you can then interact with Reddit:
     submission.reply("Super rad!")
 
     # Reply to the first comment of a weekly top thread of a moderated community
-    submission = next(reddit.subreddit("mod").top("week"))
+    submission = next(reddit.subreddit("mod").top(time_filter="week"))
     submission.comments[0].reply("An automated reply")
 
     # Output score for the first 256 items on the frontpage
     for submission in reddit.front.hot(limit=256):
         print(submission.score)
 
-    # Obtain the moderator listing for r/redditdev
-    for moderator in reddit.subreddit("redditdev").moderator():
+    # Obtain the moderator listing for r/test
+    for moderator in reddit.subreddit("test").moderator():
         print(moderator)
 
 Please see PRAW's `documentation <https://praw.readthedocs.io/>`_ for more examples of

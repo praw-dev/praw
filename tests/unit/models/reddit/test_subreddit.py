@@ -70,6 +70,31 @@ class TestSubreddit(UnitTest):
         with pytest.raises(MediaPostFailed):
             self.reddit.subreddit("test").submit_image("Test", "dummy path")
 
+    @mock.patch("praw.models.Subreddit._read_and_post_media")
+    @mock.patch(
+        "praw.Reddit.post",
+        return_value={
+            "json": {"data": {"websocket_url": ""}},
+            "args": {"action": "", "fields": []},
+        },
+    )
+    @mock.patch("websocket.create_connection")
+    def test_media_upload_500(self, connection_mock, _mock_post, mock_method):
+        from prawcore.exceptions import ServerError
+        from requests.exceptions import HTTPError
+
+        http_response = mock.Mock()
+        http_response.status_code = 500
+
+        response = mock.Mock()
+        response.ok = True
+        response.raise_for_status = mock.Mock(
+            side_effect=HTTPError(response=http_response)
+        )
+        mock_method.return_value = response
+        with pytest.raises(ServerError):
+            self.reddit.subreddit("test").submit_image("Test", "/dev/null")
+
     def test_pickle(self):
         subreddit = Subreddit(
             self.reddit, _data={"display_name": "name", "id": "dummy"}
@@ -117,7 +142,7 @@ class TestSubreddit(UnitTest):
 
         with pytest.raises(TypeError) as excinfo:
             subreddit.submit_gallery(
-                "Cool title", images=[{"caption": "caption"}, {"caption": "caption2"}]
+                "Cool title", [{"caption": "caption"}, {"caption": "caption2"}]
             )
         assert str(excinfo.value) == message
 
@@ -127,17 +152,21 @@ class TestSubreddit(UnitTest):
 
         with pytest.raises(TypeError) as excinfo:
             subreddit.submit_gallery(
-                "Cool title", images=[{"image_path": "invalid_image_path"}]
+                "Cool title", [{"image_path": "invalid_image_path"}]
             )
         assert str(excinfo.value) == message
 
     def test_submit_gallery__too_long_caption(self):
         message = "Caption must be 180 characters or less."
         subreddit = Subreddit(self.reddit, display_name="name")
-        caption = "wayyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy too long caption"
+        caption = (
+            "wayyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+            "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+            "yyyyyyyyyyyyyyyy too long caption"
+        )
         with pytest.raises(TypeError) as excinfo:
             subreddit.submit_gallery(
-                "Cool title", images=[{"image_path": __file__, "caption": caption}]
+                "Cool title", [{"image_path": __file__, "caption": caption}]
             )
         assert str(excinfo.value) == message
 
@@ -150,7 +179,7 @@ class TestSubreddit(UnitTest):
         selftext = "Text with {gif1}, {image1}, and {video1} inline"
         media = {"gif1": gif, "image1": image, "video1": video}
         with pytest.raises(ValueError) as excinfo:
-            subreddit.submit("title", selftext=selftext, inline_media=media)
+            subreddit.submit("title", inline_media=media, selftext=selftext)
         assert str(excinfo.value) == message
 
     def test_upload_banner_additional_image(self):

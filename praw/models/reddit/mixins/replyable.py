@@ -1,37 +1,36 @@
 """Provide the ReplyableMixin class."""
 from ....const import API_PATH
+from ...util import _deprecate_args
 
 
 class ReplyableMixin:
-    """Interface for RedditBase classes that can be replied to."""
+    """Interface for :class:`.RedditBase` classes that can be replied to."""
 
-    def reply(self, body: str):
+    @_deprecate_args("body")
+    def reply(self, *, body: str):
         """Reply to the object.
 
         :param body: The Markdown formatted content for a comment.
 
-        :returns: A :class:`~.Comment` object for the newly created comment or ``None``
+        :returns: A :class:`.Comment` object for the newly created comment or ``None``
             if Reddit doesn't provide one.
+
+        :raises: ``prawcore.exceptions.Forbidden`` when attempting to reply to some
+            items, such as locked submissions/comments or non-replyable messages.
 
         A ``None`` value can be returned if the target is a comment or submission in a
         quarantined subreddit and the authenticated user has not opt-ed into viewing the
         content. When this happens the comment will be successfully created on Reddit
         and can be retried by drawing the comment from the user's comment history.
 
-        .. note::
-
-            Some items, such as locked submissions/comments or non-replyable messages
-            will throw ``prawcore.exceptions.Forbidden`` when attempting to reply to
-            them.
-
         Example usage:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.reply("reply")
 
-            comment = reddit.comment(id="dxolpyc")
+            comment = reddit.comment("dxolpyc")
             comment.reply("reply")
 
         """

@@ -26,6 +26,8 @@ Documentation Contributors
 - Federico Gallo `@Karmavil <https://github.com/Karmavil>`_
 - Aidan Welch `@AidanWelch <https://github.com/AidanWelch>`_
 - Tom Eagles `@deplorableword <https://github.com/deplorableword>`_
+- Mohammad Ghalayini `@mghalayini <https://github.com/mghalayini>`_
+- Jason Haines `@jghaines <https://github.com/jghaines>`_
 - Add "Name <email (optional)> and github profile link" above this line.
 
 Logo Creator
@@ -74,4 +76,8 @@ Source Contributors
 - Nick Kelly `@nickatnight <https://github.com/nickatnight>`_
 - Yash Chhabria `@Cyatos <https://github.com/Cyatos>`_
 - Justin Krejcha <justin@justinkrejcha.com> `@jkrejcha <https://github.com/jkrejcha>`_
+- Dio Brando `@isFakeAccount <https://github.com/isFakeAccount>`_
+- Josh Kim `@jsk56143 <https://github.com/jsk56143>`_
+- Rolf Campbell `@endlisnis <https://github.com/endlisnis>`_
+- zacc `@zacc <https://github.com/zacc>`_
 - Add "Name <email (optional)> and github profile link" above this line.

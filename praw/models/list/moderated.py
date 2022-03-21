@@ -3,6 +3,6 @@ from .base import BaseList
 
 
 class ModeratedList(BaseList):
-    """A list of Moderated Subreddits. Works just like a regular list."""
+    """A list of moderated :class:`.Subreddit` objects. Works just like a regular list."""
 
     CHILD_ATTRIBUTE = "data"

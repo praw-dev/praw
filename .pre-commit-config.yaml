@@ -1,7 +1,60 @@
-fail_fast: true
 repos:
-- hooks:
-  - id: black
-    language_version: python3
-  repo: https://github.com/psf/black
-  rev: 20.8b1
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    hooks:
+      - id: end-of-file-fixer
+        exclude: .*\.txt
+    rev: v4.1.0
+
+  - repo: local
+    hooks:
+      - id: static_word_checks
+        args:
+          - '--replace'
+        entry: python -m tools.static_word_checks
+        language: system
+        name: Static Word Checks
+        pass_filenames: false
+        types: [ python ]
+
+      - id: check_documentation
+        entry: python -m tools.check_documentation
+        language: system
+        name: Check Documentation
+        pass_filenames: false
+        types: [ python ]
+
+  - repo: https://github.com/psf/black
+    hooks:
+      - id: black
+    rev: 22.1.0
+
+  - repo: https://github.com/LilSpazJoekp/docstrfmt
+    hooks:
+      - id: docstrfmt
+        require_serial: true
+    rev: v1.4.4
+
+  - repo: https://github.com/pycqa/flake8
+    hooks:
+      - id: flake8
+    rev: 4.0.1
+
+  - repo: https://github.com/ikamensh/flynt/
+    hooks:
+      - id: flynt
+        args:
+          - '-ll'
+          - '1000'
+    rev: '0.76'
+
+  - repo: https://github.com/pycqa/isort
+    hooks:
+      - id: isort
+    rev: 5.10.1
+
+  - repo: https://github.com/pycqa/pydocstyle
+    hooks:
+      - id: pydocstyle
+        files: praw/.*
+    rev: 6.1.1

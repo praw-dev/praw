@@ -46,7 +46,9 @@ class TestAuthImplicit(IntegrationTest):
         )
 
     def test_implicit__with_invalid_token(self):
-        self.reddit.auth.implicit("invalid_token", 10, "read")
+        self.reddit.auth.implicit(
+            access_token="invalid_token", expires_in=10, scope="read"
+        )
         with self.use_cassette():
             with pytest.raises(InvalidToken):
                 self.reddit.user.me()

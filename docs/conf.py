@@ -6,7 +6,7 @@ from datetime import datetime
 sys.path.insert(0, ".")
 sys.path.insert(1, "..")
 
-from praw import __version__
+from praw import __version__  # noqa: E402
 
 copyright = datetime.today().strftime("%Y, Bryce Boe")
 exclude_patterns = ["_build"]

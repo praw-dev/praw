@@ -20,7 +20,7 @@ class RisingListingMixin(PRAWBase):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        For example, to get random rising submissions for subreddit ``r/test``:
+        For example, to get random rising submissions for r/test:
 
         .. code-block:: python
 
@@ -40,7 +40,7 @@ class RisingListingMixin(PRAWBase):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        For example, to get rising submissions for subreddit ``r/test``:
+        For example, to get rising submissions for r/test:
 
         .. code-block:: python
 

@@ -55,7 +55,7 @@ mysubreddits     Access the list of subreddits I moderate, contribute to, and su
                  to.
 privatemessages  Access my inbox and send private messages to other users.
 read             Access posts and comments through my account.
-report           Report content for rules violations. Hide &amp; show individual
+report           Report content for rules violations. Hide & show individual
                  submissions.
 save             Save and unsave comments and submissions.
 structuredstyles Edit structured styles for a subreddit I moderate.
@@ -74,3 +74,20 @@ The following program can be used to obtain a refresh token with the desired sco
 
 .. literalinclude:: ../examples/obtain_refresh_token.py
     :language: python
+
+This script assumes you have configured your application's ``redirect uri`` to
+``localhost:8080``
+
+When you execute this script interactively:
+
+1. You will be prompted to provide a comma-separated list of scopes.
+2. You will be given a URL that will take you through the auth flow on Reddit.
+3. When you open the provided link in your browser, Reddit will ask you for permission
+   to grant the application permissions to the scopes requested.
+4. After clicking allow, you will have a new authorized application configured.
+5. You will be redirected to another page (the application's ``redirect uri``) where
+   your refresh token will be displayed and will be printed to the command line.
+
+You only have to run this script once for each refresh token. The refresh token (along
+with the application's ``client_id``, ``client_secret``) are valid credentials until
+manually revoked by the user.

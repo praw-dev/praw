@@ -51,7 +51,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             submission = Submission(self.reddit, "4b1tfm")
-            submission.edit("New text")
+            submission.edit(body="New text")
             assert submission.selftext == "New text"
 
     @mock.patch("time.sleep", return_value=None)
@@ -61,7 +61,7 @@ class TestSubmission(IntegrationTest):
         with self.use_cassette():
             submission = Submission(self.reddit, "eippcc")
             with pytest.raises(RedditAPIException):
-                submission.edit("rewtwert")
+                submission.edit(body="rewtwert")
 
     def test_enable_inbox_replies(self):
         self.reddit.read_only = False
@@ -117,7 +117,7 @@ class TestSubmission(IntegrationTest):
             Submission(self.reddit, "c625v"),
         ]
         with self.use_cassette():
-            Submission(self.reddit, "1eipl7").hide(submissions)
+            Submission(self.reddit, "1eipl7").hide(other_submissions=submissions)
 
     @mock.patch("time.sleep", return_value=None)
     def test_hide_multiple_in_batches(self, _):
@@ -125,7 +125,7 @@ class TestSubmission(IntegrationTest):
         with self.use_cassette():
             submissions = list(self.reddit.subreddit("popular").hot(limit=100))
             assert len(submissions) == 100
-            submissions[0].hide(submissions[1:])
+            submissions[0].hide(other_submissions=submissions[1:])
 
     def test_invalid_attribute(self):
         with self.use_cassette():
@@ -140,7 +140,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             submission = Submission(self.reddit, "4b1tfm")
-            comment = submission.reply("Test reply")
+            comment = submission.reply(body="Test reply")
             assert comment.author == self.reddit.config.username
             assert comment.body == "Test reply"
             assert comment.parent_id == submission.fullname
@@ -149,7 +149,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         submission = Submission(self.reddit, "ah19vv")
         with self.use_cassette():
-            reply = submission.reply("TEST")
+            reply = submission.reply(body="TEST")
         assert reply is None
 
     def test_report(self):
@@ -179,7 +179,7 @@ class TestSubmission(IntegrationTest):
             Submission(self.reddit, "c625v"),
         ]
         with self.use_cassette():
-            Submission(self.reddit, "1eipl7").unhide(submissions)
+            Submission(self.reddit, "1eipl7").unhide(other_submissions=submissions)
 
     @mock.patch("time.sleep", return_value=None)
     def test_unhide_multiple_in_batches(self, _):
@@ -187,7 +187,7 @@ class TestSubmission(IntegrationTest):
         with self.use_cassette():
             submissions = list(self.reddit.subreddit("popular").hot(limit=100))
             assert len(submissions) == 100
-            submissions[0].unhide(submissions[1:])
+            submissions[0].unhide(other_submissions=submissions[1:])
 
     def test_unsave(self):
         self.reddit.read_only = False
@@ -204,7 +204,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             subreddit = pytest.placeholders.test_subreddit
-            crosspost_parent = self.reddit.submission(id="6vx01b")
+            crosspost_parent = self.reddit.submission("6vx01b")
 
             submission = crosspost_parent.crosspost(subreddit)
             assert submission.author == self.reddit.config.username
@@ -216,7 +216,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-            crosspost_parent = self.reddit.submission(id="6vx01b")
+            crosspost_parent = self.reddit.submission("6vx01b")
 
             submission = crosspost_parent.crosspost(subreddit)
             assert submission.author == self.reddit.config.username
@@ -228,9 +228,9 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-            crosspost_parent = self.reddit.submission(id="6vx01b")
+            crosspost_parent = self.reddit.submission("6vx01b")
 
-            submission = crosspost_parent.crosspost(subreddit, "my title")
+            submission = crosspost_parent.crosspost(subreddit, title="my title")
             assert submission.author == self.reddit.config.username
             assert submission.title == "my title"
             assert submission.crosspost_parent == "t3_6vx01b"
@@ -243,7 +243,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             subreddit = pytest.placeholders.test_subreddit
-            crosspost_parent = self.reddit.submission(id="6vx01b")
+            crosspost_parent = self.reddit.submission("6vx01b")
 
             submission = crosspost_parent.crosspost(
                 subreddit, flair_id=flair_id, flair_text=flair_text
@@ -257,7 +257,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             subreddit = pytest.placeholders.test_subreddit
-            crosspost_parent = self.reddit.submission(id="6vx01b")
+            crosspost_parent = self.reddit.submission("6vx01b")
 
             submission = crosspost_parent.crosspost(subreddit, nsfw=True)
             assert submission.over_18 is True
@@ -268,7 +268,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             subreddit = pytest.placeholders.test_subreddit
-            crosspost_parent = self.reddit.submission(id="6vx01b")
+            crosspost_parent = self.reddit.submission("6vx01b")
 
             submission = crosspost_parent.crosspost(subreddit, spoiler=True)
             assert submission.spoiler is True
@@ -329,14 +329,14 @@ class TestSubmissionModeration(IntegrationTest):
     def test_flair(self, _):
         self.reddit.read_only = False
         with self.use_cassette():
-            self.reddit.submission("4b536p").mod.flair("submission flair")
+            self.reddit.submission("4b536p").mod.flair(text="submission flair")
 
     @mock.patch("time.sleep", return_value=None)
     def test_flair_template_id(self, _):
         self.reddit.read_only = False
         with self.use_cassette():
             self.reddit.submission("eh9xy1").mod.flair(
-                "submission flair",
+                text="submission flair",
                 flair_template_id="0f7349d8-2a6d-11ea-8529-0e5dee3e1a9d",
             )
 
@@ -344,14 +344,14 @@ class TestSubmissionModeration(IntegrationTest):
     def test_flair_text_only(self, _):
         self.reddit.read_only = False
         with self.use_cassette():
-            self.reddit.submission("eh9xy1").mod.flair("submission flair")
+            self.reddit.submission("eh9xy1").mod.flair(text="submission flair")
 
     @mock.patch("time.sleep", return_value=None)
     def test_flair_text_and_css_class(self, _):
         self.reddit.read_only = False
         with self.use_cassette():
             self.reddit.submission("eh9xy1").mod.flair(
-                "submission flair", css_class="submission flair"
+                text="submission flair", css_class="submission flair"
             )
 
     @mock.patch("time.sleep", return_value=None)
@@ -359,7 +359,7 @@ class TestSubmissionModeration(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             self.reddit.submission("eh9xy1").mod.flair(
-                "submission flair",
+                text="submission flair",
                 css_class="submission flair",
                 flair_template_id="0f7349d8-2a6d-11ea-8529-0e5dee3e1a9d",
             )
@@ -446,7 +446,7 @@ class TestSubmissionModeration(IntegrationTest):
             mod.remove()
             message = "message"
             res = [
-                mod.send_removal_message(type, "title", message)
+                mod.send_removal_message(message=type, title="title", type=message)
                 for type in ("public", "private", "private_exposed")
             ]
             assert isinstance(res[0], Comment)

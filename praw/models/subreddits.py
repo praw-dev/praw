@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Union
 from warnings import warn
 
 from ..const import API_PATH
+from ..util import _deprecate_args
 from . import Subreddit
 from .base import PRAWBase
 from .listing.generator import ListingGenerator
@@ -87,9 +88,10 @@ class Subreddits(PRAWBase):
     ) -> List["praw.models.Subreddit"]:
         """Return subreddits recommended for the given list of subreddits.
 
-        :param subreddits: A list of Subreddit instances and/or subreddit names.
-        :param omit_subreddits: A list of Subreddit instances and/or subreddit names to
-            exclude from the results (Reddit's end may not work as expected).
+        :param subreddits: A list of :class:`.Subreddit` instances and/or subreddit
+            names.
+        :param omit_subreddits: A list of :class:`.Subreddit` instances and/or subreddit
+            names to exclude from the results (Reddit's end may not work as expected).
 
         """
         if not isinstance(subreddits, list):
@@ -118,22 +120,27 @@ class Subreddits(PRAWBase):
 
         .. seealso::
 
-            :meth:`~.search_by_name` to search by subreddit names
+            :meth:`.search_by_name` to search by subreddit names
 
         """
-        self._safely_add_arguments(generator_kwargs, "params", q=query)
+        self._safely_add_arguments(arguments=generator_kwargs, key="params", q=query)
         return ListingGenerator(
             self._reddit, API_PATH["subreddits_search"], **generator_kwargs
         )
 
+    @_deprecate_args("query", "include_nsfw", "exact")
     def search_by_name(
-        self, query: str, include_nsfw: bool = True, exact: bool = False
+        self,
+        query: str,
+        *,
+        include_nsfw: bool = True,
+        exact: bool = False,
     ) -> List["praw.models.Subreddit"]:
-        """Return list of Subreddits whose names begin with ``query``.
+        r"""Return list of :class:`.Subreddit`\ s whose names begin with ``query``.
 
         :param query: Search for subreddits beginning with this string.
-        :param include_nsfw: Include subreddits labeled NSFW (default: True).
-        :param exact: Return only exact matches to ``query`` (default: False).
+        :param exact: Return only exact matches to ``query`` (default: ``False``).
+        :param include_nsfw: Include subreddits labeled NSFW (default: ``True``).
 
         """
         result = self._reddit.post(

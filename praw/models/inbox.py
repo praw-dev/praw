@@ -2,6 +2,7 @@
 from typing import TYPE_CHECKING, Dict, Iterator, List, Union
 
 from ..const import API_PATH
+from ..util import _deprecate_args
 from .base import PRAWBase
 from .listing.generator import ListingGenerator
 from .util import stream_generator
@@ -11,7 +12,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Inbox(PRAWBase):
-    """Inbox is a Listing class that represents the Inbox."""
+    """Inbox is a Listing class that represents the inbox."""
 
     def all(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
@@ -91,7 +92,7 @@ class Inbox(PRAWBase):
 
         .. note::
 
-            This method returns after Reddit acknowleges your request, instead of after
+            This method returns after Reddit acknowledges your request, instead of after
             the request has been fulfilled.
 
         """
@@ -103,7 +104,7 @@ class Inbox(PRAWBase):
         """Mark Comments or Messages as read.
 
         :param items: A list containing instances of :class:`.Comment` and/or
-            :class:`.Message` to be be marked as read relative to the authorized user's
+            :class:`.Message` to be marked as read relative to the authorized user's
             inbox.
 
         Requests are batched at 25 items (reddit limit).
@@ -122,7 +123,8 @@ class Inbox(PRAWBase):
 
         .. seealso::
 
-            :meth:`.Comment.mark_read` and :meth:`.Message.mark_read`
+            - :meth:`.Comment.mark_read`
+            - :meth:`.Message.mark_read`
 
         """
         while items:
@@ -136,10 +138,10 @@ class Inbox(PRAWBase):
         """Unmark Comments or Messages as read.
 
         :param items: A list containing instances of :class:`.Comment` and/or
-            :class:`.Message` to be be marked as unread relative to the authorized
-            user's inbox.
+            :class:`.Message` to be marked as unread relative to the authorized user's
+            inbox.
 
-        Requests are batched at 25 items (reddit limit).
+        Requests are batched at 25 items (Reddit limit).
 
         For example, to mark the first 10 items as unread try:
 
@@ -150,7 +152,8 @@ class Inbox(PRAWBase):
 
         .. seealso::
 
-            :meth:`.Comment.mark_unread` and :meth:`.Message.mark_unread`
+            - :meth:`.Comment.mark_unread`
+            - :meth:`.Message.mark_unread`
 
         """
         while items:
@@ -164,7 +167,7 @@ class Inbox(PRAWBase):
         r"""Return a :class:`.ListingGenerator` for mentions.
 
         A mention is :class:`.Comment` in which the authorized redditor is named in its
-        body like ``u/redditor_name``.
+        body like u/spez.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -174,15 +177,15 @@ class Inbox(PRAWBase):
         .. code-block:: python
 
             for mention in reddit.inbox.mentions(limit=25):
-                print(f"{mention.author}\n{mention.body}\n")
+                print(f"{mention.author}\\n{mention.body}\\n")
 
         """
         return ListingGenerator(self._reddit, API_PATH["mentions"], **generator_kwargs)
 
     def message(self, message_id: str) -> "praw.models.Message":
-        """Return a Message corresponding to ``message_id``.
+        """Return a :class:`.Message` corresponding to ``message_id``.
 
-        :param message_id: The base36 id of a message.
+        :param message_id: The base36 ID of a message.
 
         For example:
 
@@ -192,11 +195,12 @@ class Inbox(PRAWBase):
 
         """
         listing = self._reddit.get(API_PATH["message"].format(id=message_id))
-        messages = [listing[0]] + listing[0].replies
-        while messages:
-            message = messages.pop(0)
-            if message.id == message_id:
-                return message
+        messages = {
+            message.fullname: message for message in [listing[0]] + listing[0].replies
+        }
+        for fullname, message in messages.items():
+            message.parent = messages.get(message.parent_id, None)
+        return messages[f"t4_{message_id.lower()}"]
 
     def messages(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
@@ -303,14 +307,16 @@ class Inbox(PRAWBase):
             self._reddit.post(API_PATH["uncollapse"], data=data)
             items = items[25:]
 
+    @_deprecate_args("mark_read")
     def unread(
         self,
+        *,
         mark_read: bool = False,
-        **generator_kwargs: Union[str, int, Dict[str, str]]
+        **generator_kwargs: Union[str, int, Dict[str, str]],
     ) -> Iterator[Union["praw.models.Comment", "praw.models.Message"]]:
         """Return a :class:`.ListingGenerator` for unread comments and messages.
 
-        :param mark_read: Marks the inbox as read (default: False).
+        :param mark_read: Marks the inbox as read (default: ``False``).
 
         .. note::
 
@@ -331,5 +337,7 @@ class Inbox(PRAWBase):
                     print(item.author)
 
         """
-        self._safely_add_arguments(generator_kwargs, "params", mark=mark_read)
+        self._safely_add_arguments(
+            arguments=generator_kwargs, key="params", mark=mark_read
+        )
         return ListingGenerator(self._reddit, API_PATH["unread"], **generator_kwargs)

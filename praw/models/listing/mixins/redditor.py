@@ -15,7 +15,7 @@ class SubListing(BaseListingMixin):
     """Helper class for generating :class:`.ListingGenerator` objects."""
 
     def __init__(self, reddit: "praw.Reddit", base_path: str, subpath: str):
-        """Initialize a SubListing instance.
+        """Initialize a :class:`.SubListing` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
         :param base_path: The path to the object up to this point.
@@ -29,18 +29,18 @@ class SubListing(BaseListingMixin):
 
 
 class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
-    """Adds additional methods pertaining to Redditor instances."""
+    """Adds additional methods pertaining to :class:`.Redditor` instances."""
 
     @cachedproperty
     def comments(self) -> SubListing:
         r"""Provide an instance of :class:`.SubListing` for comment access.
 
-        For example, to output the first line of all new comments by ``u/spez`` try:
+        For example, to output the first line of all new comments by u/spez try:
 
         .. code-block:: python
 
             for comment in reddit.redditor("spez").comments.new(limit=None):
-                print(comment.body.split("\n", 1)[0][:79])
+                print(comment.body.split("\\n", 1)[0][:79])
 
         """
         return SubListing(self._reddit, self._path, "comments")
@@ -49,12 +49,12 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
     def submissions(self) -> SubListing:
         """Provide an instance of :class:`.SubListing` for submission access.
 
-        For example, to output the title's of top 100 of all time submissions for
-        ``u/spez`` try:
+        For example, to output the title's of top 100 of all time submissions for u/spez
+        try:
 
         .. code-block:: python
 
-            for submission in reddit.redditor("spez").submissions.top("all"):
+            for submission in reddit.redditor("spez").submissions.top(time_filter="all"):
                 print(submission.title)
 
         """

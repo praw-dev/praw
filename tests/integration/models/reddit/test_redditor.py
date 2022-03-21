@@ -61,7 +61,7 @@ class TestRedditor(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             redditor = self.reddit.redditor("subreddit_stats")
-            redditor.message("PRAW test", "This is a test from PRAW")
+            redditor.message(subject="PRAW test", message="This is a test from PRAW")
 
     @mock.patch("time.sleep", return_value=None)
     def test_message_from_subreddit(self, _):
@@ -69,8 +69,8 @@ class TestRedditor(IntegrationTest):
         with self.use_cassette():
             redditor = self.reddit.redditor("subreddit_stats")
             redditor.message(
-                "PRAW test",
-                "This is a test from PRAW",
+                subject="PRAW test",
+                message="This is a test from PRAW",
                 from_subreddit=pytest.placeholders.test_subreddit,
             )
 

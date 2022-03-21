@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from ...const import API_PATH
 from ...exceptions import ClientException
+from ...util import _deprecate_args
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -11,14 +12,9 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Emoji(RedditBase):
-    """An individual Emoji object.
+    """An individual :class:`.Emoji` object.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily comprehensive.
+    .. include:: ../../typical_attributes.rst
 
     ====================== =================================================
     Attribute              Description
@@ -53,7 +49,7 @@ class Emoji(RedditBase):
         name: str,
         _data: Optional[Dict[str, Any]] = None,
     ):
-        """Construct an instance of the Emoji object."""
+        """Initialize an :class:`.Emoji` instance."""
         self.name = name
         self.subreddit = subreddit
         super().__init__(reddit, _data=_data)
@@ -67,13 +63,13 @@ class Emoji(RedditBase):
         raise ClientException(f"r/{self.subreddit} does not have the emoji {self.name}")
 
     def delete(self):
-        """Delete an emoji from this subreddit by Emoji.
+        """Delete an emoji from this subreddit by :class:`.Emoji`.
 
-        To delete ``"test"`` as an emoji on the subreddit ``"praw_test"`` try:
+        To delete ``"emoji"`` as an emoji on r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("praw_test").emoji["test"].delete()
+            reddit.subreddit("test").emoji["emoji"].delete()
 
         """
         url = API_PATH["emoji_delete"].format(
@@ -81,20 +77,22 @@ class Emoji(RedditBase):
         )
         self._reddit.delete(url)
 
+    @_deprecate_args("mod_flair_only", "post_flair_allowed", "user_flair_allowed")
     def update(
         self,
+        *,
         mod_flair_only: Optional[bool] = None,
         post_flair_allowed: Optional[bool] = None,
         user_flair_allowed: Optional[bool] = None,
     ):
         """Update the permissions of an emoji in this subreddit.
 
-        :param mod_flair_only: (boolean) Indicate whether the emoji is restricted to mod
-            use only. Respects pre-existing settings if not provided.
-        :param post_flair_allowed: (boolean) Indicate whether the emoji may appear in
-            post flair. Respects pre-existing settings if not provided.
-        :param user_flair_allowed: (boolean) Indicate whether the emoji may appear in
-            user flair. Respects pre-existing settings if not provided.
+        :param mod_flair_only: Indicate whether the emoji is restricted to mod use only.
+            Respects pre-existing settings if not provided.
+        :param post_flair_allowed: Indicate whether the emoji may appear in post flair.
+            Respects pre-existing settings if not provided.
+        :param user_flair_allowed: Indicate whether the emoji may appear in user flair.
+            Respects pre-existing settings if not provided.
 
         .. note::
 
@@ -102,11 +100,11 @@ class Emoji(RedditBase):
             passed, a network request is issued. To avoid that network request,
             explicitly provide all values.
 
-        To restrict the emoji ``test`` in subreddit ``wowemoji`` to mod use only, try:
+        To restrict the emoji ``"emoji"`` in r/test to mod use only, try:
 
         .. code-block:: python
 
-            reddit.subreddit("wowemoji").emoji["test"].update(mod_flair_only=True)
+            reddit.subreddit("test").emoji["emoji"].update(mod_flair_only=True)
 
         """
         locals_reference = locals()
@@ -133,25 +131,25 @@ class Emoji(RedditBase):
 
 
 class SubredditEmoji:
-    """Provides a set of functions to a Subreddit for emoji."""
+    """Provides a set of functions to a :class:`.Subreddit` for emoji."""
 
     def __getitem__(self, name: str) -> Emoji:
-        """Lazily return the Emoji for the subreddit named ``name``.
+        """Lazily return the :class:`.Emoji` for the subreddit named ``name``.
 
-        :param name: The name of the emoji
+        :param name: The name of the emoji.
 
         This method is to be used to fetch a specific emoji url, like so:
 
         .. code-block:: python
 
-            emoji = reddit.subreddit("praw_test").emoji["test"]
+            emoji = reddit.subreddit("test").emoji["emoji"]
             print(emoji)
 
         """
         return Emoji(self._reddit, self.subreddit, name)
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Create a SubredditEmoji instance.
+        """Initialize a :class:`.SubredditEmoji` instance.
 
         :param subreddit: The subreddit whose emoji are affected.
 
@@ -160,13 +158,13 @@ class SubredditEmoji:
         self._reddit = subreddit._reddit
 
     def __iter__(self) -> List[Emoji]:
-        """Return a list of Emoji for the subreddit.
+        """Return a list of :class:`.Emoji` for the subreddit.
 
         This method is to be used to discover all emoji for a subreddit:
 
         .. code-block:: python
 
-            for emoji in reddit.subreddit("praw_test").emoji:
+            for emoji in reddit.subreddit("test").emoji:
                 print(emoji)
 
         """
@@ -184,30 +182,31 @@ class SubredditEmoji:
 
     def add(
         self,
-        name: str,
+        *,
         image_path: str,
         mod_flair_only: Optional[bool] = None,
+        name: str,
         post_flair_allowed: Optional[bool] = None,
         user_flair_allowed: Optional[bool] = None,
     ) -> Emoji:
         """Add an emoji to this subreddit.
 
-        :param name: The name of the emoji
         :param image_path: A path to a jpeg or png image.
-        :param mod_flair_only: (boolean) When provided, indicate whether the emoji is
-            restricted to mod use only. (Default: ``None``)
-        :param post_flair_allowed: (boolean) When provided, indicate whether the emoji
-            may appear in post flair. (Default: ``None``)
-        :param user_flair_allowed: (boolean) When provided, indicate whether the emoji
-            may appear in user flair. (Default: ``None``)
+        :param mod_flair_only: When provided, indicate whether the emoji is restricted
+            to mod use only (default: ``None``).
+        :param name: The name of the emoji.
+        :param post_flair_allowed: When provided, indicate whether the emoji may appear
+            in post flair (default: ``None``).
+        :param user_flair_allowed: When provided, indicate whether the emoji may appear
+            in user flair (default: ``None``).
 
-        :returns: The Emoji added.
+        :returns: The :class:`.Emoji` added.
 
-        To add ``test`` to the subreddit ``praw_test`` try:
+        To add ``"emoji"`` to r/test try:
 
         .. code-block:: python
 
-            reddit.subreddit("praw_test").emoji.add("test", "test.png")
+            reddit.subreddit("test").emoji.add(name="emoji", image_path="emoji.png")
 
         """
         data = {

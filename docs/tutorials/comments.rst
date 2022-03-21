@@ -11,11 +11,11 @@ As always, you need to begin by creating an instance of :class:`.Reddit`:
     import praw
 
     reddit = praw.Reddit(
-        user_agent="Comment Extraction (by u/USERNAME)",
         client_id="CLIENT_ID",
         client_secret="CLIENT_SECRET",
-        username="USERNAME",
         password="PASSWORD",
+        user_agent="Comment Extraction (by u/USERNAME)",
+        username="USERNAME",
     )
 
 .. note::
@@ -25,8 +25,7 @@ As always, you need to begin by creating an instance of :class:`.Reddit`:
 
 In this document, we will detail the process of finding all the comments for a given
 submission. If you instead want to process all comments on Reddit, or comments belonging
-to one or more specific subreddits, please see
-:meth:`praw.models.reddit.subreddit.SubredditStream.comments`.
+to one or more specific subreddits, please see :meth:`.SubredditStream.comments`.
 
 .. _extracting_comments:
 
@@ -47,13 +46,13 @@ or with the submission's ID which comes after ``comments/`` in the URL:
 
 .. code-block:: python
 
-    submission = reddit.submission(id="3g1jfi")
+    submission = reddit.submission("3g1jfi")
 
 With a submission object we can then interact with its :class:`.CommentForest` through
 the submission's :attr:`.Submission.comments` attribute. A :class:`.CommentForest` is a
 list of top-level comments each of which contains a :class:`.CommentForest` of replies.
 
-If we wanted to output only the ``body`` of the top level comments in the thread we
+If we wanted to output only the ``body`` of the top-level comments in the thread we
 could do:
 
 .. code-block:: python
@@ -79,22 +78,23 @@ could ignore :class:`.MoreComments` in our code, like so:
 The ``replace_more`` method
 ---------------------------
 
-In the previous snippet, we used ``isinstance`` to check whether the item in the comment
-list was a :class:`.MoreComments` so that we could ignore it. But there is a better way:
-the :class:`.CommentForest` object has a method called :meth:`.replace_more`, which
-replaces or removes :class:`.MoreComments` objects from the forest.
+In the previous snippet, we used :py:func:`isinstance` to check whether the item in the
+comment list was a :class:`.MoreComments` so that we could ignore it. But there is a
+better way: the :class:`.CommentForest` object has a method called
+:meth:`.replace_more`, which replaces or removes :class:`.MoreComments` objects from the
+forest.
 
 Each replacement requires one network request, and its response may yield additional
 :class:`.MoreComments` instances. As a result, by default, :meth:`.replace_more` only
-replaces at most thirty-two :class:`.MoreComments` instances -- all other instances are
-simply removed. The maximum number of instances to replace can be configured via the
-``limit`` parameter. Additionally a ``threshold`` parameter can be set to only perform
-replacement of :class:`.MoreComments` instances that represent a minimum number of
-comments; it defaults to 0, meaning all :class:`.MoreComments` instances will be
-replaced up to ``limit``.
+replaces at most 32 :class:`.MoreComments` instances -- all other instances are simply
+removed. The maximum number of instances to replace can be configured via the ``limit``
+parameter. Additionally a ``threshold`` parameter can be set to only perform replacement
+of :class:`.MoreComments` instances that represent a minimum number of comments; it
+defaults to ``0``, meaning all :class:`.MoreComments` instances will be replaced up to
+``limit``.
 
-A ``limit`` of 0 simply removes all :class:`.MoreComments` from the forest. The previous
-snippet can thus be simplified:
+A ``limit`` of ``0`` simply removes all :class:`.MoreComments` from the forest. The
+previous snippet can thus be simplified:
 
 .. code-block:: python
 

@@ -7,8 +7,8 @@ PRAW comes with a ``praw.ini`` file in the package directory, and looks for user
 ``praw.ini`` files in a few other locations:
 
 1. In the `current working directory
-   <https://docs.python.org/3.6/library/os.html#os.getcwd>`_ at the time
-   :class:`.Reddit` is initialized.
+   <https://docs.python.org/3/library/os.html#os.getcwd>`_ at the time :class:`.Reddit`
+   is initialized.
 2. In the launching user's config directory. This directory, if available, is detected
    in order as one of the following:
 
@@ -85,21 +85,21 @@ you have three separate bots, you might create a site for each:
 .. code-block:: ini
 
     [bot1]
-    client_id=Y4PJOclpDQy3xZ
-    client_secret=UkGLTe6oqsMk5nHCJTHLrwgvHpr
-    password=pni9ubeht4wd50gk
+    client_id=revokedpDQy3xZ
+    client_secret=revokedoqsMk5nHCJTHLrwgvHpr
+    password=invalidht4wd50gk
     username=fakebot1
 
     [bot2]
-    client_id=6abrJJdcIqbclb
-    client_secret=Kcn6Bj8CClyu4FjVO77MYlTynfj
-    password=mi1ky2qzpiq8s59j
+    client_id=revokedcIqbclb
+    client_secret=revokedCClyu4FjVO77MYlTynfj
+    password=invalidzpiq8s59j
     username=fakebot2
 
     [bot3]
-    client_id=SI8pN3DSbt0zor
-    client_secret=xaxkj7HNh8kwg8e5t4m6KvSrbTI
-    password=1guiwevlfo00esyy
+    client_id=revokedSbt0zor
+    client_secret=revokedNh8kwg8e5t4m6KvSrbTI
+    password=invalidlfo00esyy
     username=fakebot3
 
 Choosing a Site
@@ -147,8 +147,8 @@ This uses basic interpolation thus :class:`.Reddit` need to be initialized as fo
 
     reddit = praw.Reddit("bot1", config_interpolation="basic")
 
-Then the value of ``reddit.config.user_agent`` will be ``script:MyBot:v1.2.3 (by
-u/MyUser)``.
+Then the value of ``reddit.config.user_agent`` will be ``"script:MyBot:v1.2.3 (by
+u/MyUser)"``.
 
 See `Interpolation of values
 <https://docs.python.org/3/library/configparser.html#interpolation-of-values>`_ for
@@ -156,6 +156,6 @@ details.
 
 .. warning::
 
-    The ConfigParser instance is cached internally at the class level, it is shared
-    across all instances of :class:`.Reddit` and once set it's not overridden by future
-    invocations.
+    The :py:class:`configparser.ConfigParser` instance is cached internally at the class
+    level, it is shared across all instances of :class:`.Reddit` and once set it's not
+    overridden by future invocations.

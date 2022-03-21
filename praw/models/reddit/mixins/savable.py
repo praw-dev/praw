@@ -2,30 +2,32 @@
 from typing import Optional
 
 from ....const import API_PATH
+from ....util import _deprecate_args
 
 
 class SavableMixin:
-    """Interface for RedditBase classes that can be saved."""
+    """Interface for :class:`.RedditBase` classes that can be saved."""
 
-    def save(self, category: Optional[str] = None):
+    @_deprecate_args("category")
+    def save(self, *, category: Optional[str] = None):
         """Save the object.
 
-        :param category: (Premium) The category to save to. If your user does not have
-            Reddit Premium this value is ignored by Reddit (default: ``None``).
+        :param category: The category to save to. If the authenticated user does not
+            have Reddit Premium this value is ignored by Reddit (default: ``None``).
 
         Example usage:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.save(category="view later")
 
-            comment = reddit.comment(id="dxolpyc")
+            comment = reddit.comment("dxolpyc")
             comment.save()
 
         .. seealso::
 
-            :meth:`~.unsave`
+            :meth:`.unsave`
 
         """
         self._reddit.post(
@@ -39,14 +41,15 @@ class SavableMixin:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.unsave()
 
-        comment = reddit.comment(id="dxolpyc") comment.unsave()
+            comment = reddit.comment("dxolpyc")
+            comment.unsave()
 
         .. seealso::
 
-            :meth:`~.save`
+            :meth:`.save`
 
         """
         self._reddit.post(API_PATH["unsave"], data={"id": self.fullname})

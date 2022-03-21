@@ -28,7 +28,7 @@ list. In the example code below, observe how attributes are accessed.
     except APIException as exception:
         print(exception.error_type)
 
-This can generally be changed to
+This can generally be changed to:
 
 .. code-block:: python
 
@@ -51,7 +51,7 @@ iterator.
             print(subexception.error_type)
 
 Alternatively, the exceptions are provided to the exception constructor, so printing the
-exception directly will also allow you to see all of the exceptions.
+exception directly will also allow you to see all the exceptions.
 
 .. code-block:: python
 

@@ -104,10 +104,10 @@ class TestSubreddit(IntegrationTest):
         new_name = "PRAW_rrldkyrfln"
         with self.use_cassette():
             subreddit = self.reddit.subreddit.create(
-                name=new_name,
-                title="Sub",
+                new_name,
                 link_type="any",
                 subreddit_type="public",
+                title="Sub",
                 wikimode="disabled",
             )
             assert subreddit.display_name == new_name
@@ -119,9 +119,9 @@ class TestSubreddit(IntegrationTest):
             with pytest.raises(RedditAPIException) as excinfo:
                 self.reddit.subreddit.create(
                     "redditdev",
-                    title="redditdev",
                     link_type="any",
                     subreddit_type="public",
+                    title="redditdev",
                     wikimode="disabled",
                 )
             assert excinfo.value.items[0].error_type == "SUBREDDIT_EXISTS"
@@ -132,10 +132,10 @@ class TestSubreddit(IntegrationTest):
             with pytest.raises(RedditAPIException) as excinfo:
                 # Supplying invalid setting for link_type
                 self.reddit.subreddit.create(
-                    name="PRAW_iavynavffv",
-                    title="sub",
+                    "PRAW_iavynavffv",
                     link_type="abcd",
                     subreddit_type="public",
+                    title="sub",
                     wikimode="disabled",
                 )
             assert excinfo.value.items[0].error_type == "INVALID_OPTION"
@@ -146,10 +146,10 @@ class TestSubreddit(IntegrationTest):
             with pytest.raises(RedditAPIException) as excinfo:
                 # Not supplying required field title.
                 self.reddit.subreddit.create(
-                    name="PRAW_iavynavffv",
-                    title=None,
+                    "PRAW_iavynavffv",
                     link_type="any",
                     subreddit_type="public",
+                    title=None,
                     wikimode="disabled",
                 )
             assert excinfo.value.items[0].error_type == "NO_TEXT"
@@ -159,7 +159,7 @@ class TestSubreddit(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-            subreddit.message("Test from PRAW", message="Test content")
+            subreddit.message(subject="Test from PRAW", message="Test content")
 
     @mock.patch("time.sleep", return_value=None)
     def test_post_requirements(self, _):
@@ -215,13 +215,13 @@ class TestSubreddit(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         with self.use_cassette():
             with pytest.raises(NotFound):
-                subreddit.sticky(2)
+                subreddit.sticky(number=2)
 
     def test_search(self):
         with self.use_cassette():
             subreddit = self.reddit.subreddit("all")
             for item in subreddit.search(
-                "praw oauth search", limit=None, syntax="cloudsearch"
+                "praw oauth search", syntax="cloudsearch", limit=None
             ):
                 assert isinstance(item, Submission)
 
@@ -235,9 +235,9 @@ class TestSubreddit(IntegrationTest):
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit(
                 "Test Title",
-                selftext="Test text.",
                 flair_id=flair_id,
                 flair_text=flair_text,
+                selftext="Test text.",
             )
             assert submission.link_flair_css_class == flair_class
             assert submission.link_flair_text == flair_text
@@ -277,12 +277,16 @@ class TestSubreddit(IntegrationTest):
             )
             media = {"gif1": gif, "image1": image, "video1": video}
             submission = subreddit.submit(
-                "title", selftext=selftext, inline_media=media
+                "title", inline_media=media, selftext=selftext
             )
             assert submission.author == pytest.placeholders.username
             assert (
-                submission.selftext
-                == "Text with a gif\n\n[optional caption](https://i.redd.it/3vwgfvq3tyq51.gif)\n\nan image\n\n[optional caption](https://preview.redd.it/9147est3tyq51.png?width=128&format=png&auto=webp&s=54d1a865a9339dcca9ec19eb1e357079c81e5100)\n\nand a video\n\n[optional caption](https://reddit.com/link/j4p2rk/video/vsie20v3tyq51/player)\n\ninline"
+                submission.selftext == "Text with a gif\n\n[optional"
+                " caption](https://i.redd.it/3vwgfvq3tyq51.gif)\n\nan"
+                " image\n\n[optional"
+                " caption](https://preview.redd.it/9147est3tyq51.png?width=128&format=png&auto=webp&s=54d1a865a9339dcca9ec19eb1e357079c81e5100)\n\nand"
+                " a video\n\n[optional"
+                " caption](https://reddit.com/link/j4p2rk/video/vsie20v3tyq51/player)\n\ninline"
             )
             assert submission.title == "title"
 
@@ -292,7 +296,7 @@ class TestSubreddit(IntegrationTest):
         with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit(
-                "Test Title", selftext="", discussion_type="CHAT"
+                "Test Title", discussion_type="CHAT", selftext=""
             )
             assert submission.discussion_type == "CHAT"
 
@@ -315,7 +319,7 @@ class TestSubreddit(IntegrationTest):
                 pytest.placeholders.test_subreddit
             )
             submission = subreddit.submit(
-                "Test Title", selftext="Test text.", nsfw=True
+                "Test Title", nsfw=True, selftext="Test text."
             )
             assert submission.over_18 is True
 
@@ -349,10 +353,7 @@ class TestSubreddit(IntegrationTest):
         with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit_poll(
-                "Test Poll",
-                selftext="Test poll text.",
-                options=options,
-                duration=6,
+                "Test Poll", duration=6, options=options, selftext="Test poll text."
             )
             assert submission.author == self.reddit.config.username
             assert submission.selftext.startswith("Test poll text.")
@@ -371,11 +372,11 @@ class TestSubreddit(IntegrationTest):
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit_poll(
                 "Test Poll",
-                selftext="Test poll text.",
+                duration=6,
                 flair_id=flair_id,
                 flair_text=flair_text,
                 options=options,
-                duration=6,
+                selftext="Test poll text.",
             )
             assert submission.link_flair_text == flair_text
             assert submission.link_flair_css_class == flair_class
@@ -388,10 +389,10 @@ class TestSubreddit(IntegrationTest):
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             submission = subreddit.submit_poll(
                 "Test Poll",
-                selftext="",
                 discussion_type="CHAT",
-                options=options,
                 duration=2,
+                options=options,
+                selftext="",
             )
             assert submission.discussion_type == "CHAT"
 
@@ -731,9 +732,9 @@ class TestSubreddit(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-            image = self.image_path("test.mov")
+            video = self.image_path("test.mov")
             submission = subreddit.submit_video(
-                "Test Title", image, flair_id=flair_id, flair_text=flair_text
+                "Test Title", video, flair_id=flair_id, flair_text=flair_text
             )
             assert submission.link_flair_css_class == flair_class
             assert submission.link_flair_text == flair_text
@@ -746,9 +747,9 @@ class TestSubreddit(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-            image = self.image_path("test.mov")
+            video = self.image_path("test.mov")
             submission = subreddit.submit_video(
-                "Test Title", image, discussion_type="CHAT"
+                "Test Title", video, discussion_type="CHAT"
             )
             assert submission.discussion_type == "CHAT"
 
@@ -758,12 +759,12 @@ class TestSubreddit(IntegrationTest):
         self.reddit.validate_on_submit = True
         with self.use_cassette():
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-            image = self.image_path("test.mov")
+            video = self.image_path("test.mov")
             with pytest.raises(
                 (RedditAPIException, BadRequest)
             ):  # waiting for prawcore fix
                 subreddit.submit_video(
-                    "gdfgfdgdgdgfgfdgdfgfdgfdg", image, without_websockets=True
+                    "gdfgfdgdgdgfgfdgdfgfdgfdg", video, without_websockets=True
                 )
 
     @mock.patch("time.sleep", return_value=None)
@@ -904,7 +905,9 @@ class TestSubreddit(IntegrationTest):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         with self.use_cassette():
-            subreddit.subscribe(["redditdev", self.reddit.subreddit("iama")])
+            subreddit.subscribe(
+                other_subreddits=["redditdev", self.reddit.subreddit("iama")]
+            )
 
     def test_traffic(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -928,7 +931,9 @@ class TestSubreddit(IntegrationTest):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         with self.use_cassette():
-            subreddit.unsubscribe(["redditdev", self.reddit.subreddit("iama")])
+            subreddit.unsubscribe(
+                other_subreddits=["redditdev", self.reddit.subreddit("iama")]
+            )
 
 
 class TestSubredditFilters(IntegrationTest):
@@ -1043,7 +1048,7 @@ class TestSubredditFlair(IntegrationTest):
             redditor = self.reddit.redditor(self.reddit.config.username)
             flair = "11c32eee-1482-11e9-bfc0-0efc81a5e8e8"
             self.subreddit.flair.set(
-                redditor, "redditor flair", flair_template_id=flair
+                redditor, flair_template_id=flair, text="redditor flair"
             )
 
     def test_set__flair_id_default_text(self):
@@ -1057,7 +1062,7 @@ class TestSubredditFlair(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             redditor = self.subreddit._reddit.redditor(self.reddit.config.username)
-            self.subreddit.flair.set(redditor, "redditor flair")
+            self.subreddit.flair.set(redditor, text="redditor flair")
 
     def test_set__redditor_css_only(self):
         self.reddit.read_only = False
@@ -1070,7 +1075,7 @@ class TestSubredditFlair(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             self.subreddit.flair.set(
-                self.reddit.config.username, "new flair", "some class"
+                self.reddit.config.username, css_class="some class", text="new flair"
             )
 
     def test_update(self):
@@ -1107,7 +1112,7 @@ class TestSubredditFlair(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             response = self.subreddit.flair.update(
-                [self.reddit.user.me()], text='"testing"', css_class="testing"
+                [self.reddit.user.me()], css_class="testing", text='"testing"'
             )
             assert all(x["ok"] for x in response)
             flair = next(self.subreddit.flair(self.reddit.user.me()))
@@ -1133,7 +1138,7 @@ class TestSubredditFlairTemplates(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             self.subreddit.flair.templates.add(
-                "PRAW", css_class="myCSS", background_color="#ABCDEF"
+                "PRAW", background_color="#ABCDEF", css_class="myCSS"
             )
 
     def test_clear(self):
@@ -1155,10 +1160,10 @@ class TestSubredditFlairTemplates(IntegrationTest):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
                 template["id"],
-                "PRAW updated",
-                css_class="myCSS",
-                text_color="dark",
                 background_color="#00FFFF",
+                css_class="myCSS",
+                text="PRAW updated",
+                text_color="dark",
             )
 
     @mock.patch("time.sleep", return_value=None)
@@ -1168,11 +1173,11 @@ class TestSubredditFlairTemplates(IntegrationTest):
             with pytest.raises(InvalidFlairTemplateID):
                 self.subreddit.flair.templates.update(
                     "fake id",
-                    "PRAW updated",
-                    css_class="myCSS",
-                    text_color="dark",
                     background_color="#00FFFF",
+                    css_class="myCSS",
                     fetch=True,
+                    text="PRAW updated",
+                    text_color="dark",
                 )
 
     @mock.patch("time.sleep", return_value=None)
@@ -1182,11 +1187,11 @@ class TestSubredditFlairTemplates(IntegrationTest):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
                 template["id"],
-                "PRAW updated",
-                css_class="myCSS",
-                text_color="dark",
                 background_color="#00FFFF",
+                css_class="myCSS",
                 fetch=True,
+                text="PRAW updated",
+                text_color="dark",
             )
 
     @mock.patch("time.sleep", return_value=None)
@@ -1196,10 +1201,10 @@ class TestSubredditFlairTemplates(IntegrationTest):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
                 template["id"],
-                "PRAW updated",
-                text_color="dark",
                 background_color="#00FFFF",
                 fetch=True,
+                text="PRAW updated",
+                text_color="dark",
             )
 
     @mock.patch("time.sleep", return_value=None)
@@ -1209,10 +1214,10 @@ class TestSubredditFlairTemplates(IntegrationTest):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
                 template["id"],
-                css_class="myCSS",
-                text_color="dark",
                 background_color="#00FFFF",
+                css_class="myCSS",
                 fetch=True,
+                text_color="dark",
             )
 
     @mock.patch("time.sleep", return_value=None)
@@ -1222,9 +1227,9 @@ class TestSubredditFlairTemplates(IntegrationTest):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
                 template["id"],
-                text_color="dark",
                 background_color="#00FFFF",
                 fetch=True,
+                text_color="dark",
             )
 
     @mock.patch("time.sleep", return_value=None)
@@ -1247,10 +1252,10 @@ class TestSubredditFlairTemplates(IntegrationTest):
         with self.use_cassette():
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
-                template["id"], text_editable=True, fetch=True
+                template["id"], fetch=True, text_editable=True
             )
             self.subreddit.flair.templates.update(
-                template["id"], text_editable=False, fetch=True
+                template["id"], fetch=True, text_editable=False
             )
             newtemplate = list(
                 filter(
@@ -1288,6 +1293,16 @@ class TestSubredditLinkFlairTemplates(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             self.subreddit.flair.link_templates.clear()
+
+    def test_user_selectable(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            templates = list(self.subreddit.flair.link_templates.user_selectable())
+        assert len(templates) >= 2
+
+        for template in templates:
+            assert template["flair_template_id"]
+            assert template["flair_text"]
 
 
 class TestSubredditListings(IntegrationTest):
@@ -1578,36 +1593,40 @@ class TestSubredditModmail(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_conversations(self, _):
         self.reddit.read_only = False
-        conversations = self.reddit.subreddit("all").modmail.conversations()
         with self.use_cassette():
+            conversations = self.reddit.subreddit("all").modmail.conversations()
             for conversation in conversations:
                 assert isinstance(conversation, ModmailConversation)
                 assert isinstance(conversation.authors[0], Redditor)
 
     @mock.patch("time.sleep", return_value=None)
-    def test_conversations__params(self, _):
-        self.reddit.read_only = False
-        conversations = self.reddit.subreddit("all").modmail.conversations(state="mod")
-        with self.use_cassette():
-            for conversation in conversations:
-                assert conversation.is_internal
-
-    @mock.patch("time.sleep", return_value=None)
     def test_conversations__other_subreddits(self, _):
         self.reddit.read_only = False
-        subreddit = self.reddit.subreddit("modmailtestA")
-        conversations = subreddit.modmail.conversations(
-            other_subreddits=["modmailtestB"]
-        )
         with self.use_cassette():
-            assert len(set(conversation.owner for conversation in conversations)) > 1
+            subreddit = self.reddit.subreddit("pics")
+            conversations = subreddit.modmail.conversations(
+                other_subreddits=["LifeProTips"]
+            )
+            assert (
+                len(set(list(conversation.owner for conversation in conversations))) > 1
+            )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_conversations__params(self, _):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            conversations = self.reddit.subreddit("all").modmail.conversations(
+                state="mod"
+            )
+            for conversation in conversations:
+                assert conversation.is_internal
 
     @mock.patch("time.sleep", return_value=None)
     def test_create(self, _):
         self.reddit.read_only = False
         with self.use_cassette():
             conversation = self.subreddit.modmail.create(
-                "Subject", "Body", self.redditor
+                subject="Subject", body="Body", recipient=self.redditor
             )
         assert isinstance(conversation, ModmailConversation)
 
@@ -1880,7 +1899,7 @@ class TestSubredditModerationStreams(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             generator = self.reddit.subreddit("mod").mod.stream.modmail_conversations()
-            for i in range(10):
+            for i in range(101):
                 assert isinstance(next(generator), ModmailConversation)
 
     @mock.patch("time.sleep", return_value=None)
@@ -1990,7 +2009,7 @@ class TestSubredditStylesheet(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             response = self.subreddit.stylesheet.upload(
-                "praw", self.image_path("white-square.png")
+                name="praw", image_path=self.image_path("white-square.png")
             )
         assert response["img_src"].endswith(".png")
 
@@ -1998,7 +2017,9 @@ class TestSubredditStylesheet(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             with pytest.raises(RedditAPIException) as excinfo:
-                self.subreddit.stylesheet.upload("praw", self.image_path("invalid.jpg"))
+                self.subreddit.stylesheet.upload(
+                    name="praw", image_path=self.image_path("invalid.jpg")
+                )
         assert excinfo.value.items[0].error_type == "IMAGE_ERROR"
 
     def test_upload__invalid_ext(self):
@@ -2006,7 +2027,7 @@ class TestSubredditStylesheet(IntegrationTest):
         with self.use_cassette():
             with pytest.raises(RedditAPIException) as excinfo:
                 self.subreddit.stylesheet.upload(
-                    "praw.png", self.image_path("white-square.png")
+                    name="praw.png", image_path=self.image_path("white-square.png")
                 )
         assert excinfo.value.items[0].error_type == "BAD_CSS_NAME"
 
@@ -2015,7 +2036,7 @@ class TestSubredditStylesheet(IntegrationTest):
         with self.use_cassette():
             with pytest.raises(TooLarge):
                 self.subreddit.stylesheet.upload(
-                    "praw", self.image_path("too_large.jpg")
+                    name="praw", image_path=self.image_path("too_large.jpg")
                 )
 
     @mock.patch("time.sleep", return_value=None)
@@ -2157,7 +2178,7 @@ class TestSubredditWiki(IntegrationTest):
 
         with self.use_cassette():
             wikipage = subreddit.wiki.create(
-                "PRAW New Page", "This is the new wiki page"
+                name="PRAW New Page", content="This is the new wiki page"
             )
             assert wikipage.name == "praw_new_page"
             assert wikipage.content_md == "This is the new wiki page"

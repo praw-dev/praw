@@ -8,6 +8,7 @@ The Reddit Instance
     :maxdepth: 2
     :caption: Helper Classes
 
+    reddit/drafts
     reddit/front
     reddit/inbox
     reddit/live

@@ -26,7 +26,7 @@ features as PRAW.
 
     By default, PRAW will check to see if it is in an asynchronous environment every
     time a network request is made. To disable this check, set the ``check_for_async``
-    configuration option to ``false``. For example:
+    configuration option to ``False``. For example:
 
     .. code-block:: python
 
@@ -53,14 +53,14 @@ Multiple Threads
 
 In a nutshell, instances of :class:`.Reddit` are not thread-safe for a number of reasons
 in its own code and each instance depends on an instance of ``requests.Session``, which
-is not thread-safe [`ref <https://github.com/kennethreitz/requests/issues/2766>`_].
+is not thread-safe [`ref <https://github.com/psf/requests/issues/2766>`_].
 
 In theory, having a unique :class:`.Reddit` instance for each thread, and making sure
 that the instances are used in their respective threads only, will work.
-:class:`multiprocessing.Process` has been confirmed to work with PRAW, so that is a
+:py:class:`~multiprocessing.Process` has been confirmed to work with PRAW, so that is a
 viable choice as well. However, there are various errors with
-:class:`multiprocessing.pool.Pool`, thus it is not supported by PRAW. Please use
-``multiprocessing.pool.ThreadPool`` as an alternative to a process pool.
+:py:class:`~multiprocessing.pool.Pool`, thus it is not supported by PRAW. Please use
+:py:class:`~multiprocessing.pool.ThreadPool` as an alternative to a process pool.
 
 Please see `this discussion
 <https://www.reddit.com/r/redditdev/comments/5uwxke/praw4_is_praw4_thread_safe/>`_ and

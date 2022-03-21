@@ -6,7 +6,7 @@ tasks including providing useful information, e.g., an Imperial to Metric units 
 convenience, e.g., a link corrector bot; or analytical information, e.g., redditor
 analyzer bot for writing complexity.
 
-PRAW provides a simple way to build your own bot using the python programming language.
+PRAW provides a simple way to build your own bot using the Python programming language.
 As a result, it is little surprise that a majority of bots on Reddit are powered by
 PRAW.
 
@@ -54,11 +54,11 @@ an instance of :class:`.Reddit`:
     import praw
 
     reddit = praw.Reddit(
-        user_agent="LMGTFY (by u/USERNAME)",
         client_id="CLIENT_ID",
         client_secret="CLIENT_SECRET",
-        username="USERNAME",
         password="PASSWORD",
+        user_agent="LMGTFY (by u/USERNAME)",
+        username="USERNAME",
     )
 
 In addition to the OAuth2 credentials, the username and password of the Reddit account
@@ -83,10 +83,12 @@ indefinitely iterate over new submissions to a subreddit add:
         # do something with submission
         ...
 
-Replace ``AskReddit`` with the name of another subreddit if you want to iterate through
-its new submissions. Additionally multiple subreddits can be specified by joining them
-with pluses, for example ``AskReddit+NoStupidQuestions``. All subreddits can be
-specified using the special name ``all``.
+Replace ``"AskReddit"`` with the name of another subreddit if you want to iterate
+through its new submissions. Additionally, multiple subreddits can be specified by
+joining them with pluses (``+``), for example ``"AskReddit+NoStupidQuestions"``. All
+subreddits can be specified using the special name ``"all"``. Subreddits can be excluded
+from the special ``"all"`` subreddit by joining them with minuses (``-``), for example
+``"all-excluded_subreddit1-excluded_subreddit2"``.
 
 Step 3: Analyzing the Submission Titles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,7 +97,7 @@ Now that we have a stream of new submissions to r/AskReddit, it is time to see i
 titles contain a simple question. We naïvely define a simple question as:
 
 1. It must contain no more than ten words.
-2. It must contain one of the phrases "what is", "what are", or "who is".
+2. It must contain one of the phrases ``"what is"``, ``"what are"``, or ``"who is"``.
 
 .. warning::
 
@@ -127,25 +129,25 @@ means only lower-case.
 
 The ``break`` at the end prevents us from matching more than once on a single
 submission. For instance, what would happen without the ``break`` if a submission's
-title was "Who is or what are buffalo?"
+title was "Who is or what are buffalo?"?
 
 Step 4: Automatically Replying to the Submission
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The LMGTFY Bot is nearly complete. We iterate through submissions, and find ones that
+The LMGTFY Bot is nearly complete. We iterate through submissions and find ones that
 appear to be simple questions. All that is remaining is to reply to those submissions
 with an appropriate lmgtfy_ link.
 
-First we will need to construct a working lmgtfy_ link. In essence we want to pass the
+First we will need to construct a working lmgtfy_ link. In essence, we want to pass the
 entire submission title to lmgtfy_. However, there are certain characters that are not
-permitted in URLs or have other meanings. For instance, the space character, " ", is not
-permitted, and the question mark, "?", has a special meaning. Thus we will transform
-those into their URL-safe representation so that a question like "What is the capital of
-Canada?" is transformed into the link
+permitted in URLs or have other meanings. For instance, the space character, `` ``, is
+not permitted, and the question mark, ``?``, has a special meaning. Thus we will
+transform those into their URL-safe representation so that a question like "What is the
+capital of Canada?" is transformed into the link
 ``https://lmgtfy.com/?q=What+is+the+capital+of+Canada%3F``.
 
-There are a number of ways we could accomplish this task. For starters we could write a
-function to replace spaces with pluses, ``+``, and question marks with ``%3F``. However,
+There are a number of ways we could accomplish this task. For starters, we could write a
+function to replace spaces with pluses (``+``) and question marks with ``%3F``. However,
 there is even an easier way; using an existing built-in function to do so.
 
 Add the following code where the "do something with a matched submission" comment is
@@ -178,13 +180,13 @@ continue to do so in this fashion our code would be quite unreadable. Let's clea
 some.
 
 The first thing we should do is put all of our import statements at the top of the file.
-It is common to list built-in packages before third party ones:
+It is common to list built-in packages before third-party ones:
 
 .. include:: ../examples/lmgtfy_bot.py
     :code: python
     :end-line: 3
 
-Next we extract a few constants that are used in our script:
+Next, we extract a few constants that are used in our script:
 
 .. include:: ../examples/lmgtfy_bot.py
     :code: python
@@ -199,9 +201,9 @@ its own function:
     :start-line: 18
     :end-line: 33
 
-Observe that we added some comments and a ``print`` call. The ``print`` addition informs
-us every time we are about to reply to a submission, which is useful to ensure the
-script is running.
+Observe that we added some comments and a :py:func:`print` call. The :py:func:`print`
+addition informs us every time we are about to reply to a submission, which is useful to
+ensure the script is running.
 
 Next, it is a good practice to not have any top-level executable code in case you want
 to turn your Python script into a Python module, i.e., import it from another Python
@@ -213,7 +215,7 @@ function:
     :start-line: 8
     :end-line: 16
 
-Finally we need to call ``main`` only in the cases that this script is the one being
+Finally, we need to call ``main`` only in the cases that this script is the one being
 executed:
 
 .. include:: ../examples/lmgtfy_bot.py

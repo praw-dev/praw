@@ -17,7 +17,7 @@ class GildedListingMixin(PRAWBase):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        For example, to get gilded items in subreddit ``r/test``:
+        For example, to get gilded items in r/test:
 
         .. code-block:: python
 

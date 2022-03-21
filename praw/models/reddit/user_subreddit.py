@@ -1,4 +1,4 @@
-"""Provide the UserSubreddit class."""
+"""Provide the :class:`.UserSubreddit` class."""
 import inspect
 from typing import TYPE_CHECKING, Dict, Union
 from warnings import warn
@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class UserSubreddit(Subreddit):
-    """A class for User Subreddits.
+    """A class for :class:`.User` Subreddits.
 
     To obtain an instance of this class execute:
 
@@ -19,12 +19,7 @@ class UserSubreddit(Subreddit):
 
         subreddit = reddit.user.me().subreddit
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ========================= ==========================================================
     Attribute                 Description
@@ -55,13 +50,13 @@ class UserSubreddit(Subreddit):
     """
 
     def __init__(self, reddit: "praw.Reddit", *args, **kwargs):
-        """Initialize a UserSubreddit instance.
+        """Initialize an :class:`.UserSubreddit` instance.
 
-        :param reddit: An instance of :class:`~.Reddit`.
+        :param reddit: An instance of :class:`.Reddit`.
 
         .. note::
 
-            This class should not be initialized directly. Instead obtain an instance
+            This class should not be initialized directly. Instead, obtain an instance
             via: ``reddit.user.me().subreddit`` or
             ``reddit.redditor("redditor_name").subreddit``.
 
@@ -122,9 +117,9 @@ class UserSubreddit(Subreddit):
 
 
 class UserSubredditModeration(SubredditModeration):
-    """Provides a set of moderation functions to a UserSubreddit.
+    """Provides a set of moderation functions to a :class:`.UserSubreddit`.
 
-    For example, to accept a moderation invite from subreddit ``r/test``:
+    For example, to accept a moderation invite from the user subreddit of u/spez:
 
     .. code-block:: python
 
@@ -135,7 +130,7 @@ class UserSubredditModeration(SubredditModeration):
     def update(
         self, **settings: Union[str, int, bool]
     ) -> Dict[str, Union[str, int, bool]]:
-        """Update the subreddit's settings.
+        """Update the :class:`.Subreddit`'s settings.
 
         :param all_original_content: Mandate all submissions to be original content
             only.
@@ -145,8 +140,8 @@ class UserSubredditModeration(SubredditModeration):
         :param allow_polls: Allow users to post polls to the subreddit.
         :param allow_post_crossposts: Allow users to crosspost submissions from other
             subreddits.
-        :param allow_top: Allow the subreddit to appear on ``r/all`` as well as the
-            default and trending lists.
+        :param allow_top: Allow the subreddit to appear on r/all as well as the default
+            and trending lists.
         :param allow_videos: Allow users to upload videos using the native image
             hosting.
         :param collapse_deleted_comments: Collapse deleted and removed comments on
@@ -167,14 +162,14 @@ class UserSubredditModeration(SubredditModeration):
         :param header_hover_text: The text seen when hovering over the snoo.
         :param hide_ads: Don't show ads within this subreddit. Only applies to
             Premium-user only subreddits.
-        :param key_color: A 6-digit rgb hex color (e.g. ``"#AABBCC"``), used as a
+        :param key_color: A 6-digit rgb hex color (e.g., ``"#AABBCC"``), used as a
             thematic color for your subreddit on mobile.
         :param lang: A valid IETF language tag (underscore separated).
-        :param link_type: The types of submissions users can make. One of ``any``,
-            ``link``, ``self``.
+        :param link_type: The types of submissions users can make. One of ``"any"``,
+            ``"link"``, or ``"self"``.
         :param original_content_tag_enabled: Enables the use of the ``original content``
             label for submissions.
-        :param over_18: Viewers must be over 18 years old (i.e. NSFW).
+        :param over_18: Viewers must be over 18 years old (i.e., NSFW).
         :param public_description: Public description blurb. Appears in search results
             and on the landing page for private subreddits.
         :param public_traffic: Make the traffic stats page public.
@@ -184,22 +179,23 @@ class UserSubredditModeration(SubredditModeration):
             submit posts.
         :param show_media: Show thumbnails on submissions.
         :param show_media_preview: Expand media previews on comments pages.
-        :param spam_comments: Spam filter strength for comments. One of ``all``,
-            ``low``, ``high``.
-        :param spam_links: Spam filter strength for links. One of ``all``, ``low``,
-            ``high``.
-        :param spam_selfposts: Spam filter strength for selfposts. One of ``all``,
-            ``low``, ``high``.
+        :param spam_comments: Spam filter strength for comments. One of ``"all"``,
+            ``"low"``, or ``"high"``.
+        :param spam_links: Spam filter strength for links. One of ``"all"``, ``"low"``,
+            or ``"high"``.
+        :param spam_selfposts: Spam filter strength for selfposts. One of ``"all"``,
+            ``"low"``, or ``"high"``.
         :param spoilers_enabled: Enable marking posts as containing spoilers.
         :param submit_link_label: Custom label for submit link button (None for
             default).
         :param submit_text: Text to show on submission page.
         :param submit_text_label: Custom label for submit text post button (None for
             default).
-        :param subreddit_type: The string ``user``.
+        :param subreddit_type: The string ``"user"``.
         :param suggested_comment_sort: All comment threads will use this sorting method
-            by default. Leave None, or choose one of ``confidence``, ``controversial``,
-            ``live``, ``new``, ``old``, ``qa``, ``random``, ``top``.
+            by default. Leave ``None``, or choose one of ``confidence``,
+            ``"controversial"``, ``"live"``, ``"new"``, ``"old"``, ``"qa"``,
+            ``"random"``, or ``"top"``.
         :param title: The title of the subreddit.
         :param welcome_message_enabled: Enables the subreddit welcome message.
         :param welcome_message_text: The text to be used as a welcome message. A welcome
@@ -207,7 +203,7 @@ class UserSubredditModeration(SubredditModeration):
         :param wiki_edit_age: Account age, in days, required to edit and create wiki
             pages.
         :param wiki_edit_karma: Subreddit karma required to edit and create wiki pages.
-        :param wikimode: One of ``anyone``, ``disabled``, ``modonly``.
+        :param wikimode: One of ``"anyone"``, ``"disabled"``, or ``"modonly"``.
 
         Additional keyword arguments can be provided to handle new settings as Reddit
         introduces them.

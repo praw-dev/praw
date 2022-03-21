@@ -4,7 +4,7 @@ from unittest import mock
 
 import pytest
 
-from praw.exceptions import ClientException
+from praw.exceptions import ClientException, RedditAPIException
 from praw.models import Submission
 
 from ... import IntegrationTest
@@ -64,6 +64,7 @@ class TestCollection(IntegrationTest):
 
 class TestCollectionModeration(IntegrationTest):
     NONEMPTY_REAL_UUID = "847e4548-a3b5-4ad7-afb4-edbfc2ed0a6b"
+    UPDATE_LAYOUT_UUID = "accd53cf-6f76-49fd-8ca5-5ad2036b4693"
 
     @property
     def subreddit(self):
@@ -84,7 +85,7 @@ class TestCollectionModeration(IntegrationTest):
             collection.mod.add_post(posts[3].id)  # id
 
             posts.append(
-                self.subreddit.submit("Post #4", selftext="", collection_id=uuid)
+                self.subreddit.submit("Post #4", collection_id=uuid, selftext="")
             )
 
             with pytest.raises(TypeError):
@@ -100,7 +101,9 @@ class TestCollectionModeration(IntegrationTest):
     def test_delete(self, _):
         self.reddit.read_only = False
         with self.use_cassette():
-            collection = self.subreddit.collections.mod.create("Title", "")
+            collection = self.subreddit.collections.mod.create(
+                title="Title", description=""
+            )
             collection.mod.delete()
 
     @mock.patch("time.sleep", return_value=None)
@@ -108,7 +111,7 @@ class TestCollectionModeration(IntegrationTest):
         self.reddit.read_only = False
         uuid = self.NONEMPTY_REAL_UUID
         with self.use_cassette():
-            post = self.subreddit.submit("The title", selftext="", collection_id=uuid)
+            post = self.subreddit.submit("The title", collection_id=uuid, selftext="")
             collection = self.subreddit.collections(uuid)
             collection.mod.remove_post(post)
 
@@ -137,6 +140,66 @@ class TestCollectionModeration(IntegrationTest):
             collection = self.subreddit.collections(uuid)
             collection.mod.update_description(new_description)
             assert new_description == collection.description
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_display_layout__empty_string(self, _):
+        self.reddit.read_only = False
+        uuid = self.UPDATE_LAYOUT_UUID
+        empty_string = ""
+        with self.use_cassette():
+            collection = self.subreddit.collections(uuid)
+            collection.mod.update_display_layout(empty_string)
+            assert empty_string != collection.display_layout
+            assert collection.display_layout is None
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_display_layout__gallery(self, _):
+        self.reddit.read_only = False
+        uuid = self.UPDATE_LAYOUT_UUID
+        gallery_layout = "GALLERY"
+        with self.use_cassette():
+            collection = self.subreddit.collections(uuid)
+            collection.mod.update_display_layout(gallery_layout)
+            assert gallery_layout == collection.display_layout
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_display_layout__invalid_layout(self, _):
+        self.reddit.read_only = False
+        uuid = self.UPDATE_LAYOUT_UUID
+        invalid_layout = "colossal atom cake"
+        with self.use_cassette():
+            collection = self.subreddit.collections(uuid)
+            with pytest.raises(RedditAPIException):
+                collection.mod.update_display_layout(invalid_layout)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_display_layout__lowercase(self, _):
+        self.reddit.read_only = False
+        uuid = self.UPDATE_LAYOUT_UUID
+        lowercase_gallery_layout = "gallery"
+        with self.use_cassette():
+            collection = self.subreddit.collections(uuid)
+            with pytest.raises(RedditAPIException):
+                collection.mod.update_display_layout(lowercase_gallery_layout)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_display_layout__none(self, _):
+        self.reddit.read_only = False
+        uuid = self.UPDATE_LAYOUT_UUID
+        with self.use_cassette():
+            collection = self.subreddit.collections(uuid)
+            collection.mod.update_display_layout(None)
+            assert collection.display_layout is None
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_display_layout__timeline(self, _):
+        self.reddit.read_only = False
+        uuid = self.UPDATE_LAYOUT_UUID
+        timeline_layout = "TIMELINE"
+        with self.use_cassette():
+            collection = self.subreddit.collections(uuid)
+            collection.mod.update_display_layout(timeline_layout)
+            assert timeline_layout == collection.display_layout
 
     @mock.patch("time.sleep", return_value=None)
     def test_update_title(self, _):
@@ -186,7 +249,93 @@ class TestSubredditCollectionsModeration(IntegrationTest):
         description = "The description."
         self.reddit.read_only = False
         with self.use_cassette():
-            collection = self.subreddit.collections.mod.create(title, description)
+            collection = self.subreddit.collections.mod.create(
+                title=title, description=description
+            )
             assert collection.title == title
             assert collection.description == description
+            assert len(collection) == 0
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_create__empty_layout(self, _):
+        title = "The title!"
+        description = "The description."
+        layout = ""
+        self.reddit.read_only = False
+        with self.use_cassette():
+            collection = self.subreddit.collections.mod.create(
+                title=title, description=description, display_layout=layout
+            )
+            assert collection.title == title
+            assert collection.description == description
+            assert collection.display_layout is None
+            assert len(collection) == 0
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_create__gallery_layout(self, _):
+        title = "The title!"
+        description = "The description."
+        layout = "GALLERY"
+        self.reddit.read_only = False
+        with self.use_cassette():
+            collection = self.subreddit.collections.mod.create(
+                title=title, description=description, display_layout=layout
+            )
+            assert collection.title == title
+            assert collection.description == description
+            assert collection.display_layout == layout
+            assert len(collection) == 0
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_create__invalid_layout(self, _):
+        title = "The title!"
+        description = "The description."
+        layout = "milk before cereal"
+        self.reddit.read_only = False
+        with self.use_cassette():
+            with pytest.raises(RedditAPIException):
+                self.subreddit.collections.mod.create(
+                    title=title, description=description, display_layout=layout
+                )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_create__lowercase_layout(self, _):
+        title = "The title!"
+        description = "The description."
+        layout = "gallery"
+        self.reddit.read_only = False
+        with self.use_cassette():
+            with pytest.raises(RedditAPIException):
+                self.subreddit.collections.mod.create(
+                    title=title, description=description, display_layout=layout
+                )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_create__none_layout(self, _):
+        title = "The title!"
+        description = "The description."
+        layout = None
+        self.reddit.read_only = False
+        with self.use_cassette():
+            collection = self.subreddit.collections.mod.create(
+                title=title, description=description, display_layout=layout
+            )
+            assert collection.title == title
+            assert collection.description == description
+            assert collection.display_layout is None
+            assert len(collection) == 0
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_create__timeline_layout(self, _):
+        title = "The title!"
+        description = "The description."
+        layout = "TIMELINE"
+        self.reddit.read_only = False
+        with self.use_cassette():
+            collection = self.subreddit.collections.mod.create(
+                title=title, description=description, display_layout=layout
+            )
+            assert collection.title == title
+            assert collection.description == description
+            assert collection.display_layout == layout
             assert len(collection) == 0

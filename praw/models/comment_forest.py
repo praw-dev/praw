@@ -1,8 +1,9 @@
-"""Provide CommentForest for Submission comments."""
+"""Provide CommentForest for submission comments."""
 from heapq import heappop, heappush
 from typing import TYPE_CHECKING, List, Optional, Union
 
 from ..exceptions import DuplicateReplaceException
+from ..util import _deprecate_args
 from .reddit.more import MoreComments
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -17,8 +18,8 @@ class CommentForest:
     """
 
     @staticmethod
-    def _gather_more_comments(tree, parent_tree=None):
-        """Return a list of MoreComments objects obtained from tree."""
+    def _gather_more_comments(tree, *, parent_tree=None):
+        """Return a list of :class:`.MoreComments` objects obtained from tree."""
         more_comments = []
         queue = [(None, x) for x in tree]
         while queue:
@@ -59,11 +60,12 @@ class CommentForest:
         submission: "praw.models.Submission",
         comments: Optional[List["praw.models.Comment"]] = None,
     ):
-        """Initialize a CommentForest instance.
+        """Initialize a :class:`.CommentForest` instance.
 
-        :param submission: An instance of :class:`~.Subreddit` that is the parent of the
+        :param submission: An instance of :class:`.Submission` that is the parent of the
             comments.
-        :param comments: Initialize the Forest with a list of comments (default: None).
+        :param comments: Initialize the forest with a list of comments (default:
+            ``None``).
 
         """
         self._comments = comments
@@ -93,7 +95,7 @@ class CommentForest:
             comment.submission = self._submission
 
     def list(self) -> List[Union["praw.models.Comment", "praw.models.MoreComments"]]:
-        """Return a flattened list of all Comments.
+        """Return a flattened list of all comments.
 
         This list may contain :class:`.MoreComments` instances if :meth:`.replace_more`
         was not called first.
@@ -108,19 +110,20 @@ class CommentForest:
                 queue.extend(comment.replies)
         return comments
 
+    @_deprecate_args("limit", "threshold")
     def replace_more(
-        self, limit: int = 32, threshold: int = 0
+        self, *, limit: int = 32, threshold: int = 0
     ) -> List["praw.models.MoreComments"]:
-        """Update the comment forest by resolving instances of MoreComments.
+        """Update the comment forest by resolving instances of :class:`.MoreComments`.
 
         :param limit: The maximum number of :class:`.MoreComments` instances to replace.
             Each replacement requires 1 API request. Set to ``None`` to have no limit,
             or to ``0`` to remove all :class:`.MoreComments` instances without
-            additional requests (default: 32).
+            additional requests (default: ``32``).
         :param threshold: The minimum number of children comments a
             :class:`.MoreComments` instance must have in order to be replaced.
             :class:`.MoreComments` instances that represent "continue this thread" links
-            unfortunately appear to have 0 children. (default: 0).
+            unfortunately appear to have 0 children (default: ``0``).
 
         :returns: A list of :class:`.MoreComments` instances that were not replaced.
 
@@ -182,7 +185,9 @@ class CommentForest:
                 remaining -= 1
 
             # Add new MoreComment objects to the heap of more_comments
-            for more in self._gather_more_comments(new_comments, self._comments):
+            for more in self._gather_more_comments(
+                new_comments, parent_tree=self._comments
+            ):
                 more.submission = self._submission
                 heappush(more_comments, more)
             # Insert all items into the tree

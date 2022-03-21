@@ -5,7 +5,7 @@ from ..base import PRAWBase
 
 
 class Listing(PRAWBase):
-    """A listing is a collection of RedditBase instances."""
+    """A listing is a collection of :class:`.RedditBase` instances."""
 
     CHILD_ATTRIBUTE = "children"
 
@@ -18,7 +18,7 @@ class Listing(PRAWBase):
         return getattr(self, self.CHILD_ATTRIBUTE)[index]
 
     def __setattr__(self, attribute: str, value: Any):
-        """Objectify the CHILD_ATTRIBUTE attribute."""
+        """Objectify the ``CHILD_ATTRIBUTE`` attribute."""
         if attribute == self.CHILD_ATTRIBUTE:
             value = self._reddit._objector.objectify(value)
         super().__setattr__(attribute, value)
@@ -31,7 +31,7 @@ class FlairListing(Listing):
 
     @property
     def after(self) -> Optional[Any]:
-        """Return the next attribute or None."""
+        """Return the next attribute or ``None``."""
         return getattr(self, "next", None)
 
 
@@ -39,3 +39,17 @@ class ModeratorListing(Listing):
     """Special Listing for handling moderator lists."""
 
     CHILD_ATTRIBUTE = "moderators"
+
+
+class ModmailConversationsListing(Listing):
+    """Special Listing for handling :class:`.ModmailConversation` lists."""
+
+    CHILD_ATTRIBUTE = "conversations"
+
+    @property
+    def after(self) -> Optional[str]:
+        """Return the next attribute or ``None``."""
+        try:
+            return self.conversations[-1].id
+        except IndexError:
+            return None

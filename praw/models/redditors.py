@@ -15,18 +15,18 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class PartialRedditor(SimpleNamespace):
-    """A namespace object that provides a subset of Redditor attributes."""
+    """A namespace object that provides a subset of :class:`.Redditor` attributes."""
 
 
 class Redditors(PRAWBase):
-    """Redditors is a Listing class that provides various Redditor lists."""
+    """Redditors is a Listing class that provides various :class:`.Redditor` lists."""
 
     def new(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
     ) -> Iterator["praw.models.Subreddit"]:
-        """Return a :class:`.ListingGenerator` for new Redditors.
+        """Return a :class:`.ListingGenerator` for new :class:`.Redditors`.
 
-        :returns: Redditor profiles, which are a type of :class:`.Subreddit`.
+        :returns: :class:`.Redditor` profiles, which are a type of :class:`.Subreddit`.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -37,9 +37,9 @@ class Redditors(PRAWBase):
     def popular(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
     ) -> Iterator["praw.models.Subreddit"]:
-        """Return a :class:`.ListingGenerator` for popular Redditors.
+        """Return a :class:`.ListingGenerator` for popular :class:`.Redditors`.
 
-        :returns: Redditor profiles, which are a type of :class:`.Subreddit`.
+        :returns: :class:`.Redditor` profiles, which are a type of :class:`.Subreddit`.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -62,7 +62,7 @@ class Redditors(PRAWBase):
         :class:`.ListingGenerator`.
 
         """
-        self._safely_add_arguments(generator_kwargs, "params", q=query)
+        self._safely_add_arguments(arguments=generator_kwargs, key="params", q=query)
         return ListingGenerator(
             self._reddit, API_PATH["users_search"], **generator_kwargs
         )
@@ -77,7 +77,7 @@ class Redditors(PRAWBase):
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
-        :returns: Redditor profiles, which are a type of :class:`.Subreddit`.
+        :returns: :class:`.Redditor` profiles, which are a type of :class:`.Subreddit`.
 
         """
         return stream_generator(self.new, **stream_options)
@@ -87,7 +87,7 @@ class Redditors(PRAWBase):
 
         :param ids: An iterable of redditor fullname IDs.
 
-        :returns: A iterator producing types.SimpleNamespace objects.
+        :returns: A iterator producing :class:`.PartialRedditor` objects.
 
         Each ID must be prefixed with ``t2_``.
 

@@ -68,7 +68,7 @@ class TestFileTokenManager(UnitTest):
 
 class TestSQLiteTokenManager(UnitTest):
     def test_is_registered(self):
-        manager = SQLiteTokenManager(":memory:", "dummy_key")
+        manager = SQLiteTokenManager(database=":memory:", key="dummy_key")
         assert not manager.is_registered()
 
     @pytest.mark.skipif(
@@ -76,9 +76,9 @@ class TestSQLiteTokenManager(UnitTest):
     )
     def test_multiple_instances(self):
         with NamedTemporaryFile() as fp:
-            manager1 = SQLiteTokenManager(fp.name, "dummy_key1")
-            manager2 = SQLiteTokenManager(fp.name, "dummy_key1")
-            manager3 = SQLiteTokenManager(fp.name, "dummy_key2")
+            manager1 = SQLiteTokenManager(database=fp.name, key="dummy_key1")
+            manager2 = SQLiteTokenManager(database=fp.name, key="dummy_key1")
+            manager3 = SQLiteTokenManager(database=fp.name, key="dummy_key2")
 
             manager1.register("dummy_value1")
             assert manager2.is_registered()
@@ -86,7 +86,7 @@ class TestSQLiteTokenManager(UnitTest):
 
     def test_post_refresh_token_callback__sets_value(self):
         authorizer = DummyAuthorizer("dummy_value")
-        manager = SQLiteTokenManager(":memory:", "dummy_key")
+        manager = SQLiteTokenManager(database=":memory:", key="dummy_key")
 
         manager.post_refresh_callback(authorizer)
         assert authorizer.refresh_token is None
@@ -94,7 +94,7 @@ class TestSQLiteTokenManager(UnitTest):
 
     def test_post_refresh_token_callback__updates_value(self):
         authorizer = DummyAuthorizer("dummy_value_updated")
-        manager = SQLiteTokenManager(":memory:", "dummy_key")
+        manager = SQLiteTokenManager(database=":memory:", key="dummy_key")
         manager.register("dummy_value")
 
         manager.post_refresh_callback(authorizer)
@@ -103,7 +103,7 @@ class TestSQLiteTokenManager(UnitTest):
 
     def test_pre_refresh_token_callback(self):
         authorizer = DummyAuthorizer(None)
-        manager = SQLiteTokenManager(":memory:", "dummy_key")
+        manager = SQLiteTokenManager(database=":memory:", key="dummy_key")
         manager.register("dummy_value")
 
         manager.pre_refresh_callback(authorizer)
@@ -111,13 +111,13 @@ class TestSQLiteTokenManager(UnitTest):
 
     def test_pre_refresh_token_callback__raises_key_error(self):
         authorizer = DummyAuthorizer(None)
-        manager = SQLiteTokenManager(":memory:", "dummy_key")
+        manager = SQLiteTokenManager(database=":memory:", key="dummy_key")
 
         with pytest.raises(KeyError):
             manager.pre_refresh_callback(authorizer)
 
     def test_register(self):
-        manager = SQLiteTokenManager(":memory:", "dummy_key")
+        manager = SQLiteTokenManager(database=":memory:", key="dummy_key")
         assert manager.register("dummy_value")
         assert manager.is_registered()
         assert not manager.register("dummy_value2")

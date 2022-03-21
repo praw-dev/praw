@@ -1,5 +1,5 @@
 """Provides the Objector class."""
-
+from datetime import datetime
 from json import loads
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
@@ -22,7 +22,7 @@ class Objector:
 
         :param data: The dict to be converted.
 
-        :returns: An instance of :class:`~.RedditAPIException`, or ``None`` if ``data``
+        :returns: An instance of :class:`.RedditAPIException`, or ``None`` if ``data``
             doesn't fit this model.
 
         """
@@ -47,24 +47,60 @@ class Objector:
             raise error
 
     def __init__(self, reddit: "praw.Reddit", parsers: Optional[Dict[str, Any]] = None):
-        """Initialize an Objector instance.
+        """Initialize an :class:`.Objector` instance.
 
-        :param reddit: An instance of :class:`~.Reddit`.
+        :param reddit: An instance of :class:`.Reddit`.
 
         """
         self.parsers = {} if parsers is None else parsers
         self._reddit = reddit
 
     def _objectify_dict(self, data):
-        """Create RedditBase objects from dicts.
+        """Create :class:`.RedditBase` objects from dicts.
 
         :param data: The structured data, assumed to be a dict.
 
-        :returns: An instance of :class:`~.RedditBase`.
+        :returns: An instance of :class:`.RedditBase`.
 
         """
-        if {"conversation", "messages", "modActions"}.issubset(data):
+        if {"messages", "modActions"}.issubset(data) and {
+            "conversations",
+            "conversation",
+        }.intersection(data):
+            data.update(
+                data.pop("conversation")
+                if "conversation" in data
+                else data.pop("conversations")
+            )
+            parser: "praw.models.ModmailConversation" = self.parsers[
+                "ModmailConversation"
+            ]
+            parser._convert_conversation_objects(data, self._reddit)
+        elif {"messages", "modActions"}.issubset(data):
             parser = self.parsers["ModmailConversation"]
+        elif {"conversationIds", "conversations", "messages"}.issubset(data):
+            conversations = []
+            temp_data = {
+                thing_type: data.pop(thing_type, {})
+                for thing_type in ["messages", "modActions"]
+            }
+            for conversation_id in data["conversationIds"]:
+                conversation_data = {
+                    **data["conversations"][conversation_id],
+                    "messages": [],
+                    "modActions": [],
+                }
+                for object_id in conversation_data["objIds"]:
+                    conversation_data[object_id["key"]].append(
+                        self._objectify_dict(
+                            temp_data[object_id["key"]].pop(object_id["id"])
+                        )
+                    )
+                conversations.append(conversation_data)
+            data["conversations"] = conversations
+            del temp_data
+            data = snake_case_keys(data)
+            parser = self.parsers["ModmailConversations-list"]
         elif {"actionTypeId", "author", "date"}.issubset(data):
             # Modmail mod action
             data = snake_case_keys(data)
@@ -134,6 +170,22 @@ class Objector:
         elif {"mod_permissions", "name", "sr", "subscribers"}.issubset(data):
             data["display_name"] = data["sr"]
             parser = self.parsers[self._reddit.config.kinds["subreddit"]]
+        elif {"drafts", "subreddits"}.issubset(data):  # Draft list
+            subreddit_parser = self.parsers[self._reddit.config.kinds["subreddit"]]
+            user_subreddit_parser = self.parsers["UserSubreddit"]
+            subreddits = {
+                subreddit["name"]: user_subreddit_parser.parse(subreddit, self._reddit)
+                if subreddit["display_name_prefixed"].startswith("u/")
+                else subreddit_parser.parse(subreddit, self._reddit)
+                for subreddit in data.pop("subreddits")
+            }
+            for draft in data["drafts"]:
+                if draft["subreddit"]:
+                    draft["subreddit"] = subreddits[draft["subreddit"]]
+                draft["modified"] = datetime.fromtimestamp(
+                    draft["modified"] / 1000
+                ).astimezone()
+            parser = self.parsers["DraftList"]
         else:
             if "user" in data:
                 parser = self.parsers[self._reddit.config.kinds["redditor"]]
@@ -144,11 +196,11 @@ class Objector:
     def objectify(
         self, data: Optional[Union[Dict[str, Any], List[Any], bool]]
     ) -> Optional[Union[RedditBase, Dict[str, Any], List[Any], bool]]:
-        """Create RedditBase objects from data.
+        """Create :class:`.RedditBase` objects from data.
 
         :param data: The structured data.
 
-        :returns: An instance of :class:`~.RedditBase`, or ``None`` if given ``data`` is
+        :returns: An instance of :class:`.RedditBase`, or ``None`` if given ``data`` is
             ``None``.
 
         """
@@ -182,6 +234,11 @@ class Objector:
                 return self.objectify(data["json"]["data"]["things"])
             if "rules" in data["json"]["data"]:
                 return self.objectify(loads(data["json"]["data"]["rules"]))
+            if "drafts_count" in data["json"]["data"] and all(
+                [key not in data["json"]["data"] for key in ["name", "url"]]
+            ):  # Draft
+                data["json"]["data"].pop("drafts_count")
+                return self.parsers["Draft"].parse(data["json"]["data"], self._reddit)
             if "url" in data["json"]["data"]:  # Subreddit.submit
                 # The URL is the URL to the submission, so it's removed.
                 del data["json"]["data"]["url"]
@@ -197,6 +254,9 @@ class Objector:
             else:
                 parser = self.parsers["LiveUpdateEvent"]
             return parser.parse(data["json"]["data"], self._reddit)
+        if {"is_public_link", "title", "body"}.issubset(data):
+            parser = self.parsers["Draft"]
+            return parser.parse(data, self._reddit)
         if "rules" in data:
             return self.objectify(data["rules"])
         elif isinstance(data, dict):

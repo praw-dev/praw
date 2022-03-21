@@ -2,19 +2,25 @@
 from warnings import warn
 
 from ....const import API_PATH
+from ....util import _deprecate_args
 
 
 class GildableMixin:
     """Interface for classes that can be gilded."""
 
+    @_deprecate_args("gild_type", "is_anonymous", "message")
     def award(
-        self, gild_type: str = "gid_2", is_anonymous: bool = True, message: str = None
+        self,
+        *,
+        gild_type: str = "gid_2",
+        is_anonymous: bool = True,
+        message: str = None
     ) -> dict:
         """Award the author of the item.
 
         :param gild_type: Type of award to give. See table below for currently know
             global award types.
-        :param is_anonymous: If True, the authenticated user's username will not be
+        :param is_anonymous: If ``True``, the authenticated user's username will not be
             revealed to the recipient.
         :param message: Message to include with the award.
 
@@ -63,8 +69,10 @@ class GildableMixin:
                 }
 
 
-        Requires the authenticated user to own Reddit Coins. Calling this method will
-        consume Reddit Coins.
+        .. warning::
+
+            Requires the authenticated user to own Reddit Coins. Calling this method
+            will consume Reddit Coins.
 
         To award the gold award anonymously do:
 

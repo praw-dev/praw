@@ -10,6 +10,8 @@ All other exceptions are subclassed from :class:`.ClientException`.
 from typing import List, Optional, Union
 from warnings import warn
 
+from .util import _deprecate_args
+
 
 class PRAWException(Exception):
     """The base PRAW Exception that all other exception classes extend."""
@@ -28,17 +30,19 @@ class RedditErrorItem:
             error_str += f" on field {self.field!r}"
         return error_str
 
+    @_deprecate_args("error_type", "message", "field")
     def __init__(
         self,
         error_type: str,
-        message: Optional[str] = None,
+        *,
         field: Optional[str] = None,
+        message: Optional[str] = None,
     ):
-        """Initialize an error item.
+        """Initialize a :class:`.RedditErrorItem` instance.
 
         :param error_type: The error type set on Reddit's end.
-        :param message: The associated message for the error.
         :param field: The input field associated with the error, if available.
+        :param message: The associated message for the error.
 
         """
         self.error_type = error_type
@@ -55,8 +59,8 @@ class RedditErrorItem:
             )
         return super().__eq__(other)
 
-    def __repr__(self):
-        """Return repr(self)."""
+    def __repr__(self) -> str:
+        """Return an object initialization representation of the instance."""
         return (
             f"{self.__class__.__name__}(error_type={self.error_type!r},"
             f" message={self.message!r}, field={self.field!r})"
@@ -84,9 +88,9 @@ class APIException(PRAWException):
             exception
             if isinstance(exception, RedditErrorItem)
             else RedditErrorItem(
-                exception[0],
-                exception[1] if bool(exception[1]) else "",
-                exception[2] if bool(exception[2]) else "",
+                error_type=exception[0],
+                field=exception[2] if bool(exception[2]) else "",
+                message=exception[1] if bool(exception[1]) else "",
             )
             for exception in exceptions
         ]
@@ -149,7 +153,7 @@ class APIException(PRAWException):
         items: Union[List[Union[RedditErrorItem, List[str], str]], str],
         *optional_args: str,
     ):
-        """Initialize an instance of RedditAPIException.
+        """Initialize a :class:`.RedditAPIException` instance.
 
         :param items: Either a list of instances of :class:`.RedditErrorItem` or a list
             containing lists of unformed errors.
@@ -174,10 +178,10 @@ class ClientException(PRAWException):
 
 
 class DuplicateReplaceException(ClientException):
-    """Indicate exceptions that involve the replacement of MoreComments."""
+    """Indicate exceptions that involve the replacement of :class:`.MoreComments`."""
 
     def __init__(self):
-        """Initialize the class."""
+        """Initialize a :class:`.DuplicateReplaceException` instance."""
         super().__init__(
             "A duplicate comment has been detected. Are you attempting to call"
             " ``replace_more_comments`` more than once?"
@@ -185,12 +189,12 @@ class DuplicateReplaceException(ClientException):
 
 
 class InvalidFlairTemplateID(ClientException):
-    """Indicate exceptions where an invalid flair template id is given."""
+    """Indicate exceptions where an invalid flair template ID is given."""
 
     def __init__(self, template_id: str):
-        """Initialize the class."""
+        """Initialize an :class:`.InvalidFlairTemplateID` instance."""
         super().__init__(
-            f"The flair template id ``{template_id}`` is invalid. If you are trying to"
+            f"The flair template ID ``{template_id}`` is invalid. If you are trying to"
             " create a flair, please use the ``add`` method."
         )
 
@@ -199,19 +203,20 @@ class InvalidImplicitAuth(ClientException):
     """Indicate exceptions where an implicit auth type is used incorrectly."""
 
     def __init__(self):
-        """Initialize the class."""
+        """Initialize an :class:`.InvalidImplicitAuth` instance."""
         super().__init__("Implicit authorization can only be used with installed apps.")
 
 
 class InvalidURL(ClientException):
     """Indicate exceptions where an invalid URL is entered."""
 
-    def __init__(self, url: str, message: str = "Invalid URL: {}"):
-        """Initialize the class.
+    @_deprecate_args("url", "message")
+    def __init__(self, url: str, *, message: str = "Invalid URL: {}"):
+        """Initialize an :class:`.InvalidURL` instance.
 
         :param url: The invalid URL.
         :param message: The message to display. Must contain a format identifier (``{}``
-            or ``{0}``). (default: ``"Invalid URL: {}"``)
+            or ``{0}``) (default: ``"Invalid URL: {}"``).
 
         """
         super().__init__(message.format(url))
@@ -228,11 +233,12 @@ class ReadOnlyException(ClientException):
 class TooLargeMediaException(ClientException):
     """Indicate exceptions from uploading media that's too large."""
 
-    def __init__(self, maximum_size: int, actual: int):
-        """Initialize a TooLargeMediaException.
+    @_deprecate_args("maximum_size", "actual")
+    def __init__(self, *, actual: int, maximum_size: int):
+        """Initialize a :class:`.TooLargeMediaException` instance.
 
-        :param maximum_size: The maximum_size size of the uploaded media.
         :param actual: The actual size of the uploaded media.
+        :param maximum_size: The maximum size of the uploaded media.
 
         """
         self.maximum_size = maximum_size
@@ -267,7 +273,7 @@ class WebSocketException(ClientException):
         del self._original_exception
 
     def __init__(self, message: str, exception: Optional[Exception]):
-        """Initialize a WebSocketException.
+        """Initialize a :class:`.WebSocketException` instance.
 
         :param message: The exception message.
         :param exception: The exception thrown by the websocket library.
@@ -285,7 +291,7 @@ class MediaPostFailed(WebSocketException):
     """Indicate exceptions where media uploads failed.."""
 
     def __init__(self):
-        """Initialize MediaPostFailed."""
+        """Initialize a :class:`.MediaPostFailed` instance."""
         super().__init__(
             "The attempted media upload action has failed. Possible causes include the"
             " corruption of media files. Check that the media file can be opened on"

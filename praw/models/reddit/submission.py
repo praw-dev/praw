@@ -7,7 +7,7 @@ from prawcore import Conflict
 
 from ...const import API_PATH
 from ...exceptions import InvalidURL
-from ...util.cache import cachedproperty
+from ...util import _deprecate_args, cachedproperty
 from ..comment_forest import CommentForest
 from ..listing.listing import Listing
 from ..listing.mixins import SubmissionListingMixin
@@ -22,12 +22,12 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class SubmissionFlair:
-    """Provide a set of functions pertaining to Submission flair."""
+    """Provide a set of functions pertaining to :class:`.Submission` flair."""
 
     def __init__(self, submission: "praw.models.Submission"):
-        """Create a SubmissionFlair instance.
+        """Initialize a :class:`.SubmissionFlair` instance.
 
-        :param submission: The submission associated with the flair functions.
+        :param submission: The :class:`.Submission` associated with the flair functions.
 
         """
         self.submission = submission
@@ -49,13 +49,14 @@ class SubmissionFlair:
             url, data={"link": self.submission.fullname}
         )["choices"]
 
-    def select(self, flair_template_id: str, text: Optional[str] = None):
+    @_deprecate_args("flair_template_id", "text")
+    def select(self, flair_template_id: str, *, text: Optional[str] = None):
         """Select flair for submission.
 
-        :param flair_template_id: The flair template to select. The possible
-            ``flair_template_id`` values can be discovered through :meth:`.choices`.
-        :param text: If the template's ``flair_text_editable`` value is True, this value
-            will set a custom text (default: None).
+        :param flair_template_id: The flair template to select. The possible values can
+            be discovered through :meth:`.choices`.
+        :param text: If the template's ``flair_text_editable`` value is ``True``, this
+            value will set a custom text (default: ``None``).
 
         For example, to select an arbitrary editable flair text (assuming there is one)
         and set a custom value try:
@@ -64,7 +65,7 @@ class SubmissionFlair:
 
             choices = submission.flair.choices()
             template_id = next(x for x in choices if x["flair_text_editable"])["flair_template_id"]
-            submission.flair.select(template_id, "my custom value")
+            submission.flair.select(template_id, text="my custom value")
 
         """
         data = {
@@ -77,13 +78,13 @@ class SubmissionFlair:
 
 
 class SubmissionModeration(ThingModerationMixin):
-    """Provide a set of functions pertaining to Submission moderation.
+    """Provide a set of functions pertaining to :class:`.Submission` moderation.
 
     Example usage:
 
     .. code-block:: python
 
-        submission = reddit.submission(id="8dmv8z")
+        submission = reddit.submission("8dmv8z")
         submission.mod.approve()
 
     """
@@ -91,18 +92,19 @@ class SubmissionModeration(ThingModerationMixin):
     REMOVAL_MESSAGE_API = "removal_link_message"
 
     def __init__(self, submission: "praw.models.Submission"):
-        """Create a SubmissionModeration instance.
+        """Initialize a :class:`.SubmissionModeration` instance.
 
         :param submission: The submission to moderate.
 
         """
         self.thing = submission
 
-    def contest_mode(self, state: bool = True):
+    @_deprecate_args("state")
+    def contest_mode(self, *, state: bool = True):
         """Set contest mode for the comments of this submission.
 
-        :param state: (boolean) True enables contest mode, False, disables (default:
-            True).
+        :param state: ``True`` enables contest mode and ``False`` disables (default:
+            ``True``).
 
         Contest mode have the following effects:
 
@@ -116,35 +118,38 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
-            submission.mod.contest_mode(state=True)
+            submission = reddit.submission("5or86n")
+            submission.mod.contest_mode()
 
         """
         self.thing._reddit.post(
-            API_PATH["contest_mode"],
-            data={"id": self.thing.fullname, "state": state},
+            API_PATH["contest_mode"], data={"id": self.thing.fullname, "state": state}
         )
 
+    @_deprecate_args("text", "css_class", "flair_template_id")
     def flair(
         self,
-        text: str = "",
+        *,
         css_class: str = "",
         flair_template_id: Optional[str] = None,
+        text: str = "",
     ):
         """Set flair for the submission.
 
-        :param text: The flair text to associate with the Submission (default: "").
-        :param css_class: The css class to associate with the flair html (default: "").
-        :param flair_template_id: The flair template id to use when flairing (Optional).
+        :param css_class: The css class to associate with the flair html (default:
+            ``""``).
+        :param flair_template_id: The flair template ID to use when flairing.
+        :param text: The flair text to associate with the :class:`.Submission` (default:
+            ``""``).
 
         This method can only be used by an authenticated user who is a moderator of the
-        Submission's Subreddit.
+        submission's :class:`.Subreddit`.
 
         Example usage:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.flair(text="PRAW", css_class="bot")
 
         """
@@ -174,7 +179,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. seealso::
 
-            :meth:`~.sfw`
+            :meth:`.sfw`
 
         """
         self.thing._reddit.post(API_PATH["marknsfw"], data={"id": self.thing.fullname})
@@ -217,12 +222,12 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.sfw()
 
         .. seealso::
 
-            :meth:`~.nsfw`
+            :meth:`.nsfw`
 
         """
         self.thing._reddit.post(
@@ -239,29 +244,30 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.spoiler()
 
         .. seealso::
 
-            :meth:`~.unspoiler`
+            :meth:`.unspoiler`
 
         """
         self.thing._reddit.post(API_PATH["spoiler"], data={"id": self.thing.fullname})
 
-    def sticky(self, state: bool = True, bottom: bool = True):
+    @_deprecate_args("state", "bottom")
+    def sticky(self, *, bottom: bool = True, state: bool = True):
         """Set the submission's sticky state in its subreddit.
 
-        :param state: (boolean) True sets the sticky for the submission, false unsets
-            (default: True).
-        :param bottom: (boolean) When true, set the submission as the bottom sticky. If
-            no top sticky exists, this submission will become the top sticky regardless
-            (default: True).
+        :param bottom: When ``True``, set the submission as the bottom sticky. If no top
+            sticky exists, this submission will become the top sticky regardless
+            (default: ``True``).
+        :param state: ``True`` sets the sticky for the submission and ``False`` unsets
+            (default: ``True``).
 
         .. note::
 
             When a submission is stickied two or more times, the Reddit API responds
-            with a 409 error that is raises as a ``Conflict`` by prawcore. The method
+            with a 409 error that is raised as a ``Conflict`` by prawcore. This method
             suppresses these ``Conflict`` errors.
 
         This submission will replace the second stickied submission if one exists.
@@ -270,7 +276,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mod.sticky()
 
         """
@@ -282,16 +288,17 @@ class SubmissionModeration(ThingModerationMixin):
         except Conflict:
             pass
 
-    def suggested_sort(self, sort: str = "blank"):
+    @_deprecate_args("sort")
+    def suggested_sort(self, *, sort: str = "blank"):
         """Set the suggested sort for the comments of the submission.
 
-        :param sort: Can be one of: confidence, top, new, controversial, old, random,
-            qa, blank (default: blank).
+        :param sort: Can be one of: ``"confidence"``, ``"top"``, ``"new"``,
+            ``"controversial"``, ``"old"``, ``"random"``, ``"qa"``, or ``"blank"``
+            (default: ``"blank"``).
 
         """
         self.thing._reddit.post(
-            API_PATH["suggested_sort"],
-            data={"id": self.thing.fullname, "sort": sort},
+            API_PATH["suggested_sort"], data={"id": self.thing.fullname, "sort": sort}
         )
 
     def unset_original_content(self):
@@ -337,7 +344,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. seealso::
 
-            :meth:`~.spoiler`
+            :meth:`.spoiler`
 
         """
         self.thing._reddit.post(API_PATH["unspoiler"], data={"id": self.thing.fullname})
@@ -352,7 +359,7 @@ class SubmissionModeration(ThingModerationMixin):
         ===== ======== ================================================================
         Level Name     Description
         ===== ======== ================================================================
-        0     Off      Crowd Control will not action any of the submission's commments.
+        0     Off      Crowd Control will not action any of the submission's comments.
         1     Lenient  Comments from users who have negative karma in the subreddit are
                        automatically collapsed.
         2     Moderate Comments from new users and users with negative karma in the
@@ -366,7 +373,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-            submission = reddit.submission(id="745ryj")
+            submission = reddit.submission("745ryj")
             submission.mod.update_crowd_control_level(2)
 
         .. seealso::
@@ -381,14 +388,9 @@ class SubmissionModeration(ThingModerationMixin):
 
 
 class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, RedditBase):
-    """A class for submissions to reddit.
+    """A class for submissions to Reddit.
 
-    **Typical Attributes**
-
-    This table describes attributes that typically belong to objects of this class.
-    Since attributes are dynamically provided (see
-    :ref:`determine-available-attributes-of-an-object`), there is not a guarantee that
-    these attributes will always be present, nor is this list necessarily complete.
+    .. include:: ../../typical_attributes.rst
 
     ========================== =========================================================
     Attribute                  Description
@@ -406,7 +408,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
                                content.
     ``is_self``                Whether or not the submission is a selfpost (text-only).
     ``link_flair_template_id`` The link flair's ID.
-    ``link_flair_text``        The link flair's text content, or None if not flaired.
+    ``link_flair_text``        The link flair's text content, or ``None`` if not
+                               flaired.
     ``locked``                 Whether or not the submission has been locked.
     ``name``                   Fullname of the submission.
     ``num_comments``           The number of comments on the submission.
@@ -442,12 +445,12 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         :param url: A url to a submission in one of the following formats (http urls
             will also work):
 
-            - https://redd.it/2gmzqe
-            - https://reddit.com/comments/2gmzqe/
-            - https://www.reddit.com/r/redditdev/comments/2gmzqe/praw_https/
-            - https://www.reddit.com/gallery/2gmzqe
+            - ``"https://redd.it/2gmzqe"``
+            - ``"https://reddit.com/comments/2gmzqe/"``
+            - ``"https://www.reddit.com/r/redditdev/comments/2gmzqe/praw_https/"``
+            - ``"https://www.reddit.com/gallery/2gmzqe"``
 
-        :raises: :class:`.InvalidURL` if URL is not a valid submission URL.
+        :raises: :class:`.InvalidURL` if ``url`` is not a valid submission URL.
 
         """
         parts = RedditBase._url_parts(url)
@@ -462,7 +465,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             submission_id = parts[parts.index("gallery") + 1]
 
         elif parts[-1] == "comments":
-            raise InvalidURL(url, message="Invalid URL (submission id not present): {}")
+            raise InvalidURL(url, message="Invalid URL (submission ID not present): {}")
 
         else:
             submission_id = parts[parts.index("comments") + 1]
@@ -499,8 +502,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. note::
 
-            The appropriate values for ``comment_sort`` include ``confidence``,
-            ``controversial``, ``new``, ``old``, ``q&a``, and ``top``
+            The appropriate values for ``"comment_sort"`` include ``"confidence"``,
+            ``"controversial"``, ``"new"``, ``"old"``, ``"q&a"``, and ``"top"``
 
         See :ref:`extracting_comments` for more on working with a
         :class:`.CommentForest`.
@@ -523,7 +526,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
             choices = submission.flair.choices()
             template_id = next(x for x in choices if x["flair_text_editable"])["flair_template_id"]
-            submission.flair.select(template_id, "my custom value")
+            submission.flair.select(template_id, text="my custom value")
 
         """
         return SubmissionFlair(self)
@@ -536,7 +539,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. code-block:: python
 
-            submission = reddit.submission(id="8dmv8z")
+            submission = reddit.submission("8dmv8z")
             submission.mod.approve()
 
         """
@@ -559,11 +562,11 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         url: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
     ):
-        """Initialize a Submission instance.
+        """Initialize a :class:`.Submission` instance.
 
-        :param reddit: An instance of :class:`~.Reddit`.
-        :param id: A reddit base36 submission ID, e.g., ``2gmzqe``.
-        :param url: A URL supported by :meth:`~.id_from_url`.
+        :param reddit: An instance of :class:`.Reddit`.
+        :param id: A reddit base36 submission ID, e.g., ``"2gmzqe"``.
+        :param url: A URL supported by :meth:`.id_from_url`.
 
         Either ``id`` or ``url`` can be provided, but not both.
 
@@ -605,7 +608,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             )
         super().__setattr__(attribute, value)
 
-    def _chunk(self, other_submissions, chunk_size):
+    def _chunk(self, *, chunk_size, other_submissions):
         all_submissions = [self.fullname]
         if other_submissions:
             all_submissions += [x.fullname for x in other_submissions]
@@ -623,7 +626,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
-        return self._reddit.request("GET", path, params)
+        return self._reddit.request(method="GET", params=params, path=path)
 
     def _fetch(self):
         data = self._fetch_data()
@@ -650,66 +653,86 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.mark_visited()
 
         """
         data = {"links": self.fullname}
         self._reddit.post(API_PATH["store_visits"], data=data)
 
-    def hide(self, other_submissions: Optional[List["praw.models.Submission"]] = None):
-        """Hide Submission.
+    @_deprecate_args("other_submissions")
+    def hide(
+        self, *, other_submissions: Optional[List["praw.models.Submission"]] = None
+    ):
+        """Hide :class:`.Submission`.
 
         :param other_submissions: When provided, additionally hide this list of
-            :class:`.Submission` instances as part of a single request (default: None).
+            :class:`.Submission` instances as part of a single request (default:
+            ``None``).
 
         Example usage:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.hide()
 
         .. seealso::
 
-            :meth:`~.unhide`
+            :meth:`.unhide`
 
         """
-        for submissions in self._chunk(other_submissions, 50):
+        for submissions in self._chunk(
+            chunk_size=50, other_submissions=other_submissions
+        ):
             self._reddit.post(API_PATH["hide"], data={"id": submissions})
 
+    @_deprecate_args("other_submissions")
     def unhide(
-        self, other_submissions: Optional[List["praw.models.Submission"]] = None
+        self, *, other_submissions: Optional[List["praw.models.Submission"]] = None
     ):
-        """Unhide Submission.
+        """Unhide :class:`.Submission`.
 
         :param other_submissions: When provided, additionally unhide this list of
-            :class:`.Submission` instances as part of a single request (default: None).
+            :class:`.Submission` instances as part of a single request (default:
+            ``None``).
 
         Example usage:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
+            submission = reddit.submission("5or86n")
             submission.unhide()
 
         .. seealso::
 
-            :meth:`~.hide`
+            :meth:`.hide`
 
         """
-        for submissions in self._chunk(other_submissions, 50):
+        for submissions in self._chunk(
+            chunk_size=50, other_submissions=other_submissions
+        ):
             self._reddit.post(API_PATH["unhide"], data={"id": submissions})
 
+    @_deprecate_args(
+        "subreddit",
+        "title",
+        "send_replies",
+        "flair_id",
+        "flair_text",
+        "nsfw",
+        "spoiler",
+    )
     def crosspost(
         self,
         subreddit: "praw.models.Subreddit",
-        title: Optional[str] = None,
-        send_replies: bool = True,
+        *,
         flair_id: Optional[str] = None,
         flair_text: Optional[str] = None,
         nsfw: bool = False,
+        send_replies: bool = True,
         spoiler: bool = False,
+        title: Optional[str] = None,
     ) -> "praw.models.Submission":
         """Crosspost the submission to a subreddit.
 
@@ -717,32 +740,32 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
             Be aware you have to be subscribed to the target subreddit.
 
-        :param subreddit: Name of the subreddit or :class:`~.Subreddit` object to
+        :param subreddit: Name of the subreddit or :class:`.Subreddit` object to
             crosspost into.
+        :param flair_id: The flair template to select (default: ``None``).
+        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
+            this value will set a custom text (default: ``None``).
+        :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
+        :param send_replies: When ``True``, messages will be sent to the created
+            submission's author when comments are made to the submission (default:
+            ``True``).
+        :param spoiler: Whether the submission should be marked as a spoiler (default:
+            ``False``).
         :param title: Title of the submission. Will use this submission's title if
-            `None` (default: None).
-        :param flair_id: The flair template to select (default: None).
-        :param flair_text: If the template's ``flair_text_editable`` value is True, this
-            value will set a custom text (default: None).
-        :param send_replies: When True, messages will be sent to the submission author
-            when comments are made to the submission (default: True).
-        :param nsfw: Whether or not the submission should be marked NSFW (default:
-            False).
-        :param spoiler: Whether or not the submission should be marked as a spoiler
-            (default: False).
+            ``None`` (default: ``None``).
 
-        :returns: A :class:`~.Submission` object for the newly created submission.
+        :returns: A :class:`.Submission` object for the newly created submission.
 
         Example usage:
 
         .. code-block:: python
 
-            submission = reddit.submission(id="5or86n")
-            cross_post = submission.crosspost(subreddit="learnprogramming", send_replies=False)
+            submission = reddit.submission("5or86n")
+            cross_post = submission.crosspost("learnprogramming", send_replies=False)
 
         .. seealso::
 
-            :meth:`~.hide`
+            :meth:`.hide`
 
         """
         if title is None:

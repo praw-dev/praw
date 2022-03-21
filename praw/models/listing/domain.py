@@ -12,9 +12,9 @@ class DomainListing(BaseListingMixin, RisingListingMixin):
     """Provide a set of functions to interact with domain listings."""
 
     def __init__(self, reddit: "praw.Reddit", domain: str):
-        """Initialize a DomainListing instance.
+        """Initialize a :class:`.DomainListing` instance.
 
-        :param reddit: An instance of Reddit.
+        :param reddit: An instance of :class:`.Reddit`.
         :param domain: The domain for which to obtain listings.
 
         """
