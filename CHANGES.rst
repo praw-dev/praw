@@ -6,6 +6,9 @@ PRAW follows `semantic versioning <http://semver.org/>`_.
 Unreleased
 ----------
 
+7.6.0 (2022/05/10)
+------------------
+
 **Added**
 
 - :meth:`.pin` to manage pinned submissions on the authenticated user's profile.
