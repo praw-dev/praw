@@ -1,0 +1,310 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2022-04-02T05:50:15",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=nZ2J81SdOTmoKJRyxW"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.5.1.dev0 prawcore/2.3.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/user/Watchful1/about/?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"t2\", \"data\": {\"is_employee\": false, \"has_visited_new_profile\": false, \"is_friend\": false, \"pref_no_profanity\": false, \"has_external_account\": false, \"pref_geopopular\": \"GLOBAL\", \"pref_show_trending\": false, \"subreddit\": {\"default_set\": true, \"user_is_contributor\": false, \"banner_img\": \"\", \"restrict_posting\": true, \"user_is_banned\": false, \"free_form_reports\": true, \"community_icon\": null, \"show_media\": true, \"icon_color\": \"\", \"user_is_muted\": false, \"display_name\": \"u_Watchful1\", \"header_img\": null, \"title\": \"\", \"coins\": 0, \"previous_names\": [], \"over_18\": false, \"icon_size\": [256, 256], \"primary_color\": \"\", \"icon_img\": \"https://styles.redditmedia.com/t5_1tpu9w/styles/profileIcon_357tmiqf7mg41.png?width=256\\u0026height=256\\u0026crop=256:256,smart\\u0026s=60a212b73fd172150d3007b6d501228bdbc12b59\", \"description\": \"\", \"submit_link_label\": \"\", \"header_size\": null, \"restrict_commenting\": false, \"subscribers\": 156, \"submit_text_label\": \"\", \"is_default_icon\": false, \"link_flair_position\": \"\", \"display_name_prefixed\": \"u/Watchful1\", \"key_color\": \"\", \"name\": \"t5_1tpu9w\", \"is_default_banner\": true, \"url\": \"/user/Watchful1/\", \"quarantine\": false, \"banner_size\": null, \"user_is_moderator\": true, \"accept_followers\": true, \"public_description\": \"Runs u/RemindMeBot and u/UpdateMeBot, moderates r/CompetitiveOverwatch. Happy to answer any python/praw questions\", \"link_flair_enabled\": false, \"disable_contributor_requests\": false, \"subreddit_type\": \"user\", \"user_is_subscriber\": false}, \"pref_show_presence\": false, \"snoovatar_img\": \"\", \"snoovatar_size\": null, \"gold_expiration\": 1708295531, \"has_gold_subscription\": true, \"is_sponsor\": false, \"num_friends\": 0, \"features\": {\"mod_service_mute_writes\": true, \"promoted_trend_blanks\": true, \"show_amp_link\": true, \"top_content_email_digest_v2\": {\"owner\": \"growth\", \"variant\": \"control_1\", \"experiment_id\": 363}, \"chat\": true, \"is_email_permission_required\": false, \"mod_awards\": true, \"expensive_coins_package\": true, \"mweb_xpromo_revamp_v2\": {\"owner\": \"growth\", \"variant\": \"treatment_6\", \"experiment_id\": 457}, \"awards_on_streams\": true, \"mweb_xpromo_modal_listing_click_daily_dismissible_ios\": true, \"chat_subreddit\": true, \"cookie_consent_banner\": true, \"modlog_copyright_removal\": true, \"do_not_track\": true, \"mod_service_mute_reads\": true, \"chat_user_settings\": true, \"use_pref_account_deployment\": true, \"mweb_xpromo_interstitial_comments_ios\": true, \"noreferrer_to_noopener\": true, \"premium_subscriptions_table\": true, \"mweb_xpromo_interstitial_comments_android\": true, \"crowd_control_for_post\": true, \"chat_group_rollout\": true, \"resized_styles_images\": true, \"spez_modal\": true, \"mweb_xpromo_modal_listing_click_daily_dismissible_android\": true}, \"can_edit_name\": false, \"is_blocked\": false, \"verified\": true, \"new_modmail_exists\": false, \"pref_autoplay\": false, \"coins\": 35585, \"has_paypal_subscription\": false, \"has_subscribed_to_premium\": true, \"id\": \"d0z23\", \"can_create_subreddit\": true, \"over_18\": true, \"is_gold\": true, \"is_mod\": true, \"awarder_karma\": 3884, \"suspension_expiration_utc\": null, \"has_stripe_subscription\": true, \"is_suspended\": false, \"pref_video_autoplay\": false, \"in_chat\": true, \"has_android_subscription\": false, \"in_redesign_beta\": false, \"icon_img\": \"https://styles.redditmedia.com/t5_1tpu9w/styles/profileIcon_357tmiqf7mg41.png?width=256\\u0026height=256\\u0026crop=256:256,smart\\u0026s=60a212b73fd172150d3007b6d501228bdbc12b59\", \"has_mod_mail\": false, \"pref_nightmode\": false, \"awardee_karma\": 4033, \"hide_from_robots\": false, \"password_set\": true, \"modhash\": null, \"link_karma\": 50781, \"force_password_reset\": false, \"total_karma\": 265351, \"inbox_count\": 0, \"pref_top_karma_subreddits\": false, \"has_mail\": false, \"pref_show_snoovatar\": false, \"name\": \"Watchful1\", \"pref_clickgadget\": 5, \"created\": 1378424297.0, \"has_verified_email\": true, \"gold_creddits\": 0, \"created_utc\": 1378424297.0, \"has_ios_subscription\": false, \"pref_show_twitter\": false, \"in_beta\": false, \"comment_karma\": 206653, \"accept_followers\": true, \"has_subscribed\": true}}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "4040"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 02 Apr 2022 05:50:14 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "loid=0000000000000d0z23.2.1378424297146.Z0FBQUFBQmlSLVFXanh5Q1RPX1FnenVPNmV1X3FBRDNTUVJoVS1TVkxzYlRNZXhKcm13cndSX3hyT003aUhseWRIY0pUMnYwTldkNGs0aVBlc0VUNUxyVjdkMmt0NkxzTDYtSXRYZ0I3cmY4Y2U3YUo5MGJfc2h2czEzM0Rvd1ZOT0NWVFhtRlBhTTk; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Mon, 01-Apr-2024 05:50:14 GMT; secure; SameSite=None; Secure",
+            "session_tracker=fheeracbrmmfgermal.0.1648878614820.Z0FBQUFBQmlSLVFXVVlpRWs4LUFwVnVpbEpnTWZtdVhHOEdmVWJCWTczelROc3ZlYVJ2dzVsUkVmME1YaUxaelgtQ1V2QVBHV2REUU1CTnE4WjhkUE40cmtpMWpvOE43NWJBT0IybG5yM1VhZDUtenF0ekxPWVRrZy1vcXBJQkEyYlluVzRzODFaZWc; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 02-Apr-2022 07:50:14 GMT; secure; SameSite=None; Secure",
+            "redesign_optout=true; Domain=reddit.com; Max-Age=94607999; Path=/; expires=Tue, 01-Apr-2025 05:50:14 GMT; secure",
+            "csv=2; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "599.0"
+          ],
+          "x-ratelimit-reset": [
+            "586"
+          ],
+          "x-ratelimit-used": [
+            "1"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/user/Watchful1/about/?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2022-04-02T06:04:01",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "Content-Length": [
+            "75"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.5.1.dev0 prawcore/2.3.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"refresh_token\": \"<REFRESH_TOKEN>\", \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "Content-Length": [
+            "174"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 02 Apr 2022 06:04:01 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=xCleut8glh4DrJfWeR; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "298"
+          ],
+          "x-ratelimit-reset": [
+            "359"
+          ],
+          "x-ratelimit-used": [
+            "2"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2022-04-02T06:04:02",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=xCleut8glh4DrJfWeR"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.5.1.dev0 prawcore/2.3.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/mod/notes/recent?subreddits=subtestbot1%2Csubtestbot2&users=Watchful1%2CWatchful1&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"mod_notes\": [{\"subreddit_id\": \"t5_3fib0\", \"operator_id\": \"t2_d0z23\", \"mod_action_data\": {\"action\": null, \"reddit_id\": null, \"details\": null, \"description\": null}, \"subreddit\": \"<TEST_SUBREDDIT>\", \"user\": \"Watchful1\", \"operator\": \"Watchful1\", \"id\": \"ModNote_853f9951-2f4f-4a7f-80ff-aa6aeb2c7a1e\", \"user_note_data\": {\"note\": \"praw_note 2\", \"reddit_id\": null, \"label\": null}, \"user_id\": \"t2_d0z23\", \"created_at\": 1648167599, \"type\": \"NOTE\"}, null]}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "442"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 02 Apr 2022 06:04:01 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "loid=0000000000000d0z23.2.1378424297146.Z0FBQUFBQmlSLWRSNWhRRXlTRko4cElfWTFuNENXMjRwYkxWaTlwSkh1bWlmUGhfUE9lUndfbXAyY1ZpRk1QcjhndEpzMnR2aUtZbDZEeU1RRDgtUU9tOXhYcDZrLWNyUTBsTzB1ZHE0enViRzREbDB1VmJ1bnM2SzhBZVRGR1lIYXUwcmo3Z0NscGQ; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Mon, 01-Apr-2024 06:04:01 GMT; secure; SameSite=None; Secure",
+            "session_tracker=prhdpnnjgfgfbbfpmm.0.1648879441641.Z0FBQUFBQmlSLWRSUG10d2NxUVhoNV9oSExKdTQ0b3gwdVRfbnNoVy1raTlXRGlhRkRWX0ljQlN2NnBrS0QyRU10WVNleTZIUDlnUEVJS1FfVG5CS212SHUyX09zRVgzSHk2d3c3OHZoTXltSHhod2N4TV9RTWxNSGFUbEF2bHBGUTRUV0FBTUVkZW8; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 02-Apr-2022 08:04:01 GMT; secure; SameSite=None; Secure",
+            "csv=2; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "582.0"
+          ],
+          "x-ratelimit-reset": [
+            "359"
+          ],
+          "x-ratelimit-used": [
+            "18"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/mod/notes/recent?subreddits=subtestbot1%2Csubtestbot2&users=Watchful1%2CWatchful1&raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}

@@ -10,6 +10,7 @@ from .gildable import GildableMixin
 from .inboxable import InboxableMixin
 from .inboxtoggleable import InboxToggleableMixin
 from .messageable import MessageableMixin
+from .modnote import ModNoteMixin
 from .replyable import ReplyableMixin
 from .reportable import ReportableMixin
 from .savable import SavableMixin
@@ -19,7 +20,7 @@ if TYPE_CHECKING:  # pragma: no cover
     import praw
 
 
-class ThingModerationMixin:
+class ThingModerationMixin(ModNoteMixin):
     r"""Provides moderation methods for :class:`.Comment`\ s and :class:`.Submission`\ s."""
 
     REMOVAL_MESSAGE_API = None

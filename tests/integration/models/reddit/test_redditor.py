@@ -136,6 +136,15 @@ class TestRedditor(IntegrationTest):
             redditor = self.reddit.user.friends()[0]
             assert redditor.unfriend() is None
 
+    def test_notes__subreddits(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            redditor = self.reddit.redditor("Watchful1")
+            notes = list(redditor.notes.subreddits("subtestbot1", "subtestbot2"))
+            assert len(notes) == 2
+            assert notes[0].user == redditor
+            assert notes[1] is None
+
 
 class TestRedditorListings(IntegrationTest):
     def test_comments__controversial(self):

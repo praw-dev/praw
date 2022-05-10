@@ -81,6 +81,30 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         return cls(reddit, data)
 
     @cachedproperty
+    def notes(self) -> "praw.models.RedditorModNotes":
+        """Provide an instance of :class:`.RedditorModNotes`.
+
+        This provides an interface for managing moderator notes for a redditor.
+
+        .. note::
+
+            The authenticated user must be a moderator of the provided subreddit(s).
+
+        For example, all the notes for u/spez in r/test can be iterated through like so:
+
+        .. code-block:: python
+
+            redditor = reddit.redditor("spez")
+
+            for note in redditor.notes.subreddits("test"):
+                print(f"{note.label}: {note.note}")
+
+        """
+        from ..mod_notes import RedditorModNotes
+
+        return RedditorModNotes(self._reddit, self)
+
+    @cachedproperty
     def stream(self) -> "praw.models.reddit.redditor.RedditorStream":
         """Provide an instance of :class:`.RedditorStream`.
 

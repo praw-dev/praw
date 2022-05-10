@@ -14,6 +14,26 @@ Unreleased
 - :meth:`.SubredditCollectionsModeration.create` keyword argument ``display_layout`` for
   specifying a display layout when creating a :class:`.Collection`.
 - :attr:`~.Message.parent` to get the parent of a :class:`.Message`.
+- :class:`.ModNote` to represent a moderator note.
+- :meth:`.ModNote.delete` to delete a single moderator note.
+- :class:`.RedditModNotes` to interact with moderator notes from a :class:`.Reddit`
+  instance. This provides the ability to create and fetch notes for one or more
+  redditors from one or more subreddits.
+- :class:`.RedditorModNotes` to interact with moderator notes from a :class:`.Redditor`
+  instance.
+- :meth:`.RedditorModNotes.subreddits` to obtain moderator notes from multiple
+  subreddits for a single redditor.
+- :class:`.SubredditModNotes` to interact with moderator notes from a
+  :class:`.Subreddit` instance.
+- :meth:`.SubredditModNotes.redditors` to obtain moderator notes for multiple redditors
+  from a single subreddit.
+- :meth:`~.BaseModNotes.create` to create a moderator note.
+- :attr:`.Redditor.notes` to interact with :class:`.RedditorModNotes`.
+- :attr:`.SubredditModeration.notes` to interact with :class:`.SubredditModNotes`.
+- :meth:`~.ModNoteMixin.create_note` create a moderator note from a :class:`.Comment` or
+  :class:`.Submission`.
+- :meth:`~.ModNoteMixin.author_notes` to view the moderator notes for the author of a
+  :class:`.Comment` or :class:`.Submission`.
 
 **Changed**
 

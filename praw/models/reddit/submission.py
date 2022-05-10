@@ -12,7 +12,7 @@ from ..comment_forest import CommentForest
 from ..listing.listing import Listing
 from ..listing.mixins import SubmissionListingMixin
 from .base import RedditBase
-from .mixins import FullnameMixin, ThingModerationMixin, UserContentMixin
+from .mixins import FullnameMixin, ModNoteMixin, ThingModerationMixin, UserContentMixin
 from .poll import PollData
 from .redditor import Redditor
 from .subreddit import Subreddit
@@ -77,7 +77,7 @@ class SubmissionFlair:
         self.submission._reddit.post(url, data=data)
 
 
-class SubmissionModeration(ThingModerationMixin):
+class SubmissionModeration(ThingModerationMixin, ModNoteMixin):
     """Provide a set of functions pertaining to :class:`.Submission` moderation.
 
     Example usage:

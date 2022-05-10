@@ -351,6 +351,31 @@ class Reddit:
 
         """
 
+        self.notes = models.RedditModNotes(self)
+        r"""An instance of :class:`.RedditModNotes`.
+
+        Provides the interface for working with :class:`.ModNote`\ s for multiple
+        redditors across multiple subreddits.
+
+        .. note::
+
+            The authenticated user must be a moderator of the provided subreddit(s).
+
+        For example, the latest note for u/spez in r/redditdev and r/test, and for
+        u/bboe in r/redditdev can be iterated through like so:
+
+        .. code-block:: python
+
+            redditor = reddit.redditor("bboe")
+            subreddit = reddit.subreddit("redditdev")
+
+            pairs = [(subreddit, "spez"), ("test", "spez"), (subreddit, redditor)]
+
+            for note in reddit.notes(pairs=pairs):
+                print(f"{note.label}: {note.note}")
+
+        """
+
         self.redditors = models.Redditors(self, None)
         """An instance of :class:`.Redditors`.
 
@@ -512,6 +537,7 @@ class Reddit:
             "modaction": models.ModAction,
             "moderator-list": models.ModeratorListing,
             "moderators": models.ModeratorsWidget,
+            "mod_note": models.ModNote,
             "more": models.MoreComments,
             "post-flair": models.PostFlairWidget,
             "rule": models.Rule,
