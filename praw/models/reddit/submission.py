@@ -397,7 +397,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
     ========================== =========================================================
     ``author``                 Provides an instance of :class:`.Redditor`.
     ``author_flair_text``      The text content of the authors flair, or ``None`` if not
-                               flaired. 
+                               flaired.
     ``clicked``                Whether or not the submission has been clicked by the
                                client.
     ``comments``               Provides an instance of :class:`.CommentForest`.
