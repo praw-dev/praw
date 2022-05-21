@@ -2230,7 +2230,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         .. code-block:: python
 
-            reddit.subreddit("test").flair.templates.add(
+            reddit.subreddit("test").flair.link_templates.add(
                 "PRAW",
                 css_class="praw",
                 text_editable=True,
