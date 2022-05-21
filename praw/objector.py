@@ -80,7 +80,7 @@ class Objector:
             "state",
         }.issubset(data):
             # not fetched conversation i.e., from conversations()
-            del data["objIds"]  # delete objIds since could be missing data
+            del data["objIds"]  # delete objIds since it could be missing data
             parser = self.parsers["ModmailConversation"]
         elif {"conversationIds", "conversations", "messages"}.issubset(data):
             # modmail conversations
