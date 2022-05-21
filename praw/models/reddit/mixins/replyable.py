@@ -1,13 +1,18 @@
 """Provide the ReplyableMixin class."""
+from typing import TYPE_CHECKING, Optional
+
 from ....const import API_PATH
 from ...util import _deprecate_args
+
+if TYPE_CHECKING:  # pragma: no cover
+    import praw
 
 
 class ReplyableMixin:
     """Interface for :class:`.RedditBase` classes that can be replied to."""
 
     @_deprecate_args("body")
-    def reply(self, *, body: str):
+    def reply(self, *, body: str) -> Optional["praw.models.Comment"]:
         """Reply to the object.
 
         :param body: The Markdown formatted content for a comment.
