@@ -67,6 +67,7 @@ class Objector:
             "conversations",
             "conversation",
         }.intersection(data):
+            # fetched conversation
             data.update(
                 data.pop("conversation")
                 if "conversation" in data
@@ -78,12 +79,24 @@ class Objector:
             "legacyFirstMessageId",
             "state",
         }.issubset(data):
+            # not fetched conversation i.e., from conversations()
+            del data["objIds"]  # delete objIds since could be missing data
             parser = self.parsers["ModmailConversation"]
         elif {"conversationIds", "conversations", "messages"}.issubset(data):
-            data["conversations"] = [
-                data["conversations"][conversation_id]
-                for conversation_id in data["conversationIds"]
-            ]
+            # modmail conversations
+            conversations = []
+            for conversation_id in data["conversationIds"]:
+                conversation = data["conversations"][conversation_id]
+                # set if the numMessages is same as number of messages in objIds
+                if conversation["numMessages"] == len(
+                    [obj for obj in conversation["objIds"] if obj["key"] == "messages"]
+                ):
+                    conversation["messages"] = [
+                        self.objectify(data["messages"][obj_id["id"]])
+                        for obj_id in conversation["objIds"]
+                    ]
+                conversations.append(conversation)
+            data["conversations"] = conversations
             data = snake_case_keys(data)
             parser = self.parsers["ModmailConversations-list"]
         elif {"actionTypeId", "author", "date"}.issubset(data):
