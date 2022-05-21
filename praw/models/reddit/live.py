@@ -422,7 +422,7 @@ class LiveThread(RedditBase):
             constructor.
 
         :returns: A :class:`.ListingGenerator` object which yields :class:`.Submission`
-            object.
+            objects.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -465,7 +465,7 @@ class LiveThread(RedditBase):
             constructor.
 
         :returns: A :class:`.ListingGenerator` object which yields :class:`.LiveUpdate`
-            object.
+            objects.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
