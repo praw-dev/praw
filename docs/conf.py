@@ -20,7 +20,7 @@ html_static_path = ["_static"]
 html_theme = "sphinx_rtd_theme"
 html_theme_options = {"collapse_navigation": True}
 htmlhelp_basename = "PRAW"
-intersphinx_mapping = {"python": ("https://docs.python.org", None)}
+intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
 master_doc = "index"
 nitpick_ignore = [
     ("py:class", "IO"),
