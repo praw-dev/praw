@@ -160,7 +160,7 @@ class Reddit:
         requestor_class: Optional[Type[Requestor]] = None,
         requestor_kwargs: Optional[Dict[str, Any]] = None,
         token_manager: Optional[BaseTokenManager] = None,
-        **config_settings: Optional[Union[str, bool]],
+        **config_settings: Optional[Union[str, bool, int]],
     ):  # noqa: D207, D301
         """Initialize a :class:`.Reddit` instance.
 
