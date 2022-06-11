@@ -16,12 +16,8 @@ with open(path.join(HERE, PACKAGE_NAME, "const.py"), encoding="utf-8") as fp:
 extras = {
     "ci": ["coveralls"],
     "dev": ["packaging"],
-    "lint": [
-        "pre-commit",
-        "sphinx",
-        "sphinx_rtd_theme",
-    ],
-    "readthedocs": ["sphinx", "sphinx_rtd_theme"],
+    "lint": ["pre-commit"],
+    "readthedocs": ["sphinx", "sphinx-rtd-dark-mode", "sphinx_rtd_theme"],
     "test": [
         "betamax >=0.8, <0.9",
         "betamax-matchers >=0.3.0, <0.5",
@@ -29,6 +25,7 @@ extras = {
         "requests >=2.20.1, <3",
     ],
 }
+extras["lint"] += extras["readthedocs"]
 extras["dev"] += extras["lint"] + extras["test"]
 
 setup(

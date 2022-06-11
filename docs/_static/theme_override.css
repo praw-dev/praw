@@ -4,15 +4,21 @@ https://rackerlabs.github.io/docs-rackspace/tools/rtd-tables.html */
 /* override table width restrictions */
 @media screen and (min-width: 767px) {
 
-   .wy-table-responsive table td {
-      /* !important prevents the common CSS stylesheets from overriding
-         this as on RTD they are loaded after this stylesheet */
-      white-space: normal !important;
-   }
+    .wy-table-responsive table td {
+        /* !important prevents the common CSS stylesheets from overriding
+           this as on RTD they are loaded after this stylesheet */
+        white-space: normal !important;
+    }
 
-   .wy-table-responsive {
-      overflow: visible !important;
-   }
+    .wy-table-responsive {
+        overflow: visible !important;
+    }
 }
 
-table.center-table-items, table.center-table-items th { text-align: center; }
+table.center-table-items, table.center-table-items th {
+    text-align: center;
+}
+
+html[data-theme='dark'] .btn-neutral {
+    color: #c1c1c1 !important;
+}

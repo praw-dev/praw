@@ -10,7 +10,12 @@ from praw import __version__  # noqa: E402
 
 copyright = datetime.today().strftime("%Y, Bryce Boe")
 exclude_patterns = ["_build"]
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.intersphinx", "sphinx_rtd_theme"]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
+    "sphinx_rtd_dark_mode",
+    "sphinx_rtd_theme",
+]
 html_static_path = ["_static"]
 html_theme = "sphinx_rtd_theme"
 html_theme_options = {"collapse_navigation": True}
