@@ -29,26 +29,33 @@ Creating Pull Requests
 
 1. If you are fixing an already filed issue, please indicate your intentions by
    commenting on the issue. This act will hopefully minimize any duplicate work.
-2. Before committing, make sure to install pre-commit_ and the pre-commit hooks, which
+2. You will need to clone the repository and open the project in the IDE of your choice.
+   Note: the following commands need to executed within the project directory.
+3. Install the development dependencies with ``pip install -e ".[dev]"``. This will
+   install PRAW in an editable state which will make development, testing, and debugging
+   easier. This will also install all the needed dependencies for linting and testing.
+   `See here`_ for more information on installing the development dependencies.
+4. Before committing, make sure to install pre-commit_ and the pre-commit hooks, which
    ensures any new code conforms to our quality and style guidelines. To do so, install
-   the linting dependencies with ``pip install praw[lint]``, then by the hooks with
-   ``pre-commit install``. They will now run automatically every time you commit. If one
-   of the hooks changes one or more files, the commit will automatically abort, so you
-   can double-check the changes. If everything looks good try committing again.
-3. Prior to creating a pull request, run the ``pre_push.py`` script. This runs the
+   the development dependencies mentioned previously or just the linting dependencies
+   with ``pip install ".[lint]"``, then install the hooks with ``pre-commit install``.
+   They will now run automatically every time you commit. If one of the hooks changes
+   one or more files, the commit will automatically abort, so you can double-check the
+   changes. If everything looks good try committing again.
+5. Prior to creating a pull request, run the ``pre_push.py`` script. This runs the
    pre-commit suite on all files, as well as builds the docs. You'll need to have
-   installed the linting dependencies first (see previous).
-4. Add yourself as a contributor to appropriate section in the ``AUTHORS.rst`` file.
-5. Once pushed, ensure that your GitHub Actions build succeeds. If this is your first
-   time contributing to the repository, you will need to wait for a team member to allow
+   installed the linting dependencies first (see previous step).
+6. Add yourself as a contributor to appropriate section in the ``AUTHORS.rst`` file.
+7. Once pushed, ensure that your GitHub Actions build succeeds. If this is your first
+   time contributing to the repository, you may need to wait for a team member to allow
    GitHub Actions to run. GitHub Actions will error if there are *any* linting or test
    failures. Resolve any issues by updating your pull request.
-6. Ensure that your code change has complete test coverage. Tests on methods that do not
+8. Ensure that your code change has complete test coverage. Tests on methods that do not
    require fetching data from Reddit, e.g., method argument validation, should be saved
    as a unit test. Tests that hit Reddit's servers will be an integration test and all
    network activity will be recorded via Betamax. The required packages can be installed
-   with ``pip install praw[test]``.
-7. Feel free to check on the status of your pull request periodically by adding a
+   with ``pip install ".[test]"``.
+9. Feel free to check on the status of your pull request periodically by adding a
    comment.
 
 Becoming a Team Member
@@ -107,16 +114,19 @@ Method Order within a Class
               pass
 
 See Also
-~~~~~~~~
+--------
 
-Please also read through:
-https://praw.readthedocs.io/en/latest/package_info/contributing.html
+Please also read `Contributing to PRAW`_.
+
+.. _contributing to praw: https://praw.readthedocs.io/en/latest/package_info/contributing.html
 
 .. _contributor code of conduct: https://github.com/praw-dev/.github/blob/main/CODE_OF_CONDUCT.md
 
 .. _pre-commit: https://pre-commit.com
 
 .. _r/redditdev: https://redditdev.reddit.com
+
+.. _see here: https://praw.readthedocs.io/en/latest/package_info/contributing.html#install-development-dependencies
 
 .. _slack: https://join.slack.com/t/praw/shared_invite/enQtOTUwMDcxOTQ0NzY5LWVkMGQ3ZDk5YmQ5MDEwYTZmMmJkMTJkNjBkNTY3OTU0Y2E2NGRlY2ZhZTAzMWZmMWRiMTMwYjdjODkxOGYyZjY
 
