@@ -10,12 +10,17 @@ from praw import __version__  # noqa: E402
 
 copyright = datetime.today().strftime("%Y, Bryce Boe")
 exclude_patterns = ["_build"]
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.intersphinx", "sphinx_rtd_theme"]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
+    "sphinx_rtd_dark_mode",
+    "sphinx_rtd_theme",
+]
 html_static_path = ["_static"]
 html_theme = "sphinx_rtd_theme"
 html_theme_options = {"collapse_navigation": True}
 htmlhelp_basename = "PRAW"
-intersphinx_mapping = {"python": ("https://docs.python.org", None)}
+intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
 master_doc = "index"
 nitpick_ignore = [
     ("py:class", "IO"),
