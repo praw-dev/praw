@@ -27,7 +27,7 @@ repos:
   - repo: https://github.com/psf/black
     hooks:
       - id: black
-    rev: 22.3.0
+    rev: 22.6.0
 
   - repo: https://github.com/LilSpazJoekp/docstrfmt
     hooks:
