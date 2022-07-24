@@ -28,6 +28,7 @@ Documentation Contributors
 - Tom Eagles `@deplorableword <https://github.com/deplorableword>`_
 - Mohammad Ghalayini `@mghalayini <https://github.com/mghalayini>`_
 - Jason Haines `@jghaines <https://github.com/jghaines>`_
+- Johanna Rührig `@TheRealVira <https://github.com/TheRealVira>`_
 - Add "Name <email (optional)> and github profile link" above this line.
 
 Logo Creator

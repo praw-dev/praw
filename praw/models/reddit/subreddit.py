@@ -3148,6 +3148,14 @@ class ModeratorRelationship(SubredditRelationship):
 
         .. note::
 
+            To help mitigate targeted moderator harassment, this call requires the
+            :class:`.Reddit` instance to be authenticated i.e., :attr:`.read_only` must
+            return ``False``. This call, however, only makes use of the ``read`` scope.
+            For more information on why the moderator list is hidden can be found here:
+            https://reddit.zendesk.com/hc/en-us/articles/360049499032-Why-is-the-moderator-list-hidden-
+
+        .. note::
+
             Unlike other relationship callables, this relationship is not paginated.
             Thus it simply returns the full list, rather than an iterator for the
             results.
