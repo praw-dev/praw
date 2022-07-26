@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, Any, Dict, Generator, Iterator, List, Optional
 from urllib.parse import urljoin
 from warnings import warn
 from xml.etree.ElementTree import XML
+from io import BytesIO
 
 import websocket
 from prawcore import Redirect
@@ -215,7 +216,12 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                 if not isfile(image_path):
                     raise TypeError(f"{image_path!r} is not a valid image path.")
             else:
-                raise TypeError("'image_path' is required.")
+                image_bytes = image.get("image_bytes")
+                if image_bytes:
+                    if not isinstance(image_bytes, bytes):
+                        raise TypeError("image_bytes String to bytes object conversion failed.")
+                else:
+                    raise TypeError("'image_path' or 'image_bytes' are required.")
             if not len(image.get("caption", "")) <= 180:
                 raise TypeError("Caption must be 180 characters or less.")
 
@@ -643,20 +649,27 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         url = ws_update["payload"]["redirect"]
         return self._reddit.submission(url=url)
 
-    def _read_and_post_media(self, media_path, upload_url, upload_data):
-        with open(media_path, "rb") as media:
-            response = self._reddit._core._requestor._http.post(
-                upload_url, data=upload_data, files={"file": media}
-            )
+    def _read_and_post_media(self, media_path, upload_url, upload_data, image_bytes):
+        if media_path is not None:
+            with open(media_path, "rb") as media_data:
+                media = media_data 
+        elif image_bytes is not None:
+            media = BytesIO(image_bytes)
+        response = self._reddit._core._requestor._http.post(
+            upload_url, data=upload_data, files={"file": media}
+        )
         return response
 
     def _upload_media(
         self,
         *,
         expected_mime_prefix: Optional[str] = None,
-        media_path: str,
+        media_path: Optional[str],
+        image_bytes: Optional[bytes],
+        file_name: Optional[str],
         upload_type: str = "link",
     ):
+
         """Upload media and return its URL and a websocket (Undocumented endpoint).
 
         :param expected_mime_prefix: If provided, enforce that the media has a mime type
@@ -669,13 +682,13 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             finished, or it can be ignored.
 
         """
-        if media_path is None:
+
+        if media_path is None and image_bytes is None:
             media_path = join(
                 dirname(dirname(dirname(__file__))), "images", "PRAW logo.png"
             )
-
-        file_name = basename(media_path).lower()
-        file_extension = file_name.rpartition(".")[2]
+            file_name = basename(media_path).lower()
+        file_extension = file_name.rpartition(".")[2]  
         mime_type = {
             "png": "image/png",
             "mov": "video/quicktime",
@@ -703,7 +716,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         upload_url = f"https:{upload_lease['action']}"
         upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
 
-        response = self._read_and_post_media(media_path, upload_url, upload_data)
+        response = self._read_and_post_media(media_path, upload_url, upload_data, image_bytes)
         if not response.ok:
             self._parse_xml_response(response)
         try:
@@ -1040,8 +1053,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def submit_gallery(
         self,
         title: str,
-        images: List[Dict[str, str]],
         *,
+        images: List[Dict[str, str]] = None,
         collection_id: Optional[str] = None,
         discussion_type: Optional[str] = None,
         flair_id: Optional[str] = None,
@@ -1132,7 +1145,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                     "outbound_url": image.get("outbound_url", ""),
                     "media_id": self._upload_media(
                         expected_mime_prefix="image",
-                        media_path=image["image_path"],
+                        media_path=image.get("image_path"),
+                        image_bytes=image.get("image_bytes"),
+                        file_name=image.get("file_name"),
                         upload_type="gallery",
                     )[0],
                 }
@@ -1162,8 +1177,10 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def submit_image(
         self,
         title: str,
-        image_path: str,
         *,
+        image_path: Optional[str] = None,
+        image_bytes: Optional[bytes],
+        file_name: Optional[str],
         collection_id: Optional[str] = None,
         discussion_type: Optional[str] = None,
         flair_id: Optional[str] = None,
@@ -1255,8 +1272,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                 data[key] = value
 
         image_url, websocket_url = self._upload_media(
-            expected_mime_prefix="image", media_path=image_path
+            expected_mime_prefix="image", media_path=image_path, image_bytes=image_bytes, file_name=file_name 
         )
+
         data.update(kind="image", url=image_url)
         if without_websockets:
             websocket_url = None
@@ -2230,7 +2248,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         .. code-block:: python
 
-            reddit.subreddit("test").flair.link_templates.add(
+            reddit.subreddit("test").flair.templates.add(
                 "PRAW",
                 css_class="praw",
                 text_editable=True,
@@ -3145,14 +3163,6 @@ class ModeratorRelationship(SubredditRelationship):
             :class:`.Redditor` instance. This is useful to confirm if a relationship
             exists, or to fetch the metadata associated with a particular relationship
             (default: ``None``).
-
-        .. note::
-
-            To help mitigate targeted moderator harassment, this call requires the
-            :class:`.Reddit` instance to be authenticated i.e., :attr:`.read_only` must
-            return ``False``. This call, however, only makes use of the ``read`` scope.
-            For more information on why the moderator list is hidden can be found here:
-            https://reddit.zendesk.com/hc/en-us/articles/360049499032-Why-is-the-moderator-list-hidden-
 
         .. note::
 
