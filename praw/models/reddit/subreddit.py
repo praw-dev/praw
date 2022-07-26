@@ -4,16 +4,16 @@
 import socket
 from copy import deepcopy
 from csv import writer
-from io import StringIO
+from io import BytesIO, StringIO
 from json import dumps, loads
 from os.path import basename, dirname, isfile, join
 from typing import TYPE_CHECKING, Any, Dict, Generator, Iterator, List, Optional, Union
 from urllib.parse import urljoin
 from warnings import warn
 from xml.etree.ElementTree import XML
-from io import BytesIO
 
 import websocket
+from PIL import Image
 from prawcore import Redirect
 from prawcore.exceptions import ServerError
 from requests.exceptions import HTTPError
@@ -211,17 +211,17 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     @staticmethod
     def _validate_gallery(images):
         for image in images:
-            image_path = image.get("image_path", "")
-            if image_path:
-                if not isfile(image_path):
-                    raise TypeError(f"{image_path!r} is not a valid image path.")
+            image_data = image.get("image", "")
+            if image_data:
+                if isinstance(image_data, str):
+                    if not isfile(image_data):
+                        raise ValueError(f"{image_data!r} is not a valid file path.")
+                elif not isinstance(image_data, bytes):
+                    raise TypeError(
+                        "'image' dictionary value contains an invalid bytes object."
+                    )  # do not log bytes value, it is long and not human readable
             else:
-                image_bytes = image.get("image_bytes")
-                if image_bytes:
-                    if not isinstance(image_bytes, bytes):
-                        raise TypeError("image_bytes String to bytes object conversion failed.")
-                else:
-                    raise TypeError("'image_path' or 'image_bytes' are required.")
+                raise TypeError("'image' dictionary value cannot be null.")
             if not len(image.get("caption", "")) <= 180:
                 raise TypeError("Caption must be 180 characters or less.")
 
@@ -649,27 +649,26 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         url = ws_update["payload"]["redirect"]
         return self._reddit.submission(url=url)
 
-    def _read_and_post_media(self, media_path, upload_url, upload_data, image_bytes):
-        if media_path is not None:
-            with open(media_path, "rb") as media_data:
-                media = media_data 
-        elif image_bytes is not None:
-            media = BytesIO(image_bytes)
-        response = self._reddit._core._requestor._http.post(
-            upload_url, data=upload_data, files={"file": media}
-        )
+    def _read_and_post_media(self, media, upload_url, upload_data):
+        if isfile(media):
+            with open(media, "rb") as media_data:
+                response = self._reddit._core._requestor._http.post(
+                    upload_url, data=upload_data, files={"file": media_data}
+                )
+        elif isinstance(media, bytes):
+            media = BytesIO(media)
+            response = self._reddit._core._requestor._http.post(
+                upload_url, data=upload_data, files={"file": media}
+            )
         return response
 
     def _upload_media(
         self,
         *,
         expected_mime_prefix: Optional[str] = None,
-        media_path: Optional[str],
-        image_bytes: Optional[bytes],
-        file_name: Optional[str],
+        media: str,
         upload_type: str = "link",
     ):
-
         """Upload media and return its URL and a websocket (Undocumented endpoint).
 
         :param expected_mime_prefix: If provided, enforce that the media has a mime type
@@ -682,13 +681,14 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             finished, or it can be ignored.
 
         """
+        if media is None:
+            media = join(dirname(dirname(dirname(__file__))), "images", "PRAW logo.png")
+        if isfile(media):
+            file_name = basename(media).lower()
+            file_extension = file_name.rpartition(".")[2]
+        elif isinstance(media, bytes):
+            file_extension = Image.open(BytesIO(media)).format.lower()
 
-        if media_path is None and image_bytes is None:
-            media_path = join(
-                dirname(dirname(dirname(__file__))), "images", "PRAW logo.png"
-            )
-            file_name = basename(media_path).lower()
-        file_extension = file_name.rpartition(".")[2]  
         mime_type = {
             "png": "image/png",
             "mov": "video/quicktime",
@@ -707,6 +707,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                 f"Expected a mimetype starting with {expected_mime_prefix!r} but got"
                 f" mimetype {mime_type!r} (from file extension {file_extension!r})."
             )
+        if isinstance(media, bytes):
+            file_name = mime_type.split("/")[0] + "." + mime_type.split("/")[1]
         img_data = {"filepath": file_name, "mimetype": mime_type}
 
         url = API_PATH["media_asset"]
@@ -716,7 +718,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         upload_url = f"https:{upload_lease['action']}"
         upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
 
-        response = self._read_and_post_media(media_path, upload_url, upload_data, image_bytes)
+        response = self._read_and_post_media(media, upload_url, upload_data)
         if not response.ok:
             self._parse_xml_response(response)
         try:
@@ -1053,8 +1055,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def submit_gallery(
         self,
         title: str,
-        *,
         images: List[Dict[str, str]] = None,
+        *,
         collection_id: Optional[str] = None,
         discussion_type: Optional[str] = None,
         flair_id: Optional[str] = None,
@@ -1067,8 +1069,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         :param title: The title of the submission.
         :param images: The images to post in dict with the following structure:
-            ``{"image_path": "path", "caption": "caption", "outbound_url": "url"}``,
-            only ``image_path`` is required.
+            ``{"image": "path", "caption": "caption", "outbound_url": "url"}``, only
+            ``image`` is required. ``image`` can refer to either an image path or a
+            bytes object representing an image.
         :param collection_id: The UUID of a :class:`.Collection` to add the
             newly-submitted post to.
         :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
@@ -1145,9 +1148,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                     "outbound_url": image.get("outbound_url", ""),
                     "media_id": self._upload_media(
                         expected_mime_prefix="image",
-                        media_path=image.get("image_path"),
-                        image_bytes=image.get("image_bytes"),
-                        file_name=image.get("file_name"),
+                        media=image.get("image"),
                         upload_type="gallery",
                     )[0],
                 }
@@ -1177,10 +1178,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def submit_image(
         self,
         title: str,
+        image: str,
         *,
-        image_path: Optional[str] = None,
-        image_bytes: Optional[bytes],
-        file_name: Optional[str],
         collection_id: Optional[str] = None,
         discussion_type: Optional[str] = None,
         flair_id: Optional[str] = None,
@@ -1202,7 +1201,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
             this value will set a custom text (default: ``None``). ``flair_id`` is
             required when ``flair_text`` is provided.
-        :param image_path: The path to an image, to upload and post.
+        :param image: Either the path to an image or a bytes object representing an
+            image, to upload and post.
         :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
         :param resubmit: When ``False``, an error will occur if the URL has already been
             submitted (default: ``True``).
@@ -1272,7 +1272,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                 data[key] = value
 
         image_url, websocket_url = self._upload_media(
-            expected_mime_prefix="image", media_path=image_path, image_bytes=image_bytes, file_name=file_name 
+            expected_mime_prefix="image", media=image
         )
 
         data.update(kind="image", url=image_url)
@@ -2248,7 +2248,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         .. code-block:: python
 
-            reddit.subreddit("test").flair.templates.add(
+            reddit.subreddit("test").flair.link_templates.add(
                 "PRAW",
                 css_class="praw",
                 text_editable=True,
@@ -3163,6 +3163,14 @@ class ModeratorRelationship(SubredditRelationship):
             :class:`.Redditor` instance. This is useful to confirm if a relationship
             exists, or to fetch the metadata associated with a particular relationship
             (default: ``None``).
+
+        .. note::
+
+            To help mitigate targeted moderator harassment, this call requires the
+            :class:`.Reddit` instance to be authenticated i.e., :attr:`.read_only` must
+            return ``False``. This call, however, only makes use of the ``read`` scope.
+            For more information on why the moderator list is hidden can be found here:
+            https://reddit.zendesk.com/hc/en-us/articles/360049499032-Why-is-the-moderator-list-hidden-
 
         .. note::
 
