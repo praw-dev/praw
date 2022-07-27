@@ -6,14 +6,13 @@ from copy import deepcopy
 from csv import writer
 from io import BytesIO, StringIO
 from json import dumps, loads
-from os.path import basename, dirname, isfile, join
+from os.path import basename, isfile
 from typing import TYPE_CHECKING, Any, Dict, Generator, Iterator, List, Optional, Union
 from urllib.parse import urljoin
 from warnings import warn
 from xml.etree.ElementTree import XML
 
 import websocket
-from PIL import Image
 from prawcore import Redirect
 from prawcore.exceptions import ServerError
 from requests.exceptions import HTTPError
@@ -210,18 +209,22 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
     @staticmethod
     def _validate_gallery(images):
-        for image in images:
-            image_data = image.get("image", "")
-            if image_data:
-                if isinstance(image_data, str):
-                    if not isfile(image_data):
-                        raise ValueError(f"{image_data!r} is not a valid file path.")
-                elif not isinstance(image_data, bytes):
+        for index, image in enumerate(images):
+            image_path = image.get("image_path")
+            image_fp = image.get("image_fp")
+            if image_path is not None and image_fp is None:
+                if isinstance(image_path, str):
+                    if not isfile(image_path):
+                        raise ValueError(f"{image_path!r} is not a valid file path.")
+            elif image_path is None and image_fp is not None:
+                if not isinstance(image_fp, bytes):
                     raise TypeError(
-                        "'image' dictionary value contains an invalid bytes object."
+                        f"'image_fp' dictionary value at index {index} contains an invalid bytes object."
                     )  # do not log bytes value, it is long and not human readable
             else:
-                raise TypeError("'image' dictionary value cannot be null.")
+                raise TypeError(
+                    f"Values for keys image_path and image_fp are null for dictionary at index {index}."
+                )
             if not len(image.get("caption", "")) <= 180:
                 raise TypeError("Caption must be 180 characters or less.")
 
@@ -649,16 +652,15 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         url = ws_update["payload"]["redirect"]
         return self._reddit.submission(url=url)
 
-    def _read_and_post_media(self, media, upload_url, upload_data):
-        if isfile(media):
-            with open(media, "rb") as media_data:
+    def _read_and_post_media(self, media_path, media_fp, upload_url, upload_data):
+        if media_path is not None and media_fp is None:
+            with open(media_path, "rb") as media:
                 response = self._reddit._core._requestor._http.post(
-                    upload_url, data=upload_data, files={"file": media_data}
+                    upload_url, data=upload_data, files={"file": media}
                 )
-        elif isinstance(media, bytes):
-            media = BytesIO(media)
+        elif media_path is None and media_fp is not None:
             response = self._reddit._core._requestor._http.post(
-                upload_url, data=upload_data, files={"file": media}
+                upload_url, data=upload_data, files={"file": BytesIO(media_fp)}
             )
         return response
 
@@ -666,7 +668,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         self,
         *,
         expected_mime_prefix: Optional[str] = None,
-        media: str,
+        media_path: str,
+        media_fp: bytes,
         upload_type: str = "link",
     ):
         """Upload media and return its URL and a websocket (Undocumented endpoint).
@@ -681,14 +684,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             finished, or it can be ignored.
 
         """
-        if media is None:
-            media = join(dirname(dirname(dirname(__file__))), "images", "PRAW logo.png")
-        if isfile(media):
-            file_name = basename(media).lower()
-            file_extension = file_name.rpartition(".")[2]
-        elif isinstance(media, bytes):
-            file_extension = Image.open(BytesIO(media)).format.lower()
-
         mime_type = {
             "png": "image/png",
             "mov": "video/quicktime",
@@ -696,9 +691,79 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             "jpg": "image/jpeg",
             "jpeg": "image/jpeg",
             "gif": "image/gif",
-        }.get(
-            file_extension, "image/jpeg"
-        )  # default to JPEG
+        }
+        if media_path is not None and media_fp is None:
+            if isfile(media_path):
+                file_name = basename(media_path).lower()
+                file_extension = file_name.rpartition(".")[2]
+                mime_type = mime_type.get(
+                    file_extension, "image/jpeg"
+                )  # default to JPEG
+            else:
+                raise TypeError("media_path does not reference a file.")
+        elif media_path is None and media_fp is not None:
+            if isinstance(media_fp, bytes):
+                magic_number = [
+                    int(aByte) for aByte in media_fp[:8]
+                ]  # gets the format indicator
+                file_headers = {
+                    tuple(
+                        [
+                            int(aByte)
+                            for aByte in bytes(
+                                [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]
+                            )
+                        ]
+                    ): "png",
+                    tuple(
+                        [int(aByte) for aByte in bytes([0x6D, 0x6F, 0x6F, 0x76])]
+                    ): "mov",
+                    tuple(
+                        [
+                            int(aByte)
+                            for aByte in bytes(
+                                [0x66, 0x74, 0x79, 0x70, 0x69, 0x73, 0x6F, 0x6D]
+                            )
+                        ]
+                    ): "mp4",
+                    tuple(
+                        [int(aByte) for aByte in bytes([0xFF, 0xD8, 0xFF, 0xE0])]
+                    ): "jpg",
+                    tuple(
+                        [
+                            int(aByte)
+                            for aByte in bytes(
+                                [0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46]
+                            )
+                        ]
+                    ): "jpeg",
+                    tuple(
+                        [
+                            int(aByte)
+                            for aByte in bytes([0x47, 0x49, 0x46, 0x38, 0x37, 0x61])
+                        ]
+                    ): "gif",
+                }
+                for size in range(4, 10, 2):  # size will equal 4, 6, 8
+                    file_extension = file_headers.get(tuple(magic_number[:size]))
+                    if file_extension is not None:
+                        mime_type = mime_type.get(
+                            file_extension, "image/jpeg"
+                        )  # default to JPEG
+                        file_name = (
+                            mime_type.split("/")[0] + "." + mime_type.split("/")[1]
+                        )
+                        break
+                if file_extension is None:
+                    raise TypeError(
+                        "media_fp does not represent an accepted file format"
+                        " (png, mov, mp4, jpg, jpeg, gif.)"
+                    )
+            else:
+                raise TypeError("media_fp is not of type bytes.")
+        else:
+            raise TypeError("media_path and media_fp are null.")
+
         if (
             expected_mime_prefix is not None
             and mime_type.partition("/")[0] != expected_mime_prefix
@@ -707,8 +772,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                 f"Expected a mimetype starting with {expected_mime_prefix!r} but got"
                 f" mimetype {mime_type!r} (from file extension {file_extension!r})."
             )
-        if isinstance(media, bytes):
-            file_name = mime_type.split("/")[0] + "." + mime_type.split("/")[1]
         img_data = {"filepath": file_name, "mimetype": mime_type}
 
         url = API_PATH["media_asset"]
@@ -718,7 +781,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         upload_url = f"https:{upload_lease['action']}"
         upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
 
-        response = self._read_and_post_media(media, upload_url, upload_data)
+        response = self._read_and_post_media(
+            media_path, media_fp, upload_url, upload_data
+        )
         if not response.ok:
             self._parse_xml_response(response)
         try:
@@ -1068,10 +1133,11 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         """Add an image gallery submission to the subreddit.
 
         :param title: The title of the submission.
-        :param images: The images to post in dict with the following structure:
-            ``{"image": "path", "caption": "caption", "outbound_url": "url"}``, only
-            ``image`` is required. ``image`` can refer to either an image path or a
-            bytes object representing an image.
+        :param images: The images to post in dict with one of the following two
+            structures: ``{"image_path": "path", "caption": "caption", "outbound_url":
+            "url"}`` and ``{"image_fp": "file_pointer", "caption": "caption",
+            "outbound_url": "url"}``, only ``image_path`` and ``image_fp`` are required
+            for each given structure.
         :param collection_id: The UUID of a :class:`.Collection` to add the
             newly-submitted post to.
         :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
@@ -1148,7 +1214,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                     "outbound_url": image.get("outbound_url", ""),
                     "media_id": self._upload_media(
                         expected_mime_prefix="image",
-                        media=image.get("image"),
+                        media_path=image.get("image_path"),
+                        media_fp=image.get("image_fp"),
                         upload_type="gallery",
                     )[0],
                 }
@@ -1178,8 +1245,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def submit_image(
         self,
         title: str,
-        image: str,
         *,
+        image_path: Optional[str] = None,
+        image_fp: Optional[bytes] = None,
         collection_id: Optional[str] = None,
         discussion_type: Optional[str] = None,
         flair_id: Optional[str] = None,
@@ -1201,8 +1269,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
             this value will set a custom text (default: ``None``). ``flair_id`` is
             required when ``flair_text`` is provided.
-        :param image: Either the path to an image or a bytes object representing an
-            image, to upload and post.
+        :param image_path: The path to an image, to upload and post. (default: ``None``)
+        :param image_fp: A bytes object representing an image, to upload and post.
+            (default: ``None``)
         :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
         :param resubmit: When ``False``, an error will occur if the URL has already been
             submitted (default: ``True``).
@@ -1272,7 +1341,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                 data[key] = value
 
         image_url, websocket_url = self._upload_media(
-            expected_mime_prefix="image", media=image
+            expected_mime_prefix="image", media_path=image_path, media_fp=image_fp
         )
 
         data.update(kind="image", url=image_url)
