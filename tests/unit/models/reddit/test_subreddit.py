@@ -155,7 +155,7 @@ class TestSubreddit(UnitTest):
         assert str(excinfo.value) == message
 
     def test_submit_gallery__invalid_image_path(self):
-        message = "'invalid_image' is not a valid image path."
+        message = "'invalid_image' is not a valid file path."
         subreddit = Subreddit(self.reddit, display_name="name")
 
         with pytest.raises(TypeError) as excinfo:
