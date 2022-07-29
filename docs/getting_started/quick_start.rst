@@ -91,7 +91,7 @@ Just like that, you now have a read-only :class:`.Reddit` instance.
     # Output: True
 
 With a read-only instance, you can do something like obtaining 10 "hot" submissions from
-``r/learnpython``:
+``r/test``:
 
 .. code-block:: python
 
