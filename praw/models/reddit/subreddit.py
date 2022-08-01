@@ -215,7 +215,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             if image_path is not None and image_fp is None:
                 if isinstance(image_path, str):
                     if not isfile(image_path):
-                        raise ValueError(f"{image_path!r} is not a valid file path.")
+                        raise ValueError(f"{image_path} is not a valid file path.")
             elif image_path is None and image_fp is not None:
                 if not isinstance(image_fp, bytes):
                     raise TypeError(
