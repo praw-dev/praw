@@ -155,11 +155,12 @@ class TestSubreddit(UnitTest):
         assert str(excinfo.value) == message
 
     def test_submit_gallery__invalid_image_path(self):
-        message = "'invalid_image' is not a valid file path."
+        image_path = "invalid_image"
+        message = f"{image_path!r} is not a valid file path."
         subreddit = Subreddit(self.reddit, display_name="name")
 
         with pytest.raises(TypeError) as excinfo:
-            subreddit.submit_gallery("Cool title", [{"image_path": "invalid_image"}])
+            subreddit.submit_gallery("Cool title", [{"image_path": image_path}])
         assert str(excinfo.value) == message
 
     def test_submit_gallery__too_long_caption(self):
