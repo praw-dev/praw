@@ -156,7 +156,7 @@ class TestSubreddit(UnitTest):
 
     def test_submit_gallery__invalid_image_path(self):
         image_path = "invalid_image"
-        message = f"{image_path!r} is not a valid file path."
+        message = f"{image_path} is not a valid file path."
         subreddit = Subreddit(self.reddit, display_name="name")
 
         with pytest.raises(TypeError) as excinfo:
