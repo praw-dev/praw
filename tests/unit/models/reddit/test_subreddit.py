@@ -144,8 +144,9 @@ class TestSubreddit(UnitTest):
             subreddit.submit("Cool title", selftext="", url="b")
         assert str(excinfo.value) == message
 
-    def test_submit_gallery__missing_image_path(self):
-        message = "'image_path' is required."
+    def test_submit_gallery__missing_image_path_and_image_fp(self):
+        # message = "'image_path' is required."
+        message = "Values for keys image_path and image_fp are null for dictionary at index 0."
         subreddit = Subreddit(self.reddit, display_name="name")
 
         with pytest.raises(TypeError) as excinfo:
@@ -155,13 +156,24 @@ class TestSubreddit(UnitTest):
         assert str(excinfo.value) == message
 
     def test_submit_gallery__invalid_image_path(self):
-        image_path = "invalid_image"
-        message = f"{image_path} is not a valid file path."
+        message = "invalid_image is not a valid file path."
         subreddit = Subreddit(self.reddit, display_name="name")
 
         with pytest.raises(TypeError) as excinfo:
-            subreddit.submit_gallery("Cool title", [{"image_path": image_path}])
-        assert str(excinfo.value) != message
+            subreddit.submit_gallery("Cool title", [{"image_path": "invalid_image"}])
+        assert str(excinfo.value) == message
+
+    def test_submit_gallery__invalid_image_fp(self):
+        message = (
+            "'image_fp' dictionary value at index 0 contains an invalid bytes object."
+        )
+        subreddit = Subreddit(self.reddit, display_name="name")
+
+        with pytest.raises(TypeError) as excinfo:
+            subreddit.submit_gallery(
+                "Cool title", [{"image_fp": "invalid_image_filepointer"}]
+            )
+        assert str(excinfo.value) == message
 
     def test_submit_gallery__too_long_caption(self):
         message = "Caption must be 180 characters or less."
