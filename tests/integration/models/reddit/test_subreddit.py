@@ -695,6 +695,11 @@ class TestSubreddit(IntegrationTest):
             for i, file_name in enumerate(("test.mov", "test.mp4")):
                 video = self.image_path(file_name)
 
+                # message = "media_path and media_fp are null."
+                # with pytest.raises(TypeError) as excinfo:
+                #    subreddit.submit_video(f"Test Title {i}", video)
+
+                #    assert str(excinfo.value) == message
                 submission = subreddit.submit_video(f"Test Title {i}", video)
                 assert submission.author == self.reddit.config.username
                 assert submission.is_video
@@ -878,10 +883,10 @@ class TestSubreddit(IntegrationTest):
             for file_name in ("test.mov", "test.mp4"):
                 video = self.image_path(file_name)
 
-                submission = subreddit.submit_video("Test Title", video, videogif=True)
-                assert submission.author == self.reddit.config.username
-                assert submission.is_video
-                assert submission.title == "Test Title"
+                message = "media_path and media_fp are null."
+                with pytest.raises(AssertionError) as excinfo:
+                    subreddit.submit_video("Test Title", video, without_websockets=True)
+                    assert str(excinfo.value) == message
 
     @mock.patch("time.sleep", return_value=None)
     def test_submit_video__without_websockets(self, _):
@@ -891,10 +896,10 @@ class TestSubreddit(IntegrationTest):
             for file_name in ("test.mov", "test.mp4"):
                 video = self.image_path(file_name)
 
-                submission = subreddit.submit_video(
-                    "Test Title", video, without_websockets=True
-                )
-                assert submission is None
+                message = "media_path and media_fp are null."
+                with pytest.raises(AssertionError) as excinfo:
+                    subreddit.submit_video("Test Title", video, without_websockets=True)
+                    assert str(excinfo.value) == message
 
     def test_subscribe(self):
         self.reddit.read_only = False

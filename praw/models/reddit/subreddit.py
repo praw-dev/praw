@@ -6,7 +6,7 @@ from copy import deepcopy
 from csv import writer
 from io import BytesIO, StringIO
 from json import dumps, loads
-from os.path import basename, isfile
+from os.path import basename, dirname, isfile, join
 from typing import TYPE_CHECKING, Any, Dict, Generator, Iterator, List, Optional, Union
 from urllib.parse import urljoin
 from warnings import warn
@@ -658,18 +658,22 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                 response = self._reddit._core._requestor._http.post(
                     upload_url, data=upload_data, files={"file": media}
                 )
+                return response
         elif media_path is None and media_fp is not None:
-            response = self._reddit._core._requestor._http.post(
-                upload_url, data=upload_data, files={"file": BytesIO(media_fp)}
-            )
+            file_data = {"file": BytesIO(media_fp)}
+        else:
+            file_data = None
+        response = self._reddit._core._requestor._http.post(
+            upload_url, data=upload_data, files=file_data
+        )
         return response
 
     def _upload_media(
         self,
         *,
         expected_mime_prefix: Optional[str] = None,
-        media_path: str,
-        media_fp: bytes,
+        media_path: Optional[str] = None,
+        media_fp: Optional[bytes] = None,
         upload_type: str = "link",
     ):
         """Upload media and return its URL and a websocket (Undocumented endpoint).
@@ -684,6 +688,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             finished, or it can be ignored.
 
         """
+        file_name = None
         mime_type = {
             "png": "image/png",
             "mov": "video/quicktime",
@@ -692,15 +697,14 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             "jpeg": "image/jpeg",
             "gif": "image/gif",
         }
+        if media_path is None and media_fp is None:
+            media_path = join(
+                dirname(dirname(dirname(__file__))), "images", "PRAW logo.png"
+            )
         if media_path is not None and media_fp is None:
-            if isfile(media_path):
-                file_name = basename(media_path).lower()
-                file_extension = file_name.rpartition(".")[2]
-                mime_type = mime_type.get(
-                    file_extension, "image/jpeg"
-                )  # default to JPEG
-            else:
-                raise TypeError("media_path does not reference a file.")
+            file_name = basename(media_path).lower()
+            file_extension = file_name.rpartition(".")[2]
+            mime_type = mime_type.get(file_extension, "image/jpeg")  # default to JPEG
         elif media_path is None and media_fp is not None:
             if isinstance(media_fp, bytes):
                 magic_number = [
@@ -761,8 +765,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                     )
             else:
                 raise TypeError("media_fp is not of type bytes.")
-        else:
-            raise TypeError("media_path and media_fp are null.")
 
         if (
             expected_mime_prefix is not None
