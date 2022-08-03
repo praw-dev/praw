@@ -653,6 +653,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return self._reddit.submission(url=url)
 
     def _read_and_post_media(self, media_path, media_fp, upload_url, upload_data):
+        response = None
         if media_path is not None and media_fp is None:
             with open(media_path, "rb") as media:
                 response = self._reddit._core._requestor._http.post(
@@ -661,10 +662,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         elif media_path is None and media_fp is not None:
             response = self._reddit._core._requestor._http.post(
                 upload_url, data=upload_data, files={"file": BytesIO(media_fp)}
-            )
-        else:
-            response = self._reddit._core._requestor._http.post(
-                upload_url, data=upload_data, files=None
             )
         return response
 
