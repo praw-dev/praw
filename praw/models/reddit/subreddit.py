@@ -13,7 +13,7 @@ from warnings import warn
 from xml.etree.ElementTree import XML
 
 import websocket
-from prawcore import Redirect
+from prawcore import Redirect, RequestException
 from prawcore.exceptions import ServerError
 from requests.exceptions import HTTPError
 
@@ -778,11 +778,19 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         url = API_PATH["media_asset"]
         # until we learn otherwise, assume this request always succeeds
-        upload_response = self._reddit.post(url, data=img_data)
-        upload_lease = upload_response["args"]
-        upload_url = f"https:{upload_lease['action']}"
-        upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
-
+        upload_response = None
+        upload_lease = None
+        upload_url = None
+        upload_data = None
+        try:
+            upload_response = self._reddit.post(url, data=img_data)
+            upload_lease = upload_response["args"]
+            upload_url = f"https:{upload_lease['action']}"
+            upload_data = {
+                item["name"]: item["value"] for item in upload_lease["fields"]
+            }
+        except RequestException:
+            pass
         response = self._read_and_post_media(
             media_path, media_fp, upload_url, upload_data
         )

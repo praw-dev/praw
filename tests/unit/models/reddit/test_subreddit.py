@@ -171,8 +171,6 @@ class TestSubreddit(UnitTest):
         assert str(excinfo.value) == message
 
     def test_submit_gallery__invalid_image_fp(self):
-        from prawcore import RequestException
-
         subreddit = Subreddit(self.reddit, display_name="name")
 
         message = (
@@ -188,16 +186,13 @@ class TestSubreddit(UnitTest):
             subreddit.submit_gallery("Cool title", [{"image_fp": encoded_string}])
         assert str(excinfo.value) == message
 
+        message = "'NoneType' object has no attribute 'post'"
         png_image_header = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]
         invalid_png_image = bytes(bytearray(png_image_header) + encoded_string)
-        try:
-            with pytest.raises(TypeError) as excinfo:
-                subreddit.submit_gallery(
-                    "Cool title", [{"image_fp": invalid_png_image}]
-                )
-            assert str(excinfo.value) == ""
-        except RequestException:
-            pass
+
+        with pytest.raises(AttributeError) as excinfo:
+            subreddit.submit_gallery("Cool title", [{"image_fp": invalid_png_image}])
+        assert str(excinfo.value) == message
 
     def test_submit_gallery__too_long_caption(self):
         message = "Caption must be 180 characters or less."
