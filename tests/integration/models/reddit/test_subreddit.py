@@ -694,12 +694,6 @@ class TestSubreddit(IntegrationTest):
             subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
             for i, file_name in enumerate(("test.mov", "test.mp4")):
                 video = self.image_path(file_name)
-
-                # message = "media_path and media_fp are null."
-                # with pytest.raises(TypeError) as excinfo:
-                #    subreddit.submit_video(f"Test Title {i}", video)
-
-                #    assert str(excinfo.value) == message
                 submission = subreddit.submit_video(f"Test Title {i}", video)
                 assert submission.author == self.reddit.config.username
                 assert submission.is_video

@@ -153,7 +153,6 @@ class TestSubreddit(UnitTest):
         assert str(excinfo.value) == message
 
     def test_submit_gallery__missing_image_path_and_image_fp(self):
-        # message = "'image_path' is required."
         message = "Values for keys image_path and image_fp are null for dictionary at index 0."
         subreddit = Subreddit(self.reddit, display_name="name")
 
@@ -172,13 +171,19 @@ class TestSubreddit(UnitTest):
         assert str(excinfo.value) == message
 
     def test_submit_gallery__invalid_image_fp(self):
+        subreddit = Subreddit(self.reddit, display_name="name")
+
         message = (
             "'image_fp' dictionary value at index 0 contains an invalid bytes object."
         )
-        subreddit = Subreddit(self.reddit, display_name="name")
-
         with pytest.raises(TypeError) as excinfo:
             subreddit.submit_gallery("Cool title", [{"image_fp": "invalid_image"}])
+        assert str(excinfo.value) == message
+
+        message = "media_fp does not represent an accepted file format (png, mov, mp4, jpg, jpeg, gif.)"
+        encoded_string = "invalid_image".encode()
+        with pytest.raises(TypeError) as excinfo:
+            subreddit.submit_gallery("Cool title", [{"image_fp": encoded_string}])
         assert str(excinfo.value) == message
 
     def test_submit_gallery__too_long_caption(self):
