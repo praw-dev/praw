@@ -38,7 +38,7 @@ repos:
   - repo: https://github.com/pycqa/flake8
     hooks:
       - id: flake8
-    rev: 5.0.2
+    rev: 5.0.4
 
   - repo: https://github.com/ikamensh/flynt/
     hooks:
