@@ -678,6 +678,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         :param expected_mime_prefix: If provided, enforce that the media has a mime type
             that starts with the provided prefix.
+        :param mime_type: The mime type of the media, supplement of ``media_fp``.
+            Redundant when ``media_path`` has an appropriate value. (default: ``None``).
         :param upload_type: One of ``"link"``, ``"gallery"'', or ``"selfpost"``
             (default: ``"link"``).
 
@@ -1229,6 +1231,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :param image_path: The path to an image, to upload and post. (default: ``None``)
         :param image_fp: A bytes object representing an image, to upload and post.
             (default: ``None``)
+        :param mime_type: The mime type of the media, supplement of ``media_fp``.
+            Redundant when ``media_path`` has an appropriate value. (default: ``None``).
         :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
         :param resubmit: When ``False``, an error will occur if the URL has already been
             submitted (default: ``True``).
