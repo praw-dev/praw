@@ -671,6 +671,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         expected_mime_prefix: Optional[str] = None,
         media_path: Optional[str] = None,
         media_fp: Optional[bytes] = None,
+        mime_type: Optional[str] = None,
         upload_type: str = "link",
     ):
         """Upload media and return its URL and a websocket (Undocumented endpoint).
@@ -686,7 +687,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         """
         file_name = None
-        mime_type = {
+        mime_types = {
             "png": "image/png",
             "mov": "video/quicktime",
             "mp4": "video/mp4",
@@ -701,68 +702,14 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         if media_path is not None and media_fp is None:
             file_name = basename(media_path).lower()
             file_extension = file_name.rpartition(".")[2]
-            mime_type = mime_type.get(file_extension, "image/jpeg")  # default to JPEG
+            mime_type = mime_types.get(file_extension, "image/jpeg")  # default to JPEG
         elif media_path is None and media_fp is not None:
             if isinstance(media_fp, bytes):
-                magic_number = [
-                    int(aByte) for aByte in media_fp[:8]
-                ]  # gets the format indicator
-                file_headers = {
-                    tuple(
-                        [
-                            int(aByte)
-                            for aByte in bytes(
-                                [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]
-                            )
-                        ]
-                    ): "png",
-                    tuple(
-                        [int(aByte) for aByte in bytes([0x6D, 0x6F, 0x6F, 0x76])]
-                    ): "mov",
-                    tuple(
-                        [
-                            int(aByte)
-                            for aByte in bytes(
-                                [0x66, 0x74, 0x79, 0x70, 0x69, 0x73, 0x6F, 0x6D]
-                            )
-                        ]
-                    ): "mp4",
-                    tuple(
-                        [int(aByte) for aByte in bytes([0xFF, 0xD8, 0xFF, 0xE0])]
-                    ): "jpg",
-                    tuple(
-                        [
-                            int(aByte)
-                            for aByte in bytes(
-                                [0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46]
-                            )
-                        ]
-                    ): "jpeg",
-                    tuple(
-                        [
-                            int(aByte)
-                            for aByte in bytes([0x47, 0x49, 0x46, 0x38, 0x37, 0x61])
-                        ]
-                    ): "gif",
-                }
-                for size in range(4, 10, 2):  # size will equal 4, 6, 8
-                    file_extension = file_headers.get(tuple(magic_number[:size]))
-                    if file_extension is not None:
-                        mime_type = mime_type.get(
-                            file_extension, "image/jpeg"
-                        )  # default to JPEG
-                        file_name = (
-                            mime_type.split("/")[0] + "." + mime_type.split("/")[1]
-                        )
-                        break
-                if file_extension is None:
-                    raise TypeError(
-                        "media_fp does not represent an accepted file format"
-                        " (png, mov, mp4, jpg, jpeg, gif.)"
-                    )
+                mime_type = mime_types.get(
+                    mime_type.partition("/")[1], "image/jpeg"
+                )  # default to JPEG
             else:
                 raise TypeError("media_fp is not of type bytes.")
-
         if (
             expected_mime_prefix is not None
             and mime_type.partition("/")[0] != expected_mime_prefix
@@ -1143,8 +1090,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :param images: The images to post in dict with one of the following two
             structures: ``{"image_path": "path", "caption": "caption", "outbound_url":
             "url"}`` and ``{"image_fp": "file_pointer", "caption": "caption",
-            "outbound_url": "url"}``, only ``image_path`` and ``image_fp`` are required
-            for each given structure.
+            "mime_type": "image/png", "outbound_url": "url"}``, only ``image_path`` is
+            required for the former structure while ``image_fp`` and ``mime_type`` are
+            required for the latter.
         :param collection_id: The UUID of a :class:`.Collection` to add the
             newly-submitted post to.
         :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
@@ -1223,6 +1171,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                         expected_mime_prefix="image",
                         media_path=image.get("image_path"),
                         media_fp=image.get("image_fp"),
+                        mime_type=image.get("mime_type"),
                         upload_type="gallery",
                     )[0],
                 }
@@ -1255,6 +1204,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         *,
         image_path: Optional[str] = None,
         image_fp: Optional[bytes] = None,
+        mime_type: Optional[str] = None,
         collection_id: Optional[str] = None,
         discussion_type: Optional[str] = None,
         flair_id: Optional[str] = None,
@@ -1348,7 +1298,10 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                 data[key] = value
 
         image_url, websocket_url = self._upload_media(
-            expected_mime_prefix="image", media_path=image_path, media_fp=image_fp
+            expected_mime_prefix="image",
+            media_path=image_path,
+            media_fp=image_fp,
+            mime_type=mime_type,
         )
 
         data.update(kind="image", url=image_url)
@@ -1574,7 +1527,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                 data[key] = value
 
         video_url, websocket_url = self._upload_media(
-            expected_mime_prefix="video", media_path=video_path
+            expected_mime_prefix="video",
+            media_path=video_path,
         )
         data.update(
             kind="videogif" if videogif else "video",
