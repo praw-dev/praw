@@ -182,6 +182,16 @@ class TestSubreddit(UnitTest):
             )
         assert str(excinfo.value) == message
 
+        encoded_string = "invalid_image".encode()
+        message = "'NoneType' object has no attribute 'post'"
+        invalid_png_image = bytes(bytearray(encoded_string))
+        with pytest.raises(AttributeError) as excinfo:
+            subreddit.submit_gallery(
+                "Cool title",
+                [{"image_fp": invalid_png_image, "mime_type": "image/png"}],
+            )
+        assert str(excinfo.value) == message
+
     def test_submit_gallery__too_long_caption(self):
         message = "Caption must be 180 characters or less."
         subreddit = Subreddit(self.reddit, display_name="name")
