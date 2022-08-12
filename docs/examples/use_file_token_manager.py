@@ -2,11 +2,11 @@
 """This example demonstrates using the file token manager for refresh tokens.
 
 In order to run this program, you will first need to obtain a valid refresh token. You
-can use the `obtain_refresh_token.py` example to help.
+can use the ``obtain_refresh_token.py`` example to help.
 
-In this example, refresh tokens will be saved into a file `refresh_token.txt` relative
+In this example, refresh tokens will be saved into a file ``refresh_token.txt`` relative
 to your current working directory. If your current working directory is under version
-control it is strongly encouraged you add `refresh_token.txt` to the version control
+control it is strongly encouraged you add ``refresh_token.txt`` to the version control
 ignore list.
 
 Usage:
@@ -36,12 +36,10 @@ def initialize_refresh_token_file():
 
 def main():
     if "praw_client_id" not in os.environ:
-        sys.stderr.write("Environment variable ``praw_client_id`` must be defined\n")
+        sys.stderr.write("Environment variable 'praw_client_id' must be defined\n")
         return 1
     if "praw_client_secret" not in os.environ:
-        sys.stderr.write(
-            "Environment variable ``praw_client_secret`` must be defined\n"
-        )
+        sys.stderr.write("Environment variable 'praw_client_secret' must be defined\n")
         return 1
 
     initialize_refresh_token_file()

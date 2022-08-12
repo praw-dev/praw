@@ -18,7 +18,7 @@ class TestBaseModNotes(UnitTest):
             self.reddit.subreddit("a").mod.notes.delete(redditor="redditor")
         assert (
             excinfo.value.args[0]
-            == "Either `note_id` or `delete_all` must be provided."
+            == "Either 'note_id' or 'delete_all' must be provided."
         )
 
 
@@ -36,7 +36,7 @@ class TestRedditModNotes(UnitTest):
             self.reddit.notes()
         assert (
             excinfo.value.args[0]
-            == "Either the `pairs`, `redditors`, `subreddits`, or `things` parameters must be provided."
+            == "Either the 'pairs', 'redditors', 'subreddits', or 'things' parameters must be provided."
         )
 
     def test__call__redditors_missing_subreddits(self):
@@ -44,7 +44,7 @@ class TestRedditModNotes(UnitTest):
             self.reddit.notes(subreddits=[1])
         assert (
             excinfo.value.args[0]
-            == "`redditors` must be non-empty if `subreddits` is not empty."
+            == "'redditors' must be non-empty if 'subreddits' is not empty."
         )
 
 

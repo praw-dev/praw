@@ -122,7 +122,7 @@ class ModmailConversation(RedditBase):
 
         """
         if bool(id) == bool(_data):
-            raise TypeError("Either `id` or `_data` must be provided.")
+            raise TypeError("Either 'id' or '_data' must be provided.")
 
         if id:
             self.id = id

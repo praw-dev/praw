@@ -203,7 +203,7 @@ class SubredditRules:
             also use slices, to get a subset of rules, such as the last three rules with
             ``rules[-3:]``.
 
-        For example, to fetch the second rule of ``AskReddit``:
+        For example, to fetch the second rule of r/test:
 
         .. code-block:: python
 

@@ -110,7 +110,7 @@ class GildableMixin:
     def gild(self) -> dict:
         """Alias for :meth:`.award` to maintain backwards compatibility."""
         warn(
-            "`.gild` has been renamed to `.award`.",
+            "'.gild' has been renamed to '.award'.",
             category=DeprecationWarning,
             stacklevel=2,
         )

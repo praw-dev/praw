@@ -250,7 +250,7 @@ class Reddit:
 
         required_message = (
             "Required configuration setting {!r} missing. \nThis setting can be"
-            " provided in a praw.ini file, as a keyword argument to the `Reddit` class"
+            " provided in a praw.ini file, as a keyword argument to the Reddit class"
             " constructor, or as an environment variable."
         )
         for attribute in ("client_id", "user_agent"):
@@ -262,7 +262,7 @@ class Reddit:
             raise MissingRequiredAttributeException(
                 f"{required_message.format('client_secret')}\nFor installed"
                 " applications this value must be set to None via a keyword argument"
-                " to the `Reddit` class constructor."
+                " to the Reddit class constructor."
             )
 
         self._check_for_update()
@@ -481,8 +481,8 @@ class Reddit:
             )
             if self.config.refresh_token:
                 raise TypeError(
-                    "``refresh_token`` setting cannot be provided when providing"
-                    " ``token_manager``"
+                    "'refresh_token' setting cannot be provided when providing"
+                    " 'token_manager'"
                 )
 
             self._token_manager.reddit = self
@@ -674,7 +674,7 @@ class Reddit:
         none_count = (fullnames, url, subreddits).count(None)
         if none_count != 2:
             raise TypeError(
-                "Either `fullnames`, `url`, or `subreddits` must be provided."
+                "Either 'fullnames', 'url', or 'subreddits' must be provided."
             )
 
         is_using_fullnames = fullnames is not None
@@ -683,7 +683,7 @@ class Reddit:
         if ids_or_names is not None:
             if isinstance(ids_or_names, str):
                 raise TypeError(
-                    "`fullnames` and `subreddits` must be a non-str iterable."
+                    "'fullnames' and 'subreddits' must be a non-str iterable."
                 )
 
             api_parameter_name = "id" if is_using_fullnames else "sr_name"
@@ -936,7 +936,7 @@ class Reddit:
         if self.config.check_for_async:
             self._check_for_async()
         if data and json:
-            raise ClientException("At most one of `data` or `json` is supported.")
+            raise ClientException("At most one of 'data' or 'json' is supported.")
         try:
             return self._core.request(
                 data=data,

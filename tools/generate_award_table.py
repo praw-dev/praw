@@ -135,8 +135,8 @@ def main():
         choices=["a", "g", "s", "m"],
         default="g",
         help=(
-            "One of ``a`` for all, ``g`` for global, ``s`` for subreddit, or ``m`` for"
-            " moderator. Determines the types of awards to give (default: ``g``)."
+            "One of 'a' for all, 'g' for global, 's' for subreddit, or 'm' for"
+            " moderator. Determines the types of awards to give (default: 'g')."
         ),
     )
     parser.add_argument(
@@ -145,7 +145,7 @@ def main():
         action="store",
         choices=["j", "r"],
         default="r",
-        help="One of ``j`` for json or ``r`` for rst (default: ``r``).",
+        help="One of 'j' for json or 'r' for rst (default: 'r').",
     )
     parser.add_argument(
         "-c",

@@ -20,8 +20,10 @@ class BaseListingMixin(PRAWBase):
 
         """
         if time_filter not in BaseListingMixin.VALID_TIME_FILTERS:
-            valid_time_filters = ", ".join(BaseListingMixin.VALID_TIME_FILTERS)
-            raise ValueError(f"time_filter must be one of: {valid_time_filters}")
+            valid_time_filters = ", ".join(
+                map("{!r}".format, BaseListingMixin.VALID_TIME_FILTERS)
+            )
+            raise ValueError(f"'time_filter' must be one of: {valid_time_filters}")
 
     def _prepare(self, *, arguments, sort):
         """Fix for :class:`.Redditor` methods that use a query param rather than subpath."""
