@@ -393,7 +393,7 @@ class LiveThread(RedditBase):
 
         """
         if (id, _data).count(None) != 1:
-            raise TypeError("Either `id` or `_data` must be provided.")
+            raise TypeError("Either 'id' or '_data' must be provided.")
         if id:
             self.id = id
         super().__init__(reddit, _data=_data)
@@ -567,7 +567,7 @@ class LiveThreadContribution:
 
             thread = reddit.live("xyu8kmjvfrww")
 
-            # update `title` and `nsfw`
+            # update 'title' and 'nsfw'
             updated_thread = thread.contrib.update(title=new_title, nsfw=True)
 
         If Reddit introduces new settings, you must specify ``None`` for the setting you
@@ -575,7 +575,7 @@ class LiveThreadContribution:
 
         .. code-block:: python
 
-            # update `nsfw` and maintain new setting `foo`
+            # update 'nsfw' and maintain new setting 'foo'
             thread.contrib.update(nsfw=True, foo=None)
 
         """
@@ -738,7 +738,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
             self._thread = LiveThread(self._reddit, thread_id)
         else:
             raise TypeError(
-                "Either `thread_id` and `update_id`, or `_data` must be provided."
+                "Either 'thread_id' and 'update_id', or '_data' must be provided."
             )
 
     def __setattr__(self, attribute: str, value: Any):

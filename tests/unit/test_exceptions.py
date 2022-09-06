@@ -112,7 +112,7 @@ class TestDuplicateReplaceException:
     def test_message(self):
         assert (
             str(DuplicateReplaceException())
-            == "A duplicate comment has been detected. Are you attempting to call ``replace_more_comments`` more than once?"
+            == "A duplicate comment has been detected. Are you attempting to call 'replace_more_comments' more than once?"
         )
 
 
@@ -123,7 +123,7 @@ class TestInvalidFlairTemplateID:
     def test_str(self):
         assert (
             str(InvalidFlairTemplateID("123"))
-            == "The flair template ID ``123`` is invalid. If you are trying to create a flair, please use the ``add`` method."
+            == "The flair template ID '123' is invalid. If you are trying to create a flair, please use the 'add' method."
         )
 
 

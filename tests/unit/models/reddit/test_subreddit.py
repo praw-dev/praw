@@ -26,7 +26,7 @@ class TestSubreddit(UnitTest):
         assert subreddit2 == "dummy1"
 
     def test_construct_failure(self):
-        message = "Either `display_name` or `_data` must be provided."
+        message = "Either 'display_name' or '_data' must be provided."
         with pytest.raises(TypeError) as excinfo:
             Subreddit(self.reddit)
         assert str(excinfo.value) == message
@@ -99,8 +99,8 @@ class TestSubreddit(UnitTest):
         with pytest.raises(TypeError) as excinfo:
             self.reddit.subreddit("SubTestBot1").mod.notes.delete(note_id="111")
         assert excinfo.value.args[0] == (
-            "Either the `redditor` parameter must be provided or this method must be"
-            " called from a Redditor instance (e.g., `redditor.notes`)."
+            "Either the 'redditor' parameter must be provided or this method must be"
+            " called from a Redditor instance (e.g., 'redditor.notes')."
         )
 
     def test_pickle(self):
@@ -129,7 +129,7 @@ class TestSubreddit(UnitTest):
         assert str(subreddit) == "name"
 
     def test_submit_failure(self):
-        message = "Either `selftext` or `url` must be provided."
+        message = "Either 'selftext' or 'url' must be provided."
         subreddit = Subreddit(self.reddit, display_name="name")
 
         with pytest.raises(TypeError) as excinfo:

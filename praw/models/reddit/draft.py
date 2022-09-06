@@ -92,7 +92,7 @@ class Draft(RedditBase):
     ):
         """Initialize a :class:`.Draft` instance."""
         if (id, _data).count(None) != 1:
-            raise TypeError("Exactly one of `id` or `_data` must be provided.")
+            raise TypeError("Exactly one of 'id' or '_data' must be provided.")
         fetched = False
         if id:
             self.id = id
@@ -286,7 +286,8 @@ class Draft(RedditBase):
         submit_kwargs["draft_id"] = self.id
         if not (self.subreddit or subreddit):
             raise ValueError(
-                "`subreddit` must be set on the Draft or passed as a keyword argument."
+                "'subreddit' must be set on the Draft instance or passed as a keyword"
+                " argument."
             )
         for key, attribute in [
             ("flair_id", flair_id),

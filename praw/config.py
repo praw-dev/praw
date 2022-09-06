@@ -1,4 +1,4 @@
-"""Provides the code to load PRAW's configuration file `praw.ini`."""
+"""Provides the code to load PRAW's configuration file ``praw.ini``."""
 import configparser
 import os
 import sys

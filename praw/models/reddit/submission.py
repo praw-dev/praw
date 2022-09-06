@@ -574,7 +574,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         """
         if (id, url, _data).count(None) != 2:
-            raise TypeError("Exactly one of `id`, `url`, or `_data` must be provided.")
+            raise TypeError("Exactly one of 'id', 'url', or '_data' must be provided.")
         self.comment_limit = 2048
 
         # Specify the sort order for ``comments``

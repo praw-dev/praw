@@ -160,14 +160,14 @@ class BaseModNotes:
             redditor = getattr(self, "redditor", redditor) or thing.author
             subreddit = getattr(self, "subreddit", subreddit) or thing.subreddit
         redditor = self._ensure_attribute(
-            "Either the `redditor` or `thing` parameters must be provided or this"
-            " method must be called from a Redditor instance (e.g., `redditor.notes`).",
+            "Either the 'redditor' or 'thing' parameters must be provided or this"
+            " method must be called from a Redditor instance (e.g., 'redditor.notes').",
             redditor=redditor,
         )
         subreddit = self._ensure_attribute(
-            "Either the `subreddit` or `thing` parameters must be provided or this"
+            "Either the 'subreddit' or 'thing' parameters must be provided or this"
             " method must be called from a Subreddit instance (e.g.,"
-            " `subreddit.mod.notes`).",
+            " 'subreddit.mod.notes').",
             subreddit=subreddit,
         )
         data = {
@@ -249,17 +249,17 @@ class BaseModNotes:
 
         """
         redditor = self._ensure_attribute(
-            "Either the `redditor` parameter must be provided or this method must be called"
-            " from a Redditor instance (e.g., `redditor.notes`).",
+            "Either the 'redditor' parameter must be provided or this method must be"
+            " called from a Redditor instance (e.g., 'redditor.notes').",
             redditor=redditor,
         )
         subreddit = self._ensure_attribute(
-            "Either the `subreddit` parameter must be provided or this method must be called"
-            " from a Subreddit instance (e.g., `subreddit.mod.notes`).",
+            "Either the 'subreddit' parameter must be provided or this method must be"
+            " called from a Subreddit instance (e.g., 'subreddit.mod.notes').",
             subreddit=subreddit,
         )
         if not delete_all and note_id is None:
-            raise TypeError("Either `note_id` or `delete_all` must be provided.")
+            raise TypeError("Either 'note_id' or 'delete_all' must be provided.")
         if delete_all:
             for note in self._notes(True, [redditor], [subreddit]):
                 note.delete()
@@ -413,7 +413,7 @@ class RedditModNotes(BaseModNotes):
             things = []
         if not (pairs + redditors + subreddits + things):
             raise TypeError(
-                "Either the `pairs`, `redditors`, `subreddits`, or `things` parameters"
+                "Either the 'pairs', 'redditors', 'subreddits', or 'things' parameters"
                 " must be provided."
             )
         if (
@@ -421,9 +421,9 @@ class RedditModNotes(BaseModNotes):
             and len(redditors) + len(subreddits) > 0
         ):
             raise TypeError(
-                "`redditors` must be non-empty if `subreddits` is not empty."
+                "'redditors' must be non-empty if 'subreddits' is not empty."
                 if len(subreddits) > 0
-                else "`subreddits` must be non-empty if `redditors` is not empty."
+                else "'subreddits' must be non-empty if 'redditors' is not empty."
             )
 
         merged_redditors = []

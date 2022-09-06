@@ -28,14 +28,14 @@ class TestDeprecation(UnitTest):
     def test_gild_method(self):
         with pytest.raises(DeprecationWarning) as excinfo:
             self.reddit.submission("1234").gild()
-            assert excinfo.value.args[0] == "`.gild` has been renamed to `.award`."
+            assert excinfo.value.args[0] == "'.gild' has been renamed to '.award'."
 
     def test_gold_method(self):
         with pytest.raises(DeprecationWarning) as excinfo:
             self.reddit.subreddits.gold()
             assert (
                 excinfo.value.args[0]
-                == "`subreddits.gold` has be renamed to `subreddits.premium`."
+                == "'subreddits.gold' has be renamed to 'subreddits.premium'."
             )
 
     def test_reddit_token_manager(self):
@@ -67,12 +67,12 @@ class TestDeprecation(UnitTest):
             assert display_name == "test"
             assert (
                 warning_info.list[0].message.args[0]
-                == "`Redditor.subreddit` is no longer a dict and is now an `UserSubreddit` object. Accessing attributes using string indices is deprecated."
+                == "'Redditor.subreddit' is no longer a dict and is now an UserSubreddit object. Accessing attributes using string indices is deprecated."
             )
             assert user_subreddit.keys() == user_subreddit.__dict__.keys()
             assert (
                 warning_info.list[1].message.args[0]
-                == "`Redditor.subreddit` is no longer a dict and is now an `UserSubreddit` object. Using `keys` is deprecated and will be removed in PRAW 8."
+                == "'Redditor.subreddit' is no longer a dict and is now an UserSubreddit object. Using 'keys' is deprecated and will be removed in PRAW 8."
             )
 
     def test_validate_on_submit(self):
@@ -90,5 +90,5 @@ class TestDeprecation(UnitTest):
             _ = exc.original_exception
         assert (
             excinfo.value.args[0]
-            == "Accessing the attribute original_exception is deprecated. Please rewrite your code in such a way that this attribute does not need to be used. It will be removed in PRAW 8.0."
+            == "Accessing the attribute 'original_exception' is deprecated. Please rewrite your code in such a way that this attribute does not need to be used. It will be removed in PRAW 8.0."
         )

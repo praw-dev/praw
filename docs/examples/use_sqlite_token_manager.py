@@ -33,16 +33,15 @@ DATABASE_PATH = "tokens.sqlite3"
 
 def main():
     if "praw_client_id" not in os.environ:
-        sys.stderr.write("Environment variable ``praw_client_id`` must be defined\n")
+        sys.stderr.write("Environment variable 'praw_client_id' must be defined\n")
         return 1
     if "praw_client_secret" not in os.environ:
-        sys.stderr.write(
-            "Environment variable ``praw_client_secret`` must be defined\n"
-        )
+        sys.stderr.write("Environment variable 'praw_client_secret' must be defined\n")
         return 1
     if len(sys.argv) != 2:
         sys.stderr.write(
-            "KEY must be provided.\n\nUsage: python3 use_sqlite_token_manager.py TOKEN_KEY\n"
+            "'KEY' must be provided.\n\nUsage: python3 use_sqlite_token_manager.py"
+            " TOKEN_KEY\n"
         )
         return 1
 

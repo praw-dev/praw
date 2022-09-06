@@ -330,7 +330,7 @@ class SubredditWidgets(PRAWBase):
         self._fetch()
 
     def __getattr__(self, attribute: str) -> Any:
-        """Return the value of `attr`."""
+        """Return the value of ``attr``."""
         if not attribute.startswith("_") and not self._fetched:
             self._fetch()
             return getattr(self, attribute)

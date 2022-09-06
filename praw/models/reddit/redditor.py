@@ -154,7 +154,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         if (name, fullname, _data).count(None) != 2:
             raise TypeError(
-                "Exactly one of `name`, `fullname`, or `_data` must be provided."
+                "Exactly one of 'name', 'fullname', or '_data' must be provided."
             )
         if _data:
             assert (

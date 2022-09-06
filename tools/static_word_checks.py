@@ -43,13 +43,13 @@ class StaticChecker:
             with open(filename, "w") as fp:
                 fp.write(new_content)
             print(
-                f"{filename}: Replaced all instances of ``/r/`` and/or ``/u/`` to"
-                " ``r/`` and/or ``u/``."
+                f"{filename}: Replaced all instances of '/r/' and/or '/u/' to"
+                " 'r/' and/or 'u/'."
             )
             return True
         print(
-            f"{filename}: This file contains instances of ``/r/`` and/or ``/u/``."
-            " Please change them to ``r/`` and/or ``u/``."
+            f"{filename}: This file contains instances of '/r/' and/or '/u/'."
+            " Please change them to 'r/' and/or 'u/'."
         )
         return False
 
@@ -65,8 +65,8 @@ class StaticChecker:
         """
         if "noreturn" in content.lower():
             print(
-                f"{filename}: Line {line_number} has phrase ``noreturn``, please edit"
-                " and remove this."
+                f"{filename}: Line {line_number} has phrase 'noreturn', please edit and"
+                " remove this."
             )
             return False
         return True

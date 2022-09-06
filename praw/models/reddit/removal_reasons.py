@@ -39,10 +39,10 @@ class RemovalReason(RedditBase):
         """
         if reason_id_value is not None:
             warn(
-                "Parameter ``reason_id`` is deprecated. Either use positional"
-                ' arguments (reason_id="x" -> "x") or change the parameter '
-                'name to ``id`` (reason_id="x" -> id="x"). The parameter will'
-                " be removed in PRAW 8.",
+                "Parameter 'reason_id' is deprecated. Either use positional arguments"
+                ' (e.g., reason_id="x" -> "x") or change the parameter name to \'id\''
+                ' (e.g., reason_id="x" -> id="x"). This parameter will be removed in'
+                " PRAW 8.",
                 category=DeprecationWarning,
                 stacklevel=3,
             )

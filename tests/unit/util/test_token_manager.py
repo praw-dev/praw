@@ -37,7 +37,7 @@ class TestBaseTokenManager(UnitTest):
             manager.reddit = None
         assert (
             str(excinfo.value)
-            == "``reddit`` can only be set once and is done automatically"
+            == "'reddit' can only be set once and is done automatically"
         )
 
 

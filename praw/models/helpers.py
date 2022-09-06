@@ -111,7 +111,7 @@ class DraftHelper(PRAWBase):
 
         """
         if selftext and url:
-            raise TypeError("Exactly one of `selftext` or `url` must be provided.")
+            raise TypeError("Exactly one of 'selftext' or 'url' must be provided.")
         if isinstance(subreddit, str):
             subreddit = self._reddit.subreddit(subreddit)
 
@@ -206,7 +206,7 @@ class LiveHelper(PRAWBase):
         :param resources: Markdown formatted information that is useful for the
             :class:`.LiveThread`.
 
-        :returns: The new :class`.LiveThread` object.
+        :returns: The new :class:`.LiveThread` object.
 
         """
         return self._reddit.post(

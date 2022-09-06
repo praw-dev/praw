@@ -554,7 +554,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         """
         if (display_name, _data).count(None) != 1:
-            raise TypeError("Either `display_name` or `_data` must be provided.")
+            raise TypeError("Either 'display_name' or '_data' must be provided.")
         if display_name:
             self.display_name = display_name
         super().__init__(reddit, _data=_data)
@@ -601,7 +601,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def _submit_media(
         self, *, data: Dict[Any, Any], timeout: int, websocket_url: Optional[str] = None
     ):
-        """Submit and return an `image`, `video`, or `videogif`.
+        """Submit and return an ``image``, ``video``, or ``videogif``.
 
         This is a helper method for submitting posts that are not link posts or self
         posts.
@@ -988,7 +988,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         """
         if (bool(selftext) or selftext == "") == bool(url):
-            raise TypeError("Either `selftext` or `url` must be provided.")
+            raise TypeError("Either 'selftext' or 'url' must be provided.")
 
         data = {
             "sr": str(self),
@@ -1830,8 +1830,8 @@ class SubredditFlair:
         """
         if css_class and flair_template_id is not None:
             raise TypeError(
-                "Parameter `css_class` cannot be used in conjunction with"
-                " `flair_template_id`."
+                "Parameter 'css_class' cannot be used in conjunction with"
+                " 'flair_template_id'."
             )
         data = {"name": str(redditor), "text": text}
         if flair_template_id is not None:
@@ -3534,7 +3534,7 @@ class Modmail:
         params = {}
         if after:
             warn(
-                "The `after` argument is deprecated and should be moved to the `params`"
+                "The 'after' argument is deprecated and should be moved to the 'params'"
                 " dictionary argument.",
                 category=DeprecationWarning,
                 stacklevel=3,
@@ -3993,7 +3993,7 @@ class SubredditStylesheet:
         if align is not None:
             if align not in {"left", "centered", "right"}:
                 raise ValueError(
-                    "align argument must be either `left`, `centered`, or `right`"
+                    "'align' argument must be either 'left', 'centered', or 'right'"
                 )
             alignment["bannerPositionedImagePosition"] = align
 

@@ -32,7 +32,7 @@ class BaseTokenManager(ABC):
     def reddit(self, value):
         if self._reddit is not None:
             raise RuntimeError(
-                "``reddit`` can only be set once and is done automatically"
+                "'reddit' can only be set once and is done automatically"
             )
         self._reddit = value
 
