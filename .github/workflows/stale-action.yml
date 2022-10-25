@@ -1,6 +1,6 @@
 env:
-  days-before-close: 10
-  days-before-stale: 20
+  days-before-close: 30
+  days-before-stale: 30
   stale-close-label: 'Auto-closed - Stale'
 jobs:
   stale:
