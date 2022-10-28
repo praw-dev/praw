@@ -182,24 +182,22 @@ some.
 The first thing we should do is put all of our import statements at the top of the file.
 It is common to list built-in packages before third-party ones:
 
-.. include:: ../examples/lmgtfy_bot.py
-    :code: python
-    :end-line: 3
+.. literalinclude:: ../examples/lmgtfy_bot.py
+    :language: python
+    :lines: -4
 
 Next, we extract a few constants that are used in our script:
 
-.. include:: ../examples/lmgtfy_bot.py
-    :code: python
-    :start-line: 4
-    :end-line: 6
+.. literalinclude:: ../examples/lmgtfy_bot.py
+    :language: python
+    :lines: 6-7
 
 We then extract the segment of code pertaining to processing a single submission into
 its own function:
 
-.. include:: ../examples/lmgtfy_bot.py
-    :code: python
-    :start-line: 18
-    :end-line: 33
+.. literalinclude:: ../examples/lmgtfy_bot.py
+    :language: python
+    :pyobject: process_submission
 
 Observe that we added some comments and a :py:func:`print` call. The :py:func:`print`
 addition informs us every time we are about to reply to a submission, which is useful to
@@ -210,17 +208,16 @@ to turn your Python script into a Python module, i.e., import it from another Py
 script or module. A common way to do that is to move the top-level code to a ``main``
 function:
 
-.. include:: ../examples/lmgtfy_bot.py
-    :code: python
-    :start-line: 8
-    :end-line: 16
+.. literalinclude:: ../examples/lmgtfy_bot.py
+    :language: python
+    :pyobject: main
 
 Finally, we need to call ``main`` only in the cases that this script is the one being
 executed:
 
-.. include:: ../examples/lmgtfy_bot.py
-    :code: python
-    :start-line: 35
+.. literalinclude:: ../examples/lmgtfy_bot.py
+    :language: python
+    :lines: 41-
 
 The Complete LMGTFY Bot
 ~~~~~~~~~~~~~~~~~~~~~~~
