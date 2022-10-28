@@ -1,8 +1,7 @@
 """Provide the ReplyableMixin class."""
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union
 
 from ....const import API_PATH
-from ...util import _deprecate_args
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw
@@ -11,14 +10,15 @@ if TYPE_CHECKING:  # pragma: no cover
 class ReplyableMixin:
     """Interface for :class:`.RedditBase` classes that can be replied to."""
 
-    @_deprecate_args("body")
-    def reply(self, *, body: str) -> Optional["praw.models.Comment"]:
+    def reply(
+        self, body: str
+    ) -> Optional[Union["praw.models.Comment", "praw.models.Message"]]:
         """Reply to the object.
 
         :param body: The Markdown formatted content for a comment.
 
-        :returns: A :class:`.Comment` object for the newly created comment or ``None``
-            if Reddit doesn't provide one.
+        :returns: A :class:`.Comment` or :class:`.Message` object for the newly created
+            comment or message or ``None`` if Reddit doesn't provide one.
 
         :raises: ``prawcore.exceptions.Forbidden`` when attempting to reply to some
             items, such as locked submissions/comments or non-replyable messages.

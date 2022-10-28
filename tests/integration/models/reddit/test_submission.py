@@ -51,7 +51,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             submission = Submission(self.reddit, "4b1tfm")
-            submission.edit(body="New text")
+            submission.edit("New text")
             assert submission.selftext == "New text"
 
     @mock.patch("time.sleep", return_value=None)
@@ -61,7 +61,7 @@ class TestSubmission(IntegrationTest):
         with self.use_cassette():
             submission = Submission(self.reddit, "eippcc")
             with pytest.raises(RedditAPIException):
-                submission.edit(body="rewtwert")
+                submission.edit("rewtwert")
 
     def test_enable_inbox_replies(self):
         self.reddit.read_only = False
