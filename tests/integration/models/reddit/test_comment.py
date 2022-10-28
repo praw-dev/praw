@@ -232,7 +232,7 @@ class TestComment(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             parent_comment = Comment(self.reddit, "d1616q2")
-            comment = parent_comment.reply(body="Comment reply")
+            comment = parent_comment.reply("Comment reply")
             assert comment.author == self.reddit.config.username
             assert comment.body == "Comment reply"
             assert not comment.is_root
@@ -242,7 +242,7 @@ class TestComment(IntegrationTest):
         self.reddit.read_only = False
         comment = Comment(self.reddit, "eear2ml")
         with self.use_cassette():
-            reply = comment.reply(body="TEST")
+            reply = comment.reply("TEST")
         assert reply is None
 
     def test_report(self):
