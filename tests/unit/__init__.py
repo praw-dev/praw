@@ -5,7 +5,7 @@ from praw import Reddit
 class UnitTest:
     """Base class for PRAW unit tests."""
 
-    def setup(self):
+    def setup_method(self):
         """Setup runs before all test cases."""
         self.reddit = Reddit(
             client_id="dummy", client_secret="dummy", user_agent="dummy"

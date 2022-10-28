@@ -14,7 +14,7 @@ class IntegrationTest:
 
     logger = logging.getLogger(__name__)
 
-    def setup(self):
+    def setup_method(self):
         """Setup runs before all test cases."""
         self._overrode_reddit_setup = True
         self.setup_reddit()

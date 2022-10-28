@@ -16,10 +16,10 @@ class Dummy:
 
 
 class TestBaseList:
-    def setup(self):
+    def setup_method(self):
         self._prev_child_attribute = BaseList.CHILD_ATTRIBUTE
 
-    def teardown(self):
+    def teardown_method(self):
         BaseList.CHILD_ATTRIBUTE = self._prev_child_attribute
 
     def test__init__CHILD_ATTRIBUTE_not_set(self):

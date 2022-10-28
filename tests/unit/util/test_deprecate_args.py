@@ -27,7 +27,7 @@ class ArgTest:
 
 
 class TestDeprecateArgs(UnitTest):
-    def setup(self):
+    def setup_method(self):
         self.arg_test = ArgTest()
 
     def test_arg_test(self):
