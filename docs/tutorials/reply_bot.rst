@@ -217,7 +217,7 @@ executed:
 
 .. literalinclude:: ../examples/lmgtfy_bot.py
     :language: python
-    :lines: 41-
+    :lines: 40-
 
 The Complete LMGTFY Bot
 ~~~~~~~~~~~~~~~~~~~~~~~
