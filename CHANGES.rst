@@ -3,6 +3,9 @@ Change Log
 
 PRAW follows `semantic versioning <http://semver.org/>`_.
 
+Unreleased
+----------
+
 7.6.1 (2022/11/11)
 ------------------
 
