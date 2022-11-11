@@ -6,6 +6,14 @@ PRAW follows `semantic versioning <http://semver.org/>`_.
 Unreleased
 ----------
 
+**Changed**
+
+- Revert :meth:`~.Comment.edit` positional argument deprecation.
+- Revert :meth:`~.Comment.reply` positional argument deprecation.
+- Revert :meth:`~.Message.reply` positional argument deprecation.
+- Revert :meth:`~.Submission.edit` positional argument deprecation.
+- Revert :meth:`~.Submission.reply` positional argument deprecation.
+
 **Fixed**
 
 - An issue where :class:`.ModmailConversation`'s ``messages`` attribute would only
