@@ -6,9 +6,6 @@ PRAW follows `semantic versioning <http://semver.org/>`_.
 Unreleased
 ----------
 
-7.6.1 (2022/11/11)
-------------------
-
 **Fixed**
 
 - An issue where :class:`.ModmailConversation`'s ``messages`` attribute would only
