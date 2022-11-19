@@ -71,7 +71,7 @@ instantiate an instance of PRAW like so:
         client_secret="CLIENT_SECRET",
         password="PASSWORD",
         user_agent="USERAGENT",
-        username="USERNAME",
+        username="USERNAME"
     )
 
 With the ``reddit`` instance you can then interact with Reddit:
