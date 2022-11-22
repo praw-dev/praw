@@ -1998,6 +1998,11 @@ class TestSubredditStylesheet(IntegrationTest):
         with self.use_cassette():
             self.subreddit.stylesheet.delete_image("praw")
 
+    def test_delete_mobile_banner(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            self.subreddit.stylesheet.delete_mobile_banner()
+
     def test_delete_mobile_header(self):
         self.reddit.read_only = False
         with self.use_cassette():
@@ -2108,6 +2113,22 @@ class TestSubredditStylesheet(IntegrationTest):
                 self.image_path("white-square.jpg")
             )
             self.subreddit.stylesheet.upload_banner_hover_image(
+                self.image_path("white-square.png")
+            )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_upload_mobile_banner__jpg(self, _):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            self.subreddit.stylesheet.upload_mobile_banner(
+                self.image_path("white-square.jpg")
+            )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_upload_mobile_banner__png(self, _):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            self.subreddit.stylesheet.upload_mobile_banner(
                 self.image_path("white-square.png")
             )
 
