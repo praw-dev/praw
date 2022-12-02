@@ -8,6 +8,7 @@ class Listing(PRAWBase):
     """A listing is a collection of :class:`.RedditBase` instances."""
 
     CHILD_ATTRIBUTE = "children"
+    AFTER_PARAM = "after"
 
     def __len__(self) -> int:
         """Return the number of items in the Listing."""
@@ -45,6 +46,7 @@ class ModNoteListing(Listing):
     """Special Listing for handling :class:`.ModNote` lists."""
 
     CHILD_ATTRIBUTE = "mod_notes"
+    AFTER_PARAM = "before"
 
     @property
     def after(self) -> Optional[Any]:
