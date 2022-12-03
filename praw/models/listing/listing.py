@@ -45,8 +45,8 @@ class ModeratorListing(Listing):
 class ModNoteListing(Listing):
     """Special Listing for handling :class:`.ModNote` lists."""
 
-    CHILD_ATTRIBUTE = "mod_notes"
     AFTER_PARAM = "before"
+    CHILD_ATTRIBUTE = "mod_notes"
 
     @property
     def after(self) -> Optional[Any]:
