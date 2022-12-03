@@ -7,8 +7,8 @@ from ..base import PRAWBase
 class Listing(PRAWBase):
     """A listing is a collection of :class:`.RedditBase` instances."""
 
-    CHILD_ATTRIBUTE = "children"
     AFTER_PARAM = "after"
+    CHILD_ATTRIBUTE = "children"
 
     def __len__(self) -> int:
         """Return the number of items in the Listing."""
