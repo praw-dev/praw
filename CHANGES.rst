@@ -6,6 +6,11 @@ PRAW follows `semantic versioning <http://semver.org/>`_.
 Unreleased
 ----------
 
+**Fixed**
+
+- An issue with with iterating :class:`.ModNote` when a user has more than a hundred
+  notes.
+
 7.6.1 (2022/11/11)
 ------------------
 

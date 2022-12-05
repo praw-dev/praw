@@ -7,6 +7,7 @@ from ..base import PRAWBase
 class Listing(PRAWBase):
     """A listing is a collection of :class:`.RedditBase` instances."""
 
+    AFTER_PARAM = "after"
     CHILD_ATTRIBUTE = "children"
 
     def __len__(self) -> int:
@@ -44,6 +45,7 @@ class ModeratorListing(Listing):
 class ModNoteListing(Listing):
     """Special Listing for handling :class:`.ModNote` lists."""
 
+    AFTER_PARAM = "before"
     CHILD_ATTRIBUTE = "mod_notes"
 
     @property
