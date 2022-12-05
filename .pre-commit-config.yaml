@@ -4,7 +4,7 @@ repos:
     hooks:
       - id: end-of-file-fixer
         exclude: .*\.txt
-    rev: v4.3.0
+    rev: v4.4.0
 
   - repo: local
     hooks:
@@ -38,7 +38,7 @@ repos:
   - repo: https://github.com/pycqa/flake8
     hooks:
       - id: flake8
-    rev: 5.0.4
+    rev: 6.0.0
 
   - repo: https://github.com/ikamensh/flynt/
     hooks:
@@ -46,7 +46,7 @@ repos:
         args:
           - '-ll'
           - '1000'
-    rev: '0.76'
+    rev: '0.77'
 
   - repo: https://github.com/pycqa/isort
     hooks:
