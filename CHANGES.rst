@@ -6,6 +6,11 @@ PRAW follows `semantic versioning <http://semver.org/>`_.
 Unreleased
 ----------
 
+**Added**
+
+- :meth:`.delete_mobile_banner` to delete mobile banners.
+- :meth:`.upload_mobile_banner` to upload mobile banners.
+
 **Fixed**
 
 - An issue with with iterating :class:`.ModNote` when a user has more than a hundred

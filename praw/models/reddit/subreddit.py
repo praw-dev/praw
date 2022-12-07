@@ -3857,6 +3857,22 @@ class SubredditStylesheet:
         url = API_PATH["delete_sr_image"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data={"img_name": name})
 
+    def delete_mobile_banner(self):
+        """Remove the current :class:`.Subreddit` (redesign) mobile banner.
+
+        Succeeds even if there is no mobile banner.
+
+        For example:
+
+        .. code-block:: python
+
+            subreddit = reddit.subreddit("test")
+            subreddit.stylesheet.delete_banner_hover_image()
+
+        """
+        data = {"mobileBannerImage": ""}
+        self._update_structured_styles(data)
+
     def delete_mobile_header(self):
         """Remove the current :class:`.Subreddit` mobile header.
 
@@ -4057,6 +4073,34 @@ class SubredditStylesheet:
 
         """
         return self._upload_image(data={"upload_type": "header"}, image_path=image_path)
+
+    def upload_mobile_banner(self, image_path: str):
+        """Upload an image for the :class:`.Subreddit`'s (redesign) mobile banner.
+
+        :param image_path: A path to a JPEG or PNG image.
+
+        For example:
+
+        .. code-block:: python
+
+            subreddit = reddit.subreddit("test")
+            subreddit.stylesheet.upload_mobile_banner("banner.png")
+
+        Fails if the :class:`.Subreddit` does not have an additional image defined.
+
+        :raises: ``prawcore.TooLarge`` if the overall request body is too large.
+
+        :raises: :class:`.RedditAPIException` if there are other issues with the
+            uploaded image. Unfortunately the exception info might not be very specific,
+            so try through the website with the same image to see what the problem
+            actually might be.
+
+        """
+        image_type = "mobileBannerImage"
+        image_url = self._upload_style_asset(
+            image_path=image_path, image_type=image_type
+        )
+        self._update_structured_styles({image_type: image_url})
 
     def upload_mobile_header(self, image_path: str) -> Dict[str, str]:
         """Upload an image to be used as the :class:`.Subreddit`'s mobile header.
