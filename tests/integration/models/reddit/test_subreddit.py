@@ -1466,6 +1466,19 @@ class TestSubredditModeration(IntegrationTest):
             assert notes[1].user.name.lower() == "watchful12"
             assert notes[2] is None
 
+    def test_notes_iterate(self):
+        self.reddit.read_only = False
+        with self.use_cassette():
+            subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+            distinct_ids = set()
+            count_notes = 0
+            for note in subreddit.mod.notes.redditors("watchful12", limit=None):
+                distinct_ids.add(note.id)
+                count_notes += 1
+
+            assert len(distinct_ids) == 359
+            assert count_notes == 359
+
     def test_reports(self):
         self.reddit.read_only = False
         with self.use_cassette():
