@@ -144,8 +144,16 @@ class TestSubreddit(UnitTest):
             subreddit.submit("Cool title", selftext="", url="b")
         assert str(excinfo.value) == message
 
-    def test_submit_gallery__missing_path(self):
-        message = "'image_path' is required."
+    def test_submit_image__invalid_image_fp(self):
+        message = "media_fp is not of type bytes."
+        subreddit = Subreddit(self.reddit, display_name="name")
+
+        with pytest.raises(TypeError) as excinfo:
+            subreddit.submit_image("Cool title", image_fp="invalid_image")
+        assert str(excinfo.value) == message
+
+    def test_submit_gallery__missing_image_path_and_image_fp(self):
+        message = "Values for keys image_path and image_fp are null for dictionary at index 0."
         subreddit = Subreddit(self.reddit, display_name="name")
 
         with pytest.raises(TypeError) as excinfo:
@@ -154,13 +162,33 @@ class TestSubreddit(UnitTest):
             )
         assert str(excinfo.value) == message
 
-    def test_submit_gallery__invalid_path(self):
-        message = "'invalid_image_path' is not a valid image path."
+    def test_submit_gallery__invalid_image_path(self):
+        message = "invalid_image is not a valid file path."
         subreddit = Subreddit(self.reddit, display_name="name")
 
         with pytest.raises(TypeError) as excinfo:
+            subreddit.submit_gallery("Cool title", [{"image_path": "invalid_image"}])
+        assert str(excinfo.value) == message
+
+    def test_submit_gallery__invalid_image_fp(self):
+        subreddit = Subreddit(self.reddit, display_name="name")
+
+        message = (
+            "'image_fp' dictionary value at index 0 contains an invalid bytes object."
+        )
+        with pytest.raises(TypeError) as excinfo:
             subreddit.submit_gallery(
-                "Cool title", [{"image_path": "invalid_image_path"}]
+                "Cool title", [{"image_fp": "invalid_image", "mime_type": "image/png"}]
+            )
+        assert str(excinfo.value) == message
+
+        encoded_string = "invalid_image".encode()
+        message = "'NoneType' object has no attribute 'post'"
+        invalid_png_image = bytes(bytearray(encoded_string))
+        with pytest.raises(AttributeError) as excinfo:
+            subreddit.submit_gallery(
+                "Cool title",
+                [{"image_fp": invalid_png_image, "mime_type": "image/png"}],
             )
         assert str(excinfo.value) == message
 
