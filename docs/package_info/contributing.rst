@@ -227,6 +227,25 @@ to first delete it, and then rerun the test suite.
 Please always verify that only the requests you expect to be made are contained within
 your cassette.
 
+If you are using a single cassette for multiple tests, you need to add a
+``use_cassette`` pytest mark decorator. If you need specify parameters for the
+``Betamax.use_cassette`` method, use the ``recorder_kwargs`` pytest mark decorator. The
+``recorder_kwargs`` can be applied to a test class and/or individual test functions. For
+example:
+
+.. code-block:: python
+
+    @pytest.mark.recorder_kwargs(allow_playback_repeats=True)
+    class TestClass:
+        @pytest.mark.recorder_kwargs(match_requests_on=["uri", "method", "body"])
+        def test_example(self):
+            ...
+
+        @pytest.mark.cassette_name("TestClass.test_example")
+        @pytest.mark.recorder_kwargs(match_requests_on=["uri", "method", "body"])
+        def test_example__different_assertion(self):
+            ...
+
 Documentation
 -------------
 
@@ -260,7 +279,7 @@ the ``AUTHORS.rst`` file.
 CHANGES.rst
 ~~~~~~~~~~~
 
-For feature additions, bugfixes, or code removal please add an appropriate entry to
+For feature additions, bug fixes, or code removal please add an appropriate entry to
 ``CHANGES.rst``. If the ``Unreleased`` section does not exist at the top of
 ``CHANGES.rst`` please add it. See `commit 280525c16ba28cdd69cdbb272a0e2764b1c7e6a0`_
 for an example.

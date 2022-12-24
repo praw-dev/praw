@@ -1,15 +1,13 @@
+import pytest
+
 from praw.models import MoreComments
 
 from ... import IntegrationTest
 
 
 class TestMore(IntegrationTest):
-    def setup_method(self):
-        super().setup_method()
-        # Responses do not decode well on travis so manually renable gzip.
-        self.reddit._core._requestor._http.headers["Accept-Encoding"] = "gzip"
-
-    def test_comments(self):
+    @pytest.mark.recorder_kwargs(match_requests_on=["uri", "method", "body"])
+    def test_comments(self, reddit):
         data = {
             "count": 9,
             "name": "t1_cu5tt8h",
@@ -27,12 +25,12 @@ class TestMore(IntegrationTest):
                 "cu5pbdh",
             ],
         }
-        with self.use_cassette(match_requests_on=["uri", "method", "body"]):
-            more = MoreComments(self.reddit, data)
-            more.submission = self.reddit.submission("3hahrw")
-            assert len(more.comments()) == 7
+        more = MoreComments(reddit, data)
+        more.submission = reddit.submission("3hahrw")
+        assert len(more.comments()) == 7
 
-    def test_comments__continue_thread_type(self):
+    @pytest.mark.recorder_kwargs(match_requests_on=["uri", "method", "body"])
+    def test_comments__continue_thread_type(self, reddit):
         data = {
             "count": 0,
             "name": "t1__",
@@ -40,7 +38,6 @@ class TestMore(IntegrationTest):
             "parent_id": "t1_cu5v5h7",
             "children": [],
         }
-        with self.use_cassette(match_requests_on=["uri", "method", "body"]):
-            more = MoreComments(self.reddit, data)
-            more.submission = self.reddit.submission("3hahrw")
-            assert len(more.comments()) == 1
+        more = MoreComments(reddit, data)
+        more.submission = reddit.submission("3hahrw")
+        assert len(more.comments()) == 1

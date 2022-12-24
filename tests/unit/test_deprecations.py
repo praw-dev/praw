@@ -21,18 +21,18 @@ class TestDeprecation(UnitTest):
         with pytest.raises(DeprecationWarning):
             exc.field
 
-    def test_conversations_after_argument(self):
+    def test_conversations_after_argument(self, reddit):
         with pytest.deprecated_call():
-            self.reddit.subreddit("all").modmail.conversations(after="after")
+            reddit.subreddit("all").modmail.conversations(after="after")
 
-    def test_gild_method(self):
+    def test_gild_method(self, reddit):
         with pytest.raises(DeprecationWarning) as excinfo:
-            self.reddit.submission("1234").gild()
+            reddit.submission("1234").gild()
             assert excinfo.value.args[0] == "'.gild' has been renamed to '.award'."
 
-    def test_gold_method(self):
+    def test_gold_method(self, reddit):
         with pytest.raises(DeprecationWarning) as excinfo:
-            self.reddit.subreddits.gold()
+            reddit.subreddits.gold()
             assert (
                 excinfo.value.args[0]
                 == "'subreddits.gold' has be renamed to 'subreddits.premium'."
@@ -48,13 +48,13 @@ class TestDeprecation(UnitTest):
                 user_agent="dummy",
             )
 
-    def test_reddit_user_me_read_only(self):
+    def test_reddit_user_me_read_only(self, reddit):
         with pytest.raises(DeprecationWarning):
-            self.reddit.user.me()
+            reddit.user.me()
 
-    def test_subreddit_rules_call(self):
+    def test_subreddit_rules_call(self, reddit):
         with pytest.raises(DeprecationWarning) as excinfo:
-            self.reddit.subreddit("test").rules()
+            reddit.subreddit("test").rules()
         assert (
             excinfo.value.args[0]
             == "Calling SubredditRules to get a list of rules is deprecated. Remove the parentheses to use the iterator. View the PRAW documentation on how to change the code in order to use the iterator (https://praw.readthedocs.io/en/latest/code_overview/other/subredditrules.html#praw.models.reddit.rules.SubredditRules.__call__)."
@@ -75,14 +75,14 @@ class TestDeprecation(UnitTest):
                 == "'Redditor.subreddit' is no longer a dict and is now an UserSubreddit object. Using 'keys' is deprecated and will be removed in PRAW 8."
             )
 
-    def test_validate_on_submit(self):
+    def test_validate_on_submit(self, reddit):
         with pytest.raises(DeprecationWarning):
-            self.reddit.validate_on_submit
-        self.reddit.validate_on_submit = True
-        assert self.reddit.validate_on_submit
-        self.reddit.validate_on_submit = False
+            reddit.validate_on_submit
+        reddit.validate_on_submit = True
+        assert reddit.validate_on_submit
+        reddit.validate_on_submit = False
         with pytest.raises(DeprecationWarning):
-            self.reddit.validate_on_submit
+            reddit.validate_on_submit
 
     def test_web_socket_exception_attribute(self):
         exc = WebSocketException("Test", Exception("Test"))

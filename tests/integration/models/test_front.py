@@ -3,32 +3,26 @@ from .. import IntegrationTest
 
 
 class TestFront(IntegrationTest):
-    def test_best(self):
-        with self.use_cassette():
-            submissions = list(self.reddit.front.best())
+    def test_best(self, reddit):
+        submissions = list(reddit.front.best())
         assert len(submissions) == 100
 
-    def test_controversial(self):
-        with self.use_cassette():
-            submissions = list(self.reddit.front.controversial())
+    def test_controversial(self, reddit):
+        submissions = list(reddit.front.controversial())
         assert len(submissions) == 100
 
-    def test_gilded(self):
-        with self.use_cassette():
-            submissions = list(self.reddit.front.gilded())
+    def test_gilded(self, reddit):
+        submissions = list(reddit.front.gilded())
         assert len(submissions) == 100
 
-    def test_hot(self):
-        with self.use_cassette():
-            submissions = list(self.reddit.front.hot())
+    def test_hot(self, reddit):
+        submissions = list(reddit.front.hot())
         assert len(submissions) == 100
 
-    def test_new(self):
-        with self.use_cassette():
-            submissions = list(self.reddit.front.new())
+    def test_new(self, reddit):
+        submissions = list(reddit.front.new())
         assert len(submissions) == 100
 
-    def test_top(self):
-        with self.use_cassette():
-            submissions = list(self.reddit.front.top())
+    def test_top(self, reddit):
+        submissions = list(reddit.front.top())
         assert len(submissions) == 100

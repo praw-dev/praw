@@ -2,6 +2,7 @@ import asyncio
 import configparser
 import types
 from unittest import mock
+from unittest.mock import MagicMock
 
 import pytest
 import requests
@@ -50,7 +51,12 @@ class TestReddit(UnitTest):
         assert log_record.levelname == "WARNING"
         assert (
             log_record.message
-            == "It appears that you are using PRAW in an asynchronous environment.\nIt is strongly recommended to use Async PRAW: https://asyncpraw.readthedocs.io.\nSee https://praw.readthedocs.io/en/latest/getting_started/multiple_instances.html#discord-bots-and-asynchronous-environments for more info.\n"
+            == "It appears that you are using PRAW in an asynchronous environment.\nIt"
+            " is strongly recommended to use Async PRAW:"
+            " https://asyncpraw.readthedocs.io.\nSee"
+            " https://praw.readthedocs.io/en/latest/getting_started"
+            "/multiple_instances.html#discord-bots-and-asynchronous-environments"
+            " for more info.\n"
         )
 
     def test_check_for_async__disabled(self, caplog):
@@ -60,24 +66,24 @@ class TestReddit(UnitTest):
         loop.run_until_complete(self.check_async(reddit))
         assert caplog.records == []
 
-    @mock.patch("praw.reddit.update_check", create=True)
     @mock.patch("praw.reddit.UPDATE_CHECKER_MISSING", False)
     @mock.patch("praw.reddit.Reddit.update_checked", False)
+    @mock.patch("praw.reddit.update_check", create=True)
     def test_check_for_updates(self, mock_update_check):
         Reddit(check_for_updates="1", **self.REQUIRED_DUMMY_SETTINGS)
         assert Reddit.update_checked
         mock_update_check.assert_called_with("praw", __version__)
 
-    @mock.patch("praw.reddit.update_check", create=True)
     @mock.patch("praw.reddit.UPDATE_CHECKER_MISSING", True)
     @mock.patch("praw.reddit.Reddit.update_checked", False)
+    @mock.patch("praw.reddit.update_check", create=True)
     def test_check_for_updates_update_checker_missing(self, mock_update_check):
         Reddit(check_for_updates="1", **self.REQUIRED_DUMMY_SETTINGS)
         assert not Reddit.update_checked
         assert not mock_update_check.called
 
-    def test_comment(self):
-        assert self.reddit.comment("cklfmye").id == "cklfmye"
+    def test_comment(self, reddit):
+        assert reddit.comment("cklfmye").id == "cklfmye"
 
     def test_conflicting_settings(self):
         with pytest.raises(TypeError) as excinfo:
@@ -88,103 +94,133 @@ class TestReddit(UnitTest):
             )
         assert (
             str(excinfo.value)
-            == "'refresh_token' setting cannot be provided when providing 'token_manager'"
+            == "'refresh_token' setting cannot be provided when providing "
+            "'token_manager'"
         )
 
     def test_context_manager(self):
         with Reddit(**self.REQUIRED_DUMMY_SETTINGS) as reddit:
             assert not reddit.config.check_for_updates
 
-    def test_info__invalid_param(self):
+    def test_info__invalid_param(self, reddit):
         with pytest.raises(TypeError) as excinfo:
-            self.reddit.info(fullnames=None)
+            reddit.info(fullnames=None)
 
         err_str = "Either 'fullnames', 'url', or 'subreddits' must be provided."
         assert str(excinfo.value) == err_str
 
         with pytest.raises(TypeError) as excinfo:
-            self.reddit.info(fullnames=[], url="")
+            reddit.info(fullnames=[], url="")
 
         assert str(excinfo.value) == err_str
+
+    def test_info__not_list(self, reddit):
+        with pytest.raises(TypeError) as excinfo:
+            reddit.info(fullnames="Let's try a string")
+
+        assert "must be a non-str iterable" in str(excinfo.value)
 
     def test_invalid_config(self):
         with pytest.raises(ValueError) as excinfo:
             Reddit(timeout="test", **self.REQUIRED_DUMMY_SETTINGS)
         assert (
             excinfo.value.args[0]
-            == "An incorrect config type was given for option timeout. The expected type is int, but the given value is test."
+            == "An incorrect config type was given for option timeout. The expected "
+            "type is int, but the given value is test."
         )
         with pytest.raises(ValueError) as excinfo:
             Reddit(ratelimit_seconds="test", **self.REQUIRED_DUMMY_SETTINGS)
         assert (
             excinfo.value.args[0]
-            == "An incorrect config type was given for option ratelimit_seconds. The expected type is int, but the given value is test."
+            == "An incorrect config type was given for option ratelimit_seconds. The "
+            "expected type is int, but the given value is test."
         )
 
-    def test_info__not_list(self):
+    def test_live_info__invalid_param(self, reddit):
         with pytest.raises(TypeError) as excinfo:
-            self.reddit.info(fullnames="Let's try a string")
-
-        assert "must be a non-str iterable" in str(excinfo.value)
-
-    def test_live_info__valid_param(self):
-        gen = self.reddit.live.info(["dummy", "dummy2"])
-        assert isinstance(gen, types.GeneratorType)
-
-    def test_live_info__invalid_param(self):
-        with pytest.raises(TypeError) as excinfo:
-            self.reddit.live.info(None)
+            reddit.live.info(None)
         assert str(excinfo.value) == "ids must be a list"
 
-    def test_multireddit(self):
-        assert (
-            self.reddit.multireddit(redditor="bboe", name="aa").path
-            == "/user/bboe/m/aa"
-        )
+    def test_live_info__valid_param(self, reddit):
+        gen = reddit.live.info(["dummy", "dummy2"])
+        assert isinstance(gen, types.GeneratorType)
+
+    def test_multireddit(self, reddit):
+        assert reddit.multireddit(redditor="bboe", name="aa").path == "/user/bboe/m/aa"
 
     @mock.patch(
         "praw.Reddit.request",
-        side_effect=[
-            {
-                "json": {
-                    "errors": [
-                        [
-                            "RATELIMIT",
-                            "Some unexpected error message",
-                            "ratelimit",
+        new=MagicMock(
+            side_effect=[
+                {
+                    "json": {
+                        "errors": [
+                            [
+                                "RATELIMIT",
+                                "Some unexpected error message",
+                                "ratelimit",
+                            ]
                         ]
-                    ]
-                }
-            },
-        ],
+                    }
+                },
+            ],
+        ),
     )
     @mock.patch("time.sleep", return_value=None)
-    def test_post_ratelimit__invalid_rate_limit_message(self, mock_sleep, _):
+    def test_post_ratelimit__invalid_rate_limit_message(self, mock_sleep, reddit):
         with pytest.raises(RedditAPIException) as exception:
-            self.reddit.post("test")
+            reddit.post("test")
         assert exception.value.message == "Some unexpected error message"
         mock_sleep.assert_not_called()
 
     @mock.patch(
         "praw.Reddit.request",
-        side_effect=[
-            {
-                "json": {
-                    "errors": [
-                        [
-                            "RATELIMIT",
-                            "You are doing that too much. Try again in 6 seconds.",
-                            "ratelimit",
+        new=MagicMock(
+            side_effect=[
+                {
+                    "json": {
+                        "errors": [
+                            [
+                                "RATELIMIT",
+                                "You are doing that too much. Try again in 1 minute.",
+                                "ratelimit",
+                            ]
                         ]
-                    ]
-                }
-            },
-        ],
+                    }
+                },
+            ],
+        ),
+    )
+    def test_post_ratelimit__over_threshold__minutes(self, reddit):
+        with pytest.raises(RedditAPIException) as exception:
+            reddit.post("test")
+        assert (
+            exception.value.message
+            == "You are doing that too much. Try again in 1 minute."
+        )
+
+    @mock.patch(
+        "praw.Reddit.request",
+        new=MagicMock(
+            side_effect=[
+                {
+                    "json": {
+                        "errors": [
+                            [
+                                "RATELIMIT",
+                                "You are doing that too much. Try again in 6 seconds.",
+                                "ratelimit",
+                            ]
+                        ]
+                    }
+                },
+            ],
+        ),
     )
     @mock.patch("time.sleep", return_value=None)
-    def test_post_ratelimit__over_threshold__seconds(self, mock_sleep, _):
+    def test_post_ratelimit__over_threshold__seconds(self, mock_sleep, reddit):
         with pytest.raises(RedditAPIException) as exception:
-            self.reddit.post("test")
+            reddit.post("test")
         assert (
             exception.value.message
             == "You are doing that too much. Try again in 6 seconds."
@@ -193,149 +229,134 @@ class TestReddit(UnitTest):
 
     @mock.patch(
         "praw.Reddit.request",
-        side_effect=[
-            {
-                "json": {
-                    "errors": [
-                        [
-                            "RATELIMIT",
-                            "You are doing that too much. Try again in 1 minute.",
-                            "ratelimit",
+        new=MagicMock(
+            side_effect=[
+                {
+                    "json": {
+                        "errors": [
+                            [
+                                "RATELIMIT",
+                                "You are doing that too much. Try again in 2 "
+                                "milliseconds.",
+                                "ratelimit",
+                            ]
                         ]
-                    ]
-                }
-            },
-        ],
+                    }
+                },
+                {
+                    "json": {
+                        "errors": [
+                            [
+                                "RATELIMIT",
+                                "You are doing that too much. Try again in 1 "
+                                "millisecond.",
+                                "ratelimit",
+                            ]
+                        ]
+                    }
+                },
+                {},
+            ],
+        ),
     )
     @mock.patch("time.sleep", return_value=None)
-    def test_post_ratelimit__over_threshold__minutes(self, __, _):
-        with pytest.raises(RedditAPIException) as exception:
-            self.reddit.post("test")
-        assert (
-            exception.value.message
-            == "You are doing that too much. Try again in 1 minute."
-        )
-
-    @mock.patch(
-        "praw.Reddit.request",
-        side_effect=[
-            {
-                "json": {
-                    "errors": [
-                        [
-                            "RATELIMIT",
-                            "You are doing that too much. Try again in 2 milliseconds.",
-                            "ratelimit",
-                        ]
-                    ]
-                }
-            },
-            {
-                "json": {
-                    "errors": [
-                        [
-                            "RATELIMIT",
-                            "You are doing that too much. Try again in 1 millisecond.",
-                            "ratelimit",
-                        ]
-                    ]
-                }
-            },
-            {},
-        ],
-    )
-    @mock.patch("time.sleep", return_value=None)
-    def test_post_ratelimit__under_threshold__milliseconds(self, mock_sleep, _):
-        self.reddit.post("test")
+    def test_post_ratelimit__under_threshold__milliseconds(self, mock_sleep, reddit):
+        reddit.post("test")
         mock_sleep.assert_has_calls([mock.call(1), mock.call(1)])
 
     @mock.patch(
         "praw.Reddit.request",
-        side_effect=[
-            {
-                "json": {
-                    "errors": [
-                        [
-                            "RATELIMIT",
-                            "You are doing that too much. Try again in 1 minute.",
-                            "ratelimit",
+        new=MagicMock(
+            side_effect=[
+                {
+                    "json": {
+                        "errors": [
+                            [
+                                "RATELIMIT",
+                                "You are doing that too much. Try again in 1 minute.",
+                                "ratelimit",
+                            ]
                         ]
-                    ]
-                }
-            },
-            {},
-        ],
+                    }
+                },
+                {},
+            ],
+        ),
     )
     @mock.patch("time.sleep", return_value=None)
-    def test_post_ratelimit__under_threshold__minutes(self, mock_sleep, _):
-        self.reddit.config.ratelimit_seconds = 60
-        self.reddit.post("test")
+    def test_post_ratelimit__under_threshold__minutes(self, mock_sleep, reddit):
+        reddit.config.ratelimit_seconds = 60
+        reddit.post("test")
         mock_sleep.assert_has_calls([mock.call(61)])
 
     @mock.patch(
         "praw.Reddit.request",
-        side_effect=[
-            {
-                "json": {
-                    "errors": [
-                        [
-                            "RATELIMIT",
-                            "You are doing that too much. Try again in 5 seconds.",
-                            "ratelimit",
+        new=MagicMock(
+            side_effect=[
+                {
+                    "json": {
+                        "errors": [
+                            [
+                                "RATELIMIT",
+                                "You are doing that too much. Try again in 5 seconds.",
+                                "ratelimit",
+                            ]
                         ]
-                    ]
-                }
-            },
-            {},
-        ],
+                    }
+                },
+                {},
+            ],
+        ),
     )
     @mock.patch("time.sleep", return_value=None)
-    def test_post_ratelimit__under_threshold__seconds(self, mock_sleep, _):
-        self.reddit.post("test")
+    def test_post_ratelimit__under_threshold__seconds(self, mock_sleep, reddit):
+        reddit.post("test")
         mock_sleep.assert_has_calls([mock.call(6)])
 
     @mock.patch(
         "praw.Reddit.request",
-        side_effect=[
-            {
-                "json": {
-                    "errors": [
-                        [
-                            "RATELIMIT",
-                            "You are doing that too much. Try again in 5 seconds.",
-                            "ratelimit",
+        new=MagicMock(
+            side_effect=[
+                {
+                    "json": {
+                        "errors": [
+                            [
+                                "RATELIMIT",
+                                "You are doing that too much. Try again in 5 seconds.",
+                                "ratelimit",
+                            ]
                         ]
-                    ]
-                }
-            },
-            {
-                "json": {
-                    "errors": [
-                        [
-                            "RATELIMIT",
-                            "You are doing that too much. Try again in 3 seconds.",
-                            "ratelimit",
+                    }
+                },
+                {
+                    "json": {
+                        "errors": [
+                            [
+                                "RATELIMIT",
+                                "You are doing that too much. Try again in 3 seconds.",
+                                "ratelimit",
+                            ]
                         ]
-                    ]
-                }
-            },
-            {
-                "json": {
-                    "errors": [
-                        [
-                            "RATELIMIT",
-                            "You are doing that too much. Try again in 1 second.",
-                            "ratelimit",
+                    }
+                },
+                {
+                    "json": {
+                        "errors": [
+                            [
+                                "RATELIMIT",
+                                "You are doing that too much. Try again in 1 second.",
+                                "ratelimit",
+                            ]
                         ]
-                    ]
-                }
-            },
-        ],
+                    }
+                },
+            ],
+        ),
     )
     @mock.patch("time.sleep", return_value=None)
-    def test_post_ratelimit__under_threshold__seconds_failure(self, mock_sleep, _):
+    def test_post_ratelimit__under_threshold__seconds_failure(self, mock_sleep, reddit):
         with pytest.raises(RedditAPIException) as exception:
-            self.reddit.post("test")
+            reddit.post("test")
         assert (
             exception.value.message
             == "You are doing that too much. Try again in 1 second."
@@ -482,19 +503,19 @@ class TestReddit(UnitTest):
             "At most one of 'data' or 'json' is supported."
         )
 
-    def test_submission(self):
-        assert self.reddit.submission("2gmzqe").id == "2gmzqe"
+    def test_submission(self, reddit):
+        assert reddit.submission("2gmzqe").id == "2gmzqe"
 
-    def test_subreddit(self):
-        assert self.reddit.subreddit("redditdev").display_name == "redditdev"
+    def test_subreddit(self, reddit):
+        assert reddit.subreddit("redditdev").display_name == "redditdev"
 
 
 class TestRedditCustomRequestor(UnitTest):
-    def test_requestor_class(self):
+    def test_requestor_class(self, reddit):
         class CustomRequestor(Requestor):
             pass
 
-        reddit = Reddit(
+        _reddit = Reddit(
             requestor_class=CustomRequestor,
             client_id="dummy",
             client_secret="dummy",
@@ -502,17 +523,17 @@ class TestRedditCustomRequestor(UnitTest):
             user_agent="dummy",
             username="dummy",
         )
-        assert isinstance(reddit._core._requestor, CustomRequestor)
-        assert not isinstance(self.reddit._core._requestor, CustomRequestor)
+        assert isinstance(_reddit._core._requestor, CustomRequestor)
+        assert not isinstance(reddit._core._requestor, CustomRequestor)
 
-        reddit = Reddit(
+        _reddit = Reddit(
             requestor_class=CustomRequestor,
             client_id="dummy",
             client_secret="dummy",
             user_agent="dummy",
         )
-        assert isinstance(reddit._core._requestor, CustomRequestor)
-        assert not isinstance(self.reddit._core._requestor, CustomRequestor)
+        assert isinstance(_reddit._core._requestor, CustomRequestor)
+        assert not isinstance(reddit._core._requestor, CustomRequestor)
 
     def test_requestor_kwargs(self):
         session = mock.Mock(headers={})
