@@ -470,6 +470,60 @@ class Reddit:
             update_check(__package__, __version__)
             Reddit.update_checked = True
 
+    def _handle_rate_limit(
+        self, exception: RedditAPIException
+    ) -> Optional[Union[int, float]]:
+        for item in exception.items:
+            if item.error_type == "RATELIMIT":
+                amount_search = self._ratelimit_regex.search(item.message)
+                if not amount_search:
+                    break
+                seconds = int(amount_search.group(1))
+                if amount_search.group(2).startswith("minute"):
+                    seconds *= 60
+                elif amount_search.group(2).startswith("millisecond"):
+                    seconds = 0
+                if seconds <= int(self.config.ratelimit_seconds):
+                    sleep_seconds = seconds + 1
+                    return sleep_seconds
+        return None
+
+    def _objectify_request(
+        self,
+        *,
+        data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
+        files: Optional[Dict[str, IO]] = None,
+        json: Optional[Dict[Any, Any]] = None,
+        method: str = "",
+        params: Optional[Union[str, Dict[str, str]]] = None,
+        path: str = "",
+    ) -> Any:
+        """Run a request through the ``Objector``.
+
+        :param data: Dictionary, bytes, or file-like object to send in the body of the
+            request (default: ``None``).
+        :param files: Dictionary, filename to file (like) object mapping (default:
+            ``None``).
+        :param json: JSON-serializable object to send in the body of the request with a
+            Content-Type header of application/json (default: ``None``). If ``json`` is
+            provided, ``data`` should not be.
+        :param method: The HTTP method (e.g., ``"GET"``, ``"POST"``, ``"PUT"``,
+            ``"DELETE"``).
+        :param params: The query parameters to add to the request (default: ``None``).
+        :param path: The path to fetch.
+
+        """
+        return self._objector.objectify(
+            self.request(
+                data=data,
+                files=files,
+                json=json,
+                method=method,
+                params=params,
+                path=path,
+            )
+        )
+
     def _prepare_common_authorizer(self, authenticator):
         if self._token_manager is not None:
             warn(
@@ -610,6 +664,30 @@ class Reddit:
         """
         return models.Comment(self, id=id, url=url)
 
+    @_deprecate_args("path", "data", "json", "params")
+    def delete(
+        self,
+        path: str,
+        *,
+        data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
+        json: Optional[Dict[Any, Any]] = None,
+        params: Optional[Union[str, Dict[str, str]]] = None,
+    ) -> Any:
+        """Return parsed objects returned from a DELETE request to ``path``.
+
+        :param path: The path to fetch.
+        :param data: Dictionary, bytes, or file-like object to send in the body of the
+            request (default: ``None``).
+        :param json: JSON-serializable object to send in the body of the request with a
+            Content-Type header of application/json (default: ``None``). If ``json`` is
+            provided, ``data`` should not be.
+        :param params: The query parameters to add to the request (default: ``None``).
+
+        """
+        return self._objectify_request(
+            data=data, json=json, method="DELETE", params=params, path=path
+        )
+
     def domain(self, domain: str):
         """Return an instance of :class:`.DomainListing`.
 
@@ -709,84 +787,6 @@ class Reddit:
                 yield result
 
         return generator(url)
-
-    def _objectify_request(
-        self,
-        *,
-        data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
-        files: Optional[Dict[str, IO]] = None,
-        json: Optional[Dict[Any, Any]] = None,
-        method: str = "",
-        params: Optional[Union[str, Dict[str, str]]] = None,
-        path: str = "",
-    ) -> Any:
-        """Run a request through the ``Objector``.
-
-        :param data: Dictionary, bytes, or file-like object to send in the body of the
-            request (default: ``None``).
-        :param files: Dictionary, filename to file (like) object mapping (default:
-            ``None``).
-        :param json: JSON-serializable object to send in the body of the request with a
-            Content-Type header of application/json (default: ``None``). If ``json`` is
-            provided, ``data`` should not be.
-        :param method: The HTTP method (e.g., ``"GET"``, ``"POST"``, ``"PUT"``,
-            ``"DELETE"``).
-        :param params: The query parameters to add to the request (default: ``None``).
-        :param path: The path to fetch.
-
-        """
-        return self._objector.objectify(
-            self.request(
-                data=data,
-                files=files,
-                json=json,
-                method=method,
-                params=params,
-                path=path,
-            )
-        )
-
-    def _handle_rate_limit(
-        self, exception: RedditAPIException
-    ) -> Optional[Union[int, float]]:
-        for item in exception.items:
-            if item.error_type == "RATELIMIT":
-                amount_search = self._ratelimit_regex.search(item.message)
-                if not amount_search:
-                    break
-                seconds = int(amount_search.group(1))
-                if amount_search.group(2).startswith("minute"):
-                    seconds *= 60
-                elif amount_search.group(2).startswith("millisecond"):
-                    seconds = 0
-                if seconds <= int(self.config.ratelimit_seconds):
-                    sleep_seconds = seconds + 1
-                    return sleep_seconds
-        return None
-
-    @_deprecate_args("path", "data", "json", "params")
-    def delete(
-        self,
-        path: str,
-        *,
-        data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
-        json: Optional[Dict[Any, Any]] = None,
-        params: Optional[Union[str, Dict[str, str]]] = None,
-    ) -> Any:
-        """Return parsed objects returned from a DELETE request to ``path``.
-
-        :param path: The path to fetch.
-        :param data: Dictionary, bytes, or file-like object to send in the body of the
-            request (default: ``None``).
-        :param json: JSON-serializable object to send in the body of the request with a
-            Content-Type header of application/json (default: ``None``). If ``json`` is
-            provided, ``data`` should not be.
-        :param params: The query parameters to add to the request (default: ``None``).
-
-        """
-        return self._objectify_request(
-            data=data, json=json, method="DELETE", params=params, path=path
-        )
 
     @_deprecate_args("path", "data", "json")
     def patch(

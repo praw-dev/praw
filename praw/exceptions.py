@@ -30,6 +30,16 @@ class RedditErrorItem:
             error_str += f" on field {self.field!r}"
         return error_str
 
+    def __eq__(self, other: Union["RedditErrorItem", List[str]]):
+        """Check for equality."""
+        if isinstance(other, RedditErrorItem):
+            return (self.error_type, self.message, self.field) == (
+                other.error_type,
+                other.message,
+                other.field,
+            )
+        return super().__eq__(other)
+
     @_deprecate_args("error_type", "message", "field")
     def __init__(
         self,
@@ -49,16 +59,6 @@ class RedditErrorItem:
         self.message = message
         self.field = field
 
-    def __eq__(self, other: Union["RedditErrorItem", List[str]]):
-        """Check for equality."""
-        if isinstance(other, RedditErrorItem):
-            return (self.error_type, self.message, self.field) == (
-                other.error_type,
-                other.message,
-                other.field,
-            )
-        return super().__eq__(other)
-
     def __repr__(self) -> str:
         """Return an object initialization representation of the instance."""
         return (
@@ -69,108 +69,6 @@ class RedditErrorItem:
     def __str__(self):
         """Get the message returned from str(self)."""
         return self.error_message
-
-
-class APIException(PRAWException):
-    """Old class preserved for alias purposes.
-
-    .. deprecated:: 7.0
-
-        Class :class:`.APIException` has been deprecated in favor of
-        :class:`.RedditAPIException`. This class will be removed in PRAW 8.0.
-
-    """
-
-    @staticmethod
-    def parse_exception_list(exceptions: List[Union[RedditErrorItem, List[str]]]):
-        """Covert an exception list into a :class:`.RedditErrorItem` list."""
-        return [
-            exception
-            if isinstance(exception, RedditErrorItem)
-            else RedditErrorItem(
-                error_type=exception[0],
-                field=exception[2] if bool(exception[2]) else "",
-                message=exception[1] if bool(exception[1]) else "",
-            )
-            for exception in exceptions
-        ]
-
-    @property
-    def error_type(self) -> str:
-        """Get error_type.
-
-        .. deprecated:: 7.0
-
-            Accessing attributes through instances of :class:`.RedditAPIException` is
-            deprecated. This behavior will be removed in PRAW 8.0. Check out the
-            :ref:`PRAW 7 Migration tutorial <Exception_Handling>` on how to migrate code
-            from this behavior.
-
-        """
-        return self._get_old_attr("error_type")
-
-    @property
-    def message(self) -> str:
-        """Get message.
-
-        .. deprecated:: 7.0
-
-            Accessing attributes through instances of :class:`.RedditAPIException` is
-            deprecated. This behavior will be removed in PRAW 8.0. Check out the
-            :ref:`PRAW 7 Migration tutorial <Exception_Handling>` on how to migrate code
-            from this behavior.
-
-        """
-        return self._get_old_attr("message")
-
-    @property
-    def field(self) -> str:
-        """Get field.
-
-        .. deprecated:: 7.0
-
-            Accessing attributes through instances of :class:`.RedditAPIException` is
-            deprecated. This behavior will be removed in PRAW 8.0. Check out the
-            :ref:`PRAW 7 Migration tutorial <Exception_Handling>` on how to migrate code
-            from this behavior.
-
-        """
-        return self._get_old_attr("field")
-
-    def _get_old_attr(self, attrname):
-        warn(
-            f"Accessing attribute '{attrname}' through APIException is deprecated."
-            " This behavior will be removed in PRAW 8.0. Check out"
-            " https://praw.readthedocs.io/en/latest/package_info/praw7_migration.html"
-            " to learn how to migrate your code.",
-            category=DeprecationWarning,
-            stacklevel=3,
-        )
-        return getattr(self.items[0], attrname)
-
-    def __init__(
-        self,
-        items: Union[List[Union[RedditErrorItem, List[str], str]], str],
-        *optional_args: str,
-    ):
-        """Initialize a :class:`.RedditAPIException` instance.
-
-        :param items: Either a list of instances of :class:`.RedditErrorItem` or a list
-            containing lists of unformed errors.
-        :param optional_args: Takes the second and third arguments that
-            :class:`.APIException` used to take.
-
-        """
-        if isinstance(items, str):
-            items = [[items, *optional_args]]
-        elif isinstance(items, list) and isinstance(items[0], str):
-            items = [items]
-        self.items = self.parse_exception_list(items)
-        super().__init__(*self.items)
-
-
-class RedditAPIException(APIException):
-    """Container for error messages from Reddit's API."""
 
 
 class ClientException(PRAWException):
@@ -298,3 +196,105 @@ class MediaPostFailed(WebSocketException):
             " your local machine.",
             None,
         )
+
+
+class APIException(PRAWException):
+    """Old class preserved for alias purposes.
+
+    .. deprecated:: 7.0
+
+        Class :class:`.APIException` has been deprecated in favor of
+        :class:`.RedditAPIException`. This class will be removed in PRAW 8.0.
+
+    """
+
+    @staticmethod
+    def parse_exception_list(exceptions: List[Union[RedditErrorItem, List[str]]]):
+        """Covert an exception list into a :class:`.RedditErrorItem` list."""
+        return [
+            exception
+            if isinstance(exception, RedditErrorItem)
+            else RedditErrorItem(
+                error_type=exception[0],
+                field=exception[2] if bool(exception[2]) else "",
+                message=exception[1] if bool(exception[1]) else "",
+            )
+            for exception in exceptions
+        ]
+
+    @property
+    def error_type(self) -> str:
+        """Get error_type.
+
+        .. deprecated:: 7.0
+
+            Accessing attributes through instances of :class:`.RedditAPIException` is
+            deprecated. This behavior will be removed in PRAW 8.0. Check out the
+            :ref:`PRAW 7 Migration tutorial <Exception_Handling>` on how to migrate code
+            from this behavior.
+
+        """
+        return self._get_old_attr("error_type")
+
+    @property
+    def field(self) -> str:
+        """Get field.
+
+        .. deprecated:: 7.0
+
+            Accessing attributes through instances of :class:`.RedditAPIException` is
+            deprecated. This behavior will be removed in PRAW 8.0. Check out the
+            :ref:`PRAW 7 Migration tutorial <Exception_Handling>` on how to migrate code
+            from this behavior.
+
+        """
+        return self._get_old_attr("field")
+
+    @property
+    def message(self) -> str:
+        """Get message.
+
+        .. deprecated:: 7.0
+
+            Accessing attributes through instances of :class:`.RedditAPIException` is
+            deprecated. This behavior will be removed in PRAW 8.0. Check out the
+            :ref:`PRAW 7 Migration tutorial <Exception_Handling>` on how to migrate code
+            from this behavior.
+
+        """
+        return self._get_old_attr("message")
+
+    def __init__(
+        self,
+        items: Union[List[Union[RedditErrorItem, List[str], str]], str],
+        *optional_args: str,
+    ):
+        """Initialize a :class:`.RedditAPIException` instance.
+
+        :param items: Either a list of instances of :class:`.RedditErrorItem` or a list
+            containing lists of unformed errors.
+        :param optional_args: Takes the second and third arguments that
+            :class:`.APIException` used to take.
+
+        """
+        if isinstance(items, str):
+            items = [[items, *optional_args]]
+        elif isinstance(items, list) and isinstance(items[0], str):
+            items = [items]
+        self.items = self.parse_exception_list(items)
+        super().__init__(*self.items)
+
+    def _get_old_attr(self, attrname):
+        warn(
+            f"Accessing attribute '{attrname}' through APIException is deprecated."
+            " This behavior will be removed in PRAW 8.0. Check out"
+            " https://praw.readthedocs.io/en/latest/package_info/praw7_migration.html"
+            " to learn how to migrate your code.",
+            category=DeprecationWarning,
+            stacklevel=3,
+        )
+        return getattr(self.items[0], attrname)
+
+
+class RedditAPIException(APIException):
+    """Container for error messages from Reddit's API."""

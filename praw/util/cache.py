@@ -19,14 +19,6 @@ class cachedproperty:
 
     """
 
-    def __init__(self, func: Callable[[Any], Any], doc: Optional[str] = None):
-        """Initialize a :class:`.cachedproperty` instance."""
-        self.func = self.__wrapped__ = func
-
-        if doc is None:
-            doc = func.__doc__
-        self.__doc__ = doc
-
     # This to make sphinx run properly
     def __call__(self, *args, **kwargs):  # pragma: no cover noqa: D102
         pass
@@ -43,6 +35,14 @@ class cachedproperty:
 
         value = obj.__dict__[self.func.__name__] = self.func(obj)
         return value
+
+    def __init__(self, func: Callable[[Any], Any], doc: Optional[str] = None):
+        """Initialize a :class:`.cachedproperty` instance."""
+        self.func = self.__wrapped__ = func
+
+        if doc is None:
+            doc = func.__doc__
+        self.__doc__ = doc
 
     def __repr__(self) -> str:
         """Return an object initialization representation of the instance."""

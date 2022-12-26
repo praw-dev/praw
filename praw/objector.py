@@ -15,6 +15,13 @@ class Objector:
     """The objector builds :class:`.RedditBase` objects."""
 
     @classmethod
+    def check_error(cls, data: Union[List[Any], Dict[str, Dict[str, str]]]):
+        """Raise an error if the argument resolves to an error object."""
+        error = cls.parse_error(data)
+        if error:
+            raise error
+
+    @classmethod
     def parse_error(
         cls, data: Union[List[Any], Dict[str, Dict[str, str]]]
     ) -> Optional[RedditAPIException]:
@@ -38,13 +45,6 @@ class Objector:
             # See `Collection._fetch()`.
             raise ClientException("successful error response", data)
         return RedditAPIException(errors)
-
-    @classmethod
-    def check_error(cls, data: Union[List[Any], Dict[str, Dict[str, str]]]):
-        """Raise an error if the argument resolves to an error object."""
-        error = cls.parse_error(data)
-        if error:
-            raise error
 
     def __init__(self, reddit: "praw.Reddit", parsers: Optional[Dict[str, Any]] = None):
         """Initialize an :class:`.Objector` instance.

@@ -45,6 +45,258 @@ if TYPE_CHECKING:  # pragma: no cover
     import praw
 
 
+class Modmail:
+    """Provides modmail functions for a :class:`.Subreddit`.
+
+    For example, to send a new modmail from r/test to u/spez with the subject ``"test"``
+    along with a message body of ``"hello"``:
+
+    .. code-block:: python
+
+        reddit.subreddit("test").modmail.create(subject="test", body="hello", recipient="spez")
+
+    """
+
+    def __call__(
+        self, id: Optional[str] = None, mark_read: bool = False
+    ):  # noqa: D207, D301
+        """Return an individual conversation.
+
+        :param id: A reddit base36 conversation ID, e.g., ``"2gmz"``.
+        :param mark_read: If ``True``, conversation is marked as read (default:
+            ``False``).
+
+        For example:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").modmail("2gmz", mark_read=True)
+
+        To print all messages from a conversation as Markdown source:
+
+        .. code-block:: python
+
+            conversation = reddit.subreddit("test").modmail("2gmz", mark_read=True)
+            for message in conversation.messages:
+                print(message.body_markdown)
+
+        ``ModmailConversation.user`` is a special instance of :class:`.Redditor` with
+        extra attributes describing the non-moderator user's recent posts, comments, and
+        modmail messages within the subreddit, as well as information on active bans and
+        mutes. This attribute does not exist on internal moderator discussions.
+
+        For example, to print the user's ban status:
+
+        .. code-block:: python
+
+            conversation = reddit.subreddit("test").modmail("2gmz", mark_read=True)
+            print(conversation.user.ban_status)
+
+        To print a list of recent submissions by the user:
+
+        .. code-block:: python
+
+            conversation = reddit.subreddit("test").modmail("2gmz", mark_read=True)
+            print(conversation.user.recent_posts)
+
+        """
+        # pylint: disable=invalid-name,redefined-builtin
+        return ModmailConversation(self.subreddit._reddit, id=id, mark_read=mark_read)
+
+    def __init__(self, subreddit: "praw.models.Subreddit"):
+        """Initialize a :class:`.Modmail` instance."""
+        self.subreddit = subreddit
+
+    def _build_subreddit_list(
+        self, other_subreddits: Optional[List["praw.models.Subreddit"]]
+    ):
+        """Return a comma-separated list of subreddit display names."""
+        subreddits = [self.subreddit] + (other_subreddits or [])
+        return ",".join(str(subreddit) for subreddit in subreddits)
+
+    @_deprecate_args("other_subreddits", "state")
+    def bulk_read(
+        self,
+        *,
+        other_subreddits: Optional[List[Union["praw.models.Subreddit", str]]] = None,
+        state: Optional[str] = None,
+    ) -> List[ModmailConversation]:
+        """Mark conversations for subreddit(s) as read.
+
+        .. note::
+
+            Due to server-side restrictions, r/all is not a valid subreddit for this
+            method. Instead, use :meth:`~.Modmail.subreddits` to get a list of
+            subreddits using the new modmail.
+
+        :param other_subreddits: A list of :class:`.Subreddit` instances for which to
+            mark conversations (default: ``None``).
+        :param state: Can be one of: ``"all"``, ``"archived"``, or ``"highlighted"``,
+            ``"inprogress"``, ``"join_requests"``, ``"mod"``, ``"new"``,
+            ``"notifications"``, or ``"appeals"`` (default: ``"all"``). ``"all"`` does
+            not include internal, archived, or appeals conversations.
+
+        :returns: A list of :class:`.ModmailConversation` instances that were marked
+            read.
+
+        For example, to mark all notifications for a subreddit as read:
+
+        .. code-block:: python
+
+            subreddit = reddit.subreddit("test")
+            subreddit.modmail.bulk_read(state="notifications")
+
+        """
+        params = {"entity": self._build_subreddit_list(other_subreddits)}
+        if state:
+            params["state"] = state
+        response = self.subreddit._reddit.post(
+            API_PATH["modmail_bulk_read"], params=params
+        )
+        return [
+            self(conversation_id) for conversation_id in response["conversation_ids"]
+        ]
+
+    @_deprecate_args("after", "other_subreddits", "sort", "state")
+    def conversations(
+        self,
+        *,
+        after: Optional[str] = None,
+        other_subreddits: Optional[List["praw.models.Subreddit"]] = None,
+        sort: Optional[str] = None,
+        state: Optional[str] = None,
+        **generator_kwargs,
+    ) -> Iterator[ModmailConversation]:  # noqa: D207, D301
+        """Generate :class:`.ModmailConversation` objects for subreddit(s).
+
+        :param after: A base36 modmail conversation id. When provided, the listing
+            begins after this conversation (default: ``None``).
+
+            .. deprecated:: 7.4.0
+
+                This parameter is deprecated and will be removed in PRAW 8.0. This
+                method will automatically fetch the next batch. Please pass it in the
+                ``params`` argument like so:
+
+                .. code-block:: python
+
+                    for convo in subreddit.modmail.conversations(params={"after": "qovbn"}):
+                        # process conversation
+                        ...
+
+        :param other_subreddits: A list of :class:`.Subreddit` instances for which to
+            fetch conversations (default: ``None``).
+        :param sort: Can be one of: ``"mod"``, ``"recent"``, ``"unread"``, or ``"user"``
+            (default: ``"recent"``).
+        :param state: Can be one of: ``"all"``, ``"archived"``, ``"highlighted"``,
+            ``"inprogress"``, ``"join_requests"``, ``"mod"``, ``"new"``,
+            ``"notifications"``, or ``"appeals"`` (default: ``"all"``). ``"all"`` does
+            not include internal, archived, or appeals conversations.
+
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
+
+        For example:
+
+        .. code-block:: python
+
+            conversations = reddit.subreddit("all").modmail.conversations(state="mod")
+
+        """
+        params = {}
+        if after:
+            warn(
+                "The 'after' argument is deprecated and should be moved to the 'params'"
+                " dictionary argument.",
+                category=DeprecationWarning,
+                stacklevel=3,
+            )
+            params["after"] = after
+        if self.subreddit != "all":
+            params["entity"] = self._build_subreddit_list(other_subreddits)
+        Subreddit._safely_add_arguments(
+            arguments=generator_kwargs, key="params", sort=sort, state=state, **params
+        )
+        return ListingGenerator(
+            self.subreddit._reddit,
+            API_PATH["modmail_conversations"],
+            **generator_kwargs,
+        )
+
+    @_deprecate_args("subject", "body", "recipient", "author_hidden")
+    def create(
+        self,
+        *,
+        author_hidden: bool = False,
+        body: str,
+        recipient: Union[str, "praw.models.Redditor"],
+        subject: str,
+    ) -> ModmailConversation:
+        """Create a new :class:`.ModmailConversation`.
+
+        :param author_hidden: When ``True``, author is hidden from non-moderators
+            (default: ``False``).
+        :param body: The message body. Cannot be empty.
+        :param recipient: The recipient; a username or an instance of
+            :class:`.Redditor`.
+        :param subject: The message subject. Cannot be empty.
+
+        :returns: A :class:`.ModmailConversation` object for the newly created
+            conversation.
+
+        .. code-block:: python
+
+            subreddit = reddit.subreddit("test")
+            redditor = reddit.redditor("bboe")
+            subreddit.modmail.create(subject="Subject", body="Body", recipient=redditor)
+
+        """
+        data = {
+            "body": body,
+            "isAuthorHidden": author_hidden,
+            "srName": self.subreddit,
+            "subject": subject,
+            "to": recipient,
+        }
+        return self.subreddit._reddit.post(API_PATH["modmail_conversations"], data=data)
+
+    def subreddits(self) -> Generator["praw.models.Subreddit", None, None]:
+        """Yield subreddits using the new modmail that the user moderates.
+
+        For example:
+
+        .. code-block:: python
+
+            subreddits = reddit.subreddit("all").modmail.subreddits()
+
+        """
+        response = self.subreddit._reddit.get(API_PATH["modmail_subreddits"])
+        for value in response["subreddits"].values():
+            subreddit = self.subreddit._reddit.subreddit(value["display_name"])
+            subreddit.last_updated = value["lastUpdated"]
+            yield subreddit
+
+    def unread_count(self) -> Dict[str, int]:
+        """Return unread conversation count by conversation state.
+
+        At time of writing, possible states are: ``"archived"``, ``"highlighted"``,
+        ``"inprogress"``, ``"join_requests"``, ``"mod"``, ``"new"``,
+        ``"notifications"``, or ``"appeals"``.
+
+        :returns: A dict mapping conversation states to unread counts.
+
+        For example, to print the count of unread moderator discussions:
+
+        .. code-block:: python
+
+            subreddit = reddit.subreddit("test")
+            unread_counts = subreddit.modmail.unread_count()
+            print(unread_counts["mod"])
+
+        """
+        return self.subreddit._reddit.get(API_PATH["modmail_unread_count"])
+
+
 class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBase):
     """A class for Subreddits.
 
@@ -223,11 +475,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def _validate_inline_media(inline_media: "praw.models.InlineMedia"):
         if not isfile(inline_media.path):
             raise ValueError(f"{inline_media.path!r} is not a valid file path.")
-
-    @property
-    def _kind(self) -> str:
-        """Return the class's kind."""
-        return self._reddit.config.kinds["subreddit"]
 
     @cachedproperty
     def banned(self) -> "praw.models.reddit.subreddit.SubredditRelationship":
@@ -536,6 +783,11 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         """
         return SubredditWiki(self)
 
+    @property
+    def _kind(self) -> str:
+        """Return the class's kind."""
+        return self._reddit.config.kinds["subreddit"]
+
     def __init__(
         self,
         reddit: "praw.Reddit",
@@ -571,20 +823,20 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         text_data = {"output_mode": "rtjson", "markdown_text": markdown_text}
         return self._reddit.post(API_PATH["convert_rte_body"], data=text_data)["output"]
 
-    def _fetch_info(self):
-        return "subreddit_about", {"subreddit": self}, None
-
-    def _fetch_data(self) -> dict:
-        name, fields, params = self._fetch_info()
-        path = API_PATH[name].format(**fields)
-        return self._reddit.request(method="GET", params=params, path=path)
-
     def _fetch(self):
         data = self._fetch_data()
         data = data["data"]
         other = type(self)(self._reddit, _data=data)
         self.__dict__.update(other.__dict__)
         self._fetched = True
+
+    def _fetch_data(self) -> dict:
+        name, fields, params = self._fetch_info()
+        path = API_PATH[name].format(**fields)
+        return self._reddit.request(method="GET", params=params, path=path)
+
+    def _fetch_info(self):
+        return "subreddit_about", {"subreddit": self}, None
 
     def _parse_xml_response(self, response: "Response"):
         """Parse the XML from a response and raise any errors found."""
@@ -597,6 +849,13 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             raise TooLargeMediaException(
                 actual=int(actual), maximum_size=int(maximum_size)
             )
+
+    def _read_and_post_media(self, media_path, upload_url, upload_data):
+        with open(media_path, "rb") as media:
+            response = self._reddit._core._requestor._http.post(
+                upload_url, data=upload_data, files={"file": media}
+            )
+        return response
 
     def _submit_media(
         self, *, data: Dict[Any, Any], timeout: int, websocket_url: Optional[str] = None
@@ -643,12 +902,17 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         url = ws_update["payload"]["redirect"]
         return self._reddit.submission(url=url)
 
-    def _read_and_post_media(self, media_path, upload_url, upload_data):
-        with open(media_path, "rb") as media:
-            response = self._reddit._core._requestor._http.post(
-                upload_url, data=upload_data, files={"file": media}
-            )
-        return response
+    def _upload_inline_media(self, inline_media: "praw.models.InlineMedia"):
+        """Upload media for use in self posts and return ``inline_media``.
+
+        :param inline_media: An :class:`.InlineMedia` object to validate and upload.
+
+        """
+        self._validate_inline_media(inline_media)
+        inline_media.media_id = self._upload_media(
+            media_path=inline_media.path, upload_type="selfpost"
+        )[0]
+        return inline_media
 
     def _upload_media(
         self,
@@ -717,18 +981,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             return f"{upload_url}/{upload_data['key']}", websocket_url
         else:
             return upload_response["asset"]["asset_id"], websocket_url
-
-    def _upload_inline_media(self, inline_media: "praw.models.InlineMedia"):
-        """Upload media for use in self posts and return ``inline_media``.
-
-        :param inline_media: An :class:`.InlineMedia` object to validate and upload.
-
-        """
-        self._validate_inline_media(inline_media)
-        inline_media.media_id = self._upload_media(
-            media_path=inline_media.path, upload_type="selfpost"
-        )[0]
-        return inline_media
 
     def post_requirements(self) -> Dict[str, Union[str, int, bool]]:
         """Get the post requirements for a subreddit.
@@ -2069,218 +2321,6 @@ class SubredditFlairTemplates:
         self.subreddit._reddit.post(url, data=data)
 
 
-class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
-    """Provide functions to interact with :class:`.Redditor` flair templates."""
-
-    def __iter__(
-        self,
-    ) -> Generator[Dict[str, Union[str, int, bool, List[Dict[str, str]]]], None, None]:
-        """Iterate through the user flair templates.
-
-        For example:
-
-        .. code-block:: python
-
-            for template in reddit.subreddit("test").flair.templates:
-                print(template)
-
-        """
-        url = API_PATH["user_flair"].format(subreddit=self.subreddit)
-        params = {"unique": self.subreddit._reddit._next_unique}
-        for template in self.subreddit._reddit.get(url, params=params):
-            yield template
-
-    @_deprecate_args(
-        "text",
-        "css_class",
-        "text_editable",
-        "background_color",
-        "text_color",
-        "mod_only",
-        "allowable_content",
-        "max_emojis",
-    )
-    def add(
-        self,
-        text: str,
-        *,
-        allowable_content: Optional[str] = None,
-        background_color: Optional[str] = None,
-        css_class: str = "",
-        max_emojis: Optional[int] = None,
-        mod_only: Optional[bool] = None,
-        text_color: Optional[str] = None,
-        text_editable: bool = False,
-    ):
-        """Add a redditor flair template to the associated subreddit.
-
-        :param text: The flair template's text.
-        :param allowable_content: If specified, most be one of ``"all"``, ``"emoji"``,
-            or ``"text"`` to restrict content to that type. If set to ``"emoji"`` then
-            the ``"text"`` param must be a valid emoji string, for example,
-            ``":snoo:"``.
-        :param background_color: The flair template's new background color, as a hex
-            color.
-        :param css_class: The flair template's css_class (default: ``""``).
-        :param max_emojis: Maximum emojis in the flair (Reddit defaults this value to
-            ``10``).
-        :param mod_only: Indicate if the flair can only be used by moderators.
-        :param text_color: The flair template's new text color, either ``"light"`` or
-            ``"dark"``.
-        :param text_editable: Indicate if the flair text can be modified for each
-            redditor that sets it (default: ``False``).
-
-        For example, to add an editable redditor flair try:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").flair.templates.add(
-                "PRAW",
-                css_class="praw",
-                text_editable=True,
-            )
-
-        """
-        self._add(
-            allowable_content=allowable_content,
-            background_color=background_color,
-            css_class=css_class,
-            is_link=False,
-            max_emojis=max_emojis,
-            mod_only=mod_only,
-            text=text,
-            text_color=text_color,
-            text_editable=text_editable,
-        )
-
-    def clear(self):
-        """Remove all :class:`.Redditor` flair templates from the subreddit.
-
-        For example:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").flair.templates.clear()
-
-        """
-        self._clear(is_link=False)
-
-
-class SubredditLinkFlairTemplates(SubredditFlairTemplates):
-    """Provide functions to interact with link flair templates."""
-
-    def __iter__(
-        self,
-    ) -> Generator[Dict[str, Union[str, int, bool, List[Dict[str, str]]]], None, None]:
-        """Iterate through the link flair templates as a moderator.
-
-        For example:
-
-        .. code-block:: python
-
-            for template in reddit.subreddit("test").flair.link_templates:
-                print(template)
-
-        """
-        url = API_PATH["link_flair"].format(subreddit=self.subreddit)
-        for template in self.subreddit._reddit.get(url):
-            yield template
-
-    @_deprecate_args(
-        "text",
-        "css_class",
-        "text_editable",
-        "background_color",
-        "text_color",
-        "mod_only",
-        "allowable_content",
-        "max_emojis",
-    )
-    def add(
-        self,
-        text: str,
-        *,
-        allowable_content: Optional[str] = None,
-        background_color: Optional[str] = None,
-        css_class: str = "",
-        max_emojis: Optional[int] = None,
-        mod_only: Optional[bool] = None,
-        text_color: Optional[str] = None,
-        text_editable: bool = False,
-    ):
-        """Add a link flair template to the associated subreddit.
-
-        :param text: The flair template's text.
-        :param allowable_content: If specified, most be one of ``"all"``, ``"emoji"``,
-            or ``"text"`` to restrict content to that type. If set to ``"emoji"`` then
-            the ``"text"`` param must be a valid emoji string, for example,
-            ``":snoo:"``.
-        :param background_color: The flair template's new background color, as a hex
-            color.
-        :param css_class: The flair template's css_class (default: ``""``).
-        :param max_emojis: Maximum emojis in the flair (Reddit defaults this value to
-            ``10``).
-        :param mod_only: Indicate if the flair can only be used by moderators.
-        :param text_color: The flair template's new text color, either ``"light"`` or
-            ``"dark"``.
-        :param text_editable: Indicate if the flair text can be modified for each
-            redditor that sets it (default: ``False``).
-
-        For example, to add an editable link flair try:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").flair.link_templates.add(
-                "PRAW",
-                css_class="praw",
-                text_editable=True,
-            )
-
-        """
-        self._add(
-            allowable_content=allowable_content,
-            background_color=background_color,
-            css_class=css_class,
-            is_link=True,
-            max_emojis=max_emojis,
-            mod_only=mod_only,
-            text=text,
-            text_color=text_color,
-            text_editable=text_editable,
-        )
-
-    def clear(self):
-        """Remove all link flair templates from the subreddit.
-
-        For example:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").flair.link_templates.clear()
-
-        """
-        self._clear(is_link=True)
-
-    def user_selectable(
-        self,
-    ) -> Generator[Dict[str, Union[str, bool]], None, None]:
-        """Iterate through the link flair templates as a regular user.
-
-        For example:
-
-        .. code-block:: python
-
-            for template in reddit.subreddit("test").flair.link_templates.user_selectable():
-                print(template)
-
-        """
-        url = API_PATH["flairselector"].format(subreddit=self.subreddit)
-        for template in self.subreddit._reddit.post(url, data={"is_newlink": True})[
-            "choices"
-        ]:
-            yield template
-
-
 class SubredditModeration:
     """Provides a set of moderation functions to a :class:`.Subreddit`.
 
@@ -2320,6 +2360,48 @@ class SubredditModeration:
         from ..mod_notes import SubredditModNotes
 
         return SubredditModNotes(self.subreddit._reddit, subreddit=self.subreddit)
+
+    @cachedproperty
+    def removal_reasons(self) -> SubredditRemovalReasons:
+        """Provide an instance of :class:`.SubredditRemovalReasons`.
+
+        Use this attribute for interacting with a :class:`.Subreddit`'s removal reasons.
+        For example to list all the removal reasons for a subreddit which you have the
+        ``posts`` moderator permission on, try:
+
+        .. code-block:: python
+
+            for removal_reason in reddit.subreddit("test").mod.removal_reasons:
+                print(removal_reason)
+
+        A single removal reason can be lazily retrieved via:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").mod.removal_reasons["reason_id"]
+
+        .. note::
+
+            Attempting to access attributes of an nonexistent removal reason will result
+            in a :class:`.ClientException`.
+
+        """
+        return SubredditRemovalReasons(self.subreddit)
+
+    @cachedproperty
+    def stream(self) -> "praw.models.reddit.subreddit.SubredditModerationStream":
+        """Provide an instance of :class:`.SubredditModerationStream`.
+
+        Streams can be used to indefinitely retrieve Moderator only items from
+        :class:`.SubredditModeration` made to moderated subreddits, like:
+
+        .. code-block:: python
+
+            for log in reddit.subreddit("mod").mod.stream.log():
+                print(f"Mod: {log.mod}, Subreddit: {log.subreddit}")
+
+        """
+        return SubredditModerationStream(self.subreddit)
 
     def __init__(self, subreddit: "praw.models.Subreddit"):
         """Initialize a :class:`.SubredditModeration` instance.
@@ -2464,48 +2546,6 @@ class SubredditModeration:
             API_PATH["about_modqueue"].format(subreddit=self.subreddit),
             **generator_kwargs,
         )
-
-    @cachedproperty
-    def stream(self) -> "praw.models.reddit.subreddit.SubredditModerationStream":
-        """Provide an instance of :class:`.SubredditModerationStream`.
-
-        Streams can be used to indefinitely retrieve Moderator only items from
-        :class:`.SubredditModeration` made to moderated subreddits, like:
-
-        .. code-block:: python
-
-            for log in reddit.subreddit("mod").mod.stream.log():
-                print(f"Mod: {log.mod}, Subreddit: {log.subreddit}")
-
-        """
-        return SubredditModerationStream(self.subreddit)
-
-    @cachedproperty
-    def removal_reasons(self) -> SubredditRemovalReasons:
-        """Provide an instance of :class:`.SubredditRemovalReasons`.
-
-        Use this attribute for interacting with a :class:`.Subreddit`'s removal reasons.
-        For example to list all the removal reasons for a subreddit which you have the
-        ``posts`` moderator permission on, try:
-
-        .. code-block:: python
-
-            for removal_reason in reddit.subreddit("test").mod.removal_reasons:
-                print(removal_reason)
-
-        A single removal reason can be lazily retrieved via:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").mod.removal_reasons["reason_id"]
-
-        .. note::
-
-            Attempting to access attributes of an nonexistent removal reason will result
-            in a :class:`.ClientException`.
-
-        """
-        return SubredditRemovalReasons(self.subreddit)
 
     @_deprecate_args("only")
     def reports(
@@ -3078,551 +3118,6 @@ class SubredditRelationship:
         data = {"name": str(redditor), "type": self.relationship}
         url = API_PATH["unfriend"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
-
-
-class ContributorRelationship(SubredditRelationship):
-    r"""Provides methods to interact with a :class:`.Subreddit`'s contributors.
-
-    Contributors are also known as approved submitters.
-
-    Contributors of a subreddit can be iterated through like so:
-
-    .. code-block:: python
-
-        for contributor in reddit.subreddit("test").contributor():
-            print(contributor)
-
-    """
-
-    def leave(self):
-        """Abdicate the contributor position."""
-        self.subreddit._reddit.post(
-            API_PATH["leavecontributor"], data={"id": self.subreddit.fullname}
-        )
-
-
-class ModeratorRelationship(SubredditRelationship):
-    r"""Provides methods to interact with a :class:`.Subreddit`'s moderators.
-
-    Moderators of a subreddit can be iterated through like so:
-
-    .. code-block:: python
-
-        for moderator in reddit.subreddit("test").moderator():
-            print(moderator)
-
-    """
-
-    PERMISSIONS = {
-        "access",
-        "chat_config",
-        "chat_operator",
-        "config",
-        "flair",
-        "mail",
-        "posts",
-        "wiki",
-    }
-
-    @staticmethod
-    def _handle_permissions(
-        *,
-        other_settings: Optional[dict] = None,
-        permissions: Optional[List[str]] = None,
-    ):
-        other_settings = deepcopy(other_settings) if other_settings else {}
-        other_settings["permissions"] = permissions_string(
-            known_permissions=ModeratorRelationship.PERMISSIONS, permissions=permissions
-        )
-        return other_settings
-
-    def __call__(
-        self, redditor: Optional[Union[str, "praw.models.Redditor"]] = None
-    ) -> List["praw.models.Redditor"]:  # pylint: disable=arguments-differ
-        r"""Return a list of :class:`.Redditor`\ s who are moderators.
-
-        :param redditor: When provided, return a list containing at most one
-            :class:`.Redditor` instance. This is useful to confirm if a relationship
-            exists, or to fetch the metadata associated with a particular relationship
-            (default: ``None``).
-
-        .. note::
-
-            To help mitigate targeted moderator harassment, this call requires the
-            :class:`.Reddit` instance to be authenticated i.e., :attr:`.read_only` must
-            return ``False``. This call, however, only makes use of the ``read`` scope.
-            For more information on why the moderator list is hidden can be found here:
-            https://reddit.zendesk.com/hc/en-us/articles/360049499032-Why-is-the-moderator-list-hidden-
-
-        .. note::
-
-            Unlike other relationship callables, this relationship is not paginated.
-            Thus it simply returns the full list, rather than an iterator for the
-            results.
-
-        To be used like:
-
-        .. code-block:: python
-
-            moderators = reddit.subreddit("test").moderator()
-
-        For example, to list the moderators along with their permissions try:
-
-        .. code-block:: python
-
-            for moderator in reddit.subreddit("test").moderator():
-                print(f"{moderator}: {moderator.mod_permissions}")
-
-        """
-        params = {} if redditor is None else {"user": redditor}
-        url = API_PATH[f"list_{self.relationship}"].format(subreddit=self.subreddit)
-        return self.subreddit._reddit.get(url, params=params)
-
-    # pylint: disable=arguments-differ
-    @_deprecate_args("redditor", "permissions")
-    def add(
-        self,
-        redditor: Union[str, "praw.models.Redditor"],
-        *,
-        permissions: Optional[List[str]] = None,
-        **other_settings: Any,
-    ):
-        """Add or invite ``redditor`` to be a moderator of the :class:`.Subreddit`.
-
-        :param redditor: A redditor name or :class:`.Redditor` instance.
-        :param permissions: When provided (not ``None``), permissions should be a list
-            of strings specifying which subset of permissions to grant. An empty list
-            ``[]`` indicates no permissions, and when not provided ``None``, indicates
-            full permissions (default: ``None``).
-
-        An invite will be sent unless the user making this call is an admin user.
-
-        For example, to invite u/spez with ``"posts"`` and ``"mail"`` permissions to
-        r/test, try:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").moderator.add("spez", permissions=["posts", "mail"])
-
-        """
-        other_settings = self._handle_permissions(
-            other_settings=other_settings, permissions=permissions
-        )
-        super().add(redditor, **other_settings)
-
-    # pylint: enable=arguments-differ
-    @_deprecate_args("redditor", "permissions")
-    def invite(
-        self,
-        redditor: Union[str, "praw.models.Redditor"],
-        *,
-        permissions: Optional[List[str]] = None,
-        **other_settings: Any,
-    ):
-        """Invite ``redditor`` to be a moderator of the :class:`.Subreddit`.
-
-        :param redditor: A redditor name or :class:`.Redditor` instance.
-        :param permissions: When provided (not ``None``), permissions should be a list
-            of strings specifying which subset of permissions to grant. An empty list
-            ``[]`` indicates no permissions, and when not provided ``None``, indicates
-            full permissions (default: ``None``).
-
-        For example, to invite u/spez with ``"posts"`` and ``"mail"`` permissions to
-        r/test, try:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").moderator.invite("spez", permissions=["posts", "mail"])
-
-        """
-        data = self._handle_permissions(
-            other_settings=other_settings, permissions=permissions
-        )
-        data.update({"name": str(redditor), "type": "moderator_invite"})
-        url = API_PATH["friend"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(url, data=data)
-
-    @_deprecate_args("redditor")
-    def invited(
-        self,
-        *,
-        redditor: Optional[Union[str, "praw.models.Redditor"]] = None,
-        **generator_kwargs: Any,
-    ) -> Iterator["praw.models.Redditor"]:
-        r"""Return a :class:`.ListingGenerator` for :class:`.Redditor`\ s invited to be moderators.
-
-        :param redditor: When provided, return a list containing at most one
-            :class:`.Redditor` instance. This is useful to confirm if a relationship
-            exists, or to fetch the metadata associated with a particular relationship
-            (default: ``None``).
-
-        Additional keyword arguments are passed in the initialization of
-        :class:`.ListingGenerator`.
-
-        .. note::
-
-            Unlike other usages of :class:`.ListingGenerator`, ``limit`` has no effect
-            in the quantity returned. This endpoint always returns moderators in batches
-            of 25 at a time regardless of what ``limit`` is set to.
-
-        Usage:
-
-        .. code-block:: python
-
-            for invited_mod in reddit.subreddit("test").moderator.invited():
-                print(invited_mod)
-
-        """
-        generator_kwargs["params"] = {"username": redditor} if redditor else None
-        url = API_PATH["list_invited_moderator"].format(subreddit=self.subreddit)
-        return ListingGenerator(self.subreddit._reddit, url, **generator_kwargs)
-
-    def leave(self):
-        """Abdicate the moderator position (use with care).
-
-        For example:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").moderator.leave()
-
-        """
-        self.remove(
-            self.subreddit._reddit.config.username or self.subreddit._reddit.user.me()
-        )
-
-    def remove_invite(self, redditor: Union[str, "praw.models.Redditor"]):
-        """Remove the moderator invite for ``redditor``.
-
-        :param redditor: A redditor name or :class:`.Redditor` instance.
-
-        For example:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").moderator.remove_invite("spez")
-
-        """
-        data = {"name": str(redditor), "type": "moderator_invite"}
-        url = API_PATH["unfriend"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(url, data=data)
-
-    @_deprecate_args("redditor", "permissions")
-    def update(
-        self,
-        redditor: Union[str, "praw.models.Redditor"],
-        *,
-        permissions: Optional[List[str]] = None,
-    ):
-        """Update the moderator permissions for ``redditor``.
-
-        :param redditor: A redditor name or :class:`.Redditor` instance.
-        :param permissions: When provided (not ``None``), permissions should be a list
-            of strings specifying which subset of permissions to grant. An empty list
-            ``[]`` indicates no permissions, and when not provided, ``None``, indicates
-            full permissions (default: ``None``).
-
-        For example, to add all permissions to the moderator, try:
-
-        .. code-block:: python
-
-            subreddit.moderator.update("spez")
-
-        To remove all permissions from the moderator, try:
-
-        .. code-block:: python
-
-            subreddit.moderator.update("spez", permissions=[])
-
-        """
-        url = API_PATH["setpermissions"].format(subreddit=self.subreddit)
-        data = self._handle_permissions(
-            other_settings={"name": str(redditor), "type": "moderator"},
-            permissions=permissions,
-        )
-        self.subreddit._reddit.post(url, data=data)
-
-    @_deprecate_args("redditor", "permissions")
-    def update_invite(
-        self,
-        redditor: Union[str, "praw.models.Redditor"],
-        *,
-        permissions: Optional[List[str]] = None,
-    ):
-        """Update the moderator invite permissions for ``redditor``.
-
-        :param redditor: A redditor name or :class:`.Redditor` instance.
-        :param permissions: When provided (not ``None``), permissions should be a list
-            of strings specifying which subset of permissions to grant. An empty list
-            ``[]`` indicates no permissions, and when not provided, ``None``, indicates
-            full permissions (default: ``None``).
-
-        For example, to grant the ``"flair"`` and ``"mail"`` permissions to the
-        moderator invite, try:
-
-        .. code-block:: python
-
-            subreddit.moderator.update_invite("spez", permissions=["flair", "mail"])
-
-        """
-        url = API_PATH["setpermissions"].format(subreddit=self.subreddit)
-        data = self._handle_permissions(
-            other_settings={"name": str(redditor), "type": "moderator_invite"},
-            permissions=permissions,
-        )
-        self.subreddit._reddit.post(url, data=data)
-
-
-class Modmail:
-    """Provides modmail functions for a :class:`.Subreddit`.
-
-    For example, to send a new modmail from r/test to u/spez with the subject ``"test"``
-    along with a message body of ``"hello"``:
-
-    .. code-block:: python
-
-        reddit.subreddit("test").modmail.create(subject="test", body="hello", recipient="spez")
-
-    """
-
-    def __call__(
-        self, id: Optional[str] = None, mark_read: bool = False
-    ):  # noqa: D207, D301
-        """Return an individual conversation.
-
-        :param id: A reddit base36 conversation ID, e.g., ``"2gmz"``.
-        :param mark_read: If ``True``, conversation is marked as read (default:
-            ``False``).
-
-        For example:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").modmail("2gmz", mark_read=True)
-
-        To print all messages from a conversation as Markdown source:
-
-        .. code-block:: python
-
-            conversation = reddit.subreddit("test").modmail("2gmz", mark_read=True)
-            for message in conversation.messages:
-                print(message.body_markdown)
-
-        ``ModmailConversation.user`` is a special instance of :class:`.Redditor` with
-        extra attributes describing the non-moderator user's recent posts, comments, and
-        modmail messages within the subreddit, as well as information on active bans and
-        mutes. This attribute does not exist on internal moderator discussions.
-
-        For example, to print the user's ban status:
-
-        .. code-block:: python
-
-            conversation = reddit.subreddit("test").modmail("2gmz", mark_read=True)
-            print(conversation.user.ban_status)
-
-        To print a list of recent submissions by the user:
-
-        .. code-block:: python
-
-            conversation = reddit.subreddit("test").modmail("2gmz", mark_read=True)
-            print(conversation.user.recent_posts)
-
-        """
-        # pylint: disable=invalid-name,redefined-builtin
-        return ModmailConversation(self.subreddit._reddit, id=id, mark_read=mark_read)
-
-    def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Initialize a :class:`.Modmail` instance."""
-        self.subreddit = subreddit
-
-    def _build_subreddit_list(
-        self, other_subreddits: Optional[List["praw.models.Subreddit"]]
-    ):
-        """Return a comma-separated list of subreddit display names."""
-        subreddits = [self.subreddit] + (other_subreddits or [])
-        return ",".join(str(subreddit) for subreddit in subreddits)
-
-    @_deprecate_args("other_subreddits", "state")
-    def bulk_read(
-        self,
-        *,
-        other_subreddits: Optional[List[Union["praw.models.Subreddit", str]]] = None,
-        state: Optional[str] = None,
-    ) -> List[ModmailConversation]:
-        """Mark conversations for subreddit(s) as read.
-
-        .. note::
-
-            Due to server-side restrictions, r/all is not a valid subreddit for this
-            method. Instead, use :meth:`~.Modmail.subreddits` to get a list of
-            subreddits using the new modmail.
-
-        :param other_subreddits: A list of :class:`.Subreddit` instances for which to
-            mark conversations (default: ``None``).
-        :param state: Can be one of: ``"all"``, ``"archived"``, or ``"highlighted"``,
-            ``"inprogress"``, ``"join_requests"``, ``"mod"``, ``"new"``,
-            ``"notifications"``, or ``"appeals"`` (default: ``"all"``). ``"all"`` does
-            not include internal, archived, or appeals conversations.
-
-        :returns: A list of :class:`.ModmailConversation` instances that were marked
-            read.
-
-        For example, to mark all notifications for a subreddit as read:
-
-        .. code-block:: python
-
-            subreddit = reddit.subreddit("test")
-            subreddit.modmail.bulk_read(state="notifications")
-
-        """
-        params = {"entity": self._build_subreddit_list(other_subreddits)}
-        if state:
-            params["state"] = state
-        response = self.subreddit._reddit.post(
-            API_PATH["modmail_bulk_read"], params=params
-        )
-        return [
-            self(conversation_id) for conversation_id in response["conversation_ids"]
-        ]
-
-    @_deprecate_args("after", "other_subreddits", "sort", "state")
-    def conversations(
-        self,
-        *,
-        after: Optional[str] = None,
-        other_subreddits: Optional[List["praw.models.Subreddit"]] = None,
-        sort: Optional[str] = None,
-        state: Optional[str] = None,
-        **generator_kwargs,
-    ) -> Iterator[ModmailConversation]:  # noqa: D207, D301
-        """Generate :class:`.ModmailConversation` objects for subreddit(s).
-
-        :param after: A base36 modmail conversation id. When provided, the listing
-            begins after this conversation (default: ``None``).
-
-            .. deprecated:: 7.4.0
-
-                This parameter is deprecated and will be removed in PRAW 8.0. This
-                method will automatically fetch the next batch. Please pass it in the
-                ``params`` argument like so:
-
-                .. code-block:: python
-
-                    for convo in subreddit.modmail.conversations(params={"after": "qovbn"}):
-                        # process conversation
-                        ...
-
-        :param other_subreddits: A list of :class:`.Subreddit` instances for which to
-            fetch conversations (default: ``None``).
-        :param sort: Can be one of: ``"mod"``, ``"recent"``, ``"unread"``, or ``"user"``
-            (default: ``"recent"``).
-        :param state: Can be one of: ``"all"``, ``"archived"``, ``"highlighted"``,
-            ``"inprogress"``, ``"join_requests"``, ``"mod"``, ``"new"``,
-            ``"notifications"``, or ``"appeals"`` (default: ``"all"``). ``"all"`` does
-            not include internal, archived, or appeals conversations.
-
-        Additional keyword arguments are passed in the initialization of
-        :class:`.ListingGenerator`.
-
-        For example:
-
-        .. code-block:: python
-
-            conversations = reddit.subreddit("all").modmail.conversations(state="mod")
-
-        """
-        params = {}
-        if after:
-            warn(
-                "The 'after' argument is deprecated and should be moved to the 'params'"
-                " dictionary argument.",
-                category=DeprecationWarning,
-                stacklevel=3,
-            )
-            params["after"] = after
-        if self.subreddit != "all":
-            params["entity"] = self._build_subreddit_list(other_subreddits)
-        Subreddit._safely_add_arguments(
-            arguments=generator_kwargs, key="params", sort=sort, state=state, **params
-        )
-        return ListingGenerator(
-            self.subreddit._reddit,
-            API_PATH["modmail_conversations"],
-            **generator_kwargs,
-        )
-
-    @_deprecate_args("subject", "body", "recipient", "author_hidden")
-    def create(
-        self,
-        *,
-        author_hidden: bool = False,
-        body: str,
-        recipient: Union[str, "praw.models.Redditor"],
-        subject: str,
-    ) -> ModmailConversation:
-        """Create a new :class:`.ModmailConversation`.
-
-        :param author_hidden: When ``True``, author is hidden from non-moderators
-            (default: ``False``).
-        :param body: The message body. Cannot be empty.
-        :param recipient: The recipient; a username or an instance of
-            :class:`.Redditor`.
-        :param subject: The message subject. Cannot be empty.
-
-        :returns: A :class:`.ModmailConversation` object for the newly created
-            conversation.
-
-        .. code-block:: python
-
-            subreddit = reddit.subreddit("test")
-            redditor = reddit.redditor("bboe")
-            subreddit.modmail.create(subject="Subject", body="Body", recipient=redditor)
-
-        """
-        data = {
-            "body": body,
-            "isAuthorHidden": author_hidden,
-            "srName": self.subreddit,
-            "subject": subject,
-            "to": recipient,
-        }
-        return self.subreddit._reddit.post(API_PATH["modmail_conversations"], data=data)
-
-    def subreddits(self) -> Generator["praw.models.Subreddit", None, None]:
-        """Yield subreddits using the new modmail that the user moderates.
-
-        For example:
-
-        .. code-block:: python
-
-            subreddits = reddit.subreddit("all").modmail.subreddits()
-
-        """
-        response = self.subreddit._reddit.get(API_PATH["modmail_subreddits"])
-        for value in response["subreddits"].values():
-            subreddit = self.subreddit._reddit.subreddit(value["display_name"])
-            subreddit.last_updated = value["lastUpdated"]
-            yield subreddit
-
-    def unread_count(self) -> Dict[str, int]:
-        """Return unread conversation count by conversation state.
-
-        At time of writing, possible states are: ``"archived"``, ``"highlighted"``,
-        ``"inprogress"``, ``"join_requests"``, ``"mod"``, ``"new"``,
-        ``"notifications"``, or ``"appeals"``.
-
-        :returns: A dict mapping conversation states to unread counts.
-
-        For example, to print the count of unread moderator discussions:
-
-        .. code-block:: python
-
-            subreddit = reddit.subreddit("test")
-            unread_counts = subreddit.modmail.unread_count()
-            print(unread_counts["mod"])
-
-        """
-        return self.subreddit._reddit.get(API_PATH["modmail_unread_count"])
 
 
 class SubredditStream:
@@ -4250,3 +3745,508 @@ class SubredditWiki:
         return WikiPage._revision_generator(
             generator_kwargs=generator_kwargs, subreddit=self.subreddit, url=url
         )
+
+
+class ContributorRelationship(SubredditRelationship):
+    r"""Provides methods to interact with a :class:`.Subreddit`'s contributors.
+
+    Contributors are also known as approved submitters.
+
+    Contributors of a subreddit can be iterated through like so:
+
+    .. code-block:: python
+
+        for contributor in reddit.subreddit("test").contributor():
+            print(contributor)
+
+    """
+
+    def leave(self):
+        """Abdicate the contributor position."""
+        self.subreddit._reddit.post(
+            API_PATH["leavecontributor"], data={"id": self.subreddit.fullname}
+        )
+
+
+class ModeratorRelationship(SubredditRelationship):
+    r"""Provides methods to interact with a :class:`.Subreddit`'s moderators.
+
+    Moderators of a subreddit can be iterated through like so:
+
+    .. code-block:: python
+
+        for moderator in reddit.subreddit("test").moderator():
+            print(moderator)
+
+    """
+
+    PERMISSIONS = {
+        "access",
+        "chat_config",
+        "chat_operator",
+        "config",
+        "flair",
+        "mail",
+        "posts",
+        "wiki",
+    }
+
+    @staticmethod
+    def _handle_permissions(
+        *,
+        other_settings: Optional[dict] = None,
+        permissions: Optional[List[str]] = None,
+    ):
+        other_settings = deepcopy(other_settings) if other_settings else {}
+        other_settings["permissions"] = permissions_string(
+            known_permissions=ModeratorRelationship.PERMISSIONS, permissions=permissions
+        )
+        return other_settings
+
+    def __call__(
+        self, redditor: Optional[Union[str, "praw.models.Redditor"]] = None
+    ) -> List["praw.models.Redditor"]:  # pylint: disable=arguments-differ
+        r"""Return a list of :class:`.Redditor`\ s who are moderators.
+
+        :param redditor: When provided, return a list containing at most one
+            :class:`.Redditor` instance. This is useful to confirm if a relationship
+            exists, or to fetch the metadata associated with a particular relationship
+            (default: ``None``).
+
+        .. note::
+
+            To help mitigate targeted moderator harassment, this call requires the
+            :class:`.Reddit` instance to be authenticated i.e., :attr:`.read_only` must
+            return ``False``. This call, however, only makes use of the ``read`` scope.
+            For more information on why the moderator list is hidden can be found here:
+            https://reddit.zendesk.com/hc/en-us/articles/360049499032-Why-is-the-moderator-list-hidden-
+
+        .. note::
+
+            Unlike other relationship callables, this relationship is not paginated.
+            Thus it simply returns the full list, rather than an iterator for the
+            results.
+
+        To be used like:
+
+        .. code-block:: python
+
+            moderators = reddit.subreddit("test").moderator()
+
+        For example, to list the moderators along with their permissions try:
+
+        .. code-block:: python
+
+            for moderator in reddit.subreddit("test").moderator():
+                print(f"{moderator}: {moderator.mod_permissions}")
+
+        """
+        params = {} if redditor is None else {"user": redditor}
+        url = API_PATH[f"list_{self.relationship}"].format(subreddit=self.subreddit)
+        return self.subreddit._reddit.get(url, params=params)
+
+    # pylint: disable=arguments-differ
+    @_deprecate_args("redditor", "permissions")
+    def add(
+        self,
+        redditor: Union[str, "praw.models.Redditor"],
+        *,
+        permissions: Optional[List[str]] = None,
+        **other_settings: Any,
+    ):
+        """Add or invite ``redditor`` to be a moderator of the :class:`.Subreddit`.
+
+        :param redditor: A redditor name or :class:`.Redditor` instance.
+        :param permissions: When provided (not ``None``), permissions should be a list
+            of strings specifying which subset of permissions to grant. An empty list
+            ``[]`` indicates no permissions, and when not provided ``None``, indicates
+            full permissions (default: ``None``).
+
+        An invite will be sent unless the user making this call is an admin user.
+
+        For example, to invite u/spez with ``"posts"`` and ``"mail"`` permissions to
+        r/test, try:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").moderator.add("spez", permissions=["posts", "mail"])
+
+        """
+        other_settings = self._handle_permissions(
+            other_settings=other_settings, permissions=permissions
+        )
+        super().add(redditor, **other_settings)
+
+    # pylint: enable=arguments-differ
+    @_deprecate_args("redditor", "permissions")
+    def invite(
+        self,
+        redditor: Union[str, "praw.models.Redditor"],
+        *,
+        permissions: Optional[List[str]] = None,
+        **other_settings: Any,
+    ):
+        """Invite ``redditor`` to be a moderator of the :class:`.Subreddit`.
+
+        :param redditor: A redditor name or :class:`.Redditor` instance.
+        :param permissions: When provided (not ``None``), permissions should be a list
+            of strings specifying which subset of permissions to grant. An empty list
+            ``[]`` indicates no permissions, and when not provided ``None``, indicates
+            full permissions (default: ``None``).
+
+        For example, to invite u/spez with ``"posts"`` and ``"mail"`` permissions to
+        r/test, try:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").moderator.invite("spez", permissions=["posts", "mail"])
+
+        """
+        data = self._handle_permissions(
+            other_settings=other_settings, permissions=permissions
+        )
+        data.update({"name": str(redditor), "type": "moderator_invite"})
+        url = API_PATH["friend"].format(subreddit=self.subreddit)
+        self.subreddit._reddit.post(url, data=data)
+
+    @_deprecate_args("redditor")
+    def invited(
+        self,
+        *,
+        redditor: Optional[Union[str, "praw.models.Redditor"]] = None,
+        **generator_kwargs: Any,
+    ) -> Iterator["praw.models.Redditor"]:
+        r"""Return a :class:`.ListingGenerator` for :class:`.Redditor`\ s invited to be moderators.
+
+        :param redditor: When provided, return a list containing at most one
+            :class:`.Redditor` instance. This is useful to confirm if a relationship
+            exists, or to fetch the metadata associated with a particular relationship
+            (default: ``None``).
+
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
+
+        .. note::
+
+            Unlike other usages of :class:`.ListingGenerator`, ``limit`` has no effect
+            in the quantity returned. This endpoint always returns moderators in batches
+            of 25 at a time regardless of what ``limit`` is set to.
+
+        Usage:
+
+        .. code-block:: python
+
+            for invited_mod in reddit.subreddit("test").moderator.invited():
+                print(invited_mod)
+
+        """
+        generator_kwargs["params"] = {"username": redditor} if redditor else None
+        url = API_PATH["list_invited_moderator"].format(subreddit=self.subreddit)
+        return ListingGenerator(self.subreddit._reddit, url, **generator_kwargs)
+
+    def leave(self):
+        """Abdicate the moderator position (use with care).
+
+        For example:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").moderator.leave()
+
+        """
+        self.remove(
+            self.subreddit._reddit.config.username or self.subreddit._reddit.user.me()
+        )
+
+    def remove_invite(self, redditor: Union[str, "praw.models.Redditor"]):
+        """Remove the moderator invite for ``redditor``.
+
+        :param redditor: A redditor name or :class:`.Redditor` instance.
+
+        For example:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").moderator.remove_invite("spez")
+
+        """
+        data = {"name": str(redditor), "type": "moderator_invite"}
+        url = API_PATH["unfriend"].format(subreddit=self.subreddit)
+        self.subreddit._reddit.post(url, data=data)
+
+    @_deprecate_args("redditor", "permissions")
+    def update(
+        self,
+        redditor: Union[str, "praw.models.Redditor"],
+        *,
+        permissions: Optional[List[str]] = None,
+    ):
+        """Update the moderator permissions for ``redditor``.
+
+        :param redditor: A redditor name or :class:`.Redditor` instance.
+        :param permissions: When provided (not ``None``), permissions should be a list
+            of strings specifying which subset of permissions to grant. An empty list
+            ``[]`` indicates no permissions, and when not provided, ``None``, indicates
+            full permissions (default: ``None``).
+
+        For example, to add all permissions to the moderator, try:
+
+        .. code-block:: python
+
+            subreddit.moderator.update("spez")
+
+        To remove all permissions from the moderator, try:
+
+        .. code-block:: python
+
+            subreddit.moderator.update("spez", permissions=[])
+
+        """
+        url = API_PATH["setpermissions"].format(subreddit=self.subreddit)
+        data = self._handle_permissions(
+            other_settings={"name": str(redditor), "type": "moderator"},
+            permissions=permissions,
+        )
+        self.subreddit._reddit.post(url, data=data)
+
+    @_deprecate_args("redditor", "permissions")
+    def update_invite(
+        self,
+        redditor: Union[str, "praw.models.Redditor"],
+        *,
+        permissions: Optional[List[str]] = None,
+    ):
+        """Update the moderator invite permissions for ``redditor``.
+
+        :param redditor: A redditor name or :class:`.Redditor` instance.
+        :param permissions: When provided (not ``None``), permissions should be a list
+            of strings specifying which subset of permissions to grant. An empty list
+            ``[]`` indicates no permissions, and when not provided, ``None``, indicates
+            full permissions (default: ``None``).
+
+        For example, to grant the ``"flair"`` and ``"mail"`` permissions to the
+        moderator invite, try:
+
+        .. code-block:: python
+
+            subreddit.moderator.update_invite("spez", permissions=["flair", "mail"])
+
+        """
+        url = API_PATH["setpermissions"].format(subreddit=self.subreddit)
+        data = self._handle_permissions(
+            other_settings={"name": str(redditor), "type": "moderator_invite"},
+            permissions=permissions,
+        )
+        self.subreddit._reddit.post(url, data=data)
+
+
+class SubredditLinkFlairTemplates(SubredditFlairTemplates):
+    """Provide functions to interact with link flair templates."""
+
+    def __iter__(
+        self,
+    ) -> Generator[Dict[str, Union[str, int, bool, List[Dict[str, str]]]], None, None]:
+        """Iterate through the link flair templates as a moderator.
+
+        For example:
+
+        .. code-block:: python
+
+            for template in reddit.subreddit("test").flair.link_templates:
+                print(template)
+
+        """
+        url = API_PATH["link_flair"].format(subreddit=self.subreddit)
+        for template in self.subreddit._reddit.get(url):
+            yield template
+
+    @_deprecate_args(
+        "text",
+        "css_class",
+        "text_editable",
+        "background_color",
+        "text_color",
+        "mod_only",
+        "allowable_content",
+        "max_emojis",
+    )
+    def add(
+        self,
+        text: str,
+        *,
+        allowable_content: Optional[str] = None,
+        background_color: Optional[str] = None,
+        css_class: str = "",
+        max_emojis: Optional[int] = None,
+        mod_only: Optional[bool] = None,
+        text_color: Optional[str] = None,
+        text_editable: bool = False,
+    ):
+        """Add a link flair template to the associated subreddit.
+
+        :param text: The flair template's text.
+        :param allowable_content: If specified, most be one of ``"all"``, ``"emoji"``,
+            or ``"text"`` to restrict content to that type. If set to ``"emoji"`` then
+            the ``"text"`` param must be a valid emoji string, for example,
+            ``":snoo:"``.
+        :param background_color: The flair template's new background color, as a hex
+            color.
+        :param css_class: The flair template's css_class (default: ``""``).
+        :param max_emojis: Maximum emojis in the flair (Reddit defaults this value to
+            ``10``).
+        :param mod_only: Indicate if the flair can only be used by moderators.
+        :param text_color: The flair template's new text color, either ``"light"`` or
+            ``"dark"``.
+        :param text_editable: Indicate if the flair text can be modified for each
+            redditor that sets it (default: ``False``).
+
+        For example, to add an editable link flair try:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").flair.link_templates.add(
+                "PRAW",
+                css_class="praw",
+                text_editable=True,
+            )
+
+        """
+        self._add(
+            allowable_content=allowable_content,
+            background_color=background_color,
+            css_class=css_class,
+            is_link=True,
+            max_emojis=max_emojis,
+            mod_only=mod_only,
+            text=text,
+            text_color=text_color,
+            text_editable=text_editable,
+        )
+
+    def clear(self):
+        """Remove all link flair templates from the subreddit.
+
+        For example:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").flair.link_templates.clear()
+
+        """
+        self._clear(is_link=True)
+
+    def user_selectable(
+        self,
+    ) -> Generator[Dict[str, Union[str, bool]], None, None]:
+        """Iterate through the link flair templates as a regular user.
+
+        For example:
+
+        .. code-block:: python
+
+            for template in reddit.subreddit("test").flair.link_templates.user_selectable():
+                print(template)
+
+        """
+        url = API_PATH["flairselector"].format(subreddit=self.subreddit)
+        for template in self.subreddit._reddit.post(url, data={"is_newlink": True})[
+            "choices"
+        ]:
+            yield template
+
+
+class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
+    """Provide functions to interact with :class:`.Redditor` flair templates."""
+
+    def __iter__(
+        self,
+    ) -> Generator[Dict[str, Union[str, int, bool, List[Dict[str, str]]]], None, None]:
+        """Iterate through the user flair templates.
+
+        For example:
+
+        .. code-block:: python
+
+            for template in reddit.subreddit("test").flair.templates:
+                print(template)
+
+        """
+        url = API_PATH["user_flair"].format(subreddit=self.subreddit)
+        params = {"unique": self.subreddit._reddit._next_unique}
+        for template in self.subreddit._reddit.get(url, params=params):
+            yield template
+
+    @_deprecate_args(
+        "text",
+        "css_class",
+        "text_editable",
+        "background_color",
+        "text_color",
+        "mod_only",
+        "allowable_content",
+        "max_emojis",
+    )
+    def add(
+        self,
+        text: str,
+        *,
+        allowable_content: Optional[str] = None,
+        background_color: Optional[str] = None,
+        css_class: str = "",
+        max_emojis: Optional[int] = None,
+        mod_only: Optional[bool] = None,
+        text_color: Optional[str] = None,
+        text_editable: bool = False,
+    ):
+        """Add a redditor flair template to the associated subreddit.
+
+        :param text: The flair template's text.
+        :param allowable_content: If specified, most be one of ``"all"``, ``"emoji"``,
+            or ``"text"`` to restrict content to that type. If set to ``"emoji"`` then
+            the ``"text"`` param must be a valid emoji string, for example,
+            ``":snoo:"``.
+        :param background_color: The flair template's new background color, as a hex
+            color.
+        :param css_class: The flair template's css_class (default: ``""``).
+        :param max_emojis: Maximum emojis in the flair (Reddit defaults this value to
+            ``10``).
+        :param mod_only: Indicate if the flair can only be used by moderators.
+        :param text_color: The flair template's new text color, either ``"light"`` or
+            ``"dark"``.
+        :param text_editable: Indicate if the flair text can be modified for each
+            redditor that sets it (default: ``False``).
+
+        For example, to add an editable redditor flair try:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").flair.templates.add(
+                "PRAW",
+                css_class="praw",
+                text_editable=True,
+            )
+
+        """
+        self._add(
+            allowable_content=allowable_content,
+            background_color=background_color,
+            css_class=css_class,
+            is_link=False,
+            max_emojis=max_emojis,
+            mod_only=mod_only,
+            text=text,
+            text_color=text_color,
+            text_editable=text_editable,
+        )
+
+    def clear(self):
+        """Remove all :class:`.Redditor` flair templates from the subreddit.
+
+        For example:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").flair.templates.clear()
+
+        """
+        self._clear(is_link=False)

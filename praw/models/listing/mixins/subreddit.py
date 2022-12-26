@@ -20,11 +20,6 @@ class CommentHelper(PRAWBase):
     def _path(self) -> str:
         return urljoin(self.subreddit._path, "comments/")
 
-    def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Initialize a :class:`.CommentHelper` instance."""
-        super().__init__(subreddit._reddit, _data=None)
-        self.subreddit = subreddit
-
     def __call__(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
     ) -> Iterator["praw.models.Comment"]:
@@ -42,6 +37,11 @@ class CommentHelper(PRAWBase):
 
         """
         return ListingGenerator(self._reddit, self._path, **generator_kwargs)
+
+    def __init__(self, subreddit: "praw.models.Subreddit"):
+        """Initialize a :class:`.CommentHelper` instance."""
+        super().__init__(subreddit._reddit, _data=None)
+        self.subreddit = subreddit
 
 
 class SubredditListingMixin(BaseListingMixin, GildedListingMixin, RisingListingMixin):

@@ -7,6 +7,15 @@ class InlineMedia:
 
     TYPE = None
 
+    def __eq__(self, other: "InlineMedia"):
+        """Return whether the other instance equals the current."""
+        return all(
+            [
+                getattr(self, attr) == getattr(other, attr)
+                for attr in ["TYPE", "path", "caption", "media_id"]
+            ]
+        )
+
     @_deprecate_args("path", "caption")
     def __init__(self, *, caption: str = None, path: str):
         """Initialize an :class:`.InlineMedia` instance.
@@ -18,15 +27,6 @@ class InlineMedia:
         self.path = path
         self.caption = caption
         self.media_id = None
-
-    def __eq__(self, other: "InlineMedia"):
-        """Return whether the other instance equals the current."""
-        return all(
-            [
-                getattr(self, attr) == getattr(other, attr)
-                for attr in ["TYPE", "path", "caption", "media_id"]
-            ]
-        )
 
     def __repr__(self) -> str:
         """Return an object initialization representation of the instance."""
@@ -43,13 +43,13 @@ class InlineGif(InlineMedia):
     TYPE = "gif"
 
 
-class InlineVideo(InlineMedia):
-    """Class to provide a video to embed in text."""
-
-    TYPE = "video"
-
-
 class InlineImage(InlineMedia):
     """Class to provide am image to embed in text."""
 
     TYPE = "img"
+
+
+class InlineVideo(InlineMedia):
+    """Class to provide a video to embed in text."""
+
+    TYPE = "video"

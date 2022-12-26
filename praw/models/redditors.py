@@ -34,6 +34,34 @@ class Redditors(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH["users_new"], **generator_kwargs)
 
+    def partial_redditors(self, ids: Iterable[str]) -> Iterator[PartialRedditor]:
+        """Get user summary data by redditor IDs.
+
+        :param ids: An iterable of redditor fullname IDs.
+
+        :returns: A iterator producing :class:`.PartialRedditor` objects.
+
+        Each ID must be prefixed with ``t2_``.
+
+        Invalid IDs are ignored by the server.
+
+        """
+        iterable = iter(ids)
+        while True:
+            chunk = list(islice(iterable, 100))
+            if not chunk:
+                break
+
+            params = {"ids": ",".join(chunk)}
+            try:
+                results = self._reddit.get(API_PATH["user_by_fullname"], params=params)
+            except prawcore.exceptions.NotFound:
+                # None of the given IDs matched any Redditor.
+                continue
+
+            for fullname, user_data in results.items():
+                yield PartialRedditor(fullname=fullname, **user_data)
+
     def popular(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
     ) -> Iterator["praw.models.Subreddit"]:
@@ -81,31 +109,3 @@ class Redditors(PRAWBase):
 
         """
         return stream_generator(self.new, **stream_options)
-
-    def partial_redditors(self, ids: Iterable[str]) -> Iterator[PartialRedditor]:
-        """Get user summary data by redditor IDs.
-
-        :param ids: An iterable of redditor fullname IDs.
-
-        :returns: A iterator producing :class:`.PartialRedditor` objects.
-
-        Each ID must be prefixed with ``t2_``.
-
-        Invalid IDs are ignored by the server.
-
-        """
-        iterable = iter(ids)
-        while True:
-            chunk = list(islice(iterable, 100))
-            if not chunk:
-                break
-
-            params = {"ids": ",".join(chunk)}
-            try:
-                results = self._reddit.get(API_PATH["user_by_fullname"], params=params)
-            except prawcore.exceptions.NotFound:
-                # None of the given IDs matched any Redditor.
-                continue
-
-            for fullname, user_data in results.items():
-                yield PartialRedditor(fullname=fullname, **user_data)

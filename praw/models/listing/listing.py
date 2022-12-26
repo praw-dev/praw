@@ -10,13 +10,13 @@ class Listing(PRAWBase):
     AFTER_PARAM = "after"
     CHILD_ATTRIBUTE = "children"
 
-    def __len__(self) -> int:
-        """Return the number of items in the Listing."""
-        return len(getattr(self, self.CHILD_ATTRIBUTE))
-
     def __getitem__(self, index: int) -> Any:
         """Return the item at position index in the list."""
         return getattr(self, self.CHILD_ATTRIBUTE)[index]
+
+    def __len__(self) -> int:
+        """Return the number of items in the Listing."""
+        return len(getattr(self, self.CHILD_ATTRIBUTE))
 
     def __setattr__(self, attribute: str, value: Any):
         """Objectify the ``CHILD_ATTRIBUTE`` attribute."""
@@ -36,12 +36,6 @@ class FlairListing(Listing):
         return getattr(self, "next", None)
 
 
-class ModeratorListing(Listing):
-    """Special Listing for handling moderator lists."""
-
-    CHILD_ATTRIBUTE = "moderators"
-
-
 class ModNoteListing(Listing):
     """Special Listing for handling :class:`.ModNote` lists."""
 
@@ -54,6 +48,12 @@ class ModNoteListing(Listing):
         if not getattr(self, "has_next_page", True):
             return None
         return getattr(self, "end_cursor", None)
+
+
+class ModeratorListing(Listing):
+    """Special Listing for handling moderator lists."""
+
+    CHILD_ATTRIBUTE = "moderators"
 
 
 class ModmailConversationsListing(Listing):

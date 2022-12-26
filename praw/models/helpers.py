@@ -151,6 +151,37 @@ class LiveHelper(PRAWBase):
         """
         return LiveThread(self._reddit, id=id)
 
+    @_deprecate_args("title", "description", "nsfw", "resources")
+    def create(
+        self,
+        title: str,
+        *,
+        description: Optional[str] = None,
+        nsfw: bool = False,
+        resources: str = None,
+    ) -> "praw.models.LiveThread":
+        """Create a new :class:`.LiveThread`.
+
+        :param title: The title of the new :class:`.LiveThread`.
+        :param description: The new :class:`.LiveThread`'s description.
+        :param nsfw: Indicate whether this thread is not safe for work (default:
+            ``False``).
+        :param resources: Markdown formatted information that is useful for the
+            :class:`.LiveThread`.
+
+        :returns: The new :class:`.LiveThread` object.
+
+        """
+        return self._reddit.post(
+            API_PATH["livecreate"],
+            data={
+                "description": description,
+                "nsfw": nsfw,
+                "resources": resources,
+                "title": title,
+            },
+        )
+
     def info(self, ids: List[str]) -> Generator["praw.models.LiveThread", None, None]:
         """Fetch information about each live thread in ``ids``.
 
@@ -187,37 +218,6 @@ class LiveHelper(PRAWBase):
                     yield result
 
         return generator()
-
-    @_deprecate_args("title", "description", "nsfw", "resources")
-    def create(
-        self,
-        title: str,
-        *,
-        description: Optional[str] = None,
-        nsfw: bool = False,
-        resources: str = None,
-    ) -> "praw.models.LiveThread":
-        """Create a new :class:`.LiveThread`.
-
-        :param title: The title of the new :class:`.LiveThread`.
-        :param description: The new :class:`.LiveThread`'s description.
-        :param nsfw: Indicate whether this thread is not safe for work (default:
-            ``False``).
-        :param resources: Markdown formatted information that is useful for the
-            :class:`.LiveThread`.
-
-        :returns: The new :class:`.LiveThread` object.
-
-        """
-        return self._reddit.post(
-            API_PATH["livecreate"],
-            data={
-                "description": description,
-                "nsfw": nsfw,
-                "resources": resources,
-                "title": title,
-            },
-        )
 
     def now(self) -> Optional["praw.models.LiveThread"]:
         """Get the currently featured live thread.

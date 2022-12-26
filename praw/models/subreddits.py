@@ -42,19 +42,6 @@ class Subreddits(PRAWBase):
         )
         return self.premium(**generator_kwargs)
 
-    def premium(
-        self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["praw.models.Subreddit"]:
-        """Return a :class:`.ListingGenerator` for premium subreddits.
-
-        Additional keyword arguments are passed in the initialization of
-        :class:`.ListingGenerator`.
-
-        """
-        return ListingGenerator(
-            self._reddit, API_PATH["subreddits_gold"], **generator_kwargs
-        )
-
     def new(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
     ) -> Iterator["praw.models.Subreddit"]:
@@ -79,6 +66,19 @@ class Subreddits(PRAWBase):
         """
         return ListingGenerator(
             self._reddit, API_PATH["subreddits_popular"], **generator_kwargs
+        )
+
+    def premium(
+        self, **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Iterator["praw.models.Subreddit"]:
+        """Return a :class:`.ListingGenerator` for premium subreddits.
+
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
+
+        """
+        return ListingGenerator(
+            self._reddit, API_PATH["subreddits_gold"], **generator_kwargs
         )
 
     def recommended(

@@ -175,27 +175,27 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             value = UserSubreddit(reddit=self._reddit, _data=value)
         super().__setattr__(name, value)
 
-    def _fetch_username(self, fullname):
-        return self._reddit.get(API_PATH["user_by_fullname"], params={"ids": fullname})[
-            fullname
-        ]["name"]
-
-    def _fetch_info(self):
-        if hasattr(self, "_fullname"):
-            self.name = self._fetch_username(self._fullname)
-        return "user_about", {"user": self.name}, None
-
-    def _fetch_data(self):
-        name, fields, params = self._fetch_info()
-        path = API_PATH[name].format(**fields)
-        return self._reddit.request(method="GET", params=params, path=path)
-
     def _fetch(self):
         data = self._fetch_data()
         data = data["data"]
         other = type(self)(self._reddit, _data=data)
         self.__dict__.update(other.__dict__)
         self._fetched = True
+
+    def _fetch_data(self):
+        name, fields, params = self._fetch_info()
+        path = API_PATH[name].format(**fields)
+        return self._reddit.request(method="GET", params=params, path=path)
+
+    def _fetch_info(self):
+        if hasattr(self, "_fullname"):
+            self.name = self._fetch_username(self._fullname)
+        return "user_about", {"user": self.name}, None
+
+    def _fetch_username(self, fullname):
+        return self._reddit.get(API_PATH["user_by_fullname"], params={"ids": fullname})[
+            fullname
+        ]["name"]
 
     def _friend(self, *, data, method):
         url = API_PATH["friend_v1"].format(user=self)

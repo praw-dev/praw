@@ -12,6 +12,12 @@ if TYPE_CHECKING:  # pragma: no cover
 class MoreComments(PRAWBase):
     """A class indicating there are more comments."""
 
+    def __eq__(self, other: Union[str, "MoreComments"]) -> bool:
+        """Return ``True`` if these :class:`.MoreComments` instances are the same."""
+        if isinstance(other, self.__class__):
+            return self.count == other.count and self.children == other.children
+        return super().__eq__(other)
+
     def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
         """Initialize a :class:`.MoreComments` instance."""
         self.count = self.parent_id = None
@@ -19,12 +25,6 @@ class MoreComments(PRAWBase):
         super().__init__(reddit, _data=_data)
         self._comments = None
         self.submission = None
-
-    def __eq__(self, other: Union[str, "MoreComments"]) -> bool:
-        """Return ``True`` if these :class:`.MoreComments` instances are the same."""
-        if isinstance(other, self.__class__):
-            return self.count == other.count and self.children == other.children
-        return super().__eq__(other)
 
     def __lt__(self, other: "MoreComments") -> bool:
         """Provide a sort order on the :class:`.MoreComments` object."""
