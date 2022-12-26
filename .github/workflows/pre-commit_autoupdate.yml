@@ -1,26 +1,10 @@
 jobs:
-  auto-update:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install .[dev]
-      - name: Update hooks
-        run: pre-commit autoupdate
-      - name: Run hooks
-        run: pre-commit run --all-files
-        continue-on-error: true
-      - uses: peter-evans/create-pull-request@v3
-        with:
-          branch: update/pre-commit-hooks
-          title: Update pre-commit hooks
-          commit-message: "Update pre-commit hooks"
-          body: Update versions of pre-commit hooks to the latest version.
-name: 'Update pre-commit hooks'
+  pre-commit_autoupdate:
+    name: Update pre-commit hooks
+    secrets: inherit
+    uses: praw-dev/.github/.github/workflows/pre-commit_autoupdate.yml@main
+name: Update pre-commit hooks
 on:
   schedule:
-    - cron: '0 15 * * 1'
+    - cron: 0 15 * * 1
   workflow_dispatch:

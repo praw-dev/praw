@@ -1,0 +1,10 @@
+jobs:
+  stale_action:
+    name: Close stale issues and PRs
+    secrets: inherit
+    uses: praw-dev/.github/.github/workflows/stale_action.yml@main
+name: Close stale issues and PRs
+on:
+  schedule:
+    - cron: 0 */6 * * *
+  workflow_dispatch:
