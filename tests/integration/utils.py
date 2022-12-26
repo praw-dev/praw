@@ -7,13 +7,6 @@ import pytest
 from betamax.serializers import JSONSerializer
 
 
-class PrettyJSONSerializer(JSONSerializer):
-    name = "prettyjson"
-
-    def serialize(self, cassette_data):
-        return f"{json.dumps(cassette_data, sort_keys=True, indent=2, separators=(',', ': '))}\n"
-
-
 def ensure_environment_variables():
     """Ensure needed environment variables for recording a new cassette are set."""
     for key in (
@@ -22,7 +15,7 @@ def ensure_environment_variables():
     ):
         if getattr(pytest.placeholders, key) == f"placeholder_{key}":
             raise ValueError(
-                f"Environment variable 'prawtest_{key}' must be set for recording new "
+                f"Environment variable 'prawtest_{key}' must be set for recording new"
                 " cassettes."
             )
     auth_set = False
@@ -35,8 +28,8 @@ def ensure_environment_variables():
             break
     if not auth_set:
         raise ValueError(
-            "Environment variables 'prawtest_refresh_token' or 'prawtest_username'"
-            " and 'prawtest_password' must be set for new cassette recording."
+            "Environment variables 'prawtest_refresh_token' or 'prawtest_username' and"
+            " 'prawtest_password' must be set for new cassette recording."
         )
 
 
@@ -69,3 +62,10 @@ def filter_access_token(interaction, current_cassette):
             placeholder="<ACCESS_TOKEN>", replace=token
         )
     )
+
+
+class PrettyJSONSerializer(JSONSerializer):
+    name = "prettyjson"
+
+    def serialize(self, cassette_data):
+        return f"{json.dumps(cassette_data, sort_keys=True, indent=2, separators=(',', ': '))}\n"

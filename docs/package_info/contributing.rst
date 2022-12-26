@@ -239,8 +239,9 @@ used.
   useful when you want to use a cassette that was recorded by another test.
 - ``@pytest.mark.recorder_kwargs``: Allows you to pass additional arguments to the
   recorder. This can be useful if you need to specify parameters for the
-  ``Betamax.use_cassette`` method. Like the ``add_placeholder`` marker, this marker can be
-  applied to a test class or individual test methods and can be applied multiple times.
+  ``Betamax.use_cassette`` method. Like the ``add_placeholder`` marker, this marker can
+  be applied to a test class or individual test methods and can be applied multiple
+  times.
 
 Examples:
 
