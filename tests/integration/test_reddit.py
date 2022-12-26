@@ -49,9 +49,7 @@ class TestDomainListing(IntegrationTest):
 
 
 class TestReddit(IntegrationTest):
-    @pytest.mark.recorder_kwargs(
-        append_placeholders={"placeholder": "<COMMENT_IDS>", "replace": comment_ids()}
-    )
+    @pytest.mark.add_placeholder(comment_ids=comment_ids())
     def test_bad_request_without_json_text_html_response(self, reddit):
         with pytest.raises(RedditAPIException) as excinfo:
             reddit.request(
@@ -60,12 +58,11 @@ class TestReddit(IntegrationTest):
             )
         assert (
             str(excinfo.value)
-            == "<html><body><h1>400 Bad request</h1>\nYour browser sent an invalid request.\n</body></html>\n"
+            == "<html><body><h1>400 Bad request</h1>\nYour browser sent an invalid "
+            "request.\n</body></html>\n"
         )
 
-    @pytest.mark.recorder_kwargs(
-        append_placeholders={"placeholder": "<CONTENT>", "replace": junk_data()}
-    )
+    @pytest.mark.add_placeholder(content=junk_data())
     def test_bad_request_without_json_text_plain_response(self, reddit):
         with pytest.raises(RedditAPIException) as excinfo:
             reddit.request(
@@ -100,7 +97,6 @@ class TestReddit(IntegrationTest):
         for item in results:
             assert isinstance(item, RedditBase)
 
-    @pytest.mark.cassette_data("TestReddit.test_info_sr_names")
     def test_info_sr_names(self, reddit):
         items = [reddit.subreddit("redditdev"), "reddit.com", "t:1337", "nl"]
         item_generator = reddit.info(subreddits=items)
@@ -219,12 +215,7 @@ class TestReddit(IntegrationTest):
     def test_subreddit_with_random(self, reddit):
         assert reddit.subreddit("random").display_name != "random"
 
-    @pytest.mark.recorder_kwargs(
-        append_placeholders={
-            "placeholder": "<AVAILABLE_NAME>",
-            "replace": "prawtestuserabcd1234",
-        }
-    )
+    @pytest.mark.add_placeholder(AVAILABLE_NAME="prawtestuserabcd1234")
     def test_username_available__available(self, reddit):
         assert reddit.username_available("prawtestuserabcd1234")
 

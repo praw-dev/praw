@@ -105,16 +105,6 @@ def arg_test_global_with_positional(arg0, *, arg1=None, arg2=None, arg3=None):
     return arg0, arg1, arg2, arg3
 
 
-class ArgTest:
-    @_deprecate_args("arg2", "arg1", "arg3", "arg0")
-    def arg_test(self, *, arg0=None, arg1=None, arg2=None, arg3=None):
-        return arg0, arg1, arg2, arg3
-
-    @_deprecate_args("arg0", "arg2", "arg1", "arg3")
-    def arg_test_with_positional(self, arg0, *, arg1=None, arg2=None, arg3=None):
-        return arg0, arg1, arg2, arg3
-
-
 def pytest_generate_tests(metafunc):
     # called once per each test function
     positional = "positional" in metafunc.function.__name__
@@ -129,6 +119,16 @@ def pytest_generate_tests(metafunc):
     signature = inspect.signature(metafunc.function)
     args = [arg.name for arg in signature.parameters.values() if arg.name != "self"]
     metafunc.parametrize(argnames=args, argvalues=cases, ids=ids)
+
+
+class ArgTest:
+    @_deprecate_args("arg2", "arg1", "arg3", "arg0")
+    def arg_test(self, *, arg0=None, arg1=None, arg2=None, arg3=None):
+        return arg0, arg1, arg2, arg3
+
+    @_deprecate_args("arg0", "arg2", "arg1", "arg3")
+    def arg_test_with_positional(self, arg0, *, arg1=None, arg2=None, arg3=None):
+        return arg0, arg1, arg2, arg3
 
 
 @pytest.mark.filterwarnings("error", category=DeprecationWarning)

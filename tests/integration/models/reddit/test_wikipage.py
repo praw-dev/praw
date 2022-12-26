@@ -11,8 +11,67 @@ from ... import IntegrationTest
 
 def large_content():
     with open("tests/integration/files/too_large.jpg", "rb") as fp:
-        large_content = urlsafe_b64encode(fp.read()).decode()
-    return large_content
+        return urlsafe_b64encode(fp.read()).decode()
+
+
+class TestWikiPageModeration(IntegrationTest):
+    def test_add(self, reddit):
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
+        page = WikiPage(reddit, subreddit, "test")
+
+        reddit.read_only = False
+        page.mod.add("bboe")
+
+    def test_remove(self, reddit):
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
+        page = WikiPage(reddit, subreddit, "test")
+
+        reddit.read_only = False
+        page.mod.remove("bboe")
+
+    def test_revert(self, reddit):
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
+        page = WikiPage(reddit, subreddit, "test")
+
+        reddit.read_only = False
+        revision_id = next(page.revisions(limit=1))["id"]
+        page.revision(revision_id).mod.revert()
+
+    def test_revert_css_fail(self, reddit):
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
+        page = WikiPage(reddit, subreddit, "config/stylesheet")
+
+        reddit.read_only = False
+        subreddit.stylesheet.upload(
+            name="css-revert-fail",
+            image_path="tests/integration/files/icon.jpg",
+        )
+        page.edit(content="div {background: url(%%css-revert-fail%%)}")
+        revision_id = next(page.revisions(limit=1))["id"]
+        subreddit.stylesheet.delete_image("css-revert-fail")
+        with pytest.raises(Forbidden) as exc:
+            page.revision(revision_id).mod.revert()
+        assert exc.value.response.json() == {
+            "reason": "INVALID_CSS",
+            "message": "Forbidden",
+            "explanation": "%(css_error)s",
+        }
+
+    def test_settings(self, reddit):
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
+        page = WikiPage(reddit, subreddit, "test")
+
+        reddit.read_only = False
+        settings = page.mod.settings()
+        assert {"editors": [], "listed": True, "permlevel": 0} == settings
+
+    def test_update(self, reddit):
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
+        page = WikiPage(reddit, subreddit, "test")
+
+        reddit.read_only = False
+        updated = page.mod.update(listed=False, permlevel=1)
+        assert {"editors": [], "listed": False, "permlevel": 1} == updated
 
 
 class TestWikiPage(IntegrationTest):
@@ -40,9 +99,7 @@ class TestWikiPage(IntegrationTest):
         reddit.read_only = False
         page.edit(content="PRAW updated")
 
-    @pytest.mark.recorder_kwargs(
-        append_placeholders={"placeholder": "<CONTENT>", "replace": large_content()}
-    )
+    @pytest.mark.add_placeholder(content=large_content())
     def test_edit__usernotes(self, reddit):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         page = WikiPage(reddit, subreddit, "usernotes")
@@ -107,63 +164,3 @@ class TestWikiPage(IntegrationTest):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         revisions = subreddit.wiki["index"].revisions(limit=10)
         assert any(revision["author"] is None for revision in revisions)
-
-
-class TestWikiPageModeration(IntegrationTest):
-    def test_add(self, reddit):
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        page = WikiPage(reddit, subreddit, "test")
-
-        reddit.read_only = False
-        page.mod.add("bboe")
-
-    def test_remove(self, reddit):
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        page = WikiPage(reddit, subreddit, "test")
-
-        reddit.read_only = False
-        page.mod.remove("bboe")
-
-    def test_revert(self, reddit):
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        page = WikiPage(reddit, subreddit, "test")
-
-        reddit.read_only = False
-        revision_id = next(page.revisions(limit=1))["id"]
-        page.revision(revision_id).mod.revert()
-
-    def test_revert_css_fail(self, reddit):
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        page = WikiPage(reddit, subreddit, "config/stylesheet")
-
-        reddit.read_only = False
-        subreddit.stylesheet.upload(
-            name="css-revert-fail",
-            image_path="tests/integration/files/icon.jpg",
-        )
-        page.edit(content="div {background: url(%%css-revert-fail%%)}")
-        revision_id = next(page.revisions(limit=1))["id"]
-        subreddit.stylesheet.delete_image("css-revert-fail")
-        with pytest.raises(Forbidden) as exc:
-            page.revision(revision_id).mod.revert()
-        assert exc.value.response.json() == {
-            "reason": "INVALID_CSS",
-            "message": "Forbidden",
-            "explanation": "%(css_error)s",
-        }
-
-    def test_settings(self, reddit):
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        page = WikiPage(reddit, subreddit, "test")
-
-        reddit.read_only = False
-        settings = page.mod.settings()
-        assert {"editors": [], "listed": True, "permlevel": 0} == settings
-
-    def test_update(self, reddit):
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        page = WikiPage(reddit, subreddit, "test")
-
-        reddit.read_only = False
-        updated = page.mod.update(listed=False, permlevel=1)
-        assert {"editors": [], "listed": False, "permlevel": 1} == updated
