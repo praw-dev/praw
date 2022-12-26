@@ -12,6 +12,14 @@ class BaseList(PRAWBase):
 
     CHILD_ATTRIBUTE = None
 
+    def __contains__(self, item: Any) -> bool:
+        """Test if item exists in the list."""
+        return item in getattr(self, self.CHILD_ATTRIBUTE)
+
+    def __getitem__(self, index: int) -> Any:
+        """Return the item at position index in the list."""
+        return getattr(self, self.CHILD_ATTRIBUTE)[index]
+
     def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
         """Initialize a :class:`.BaseList` instance.
 
@@ -26,14 +34,6 @@ class BaseList(PRAWBase):
         child_list = getattr(self, self.CHILD_ATTRIBUTE)
         for index, item in enumerate(child_list):
             child_list[index] = reddit._objector.objectify(item)
-
-    def __contains__(self, item: Any) -> bool:
-        """Test if item exists in the list."""
-        return item in getattr(self, self.CHILD_ATTRIBUTE)
-
-    def __getitem__(self, index: int) -> Any:
-        """Return the item at position index in the list."""
-        return getattr(self, self.CHILD_ATTRIBUTE)[index]
 
     def __iter__(self) -> Iterator[Any]:
         """Return an iterator to the list."""

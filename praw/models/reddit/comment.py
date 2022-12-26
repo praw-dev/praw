@@ -72,17 +72,6 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             raise InvalidURL(url)
         return parts[-1]
 
-    @property
-    def _kind(self) -> str:
-        """Return the class's kind."""
-        return self._reddit.config.kinds["comment"]
-
-    @property
-    def is_root(self) -> bool:
-        """Return ``True`` when the comment is a top-level comment."""
-        parent_type = self.parent_id.split("_", 1)[0]
-        return parent_type == self._reddit.config.kinds["submission"]
-
     @cachedproperty
     def mod(self) -> "praw.models.reddit.comment.CommentModeration":
         """Provide an instance of :class:`.CommentModeration`.
@@ -96,6 +85,17 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         """
         return CommentModeration(self)
+
+    @property
+    def _kind(self) -> str:
+        """Return the class's kind."""
+        return self._reddit.config.kinds["comment"]
+
+    @property
+    def is_root(self) -> bool:
+        """Return ``True`` when the comment is a top-level comment."""
+        parent_type = self.parent_id.split("_", 1)[0]
+        return parent_type == self._reddit.config.kinds["submission"]
 
     @property
     def replies(self) -> CommentForest:
@@ -179,13 +179,10 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             value = self._reddit.subreddit(value)
         super().__setattr__(attribute, value)
 
-    def _fetch_info(self):
-        return "info", {}, {"id": self.fullname}
-
-    def _fetch_data(self):
-        name, fields, params = self._fetch_info()
-        path = API_PATH[name].format(**fields)
-        return self._reddit.request(method="GET", params=params, path=path)
+    def _extract_submission_id(self):
+        if "context" in self.__dict__:
+            return self.context.rsplit("/", 4)[1]
+        return self.link_id.split("_", 1)[1]
 
     def _fetch(self):
         data = self._fetch_data()
@@ -199,10 +196,13 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
-    def _extract_submission_id(self):
-        if "context" in self.__dict__:
-            return self.context.rsplit("/", 4)[1]
-        return self.link_id.split("_", 1)[1]
+    def _fetch_data(self):
+        name, fields, params = self._fetch_info()
+        path = API_PATH[name].format(**fields)
+        return self._reddit.request(method="GET", params=params, path=path)
+
+    def _fetch_info(self):
+        return "info", {}, {"id": self.fullname}
 
     def parent(self) -> Union["Comment", "praw.models.Submission"]:
         """Return the parent of the comment.

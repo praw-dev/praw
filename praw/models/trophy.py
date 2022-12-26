@@ -28,6 +28,12 @@ class Trophy(PRAWBase):
 
     """
 
+    def __eq__(self, other: Union["Trophy", Any]) -> bool:
+        """Check if two Trophies are equal."""
+        if isinstance(other, self.__class__):
+            return self.name == other.name
+        return super().__eq__(other)
+
     def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
         """Initialize a :class:`.Trophy` instance.
 
@@ -39,16 +45,10 @@ class Trophy(PRAWBase):
         assert isinstance(_data, dict) and "name" in _data
         super().__init__(reddit, _data=_data)
 
-    def __eq__(self, other: Union["Trophy", Any]) -> bool:
-        """Check if two Trophies are equal."""
-        if isinstance(other, self.__class__):
-            return self.name == other.name
-        return super().__eq__(other)
+    def __repr__(self) -> str:
+        """Return an object initialization representation of the instance."""
+        return f"{self.__class__.__name__}(name={self.name!r})"
 
     def __str__(self) -> str:
         """Return a name of the trophy."""
         return self.name  # pylint: disable=no-member
-
-    def __repr__(self) -> str:
-        """Return an object initialization representation of the instance."""
-        return f"{self.__class__.__name__}(name={self.name!r})"

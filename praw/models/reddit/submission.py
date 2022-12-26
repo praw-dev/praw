@@ -476,6 +476,39 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             raise InvalidURL(url)
         return submission_id
 
+    @cachedproperty
+    def flair(self) -> SubmissionFlair:
+        """Provide an instance of :class:`.SubmissionFlair`.
+
+        This attribute is used to work with flair as a regular user of the subreddit the
+        submission belongs to. Moderators can directly use :meth:`.flair`.
+
+        For example, to select an arbitrary editable flair text (assuming there is one)
+        and set a custom value try:
+
+        .. code-block:: python
+
+            choices = submission.flair.choices()
+            template_id = next(x for x in choices if x["flair_text_editable"])["flair_template_id"]
+            submission.flair.select(template_id, text="my custom value")
+
+        """
+        return SubmissionFlair(self)
+
+    @cachedproperty
+    def mod(self) -> SubmissionModeration:
+        """Provide an instance of :class:`.SubmissionModeration`.
+
+        Example usage:
+
+        .. code-block:: python
+
+            submission = reddit.submission("8dmv8z")
+            submission.mod.approve()
+
+        """
+        return SubmissionModeration(self)
+
     @property
     def _kind(self) -> str:
         """Return the class's kind."""
@@ -513,39 +546,6 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         """
         # This assumes _comments is set so that _fetch is called when it's not.
         return self._comments
-
-    @cachedproperty
-    def flair(self) -> SubmissionFlair:
-        """Provide an instance of :class:`.SubmissionFlair`.
-
-        This attribute is used to work with flair as a regular user of the subreddit the
-        submission belongs to. Moderators can directly use :meth:`.flair`.
-
-        For example, to select an arbitrary editable flair text (assuming there is one)
-        and set a custom value try:
-
-        .. code-block:: python
-
-            choices = submission.flair.choices()
-            template_id = next(x for x in choices if x["flair_text_editable"])["flair_template_id"]
-            submission.flair.select(template_id, text="my custom value")
-
-        """
-        return SubmissionFlair(self)
-
-    @cachedproperty
-    def mod(self) -> SubmissionModeration:
-        """Provide an instance of :class:`.SubmissionModeration`.
-
-        Example usage:
-
-        .. code-block:: python
-
-            submission = reddit.submission("8dmv8z")
-            submission.mod.approve()
-
-        """
-        return SubmissionModeration(self)
 
     @property
     def shortlink(self) -> str:
@@ -618,18 +618,6 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         for position in range(0, len(all_submissions), chunk_size):
             yield ",".join(all_submissions[position : position + 50])
 
-    def _fetch_info(self):
-        return (
-            "submission",
-            {"id": self.id},
-            {"limit": self.comment_limit, "sort": self.comment_sort},
-        )
-
-    def _fetch_data(self):
-        name, fields, params = self._fetch_info()
-        path = API_PATH[name].format(**fields)
-        return self._reddit.request(method="GET", params=params, path=path)
-
     def _fetch(self):
         data = self._fetch_data()
         submission_listing, comment_listing = data
@@ -646,75 +634,17 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         self._fetched = True
 
-    def mark_visited(self):
-        """Mark submission as visited.
+    def _fetch_data(self):
+        name, fields, params = self._fetch_info()
+        path = API_PATH[name].format(**fields)
+        return self._reddit.request(method="GET", params=params, path=path)
 
-        This method requires a subscription to reddit premium.
-
-        Example usage:
-
-        .. code-block:: python
-
-            submission = reddit.submission("5or86n")
-            submission.mark_visited()
-
-        """
-        data = {"links": self.fullname}
-        self._reddit.post(API_PATH["store_visits"], data=data)
-
-    @_deprecate_args("other_submissions")
-    def hide(
-        self, *, other_submissions: Optional[List["praw.models.Submission"]] = None
-    ):
-        """Hide :class:`.Submission`.
-
-        :param other_submissions: When provided, additionally hide this list of
-            :class:`.Submission` instances as part of a single request (default:
-            ``None``).
-
-        Example usage:
-
-        .. code-block:: python
-
-            submission = reddit.submission("5or86n")
-            submission.hide()
-
-        .. seealso::
-
-            :meth:`.unhide`
-
-        """
-        for submissions in self._chunk(
-            chunk_size=50, other_submissions=other_submissions
-        ):
-            self._reddit.post(API_PATH["hide"], data={"id": submissions})
-
-    @_deprecate_args("other_submissions")
-    def unhide(
-        self, *, other_submissions: Optional[List["praw.models.Submission"]] = None
-    ):
-        """Unhide :class:`.Submission`.
-
-        :param other_submissions: When provided, additionally unhide this list of
-            :class:`.Submission` instances as part of a single request (default:
-            ``None``).
-
-        Example usage:
-
-        .. code-block:: python
-
-            submission = reddit.submission("5or86n")
-            submission.unhide()
-
-        .. seealso::
-
-            :meth:`.hide`
-
-        """
-        for submissions in self._chunk(
-            chunk_size=50, other_submissions=other_submissions
-        ):
-            self._reddit.post(API_PATH["unhide"], data={"id": submissions})
+    def _fetch_info(self):
+        return (
+            "submission",
+            {"id": self.id},
+            {"limit": self.comment_limit, "sort": self.comment_sort},
+        )
 
     @_deprecate_args(
         "subreddit",
@@ -787,6 +717,76 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
                 data[key] = value
 
         return self._reddit.post(API_PATH["submit"], data=data)
+
+    @_deprecate_args("other_submissions")
+    def hide(
+        self, *, other_submissions: Optional[List["praw.models.Submission"]] = None
+    ):
+        """Hide :class:`.Submission`.
+
+        :param other_submissions: When provided, additionally hide this list of
+            :class:`.Submission` instances as part of a single request (default:
+            ``None``).
+
+        Example usage:
+
+        .. code-block:: python
+
+            submission = reddit.submission("5or86n")
+            submission.hide()
+
+        .. seealso::
+
+            :meth:`.unhide`
+
+        """
+        for submissions in self._chunk(
+            chunk_size=50, other_submissions=other_submissions
+        ):
+            self._reddit.post(API_PATH["hide"], data={"id": submissions})
+
+    def mark_visited(self):
+        """Mark submission as visited.
+
+        This method requires a subscription to reddit premium.
+
+        Example usage:
+
+        .. code-block:: python
+
+            submission = reddit.submission("5or86n")
+            submission.mark_visited()
+
+        """
+        data = {"links": self.fullname}
+        self._reddit.post(API_PATH["store_visits"], data=data)
+
+    @_deprecate_args("other_submissions")
+    def unhide(
+        self, *, other_submissions: Optional[List["praw.models.Submission"]] = None
+    ):
+        """Unhide :class:`.Submission`.
+
+        :param other_submissions: When provided, additionally unhide this list of
+            :class:`.Submission` instances as part of a single request (default:
+            ``None``).
+
+        Example usage:
+
+        .. code-block:: python
+
+            submission = reddit.submission("5or86n")
+            submission.unhide()
+
+        .. seealso::
+
+            :meth:`.hide`
+
+        """
+        for submissions in self._chunk(
+            chunk_size=50, other_submissions=other_submissions
+        ):
+            self._reddit.post(API_PATH["unhide"], data={"id": submissions})
 
 
 Subreddit._submission_class = Submission

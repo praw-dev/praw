@@ -8,6 +8,28 @@ if TYPE_CHECKING:  # pragma: no cover
 class ModNoteMixin:
     """Interface for classes that can have a moderator note set on them."""
 
+    def author_notes(
+        self, **generator_kwargs
+    ) -> Generator["praw.models.ModNote", None, None]:
+        """Get the moderator notes for the author of this object in the subreddit it's posted in.
+
+        :param generator_kwargs: Additional keyword arguments are passed in the
+            initialization of the moderator note generator.
+
+        :returns: A generator of :class:`.ModNote`.
+
+        For example, to list all notes the author of a submission, try:
+
+        .. code-block:: python
+
+            for note in reddit.submission("92dd8").mod.author_notes():
+                print(f"{note.label}: {note.note}")
+
+        """
+        return self.thing.subreddit.mod.notes.redditors(
+            self.thing.author, **generator_kwargs
+        )
+
     def create_note(
         self, *, label: Optional[str] = None, note: str, **other_settings
     ) -> "praw.models.ModNote":
@@ -33,26 +55,4 @@ class ModNoteMixin:
         """
         return self.thing.subreddit.mod.notes.create(
             label=label, note=note, thing=self.thing, **other_settings
-        )
-
-    def author_notes(
-        self, **generator_kwargs
-    ) -> Generator["praw.models.ModNote", None, None]:
-        """Get the moderator notes for the author of this object in the subreddit it's posted in.
-
-        :param generator_kwargs: Additional keyword arguments are passed in the
-            initialization of the moderator note generator.
-
-        :returns: A generator of :class:`.ModNote`.
-
-        For example, to list all notes the author of a submission, try:
-
-        .. code-block:: python
-
-            for note in reddit.submission("92dd8").mod.author_notes():
-                print(f"{note.label}: {note.note}")
-
-        """
-        return self.thing.subreddit.mod.notes.redditors(
-            self.thing.author, **generator_kwargs
         )

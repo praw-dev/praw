@@ -59,6 +59,15 @@ class Rule(RedditBase):
         """
         return RuleModeration(self)
 
+    def __getattribute__(self, attribute: str) -> Any:
+        """Get the value of an attribute."""
+        value = super().__getattribute__(attribute)
+        if attribute == "subreddit" and value is None:
+            raise ValueError(
+                "The Rule is missing a subreddit. File a bug report at PRAW."
+            )
+        return value
+
     def __init__(
         self,
         reddit: "praw.Reddit",
@@ -77,15 +86,6 @@ class Rule(RedditBase):
         self.subreddit = subreddit
         super().__init__(reddit, _data=_data)
 
-    def __getattribute__(self, attribute: str) -> Any:
-        """Get the value of an attribute."""
-        value = super().__getattribute__(attribute)
-        if attribute == "subreddit" and value is None:
-            raise ValueError(
-                "The Rule is missing a subreddit. File a bug report at PRAW."
-            )
-        return value
-
     def _fetch(self):
         for rule in self.subreddit.rules:
             if rule.short_name == self.short_name:
@@ -95,6 +95,95 @@ class Rule(RedditBase):
         raise ClientException(
             f"Subreddit {self.subreddit} does not have the rule {self.short_name}"
         )
+
+
+class RuleModeration:
+    """Contain methods used to moderate rules.
+
+    To delete ``"No spam"`` from r/test try:
+
+    .. code-block:: python
+
+        reddit.subreddit("test").rules["No spam"].mod.delete()
+
+    To update ``"No spam"`` from r/test try:
+
+    .. code-block:: python
+
+        reddit.subreddit("test").removal_reasons["No spam"].mod.update(
+            description="Don't do this!", violation_reason="Spam post"
+        )
+
+    """
+
+    def __init__(self, rule: "praw.models.Rule"):
+        """Initialize a :class:`.RuleModeration` instance."""
+        self.rule = rule
+
+    def delete(self):
+        """Delete a rule from this subreddit.
+
+        To delete ``"No spam"`` from r/test try:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").rules["No spam"].mod.delete()
+
+        """
+        data = {
+            "r": str(self.rule.subreddit),
+            "short_name": self.rule.short_name,
+        }
+        self.rule._reddit.post(API_PATH["remove_subreddit_rule"], data=data)
+
+    @_deprecate_args("description", "kind", "short_name", "violation_reason")
+    def update(
+        self,
+        *,
+        description: Optional[str] = None,
+        kind: Optional[str] = None,
+        short_name: Optional[str] = None,
+        violation_reason: Optional[str] = None,
+    ) -> "praw.models.Rule":
+        """Update the rule from this subreddit.
+
+        .. note::
+
+            Existing values will be used for any unspecified arguments.
+
+        :param description: The new description for the rule. Can be empty.
+        :param kind: The kind of item that the rule applies to. One of ``"link"``,
+            ``"comment"``, or ``"all"``.
+        :param short_name: The name of the rule.
+        :param violation_reason: The reason that is shown on the report menu.
+
+        :returns: A Rule object containing the updated values.
+
+        To update ``"No spam"`` from r/test try:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").removal_reasons["No spam"].mod.update(
+                description="Don't do this!", violation_reason="Spam post"
+            )
+
+        """
+        data = {
+            "r": str(self.rule.subreddit),
+            "old_short_name": self.rule.short_name,
+        }
+        for name, value in {
+            "description": description,
+            "kind": kind,
+            "short_name": short_name,
+            "violation_reason": violation_reason,
+        }.items():
+            data[name] = getattr(self.rule, name) if value is None else value
+        updated_rule = self.rule._reddit.post(
+            API_PATH["update_subreddit_rule"], data=data
+        )[0]
+        updated_rule.subreddit = self.rule.subreddit
+        return updated_rule
 
 
 class SubredditRules:
@@ -117,6 +206,18 @@ class SubredditRules:
         )
 
     """
+
+    @cachedproperty
+    def _rule_list(self) -> List[Rule]:
+        """Get a list of :class:`.Rule` objects.
+
+        :returns: A list of instances of :class:`.Rule`.
+
+        """
+        rule_list = self._reddit.get(API_PATH["rules"].format(subreddit=self.subreddit))
+        for rule in rule_list:
+            rule.subreddit = self.subreddit
+        return rule_list
 
     @cachedproperty
     def mod(self) -> "SubredditRulesModeration":
@@ -239,107 +340,6 @@ class SubredditRules:
 
         """
         return iter(self._rule_list)
-
-    @cachedproperty
-    def _rule_list(self) -> List[Rule]:
-        """Get a list of :class:`.Rule` objects.
-
-        :returns: A list of instances of :class:`.Rule`.
-
-        """
-        rule_list = self._reddit.get(API_PATH["rules"].format(subreddit=self.subreddit))
-        for rule in rule_list:
-            rule.subreddit = self.subreddit
-        return rule_list
-
-
-class RuleModeration:
-    """Contain methods used to moderate rules.
-
-    To delete ``"No spam"`` from r/test try:
-
-    .. code-block:: python
-
-        reddit.subreddit("test").rules["No spam"].mod.delete()
-
-    To update ``"No spam"`` from r/test try:
-
-    .. code-block:: python
-
-        reddit.subreddit("test").removal_reasons["No spam"].mod.update(
-            description="Don't do this!", violation_reason="Spam post"
-        )
-
-    """
-
-    def __init__(self, rule: "praw.models.Rule"):
-        """Initialize a :class:`.RuleModeration` instance."""
-        self.rule = rule
-
-    def delete(self):
-        """Delete a rule from this subreddit.
-
-        To delete ``"No spam"`` from r/test try:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").rules["No spam"].mod.delete()
-
-        """
-        data = {
-            "r": str(self.rule.subreddit),
-            "short_name": self.rule.short_name,
-        }
-        self.rule._reddit.post(API_PATH["remove_subreddit_rule"], data=data)
-
-    @_deprecate_args("description", "kind", "short_name", "violation_reason")
-    def update(
-        self,
-        *,
-        description: Optional[str] = None,
-        kind: Optional[str] = None,
-        short_name: Optional[str] = None,
-        violation_reason: Optional[str] = None,
-    ) -> "praw.models.Rule":
-        """Update the rule from this subreddit.
-
-        .. note::
-
-            Existing values will be used for any unspecified arguments.
-
-        :param description: The new description for the rule. Can be empty.
-        :param kind: The kind of item that the rule applies to. One of ``"link"``,
-            ``"comment"``, or ``"all"``.
-        :param short_name: The name of the rule.
-        :param violation_reason: The reason that is shown on the report menu.
-
-        :returns: A Rule object containing the updated values.
-
-        To update ``"No spam"`` from r/test try:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").removal_reasons["No spam"].mod.update(
-                description="Don't do this!", violation_reason="Spam post"
-            )
-
-        """
-        data = {
-            "r": str(self.rule.subreddit),
-            "old_short_name": self.rule.short_name,
-        }
-        for name, value in {
-            "description": description,
-            "kind": kind,
-            "short_name": short_name,
-            "violation_reason": violation_reason,
-        }.items():
-            data[name] = getattr(self.rule, name) if value is None else value
-        updated_rule = self.rule._reddit.post(
-            API_PATH["update_subreddit_rule"], data=data
-        )[0]
-        updated_rule.subreddit = self.rule.subreddit
-        return updated_rule
 
 
 class SubredditRulesModeration:

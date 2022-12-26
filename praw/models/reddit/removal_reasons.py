@@ -139,6 +139,21 @@ class RemovalReason(RedditBase):
 class SubredditRemovalReasons:
     """Provide a set of functions to a :class:`.Subreddit`'s removal reasons."""
 
+    @cachedproperty
+    def _removal_reason_list(self) -> List[RemovalReason]:
+        """Get a list of Removal Reason objects.
+
+        :returns: A list of instances of :class:`.RemovalReason`.
+
+        """
+        response = self._reddit.get(
+            API_PATH["removal_reasons_list"].format(subreddit=self.subreddit)
+        )
+        return [
+            RemovalReason(self._reddit, self.subreddit, _data=reason_data)
+            for id, reason_data in response["data"].items()
+        ]
+
     def __getitem__(self, reason_id: Union[str, int, slice]) -> RemovalReason:
         """Return the Removal Reason with the ID/number/slice ``reason_id``.
 
@@ -208,21 +223,6 @@ class SubredditRemovalReasons:
 
         """
         return iter(self._removal_reason_list)
-
-    @cachedproperty
-    def _removal_reason_list(self) -> List[RemovalReason]:
-        """Get a list of Removal Reason objects.
-
-        :returns: A list of instances of :class:`.RemovalReason`.
-
-        """
-        response = self._reddit.get(
-            API_PATH["removal_reasons_list"].format(subreddit=self.subreddit)
-        )
-        return [
-            RemovalReason(self._reddit, self.subreddit, _data=reason_data)
-            for id, reason_data in response["data"].items()
-        ]
 
     @_deprecate_args("message", "title")
     def add(self, *, message: str, title: str) -> RemovalReason:
