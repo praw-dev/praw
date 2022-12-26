@@ -51,7 +51,7 @@ repos:
   - repo: https://github.com/pycqa/isort
     hooks:
       - id: isort
-    rev: v5.11.3
+    rev: 5.11.4
 
   - repo: https://github.com/pycqa/pydocstyle
     hooks:
