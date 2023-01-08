@@ -120,6 +120,9 @@ class Config:
         self.warn_comment_sort = self._config_boolean(
             self._fetch_default("warn_comment_sort", default=True)
         )
+        self.warn_additional_fetch_params = self._config_boolean(
+            self._fetch_default("warn_additional_fetch_params", default=True)
+        )
         self.kinds = {
             x: self._fetch(f"{x}_kind")
             for x in [

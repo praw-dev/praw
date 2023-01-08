@@ -1,4 +1,6 @@
 """Provide the Submission class."""
+import re
+from json import dumps
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 from urllib.parse import urljoin
 from warnings import warn
@@ -19,6 +21,15 @@ from .subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw
+
+INLINE_MEDIA_PATTERN = re.compile(
+    r"\n\n!?(\[.*?])?\(?((https://((preview|i)\.redd\.it|reddit.com/link).*?)|(?!https)([a-zA-Z0-9]+( \".*?\")?))\)?"
+)
+MEDIA_TYPE_MAPPING = {
+    "Image": "img",
+    "RedditVideo": "video",
+    "AnimatedImage": "gif",
+}
 
 
 class SubmissionFlair:
@@ -587,6 +598,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         super().__init__(reddit, _data=_data)
 
+        self._additional_fetch_params = {}
         self._comments_by_id = {}
 
     def __setattr__(self, attribute: str, value: Any):
@@ -605,8 +617,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             and self._reddit.config.warn_comment_sort
         ):
             warn(
-                "The comments for this submission have already been fetched, "
-                "so the updated comment_sort will not have any effect"
+                "The comments for this submission have already been fetched, so the"
+                " updated comment_sort will not have any effect."
             )
         super().__setattr__(attribute, value)
 
@@ -617,6 +629,84 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         for position in range(0, len(all_submissions), chunk_size):
             yield ",".join(all_submissions[position : position + 50])
+
+    def _edit_experimental(
+        self,
+        body: str,
+        *,
+        preserve_inline_media=False,
+        inline_media: Optional[Dict[str, "praw.models.InlineMedia"]] = None,
+    ) -> Union["praw.models.Submission"]:
+        """Replace the body of the object with ``body``.
+
+        :param body: The Markdown formatted content for the updated object.
+        :param preserve_inline_media: Attempt to preserve inline media in ``body``.
+
+            .. danger::
+
+                This method is experimental. It is reliant on undocumented API endpoints
+                and may result in existing inline media not displaying correctly and/or
+                creating a malformed body. Use at your own risk. This method may be
+                removed in the future without warning.
+
+        :param inline_media: A dict of :class:`.InlineMedia` objects where the key is
+            the placeholder name in ``body``.
+
+        :returns: The current instance after updating its attributes.
+
+        Example usage:
+
+        .. code-block:: python
+
+            from praw.models import InlineGif, InlineImage, InlineVideo
+
+            submission = reddit.submission("5or86n")
+            gif = InlineGif(path="path/to/image.gif", caption="optional caption")
+            image = InlineImage(path="path/to/image.jpg", caption="optional caption")
+            video = InlineVideo(path="path/to/video.mp4", caption="optional caption")
+            body = "New body with a gif {gif1} an image {image1} and a video {video1} inline"
+            media = {"gif1": gif, "image1": image, "video1": video}
+            submission._edit_experimental(submission.selftext + body, inline_media=media)
+
+        """
+        data = {
+            "thing_id": self.fullname,
+            "validate_on_submit": self._reddit.validate_on_submit,
+        }
+        is_richtext_json = False
+        if INLINE_MEDIA_PATTERN.search(body) and self.media_metadata:
+            is_richtext_json = True
+        if inline_media:
+            body = body.format(
+                **{
+                    placeholder: self.subreddit._upload_inline_media(media)
+                    for placeholder, media in inline_media.items()
+                }
+            )
+            is_richtext_json = True
+        if is_richtext_json:
+            richtext_json = self.subreddit._convert_to_fancypants(body)
+            if preserve_inline_media:
+                self._replace_richtext_links(richtext_json)
+            data["richtext_json"] = dumps(richtext_json)
+        else:
+            data["text"] = body
+        updated = self._reddit.post(API_PATH["edit"], data=data)
+        if not is_richtext_json:
+            updated = updated[0]
+            for attribute in [
+                "_fetched",
+                "_reddit",
+                "_submission",
+                "replies",
+                "subreddit",
+            ]:
+                if attribute in updated.__dict__:
+                    delattr(updated, attribute)
+            self.__dict__.update(updated.__dict__)
+        else:
+            self.__dict__.update(updated)
+        return self  # type: ignore
 
     def _fetch(self):
         data = self._fetch_data()
@@ -636,6 +726,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
+        params.update(self._additional_fetch_params.copy())
         path = API_PATH[name].format(**fields)
         return self._reddit.request(method="GET", params=params, path=path)
 
@@ -645,6 +736,64 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             {"id": self.id},
             {"limit": self.comment_limit, "sort": self.comment_sort},
         )
+
+    def _replace_richtext_links(self, richtext_json: dict):
+        parsed_media_types = {
+            media_id: MEDIA_TYPE_MAPPING[value["e"]]
+            for media_id, value in self.media_metadata.items()
+        }
+
+        for index, element in enumerate(richtext_json["document"][:]):
+            element_items = element.get("c")
+            if isinstance(element_items, str):
+                assert element.get("e") in ["gif", "img", "video"], (
+                    "Unexpected richtext JSON schema. Please file a bug report with"
+                    " PRAW."
+                )  # make sure this is an inline element
+                continue  # pragma: no cover
+            for item in element.get("c"):
+                if item.get("e") == "link":
+                    ids = set(parsed_media_types)
+                    # remove extra bits from the url
+                    url = item["u"].split("https://")[1].split("?")[0]
+                    # the id is in the url somewhere, so we split by '/' and '.'
+                    matched_id = ids.intersection(re.split(r"[./]", url))
+                    if matched_id:
+                        matched_id = matched_id.pop()
+                        correct_element = {
+                            "e": parsed_media_types[matched_id],
+                            "id": matched_id,
+                        }
+                        if item.get("t") != item.get("u"):  # add caption if it exists
+                            correct_element["c"] = item["t"]
+                        richtext_json["document"][index] = correct_element
+
+    def add_fetch_param(self, key, value):
+        """Add a parameter to be used for the next fetch.
+
+        :param key: The key of the fetch parameter.
+        :param value: The value of the fetch parameter.
+
+        For example, to fetch a submission with the ``rtjson`` attribute populated:
+
+        .. code-block:: python
+
+            submission = reddit.submission("mcqjl8")
+            submission.add_fetch_param("rtj", "all")
+            print(submission.rtjson)
+
+        """
+        if (
+            hasattr(self, "_fetched")
+            and self._fetched
+            and hasattr(self, "_reddit")
+            and self._reddit.config.warn_additional_fetch_params
+        ):
+            warn(
+                f"This {self.__class__.__name__.lower()} has already been fetched, so"
+                " adding additional fetch parameters will not have any effect."
+            )
+        self._additional_fetch_params[key] = value
 
     @_deprecate_args(
         "subreddit",

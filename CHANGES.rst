@@ -13,6 +13,23 @@ Unreleased
 
 - :meth:`.delete_mobile_banner` to delete mobile banners.
 - :meth:`.upload_mobile_banner` to upload mobile banners.
+- Experimental :meth:`~.Submission._edit_experimental` for adding new inline media or
+  editing a submission that has inline media.
+
+  .. danger::
+
+      This method is experimental. It is reliant on undocumented API endpoints and may
+      result in existing inline media not displaying correctly and/or creating a
+      malformed body. Use at your own risk. This method may be removed in the future
+      without warning.
+
+  This method is identical to :meth:`.Submission.edit` except for the following:
+
+  - The ability to add inline media to existing posts.
+  - Additional ``preserve_inline_media`` keyword argument to allow PRAW to attempt to
+    preserve the existing inline media when editing a post. This is an experimental fix
+    for an issue that occurs when editing a post with inline media would cause the media
+    to lose their inline appearance.
 
 **Fixed**
 

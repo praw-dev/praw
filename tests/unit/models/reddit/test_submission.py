@@ -10,15 +10,33 @@ from ... import UnitTest
 
 class TestSubmission(UnitTest):
     @pytest.mark.filterwarnings("error", category=UserWarning)
+    def test_additional_fetch_params_warning(self, reddit):
+        with pytest.raises(UserWarning) as excinfo:
+            submission = reddit.submission("1234")
+            submission._fetched = True
+            submission.add_fetch_param("foo", "bar")
+        assert (
+            excinfo.value.args[0] == "This submission has already been fetched, so"
+            " adding additional fetch parameters will not have any effect."
+        )
+
+    @pytest.mark.filterwarnings("error", category=UserWarning)
+    def test_additional_fetch_params_warning__disabled(self, caplog, reddit):
+        reddit.config.warn_additional_fetch_params = False
+        submission = reddit.submission("1234")
+        submission._fetched = True
+        submission.additional_fetch_params = True
+        assert caplog.records == []
+
+    @pytest.mark.filterwarnings("error", category=UserWarning)
     def test_comment_sort_warning(self, reddit):
         with pytest.raises(UserWarning) as excinfo:
             submission = reddit.submission("1234")
             submission._fetched = True
             submission.comment_sort = "new"
         assert (
-            excinfo.value.args[0]
-            == "The comments for this submission have already been fetched, "
-            "so the updated comment_sort will not have any effect"
+            excinfo.value.args[0] == "The comments for this submission have already"
+            " been fetched, so the updated comment_sort will not have any effect."
         )
 
     @pytest.mark.filterwarnings("error", category=UserWarning)
