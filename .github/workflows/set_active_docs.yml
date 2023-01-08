@@ -1,0 +1,9 @@
+jobs:
+  set_active_docs:
+    name: Set Active Docs
+    secrets: inherit
+    uses: praw-dev/.github/.github/workflows/set_active_docs.yml@main
+name: Set Active Docs
+on:
+  release:
+    types: [ published ]

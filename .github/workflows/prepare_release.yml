@@ -1,47 +1,14 @@
 jobs:
   prepare_release:
-    name: Prepare Release v${{ github.event.inputs.version }}
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        ssh-key: ${{ secrets.SSH_DEPLOY_KEY }}
-    - uses: actions/setup-python@v2
-      with:
-        python-version: 3.x
-    - name: Install dependencies
-      run: pip install packaging
-    - name: Prepare Git Variables
-      run: |
-        git config --global author.email ${{ github.actor }}@users.noreply.github.com
-        git config --global author.name ${{ github.actor }}
-        git config --global committer.email noreply@github.com
-        git config --global committer.name GitHub
-    - name: Set desired version
-      run: |
-        tools/set_version.py ${{ github.event.inputs.version }} > tmp_version
-        echo "version=$(cat tmp_version)" >> $GITHUB_ENV
-    - name: Commit desired version
-      run: git commit -am "Bump to v${{ env.version }}"
-    - name: Set development version
-      run: |
-        tools/set_version.py Unreleased > tmp_version
-        echo "dev_version=$(cat tmp_version)" >> $GITHUB_ENV
-        rm tmp_version
-    - name: Commit development version
-      run: git commit -am "Set development version v${{ env.dev_version }}"
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v3
-      with:
-        body:
-        branch: prepare_release_v${{ env.version }}
-        draft: false
-        title: Release v${{ env.version }}
-
+    name: Prepare Release
+    secrets: inherit
+    uses: praw-dev/.github/.github/workflows/prepare_release.yml@main
+    with:
+      commit: ${{ inputs.version }}
 name: Prepare Release
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'The version to prepare for release'
+        description: The version to prepare for release
         required: true

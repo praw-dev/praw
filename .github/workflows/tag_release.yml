@@ -1,43 +1,9 @@
 jobs:
-  release_tag:
-    if: "startsWith(github.event.head_commit.message, 'Merge pull request #') && contains(github.event.head_commit.message, ' from praw-dev/prepare_release_v')"
+  tag_release:
     name: Tag Release
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 3
-        ssh-key: ${{ secrets.SSH_DEPLOY_KEY }}
-    - uses: actions/setup-python@v2
-      with:
-        python-version: 3.x
-    - name: Install dependencies
-      run: pip install packaging docutils
-    - name: Extract Version
-      run: |
-        git checkout HEAD^2^
-        echo "commit=$(git rev-parse HEAD)" >> $GITHUB_ENV
-        git log --format=%B -n 1 | ./tools/bump_version.py > tmp_version
-        echo "version=$(cat tmp_version)" >> $GITHUB_ENV
-        cat tmp_version | python -c 'import sys; from packaging import version; print(int(version.Version(sys.stdin.readline()).is_prerelease))' > tmp_is_prerelease
-        echo "is_prerelease=$(cat tmp_is_prerelease)" >> $GITHUB_ENV
-    - name: Extract Change Log
-      run: |
-        echo ${{ env.version }} | ./tools/extract_log_entry.py > version_changelog
-    - env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      name: Create GitHub Release
-      uses: actions/create-release@v1
-      with:
-        body_path: version_changelog
-        commitish: ${{ env.commit }}
-        draft: true
-        prerelease: ${{ env.is_prerelease == '1' }}
-        release_name: v${{ env.version }}
-        tag_name: v${{ env.version }}
+    secrets: inherit
+    uses: praw-dev/.github/.github/workflows/tag_release.yml@main
 name: Tag Release
 on:
   push:
-    branches:
-      - master
-      - release_test
+    branches: [ master, release_test ]
