@@ -7,3 +7,5 @@ name: Set Active Docs
 on:
   release:
     types: [ published ]
+permissions:
+  contents: read

@@ -12,3 +12,6 @@ on:
       version:
         description: The version to prepare for release
         required: true
+permissions:
+  contents: read
+  pull-requests: write
