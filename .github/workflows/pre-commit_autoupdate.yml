@@ -9,5 +9,5 @@ on:
     - cron: 0 15 * * 1
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
