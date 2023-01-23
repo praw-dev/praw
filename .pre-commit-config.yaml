@@ -57,4 +57,4 @@ repos:
     hooks:
       - id: pydocstyle
         files: praw/.*
-    rev: 6.2.3
+    rev: 6.3.0
