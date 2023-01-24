@@ -54,7 +54,7 @@ class TestRemovalReason(IntegrationTest):
     def test_update_empty(self, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        reason = subreddit.mod.removal_reasons[0]
+        reason = subreddit.mod.removal_reasons[1]
         reason.update()
 
 
