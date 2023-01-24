@@ -653,7 +653,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         .. code-block:: python
 
             for mute in reddit.subreddit("test").muted():
-                print(f"{mute}: {mute.note}")
+                print(f"{mute}: {mute.date}")
 
         """
         return SubredditRelationship(self, "muted")
