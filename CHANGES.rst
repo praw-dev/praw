@@ -10,6 +10,7 @@ Unreleased
 
 - :meth:`.delete_mobile_banner` to delete mobile banners.
 - :meth:`.upload_mobile_banner` to upload mobile banners.
+- ``py.typed`` stub file to suggest that PRAW is typed.
 
 **Fixed**
 
