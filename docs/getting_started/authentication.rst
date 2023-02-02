@@ -14,7 +14,7 @@ are:
   <https://github.com/reddit-archive/reddit/wiki/OAuth2-App-Types#script-app>`_
 
 Before you can use any one of these with PRAW, you must first `register
-<https://www.reddit.com/prefs/apps/>`_ an application of the appropriate type on Reddit.
+<https://old.reddit.com/prefs/apps/>`_ an application of the appropriate type on Reddit.
 
 If your application does not require a user context, it is :ref:`read-only
 <read_only_application>`.
