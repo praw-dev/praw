@@ -678,7 +678,6 @@ class TestPostFlairWidget(IntegrationTest):
 class TestRulesWidget(IntegrationTest):
     @pytest.mark.cassette_name("TestSubredditWidgets.fetch_widgets")
     def test_rules_widget(self, reddit):
-
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
         rules = None
