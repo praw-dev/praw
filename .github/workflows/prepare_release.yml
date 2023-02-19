@@ -4,7 +4,7 @@ jobs:
     secrets: inherit
     uses: praw-dev/.github/.github/workflows/prepare_release.yml@main
     with:
-      commit: ${{ inputs.version }}
+      version: ${{ inputs.version }}
 name: Prepare Release
 on:
   workflow_dispatch:
