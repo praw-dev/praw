@@ -106,9 +106,6 @@ def update_package(version):
 
 def valid_version(version):
     parsed_version = packaging.version.parse(version)
-    if isinstance(parsed_version, packaging.version.LegacyVersion):
-        sys.stderr.write(f"Invalid PEP 440 version: {version}\n")
-        return False
     if parsed_version.local or parsed_version.is_postrelease or parsed_version.epoch:
         sys.stderr.write("epoch, local postrelease version parts are not supported")
         return False
