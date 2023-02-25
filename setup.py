@@ -48,7 +48,6 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Topic :: Utilities",
-        "Typing :: Typed",
     ],
     description=(
         'PRAW, an acronym for "Python Reddit API Wrapper", is a python package that'
@@ -63,10 +62,7 @@ setup(
     keywords="reddit api wrapper",
     license="Simplified BSD License",
     long_description=README,
-    package_data={
-        "": ["LICENSE.txt"],
-        PACKAGE_NAME: ["*.ini", "py.typed", "images/*.png"],
-    },
+    package_data={"": ["LICENSE.txt"], PACKAGE_NAME: ["*.ini", "images/*.png"]},
     packages=find_packages(exclude=["tests", "tests.*", "tools", "tools.*"]),
     project_urls={
         "Change Log": "https://praw.readthedocs.io/en/latest/package_info/change_log.html",
@@ -75,5 +71,4 @@ setup(
         "Source Code": "https://github.com/praw-dev/praw",
     },
     version=VERSION,
-    zip_safe=False,
 )
