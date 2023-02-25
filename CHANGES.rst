@@ -6,6 +6,9 @@ PRAW follows `semantic versioning <http://semver.org/>`_.
 Unreleased
 ----------
 
+7.7.0 (2023/02/19)
+------------------
+
 **Added**
 
 - :meth:`.delete_mobile_banner` to delete mobile banners.
