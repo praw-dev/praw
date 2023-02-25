@@ -1,6 +1,5 @@
 include CHANGES.rst LICENSE.txt README.rst
 include praw/praw.ini
-include praw/py.typed
 include "praw/images/PRAW logo.png"
 include docs/Makefile
 recursive-include docs *.png *.py *.rst
