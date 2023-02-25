@@ -10,11 +10,11 @@ Unreleased
 
 - :meth:`.delete_mobile_banner` to delete mobile banners.
 - :meth:`.upload_mobile_banner` to upload mobile banners.
-- ``py.typed`` stub file to suggest that PRAW is typed.
 
 **Fixed**
 
 - An issue with iterating :class:`.ModNote` when a user has more than a hundred notes.
+- Removal reasons are now returned in the same order as they appear on Reddit.
 
 7.6.1 (2022/11/11)
 ------------------
