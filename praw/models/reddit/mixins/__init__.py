@@ -206,15 +206,18 @@ class ThingModerationMixin(ModNoteMixin):
 
         Reddit adds human-readable information about the object to the message.
 
-        :param type: One of ``"public"``, ``"private"``, or ``"private_exposed"``.
-            ``"public"`` leaves a stickied comment on the post. ``"private"`` sends a
-            modmail message with hidden username. ``"private_exposed"`` sends a modmail
-            message without hidden username (default: ``"public"``).
+        :param type: One of ``"public"``, ``"public_as_subreddit"``, ``"private"``, or
+            ``"private_exposed"``. ``"public"`` leaves a stickied comment on the post.
+            ``"public_as_subreddit"`` leaves a stickied comment on the post with the
+            u/subreddit-ModTeam account. ``"private"`` sends a modmail message with
+            hidden username. ``"private_exposed"`` sends a modmail message without
+            hidden username (default: ``"public"``).
         :param title: The short reason given in the message. Ignored if type is
-            ``"public"``.
+            ``"public"`` or ``"public_as_subreddit"``.
         :param message: The body of the message.
 
-        :returns: The new :class:`.Comment` if ``type`` is ``"public"``.
+        :returns: The new :class:`.Comment` if ``type`` is ``"public"`` or
+            ``"public_as_subreddit"``.
 
         """
         # The API endpoint used to send removal messages is different for posts and
