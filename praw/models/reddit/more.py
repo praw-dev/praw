@@ -62,7 +62,7 @@ class MoreComments(PRAWBase):
         return comments.children[0]
 
     @_deprecate_args("update")
-    def comments(self, *, update: bool = True) -> List["praw.models.Comment"]:
+    def comments(self, *, update: bool = True, limit: int = -1, depth: int = -1) -> List["praw.models.Comment"]:
         """Fetch and return the comments for a single :class:`.MoreComments` object."""
         if self._comments is None:
             if self.count == 0:  # Handle "continue this thread"
@@ -73,6 +73,11 @@ class MoreComments(PRAWBase):
                 "link_id": self.submission.fullname,
                 "sort": self.submission.comment_sort,
             }
+            if(depth>-1):
+                data["depth"]=depth
+            if(limit>-1):
+                data["limit"]=limit
+
             self._comments = self._reddit.post(API_PATH["morechildren"], data=data)
             if update:
                 for comment in self._comments:
