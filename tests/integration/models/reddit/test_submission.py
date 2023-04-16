@@ -1,12 +1,27 @@
 import pytest
 
 from praw.exceptions import RedditAPIException
-from praw.models import Comment, Submission
+from praw.models import Comment, InlineGif, InlineImage, InlineVideo, Submission
 
 from ... import IntegrationTest
 
 
 class TestSubmission(IntegrationTest):
+    @staticmethod
+    def _inline_media(image_path):
+        gif = InlineGif(image_path("test.gif"), "optional caption")
+        image = InlineImage(image_path("test.png"), "optional caption")
+        video = InlineVideo(image_path("test.mp4"), "optional caption")
+        return {"gif1": gif, "image1": image, "video1": video}
+
+    @staticmethod
+    def _new_submission_instance(reddit, submission_id, return_rtjson=False):
+        submission = Submission(reddit, submission_id)
+        submission.add_fetch_param("rtj", "all")
+        if return_rtjson:
+            return submission, submission.rtjson
+        return submission
+
     @pytest.mark.cassette_name("TestSubmission.test_award")
     def test_award(self, reddit):
         reddit.read_only = False
@@ -130,6 +145,67 @@ class TestSubmission(IntegrationTest):
         submission = Submission(reddit, "4b1tfm")
         submission.edit("New text")
         assert submission.selftext == "New text"
+
+    def test_edit__existing_and_new_inline_media(self, image_path, reddit):
+        reddit.read_only = False
+        inline_media = self._inline_media(image_path)
+        submission, original_rtjson = self._new_submission_instance(
+            reddit, "mcqjl8", True
+        )
+        submission2 = self._new_submission_instance(reddit, "mcqjl8")
+        new_selftext = (
+            "\n\nNew text with a gif {gif1} an image {image1} and a video {video1}"
+            " inline"
+        )
+        submission._edit_experimental(
+            submission.selftext + new_selftext,
+            inline_media=inline_media,
+            preserve_inline_media=True,
+        )
+        added_rtjson = submission2.subreddit._convert_to_fancypants(
+            new_selftext.format(**inline_media)
+        )
+        assert (
+            original_rtjson["document"] + added_rtjson["document"]
+        ) == submission2.rtjson["document"]
+
+    def test_edit__existing_inline_media(self, reddit):
+        reddit.read_only = False
+        submission, original_rtjson = self._new_submission_instance(
+            reddit, "mcqjl8", True
+        )
+        submission2 = self._new_submission_instance(reddit, "mcqjl8")
+        assert not submission2._fetched
+        submission._edit_experimental(submission.selftext, preserve_inline_media=True)
+        assert original_rtjson == submission2.rtjson
+
+    def test_edit__experimental(self, reddit):
+        reddit.read_only = False
+        submission = Submission(reddit, "mcqjl8")
+        submission._edit_experimental("New text")
+        assert submission.selftext == "New text"
+
+    def test_edit__new_inline_media(self, image_path, reddit):
+        reddit.read_only = False
+        inline_media = self._inline_media(image_path)
+        submission, original_rtjson = self._new_submission_instance(
+            reddit, "mcqjl8", True
+        )
+        submission2 = self._new_submission_instance(reddit, "mcqjl8")
+        additional_selftext = (
+            "\n\nNew Text with a gif {gif1} an image {image1} and a video {video1}"
+            " inline"
+        )
+        submission._edit_experimental(
+            submission.selftext + additional_selftext,
+            inline_media=inline_media,
+        )
+        added_rtjson = submission2.subreddit._convert_to_fancypants(
+            additional_selftext.format(**inline_media)
+        )
+        assert (
+            original_rtjson["document"] + added_rtjson["document"]
+        ) == submission2.rtjson["document"]
 
     def test_edit_invalid(self, reddit):
         reddit.read_only = False

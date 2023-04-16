@@ -142,11 +142,6 @@ class ModmailConversation(RedditBase):
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
-    def _fetch_data(self):
-        name, fields, params = self._fetch_info()
-        path = API_PATH[name].format(**fields)
-        return self._reddit.request(method="GET", params=params, path=path)
-
     def _fetch_info(self):
         return "modmail_conversation", {"id": self.id}, self._info_params
 
