@@ -29,6 +29,10 @@ PRAW: The Python Reddit API Wrapper
     :alt: pre-commit
     :target: https://github.com/pre-commit/pre-commit
 
+.. image:: https://api.securityscorecards.dev/projects/github.com/praw-dev/praw/badge
+    :alt: OpenSSF Scorecard
+    :target: https://api.securityscorecards.dev/projects/github.com/praw-dev/praw
+
 PRAW, an acronym for "Python Reddit API Wrapper", is a Python package that allows for
 simple access to Reddit's API. PRAW aims to be easy to use and internally follows all of
 `Reddit's API rules <https://github.com/reddit/reddit/wiki/API>`_. With PRAW there's no

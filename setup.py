@@ -23,6 +23,7 @@ extras = {
         "betamax-matchers >=0.3.0, <0.5",
         "pytest >=2.7.3",
         "requests >=2.20.1, <3",
+        "urllib3 ==1.26.*, <2",
     ],
 }
 extras["lint"] += extras["readthedocs"]
