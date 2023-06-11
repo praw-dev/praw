@@ -2728,7 +2728,7 @@ class SubredditModeration:
         :param submit_text_label: Custom label for submit text post button (``None`` for
             default).
         :param subreddit_type: One of ``"archived"``, ``"employees_only"``,
-            ``"gold_only"``, ``gold_restricted``, ``"private"``, ``"public"``, or
+            ``"gold_only"``, ``"gold_restricted"``, ``"private"``, ``"public"``, or
             ``"restricted"``.
         :param suggested_comment_sort: All comment threads will use this sorting method
             by default. Leave ``None``, or choose one of ``"confidence"``,
