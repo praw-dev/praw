@@ -830,6 +830,11 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
+    def _fetch_data(self) -> dict:
+        name, fields, params = self._fetch_info()
+        path = API_PATH[name].format(**fields)
+        return self._reddit.request(method="GET", params=params, path=path)
+
     def _fetch_info(self):
         return "subreddit_about", {"subreddit": self}, None
 
@@ -2225,6 +2230,17 @@ class SubredditFlairTemplates:
         url = API_PATH["flairtemplatedelete"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data={"flair_template_id": template_id})
 
+    def _reorder(self, flair_list: list, *, is_link: Optional[bool] = None):
+        url = API_PATH["flairtemplatereorder"].format(subreddit=self.subreddit)
+        self.subreddit._reddit.patch(
+            url,
+            params={
+                "flair_type": self.flair_type(is_link),
+                "subreddit": self.subreddit.display_name,
+            },
+            json=flair_list,
+        )
+
     @_deprecate_args(
         "template_id",
         "text",
@@ -2728,7 +2744,7 @@ class SubredditModeration:
         :param submit_text_label: Custom label for submit text post button (``None`` for
             default).
         :param subreddit_type: One of ``"archived"``, ``"employees_only"``,
-            ``"gold_only"``, ``"gold_restricted"``, ``"private"``, ``"public"``, or
+            ``"gold_only"``, ``gold_restricted``, ``"private"``, ``"public"``, or
             ``"restricted"``.
         :param suggested_comment_sort: All comment threads will use this sorting method
             by default. Leave ``None``, or choose one of ``"confidence"``,
@@ -4130,6 +4146,22 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         """
         self._clear(is_link=True)
 
+    def reorder(self, flair_list: List[str]):
+        """Reorder a list of flairs.
+
+        :param flair_list: A list of flair IDs.
+
+        For example, to reverse the order of the link flair list try:
+
+        .. code-block:: python
+
+            subreddit = reddit.subreddit("test")
+            flairs = [flair["id"] for flair in subreddit.flair.link_templates]
+            subreddit.flair.link_templates.reorder(list(reversed(flairs)))
+
+        """
+        self._reorder(flair_list, is_link=True)
+
     def user_selectable(
         self,
     ) -> Generator[Dict[str, Union[str, bool]], None, None]:
@@ -4245,3 +4277,20 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
 
         """
         self._clear(is_link=False)
+
+    def reorder(self, flair_list: List[str]):
+        """Reorder a list of flairs.
+
+        :param flair_list: A list of flair IDs.
+
+        For example, to reverse the order of the :class:`.Redditor` flair templates list
+        try:
+
+        .. code-block:: python
+
+            subreddit = reddit.subreddit("test")
+            flairs = [flair["id"] for flair in subreddit.flair.templates]
+            subreddit.flair.templates.reorder(list(reversed(flairs)))
+
+        """
+        self._reorder(flair_list, is_link=False)
