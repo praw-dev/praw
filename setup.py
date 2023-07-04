@@ -17,7 +17,7 @@ extras = {
     "ci": ["coveralls"],
     "dev": ["packaging"],
     "lint": ["pre-commit"],
-    "readthedocs": ["sphinx", "sphinx-rtd-dark-mode", "sphinx_rtd_theme"],
+    "readthedocs": ["furo", "sphinx"],
     "test": [
         "betamax >=0.8, <0.9",
         "betamax-matchers >=0.3.0, <0.5",
@@ -51,7 +51,7 @@ setup(
         "Topic :: Utilities",
     ],
     description=(
-        'PRAW, an acronym for "Python Reddit API Wrapper", is a python package that'
+        'PRAW, an acronym for "Python Reddit API Wrapper", is a Python package that'
         " allows for simple access to  Reddit's API."
     ),
     extras_require=extras,
