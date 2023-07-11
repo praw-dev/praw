@@ -257,9 +257,15 @@ class ModmailConversation(RedditBase):
         response = self._reddit.post(
             API_PATH["modmail_conversation"].format(id=self.id), data=data
         )
-        message_id = response["conversation"]["objIds"][-1]["id"]
-        message_data = response["messages"][message_id]
-        return self._reddit._objector.objectify(message_data)
+        if isinstance(response, dict):
+            # Reddit recently changed the response format, so we need to handle both in case they change it back
+            message_id = response["conversation"]["objIds"][-1]["id"]
+            message_data = response["messages"][message_id]
+            return self._reddit._objector.objectify(message_data)
+        else:
+            for message in response.messages:
+                if message.id == response.obj_ids[-1]["id"]:
+                    return message
 
     def unarchive(self):
         """Unarchive the conversation.
