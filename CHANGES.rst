@@ -6,6 +6,9 @@ PRAW follows `semantic versioning <http://semver.org/>`_.
 Unreleased
 ----------
 
+7.7.1 (2023/07/11)
+------------------
+
 **Fixed**
 
 - An issue with replying to a modmail conversation results in a error.
