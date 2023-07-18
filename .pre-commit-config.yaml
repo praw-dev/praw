@@ -27,7 +27,7 @@ repos:
   - repo: https://github.com/psf/black
     hooks:
       - id: black
-    rev: 23.3.0
+    rev: 23.7.0
 
   - repo: https://github.com/LilSpazJoekp/docstrfmt
     hooks:
@@ -46,7 +46,7 @@ repos:
         args:
           - '-ll'
           - '1000'
-    rev: '0.78'
+    rev: '1.0.0'
 
   - repo: https://github.com/pycqa/isort
     hooks:
