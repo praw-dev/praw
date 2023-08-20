@@ -773,7 +773,7 @@ class TestSubredditWidgets(IntegrationTest):
 
         # all items should be Widget subclasses
         assert all(
-            isinstance(widget, Widget) and type(widget) != Widget
+            isinstance(widget, Widget) and type(widget) is not Widget
             for widget in widgets.sidebar
         )
 
@@ -790,7 +790,7 @@ class TestSubredditWidgets(IntegrationTest):
         widgets = subreddit.widgets
         assert 1 <= len(widgets.topbar)
         assert all(
-            isinstance(widget, Widget) and type(widget) != Widget
+            isinstance(widget, Widget) and type(widget) is not Widget
             for widget in widgets.topbar
         )
 
