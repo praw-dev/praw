@@ -232,6 +232,14 @@ class TestSubredditFlairTemplates(IntegrationTest):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         subreddit.flair.templates.delete(template["id"])
 
+    def test_reorder(self, reddit):
+        reddit.read_only = False
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
+        original = list(subreddit.flair.templates)
+        flairs = [flair["id"] for flair in subreddit.flair.templates]
+        subreddit.flair.templates.reorder(list(reversed(flairs)))
+        assert list(subreddit.flair.templates) == list(reversed(original))
+
     def test_update(self, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -363,6 +371,14 @@ class TestSubredditLinkFlairTemplates(IntegrationTest):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         subreddit.flair.link_templates.clear()
+
+    def test_reorder(self, reddit):
+        reddit.read_only = False
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
+        original = list(subreddit.flair.link_templates)
+        flairs = [flair["id"] for flair in subreddit.flair.link_templates]
+        subreddit.flair.link_templates.reorder(list(reversed(flairs)))
+        assert list(subreddit.flair.link_templates) == list(reversed(original))
 
     def test_user_selectable(self, reddit):
         reddit.read_only = False

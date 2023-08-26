@@ -6,6 +6,13 @@ PRAW follows `semantic versioning <http://semver.org/>`_.
 Unreleased
 ----------
 
+**Added**
+
+- :meth:`~.SubredditLinkFlairTemplates.reorder` to reorder a subreddit's link flair
+  templates.
+- :meth:`~.SubredditRedditorFlairTemplates.reorder` to reorder a subreddit's redditor
+  flair templates.
+
 7.7.1 (2023/07/11)
 ------------------
 
