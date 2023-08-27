@@ -1,4 +1,5 @@
-"""Checks for attributes and code examples in RedditBase subclasses"""
+#!/usr/bin/env python3
+"""Checks for attributes and code examples in RedditBase subclasses."""
 
 import os
 import re

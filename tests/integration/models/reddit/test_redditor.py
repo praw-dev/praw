@@ -26,12 +26,12 @@ class TestRedditor(IntegrationTest):
         reddit.read_only = False
         with pytest.raises(RedditAPIException) as excinfo:
             reddit.redditor(self.FRIEND.lower()).friend(note="praw")
-        assert "GOLD_REQUIRED" == excinfo.value.error_type
+        assert excinfo.value.error_type == "GOLD_REQUIRED"
 
     def test_friend_info(self, reddit):
         reddit.read_only = False
         redditor = reddit.redditor(self.FRIEND).friend_info()
-        assert self.FRIEND == redditor
+        assert redditor == self.FRIEND
         assert "date" in redditor.__dict__
         assert "created_utc" not in redditor.__dict__
         assert hasattr(redditor, "created_utc")
@@ -45,7 +45,7 @@ class TestRedditor(IntegrationTest):
         reddit.read_only = False
         with pytest.raises(RedditAPIException) as excinfo:
             reddit.redditor("subreddit_stats").gild()
-        assert "INSUFFICIENT_CREDDITS" == excinfo.value.error_type
+        assert excinfo.value.error_type == "INSUFFICIENT_CREDDITS"
 
     def test_message(self, reddit):
         reddit.read_only = False
@@ -73,10 +73,11 @@ class TestRedditor(IntegrationTest):
     def test_multireddits(self, reddit):
         redditor = reddit.redditor("kjoneslol")
         for multireddit in redditor.multireddits():
-            if "sfwpornnetwork" == multireddit.name:
+            if multireddit.name == "sfwpornnetwork":
                 break
         else:
-            assert False, "sfwpornnetwork not found in multireddits"
+            msg = "sfwpornnetwork not found in multireddits"
+            raise AssertionError(msg)
 
     def test_notes__subreddits(self, reddit):
         reddit.read_only = False
@@ -88,12 +89,12 @@ class TestRedditor(IntegrationTest):
 
     def test_stream__comments(self, reddit):
         generator = reddit.redditor("AutoModerator").stream.comments()
-        for i in range(101):
+        for _i in range(101):
             assert isinstance(next(generator), Comment)
 
     def test_stream__submissions(self, reddit):
         generator = reddit.redditor("AutoModerator").stream.submissions()
-        for i in range(101):
+        for _i in range(101):
             assert isinstance(next(generator), Submission)
 
     def test_trophies(self, reddit):
@@ -106,7 +107,7 @@ class TestRedditor(IntegrationTest):
         redditor = reddit.redditor("thisusershouldnotexist")
         with pytest.raises(RedditAPIException) as excinfo:
             redditor.trophies()
-        assert "USER_DOESNT_EXIST" == excinfo.value.error_type
+        assert excinfo.value.error_type == "USER_DOESNT_EXIST"
 
     def test_unblock(self, reddit):
         reddit.read_only = False
@@ -265,7 +266,7 @@ class TestRedditorListings(IntegrationTest):
         redditor.block()
         with pytest.raises(RedditAPIException) as excinfo:
             redditor.trust()
-        assert "CANT_WHITELIST_AN_ENEMY" == excinfo.value.error_type
+        assert excinfo.value.error_type == "CANT_WHITELIST_AN_ENEMY"
 
     def test_upvoted(self, reddit):
         reddit.read_only = False

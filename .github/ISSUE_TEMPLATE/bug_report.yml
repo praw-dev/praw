@@ -28,7 +28,7 @@ body:
   - id: credential-check
     attributes:
       label: |
-        The `Reddit()` initialization in my code example does not include the following parameters to prevent credential leakage: 
+        The `Reddit()` initialization in my code example does not include the following parameters to prevent credential leakage:
         `client_secret`, `password`, or `refresh_token`.
       options:
         - label: "Yes"

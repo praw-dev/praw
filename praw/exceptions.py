@@ -7,13 +7,14 @@ client side. Both of these classes extend :class:`.PRAWException`.
 All other exceptions are subclassed from :class:`.ClientException`.
 
 """
-from typing import List, Optional, Union
+from __future__ import annotations
+
 from warnings import warn
 
 from .util import _deprecate_args
 
 
-class PRAWException(Exception):
+class PRAWException(Exception):  # noqa: N818
     """The base PRAW Exception that all other exception classes extend."""
 
 
@@ -30,7 +31,7 @@ class RedditErrorItem:
             error_str += f" on field {self.field!r}"
         return error_str
 
-    def __eq__(self, other: Union["RedditErrorItem", List[str]]):
+    def __eq__(self, other: RedditErrorItem | list[str]) -> bool:
         """Check for equality."""
         if isinstance(other, RedditErrorItem):
             return (self.error_type, self.message, self.field) == (
@@ -45,8 +46,8 @@ class RedditErrorItem:
         self,
         error_type: str,
         *,
-        field: Optional[str] = None,
-        message: Optional[str] = None,
+        field: str | None = None,
+        message: str | None = None,
     ):
         """Initialize a :class:`.RedditErrorItem` instance.
 
@@ -66,7 +67,7 @@ class RedditErrorItem:
             f" message={self.message!r}, field={self.field!r})"
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Get the message returned from str(self)."""
         return self.error_message
 
@@ -78,7 +79,7 @@ class ClientException(PRAWException):
 class DuplicateReplaceException(ClientException):
     """Indicate exceptions that involve the replacement of :class:`.MoreComments`."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize a :class:`.DuplicateReplaceException` instance."""
         super().__init__(
             "A duplicate comment has been detected. Are you attempting to call"
@@ -100,7 +101,7 @@ class InvalidFlairTemplateID(ClientException):
 class InvalidImplicitAuth(ClientException):
     """Indicate exceptions where an implicit auth type is used incorrectly."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize an :class:`.InvalidImplicitAuth` instance."""
         super().__init__("Implicit authorization can only be used with installed apps.")
 
@@ -170,7 +171,7 @@ class WebSocketException(ClientException):
     def original_exception(self):
         del self._original_exception
 
-    def __init__(self, message: str, exception: Optional[Exception]):
+    def __init__(self, message: str, exception: Exception | None):
         """Initialize a :class:`.WebSocketException` instance.
 
         :param message: The exception message.
@@ -188,7 +189,7 @@ class WebSocketException(ClientException):
 class MediaPostFailed(WebSocketException):
     """Indicate exceptions where media uploads failed.."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize a :class:`.MediaPostFailed` instance."""
         super().__init__(
             "The attempted media upload action has failed. Possible causes include the"
@@ -209,7 +210,9 @@ class APIException(PRAWException):
     """
 
     @staticmethod
-    def parse_exception_list(exceptions: List[Union[RedditErrorItem, List[str]]]):
+    def parse_exception_list(
+        exceptions: list[RedditErrorItem | list[str]],
+    ) -> list[RedditErrorItem]:
         """Covert an exception list into a :class:`.RedditErrorItem` list."""
         return [
             exception
@@ -266,7 +269,7 @@ class APIException(PRAWException):
 
     def __init__(
         self,
-        items: Union[List[Union[RedditErrorItem, List[str], str]], str],
+        items: list[RedditErrorItem | list[str] | str] | str,
         *optional_args: str,
     ):
         """Initialize a :class:`.RedditAPIException` instance.
@@ -284,7 +287,7 @@ class APIException(PRAWException):
         self.items = self.parse_exception_list(items)
         super().__init__(*self.items)
 
-    def _get_old_attr(self, attrname):
+    def _get_old_attr(self, attrname):  # noqa: ANN001
         warn(
             f"Accessing attribute '{attrname}' through APIException is deprecated."
             " This behavior will be removed in PRAW 8.0. Check out"

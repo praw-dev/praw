@@ -1,6 +1,8 @@
 """Provide the ListingGenerator class."""
+from __future__ import annotations
+
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, Dict, Iterator, Optional, Union
+from typing import TYPE_CHECKING, Any, Iterator
 
 from ..base import PRAWBase
 from .listing import FlairListing, ModNoteListing
@@ -23,10 +25,10 @@ class ListingGenerator(PRAWBase, Iterator):
 
     def __init__(
         self,
-        reddit: "praw.Reddit",
+        reddit: praw.Reddit,
         url: str,
         limit: int = 100,
-        params: Optional[Dict[str, Union[str, int]]] = None,
+        params: dict[str, str | int] | None = None,
     ):
         """Initialize a :class:`.ListingGenerator` instance.
 
@@ -50,14 +52,14 @@ class ListingGenerator(PRAWBase, Iterator):
         self.url = url
         self.yielded = 0
 
-    def __iter__(self) -> Iterator[Any]:
+    def __iter__(self):  # noqa: ANN204
         """Permit :class:`.ListingGenerator` to operate as an iterator."""
         return self
 
     def __next__(self) -> Any:
         """Permit :class:`.ListingGenerator` to operate as a generator."""
         if self.limit is not None and self.yielded >= self.limit:
-            raise StopIteration()
+            raise StopIteration
 
         if self._listing is None or self._list_index >= len(self._listing):
             self._next_batch()
@@ -66,32 +68,30 @@ class ListingGenerator(PRAWBase, Iterator):
         self.yielded += 1
         return self._listing[self._list_index - 1]
 
-    def _extract_sublist(self, listing):
+    def _extract_sublist(self, listing):  # noqa: ANN001
         if isinstance(listing, list):
             return listing[1]  # for submission duplicates
-        elif isinstance(listing, dict):
+        if isinstance(listing, dict):
             classes = [FlairListing, ModNoteListing]
 
             for listing_type in classes:
                 if listing_type.CHILD_ATTRIBUTE in listing:
                     return listing_type(self._reddit, listing)
-            else:
-                raise ValueError(
-                    "The generator returned a dictionary PRAW didn't recognize."
-                    " File a bug report at PRAW."
-                )
+            else:  # noqa: PLW0120
+                msg = "The generator returned a dictionary PRAW didn't recognize. File a bug report at PRAW."
+                raise ValueError(msg)
         return listing
 
-    def _next_batch(self):
+    def _next_batch(self):  # noqa: ANN001
         if self._exhausted:
-            raise StopIteration()
+            raise StopIteration
 
         self._listing = self._reddit.get(self.url, params=self.params)
         self._listing = self._extract_sublist(self._listing)
         self._list_index = 0
 
         if not self._listing:
-            raise StopIteration()
+            raise StopIteration
 
         if self._listing.after and self._listing.after != self.params.get(
             self._listing.AFTER_PARAM

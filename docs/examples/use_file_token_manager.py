@@ -53,12 +53,15 @@ def main():
     scopes = reddit.auth.scopes()
     if scopes == {"*"}:
         print(f"{reddit.user.me()} is authenticated with all scopes")
+        return None
     elif "identity" in scopes:
         print(
             f"{reddit.user.me()} is authenticated with the following scopes: {scopes}"
         )
+        return None
     else:
         print(f"You are authenticated with the following scopes: {scopes}")
+        return None
 
 
 if __name__ == "__main__":

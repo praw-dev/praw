@@ -1,7 +1,9 @@
 """Provide the Submission class."""
+from __future__ import annotations
+
 import re
 from json import dumps
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
 from warnings import warn
 
@@ -35,7 +37,7 @@ MEDIA_TYPE_MAPPING = {
 class SubmissionFlair:
     """Provide a set of functions pertaining to :class:`.Submission` flair."""
 
-    def __init__(self, submission: "praw.models.Submission"):
+    def __init__(self, submission: praw.models.Submission):
         """Initialize a :class:`.SubmissionFlair` instance.
 
         :param submission: The :class:`.Submission` associated with the flair functions.
@@ -43,7 +45,7 @@ class SubmissionFlair:
         """
         self.submission = submission
 
-    def choices(self) -> List[Dict[str, Union[bool, list, str]]]:
+    def choices(self) -> list[dict[str, bool | list | str]]:
         """Return list of available flair choices.
 
         Choices are required in order to use :meth:`.select`.
@@ -61,7 +63,7 @@ class SubmissionFlair:
         )["choices"]
 
     @_deprecate_args("flair_template_id", "text")
-    def select(self, flair_template_id: str, *, text: Optional[str] = None):
+    def select(self, flair_template_id: str, *, text: str | None = None):
         """Select flair for submission.
 
         :param flair_template_id: The flair template to select. The possible values can
@@ -102,7 +104,7 @@ class SubmissionModeration(ThingModerationMixin, ModNoteMixin):
 
     REMOVAL_MESSAGE_API = "removal_link_message"
 
-    def __init__(self, submission: "praw.models.Submission"):
+    def __init__(self, submission: praw.models.Submission):
         """Initialize a :class:`.SubmissionModeration` instance.
 
         :param submission: The submission to moderate.
@@ -142,7 +144,7 @@ class SubmissionModeration(ThingModerationMixin, ModNoteMixin):
         self,
         *,
         css_class: str = "",
-        flair_template_id: Optional[str] = None,
+        flair_template_id: str | None = None,
         text: str = "",
     ):
         """Set flair for the submission.
@@ -266,7 +268,9 @@ class SubmissionModeration(ThingModerationMixin, ModNoteMixin):
         self.thing._reddit.post(API_PATH["spoiler"], data={"id": self.thing.fullname})
 
     @_deprecate_args("state", "bottom")
-    def sticky(self, *, bottom: bool = True, state: bool = True):
+    def sticky(
+        self, *, bottom: bool = True, state: bool = True
+    ) -> praw.models.Submission:
         """Set the submission's sticky state in its subreddit.
 
         :param bottom: When ``True``, set the submission as the bottom sticky. If no top
@@ -274,6 +278,8 @@ class SubmissionModeration(ThingModerationMixin, ModNoteMixin):
             (default: ``True``).
         :param state: ``True`` sets the sticky for the submission and ``False`` unsets
             (default: ``True``).
+
+        :returns: The stickied submission object.
 
         .. note::
 
@@ -521,7 +527,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         return SubmissionModeration(self)
 
     @property
-    def _kind(self) -> str:
+    def _kind(self) -> str:  # noqa: ANN001
         """Return the class's kind."""
         return self._reddit.config.kinds["submission"]
 
@@ -570,10 +576,10 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
     def __init__(
         self,
-        reddit: "praw.Reddit",
-        id: Optional[str] = None,  # pylint: disable=redefined-builtin
-        url: Optional[str] = None,
-        _data: Optional[Dict[str, Any]] = None,
+        reddit: praw.Reddit,
+        id: str | None = None,  # pylint: disable=redefined-builtin
+        url: str | None = None,
+        _data: dict[str, Any] | None = None,
     ):
         """Initialize a :class:`.Submission` instance.
 
@@ -585,7 +591,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         """
         if (id, url, _data).count(None) != 2:
-            raise TypeError("Exactly one of 'id', 'url', or '_data' must be provided.")
+            msg = "Exactly one of 'id', 'url', or '_data' must be provided."
+            raise TypeError(msg)
         self.comment_limit = 2048
 
         # Specify the sort order for ``comments``
@@ -601,7 +608,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         self._additional_fetch_params = {}
         self._comments_by_id = {}
 
-    def __setattr__(self, attribute: str, value: Any):
+    def __setattr__(self, attribute: str, value: Any) -> None:
         """Objectify author, subreddit, and poll data attributes."""
         if attribute == "author":
             value = Redditor.from_data(self._reddit, value)
@@ -618,11 +625,12 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         ):
             warn(
                 "The comments for this submission have already been fetched, so the"
-                " updated comment_sort will not have any effect."
+                " updated comment_sort will not have any effect.",
+                stacklevel=2,
             )
         super().__setattr__(attribute, value)
 
-    def _chunk(self, *, chunk_size, other_submissions):
+    def _chunk(self, *, chunk_size, other_submissions):  # noqa: ANN001
         all_submissions = [self.fullname]
         if other_submissions:
             all_submissions += [x.fullname for x in other_submissions]
@@ -634,9 +642,9 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         self,
         body: str,
         *,
-        preserve_inline_media=False,
-        inline_media: Optional[Dict[str, "praw.models.InlineMedia"]] = None,
-    ) -> Union["praw.models.Submission"]:
+        preserve_inline_media: bool = False,
+        inline_media: dict[str, praw.models.InlineMedia] | None = None,
+    ) -> praw.models.Submission:
         """Replace the body of the object with ``body``.
 
         :param body: The Markdown formatted content for the updated object.
@@ -706,9 +714,9 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             self.__dict__.update(updated.__dict__)
         else:
             self.__dict__.update(updated)
-        return self  # type: ignore
+        return self
 
-    def _fetch(self):
+    def _fetch(self):  # noqa: ANN001
         data = self._fetch_data()
         submission_listing, comment_listing = data
         comment_listing = Listing(self._reddit, _data=comment_listing["data"])
@@ -724,20 +732,20 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         self._fetched = True
 
-    def _fetch_data(self):
+    def _fetch_data(self):  # noqa: ANN001
         name, fields, params = self._fetch_info()
         params.update(self._additional_fetch_params.copy())
         path = API_PATH[name].format(**fields)
         return self._reddit.request(method="GET", params=params, path=path)
 
-    def _fetch_info(self):
+    def _fetch_info(self):  # noqa: ANN001
         return (
             "submission",
             {"id": self.id},
             {"limit": self.comment_limit, "sort": self.comment_sort},
         )
 
-    def _replace_richtext_links(self, richtext_json: dict):
+    def _replace_richtext_links(self, richtext_json: dict):  # noqa: ANN001
         parsed_media_types = {
             media_id: MEDIA_TYPE_MAPPING[value["e"]]
             for media_id, value in self.media_metadata.items()
@@ -768,7 +776,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
                             correct_element["c"] = item["t"]
                         richtext_json["document"][index] = correct_element
 
-    def add_fetch_param(self, key, value):
+    def add_fetch_param(self, key: str, value: str):
         """Add a parameter to be used for the next fetch.
 
         :param key: The key of the fetch parameter.
@@ -791,7 +799,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         ):
             warn(
                 f"This {self.__class__.__name__.lower()} has already been fetched, so"
-                " adding additional fetch parameters will not have any effect."
+                " adding additional fetch parameters will not have any effect.",
+                stacklevel=2,
             )
         self._additional_fetch_params[key] = value
 
@@ -806,15 +815,15 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
     )
     def crosspost(
         self,
-        subreddit: "praw.models.Subreddit",
+        subreddit: praw.models.Subreddit,
         *,
-        flair_id: Optional[str] = None,
-        flair_text: Optional[str] = None,
+        flair_id: str | None = None,
+        flair_text: str | None = None,
         nsfw: bool = False,
         send_replies: bool = True,
         spoiler: bool = False,
-        title: Optional[str] = None,
-    ) -> "praw.models.Submission":
+        title: str | None = None,
+    ) -> praw.models.Submission:
         """Crosspost the submission to a subreddit.
 
         .. note::
@@ -868,9 +877,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         return self._reddit.post(API_PATH["submit"], data=data)
 
     @_deprecate_args("other_submissions")
-    def hide(
-        self, *, other_submissions: Optional[List["praw.models.Submission"]] = None
-    ):
+    def hide(self, *, other_submissions: list[praw.models.Submission] | None = None):
         """Hide :class:`.Submission`.
 
         :param other_submissions: When provided, additionally hide this list of
@@ -911,9 +918,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         self._reddit.post(API_PATH["store_visits"], data=data)
 
     @_deprecate_args("other_submissions")
-    def unhide(
-        self, *, other_submissions: Optional[List["praw.models.Submission"]] = None
-    ):
+    def unhide(self, *, other_submissions: list[praw.models.Submission] | None = None):
         """Unhide :class:`.Submission`.
 
         :param other_submissions: When provided, additionally unhide this list of

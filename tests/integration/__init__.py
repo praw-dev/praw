@@ -9,7 +9,7 @@ from betamax.cassette import Cassette
 
 from praw import Reddit
 
-from .utils import (
+from ..utils import (
     PrettyJSONSerializer,
     ensure_environment_variables,
     ensure_integration_test,

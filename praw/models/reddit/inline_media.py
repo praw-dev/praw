@@ -1,4 +1,6 @@
 """Provide classes related to inline media."""
+from __future__ import annotations
+
 from ..util import _deprecate_args
 
 
@@ -7,13 +9,11 @@ class InlineMedia:
 
     TYPE = None
 
-    def __eq__(self, other: "InlineMedia"):
+    def __eq__(self, other: InlineMedia) -> bool:
         """Return whether the other instance equals the current."""
         return all(
-            [
-                getattr(self, attr) == getattr(other, attr)
-                for attr in ["TYPE", "path", "caption", "media_id"]
-            ]
+            getattr(self, attr) == getattr(other, attr)
+            for attr in ["TYPE", "path", "caption", "media_id"]
         )
 
     @_deprecate_args("path", "caption")
@@ -32,7 +32,7 @@ class InlineMedia:
         """Return an object initialization representation of the instance."""
         return f"<{self.__class__.__name__} caption={self.caption!r}>"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return a string representation of the media in Markdown format."""
         return f'\n\n![{self.TYPE}]({self.media_id} "{self.caption if self.caption else ""}")\n\n'
 

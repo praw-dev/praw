@@ -47,11 +47,14 @@ class TestFileTokenManager(UnitTest):
         manager = FileTokenManager("mock/dummy_path")
         mock_open = mock.mock_open()
 
-        with mock.patch("builtins.open", mock_open):
+        with mock.patch("io.open", mock_open):
             manager.post_refresh_callback(authorizer)
 
         assert authorizer.refresh_token == "token_value"
-        mock_open.assert_called_once_with("mock/dummy_path", "w")
+        call = mock_open.mock_calls[0]
+        path, mode, *_ = call.args
+        assert path.match("mock/dummy_path")
+        assert mode == "w"
         mock_open().write.assert_called_once_with("token_value")
 
     def test_pre_refresh_token_callback__reads_from_file(self):
@@ -59,11 +62,14 @@ class TestFileTokenManager(UnitTest):
         manager = FileTokenManager("mock/dummy_path")
         mock_open = mock.mock_open(read_data="token_value")
 
-        with mock.patch("builtins.open", mock_open):
+        with mock.patch("io.open", mock_open):
             manager.pre_refresh_callback(authorizer)
 
         assert authorizer.refresh_token == "token_value"
-        mock_open.assert_called_once_with("mock/dummy_path")
+        call = mock_open.mock_calls[0]
+        path, mode, *_ = call.args
+        assert path.match("mock/dummy_path")
+        assert mode == "r"
 
 
 class TestSQLiteTokenManager(UnitTest):

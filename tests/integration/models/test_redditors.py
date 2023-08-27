@@ -45,5 +45,5 @@ class TestRedditors(IntegrationTest):
 
     def test_stream(self, reddit):
         generator = reddit.redditors.stream()
-        for i in range(101):
+        for _i in range(101):
             assert isinstance(next(generator), Subreddit)

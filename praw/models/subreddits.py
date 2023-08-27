@@ -1,5 +1,7 @@
 """Provide the Subreddits class."""
-from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Iterator
 from warnings import warn
 
 from ..const import API_PATH
@@ -17,12 +19,12 @@ class Subreddits(PRAWBase):
     """Subreddits is a Listing class that provides various subreddit lists."""
 
     @staticmethod
-    def _to_list(subreddit_list):
+    def _to_list(subreddit_list):  # noqa: ANN001,ANN003,ANN205
         return ",".join([str(x) for x in subreddit_list])
 
     def default(
-        self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["praw.models.Subreddit"]:
+        self, **generator_kwargs: str | int | dict[str, str]
+    ) -> Iterator[praw.models.Subreddit]:
         """Return a :class:`.ListingGenerator` for default subreddits.
 
         Additional keyword arguments are passed in the initialization of
@@ -33,7 +35,7 @@ class Subreddits(PRAWBase):
             self._reddit, API_PATH["subreddits_default"], **generator_kwargs
         )
 
-    def gold(self, **generator_kwargs) -> Iterator["praw.models.Subreddit"]:
+    def gold(self, **generator_kwargs: Any) -> Iterator[praw.models.Subreddit]:
         """Alias for :meth:`.premium` to maintain backwards compatibility."""
         warn(
             "'subreddits.gold' has be renamed to 'subreddits.premium'.",
@@ -43,8 +45,8 @@ class Subreddits(PRAWBase):
         return self.premium(**generator_kwargs)
 
     def new(
-        self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["praw.models.Subreddit"]:
+        self, **generator_kwargs: str | int | dict[str, str]
+    ) -> Iterator[praw.models.Subreddit]:
         """Return a :class:`.ListingGenerator` for new subreddits.
 
         Additional keyword arguments are passed in the initialization of
@@ -56,8 +58,8 @@ class Subreddits(PRAWBase):
         )
 
     def popular(
-        self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["praw.models.Subreddit"]:
+        self, **generator_kwargs: str | int | dict[str, str]
+    ) -> Iterator[praw.models.Subreddit]:
         """Return a :class:`.ListingGenerator` for popular subreddits.
 
         Additional keyword arguments are passed in the initialization of
@@ -69,8 +71,8 @@ class Subreddits(PRAWBase):
         )
 
     def premium(
-        self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["praw.models.Subreddit"]:
+        self, **generator_kwargs: str | int | dict[str, str]
+    ) -> Iterator[praw.models.Subreddit]:
         """Return a :class:`.ListingGenerator` for premium subreddits.
 
         Additional keyword arguments are passed in the initialization of
@@ -83,9 +85,9 @@ class Subreddits(PRAWBase):
 
     def recommended(
         self,
-        subreddits: List[Union[str, "praw.models.Subreddit"]],
-        omit_subreddits: Optional[List[Union[str, "praw.models.Subreddit"]]] = None,
-    ) -> List["praw.models.Subreddit"]:
+        subreddits: list[str | praw.models.Subreddit],
+        omit_subreddits: list[str | praw.models.Subreddit] | None = None,
+    ) -> list[praw.models.Subreddit]:
         """Return subreddits recommended for the given list of subreddits.
 
         :param subreddits: A list of :class:`.Subreddit` instances and/or subreddit
@@ -95,9 +97,11 @@ class Subreddits(PRAWBase):
 
         """
         if not isinstance(subreddits, list):
-            raise TypeError("subreddits must be a list")
+            msg = "subreddits must be a list"
+            raise TypeError(msg)
         if omit_subreddits is not None and not isinstance(omit_subreddits, list):
-            raise TypeError("omit_subreddits must be a list or None")
+            msg = "omit_subreddits must be a list or None"
+            raise TypeError(msg)
 
         params = {"omit": self._to_list(omit_subreddits or [])}
         url = API_PATH["sub_recommended"].format(subreddits=self._to_list(subreddits))
@@ -107,8 +111,8 @@ class Subreddits(PRAWBase):
         ]
 
     def search(
-        self, query: str, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["praw.models.Subreddit"]:
+        self, query: str, **generator_kwargs: str | int | dict[str, str]
+    ) -> Iterator[praw.models.Subreddit]:
         """Return a :class:`.ListingGenerator` of subreddits matching ``query``.
 
         Subreddits are searched by both their title and description.
@@ -135,7 +139,7 @@ class Subreddits(PRAWBase):
         *,
         include_nsfw: bool = True,
         exact: bool = False,
-    ) -> List["praw.models.Subreddit"]:
+    ) -> list[praw.models.Subreddit]:
         r"""Return list of :class:`.Subreddit`\ s whose names begin with ``query``.
 
         :param query: Search for subreddits beginning with this string.
@@ -149,7 +153,7 @@ class Subreddits(PRAWBase):
         )
         return [self._reddit.subreddit(x) for x in result["names"]]
 
-    def search_by_topic(self, query: str) -> List["praw.models.Subreddit"]:
+    def search_by_topic(self, query: str) -> list[praw.models.Subreddit]:
         """Return list of Subreddits whose topics match ``query``.
 
         :param query: Search for subreddits relevant to the search topic.
@@ -165,8 +169,8 @@ class Subreddits(PRAWBase):
         return [self._reddit.subreddit(x["name"]) for x in result if x.get("name")]
 
     def stream(
-        self, **stream_options: Union[str, int, Dict[str, str]]
-    ) -> Iterator["praw.models.Subreddit"]:
+        self, **stream_options: str | int | dict[str, str]
+    ) -> Iterator[praw.models.Subreddit]:
         """Yield new subreddits as they are created.
 
         Subreddits are yielded oldest first. Up to 100 historical subreddits will

@@ -1,5 +1,7 @@
 """Represent the :class:`.Trophy` class."""
-from typing import TYPE_CHECKING, Any, Dict, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 from .base import PRAWBase
 
@@ -28,13 +30,13 @@ class Trophy(PRAWBase):
 
     """
 
-    def __eq__(self, other: Union["Trophy", Any]) -> bool:
+    def __eq__(self, other: Trophy | Any) -> bool:
         """Check if two Trophies are equal."""
         if isinstance(other, self.__class__):
             return self.name == other.name
         return super().__eq__(other)
 
-    def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
+    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]):
         """Initialize a :class:`.Trophy` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -42,7 +44,8 @@ class Trophy(PRAWBase):
             be provided.
 
         """
-        assert isinstance(_data, dict) and "name" in _data
+        assert isinstance(_data, dict)
+        assert "name" in _data
         super().__init__(reddit, _data=_data)
 
     def __repr__(self) -> str:

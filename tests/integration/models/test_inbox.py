@@ -13,7 +13,7 @@ class TestInbox(IntegrationTest):
         reddit.read_only = False
         count = 0
         for item in reddit.inbox.all():
-            assert isinstance(item, Comment) or isinstance(item, Message)
+            assert isinstance(item, (Comment, Message))
             count += 1
         assert count == 100
 
@@ -113,7 +113,7 @@ class TestInbox(IntegrationTest):
     def test_stream(self, reddit):
         reddit.read_only = False
         item = next(reddit.inbox.stream())
-        assert isinstance(item, Comment) or isinstance(item, Message)
+        assert isinstance(item, (Comment, Message))
 
     def test_submission_replies(self, reddit):
         reddit.read_only = False
@@ -127,6 +127,6 @@ class TestInbox(IntegrationTest):
     def test_unread(self, reddit):
         reddit.read_only = False
         count = 0
-        for item in reddit.inbox.unread(limit=64):
+        for _item in reddit.inbox.unread(limit=64):
             count += 1
         assert count == 64

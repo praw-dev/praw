@@ -1,5 +1,7 @@
 """Provide the ModNoteMixin class."""
-from typing import TYPE_CHECKING, Generator, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Generator
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw
@@ -9,8 +11,8 @@ class ModNoteMixin:
     """Interface for classes that can have a moderator note set on them."""
 
     def author_notes(
-        self, **generator_kwargs
-    ) -> Generator["praw.models.ModNote", None, None]:
+        self, **generator_kwargs: Any
+    ) -> Generator[praw.models.ModNote, None, None]:
         """Get the moderator notes for the author of this object in the subreddit it's posted in.
 
         :param generator_kwargs: Additional keyword arguments are passed in the
@@ -31,8 +33,8 @@ class ModNoteMixin:
         )
 
     def create_note(
-        self, *, label: Optional[str] = None, note: str, **other_settings
-    ) -> "praw.models.ModNote":
+        self, *, label: str | None = None, note: str, **other_settings: Any
+    ) -> praw.models.ModNote:
         """Create a moderator note on the author of this object in the subreddit it's posted in.
 
         :param label: The label for the note. As of this writing, this can be one of the

@@ -1,5 +1,7 @@
 """Provide the Rule class."""
-from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Iterator
 from urllib.parse import quote
 from warnings import warn
 
@@ -39,7 +41,7 @@ class Rule(RedditBase):
     STR_FIELD = "short_name"
 
     @cachedproperty
-    def mod(self) -> "praw.models.reddit.rules.RuleModeration":
+    def mod(self) -> praw.models.reddit.rules.RuleModeration:
         """Contain methods used to moderate rules.
 
         To delete ``"No spam"`` from r/test try:
@@ -63,21 +65,21 @@ class Rule(RedditBase):
         """Get the value of an attribute."""
         value = super().__getattribute__(attribute)
         if attribute == "subreddit" and value is None:
-            raise ValueError(
-                "The Rule is missing a subreddit. File a bug report at PRAW."
-            )
+            msg = "The Rule is missing a subreddit. File a bug report at PRAW."
+            raise ValueError(msg)
         return value
 
     def __init__(
         self,
-        reddit: "praw.Reddit",
-        subreddit: Optional["praw.models.Subreddit"] = None,
-        short_name: Optional[str] = None,
-        _data: Optional[Dict[str, str]] = None,
+        reddit: praw.Reddit,
+        subreddit: praw.models.Subreddit | None = None,
+        short_name: str | None = None,
+        _data: dict[str, str] | None = None,
     ):
         """Initialize a :class:`.Rule` instance."""
         if (short_name, _data).count(None) != 1:
-            raise ValueError("Either short_name or _data needs to be given.")
+            msg = "Either short_name or _data needs to be given."
+            raise ValueError(msg)
         if short_name:
             self.short_name = short_name
         # Note: The subreddit parameter can be None, because the objector does not know
@@ -86,15 +88,14 @@ class Rule(RedditBase):
         self.subreddit = subreddit
         super().__init__(reddit, _data=_data)
 
-    def _fetch(self):
+    def _fetch(self):  # noqa: ANN001
         for rule in self.subreddit.rules:
             if rule.short_name == self.short_name:
                 self.__dict__.update(rule.__dict__)
                 self._fetched = True
                 return
-        raise ClientException(
-            f"Subreddit {self.subreddit} does not have the rule {self.short_name}"
-        )
+        msg = f"Subreddit {self.subreddit} does not have the rule {self.short_name}"
+        raise ClientException(msg)
 
 
 class RuleModeration:
@@ -116,7 +117,7 @@ class RuleModeration:
 
     """
 
-    def __init__(self, rule: "praw.models.Rule"):
+    def __init__(self, rule: praw.models.Rule):
         """Initialize a :class:`.RuleModeration` instance."""
         self.rule = rule
 
@@ -140,11 +141,11 @@ class RuleModeration:
     def update(
         self,
         *,
-        description: Optional[str] = None,
-        kind: Optional[str] = None,
-        short_name: Optional[str] = None,
-        violation_reason: Optional[str] = None,
-    ) -> "praw.models.Rule":
+        description: str | None = None,
+        kind: str | None = None,
+        short_name: str | None = None,
+        violation_reason: str | None = None,
+    ) -> praw.models.Rule:
         """Update the rule from this subreddit.
 
         .. note::
@@ -208,7 +209,7 @@ class SubredditRules:
     """
 
     @cachedproperty
-    def _rule_list(self) -> List[Rule]:
+    def _rule_list(self) -> list[Rule]:  # noqa: ANN001
         """Get a list of :class:`.Rule` objects.
 
         :returns: A list of instances of :class:`.Rule`.
@@ -220,7 +221,7 @@ class SubredditRules:
         return rule_list
 
     @cachedproperty
-    def mod(self) -> "SubredditRulesModeration":
+    def mod(self) -> SubredditRulesModeration:
         """Contain methods to moderate subreddit rules as a whole.
 
         To add rule ``"No spam"`` to r/test try:
@@ -245,7 +246,7 @@ class SubredditRules:
         """
         return SubredditRulesModeration(self)
 
-    def __call__(self) -> List["praw.models.Rule"]:
+    def __call__(self) -> list[praw.models.Rule]:
         r"""Return a list of :class:`.Rule`\ s (Deprecated).
 
         :returns: A list of instances of :class:`.Rule`.
@@ -273,7 +274,7 @@ class SubredditRules:
             method="GET", path=API_PATH["rules"].format(subreddit=self.subreddit)
         )
 
-    def __getitem__(self, short_name: Union[str, int, slice]) -> "praw.models.Rule":
+    def __getitem__(self, short_name: str | int | slice) -> praw.models.Rule:
         """Return the :class:`.Rule` for the subreddit with short_name ``short_name``.
 
         :param short_name: The short_name of the rule, or the rule number.
@@ -315,7 +316,7 @@ class SubredditRules:
             return self._rule_list[short_name]
         return Rule(self._reddit, subreddit=self.subreddit, short_name=short_name)
 
-    def __init__(self, subreddit: "praw.models.Subreddit"):
+    def __init__(self, subreddit: praw.models.Subreddit):
         """Initialize a :class:`.SubredditRules` instance.
 
         :param subreddit: The subreddit whose rules to work with.
@@ -324,7 +325,7 @@ class SubredditRules:
         self.subreddit = subreddit
         self._reddit = subreddit._reddit
 
-    def __iter__(self) -> Iterator["praw.models.Rule"]:
+    def __iter__(self) -> Iterator[praw.models.Rule]:
         """Iterate through the rules of the subreddit.
 
         :returns: An iterator containing all the rules of a subreddit.
@@ -377,8 +378,8 @@ class SubredditRulesModeration:
         description: str = "",
         kind: str,
         short_name: str,
-        violation_reason: Optional[str] = None,
-    ) -> "praw.models.Rule":
+        violation_reason: str | None = None,
+    ) -> praw.models.Rule:
         """Add a removal reason to this subreddit.
 
         :param description: The description for the rule.
@@ -415,7 +416,7 @@ class SubredditRulesModeration:
         new_rule.subreddit = self.subreddit_rules.subreddit
         return new_rule
 
-    def reorder(self, rule_list: List["praw.models.Rule"]) -> List["praw.models.Rule"]:
+    def reorder(self, rule_list: list[praw.models.Rule]) -> list[praw.models.Rule]:
         """Reorder the rules of a subreddit.
 
         :param rule_list: The list of rules, in the wanted order. Each index of the list

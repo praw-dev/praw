@@ -1,5 +1,7 @@
 """Provide Collections functionality."""
-from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Generator
 
 from ...const import API_PATH
 from ...exceptions import ClientException
@@ -25,7 +27,7 @@ class CollectionModeration(PRAWBase):
 
     """
 
-    def __init__(self, reddit: "praw.Reddit", collection_id: str):
+    def __init__(self, reddit: praw.Reddit, collection_id: str):
         """Initialize a :class:`.CollectionModeration` instance.
 
         :param collection_id: The ID of a :class:`.Collection`.
@@ -34,7 +36,7 @@ class CollectionModeration(PRAWBase):
         super().__init__(reddit, _data=None)
         self.collection_id = collection_id
 
-    def _post_fullname(self, post):
+    def _post_fullname(self, post):  # noqa: ANN001
         """Get a post's fullname.
 
         :param post: A fullname, a :class:`.Submission`, a permalink, or an ID.
@@ -44,8 +46,9 @@ class CollectionModeration(PRAWBase):
         """
         if isinstance(post, Submission):
             return post.fullname
-        elif not isinstance(post, str):
-            raise TypeError(f"Cannot get fullname from object of type {type(post)}.")
+        if not isinstance(post, str):
+            msg = f"Cannot get fullname from object of type {type(post)}."
+            raise TypeError(msg)
         if post.startswith(f"{self._reddit.config.kinds['submission']}_"):
             return post
         try:
@@ -53,7 +56,7 @@ class CollectionModeration(PRAWBase):
         except ClientException:
             return self._reddit.submission(post).fullname
 
-    def add_post(self, submission: "praw.models.Submission"):
+    def add_post(self, submission: praw.models.Submission):
         """Add a post to the collection.
 
         :param submission: The post to add, a :class:`.Submission`, its permalink as a
@@ -96,7 +99,7 @@ class CollectionModeration(PRAWBase):
             API_PATH["collection_delete"], data={"collection_id": self.collection_id}
         )
 
-    def remove_post(self, submission: "praw.models.Submission"):
+    def remove_post(self, submission: praw.models.Submission):
         """Remove a post from the collection.
 
         :param submission: The post to remove, a :class:`.Submission`, its permalink as
@@ -121,7 +124,7 @@ class CollectionModeration(PRAWBase):
             data={"collection_id": self.collection_id, "link_fullname": link_fullname},
         )
 
-    def reorder(self, links: List[Union[str, "praw.models.Submission"]]):
+    def reorder(self, links: list[str | praw.models.Submission]):
         r"""Reorder posts in the collection.
 
         :param links: A list of :class:`.Submission`\ s or a ``str`` that is either a
@@ -226,9 +229,9 @@ class SubredditCollectionsModeration(PRAWBase):
 
     def __init__(
         self,
-        reddit: "praw.Reddit",
+        reddit: praw.Reddit,
         sub_fullname: str,
-        _data: Optional[Dict[str, Any]] = None,
+        _data: dict[str, Any] | None = None,
     ):
         """Initialize a :class:`.SubredditCollectionsModeration` instance."""
         super().__init__(reddit, _data)
@@ -236,8 +239,8 @@ class SubredditCollectionsModeration(PRAWBase):
 
     @_deprecate_args("title", "description", "display_layout")
     def create(
-        self, *, description: str, display_layout: Optional[str] = None, title: str
-    ):
+        self, *, description: str, display_layout: str | None = None, title: str
+    ) -> praw.models.Collection:
         """Create a new :class:`.Collection`.
 
         The authenticated account must have appropriate moderator permissions in the
@@ -315,9 +318,9 @@ class SubredditCollections(PRAWBase):
 
     def __call__(
         self,
-        collection_id: Optional[str] = None,
-        permalink: Optional[str] = None,
-    ):
+        collection_id: str | None = None,
+        permalink: str | None = None,
+    ) -> Collection:
         """Return the :class:`.Collection` with the specified ID.
 
         :param collection_id: The ID of a :class:`.Collection` (default: ``None``).
@@ -345,18 +348,17 @@ class SubredditCollections(PRAWBase):
 
         """
         if (collection_id is None) == (permalink is None):
-            raise TypeError(
-                "Exactly one of 'collection_id' or 'permalink' must be provided."
-            )
+            msg = "Exactly one of 'collection_id' or 'permalink' must be provided."
+            raise TypeError(msg)
         return Collection(
             self._reddit, collection_id=collection_id, permalink=permalink
         )
 
     def __init__(
         self,
-        reddit: "praw.Reddit",
-        subreddit: "praw.models.Subreddit",
-        _data: Optional[Dict[str, Any]] = None,
+        reddit: praw.Reddit,
+        subreddit: praw.models.Subreddit,
+        _data: dict[str, Any] | None = None,
     ):
         """Initialize a :class:`.SubredditCollections` instance."""
         super().__init__(reddit, _data)
@@ -377,8 +379,7 @@ class SubredditCollections(PRAWBase):
             API_PATH["collection_subreddit"],
             params={"sr_fullname": self.subreddit.fullname},
         )
-        for collection in request:
-            yield collection
+        yield from request
 
 
 class Collection(RedditBase):
@@ -442,7 +443,7 @@ class Collection(RedditBase):
         return CollectionModeration(self._reddit, self.collection_id)
 
     @cachedproperty
-    def subreddit(self) -> "praw.models.Subreddit":
+    def subreddit(self) -> praw.models.Subreddit:
         """Get the subreddit that this collection belongs to.
 
         For example:
@@ -457,10 +458,10 @@ class Collection(RedditBase):
 
     def __init__(
         self,
-        reddit: "praw.Reddit",
-        _data: Dict[str, Any] = None,
-        collection_id: Optional[str] = None,
-        permalink: Optional[str] = None,
+        reddit: praw.Reddit,
+        _data: dict[str, Any] = None,
+        collection_id: str | None = None,
+        permalink: str | None = None,
     ):
         """Initialize a :class:`.Collection` instance.
 
@@ -471,10 +472,8 @@ class Collection(RedditBase):
 
         """
         if (_data, collection_id, permalink).count(None) != 2:
-            raise TypeError(
-                "Exactly one of '_data', 'collection_id', or 'permalink' must be"
-                " provided."
-            )
+            msg = "Exactly one of '_data', 'collection_id', or 'permalink' must be provided."
+            raise TypeError(msg)
 
         if permalink:
             collection_id = self._url_parts(permalink)[4]
@@ -501,8 +500,7 @@ class Collection(RedditBase):
                 print(submission.title, submission.permalink)
 
         """
-        for item in self.sorted_links:
-            yield item
+        yield from self.sorted_links
 
     def __len__(self) -> int:
         """Get the number of posts in this :class:`.Collection`.
@@ -517,7 +515,7 @@ class Collection(RedditBase):
         """
         return len(self.link_ids)
 
-    def __setattr__(self, attribute: str, value: Any):
+    def __setattr__(self, attribute: str, value: Any) -> None:
         """Objectify author, subreddit, and sorted_links attributes."""
         if attribute == "author_name":
             self.author = self._reddit.redditor(value)
@@ -525,7 +523,7 @@ class Collection(RedditBase):
             value = self._reddit._objector.objectify(value)
         super().__setattr__(attribute, value)
 
-    def _fetch(self):
+    def _fetch(self):  # noqa: ANN001
         data = self._fetch_data()
         try:
             self._reddit._objector.check_error(data)
@@ -533,16 +531,14 @@ class Collection(RedditBase):
             # A well-formed but invalid Collections ID during fetch time
             # causes Reddit to return something that looks like an error
             # but with no content.
-            raise ClientException(
-                f"Error during fetch. Check collection ID {self.collection_id!r} is"
-                " correct."
-            )
+            msg = f"Error during fetch. Check collection ID {self.collection_id!r} is correct."
+            raise ClientException(msg) from None
 
         other = type(self)(self._reddit, _data=data)
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
-    def _fetch_info(self):
+    def _fetch_info(self):  # noqa: ANN001
         return "collection", {}, self._info_params
 
     def follow(self):

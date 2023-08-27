@@ -3,8 +3,8 @@ from itertools import islice
 from typing import TYPE_CHECKING, Any, Generator, List, Optional, Tuple, Union
 
 from ..const import API_PATH
-from ..models.base import PRAWBase
-from ..models.listing.generator import ListingGenerator
+from .base import PRAWBase
+from .listing.generator import ListingGenerator
 from .reddit.comment import Comment
 from .reddit.redditor import Redditor
 from .reddit.submission import Submission
@@ -63,7 +63,7 @@ class BaseModNotes:
             for note_dict in response["mod_notes"]:
                 yield self._reddit._objector.objectify(note_dict)
 
-    def _ensure_attribute(self, error_message, **attributes: Any):
+    def _ensure_attribute(self, error_message: str, **attributes: Any):  # noqa: ANN001
         attribute, _value = attributes.popitem()
         value = _value or getattr(self, attribute, None)
         if value is None:
@@ -259,7 +259,8 @@ class BaseModNotes:
             subreddit=subreddit,
         )
         if not delete_all and note_id is None:
-            raise TypeError("Either 'note_id' or 'delete_all' must be provided.")
+            msg = "Either 'note_id' or 'delete_all' must be provided."
+            raise TypeError(msg)
         if delete_all:
             for note in self._notes(True, [redditor], [subreddit]):
                 note.delete()
@@ -356,7 +357,8 @@ class RedditorModNotes(BaseModNotes):
 
         """
         if len(subreddits) == 0:
-            raise ValueError("At least 1 subreddit must be provided.")
+            msg = "At least 1 subreddit must be provided."
+            raise ValueError(msg)
         if all_notes is None:
             all_notes = len(subreddits) == 1
         return self._notes(
@@ -451,7 +453,8 @@ class SubredditModNotes(BaseModNotes):
 
         """
         if len(redditors) == 0:
-            raise ValueError("At least 1 redditor must be provided.")
+            msg = "At least 1 redditor must be provided."
+            raise ValueError(msg)
         if all_notes is None:
             all_notes = len(redditors) == 1
         return self._notes(
@@ -602,10 +605,8 @@ class RedditModNotes(BaseModNotes):
         if things is None:
             things = []
         if not (pairs + redditors + subreddits + things):
-            raise TypeError(
-                "Either the 'pairs', 'redditors', 'subreddits', or 'things' parameters"
-                " must be provided."
-            )
+            msg = "Either the 'pairs', 'redditors', 'subreddits', or 'things' parameters must be provided."
+            raise TypeError(msg)
         if (
             len(redditors) * len(subreddits) == 0
             and len(redditors) + len(subreddits) > 0
@@ -637,9 +638,8 @@ class RedditModNotes(BaseModNotes):
                 merged_redditors.append(redditor)
                 merged_subreddits.append(subreddit)
             else:
-                raise ValueError(
-                    f"Cannot get subreddit and author fields from type {type(item)}"
-                )
+                msg = f"Cannot get subreddit and author fields from type {type(item)}"
+                raise ValueError(msg)
         return self._notes(
             all_notes, merged_redditors, merged_subreddits, **generator_kwargs
         )

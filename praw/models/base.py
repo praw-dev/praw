@@ -1,6 +1,8 @@
 """Provide the PRAWBase superclass."""
+from __future__ import annotations
+
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw
@@ -10,7 +12,9 @@ class PRAWBase:
     """Superclass for all models in PRAW."""
 
     @staticmethod
-    def _safely_add_arguments(*, arguments, key, **new_arguments):
+    def _safely_add_arguments(
+        *, arguments, key, **new_arguments  # noqa: ANN001,ANN003,ANN205
+    ):
         """Replace arguments[key] with a deepcopy and update.
 
         This method is often called when new parameters need to be added to a request.
@@ -23,7 +27,7 @@ class PRAWBase:
         arguments[key] = value
 
     @classmethod
-    def parse(cls, data: Dict[str, Any], reddit: "praw.Reddit") -> Any:
+    def parse(cls, data: dict[str, Any], reddit: praw.Reddit) -> Any:
         """Return an instance of ``cls`` from ``data``.
 
         :param data: The structured data.
@@ -32,7 +36,7 @@ class PRAWBase:
         """
         return cls(reddit, _data=data)
 
-    def __init__(self, reddit: "praw.Reddit", _data: Optional[Dict[str, Any]]):
+    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any] | None):
         """Initialize a :class:`.PRAWBase` instance.
 
         :param reddit: An instance of :class:`.Reddit`.

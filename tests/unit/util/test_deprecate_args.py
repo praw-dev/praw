@@ -10,45 +10,45 @@ from .. import UnitTest
 
 keyword_only = {
     "args": [
-        [("arg2", "arg1", "arg3", "arg0"), dict()],
+        [("arg2", "arg1", "arg3", "arg0"), {}],
         ("arg0", "arg1", "arg2", "arg3"),
     ],
     "kwargs": [
-        [(), dict(arg2="arg2", arg1="arg1", arg3="arg3", arg0="arg0")],
+        [(), {"arg2": "arg2", "arg1": "arg1", "arg3": "arg3", "arg0": "arg0"}],
         ("arg0", "arg1", "arg2", "arg3"),
     ],
     "mix": [
-        [("arg2",), dict(arg1="arg1")],
+        [("arg2",), {"arg1": "arg1"}],
         (None, "arg1", "arg2", None),
     ],
     "one_arg": [
-        [("arg2",), dict()],
+        [("arg2",), {}],
         (None, None, "arg2", None),
     ],
     "one_kwarg": [
-        [(), dict(arg0="arg0")],
+        [(), {"arg0": "arg0"}],
         ("arg0", None, None, None),
     ],
 }
 with_positional = {
     "args": [
-        [("arg0", "arg2", "arg1", "arg3"), dict()],
+        [("arg0", "arg2", "arg1", "arg3"), {}],
         ("arg0", "arg1", "arg2", "arg3"),
     ],
     "kwargs": [
-        [("arg0",), dict(arg2="arg2", arg1="arg1", arg3="arg3")],
+        [("arg0",), {"arg2": "arg2", "arg1": "arg1", "arg3": "arg3"}],
         ("arg0", "arg1", "arg2", "arg3"),
     ],
     "mix": [
-        [("arg0", "arg2"), dict(arg1="arg1", arg3=None)],
+        [("arg0", "arg2"), {"arg1": "arg1", "arg3": None}],
         ("arg0", "arg1", "arg2", None),
     ],
     "one_arg": [
-        [("arg0",), dict()],
+        [("arg0",), {}],
         ("arg0", None, None, None),
     ],
     "one_kwarg": [
-        [(), dict(arg0="arg0")],
+        [(), {"arg0": "arg0"}],
         ("arg0", None, None, None),
     ],
 }

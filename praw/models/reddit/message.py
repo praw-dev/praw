@@ -1,5 +1,7 @@
 """Provide the Message class."""
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 from ...const import API_PATH
 from .base import RedditBase
@@ -38,7 +40,9 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
     STR_FIELD = "id"
 
     @classmethod
-    def parse(cls, data: Dict[str, Any], reddit: "praw.Reddit"):
+    def parse(
+        cls, data: dict[str, Any], reddit: praw.Reddit
+    ) -> Message | SubredditMessage:
         """Return an instance of :class:`.Message` or :class:`.SubredditMessage` from ``data``.
 
         :param data: The structured data.
@@ -66,22 +70,22 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
         return cls(reddit, _data=data)
 
     @property
-    def _kind(self) -> str:
+    def _kind(self) -> str:  # noqa: ANN001
         """Return the class's kind."""
         return self._reddit.config.kinds["message"]
 
     @property
-    def parent(self) -> Optional["praw.models.Message"]:
+    def parent(self) -> praw.models.Message | None:
         """Return the parent of the message if it exists."""
         if not self._parent and self.parent_id:
             self._parent = self._reddit.inbox.message(self.parent_id.split("_")[1])
         return self._parent
 
     @parent.setter
-    def parent(self, value):
+    def parent(self, value: praw.models.Message | None):
         self._parent = value
 
-    def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
+    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]):
         """Initialize a :class:`.Message` instance."""
         super().__init__(reddit, _data=_data, _fetched=True)
         self._parent = None

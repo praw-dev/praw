@@ -36,7 +36,8 @@ class TestMessage(IntegrationTest):
                 message = item
                 break
         else:
-            assert False, "no message found"
+            msg = "no message found"
+            raise AssertionError(msg)
         message.block()
 
     def test_delete(self, reddit):
@@ -52,7 +53,8 @@ class TestMessage(IntegrationTest):
                 message = item
                 break
         else:
-            assert False, "no message found in unread"
+            msg = "no message found in unread"
+            raise AssertionError(msg)
         message.mark_read()
 
     def test_mark_unread(self, reddit):

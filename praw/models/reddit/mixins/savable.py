@@ -1,5 +1,5 @@
 """Provide the SavableMixin class."""
-from typing import Optional
+from __future__ import annotations
 
 from ....const import API_PATH
 from ....util import _deprecate_args
@@ -9,7 +9,7 @@ class SavableMixin:
     """Interface for :class:`.RedditBase` classes that can be saved."""
 
     @_deprecate_args("category")
-    def save(self, *, category: Optional[str] = None):
+    def save(self, *, category: str | None = None):
         """Save the object.
 
         :param category: The category to save to. If the authenticated user does not

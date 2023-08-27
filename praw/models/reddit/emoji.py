@@ -1,6 +1,8 @@
 """Provide the Emoji class."""
-import os
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from __future__ import annotations
+
+from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
 from ...const import API_PATH
 from ...exceptions import ClientException
@@ -30,7 +32,7 @@ class Emoji(RedditBase):
 
     STR_FIELD = "name"
 
-    def __eq__(self, other: Union[str, "Emoji"]) -> bool:
+    def __eq__(self, other: str | Emoji) -> bool:
         """Return whether the other instance equals the current."""
         if isinstance(other, str):
             return other == str(self)
@@ -44,23 +46,24 @@ class Emoji(RedditBase):
 
     def __init__(
         self,
-        reddit: "praw.Reddit",
-        subreddit: "praw.models.Subreddit",
+        reddit: praw.Reddit,
+        subreddit: praw.models.Subreddit,
         name: str,
-        _data: Optional[Dict[str, Any]] = None,
+        _data: dict[str, Any] | None = None,
     ):
         """Initialize an :class:`.Emoji` instance."""
         self.name = name
         self.subreddit = subreddit
         super().__init__(reddit, _data=_data)
 
-    def _fetch(self):
+    def _fetch(self):  # noqa: ANN001
         for emoji in self.subreddit.emoji:
             if emoji.name == self.name:
                 self.__dict__.update(emoji.__dict__)
                 self._fetched = True
                 return
-        raise ClientException(f"r/{self.subreddit} does not have the emoji {self.name}")
+        msg = f"r/{self.subreddit} does not have the emoji {self.name}"
+        raise ClientException(msg)
 
     def delete(self):
         """Delete an emoji from this subreddit by :class:`.Emoji`.
@@ -81,9 +84,9 @@ class Emoji(RedditBase):
     def update(
         self,
         *,
-        mod_flair_only: Optional[bool] = None,
-        post_flair_allowed: Optional[bool] = None,
-        user_flair_allowed: Optional[bool] = None,
+        mod_flair_only: bool | None = None,
+        post_flair_allowed: bool | None = None,
+        user_flair_allowed: bool | None = None,
     ):
         """Update the permissions of an emoji in this subreddit.
 
@@ -117,12 +120,13 @@ class Emoji(RedditBase):
             )
         }
         if all(value is None for value in mapping.values()):
-            raise TypeError("At least one attribute must be provided")
+            msg = "At least one attribute must be provided"
+            raise TypeError(msg)
 
         data = {"name": self.name}
         for attribute, value in mapping.items():
             if value is None:
-                value = getattr(self, attribute)
+                value = getattr(self, attribute)  # noqa: PLW2901
             data[attribute] = value
         url = API_PATH["emoji_update"].format(subreddit=self.subreddit)
         self._reddit.post(url, data=data)
@@ -148,7 +152,7 @@ class SubredditEmoji:
         """
         return Emoji(self._reddit, self.subreddit, name)
 
-    def __init__(self, subreddit: "praw.models.Subreddit"):
+    def __init__(self, subreddit: praw.models.Subreddit):
         """Initialize a :class:`.SubredditEmoji` instance.
 
         :param subreddit: The subreddit whose emoji are affected.
@@ -157,7 +161,7 @@ class SubredditEmoji:
         self.subreddit = subreddit
         self._reddit = subreddit._reddit
 
-    def __iter__(self) -> List[Emoji]:
+    def __iter__(self) -> list[Emoji]:
         """Return a list of :class:`.Emoji` for the subreddit.
 
         This method is to be used to discover all emoji for a subreddit:
@@ -173,7 +177,7 @@ class SubredditEmoji:
         )
         subreddit_keys = [
             key
-            for key in response.keys()
+            for key in response
             if key.startswith(self._reddit.config.kinds["subreddit"])
         ]
         assert len(subreddit_keys) == 1
@@ -184,10 +188,10 @@ class SubredditEmoji:
         self,
         *,
         image_path: str,
-        mod_flair_only: Optional[bool] = None,
+        mod_flair_only: bool | None = None,
         name: str,
-        post_flair_allowed: Optional[bool] = None,
-        user_flair_allowed: Optional[bool] = None,
+        post_flair_allowed: bool | None = None,
+        user_flair_allowed: bool | None = None,
     ) -> Emoji:
         """Add an emoji to this subreddit.
 
@@ -209,8 +213,9 @@ class SubredditEmoji:
             reddit.subreddit("test").emoji.add(name="emoji", image_path="emoji.png")
 
         """
+        file = Path(image_path)
         data = {
-            "filepath": os.path.basename(image_path),
+            "filepath": file.name,
             "mimetype": "image/jpeg",
         }
         if image_path.lower().endswith(".png"):
@@ -222,7 +227,7 @@ class SubredditEmoji:
         upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
         upload_url = f"https:{upload_lease['action']}"
 
-        with open(image_path, "rb") as image:
+        with file.open("rb") as image:
             response = self._reddit._core._requestor._http.post(
                 upload_url, data=upload_data, files={"file": image}
             )
