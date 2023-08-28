@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 from unittest import mock
 
 import pytest
@@ -20,13 +21,13 @@ class TestConfig:
                 del os.environ[env_name]
         os.environ[environment] = "/MOCK"
 
-        module_dir = os.path.dirname(sys.modules["praw"].__file__)
-        environ_path = os.path.join(
-            "/MOCK", ".config" if environment == "HOME" else "", "praw.ini"
+        module_dir = Path(sys.modules["praw"].__file__).parent
+        environ_path = (
+            Path("/MOCK") / (".config" if environment == "HOME" else "") / "praw.ini"
         )
         locations = [
-            os.path.join(module_dir, "praw.ini"),
-            environ_path,
+            str(module_dir / "praw.ini"),
+            str(environ_path),
             "praw.ini",
         ]
 

@@ -1,5 +1,6 @@
 """Test praw.util.refresh_token_manager."""
 import sys
+from pathlib import Path
 from tempfile import NamedTemporaryFile
 from unittest import mock
 
@@ -13,6 +14,18 @@ from praw.util.token_manager import (
 
 from .. import UnitTest
 from ..test_reddit import DummyTokenManager
+
+
+def mock_path(read_data=None):
+    if read_data is not None:
+        mock_open = mock.mock_open(read_data=read_data)
+    else:
+        mock_open = mock.mock_open()
+
+    def mocked_open(self, *args, **kwargs):
+        return mock_open(self, *args, **kwargs)
+
+    return mock.patch.object(Path, "open", mocked_open), mock_open
 
 
 class DummyAuthorizer:
@@ -45,9 +58,9 @@ class TestFileTokenManager(UnitTest):
     def test_post_refresh_token_callback__writes_to_file(self):
         authorizer = DummyAuthorizer("token_value")
         manager = FileTokenManager("mock/dummy_path")
-        mock_open = mock.mock_open()
+        mock_patch, mock_open = mock_path()
 
-        with mock.patch("io.open", mock_open):
+        with mock_patch:
             manager.post_refresh_callback(authorizer)
 
         assert authorizer.refresh_token == "token_value"
@@ -60,16 +73,15 @@ class TestFileTokenManager(UnitTest):
     def test_pre_refresh_token_callback__reads_from_file(self):
         authorizer = DummyAuthorizer(None)
         manager = FileTokenManager("mock/dummy_path")
-        mock_open = mock.mock_open(read_data="token_value")
+        mock_patch, mock_open = mock_path(read_data="token_value")
 
-        with mock.patch("io.open", mock_open):
+        with mock_patch:
             manager.pre_refresh_callback(authorizer)
 
         assert authorizer.refresh_token == "token_value"
         call = mock_open.mock_calls[0]
-        path, mode, *_ = call.args
+        path, *_ = call.args
         assert path.match("mock/dummy_path")
-        assert mode == "r"
 
 
 class TestSQLiteTokenManager(UnitTest):
