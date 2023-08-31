@@ -1,11 +1,12 @@
 """Provide the Multireddit class."""
+from __future__ import annotations
+
 import re
 from json import dumps
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 from ...const import API_PATH
-from ...util import _deprecate_args
-from ...util.cache import cachedproperty
+from ...util import _deprecate_args, cachedproperty
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
 from .redditor import Redditor
@@ -49,7 +50,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
     RE_INVALID = re.compile(r"[\W_]+", re.UNICODE)
 
     @staticmethod
-    def sluggify(title: str):
+    def sluggify(title: str) -> str:
         """Return a slug version of the title.
 
         :param title: The title to make a slug of.
@@ -90,7 +91,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         """
         return SubredditStream(self)
 
-    def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
+    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]):
         """Initialize a :class:`.Multireddit` instance."""
         self.path = None
         super().__init__(reddit, _data=_data)
@@ -100,21 +101,21 @@ class Multireddit(SubredditListingMixin, RedditBase):
         if "subreddits" in self.__dict__:
             self.subreddits = [Subreddit(reddit, x["name"]) for x in self.subreddits]
 
-    def _fetch(self):
+    def _fetch(self):  # noqa: ANN001
         data = self._fetch_data()
         data = data["data"]
         other = type(self)(self._reddit, _data=data)
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
-    def _fetch_info(self):
+    def _fetch_info(self):  # noqa: ANN001
         return (
             "multireddit_api",
             {"multi": self.name, "user": self._author.name},
             None,
         )
 
-    def add(self, subreddit: "praw.models.Subreddit"):
+    def add(self, subreddit: praw.models.Subreddit):
         """Add a subreddit to this multireddit.
 
         :param subreddit: The subreddit to add to this multi.
@@ -134,7 +135,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         self._reset_attributes("subreddits")
 
     @_deprecate_args("display_name")
-    def copy(self, *, display_name: Optional[str] = None) -> "praw.models.Multireddit":
+    def copy(self, *, display_name: str | None = None) -> praw.models.Multireddit:
         """Copy this multireddit and return the new multireddit.
 
         :param display_name: The display name for the copied multireddit. Reddit will
@@ -177,7 +178,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         )
         self._reddit.delete(path)
 
-    def remove(self, subreddit: "praw.models.Subreddit"):
+    def remove(self, subreddit: praw.models.Subreddit):
         """Remove a subreddit from this multireddit.
 
         :param subreddit: The subreddit to remove from this multi.
@@ -198,9 +199,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
     def update(
         self,
-        **updated_settings: Union[
-            str, List[Union[str, "praw.models.Subreddit", Dict[str, str]]]
-        ],
+        **updated_settings: str | list[str | praw.models.Subreddit | dict[str, str]],
     ):
         """Update this multireddit.
 

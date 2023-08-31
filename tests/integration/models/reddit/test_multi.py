@@ -116,7 +116,7 @@ class TestMultiredditStreams(IntegrationTest):
     def test_comments(self, reddit):
         multi = reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         generator = multi.stream.comments()
-        for i in range(110):
+        for _i in range(110):
             assert isinstance(next(generator), Comment)
 
     def test_comments__with_pause(self, reddit):
@@ -137,7 +137,7 @@ class TestMultiredditStreams(IntegrationTest):
     def test_submissions(self, reddit):
         multi = reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         generator = multi.stream.submissions()
-        for i in range(102):
+        for _i in range(102):
             assert isinstance(next(generator), Submission)
 
     @pytest.mark.cassette_name("TestMultiredditStreams.test_submissions")

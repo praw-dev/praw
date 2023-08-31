@@ -29,7 +29,7 @@ class TestCollection(UnitTest):
         with pytest.raises(TypeError):
             Collection(reddit)
         with pytest.raises(TypeError):
-            Collection(reddit, _data=dict(), collection_id="")
+            Collection(reddit, _data={}, collection_id="")
         with pytest.raises(TypeError):
             Collection(reddit, collection_id="fake_uuid", permalink="")
         with pytest.raises(TypeError):
@@ -48,16 +48,16 @@ class TestCollection(UnitTest):
         collection1 = Collection(reddit, collection_id="1")
         collection2 = Collection(reddit, collection_id="2")
         assert collection1 != collection2
-        assert "1" != collection2
-        assert "2" != collection1
+        assert collection2 != "1"
+        assert collection1 != "2"
 
     def test_repr(self, reddit):
         collection = Collection(reddit, collection_id="fake_uuid")
-        assert "Collection(collection_id='fake_uuid')" == repr(collection)
+        assert repr(collection) == "Collection(collection_id='fake_uuid')"
 
     def test_str(self, reddit):
         collection = Collection(reddit, collection_id="fake_uuid")
-        assert "fake_uuid" == str(collection)
+        assert str(collection) == "fake_uuid"
 
 
 class TestSubredditCollections(UnitTest):

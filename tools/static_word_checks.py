@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse
 import os
 import re
@@ -7,7 +8,7 @@ import sys
 class StaticChecker:
     """Run simple checks on the entire document or specific lines."""
 
-    def __init__(self, replace: bool):
+    def __init__(self, replace: bool) -> None:
         """Initialize a :class:`.StaticChecker` instance.
 
         :param replace: Whether or not to make replacements.
@@ -95,7 +96,7 @@ class StaticChecker:
         """
         status = True
         directory = os.path.abspath(os.path.join(__file__, "..", "..", "praw"))
-        for current_directory, directories, filenames in os.walk(directory):
+        for current_directory, _directories, filenames in os.walk(directory):
             for filename in filenames:
                 if not filename.endswith(".py"):
                     continue

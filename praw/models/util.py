@@ -1,15 +1,17 @@
 """Provide helper classes used by other models."""
+from __future__ import annotations
+
 import random
 import time
 from collections import OrderedDict
-from typing import Any, Callable, Generator, List, Optional, Set, Union
+from typing import Any, Callable, Generator
 
 from ..util import _deprecate_args
 
 
 @_deprecate_args("permissions", "known_permissions")
 def permissions_string(
-    *, known_permissions: Set[str], permissions: Optional[List[str]]
+    *, known_permissions: set[str], permissions: list[str] | None
 ) -> str:
     """Return a comma separated string of permission changes.
 
@@ -40,7 +42,7 @@ def stream_generator(
     *,
     attribute_name: str = "fullname",
     exclude_before: bool = False,
-    pause_after: Optional[int] = None,
+    pause_after: int | None = None,
     skip_existing: bool = False,
     **function_kwargs: Any,
 ) -> Generator[Any, None, None]:
@@ -178,7 +180,7 @@ class BoundedSet:
         self.max_items = max_items
         self._set = OrderedDict()
 
-    def _access(self, item: Any):
+    def _access(self, item: Any):  # noqa: ANN001
         if item in self._set:
             self._set.move_to_end(item)
 
@@ -206,10 +208,10 @@ class ExponentialCounter:
         self._base = 1
         self._max = max_counter
 
-    def counter(self) -> Union[int, float]:
+    def counter(self) -> int | float:
         """Increment the counter and return the current value with jitter."""
         max_jitter = self._base / 16.0
-        value = self._base + random.random() * max_jitter - max_jitter / 2
+        value = self._base + random.random() * max_jitter - max_jitter / 2  # noqa: S311
         self._base = min(self._base * 2, self._max)
         return value
 

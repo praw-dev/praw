@@ -6,4 +6,4 @@ This pull request provides ...
 
 ## References
 
-- 
+-

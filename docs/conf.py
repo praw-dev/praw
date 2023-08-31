@@ -20,6 +20,7 @@ master_doc = "index"
 nitpick_ignore = [
     ("py:class", "IO"),
     ("py:class", "prawcore.requestor.Requestor"),
+    ("py:class", "prawcore.auth.BaseAuthorizer"),
     ("py:class", "praw.models.redditors.PartialRedditor"),
 ]
 nitpicky = True

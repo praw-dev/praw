@@ -35,7 +35,7 @@ class TestSubmission(IntegrationTest):
                 gild_type="award_2385c499-a1fb-44ec-b9b7-d260f3dc55de"
             )
         exception = excinfo.value
-        assert "INSUFFICIENT_COINS_WITH_AMOUNT" == exception.error_type
+        assert exception.error_type == "INSUFFICIENT_COINS_WITH_AMOUNT"
 
     @pytest.mark.cassette_name("TestSubmission.test_award__self_gild")
     def test_award__self_gild(self, reddit):
@@ -45,7 +45,7 @@ class TestSubmission(IntegrationTest):
                 gild_type="award_2385c499-a1fb-44ec-b9b7-d260f3dc55de"
             )
         exception = excinfo.value
-        assert "SELF_GILDING_NOT_ALLOWED" == exception.error_type
+        assert exception.error_type == "SELF_GILDING_NOT_ALLOWED"
 
     def test_clear_vote(self, reddit):
         reddit.read_only = False
@@ -226,7 +226,7 @@ class TestSubmission(IntegrationTest):
         assert award_data["gildings"]["gid_2"] == 1
 
     def test_gilded(self, reddit):
-        assert 1 == Submission(reddit, "2gmzqe").gilded
+        assert Submission(reddit, "2gmzqe").gilded == 1
 
     def test_hide(self, reddit):
         reddit.read_only = False

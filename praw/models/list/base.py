@@ -1,5 +1,7 @@
 """Provide the BaseList class."""
-from typing import TYPE_CHECKING, Any, Dict, Iterator
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Iterator
 
 from ..base import PRAWBase
 
@@ -20,7 +22,7 @@ class BaseList(PRAWBase):
         """Return the item at position index in the list."""
         return getattr(self, self.CHILD_ATTRIBUTE)[index]
 
-    def __init__(self, reddit: "praw.Reddit", _data: Dict[str, Any]):
+    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]):
         """Initialize a :class:`.BaseList` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -29,7 +31,8 @@ class BaseList(PRAWBase):
         super().__init__(reddit, _data=_data)
 
         if self.CHILD_ATTRIBUTE is None:
-            raise NotImplementedError("BaseList must be extended.")
+            msg = "BaseList must be extended."
+            raise NotImplementedError(msg)
 
         child_list = getattr(self, self.CHILD_ATTRIBUTE)
         for index, item in enumerate(child_list):

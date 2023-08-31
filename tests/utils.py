@@ -14,10 +14,8 @@ def ensure_environment_variables():
         "client_secret",
     ):
         if getattr(pytest.placeholders, key) == f"placeholder_{key}":
-            raise ValueError(
-                f"Environment variable 'prawtest_{key}' must be set for recording new"
-                " cassettes."
-            )
+            msg = f"Environment variable 'prawtest_{key}' must be set for recording new cassettes."
+            raise ValueError(msg)
     auth_set = False
     for auth_keys in [["refresh_token"], ["username", "password"]]:
         if all(
@@ -27,10 +25,8 @@ def ensure_environment_variables():
             auth_set = True
             break
     if not auth_set:
-        raise ValueError(
-            "Environment variables 'prawtest_refresh_token' or 'prawtest_username' and"
-            " 'prawtest_password' must be set for new cassette recording."
-        )
+        msg = "Environment variables 'prawtest_refresh_token' or 'prawtest_username' and 'prawtest_password' must be set for new cassette recording."
+        raise ValueError(msg)
 
 
 def ensure_integration_test(cassette):
@@ -39,7 +35,7 @@ def ensure_integration_test(cassette):
         action = "record"
     else:
         is_integration_test = any(
-            [interaction.used for interaction in cassette.interactions]
+            interaction.used for interaction in cassette.interactions
         )
         action = "play back"
     message = f"Cassette did not {action} any requests. This test can be a unit test."

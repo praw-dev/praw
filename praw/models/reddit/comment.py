@@ -1,5 +1,7 @@
 """Provide the Comment class."""
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 from ...const import API_PATH
 from ...exceptions import ClientException, InvalidURL
@@ -66,14 +68,14 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         try:
             comment_index = parts.index("comments")
         except ValueError:
-            raise InvalidURL(url)
+            raise InvalidURL(url) from None
 
         if len(parts) - 4 != comment_index:
             raise InvalidURL(url)
         return parts[-1]
 
     @cachedproperty
-    def mod(self) -> "praw.models.reddit.comment.CommentModeration":
+    def mod(self) -> praw.models.reddit.comment.CommentModeration:
         """Provide an instance of :class:`.CommentModeration`.
 
         Example usage:
@@ -87,7 +89,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return CommentModeration(self)
 
     @property
-    def _kind(self) -> str:
+    def _kind(self):  # noqa: ANN001
         """Return the class's kind."""
         return self._reddit.config.kinds["comment"]
 
@@ -125,14 +127,14 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return self._replies
 
     @property
-    def submission(self) -> "praw.models.Submission":
+    def submission(self) -> praw.models.Submission:
         """Return the :class:`.Submission` object this comment belongs to."""
         if not self._submission:  # Comment not from submission
             self._submission = self._reddit.submission(self._extract_submission_id())
         return self._submission
 
     @submission.setter
-    def submission(self, submission: "praw.models.Submission"):
+    def submission(self, submission: praw.models.Submission):
         """Update the :class:`.Submission` associated with the :class:`.Comment`."""
         submission._comments_by_id[self.fullname] = self
         self._submission = submission
@@ -142,14 +144,15 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
     def __init__(
         self,
-        reddit: "praw.Reddit",
-        id: Optional[str] = None,  # pylint: disable=redefined-builtin
-        url: Optional[str] = None,
-        _data: Optional[Dict[str, Any]] = None,
+        reddit: praw.Reddit,
+        id: str | None = None,  # pylint: disable=redefined-builtin
+        url: str | None = None,
+        _data: dict[str, Any] | None = None,
     ):
         """Initialize a :class:`.Comment` instance."""
         if (id, url, _data).count(None) != 2:
-            raise TypeError("Exactly one of 'id', 'url', or '_data' must be provided.")
+            msg = "Exactly one of 'id', 'url', or '_data' must be provided."
+            raise TypeError(msg)
         fetched = False
         self._replies = []
         self._submission = None
@@ -164,8 +167,8 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     def __setattr__(
         self,
         attribute: str,
-        value: Union[str, Redditor, CommentForest, "praw.models.Subreddit"],
-    ):
+        value: str | Redditor | CommentForest | praw.models.Subreddit,
+    ) -> None:
         """Objectify author, replies, and subreddit."""
         if attribute == "author":
             value = Redditor.from_data(self._reddit, value)
@@ -179,27 +182,28 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             value = self._reddit.subreddit(value)
         super().__setattr__(attribute, value)
 
-    def _extract_submission_id(self):
+    def _extract_submission_id(self):  # noqa: ANN001
         if "context" in self.__dict__:
             return self.context.rsplit("/", 4)[1]
         return self.link_id.split("_", 1)[1]
 
-    def _fetch(self):
+    def _fetch(self):  # noqa: ANN001
         data = self._fetch_data()
         data = data["data"]
 
         if not data["children"]:
-            raise ClientException(f"No data returned for comment {self.fullname}")
+            msg = f"No data returned for comment {self.fullname}"
+            raise ClientException(msg)
 
         comment_data = data["children"][0]["data"]
         other = type(self)(self._reddit, _data=comment_data)
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
-    def _fetch_info(self):
+    def _fetch_info(self):  # noqa: ANN001
         return "info", {}, {"id": self.fullname}
 
-    def parent(self) -> Union["Comment", "praw.models.Submission"]:
+    def parent(self) -> Comment | praw.models.Submission:
         """Return the parent of the comment.
 
         The returned parent will be an instance of either :class:`.Comment`, or
@@ -262,7 +266,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         parent._submission = self.submission
         return parent
 
-    def refresh(self):
+    def refresh(self) -> Comment:
         """Refresh the comment's attributes.
 
         If using :meth:`.Reddit.comment` this method must be called in order to obtain
@@ -326,7 +330,7 @@ class CommentModeration(ThingModerationMixin):
 
     REMOVAL_MESSAGE_API = "removal_comment_message"
 
-    def __init__(self, comment: "praw.models.Comment"):
+    def __init__(self, comment: praw.models.Comment):
         """Initialize a :class:`.CommentModeration` instance.
 
         :param comment: The comment to moderate.

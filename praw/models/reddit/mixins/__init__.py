@@ -1,4 +1,6 @@
 """Package providing reddit class mixins."""
+from __future__ import annotations
+
 from json import dumps
 from typing import TYPE_CHECKING, Optional
 
@@ -25,9 +27,7 @@ class ThingModerationMixin(ModNoteMixin):
 
     REMOVAL_MESSAGE_API = None
 
-    def _add_removal_reason(
-        self, *, mod_note: str = "", reason_id: Optional[str] = None
-    ):
+    def _add_removal_reason(self, *, mod_note: str = "", reason_id: str | None = None):
         """Add a removal reason for a :class:`.Comment` or :class:`.Submission`.
 
         :param mod_note: A message for the other moderators.
@@ -40,7 +40,8 @@ class ThingModerationMixin(ModNoteMixin):
 
         """
         if not reason_id and not mod_note:
-            raise ValueError("mod_note cannot be blank if reason_id is not specified")
+            msg = "mod_note cannot be blank if reason_id is not specified"
+            raise ValueError(msg)
         # Only the first element of the item_id list is used.
         data = {
             "item_ids": [self.thing.fullname],
@@ -154,7 +155,7 @@ class ThingModerationMixin(ModNoteMixin):
 
     @_deprecate_args("spam", "mod_note", "reason_id")
     def remove(
-        self, *, mod_note: str = "", spam: bool = False, reason_id: Optional[str] = None
+        self, *, mod_note: str = "", spam: bool = False, reason_id: str | None = None
     ):
         """Remove a :class:`.Comment` or :class:`.Submission`.
 
@@ -194,7 +195,7 @@ class ThingModerationMixin(ModNoteMixin):
         message: str,
         title: str = "ignored",
         type: str = "public",  # pylint: disable=redefined-builtin
-    ) -> Optional["praw.models.Comment"]:
+    ) -> praw.models.Comment | None:
         """Send a removal message for a :class:`.Comment` or :class:`.Submission`.
 
         .. warning::
@@ -223,7 +224,8 @@ class ThingModerationMixin(ModNoteMixin):
         # The API endpoint used to send removal messages is different for posts and
         # comments, so the derived classes specify which one.
         if self.REMOVAL_MESSAGE_API is None:
-            raise NotImplementedError("ThingModerationMixin must be extended.")
+            msg = "ThingModerationMixin must be extended."
+            raise NotImplementedError(msg)
         url = API_PATH[self.REMOVAL_MESSAGE_API]
 
         # Only the first element of the item_id list is used.

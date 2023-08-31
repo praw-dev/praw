@@ -1,4 +1,4 @@
-"""A test that is run only by GitHub Actions
+"""A test that is run only by GitHub Actions.
 
 This test makes real network requests, so environment variables should be specified in
 GitHub Actions.

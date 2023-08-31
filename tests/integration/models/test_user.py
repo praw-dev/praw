@@ -164,9 +164,7 @@ class TestUser(IntegrationTest):
         for post in reddit.user.me().new(limit=4):
             reddit.user.pin(post, state=False)
             unpinned_posts.add(post.title)
-        new_posts = set(
-            [submission.title for submission in reddit.user.me().new(limit=4)]
-        )
+        new_posts = {submission.title for submission in reddit.user.me().new(limit=4)}
         assert unpinned_posts != new_posts
 
     def test_pin__remove_num(self, reddit):

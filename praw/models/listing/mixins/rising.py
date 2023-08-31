@@ -1,5 +1,7 @@
 """Provide the RisingListingMixin class."""
-from typing import TYPE_CHECKING, Dict, Iterator, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Iterator
 from urllib.parse import urljoin
 
 from ...base import PRAWBase
@@ -13,8 +15,8 @@ class RisingListingMixin(PRAWBase):
     """Mixes in the rising methods."""
 
     def random_rising(
-        self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["praw.models.Submission"]:
+        self, **generator_kwargs: str | int | dict[str, str]
+    ) -> Iterator[praw.models.Submission]:
         """Return a :class:`.ListingGenerator` for random rising submissions.
 
         Additional keyword arguments are passed in the initialization of
@@ -33,8 +35,8 @@ class RisingListingMixin(PRAWBase):
         )
 
     def rising(
-        self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["praw.models.Submission"]:
+        self, **generator_kwargs: str | int | dict[str, str]
+    ) -> Iterator[praw.models.Submission]:
         """Return a :class:`.ListingGenerator` for rising submissions.
 
         Additional keyword arguments are passed in the initialization of

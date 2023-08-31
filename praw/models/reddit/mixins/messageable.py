@@ -1,5 +1,7 @@
 """Provide the MessageableMixin class."""
-from typing import TYPE_CHECKING, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from ....const import API_PATH
 from ....util import _deprecate_args
@@ -15,7 +17,7 @@ class MessageableMixin:
     def message(
         self,
         *,
-        from_subreddit: Optional[Union["praw.models.Subreddit", str]] = None,
+        from_subreddit: praw.models.Subreddit | str | None = None,
         message: str,
         subject: str,
     ):

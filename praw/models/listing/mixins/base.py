@@ -1,5 +1,7 @@
 """Provide the BaseListingMixin class."""
-from typing import Any, Dict, Iterator, Union
+from __future__ import annotations
+
+from typing import Any, Iterator
 from urllib.parse import urljoin
 
 from ....util import _deprecate_args
@@ -13,7 +15,7 @@ class BaseListingMixin(PRAWBase):
     VALID_TIME_FILTERS = {"all", "day", "hour", "month", "week", "year"}
 
     @staticmethod
-    def _validate_time_filter(time_filter):
+    def _validate_time_filter(time_filter):  # noqa: ANN001
         """Validate ``time_filter``.
 
         :raises: :py:class:`ValueError` if ``time_filter`` is not valid.
@@ -23,9 +25,10 @@ class BaseListingMixin(PRAWBase):
             valid_time_filters = ", ".join(
                 map("{!r}".format, BaseListingMixin.VALID_TIME_FILTERS)
             )
-            raise ValueError(f"'time_filter' must be one of: {valid_time_filters}")
+            msg = f"'time_filter' must be one of: {valid_time_filters}"
+            raise ValueError(msg)
 
-    def _prepare(self, *, arguments, sort):
+    def _prepare(self, *, arguments, sort):  # noqa: ANN001
         """Fix for :class:`.Redditor` methods that use a query param rather than subpath."""
         if self.__dict__.get("_listing_use_sort"):
             self._safely_add_arguments(arguments=arguments, key="params", sort=sort)
@@ -37,7 +40,7 @@ class BaseListingMixin(PRAWBase):
         self,
         *,
         time_filter: str = "all",
-        **generator_kwargs: Union[str, int, Dict[str, str]],
+        **generator_kwargs: str | int | dict[str, str],
     ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for controversial items.
 
@@ -70,7 +73,7 @@ class BaseListingMixin(PRAWBase):
         url = self._prepare(arguments=generator_kwargs, sort="controversial")
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
-    def hot(self, **generator_kwargs: Union[str, int, Dict[str, str]]) -> Iterator[Any]:
+    def hot(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for hot items.
 
         Additional keyword arguments are passed in the initialization of
@@ -92,7 +95,7 @@ class BaseListingMixin(PRAWBase):
         url = self._prepare(arguments=generator_kwargs, sort="hot")
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
-    def new(self, **generator_kwargs: Union[str, int, Dict[str, str]]) -> Iterator[Any]:
+    def new(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for new items.
 
         Additional keyword arguments are passed in the initialization of
@@ -119,7 +122,7 @@ class BaseListingMixin(PRAWBase):
         self,
         *,
         time_filter: str = "all",
-        **generator_kwargs: Union[str, int, Dict[str, str]],
+        **generator_kwargs: str | int | dict[str, str],
     ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for top items.
 

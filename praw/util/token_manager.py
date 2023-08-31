@@ -11,16 +11,25 @@ PRAW users will create their own token manager classes suitable for their needs.
     Tokens managers have been deprecated and will be removed in the near future.
 
 """
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
+from pathlib import Path
+from typing import TYPE_CHECKING
 
 from . import _deprecate_args
+
+if TYPE_CHECKING:  # pragma: no cover
+    import prawcore
+
+    import praw
 
 
 class BaseTokenManager(ABC):
     """An abstract class for all token managers."""
 
     @abstractmethod
-    def post_refresh_callback(self, authorizer):
+    def post_refresh_callback(self, authorizer: prawcore.auth.BaseAuthorizer):
         """Handle callback that is invoked after a refresh token is used.
 
         :param authorizer: The ``prawcore.Authorizer`` instance used containing
@@ -32,7 +41,7 @@ class BaseTokenManager(ABC):
         """
 
     @abstractmethod
-    def pre_refresh_callback(self, authorizer):
+    def pre_refresh_callback(self, authorizer: prawcore.auth.BaseAuthorizer):
         """Handle callback that is invoked before refreshing PRAW's authorization.
 
         :param authorizer: The ``prawcore.Authorizer`` instance used containing
@@ -44,19 +53,18 @@ class BaseTokenManager(ABC):
         """
 
     @property
-    def reddit(self):
+    def reddit(self) -> praw.Reddit:
         """Return the :class:`.Reddit` instance bound to the token manager."""
         return self._reddit
 
     @reddit.setter
-    def reddit(self, value):
+    def reddit(self, value: praw.Reddit):
         if self._reddit is not None:
-            raise RuntimeError(
-                "'reddit' can only be set once and is done automatically"
-            )
+            msg = "'reddit' can only be set once and is done automatically"
+            raise RuntimeError(msg)
         self._reddit = value
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize a :class:`.BaseTokenManager` instance."""
         self._reddit = None
 
@@ -76,7 +84,7 @@ class FileTokenManager(BaseTokenManager):
 
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename: str) -> None:
         """Initialize a :class:`.FileTokenManager` instance.
 
         :param filename: The file the contains the refresh token.
@@ -85,15 +93,15 @@ class FileTokenManager(BaseTokenManager):
         super().__init__()
         self._filename = filename
 
-    def post_refresh_callback(self, authorizer):
+    def post_refresh_callback(self, authorizer: prawcore.auth.BaseAuthorizer):
         """Update the saved copy of the refresh token."""
-        with open(self._filename, "w") as fp:
+        with Path(self._filename).open("w") as fp:
             fp.write(authorizer.refresh_token)
 
-    def pre_refresh_callback(self, authorizer):
+    def pre_refresh_callback(self, authorizer: prawcore.auth.BaseAuthorizer):
         """Load the refresh token from the file."""
         if authorizer.refresh_token is None:
-            with open(self._filename) as fp:
+            with Path(self._filename).open() as fp:
                 authorizer.refresh_token = fp.read().strip()
 
 
@@ -112,7 +120,7 @@ class SQLiteTokenManager(BaseTokenManager):
     """
 
     @_deprecate_args("database", "key")
-    def __init__(self, *, database, key):
+    def __init__(self, *, database: str, key: str) -> None:
         """Initialize a :class:`.SQLiteTokenManager` instance.
 
         :param database: The path to the SQLite database.
@@ -135,7 +143,7 @@ class SQLiteTokenManager(BaseTokenManager):
         self._connection.commit()
         self.key = key
 
-    def _get(self):
+    def _get(self):  # noqa: ANN001
         cursor = self._connection.execute(
             "SELECT refresh_token FROM tokens WHERE id=?", (self.key,)
         )
@@ -144,7 +152,7 @@ class SQLiteTokenManager(BaseTokenManager):
             raise KeyError
         return result[0]
 
-    def _set(self, refresh_token):
+    def _set(self, refresh_token):  # noqa: ANN001
         """Set the refresh token in the database.
 
         This function will overwrite an existing value if the corresponding ``key``
@@ -157,14 +165,14 @@ class SQLiteTokenManager(BaseTokenManager):
         )
         self._connection.commit()
 
-    def is_registered(self):
+    def is_registered(self) -> bool:
         """Return whether or not ``key`` already has a ``refresh_token``."""
         cursor = self._connection.execute(
             "SELECT refresh_token FROM tokens WHERE id=?", (self.key,)
         )
         return cursor.fetchone() is not None
 
-    def post_refresh_callback(self, authorizer):
+    def post_refresh_callback(self, authorizer: prawcore.auth.BaseAuthorizer):
         """Update the refresh token in the database."""
         self._set(authorizer.refresh_token)
 
@@ -173,12 +181,12 @@ class SQLiteTokenManager(BaseTokenManager):
         # to always load the latest refresh_token from the database.
         authorizer.refresh_token = None
 
-    def pre_refresh_callback(self, authorizer):
+    def pre_refresh_callback(self, authorizer: prawcore.auth.BaseAuthorizer):
         """Load the refresh token from the database."""
         assert authorizer.refresh_token is None
         authorizer.refresh_token = self._get()
 
-    def register(self, refresh_token):
+    def register(self, refresh_token: str) -> bool:
         """Register the initial refresh token in the database.
 
         :returns: ``True`` if ``refresh_token`` is saved to the database, otherwise,

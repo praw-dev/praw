@@ -788,7 +788,7 @@ class TestSubredditWidgets(IntegrationTest):
     def test_topbar(self, reddit):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
-        assert 1 <= len(widgets.topbar)
+        assert len(widgets.topbar) >= 1
         assert all(
             isinstance(widget, Widget) and type(widget) is not Widget
             for widget in widgets.topbar

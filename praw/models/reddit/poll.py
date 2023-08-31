@@ -1,5 +1,7 @@
 """Provide poll-related classes."""
-from typing import Any, Optional
+from __future__ import annotations
+
+from typing import Any
 
 from ...util import cachedproperty
 from ..base import PRAWBase
@@ -72,7 +74,7 @@ class PollData(PRAWBase):
     """
 
     @cachedproperty
-    def user_selection(self) -> Optional[PollOption]:
+    def user_selection(self) -> PollOption | None:
         """Get the user's selection in this poll, if any.
 
         :returns: The user's selection as a :class:`.PollOption`, or ``None`` if there
@@ -83,7 +85,7 @@ class PollData(PRAWBase):
             return None
         return self.option(self._user_selection)
 
-    def __setattr__(self, attribute: str, value: Any):
+    def __setattr__(self, attribute: str, value: Any) -> None:
         """Objectify the options attribute, and save user_selection."""
         if attribute == "options" and isinstance(value, list):
             value = [PollOption(self._reddit, option) for option in value]
@@ -105,4 +107,5 @@ class PollData(PRAWBase):
             if option.id == option_id:
                 return option
 
-        raise KeyError(f"No poll option with ID {option_id!r}.")
+        msg = f"No poll option with ID {option_id!r}."
+        raise KeyError(msg)

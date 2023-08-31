@@ -14,7 +14,7 @@ class GildableMixin:
         *,
         gild_type: str = "gid_2",
         is_anonymous: bool = True,
-        message: str = None
+        message: str = None,
     ) -> dict:
         """Award the author of the item.
 

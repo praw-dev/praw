@@ -1,4 +1,4 @@
-"""Test praw.models.Trophy"""
+"""Test praw.models.Trophy."""
 
 from .. import IntegrationTest
 

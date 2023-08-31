@@ -1,5 +1,7 @@
 """Provides the User class."""
-from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Iterator
 from warnings import warn
 
 from prawcore import Conflict
@@ -22,7 +24,7 @@ class User(PRAWBase):
     """The :class:`.User` class provides methods for the currently authenticated user."""
 
     @cachedproperty
-    def preferences(self) -> "praw.models.Preferences":
+    def preferences(self) -> praw.models.Preferences:
         """Get an instance of :class:`.Preferences`.
 
         The preferences can be accessed as a ``dict`` like so:
@@ -51,7 +53,7 @@ class User(PRAWBase):
         """
         return Preferences(self._reddit)
 
-    def __init__(self, reddit: "praw.Reddit"):
+    def __init__(self, reddit: praw.Reddit):
         """Initialize an :class:`.User` instance.
 
         This class is intended to be interfaced with through ``reddit.user``.
@@ -59,13 +61,13 @@ class User(PRAWBase):
         """
         super().__init__(reddit, _data=None)
 
-    def blocked(self) -> List["praw.models.Redditor"]:
+    def blocked(self) -> list[praw.models.Redditor]:
         r"""Return a :class:`.RedditorList` of blocked :class:`.Redditor`\ s."""
         return self._reddit.get(API_PATH["blocked"])
 
     def contributor_subreddits(
-        self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["praw.models.Subreddit"]:
+        self, **generator_kwargs: str | int | dict[str, str]
+    ) -> Iterator[praw.models.Subreddit]:
         r"""Return a :class:`.ListingGenerator` of contributor :class:`.Subreddit`\ s.
 
         These are subreddits in which the user is an approved user.
@@ -87,8 +89,8 @@ class User(PRAWBase):
 
     @_deprecate_args("user")
     def friends(
-        self, *, user: Optional[Union[str, "praw.models.Redditor"]] = None
-    ) -> Union[List["praw.models.Redditor"], "praw.models.Redditor"]:
+        self, *, user: str | praw.models.Redditor | None = None
+    ) -> list[praw.models.Redditor] | praw.models.Redditor:
         r"""Return a :class:`.RedditorList` of friends or a :class:`.Redditor` in the friends list.
 
         :param user: Checks to see if you are friends with the redditor. Either an
@@ -109,7 +111,7 @@ class User(PRAWBase):
         )
         return self._reddit.get(endpoint)
 
-    def karma(self) -> Dict["praw.models.Subreddit", Dict[str, int]]:
+    def karma(self) -> dict[praw.models.Subreddit, dict[str, int]]:
         r"""Return a dictionary mapping :class:`.Subreddit`\ s to their karma.
 
         The returned dict contains subreddits as keys. Each subreddit key contains a
@@ -133,7 +135,7 @@ class User(PRAWBase):
     @_deprecate_args("use_cache")
     def me(
         self, *, use_cache: bool = True
-    ) -> Optional["praw.models.Redditor"]:  # pylint: disable=invalid-name
+    ) -> praw.models.Redditor | None:  # pylint: disable=invalid-name
         """Return a :class:`.Redditor` instance for the authenticated user.
 
         :param use_cache: When ``True``, and if this function has been previously
@@ -163,15 +165,16 @@ class User(PRAWBase):
                     stacklevel=2,
                 )
                 return None
-            raise ReadOnlyException("`user.me()` does not work in read_only mode")
+            msg = "`user.me()` does not work in read_only mode"
+            raise ReadOnlyException(msg)
         if "_me" not in self.__dict__ or not use_cache:
             user_data = self._reddit.get(API_PATH["me"])
             self._me = Redditor(self._reddit, _data=user_data)
         return self._me
 
     def moderator_subreddits(
-        self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["praw.models.Subreddit"]:
+        self, **generator_kwargs: str | int | dict[str, str]
+    ) -> Iterator[praw.models.Subreddit]:
         """Return a :class:`.ListingGenerator` subreddits that the user moderates.
 
         Additional keyword arguments are passed in the initialization of
@@ -193,17 +196,13 @@ class User(PRAWBase):
             self._reddit, API_PATH["my_moderator"], **generator_kwargs
         )
 
-    def multireddits(self) -> List["praw.models.Multireddit"]:
+    def multireddits(self) -> list[praw.models.Multireddit]:
         r"""Return a list of :class:`.Multireddit`\ s belonging to the user."""
         return self._reddit.get(API_PATH["my_multireddits"])
 
     def pin(
-        self,
-        submission: "praw.models.Submission",
-        *,
-        num: int = None,
-        state: bool = True
-    ):
+        self, submission: praw.models.Submission, *, num: int = None, state: bool = True
+    ) -> praw.models.Submission:
         """Set the pin state of a submission on the authenticated user's profile.
 
         :param submission: An instance of :class:`.Submission` that will be
@@ -236,6 +235,8 @@ class User(PRAWBase):
         :param state: ``True`` pins the submission, ``False`` unpins (default:
             ``True``).
 
+        :returns: The pinned submission.
+
         :raises: ``prawcore.BadRequest`` when pinning a removed or deleted submission.
 
         :raises: ``prawcore.Forbidden`` when pinning a submission the authenticated user
@@ -259,8 +260,8 @@ class User(PRAWBase):
             pass
 
     def subreddits(
-        self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["praw.models.Subreddit"]:
+        self, **generator_kwargs: str | int | dict[str, str]
+    ) -> Iterator[praw.models.Subreddit]:
         r"""Return a :class:`.ListingGenerator` of :class:`.Subreddit`\ s the user is subscribed to.
 
         Additional keyword arguments are passed in the initialization of
@@ -278,7 +279,7 @@ class User(PRAWBase):
             self._reddit, API_PATH["my_subreddits"], **generator_kwargs
         )
 
-    def trusted(self) -> List["praw.models.Redditor"]:
+    def trusted(self) -> list[praw.models.Redditor]:
         r"""Return a :class:`.RedditorList` of trusted :class:`.Redditor`\ s.
 
         To display the usernames of your trusted users and the times at which you
