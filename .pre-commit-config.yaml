@@ -33,7 +33,6 @@ repos:
       - id: name-tests-test
         args: [ --pytest-test-first ]
         files: ^tests/integration/.*\.py|tests/unit/.*\.py$
-      - id: no-commit-to-branch
       - id: sort-simple-yaml
         files: ^(\.github/workflows/.*\.ya?ml|\.readthedocs.ya?ml)$
       - id: trailing-whitespace
