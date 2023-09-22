@@ -1,4 +1,3 @@
-# coding: utf-8
 import pytest
 
 from praw.exceptions import (
@@ -17,83 +16,11 @@ from praw.exceptions import (
 )
 
 
-class TestPRAWException:
-    def test_inheritance(self):
-        assert issubclass(PRAWException, Exception)
-
-    def test_str(self):
-        assert str(PRAWException()) == ""
-        assert str(PRAWException("foo")) == "foo"
-
-
-class TestRedditErrorItem:
-    def test_equality(self):
-        resp = {
-            "error_type": "BAD_SOMETHING",
-            "field": "some_field",
-            "message": "invalid something",
-        }
-        error = RedditErrorItem(**resp)
-        error2 = RedditErrorItem(**resp)
-        assert error == error2
-        assert error != 0
-
-    def test_property(self):
-        error = RedditErrorItem(
-            "BAD_SOMETHING", field="some_field", message="invalid something"
-        )
-        assert (
-            error.error_message
-            == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
-        )
-
-    def test_str(self):
-        error = RedditErrorItem(
-            "BAD_SOMETHING", field="some_field", message="invalid something"
-        )
-        assert str(error) == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
-
-    def test_repr(self):
-        error = RedditErrorItem(
-            "BAD_SOMETHING", field="some_field", message="invalid something"
-        )
-        assert (
-            repr(error)
-            == "RedditErrorItem(error_type='BAD_SOMETHING', message='invalid something', field='some_field')"
-        )
-
-
 class TestAPIException:
     def test_catch(self):
         exc = RedditAPIException([["test", "testing", "test"]])
         with pytest.raises(APIException):
             raise exc
-
-
-class TestRedditAPIException:
-    def test_inheritance(self):
-        assert issubclass(RedditAPIException, PRAWException)
-
-    def test_items(self):
-        container = RedditAPIException(
-            [
-                ["BAD_SOMETHING", "invalid something", "some_field"],
-                RedditErrorItem(
-                    "BAD_SOMETHING", field="some_field", message="invalid something"
-                ),
-            ]
-        )
-        for exception in container.items:
-            assert isinstance(exception, RedditErrorItem)
-
-    @pytest.mark.filterwarnings("ignore", category=DeprecationWarning)
-    def test_apiexception_value(self):
-        exc = RedditAPIException("test", "testing", "test")
-        assert exc.error_type == "test"
-        exc2 = RedditAPIException(["test", "testing", "test"])
-        assert exc2.message == "testing"
-        exc3 = RedditAPIException([["test", "testing", "test"]])
-        assert exc3.field == "test"
 
 
 class TestClientException:
@@ -139,6 +66,12 @@ class TestInvalidImplicitAuth:
 
 
 class TestInvalidURL:
+    def test_custom_message(self):
+        assert (
+            str(InvalidURL("https://www.google.com", message="Test custom {}"))
+            == "Test custom https://www.google.com"
+        )
+
     def test_inheritance(self):
         assert issubclass(InvalidURL, ClientException)
 
@@ -148,10 +81,15 @@ class TestInvalidURL:
             == "Invalid URL: https://www.google.com"
         )
 
-    def test_custom_message(self):
+
+class TestMediaPostFailed:
+    def test_inheritance(self):
+        assert issubclass(MediaPostFailed, WebSocketException)
+
+    def test_message(self):
         assert (
-            str(InvalidURL("https://www.google.com", message="Test custom {}"))
-            == "Test custom https://www.google.com"
+            str(MediaPostFailed())
+            == "The attempted media upload action has failed. Possible causes include the corruption of media files. Check that the media file can be opened on your local machine."
         )
 
 
@@ -166,14 +104,79 @@ class TestMissingRequiredAttributeException:
         )
 
 
-class TestWebSocketException:
+class TestPRAWException:
     def test_inheritance(self):
-        assert issubclass(WebSocketException, ClientException)
+        assert issubclass(PRAWException, Exception)
 
     def test_str(self):
-        assert str(WebSocketException("", None)) == ""
-        assert str(WebSocketException("error message", None)) == "error message"
+        assert str(PRAWException()) == ""
+        assert str(PRAWException("foo")) == "foo"
 
+
+class TestRedditAPIException:
+    @pytest.mark.filterwarnings("ignore", category=DeprecationWarning)
+    def test_apiexception_value(self):
+        exc = RedditAPIException("test", "testing", "test")
+        assert exc.error_type == "test"
+        exc2 = RedditAPIException(["test", "testing", "test"])
+        assert exc2.message == "testing"
+        exc3 = RedditAPIException([["test", "testing", "test"]])
+        assert exc3.field == "test"
+
+    def test_inheritance(self):
+        assert issubclass(RedditAPIException, PRAWException)
+
+    def test_items(self):
+        container = RedditAPIException(
+            [
+                ["BAD_SOMETHING", "invalid something", "some_field"],
+                RedditErrorItem(
+                    "BAD_SOMETHING", field="some_field", message="invalid something"
+                ),
+            ]
+        )
+        for exception in container.items:
+            assert isinstance(exception, RedditErrorItem)
+
+
+class TestRedditErrorItem:
+    def test_equality(self):
+        resp = {
+            "error_type": "BAD_SOMETHING",
+            "field": "some_field",
+            "message": "invalid something",
+        }
+        error = RedditErrorItem(**resp)
+        error2 = RedditErrorItem(**resp)
+        assert error == error2
+        assert error != 0
+
+    def test_property(self):
+        error = RedditErrorItem(
+            "BAD_SOMETHING", field="some_field", message="invalid something"
+        )
+        assert (
+            error.error_message
+            == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
+        )
+
+    def test_repr(self):
+        error = RedditErrorItem(
+            "BAD_SOMETHING", field="some_field", message="invalid something"
+        )
+        assert (
+            repr(error)
+            == "RedditErrorItem(error_type='BAD_SOMETHING', message='invalid something', field='some_field')"
+        )
+
+    def test_str(self):
+        error = RedditErrorItem(
+            "BAD_SOMETHING", field="some_field", message="invalid something"
+        )
+        assert str(error) == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
+
+
+class TestWebSocketException:
     @pytest.mark.filterwarnings("ignore", category=DeprecationWarning)
     def test_exception_attr(self):
         exc = WebSocketException(None, None)
@@ -188,13 +191,9 @@ class TestWebSocketException:
         del exc.original_exception
         assert "_original_exception" not in vars(exc)
 
-
-class TestMediaPostFailed:
     def test_inheritance(self):
-        assert issubclass(MediaPostFailed, WebSocketException)
+        assert issubclass(WebSocketException, ClientException)
 
-    def test_message(self):
-        assert (
-            str(MediaPostFailed())
-            == "The attempted media upload action has failed. Possible causes include the corruption of media files. Check that the media file can be opened on your local machine."
-        )
+    def test_str(self):
+        assert str(WebSocketException("", None)) == ""
+        assert str(WebSocketException("error message", None)) == "error message"

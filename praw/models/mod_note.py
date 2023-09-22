@@ -1,6 +1,7 @@
 """Provide the ModNote class."""
-from praw.endpoints import API_PATH
+from __future__ import annotations
 
+from ..endpoints import API_PATH
 from .base import PRAWBase
 
 
@@ -43,7 +44,7 @@ class ModNote(PRAWBase):
 
     """
 
-    def __eq__(self, other):
+    def __eq__(self, other: ModNote) -> bool:
         """Return whether the other instance equals the current."""
         if isinstance(other, self.__class__):
             return self.id == other.id

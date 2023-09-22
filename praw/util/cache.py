@@ -1,8 +1,10 @@
 """Caching utilities."""
-from typing import Any, Callable, Optional
+from __future__ import annotations
+
+from typing import Any, Callable
 
 
-class cachedproperty:
+class cachedproperty:  # noqa: N801
     """A decorator for caching a property's result.
 
     Similar to :py:class:`property`, but the wrapped method's result is cached on the
@@ -19,19 +21,14 @@ class cachedproperty:
 
     """
 
-    def __init__(self, func: Callable[[Any], Any], doc: Optional[str] = None):
-        """Initialize a :class:`.cachedproperty` instance."""
-        self.func = self.__wrapped__ = func
-
-        if doc is None:
-            doc = func.__doc__
-        self.__doc__ = doc
-
     # This to make sphinx run properly
-    def __call__(self, *args, **kwargs):  # pragma: no cover noqa: D102
-        pass
+    # noqa: D102
+    def __call__(self, *args: Any, **kwargs: Any):  # pragma: no cover
+        """Empty method to make sphinx run properly."""
 
-    def __get__(self, obj: Optional[Any], objtype: Optional[Any] = None) -> Any:
+    def __get__(
+        self, obj: Any | None, objtype: Any | None = None
+    ) -> Any:  # noqa: ANN401
         """Implement descriptor getter.
 
         Calculate the property's value and then store it in the associated object's
@@ -43,6 +40,14 @@ class cachedproperty:
 
         value = obj.__dict__[self.func.__name__] = self.func(obj)
         return value
+
+    def __init__(self, func: Callable[[Any], Any], doc: str | None = None):
+        """Initialize a :class:`.cachedproperty` instance."""
+        self.func = self.__wrapped__ = func
+
+        if doc is None:
+            doc = func.__doc__
+        self.__doc__ = doc
 
     def __repr__(self) -> str:
         """Return an object initialization representation of the instance."""

@@ -1,5 +1,7 @@
 """Provide the ReplyableMixin class."""
-from typing import TYPE_CHECKING, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from ....const import API_PATH
 
@@ -10,9 +12,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class ReplyableMixin:
     """Interface for :class:`.RedditBase` classes that can be replied to."""
 
-    def reply(
-        self, body: str
-    ) -> Optional[Union["praw.models.Comment", "praw.models.Message"]]:
+    def reply(self, body: str) -> praw.models.Comment | praw.models.Message | None:
         """Reply to the object.
 
         :param body: The Markdown formatted content for a comment.

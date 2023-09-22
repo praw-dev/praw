@@ -6,6 +6,50 @@ PRAW follows `semantic versioning <http://semver.org/>`_.
 Unreleased
 ----------
 
+**Added**
+
+- :meth:`~.SubredditLinkFlairTemplates.reorder` to reorder a subreddit's link flair
+  templates.
+- :meth:`~.SubredditRedditorFlairTemplates.reorder` to reorder a subreddit's redditor
+  flair templates.
+
+7.7.1 (2023/07/11)
+------------------
+
+**Fixed**
+
+- An issue with replying to a modmail conversation results in a error.
+
+7.7.0 (2023/02/25)
+------------------
+
+**Added**
+
+- :meth:`.delete_mobile_banner` to delete mobile banners.
+- :meth:`.upload_mobile_banner` to upload mobile banners.
+- Experimental :meth:`~.Submission._edit_experimental` for adding new inline media or
+  editing a submission that has inline media.
+
+  .. danger::
+
+      This method is experimental. It is reliant on undocumented API endpoints and may
+      result in existing inline media not displaying correctly and/or creating a
+      malformed body. Use at your own risk. This method may be removed in the future
+      without warning.
+
+  This method is identical to :meth:`.Submission.edit` except for the following:
+
+  - The ability to add inline media to existing posts.
+  - Additional ``preserve_inline_media`` keyword argument to allow PRAW to attempt to
+    preserve the existing inline media when editing a post. This is an experimental fix
+    for an issue that occurs when editing a post with inline media would cause the media
+    to lose their inline appearance.
+
+**Fixed**
+
+- An issue with iterating :class:`.ModNote` when a user has more than a hundred notes.
+- Removal reasons are now returned in the same order as they appear on Reddit.
+
 7.6.1 (2022/11/11)
 ------------------
 

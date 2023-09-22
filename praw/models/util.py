@@ -1,72 +1,17 @@
 """Provide helper classes used by other models."""
+from __future__ import annotations
+
 import random
 import time
 from collections import OrderedDict
-from typing import Any, Callable, Generator, List, Optional, Set, Union
+from typing import Any, Callable, Generator
 
 from ..util import _deprecate_args
 
 
-class BoundedSet:
-    """A set with a maximum size that evicts the oldest items when necessary.
-
-    This class does not implement the complete set interface.
-
-    """
-
-    def __init__(self, max_items: int):
-        """Initialize a :class:`.BoundedSet` instance."""
-        self.max_items = max_items
-        self._set = OrderedDict()
-
-    def __contains__(self, item: Any) -> bool:
-        """Test if the :class:`.BoundedSet` contains item."""
-        self._access(item)
-        return item in self._set
-
-    def _access(self, item: Any):
-        if item in self._set:
-            self._set.move_to_end(item)
-
-    def add(self, item: Any):
-        """Add an item to the set discarding the oldest item if necessary."""
-        self._access(item)
-        self._set[item] = None
-        if len(self._set) > self.max_items:
-            self._set.popitem(last=False)
-
-
-class ExponentialCounter:
-    """A class to provide an exponential counter with jitter."""
-
-    def __init__(self, max_counter: int):
-        """Initialize an :class:`.ExponentialCounter` instance.
-
-        :param max_counter: The maximum base value.
-
-            .. note::
-
-                The computed value may be 3.125% higher due to jitter.
-
-        """
-        self._base = 1
-        self._max = max_counter
-
-    def counter(self) -> Union[int, float]:
-        """Increment the counter and return the current value with jitter."""
-        max_jitter = self._base / 16.0
-        value = self._base + random.random() * max_jitter - max_jitter / 2
-        self._base = min(self._base * 2, self._max)
-        return value
-
-    def reset(self):
-        """Reset the counter to 1."""
-        self._base = 1
-
-
 @_deprecate_args("permissions", "known_permissions")
 def permissions_string(
-    *, known_permissions: Set[str], permissions: Optional[List[str]]
+    *, known_permissions: set[str], permissions: list[str] | None
 ) -> str:
     """Return a comma separated string of permission changes.
 
@@ -97,7 +42,7 @@ def stream_generator(
     *,
     attribute_name: str = "fullname",
     exclude_before: bool = False,
-    pause_after: Optional[int] = None,
+    pause_after: int | None = None,
     skip_existing: bool = False,
     **function_kwargs: Any,
 ) -> Generator[Any, None, None]:
@@ -216,3 +161,60 @@ def stream_generator(
                 yield None
             else:
                 time.sleep(exponential_counter.counter())
+
+
+class BoundedSet:
+    """A set with a maximum size that evicts the oldest items when necessary.
+
+    This class does not implement the complete set interface.
+
+    """
+
+    def __contains__(self, item: Any) -> bool:
+        """Test if the :class:`.BoundedSet` contains item."""
+        self._access(item)
+        return item in self._set
+
+    def __init__(self, max_items: int):
+        """Initialize a :class:`.BoundedSet` instance."""
+        self.max_items = max_items
+        self._set = OrderedDict()
+
+    def _access(self, item: Any):  # noqa: ANN001
+        if item in self._set:
+            self._set.move_to_end(item)
+
+    def add(self, item: Any):
+        """Add an item to the set discarding the oldest item if necessary."""
+        self._access(item)
+        self._set[item] = None
+        if len(self._set) > self.max_items:
+            self._set.popitem(last=False)
+
+
+class ExponentialCounter:
+    """A class to provide an exponential counter with jitter."""
+
+    def __init__(self, max_counter: int):
+        """Initialize an :class:`.ExponentialCounter` instance.
+
+        :param max_counter: The maximum base value.
+
+            .. note::
+
+                The computed value may be 3.125% higher due to jitter.
+
+        """
+        self._base = 1
+        self._max = max_counter
+
+    def counter(self) -> int | float:
+        """Increment the counter and return the current value with jitter."""
+        max_jitter = self._base / 16.0
+        value = self._base + random.random() * max_jitter - max_jitter / 2  # noqa: S311
+        self._base = min(self._base * 2, self._max)
+        return value
+
+    def reset(self):
+        """Reset the counter to 1."""
+        self._base = 1

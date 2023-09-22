@@ -1,12 +1,14 @@
 """Positional argument deprecation decorator."""
+from __future__ import annotations
+
 import inspect
 from functools import wraps
-from typing import Any, Callable, Tuple
+from typing import Any, Callable
 from warnings import warn
 
 
-def _deprecate_args(*old_args: str):
-    def _generate_arg_string(used_args: Tuple[str, ...]) -> str:
+def _deprecate_args(*old_args: str):  # noqa: ANN001
+    def _generate_arg_string(used_args: tuple[str, ...]) -> str:  # noqa: ANN001
         used_args = list(map(repr, used_args))
         arg_count = len(used_args)
         arg_string = (

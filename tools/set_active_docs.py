@@ -22,7 +22,7 @@ def fetch_versions():
         versions = [
             packaging.version.parse(slug["slug"].strip("v"))
             for slug in active_versions["results"]
-            if not slug["hidden"] and not slug["slug"] in ["stable", "latest"]
+            if not slug["hidden"] and slug["slug"] not in ["stable", "latest"]
         ]
     if versions is None:
         sys.stderr.write("Failed to get current active versions\n")
@@ -88,6 +88,7 @@ def main():
             else:
                 sys.stderr.write(f"Failed to hide version {version!s}\n")
                 return 1
+    return 0
 
 
 if __name__ == "__main__":

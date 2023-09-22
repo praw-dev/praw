@@ -1,5 +1,7 @@
 """Provide the LiveThread class."""
-from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Iterator
 
 from ...const import API_PATH
 from ...util import _deprecate_args
@@ -19,14 +21,11 @@ class LiveContributorRelationship:
     """Provide methods to interact with live threads' contributors."""
 
     @staticmethod
-    def _handle_permissions(permissions):
-        if permissions is None:
-            permissions = {"all"}
-        else:
-            permissions = set(permissions)
+    def _handle_permissions(permissions):  # noqa: ANN001,ANN205
+        permissions = {"all"} if permissions is None else set(permissions)
         return ",".join(f"+{x}" for x in permissions)
 
-    def __call__(self) -> List["praw.models.Redditor"]:
+    def __call__(self) -> list[praw.models.Redditor]:
         """Return a :class:`.RedditorList` for live threads' contributors.
 
         Usage:
@@ -42,7 +41,7 @@ class LiveContributorRelationship:
         temp = self.thread._reddit.get(url)
         return temp if isinstance(temp, RedditorList) else temp[0]
 
-    def __init__(self, thread: "praw.models.LiveThread"):
+    def __init__(self, thread: praw.models.LiveThread):
         """Initialize a :class:`.LiveContributorRelationship` instance.
 
         :param thread: An instance of :class:`.LiveThread`.
@@ -72,9 +71,9 @@ class LiveContributorRelationship:
     @_deprecate_args("redditor", "permissions")
     def invite(
         self,
-        redditor: Union[str, "praw.models.Redditor"],
+        redditor: str | praw.models.Redditor,
         *,
-        permissions: Optional[List[str]] = None,
+        permissions: list[str] | None = None,
     ):
         """Invite a redditor to be a contributor of the live thread.
 
@@ -124,7 +123,7 @@ class LiveContributorRelationship:
         url = API_PATH["live_leave"].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
-    def remove(self, redditor: Union[str, "praw.models.Redditor"]):
+    def remove(self, redditor: str | praw.models.Redditor):
         """Remove the redditor from the live thread contributors.
 
         :param redditor: A redditor fullname (e.g., ``"t2_1w72"``) or :class:`.Redditor`
@@ -140,15 +139,12 @@ class LiveContributorRelationship:
             thread.contributor.remove("t2_1w72")  # with fullname
 
         """
-        if isinstance(redditor, Redditor):
-            fullname = redditor.fullname
-        else:
-            fullname = redditor
+        fullname = redditor.fullname if isinstance(redditor, Redditor) else redditor
         data = {"id": fullname}
         url = API_PATH["live_remove_contrib"].format(id=self.thread.id)
         self.thread._reddit.post(url, data=data)
 
-    def remove_invite(self, redditor: Union[str, "praw.models.Redditor"]):
+    def remove_invite(self, redditor: str | praw.models.Redditor):
         """Remove the invite for redditor.
 
         :param redditor: A redditor fullname (e.g., ``"t2_1w72"``) or :class:`.Redditor`
@@ -169,10 +165,7 @@ class LiveContributorRelationship:
             contributor of the live thread.
 
         """
-        if isinstance(redditor, Redditor):
-            fullname = redditor.fullname
-        else:
-            fullname = redditor
+        fullname = redditor.fullname if isinstance(redditor, Redditor) else redditor
         data = {"id": fullname}
         url = API_PATH["live_remove_invite"].format(id=self.thread.id)
         self.thread._reddit.post(url, data=data)
@@ -180,9 +173,9 @@ class LiveContributorRelationship:
     @_deprecate_args("redditor", "permissions")
     def update(
         self,
-        redditor: Union[str, "praw.models.Redditor"],
+        redditor: str | praw.models.Redditor,
         *,
-        permissions: Optional[List[str]] = None,
+        permissions: list[str] | None = None,
     ):
         """Update the contributor permissions for ``redditor``.
 
@@ -224,9 +217,9 @@ class LiveContributorRelationship:
     @_deprecate_args("redditor", "permissions")
     def update_invite(
         self,
-        redditor: Union[str, "praw.models.Redditor"],
+        redditor: str | praw.models.Redditor,
         *,
-        permissions: Optional[List[str]] = None,
+        permissions: list[str] | None = None,
     ):
         """Update the contributor invite permissions for ``redditor``.
 
@@ -289,7 +282,7 @@ class LiveThread(RedditBase):
     STR_FIELD = "id"
 
     @cachedproperty
-    def contrib(self) -> "praw.models.reddit.live.LiveThreadContribution":
+    def contrib(self) -> praw.models.reddit.live.LiveThreadContribution:
         """Provide an instance of :class:`.LiveThreadContribution`.
 
         Usage:
@@ -303,7 +296,7 @@ class LiveThread(RedditBase):
         return LiveThreadContribution(self)
 
     @cachedproperty
-    def contributor(self) -> "praw.models.reddit.live.LiveContributorRelationship":
+    def contributor(self) -> praw.models.reddit.live.LiveContributorRelationship:
         """Provide an instance of :class:`.LiveContributorRelationship`.
 
         You can call the instance to get a list of contributors which is represented as
@@ -321,7 +314,7 @@ class LiveThread(RedditBase):
         return LiveContributorRelationship(self)
 
     @cachedproperty
-    def stream(self) -> "praw.models.reddit.live.LiveThreadStream":
+    def stream(self) -> praw.models.reddit.live.LiveThreadStream:
         """Provide an instance of :class:`.LiveThreadStream`.
 
         Streams are used to indefinitely retrieve new updates made to a live thread,
@@ -345,7 +338,7 @@ class LiveThread(RedditBase):
         """
         return LiveThreadStream(self)
 
-    def __eq__(self, other: Union[str, "praw.models.LiveThread"]) -> bool:
+    def __eq__(self, other: str | praw.models.LiveThread) -> bool:
         """Return whether the other instance equals the current.
 
         .. note::
@@ -357,7 +350,7 @@ class LiveThread(RedditBase):
             return other == str(self)
         return isinstance(other, self.__class__) and str(self) == str(other)
 
-    def __getitem__(self, update_id: str) -> "praw.models.LiveUpdate":
+    def __getitem__(self, update_id: str) -> praw.models.LiveUpdate:
         """Return a lazy :class:`.LiveUpdate` instance.
 
         :param update_id: A live update ID, e.g.,
@@ -382,9 +375,9 @@ class LiveThread(RedditBase):
 
     def __init__(
         self,
-        reddit: "praw.Reddit",
-        id: Optional[str] = None,
-        _data: Optional[Dict[str, Any]] = None,  # pylint: disable=redefined-builtin
+        reddit: praw.Reddit,
+        id: str | None = None,
+        _data: dict[str, Any] | None = None,  # pylint: disable=redefined-builtin
     ):
         """Initialize a :class:`.LiveThread` instance.
 
@@ -393,29 +386,25 @@ class LiveThread(RedditBase):
 
         """
         if (id, _data).count(None) != 1:
-            raise TypeError("Either 'id' or '_data' must be provided.")
+            msg = "Either 'id' or '_data' must be provided."
+            raise TypeError(msg)
         if id:
             self.id = id
         super().__init__(reddit, _data=_data)
 
-    def _fetch_info(self):
-        return "liveabout", {"id": self.id}, None
-
-    def _fetch_data(self):
-        name, fields, params = self._fetch_info()
-        path = API_PATH[name].format(**fields)
-        return self._reddit.request(method="GET", params=params, path=path)
-
-    def _fetch(self):
+    def _fetch(self):  # noqa: ANN001
         data = self._fetch_data()
         data = data["data"]
         other = type(self)(self._reddit, _data=data)
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
+    def _fetch_info(self):  # noqa: ANN001
+        return "liveabout", {"id": self.id}, None
+
     def discussions(
-        self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["praw.models.Submission"]:
+        self, **generator_kwargs: str | int | dict[str, str]
+    ) -> Iterator[praw.models.Submission]:
         """Get submissions linking to the thread.
 
         :param generator_kwargs: keyword arguments passed to :class:`.ListingGenerator`
@@ -457,8 +446,8 @@ class LiveThread(RedditBase):
         self._reddit.post(url, data={"type": type})
 
     def updates(
-        self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["praw.models.LiveUpdate"]:
+        self, **generator_kwargs: str | int | dict[str, str]
+    ) -> Iterator[praw.models.LiveUpdate]:
         """Return a :class:`.ListingGenerator` yields :class:`.LiveUpdate` s.
 
         :param generator_kwargs: keyword arguments passed to :class:`.ListingGenerator`
@@ -489,7 +478,7 @@ class LiveThread(RedditBase):
 class LiveThreadContribution:
     """Provides a set of contribution functions to a :class:`.LiveThread`."""
 
-    def __init__(self, thread: "praw.models.LiveThread"):
+    def __init__(self, thread: praw.models.LiveThread):
         """Initialize a :class:`.LiveThreadContribution` instance.
 
         :param thread: An instance of :class:`.LiveThread`.
@@ -539,11 +528,11 @@ class LiveThreadContribution:
     def update(
         self,
         *,
-        description: Optional[str] = None,
-        nsfw: Optional[bool] = None,
-        resources: Optional[str] = None,
-        title: Optional[str] = None,
-        **other_settings: Optional[str],
+        description: str | None = None,
+        nsfw: bool | None = None,
+        resources: str | None = None,
+        title: str | None = None,
+        **other_settings: str | None,
     ):
         """Update settings of the live thread.
 
@@ -613,7 +602,7 @@ class LiveThreadStream:
 
     """
 
-    def __init__(self, live_thread: "praw.models.LiveThread"):
+    def __init__(self, live_thread: praw.models.LiveThread):
         """Initialize a :class:`.LiveThreadStream` instance.
 
         :param live_thread: The live thread associated with the stream.
@@ -622,8 +611,8 @@ class LiveThreadStream:
         self.live_thread = live_thread
 
     def updates(
-        self, **stream_options: Dict[str, Any]
-    ) -> Iterator["praw.models.LiveUpdate"]:
+        self, **stream_options: dict[str, Any]
+    ) -> Iterator[praw.models.LiveUpdate]:
         """Yield new updates to the live thread as they become available.
 
         :param skip_existing: Set to ``True`` to only fetch items created after the
@@ -658,106 +647,10 @@ class LiveThreadStream:
         return stream_generator(self.live_thread.updates, **stream_options)
 
 
-class LiveUpdate(FullnameMixin, RedditBase):
-    """An individual :class:`.LiveUpdate` object.
-
-    .. include:: ../../typical_attributes.rst
-
-    =============== ===================================================================
-    Attribute       Description
-    =============== ===================================================================
-    ``author``      The :class:`.Redditor` who made the update.
-    ``body``        Body of the update, as Markdown.
-    ``body_html``   Body of the update, as HTML.
-    ``created_utc`` The time the update was created, as `Unix Time`_.
-    ``stricken``    A ``bool`` representing whether or not the update was stricken (see
-                    :meth:`.strike`).
-    =============== ===================================================================
-
-    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
-
-    """
-
-    STR_FIELD = "id"
-    _kind = "LiveUpdate"
-
-    @cachedproperty
-    def contrib(self) -> "praw.models.reddit.live.LiveUpdateContribution":
-        """Provide an instance of :class:`.LiveUpdateContribution`.
-
-        Usage:
-
-        .. code-block:: python
-
-            thread = reddit.live("ukaeu1ik4sw5")
-            update = thread["7827987a-c998-11e4-a0b9-22000b6a88d2"]
-            update.contrib  # LiveUpdateContribution instance
-
-        """
-        return LiveUpdateContribution(self)
-
-    @property
-    def thread(self) -> LiveThread:
-        """Return :class:`.LiveThread` object the update object belongs to."""
-        return self._thread
-
-    def __init__(
-        self,
-        reddit: "praw.Reddit",
-        thread_id: Optional[str] = None,
-        update_id: Optional[str] = None,
-        _data: Optional[Dict[str, Any]] = None,
-    ):
-        """Initialize a :class:`.LiveUpdate` instance.
-
-        Either ``thread_id`` and ``update_id``, or ``_data`` must be provided.
-
-        :param reddit: An instance of :class:`.Reddit`.
-        :param thread_id: A live thread ID, e.g., ``"ukaeu1ik4sw5"``.
-        :param update_id: A live update ID, e.g.,
-            ``"7827987a-c998-11e4-a0b9-22000b6a88d2"``.
-
-        Usage:
-
-        .. code-block:: python
-
-            update = LiveUpdate(reddit, "ukaeu1ik4sw5", "7827987a-c998-11e4-a0b9-22000b6a88d2")
-            update.thread  # LiveThread(id="ukaeu1ik4sw5")
-            update.id  # "7827987a-c998-11e4-a0b9-22000b6a88d2"
-            update.author  # "umbrae"
-
-        """
-        if _data is not None:
-            # Since _data (part of JSON returned from reddit) have no thread ID,
-            # self._thread must be set by the caller of LiveUpdate(). See the code of
-            # LiveThread.updates() for example.
-            super().__init__(reddit, _data=_data, _fetched=True)
-        elif thread_id and update_id:
-            self.id = update_id
-            super().__init__(reddit, _data=None)
-            self._thread = LiveThread(self._reddit, thread_id)
-        else:
-            raise TypeError(
-                "Either 'thread_id' and 'update_id', or '_data' must be provided."
-            )
-
-    def __setattr__(self, attribute: str, value: Any):
-        """Objectify author."""
-        if attribute == "author":
-            value = Redditor(self._reddit, name=value)
-        super().__setattr__(attribute, value)
-
-    def _fetch(self):
-        url = API_PATH["live_focus"].format(thread_id=self.thread.id, update_id=self.id)
-        other = self._reddit.get(url)[0]
-        self.__dict__.update(other.__dict__)
-        self._fetched = True
-
-
 class LiveUpdateContribution:
     """Provides a set of contribution functions to :class:`.LiveUpdate`."""
 
-    def __init__(self, update: "praw.models.LiveUpdate"):
+    def __init__(self, update: praw.models.LiveUpdate):
         """Initialize a :class:`.LiveUpdateContribution` instance.
 
         :param update: An instance of :class:`.LiveUpdate`.
@@ -812,3 +705,98 @@ class LiveUpdateContribution:
         url = API_PATH["live_strike"].format(id=self.update.thread.id)
         data = {"id": self.update.fullname}
         self.update.thread._reddit.post(url, data=data)
+
+
+class LiveUpdate(FullnameMixin, RedditBase):
+    """An individual :class:`.LiveUpdate` object.
+
+    .. include:: ../../typical_attributes.rst
+
+    =============== ===================================================================
+    Attribute       Description
+    =============== ===================================================================
+    ``author``      The :class:`.Redditor` who made the update.
+    ``body``        Body of the update, as Markdown.
+    ``body_html``   Body of the update, as HTML.
+    ``created_utc`` The time the update was created, as `Unix Time`_.
+    ``stricken``    A ``bool`` representing whether or not the update was stricken (see
+                    :meth:`.strike`).
+    =============== ===================================================================
+
+    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
+
+    """
+
+    STR_FIELD = "id"
+    _kind = "LiveUpdate"
+
+    @cachedproperty
+    def contrib(self) -> praw.models.reddit.live.LiveUpdateContribution:
+        """Provide an instance of :class:`.LiveUpdateContribution`.
+
+        Usage:
+
+        .. code-block:: python
+
+            thread = reddit.live("ukaeu1ik4sw5")
+            update = thread["7827987a-c998-11e4-a0b9-22000b6a88d2"]
+            update.contrib  # LiveUpdateContribution instance
+
+        """
+        return LiveUpdateContribution(self)
+
+    @property
+    def thread(self) -> LiveThread:
+        """Return :class:`.LiveThread` object the update object belongs to."""
+        return self._thread
+
+    def __init__(
+        self,
+        reddit: praw.Reddit,
+        thread_id: str | None = None,
+        update_id: str | None = None,
+        _data: dict[str, Any] | None = None,
+    ):
+        """Initialize a :class:`.LiveUpdate` instance.
+
+        Either ``thread_id`` and ``update_id``, or ``_data`` must be provided.
+
+        :param reddit: An instance of :class:`.Reddit`.
+        :param thread_id: A live thread ID, e.g., ``"ukaeu1ik4sw5"``.
+        :param update_id: A live update ID, e.g.,
+            ``"7827987a-c998-11e4-a0b9-22000b6a88d2"``.
+
+        Usage:
+
+        .. code-block:: python
+
+            update = LiveUpdate(reddit, "ukaeu1ik4sw5", "7827987a-c998-11e4-a0b9-22000b6a88d2")
+            update.thread  # LiveThread(id="ukaeu1ik4sw5")
+            update.id  # "7827987a-c998-11e4-a0b9-22000b6a88d2"
+            update.author  # "umbrae"
+
+        """
+        if _data is not None:
+            # Since _data (part of JSON returned from reddit) have no thread ID,
+            # self._thread must be set by the caller of LiveUpdate(). See the code of
+            # LiveThread.updates() for example.
+            super().__init__(reddit, _data=_data, _fetched=True)
+        elif thread_id and update_id:
+            self.id = update_id
+            super().__init__(reddit, _data=None)
+            self._thread = LiveThread(self._reddit, thread_id)
+        else:
+            msg = "Either 'thread_id' and 'update_id', or '_data' must be provided."
+            raise TypeError(msg)
+
+    def __setattr__(self, attribute: str, value: Any) -> None:
+        """Objectify author."""
+        if attribute == "author":
+            value = Redditor(self._reddit, name=value)
+        super().__setattr__(attribute, value)
+
+    def _fetch(self):  # noqa: ANN001
+        url = API_PATH["live_focus"].format(thread_id=self.thread.id, update_id=self.id)
+        other = self._reddit.get(url)[0]
+        self.__dict__.update(other.__dict__)
+        self._fetched = True

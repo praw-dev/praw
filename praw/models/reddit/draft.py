@@ -1,5 +1,7 @@
 """Provide the draft class."""
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 from ...const import API_PATH
 from ...exceptions import ClientException
@@ -45,21 +47,19 @@ class Draft(RedditBase):
     def _prepare_data(
         cls,
         *,
-        flair_id: Optional[str] = None,
-        flair_text: Optional[str] = None,
-        is_public_link: Optional[bool] = None,
-        nsfw: Optional[bool] = None,
-        original_content: Optional[bool] = None,
-        selftext: Optional[str] = None,
-        send_replies: Optional[bool] = None,
-        spoiler: Optional[bool] = None,
-        subreddit: Optional[
-            Union["praw.models.Subreddit", "praw.models.UserSubreddit"]
-        ] = None,
-        title: Optional[str] = None,
-        url: Optional[str] = None,
-        **draft_kwargs,
-    ):
+        flair_id: str | None = None,
+        flair_text: str | None = None,
+        is_public_link: bool | None = None,
+        nsfw: bool | None = None,
+        original_content: bool | None = None,
+        selftext: str | None = None,
+        send_replies: bool | None = None,
+        spoiler: bool | None = None,
+        subreddit: praw.models.Subreddit | praw.models.UserSubreddit | None = None,
+        title: str | None = None,
+        url: str | None = None,
+        **draft_kwargs: Any,
+    ) -> dict[str, Any]:
         data = {
             "body": selftext or url,
             "flair_id": flair_id,
@@ -86,23 +86,23 @@ class Draft(RedditBase):
 
     def __init__(
         self,
-        reddit: "praw.Reddit",
-        id: Optional[str] = None,  # pylint: disable=redefined-builtin
-        _data: Dict[str, Any] = None,
+        reddit: praw.Reddit,
+        id: str | None = None,  # pylint: disable=redefined-builtin
+        _data: dict[str, Any] = None,
     ):
         """Initialize a :class:`.Draft` instance."""
         if (id, _data).count(None) != 1:
-            raise TypeError("Exactly one of 'id' or '_data' must be provided.")
+            msg = "Exactly one of 'id' or '_data' must be provided."
+            raise TypeError(msg)
         fetched = False
         if id:
             self.id = id
-        else:
-            if len(_data) > 1:
-                if _data["kind"] == "markdown":
-                    _data["selftext"] = _data.pop("body")
-                elif _data["kind"] == "link":
-                    _data["url"] = _data.pop("body")
-                fetched = True
+        elif len(_data) > 1:
+            if _data["kind"] == "markdown":
+                _data["selftext"] = _data.pop("body")
+            elif _data["kind"] == "link":
+                _data["url"] = _data.pop("body")
+            fetched = True
         super().__init__(reddit, _data=_data, _fetched=fetched)
 
     def __repr__(self) -> str:
@@ -113,8 +113,7 @@ class Draft(RedditBase):
             )
             title = f" title={self.title!r}" if self.title else ""
             return f"{self.__class__.__name__}(id={self.id!r}{subreddit}{title})"
-        else:
-            return f"{self.__class__.__name__}(id={self.id!r})"
+        return f"{self.__class__.__name__}(id={self.id!r})"
 
     def _fetch(self):
         for draft in self._reddit.drafts():
@@ -122,9 +121,10 @@ class Draft(RedditBase):
                 self.__dict__.update(draft.__dict__)
                 self._fetched = True
                 return
-        raise ClientException(
+        msg = (
             f"The currently authenticated user not have a draft with an ID of {self.id}"
         )
+        raise ClientException(msg)
 
     def delete(self):
         """Delete the :class:`.Draft`.
@@ -139,23 +139,115 @@ class Draft(RedditBase):
         """
         self._reddit.delete(API_PATH["draft"], params={"draft_id": self.id})
 
+    def submit(
+        self,
+        *,
+        flair_id: str | None = None,
+        flair_text: str | None = None,
+        nsfw: bool | None = None,
+        selftext: str | None = None,
+        spoiler: bool | None = None,
+        subreddit: str
+        | praw.models.Subreddit
+        | praw.models.UserSubreddit
+        | None = None,
+        title: str | None = None,
+        url: str | None = None,
+        **submit_kwargs: Any,
+    ) -> praw.models.Submission:
+        """Submit a draft.
+
+        :param flair_id: The flair template to select (default: ``None``).
+        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
+            this value will set a custom text (default: ``None``). ``flair_id`` is
+            required when ``flair_text`` is provided.
+        :param nsfw: Whether or not the submission should be marked NSFW (default:
+            ``None``).
+        :param selftext: The Markdown formatted content for a ``text`` submission. Use
+            an empty string, ``""``, to make a title-only submission (default:
+            ``None``).
+        :param spoiler: Whether or not the submission should be marked as a spoiler
+            (default: ``None``).
+        :param subreddit: The subreddit to submit the draft to. This accepts a subreddit
+            display name, :class:`.Subreddit` object, or :class:`.UserSubreddit` object.
+        :param title: The title of the submission (default: ``None``).
+        :param url: The URL for a ``link`` submission (default: ``None``).
+
+        :returns: A :class:`.Submission` object for the newly created submission.
+
+        .. note::
+
+            Parameters set here will override their respective :class:`.Draft`
+            attributes.
+
+        Additional keyword arguments are passed to the :meth:`.Subreddit.submit` method.
+
+        For example, to submit a draft as is:
+
+        .. code-block:: python
+
+            draft = reddit.drafts("5f87d55c-e4fb-11eb-8965-6aeb41b0880e")
+            submission = draft.submit()
+
+        For example, to submit a draft but use a different title than what is set:
+
+        .. code-block:: python
+
+            draft = reddit.drafts("5f87d55c-e4fb-11eb-8965-6aeb41b0880e")
+            submission = draft.submit(title="New Title")
+
+        .. seealso::
+
+            - :meth:`~.Subreddit.submit` to submit url posts and selftexts
+            - :meth:`~.Subreddit.submit_gallery`. to submit more than one image in the
+              same post
+            - :meth:`~.Subreddit.submit_image` to submit images
+            - :meth:`~.Subreddit.submit_poll` to submit polls
+            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
+
+        """
+        submit_kwargs["draft_id"] = self.id
+        if not (self.subreddit or subreddit):
+            msg = "'subreddit' must be set on the Draft instance or passed as a keyword argument."
+            raise ValueError(msg)
+        for key, attribute in [
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+            ("nsfw", nsfw),
+            ("selftext", selftext),
+            ("spoiler", spoiler),
+            ("title", title),
+            ("url", url),
+        ]:
+            value = attribute or getattr(self, key, None)
+            if value is not None:
+                submit_kwargs[key] = value
+        if isinstance(subreddit, str):
+            _subreddit = self._reddit.subreddit(subreddit)
+        elif isinstance(subreddit, (Subreddit, UserSubreddit)):
+            _subreddit = subreddit
+        else:
+            _subreddit = self.subreddit
+        return _subreddit.submit(**submit_kwargs)
+
     def update(
         self,
         *,
-        flair_id: Optional[str] = None,
-        flair_text: Optional[str] = None,
-        is_public_link: Optional[bool] = None,
-        nsfw: Optional[bool] = None,
-        original_content: Optional[bool] = None,
-        selftext: Optional[str] = None,
-        send_replies: Optional[bool] = None,
-        spoiler: Optional[bool] = None,
-        subreddit: Optional[
-            Union[str, "praw.models.Subreddit", "praw.models.UserSubreddit"]
-        ] = None,
-        title: Optional[str] = None,
-        url: Optional[str] = None,
-        **draft_kwargs,
+        flair_id: str | None = None,
+        flair_text: str | None = None,
+        is_public_link: bool | None = None,
+        nsfw: bool | None = None,
+        original_content: bool | None = None,
+        selftext: str | None = None,
+        send_replies: bool | None = None,
+        spoiler: bool | None = None,
+        subreddit: str
+        | praw.models.Subreddit
+        | praw.models.UserSubreddit
+        | None = None,
+        title: str | None = None,
+        url: str | None = None,
+        **draft_kwargs: Any,
     ):
         """Update the :class:`.Draft`.
 
@@ -216,95 +308,3 @@ class Draft(RedditBase):
         _new_draft = self._reddit.put(API_PATH["draft"], data=data)
         _new_draft._fetch()
         self.__dict__.update(_new_draft.__dict__)
-
-    def submit(
-        self,
-        *,
-        flair_id: Optional[str] = None,
-        flair_text: Optional[str] = None,
-        nsfw: Optional[bool] = None,
-        selftext: Optional[str] = None,
-        spoiler: Optional[bool] = None,
-        subreddit: Optional[
-            Union[str, "praw.models.Subreddit", "praw.models.UserSubreddit"]
-        ] = None,
-        title: Optional[str] = None,
-        url: Optional[str] = None,
-        **submit_kwargs,
-    ) -> "praw.models.Submission":
-        """Submit a draft.
-
-        :param flair_id: The flair template to select (default: ``None``).
-        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
-            this value will set a custom text (default: ``None``). ``flair_id`` is
-            required when ``flair_text`` is provided.
-        :param nsfw: Whether or not the submission should be marked NSFW (default:
-            ``None``).
-        :param selftext: The Markdown formatted content for a ``text`` submission. Use
-            an empty string, ``""``, to make a title-only submission (default:
-            ``None``).
-        :param spoiler: Whether or not the submission should be marked as a spoiler
-            (default: ``None``).
-        :param subreddit: The subreddit to submit the draft to. This accepts a subreddit
-            display name, :class:`.Subreddit` object, or :class:`.UserSubreddit` object.
-        :param title: The title of the submission (default: ``None``).
-        :param url: The URL for a ``link`` submission (default: ``None``).
-
-        :returns: A :class:`.Submission` object for the newly created submission.
-
-        .. note::
-
-            Parameters set here will override their respective :class:`.Draft`
-            attributes.
-
-        Additional keyword arguments are passed to the :meth:`.Subreddit.submit` method.
-
-        For example, to submit a draft as is:
-
-        .. code-block:: python
-
-            draft = reddit.drafts("5f87d55c-e4fb-11eb-8965-6aeb41b0880e")
-            submission = draft.submit()
-
-        For example, to submit a draft but use a different title than what is set:
-
-        .. code-block:: python
-
-            draft = reddit.drafts("5f87d55c-e4fb-11eb-8965-6aeb41b0880e")
-            submission = draft.submit(title="New Title")
-
-        .. seealso::
-
-            - :meth:`~.Subreddit.submit` to submit url posts and selftexts
-            - :meth:`~.Subreddit.submit_gallery`. to submit more than one image in the
-              same post
-            - :meth:`~.Subreddit.submit_image` to submit images
-            - :meth:`~.Subreddit.submit_poll` to submit polls
-            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
-
-        """
-        submit_kwargs["draft_id"] = self.id
-        if not (self.subreddit or subreddit):
-            raise ValueError(
-                "'subreddit' must be set on the Draft instance or passed as a keyword"
-                " argument."
-            )
-        for key, attribute in [
-            ("flair_id", flair_id),
-            ("flair_text", flair_text),
-            ("nsfw", nsfw),
-            ("selftext", selftext),
-            ("spoiler", spoiler),
-            ("title", title),
-            ("url", url),
-        ]:
-            value = attribute or getattr(self, key, None)
-            if value is not None:
-                submit_kwargs[key] = value
-        if isinstance(subreddit, str):
-            _subreddit = self._reddit.subreddit(subreddit)
-        elif isinstance(subreddit, (Subreddit, UserSubreddit)):
-            _subreddit = subreddit
-        else:
-            _subreddit = self.subreddit
-        return _subreddit.submit(**submit_kwargs)

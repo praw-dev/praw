@@ -1,7 +1,10 @@
 """Provide the RedditBase class."""
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
 
+from ...endpoints import API_PATH
 from ...exceptions import InvalidURL
 from ..base import PRAWBase
 
@@ -13,13 +16,13 @@ class RedditBase(PRAWBase):
     """Base class that represents actual Reddit objects."""
 
     @staticmethod
-    def _url_parts(url):
+    def _url_parts(url):  # noqa: ANN001,ANN205
         parsed = urlparse(url)
         if not parsed.netloc:
             raise InvalidURL(url)
         return parsed.path.rstrip("/").split("/")
 
-    def __eq__(self, other: Union[Any, str]) -> bool:
+    def __eq__(self, other: Any | str) -> bool:
         """Return whether the other instance equals the current."""
         if isinstance(other, str):
             return other.lower() == str(self).lower()
@@ -33,9 +36,8 @@ class RedditBase(PRAWBase):
         if not attribute.startswith("_") and not self._fetched:
             self._fetch()
             return getattr(self, attribute)
-        raise AttributeError(
-            f"{self.__class__.__name__!r} object has no attribute {attribute!r}"
-        )
+        msg = f"{self.__class__.__name__!r} object has no attribute {attribute!r}"
+        raise AttributeError(msg)
 
     def __hash__(self) -> int:
         """Return the hash of the current instance."""
@@ -43,9 +45,9 @@ class RedditBase(PRAWBase):
 
     def __init__(
         self,
-        reddit: "praw.Reddit",
-        _data: Optional[Dict[str, Any]],
-        _extra_attribute_to_check: Optional[str] = None,
+        reddit: praw.Reddit,
+        _data: dict[str, Any] | None,
+        _extra_attribute_to_check: str | None = None,
         _fetched: bool = False,
         _str_field: bool = True,
     ):
@@ -62,10 +64,12 @@ class RedditBase(PRAWBase):
                 and _extra_attribute_to_check in self.__dict__
             ):
                 return
-            raise ValueError(
-                f"An invalid value was specified for {self.STR_FIELD}. Check that the "
-                f"argument for the {self.STR_FIELD} parameter is not empty."
-            )
+            msg = f"An invalid value was specified for {self.STR_FIELD}. Check that the argument for the {self.STR_FIELD} parameter is not empty."
+            raise ValueError(msg)
+
+    def __ne__(self, other: object) -> bool:
+        """Return whether the other instance differs from the current."""
+        return not self == other
 
     def __repr__(self) -> str:
         """Return an object initialization representation of the instance."""
@@ -75,14 +79,15 @@ class RedditBase(PRAWBase):
         """Return a string representation of the instance."""
         return getattr(self, self.STR_FIELD)
 
-    def __ne__(self, other: Any) -> bool:
-        """Return whether the other instance differs from the current."""
-        return not self == other
-
     def _fetch(self):  # pragma: no cover
         self._fetched = True
 
-    def _reset_attributes(self, *attributes):
+    def _fetch_data(self):  # noqa: ANN001
+        name, fields, params = self._fetch_info()
+        path = API_PATH[name].format(**fields)
+        return self._reddit.request(method="GET", params=params, path=path)
+
+    def _reset_attributes(self, *attributes):  # noqa: ANN001,ANN002
         for attribute in attributes:
             if attribute in self.__dict__:
                 del self.__dict__[attribute]

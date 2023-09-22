@@ -227,6 +227,42 @@ to first delete it, and then rerun the test suite.
 Please always verify that only the requests you expect to be made are contained within
 your cassette.
 
+There are a few pytest markers that can be used to control how cassettes are recorded or
+used.
+
+- ``@pytest.mark.add_placeholder``: Allows you to add custom placeholders to the
+  cassette. This can be useful when you want to record dynamic or generated data, but do
+  not want it to be saved in the cassette. This marker takes at least one keyword
+  argument and can be applied to a test class or individual test methods. It can also be
+  applied multiple times.
+- ``@pytest.mark.cassette_name``: Allows you to set the cassette name. This can be
+  useful when you want to use a cassette that was recorded by another test.
+- ``@pytest.mark.recorder_kwargs``: Allows you to pass additional arguments to the
+  recorder. This can be useful if you need to specify parameters for the
+  ``Betamax.use_cassette`` method. Like the ``add_placeholder`` marker, this marker can
+  be applied to a test class or individual test methods and can be applied multiple
+  times.
+
+Examples:
+
+.. code-block:: python
+
+    @pytest.mark.recorder_kwargs(allow_playback_repeats=True)
+    class TestClass:
+        @pytest.mark.recorder_kwargs(match_requests_on=["uri", "method", "body"])
+        def test_example(self):
+            ...
+
+        @pytest.mark.cassette_name("TestClass.test_example")
+        @pytest.mark.recorder_kwargs(match_requests_on=["uri", "method", "body"])
+        def test_example__different_assertion(self):
+            ...
+
+        @pytest.mark.add_placeholder(generated_data_a=generate_data_a())
+        @pytest.mark.add_placeholder(generated_data_b=generate_data_b())
+        def test_example__with_generated_placeholders(self):
+            ...
+
 Documentation
 -------------
 
@@ -260,7 +296,7 @@ the ``AUTHORS.rst`` file.
 CHANGES.rst
 ~~~~~~~~~~~
 
-For feature additions, bugfixes, or code removal please add an appropriate entry to
+For feature additions, bug fixes, or code removal please add an appropriate entry to
 ``CHANGES.rst``. If the ``Unreleased`` section does not exist at the top of
 ``CHANGES.rst`` please add it. See `commit 280525c16ba28cdd69cdbb272a0e2764b1c7e6a0`_
 for an example.

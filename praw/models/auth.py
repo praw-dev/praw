@@ -1,5 +1,5 @@
 """Provide the Auth class."""
-from typing import Dict, List, Optional, Set, Union
+from __future__ import annotations
 
 from prawcore import Authorizer, ImplicitAuthorizer, UntrustedAuthenticator, session
 
@@ -12,7 +12,7 @@ class Auth(PRAWBase):
     """Auth provides an interface to Reddit's authorization."""
 
     @property
-    def limits(self) -> Dict[str, Optional[Union[str, int]]]:
+    def limits(self) -> dict[str, str | int | None]:
         """Return a dictionary containing the rate limit info.
 
         The keys are:
@@ -39,7 +39,7 @@ class Auth(PRAWBase):
             "used": data.used,
         }
 
-    def authorize(self, code: str) -> Optional[str]:
+    def authorize(self, code: str) -> str | None:
         """Complete the web authorization flow and return the refresh token.
 
         :param code: The code obtained through the request to the redirect uri.
@@ -81,7 +81,7 @@ class Auth(PRAWBase):
         )
         self._reddit._core = self._reddit._authorized_core = implicit_session
 
-    def scopes(self) -> Set[str]:
+    def scopes(self) -> set[str]:
         """Return a set of scopes included in the current authorization.
 
         For read-only authorizations this should return ``{"*"}``.
@@ -98,7 +98,7 @@ class Auth(PRAWBase):
         *,
         duration: str = "permanent",
         implicit: bool = False,
-        scopes: List[str],
+        scopes: list[str],
         state: str,
     ) -> str:
         """Return the URL used out-of-band to grant access to your application.
@@ -120,7 +120,8 @@ class Auth(PRAWBase):
         """
         authenticator = self._reddit._read_only_core._authorizer._authenticator
         if authenticator.redirect_uri is self._reddit.config.CONFIG_NOT_SET:
-            raise MissingRequiredAttributeException("redirect_uri must be provided")
+            msg = "redirect_uri must be provided"
+            raise MissingRequiredAttributeException(msg)
         if isinstance(authenticator, UntrustedAuthenticator):
             return authenticator.authorize_url(
                 "temporary" if implicit else duration,

@@ -12,6 +12,7 @@ def main():
         )
         return 1
     print(line[len(COMMIT_PREFIX) : -1])
+    return 0
 
 
 if __name__ == "__main__":

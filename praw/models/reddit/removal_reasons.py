@@ -1,5 +1,7 @@
 """Provide the Removal Reason class."""
-from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Iterator
 from warnings import warn
 
 from ...const import API_PATH
@@ -29,7 +31,9 @@ class RemovalReason(RedditBase):
     STR_FIELD = "id"
 
     @staticmethod
-    def _warn_reason_id(*, id_value: Optional[str], reason_id_value: Optional[str]):
+    def _warn_reason_id(  # noqa: ANN205
+        *, id_value: str | None, reason_id_value: str | None
+    ):
         """Reason ID param is deprecated. Warns if it's used.
 
         :param id_value: Returns the actual value of parameter ``id`` is parameter
@@ -49,7 +53,7 @@ class RemovalReason(RedditBase):
             return reason_id_value
         return id_value
 
-    def __eq__(self, other: Union[str, "RemovalReason"]) -> bool:
+    def __eq__(self, other: str | RemovalReason) -> bool:
         """Return whether the other instance equals the current."""
         if isinstance(other, str):
             return other == str(self)
@@ -61,11 +65,11 @@ class RemovalReason(RedditBase):
 
     def __init__(
         self,
-        reddit: "praw.Reddit",
-        subreddit: "praw.models.Subreddit",
-        id: Optional[str] = None,  # pylint: disable=redefined-builtin
-        reason_id: Optional[str] = None,
-        _data: Optional[Dict[str, Any]] = None,
+        reddit: praw.Reddit,
+        subreddit: praw.models.Subreddit,
+        id: str | None = None,  # pylint: disable=redefined-builtin
+        reason_id: str | None = None,
+        _data: dict[str, Any] | None = None,
     ):
         """Initialize a :class:`.RemovalReason` instance.
 
@@ -76,24 +80,24 @@ class RemovalReason(RedditBase):
             compatibility. This parameter should not be used.
 
         """
-        id = self._warn_reason_id(id_value=id, reason_id_value=reason_id)
-        if (id, _data).count(None) != 1:
-            raise ValueError("Either id or _data needs to be given.")
+        reason_id = self._warn_reason_id(id_value=id, reason_id_value=reason_id)
+        if (reason_id, _data).count(None) != 1:
+            msg = "Either id or _data needs to be given."
+            raise ValueError(msg)
 
-        if id:
-            self.id = id
+        if reason_id:
+            self.id = reason_id
         self.subreddit = subreddit
         super().__init__(reddit, _data=_data)
 
-    def _fetch(self):
+    def _fetch(self):  # noqa: ANN001
         for removal_reason in self.subreddit.mod.removal_reasons:
             if removal_reason.id == self.id:
                 self.__dict__.update(removal_reason.__dict__)
                 self._fetched = True
                 return
-        raise ClientException(
-            f"Subreddit {self.subreddit} does not have the removal reason {self.id}"
-        )
+        msg = f"Subreddit {self.subreddit} does not have the removal reason {self.id}"
+        raise ClientException(msg)
 
     def delete(self):
         """Delete a removal reason from this subreddit.
@@ -109,7 +113,7 @@ class RemovalReason(RedditBase):
         self._reddit.delete(url)
 
     @_deprecate_args("message", "title")
-    def update(self, *, message: Optional[str] = None, title: Optional[str] = None):
+    def update(self, *, message: str | None = None, title: str | None = None):
         """Update the removal reason from this subreddit.
 
         .. note::
@@ -139,7 +143,24 @@ class RemovalReason(RedditBase):
 class SubredditRemovalReasons:
     """Provide a set of functions to a :class:`.Subreddit`'s removal reasons."""
 
-    def __getitem__(self, reason_id: Union[str, int, slice]) -> RemovalReason:
+    @cachedproperty
+    def _removal_reason_list(self) -> list[RemovalReason]:  # noqa: ANN001
+        """Get a list of Removal Reason objects.
+
+        :returns: A list of instances of :class:`.RemovalReason`.
+
+        """
+        response = self._reddit.get(
+            API_PATH["removal_reasons_list"].format(subreddit=self.subreddit)
+        )
+        return [
+            RemovalReason(
+                self._reddit, self.subreddit, _data=response["data"][reason_id]
+            )
+            for reason_id in response["order"]
+        ]
+
+    def __getitem__(self, reason_id: str | int | slice) -> RemovalReason:
         """Return the Removal Reason with the ID/number/slice ``reason_id``.
 
         :param reason_id: The ID or index of the removal reason
@@ -187,7 +208,7 @@ class SubredditRemovalReasons:
             return self._removal_reason_list[reason_id]
         return RemovalReason(self._reddit, self.subreddit, reason_id)
 
-    def __init__(self, subreddit: "praw.models.Subreddit"):
+    def __init__(self, subreddit: praw.models.Subreddit):
         """Initialize a :class:`.SubredditRemovalReasons` instance.
 
         :param subreddit: The subreddit whose removal reasons to work with.
@@ -209,21 +230,6 @@ class SubredditRemovalReasons:
         """
         return iter(self._removal_reason_list)
 
-    @cachedproperty
-    def _removal_reason_list(self) -> List[RemovalReason]:
-        """Get a list of Removal Reason objects.
-
-        :returns: A list of instances of :class:`.RemovalReason`.
-
-        """
-        response = self._reddit.get(
-            API_PATH["removal_reasons_list"].format(subreddit=self.subreddit)
-        )
-        return [
-            RemovalReason(self._reddit, self.subreddit, _data=reason_data)
-            for id, reason_data in response["data"].items()
-        ]
-
     @_deprecate_args("message", "title")
     def add(self, *, message: str, title: str) -> RemovalReason:
         """Add a removal reason to this subreddit.
@@ -244,5 +250,5 @@ class SubredditRemovalReasons:
         """
         data = {"message": message, "title": title}
         url = API_PATH["removal_reasons_list"].format(subreddit=self.subreddit)
-        id = self._reddit.post(url, data=data)
+        id = self._reddit.post(url, data=data)  # noqa: A001
         return RemovalReason(self._reddit, self.subreddit, id)

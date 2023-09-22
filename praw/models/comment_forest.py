@@ -1,6 +1,8 @@
 """Provide CommentForest for submission comments."""
+from __future__ import annotations
+
 from heapq import heappop, heappush
-from typing import TYPE_CHECKING, List, Optional, Union
+from typing import TYPE_CHECKING
 
 from ..exceptions import DuplicateReplaceException
 from ..util import _deprecate_args
@@ -18,7 +20,7 @@ class CommentForest:
     """
 
     @staticmethod
-    def _gather_more_comments(tree, *, parent_tree=None):
+    def _gather_more_comments(tree, *, parent_tree=None):  # noqa: ANN001,ANN205
         """Return a list of :class:`.MoreComments` objects obtained from tree."""
         more_comments = []
         queue = [(None, x) for x in tree]
@@ -35,7 +37,7 @@ class CommentForest:
                     queue.append((comment, item))
         return more_comments
 
-    def __getitem__(self, index: int):
+    def __getitem__(self, index: int) -> praw.models.Comment:
         """Return the comment at position ``index`` in the list.
 
         This method is to be used like an array access, such as:
@@ -57,8 +59,8 @@ class CommentForest:
 
     def __init__(
         self,
-        submission: "praw.models.Submission",
-        comments: Optional[List["praw.models.Comment"]] = None,
+        submission: praw.models.Submission,
+        comments: list[praw.models.Comment] | None = None,
     ):
         """Initialize a :class:`.CommentForest` instance.
 
@@ -75,7 +77,7 @@ class CommentForest:
         """Return the number of top-level comments in the forest."""
         return len(self._comments)
 
-    def _insert_comment(self, comment):
+    def _insert_comment(self, comment):  # noqa: ANN001
         if comment.name in self._submission._comments_by_id:
             raise DuplicateReplaceException
         comment.submission = self._submission
@@ -89,12 +91,14 @@ class CommentForest:
             parent = self._submission._comments_by_id[comment.parent_id]
             parent.replies._comments.append(comment)
 
-    def _update(self, comments):
+    def _update(self, comments):  # noqa: ANN001
         self._comments = comments
         for comment in comments:
             comment.submission = self._submission
 
-    def list(self) -> List[Union["praw.models.Comment", "praw.models.MoreComments"]]:
+    def list(  # noqa: A003
+        self,
+    ) -> list[praw.models.Comment | praw.models.MoreComments]:
         """Return a flattened list of all comments.
 
         This list may contain :class:`.MoreComments` instances if :meth:`.replace_more`
@@ -112,8 +116,8 @@ class CommentForest:
 
     @_deprecate_args("limit", "threshold")
     def replace_more(
-        self, *, limit: int = 32, threshold: int = 0
-    ) -> List["praw.models.MoreComments"]:
+        self, *, limit: int | None = 32, threshold: int = 0
+    ) -> list[praw.models.MoreComments]:
         """Update the comment forest by resolving instances of :class:`.MoreComments`.
 
         :param limit: The maximum number of :class:`.MoreComments` instances to replace.

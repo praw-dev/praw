@@ -1,11 +1,6 @@
+default_language_version:
+  python: python3.11
 repos:
-
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    hooks:
-      - id: end-of-file-fixer
-        exclude: .*\.txt
-    rev: v4.3.0
-
   - repo: local
     hooks:
       - id: static_word_checks
@@ -24,37 +19,44 @@ repos:
         pass_filenames: false
         types: [ python ]
 
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: check-toml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [ --fix=no ]
+      - id: name-tests-test
+        args: [ --pytest-test-first ]
+        files: ^tests/integration/.*\.py|tests/unit/.*\.py$
+      - id: sort-simple-yaml
+        files: ^(\.github/workflows/.*\.ya?ml|\.readthedocs.ya?ml)$
+      - id: trailing-whitespace
+
+  - repo: https://github.com/pappasam/toml-sort
+    rev: v0.23.1
+    hooks:
+      - id: toml-sort-fix
+        files: ^(.*\.toml)$
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.287
+    hooks:
+      - id: ruff
+        args: [ --exit-non-zero-on-fix, --fix ]
+        files: ^(praw/.*.py)$
+
   - repo: https://github.com/psf/black
     hooks:
       - id: black
-    rev: 22.10.0
+    rev: 23.9.1
 
   - repo: https://github.com/LilSpazJoekp/docstrfmt
     hooks:
       - id: docstrfmt
         require_serial: true
     rev: v1.5.1
-
-  - repo: https://github.com/pycqa/flake8
-    hooks:
-      - id: flake8
-    rev: 5.0.4
-
-  - repo: https://github.com/ikamensh/flynt/
-    hooks:
-      - id: flynt
-        args:
-          - '-ll'
-          - '1000'
-    rev: '0.76'
-
-  - repo: https://github.com/pycqa/isort
-    hooks:
-      - id: isort
-    rev: 5.10.1
-
-  - repo: https://github.com/pycqa/pydocstyle
-    hooks:
-      - id: pydocstyle
-        files: praw/.*
-    rev: 6.1.1

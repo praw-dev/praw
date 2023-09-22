@@ -1,4 +1,6 @@
 """Provide the Reddit class."""
+from __future__ import annotations
+
 import asyncio
 import configparser
 import os
@@ -6,17 +8,7 @@ import re
 import time
 from itertools import islice
 from logging import getLogger
-from typing import (
-    IO,
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Generator,
-    Iterable,
-    Optional,
-    Type,
-    Union,
-)
+from typing import IO, TYPE_CHECKING, Any, Generator, Iterable
 from warnings import warn
 
 from prawcore import (
@@ -42,17 +34,21 @@ from .exceptions import (
 )
 from .objector import Objector
 from .util import _deprecate_args
-from .util.token_manager import BaseTokenManager
 
 try:
     from update_checker import update_check
 
     UPDATE_CHECKER_MISSING = False
 except ImportError:  # pragma: no cover
+    update_check = None
     UPDATE_CHECKER_MISSING = True
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import prawcore
+
+    import praw.models
+
+    from .util.token_manager import BaseTokenManager
 
 Comment = models.Comment
 Redditor = models.Redditor
@@ -86,7 +82,7 @@ class Reddit:
     _ratelimit_regex = re.compile(r"([0-9]{1,3}) (milliseconds?|seconds?|minutes?)")
 
     @property
-    def _next_unique(self) -> int:
+    def _next_unique(self) -> int:  # noqa: ANN001
         value = self._unique_counter
         self._unique_counter += 1
         return value
@@ -107,9 +103,10 @@ class Reddit:
         if value:
             self._core = self._read_only_core
         elif self._authorized_core is None:
-            raise ClientException(
+            msg = (
                 "read_only cannot be unset as only the ReadOnlyAuthorizer is available."
             )
+            raise ClientException(msg)
         else:
             self._core = self._authorized_core
 
@@ -138,7 +135,7 @@ class Reddit:
     def validate_on_submit(self, val: bool):
         self._validate_on_submit = val
 
-    def __enter__(self):
+    def __enter__(self):  # noqa: ANN204
         """Handle the context manager open."""
         return self
 
@@ -154,13 +151,13 @@ class Reddit:
     )
     def __init__(
         self,
-        site_name: Optional[str] = None,
+        site_name: str | None = None,
         *,
-        config_interpolation: Optional[str] = None,
-        requestor_class: Optional[Type[Requestor]] = None,
-        requestor_kwargs: Optional[Dict[str, Any]] = None,
-        token_manager: Optional[BaseTokenManager] = None,
-        **config_settings: Optional[Union[str, bool, int]],
+        config_interpolation: str | None = None,
+        requestor_class: type[prawcore.requestor.Requestor] | None = None,
+        requestor_kwargs: dict[str, Any] | None = None,
+        token_manager: BaseTokenManager | None = None,
+        **config_settings: str | bool | int | None,
     ):  # noqa: D207, D301
         """Initialize a :class:`.Reddit` instance.
 
@@ -232,7 +229,9 @@ class Reddit:
         self._validate_on_submit = False
 
         try:
-            config_section = site_name or os.getenv("praw_site") or "DEFAULT"
+            config_section = (
+                site_name or os.getenv("praw_site") or "DEFAULT"  # noqa: SIM112
+            )
             self.config = Config(
                 config_section, config_interpolation, **config_settings
             )
@@ -259,11 +258,8 @@ class Reddit:
                     required_message.format(attribute)
                 )
         if self.config.client_secret is self.config.CONFIG_NOT_SET:
-            raise MissingRequiredAttributeException(
-                f"{required_message.format('client_secret')}\nFor installed"
-                " applications this value must be set to None via a keyword argument"
-                " to the Reddit class constructor."
-            )
+            msg = f"{required_message.format('client_secret')}\nFor installed applications this value must be set to None via a keyword argument to the Reddit class constructor."
+            raise MissingRequiredAttributeException(msg)
 
         self._check_for_update()
         self._prepare_objector()
@@ -440,7 +436,7 @@ class Reddit:
 
         """
 
-    def _check_for_async(self):
+    def _check_for_async(self):  # noqa: ANN001
         if self.config.check_for_async:  # pragma: no cover
             try:
                 shell = get_ipython().__class__.__name__
@@ -452,25 +448,79 @@ class Reddit:
             try:
                 asyncio.get_running_loop()
                 in_async = True
-            except Exception:  # Quietly fail if any exception occurs during the check
+            except (  # noqa: S110: Quietly fail if any exception occurs during the check
+                Exception  # noqa: BLE001
+            ):
                 pass
             if in_async:
                 logger.warning(
                     "It appears that you are using PRAW in an asynchronous"
                     " environment.\nIt is strongly recommended to use Async PRAW:"
                     " https://asyncpraw.readthedocs.io.\nSee"
-                    " https://praw.readthedocs.io/en/latest/getting_started/multiple_instances.html#discord-bots-and-asynchronous-environments"
+                    " https://praw.readthedocs.io/en/latest/getting_started/multiple_instances.html#discord-bots-and-"
+                    "asynchronous-environments"
                     " for more info.\n",
                 )
 
-    def _check_for_update(self):
+    def _check_for_update(self):  # noqa: ANN001
         if UPDATE_CHECKER_MISSING:
             return
         if not Reddit.update_checked and self.config.check_for_updates:
             update_check(__package__, __version__)
             Reddit.update_checked = True
 
-    def _prepare_common_authorizer(self, authenticator):
+    def _handle_rate_limit(self, exception: RedditAPIException) -> int | float | None:
+        for item in exception.items:
+            if item.error_type == "RATELIMIT":
+                amount_search = self._ratelimit_regex.search(item.message)
+                if not amount_search:
+                    break
+                seconds = int(amount_search.group(1))
+                if amount_search.group(2).startswith("minute"):
+                    seconds *= 60
+                elif amount_search.group(2).startswith("millisecond"):
+                    seconds = 0
+                if seconds <= int(self.config.ratelimit_seconds):
+                    return seconds + 1
+        return None
+
+    def _objectify_request(
+        self,
+        *,
+        data: dict[str, str | Any] | bytes | IO | str | None = None,
+        files: dict[str, IO] | None = None,
+        json: dict[Any, Any] | list[Any] | None = None,
+        method: str = "",
+        params: str | dict[str, str] | None = None,
+        path: str = "",
+    ) -> Any:
+        """Run a request through the ``Objector``.
+
+        :param data: Dictionary, bytes, or file-like object to send in the body of the
+            request (default: ``None``).
+        :param files: Dictionary, filename to file (like) object mapping (default:
+            ``None``).
+        :param json: JSON-serializable object to send in the body of the request with a
+            Content-Type header of application/json (default: ``None``). If ``json`` is
+            provided, ``data`` should not be.
+        :param method: The HTTP method (e.g., ``"GET"``, ``"POST"``, ``"PUT"``,
+            ``"DELETE"``).
+        :param params: The query parameters to add to the request (default: ``None``).
+        :param path: The path to fetch.
+
+        """
+        return self._objector.objectify(
+            self.request(
+                data=data,
+                files=files,
+                json=json,
+                method=method,
+                params=params,
+                path=path,
+            )
+        )
+
+    def _prepare_common_authorizer(self, authenticator):  # noqa: ANN001
         if self._token_manager is not None:
             warn(
                 "Token managers have been deprecated and will be removed in the near"
@@ -480,10 +530,8 @@ class Reddit:
                 stacklevel=2,
             )
             if self.config.refresh_token:
-                raise TypeError(
-                    "'refresh_token' setting cannot be provided when providing"
-                    " 'token_manager'"
-                )
+                msg = "'refresh_token' setting cannot be provided when providing 'token_manager'"
+                raise TypeError(msg)
 
             self._token_manager.reddit = self
             authorizer = Authorizer(
@@ -500,7 +548,7 @@ class Reddit:
             return
         self._core = self._authorized_core = session(authorizer)
 
-    def _prepare_objector(self):
+    def _prepare_objector(self):  # noqa: ANN001
         mappings = {
             self.config.kinds["comment"]: models.Comment,
             self.config.kinds["message"]: models.Message,
@@ -548,7 +596,9 @@ class Reddit:
         }
         self._objector = Objector(self, mappings)
 
-    def _prepare_prawcore(self, *, requestor_class=None, requestor_kwargs=None):
+    def _prepare_prawcore(
+        self, *, requestor_class=None, requestor_kwargs=None  # noqa: ANN001
+    ):
         requestor_class = requestor_class or Requestor
         requestor_kwargs = requestor_kwargs or {}
 
@@ -564,7 +614,7 @@ class Reddit:
         else:
             self._prepare_untrusted_prawcore(requestor)
 
-    def _prepare_trusted_prawcore(self, requestor):
+    def _prepare_trusted_prawcore(self, requestor):  # noqa: ANN001
         authenticator = TrustedAuthenticator(
             requestor,
             self.config.client_id,
@@ -582,7 +632,7 @@ class Reddit:
         else:
             self._prepare_common_authorizer(authenticator)
 
-    def _prepare_untrusted_prawcore(self, requestor):
+    def _prepare_untrusted_prawcore(self, requestor):  # noqa: ANN001
         authenticator = UntrustedAuthenticator(
             requestor, self.config.client_id, self.config.redirect_uri
         )
@@ -593,10 +643,10 @@ class Reddit:
     @_deprecate_args("id", "url")
     def comment(
         self,  # pylint: disable=invalid-name
-        id: Optional[str] = None,  # pylint: disable=redefined-builtin
+        id: str | None = None,  # pylint: disable=redefined-builtin noqa: A002
         *,
-        url: Optional[str] = None,
-    ):
+        url: str | None = None,
+    ) -> models.Comment:
         """Return a lazy instance of :class:`.Comment`.
 
         :param id: The ID of the comment.
@@ -610,7 +660,31 @@ class Reddit:
         """
         return models.Comment(self, id=id, url=url)
 
-    def domain(self, domain: str):
+    @_deprecate_args("path", "data", "json", "params")
+    def delete(
+        self,
+        path: str,
+        *,
+        data: dict[str, str | Any] | bytes | IO | str | None = None,
+        json: dict[Any, Any] | list[Any] | None = None,
+        params: str | dict[str, str] | None = None,
+    ) -> Any:
+        """Return parsed objects returned from a DELETE request to ``path``.
+
+        :param path: The path to fetch.
+        :param data: Dictionary, bytes, or file-like object to send in the body of the
+            request (default: ``None``).
+        :param json: JSON-serializable object to send in the body of the request with a
+            Content-Type header of application/json (default: ``None``). If ``json`` is
+            provided, ``data`` should not be.
+        :param params: The query parameters to add to the request (default: ``None``).
+
+        """
+        return self._objectify_request(
+            data=data, json=json, method="DELETE", params=params, path=path
+        )
+
+    def domain(self, domain: str) -> models.DomainListing:
         """Return an instance of :class:`.DomainListing`.
 
         :param domain: The domain to obtain submission listings for.
@@ -623,8 +697,8 @@ class Reddit:
         self,
         path: str,
         *,
-        params: Optional[Union[str, Dict[str, Union[str, int]]]] = None,
-    ):
+        params: str | dict[str, str | int] | None = None,
+    ) -> Any:
         """Return parsed objects returned from a GET request to ``path``.
 
         :param path: The path to fetch.
@@ -637,11 +711,11 @@ class Reddit:
     def info(
         self,
         *,
-        fullnames: Optional[Iterable[str]] = None,
-        subreddits: Optional[Iterable[Union["praw.models.Subreddit", str]]] = None,
-        url: Optional[str] = None,
+        fullnames: Iterable[str] | None = None,
+        subreddits: Iterable[praw.models.Subreddit | str] | None = None,
+        url: str | None = None,
     ) -> Generator[
-        Union["praw.models.Subreddit", "praw.models.Comment", "praw.models.Submission"],
+        praw.models.Subreddit | praw.models.Comment | praw.models.Submission,
         None,
         None,
     ]:
@@ -673,22 +747,20 @@ class Reddit:
         """
         none_count = (fullnames, url, subreddits).count(None)
         if none_count != 2:
-            raise TypeError(
-                "Either 'fullnames', 'url', or 'subreddits' must be provided."
-            )
+            msg = "Either 'fullnames', 'url', or 'subreddits' must be provided."
+            raise TypeError(msg)
 
         is_using_fullnames = fullnames is not None
         ids_or_names = fullnames if is_using_fullnames else subreddits
 
         if ids_or_names is not None:
             if isinstance(ids_or_names, str):
-                raise TypeError(
-                    "'fullnames' and 'subreddits' must be a non-str iterable."
-                )
+                msg = "'fullnames' and 'subreddits' must be a non-str iterable."
+                raise TypeError(msg)
 
             api_parameter_name = "id" if is_using_fullnames else "sr_name"
 
-            def generator(names):
+            def generator(names: Iterable[str | praw.models.Subreddit]):
                 if is_using_fullnames:
                     iterable = iter(names)
                 else:
@@ -698,82 +770,26 @@ class Reddit:
                     if not chunk:
                         break
                     params = {api_parameter_name: ",".join(chunk)}
-                    for result in self.get(API_PATH["info"], params=params):
-                        yield result
+                    yield from self.get(API_PATH["info"], params=params)
 
             return generator(ids_or_names)
 
-        def generator(url):
-            params = {"url": url}
-            for result in self.get(API_PATH["info"], params=params):
-                yield result
+        def generator(_url: str):
+            params = {"url": _url}
+            yield from self.get(API_PATH["info"], params=params)
 
         return generator(url)
 
-    def _objectify_request(
-        self,
-        *,
-        data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
-        files: Optional[Dict[str, IO]] = None,
-        json: Optional[Dict[Any, Any]] = None,
-        method: str = "",
-        params: Optional[Union[str, Dict[str, str]]] = None,
-        path: str = "",
-    ) -> Any:
-        """Run a request through the ``Objector``.
-
-        :param data: Dictionary, bytes, or file-like object to send in the body of the
-            request (default: ``None``).
-        :param files: Dictionary, filename to file (like) object mapping (default:
-            ``None``).
-        :param json: JSON-serializable object to send in the body of the request with a
-            Content-Type header of application/json (default: ``None``). If ``json`` is
-            provided, ``data`` should not be.
-        :param method: The HTTP method (e.g., ``"GET"``, ``"POST"``, ``"PUT"``,
-            ``"DELETE"``).
-        :param params: The query parameters to add to the request (default: ``None``).
-        :param path: The path to fetch.
-
-        """
-        return self._objector.objectify(
-            self.request(
-                data=data,
-                files=files,
-                json=json,
-                method=method,
-                params=params,
-                path=path,
-            )
-        )
-
-    def _handle_rate_limit(
-        self, exception: RedditAPIException
-    ) -> Optional[Union[int, float]]:
-        for item in exception.items:
-            if item.error_type == "RATELIMIT":
-                amount_search = self._ratelimit_regex.search(item.message)
-                if not amount_search:
-                    break
-                seconds = int(amount_search.group(1))
-                if amount_search.group(2).startswith("minute"):
-                    seconds *= 60
-                elif amount_search.group(2).startswith("millisecond"):
-                    seconds = 0
-                if seconds <= int(self.config.ratelimit_seconds):
-                    sleep_seconds = seconds + 1
-                    return sleep_seconds
-        return None
-
-    @_deprecate_args("path", "data", "json", "params")
-    def delete(
+    @_deprecate_args("path", "data", "json")
+    def patch(
         self,
         path: str,
         *,
-        data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
-        json: Optional[Dict[Any, Any]] = None,
-        params: Optional[Union[str, Dict[str, str]]] = None,
+        data: dict[str, str | Any] | bytes | IO | str | None = None,
+        json: dict[Any, Any] | list[Any] | None = None,
+        params: str | dict[str, str] | None = None,
     ) -> Any:
-        """Return parsed objects returned from a DELETE request to ``path``.
+        """Return parsed objects returned from a PATCH request to ``path``.
 
         :param path: The path to fetch.
         :param data: Dictionary, bytes, or file-like object to send in the body of the
@@ -785,38 +801,18 @@ class Reddit:
 
         """
         return self._objectify_request(
-            data=data, json=json, method="DELETE", params=params, path=path
+            data=data, json=json, method="PATCH", params=params, path=path
         )
-
-    @_deprecate_args("path", "data", "json")
-    def patch(
-        self,
-        path: str,
-        *,
-        data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
-        json: Optional[Dict[Any, Any]] = None,
-    ) -> Any:
-        """Return parsed objects returned from a PATCH request to ``path``.
-
-        :param path: The path to fetch.
-        :param data: Dictionary, bytes, or file-like object to send in the body of the
-            request (default: ``None``).
-        :param json: JSON-serializable object to send in the body of the request with a
-            Content-Type header of application/json (default: ``None``). If ``json`` is
-            provided, ``data`` should not be.
-
-        """
-        return self._objectify_request(data=data, json=json, method="PATCH", path=path)
 
     @_deprecate_args("path", "data", "files", "params", "json")
     def post(
         self,
         path: str,
         *,
-        data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
-        files: Optional[Dict[str, IO]] = None,
-        json: Optional[Dict[Any, Any]] = None,
-        params: Optional[Union[str, Dict[str, str]]] = None,
+        data: dict[str, str | Any] | bytes | IO | str | None = None,
+        files: dict[str, IO] | None = None,
+        json: dict[Any, Any] | list[Any] | None = None,
+        params: str | dict[str, str] | None = None,
     ) -> Any:
         """Return parsed objects returned from a POST request to ``path``.
 
@@ -853,7 +849,8 @@ class Reddit:
                 if seconds is None:
                     break
                 second_string = "second" if seconds == 1 else "seconds"
-                logger.debug(f"Rate limit hit, sleeping for {seconds} {second_string}")
+                stmt = f"Rate limit hit, sleeping for {seconds} {second_string}"
+                logger.debug(stmt)
                 time.sleep(seconds)
         raise last_exception
 
@@ -862,9 +859,9 @@ class Reddit:
         self,
         path: str,
         *,
-        data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
-        json: Optional[Dict[Any, Any]] = None,
-    ):
+        data: dict[str, str | Any] | bytes | IO | str | None = None,
+        json: dict[Any, Any] | list[Any] | None = None,
+    ) -> Any:
         """Return parsed objects returned from a PUT request to ``path``.
 
         :param path: The path to fetch.
@@ -878,7 +875,7 @@ class Reddit:
         return self._objectify_request(data=data, json=json, method="PUT", path=path)
 
     @_deprecate_args("nsfw")
-    def random_subreddit(self, *, nsfw: bool = False) -> "praw.models.Subreddit":
+    def random_subreddit(self, *, nsfw: bool = False) -> praw.models.Subreddit:
         """Return a random lazy instance of :class:`.Subreddit`.
 
         :param nsfw: Return a random NSFW (not safe for work) subreddit (default:
@@ -895,8 +892,8 @@ class Reddit:
 
     @_deprecate_args("name", "fullname")
     def redditor(
-        self, name: Optional[str] = None, *, fullname: Optional[str] = None
-    ) -> "praw.models.Redditor":
+        self, name: str | None = None, *, fullname: str | None = None
+    ) -> praw.models.Redditor:
         """Return a lazy instance of :class:`.Redditor`.
 
         :param name: The name of the redditor.
@@ -911,11 +908,11 @@ class Reddit:
     def request(
         self,
         *,
-        data: Optional[Union[Dict[str, Union[str, Any]], bytes, IO, str]] = None,
-        files: Optional[Dict[str, IO]] = None,
-        json: Optional[Dict[Any, Any]] = None,
+        data: dict[str, str | Any] | bytes | IO | str | None = None,
+        files: dict[str, IO] | None = None,
+        json: dict[Any, Any] | list[Any] | None = None,
         method: str,
-        params: Optional[Union[str, Dict[str, Union[str, int]]]] = None,
+        params: str | dict[str, str | int] | None = None,
         path: str,
     ) -> Any:
         """Return the parsed JSON data returned from a request to URL.
@@ -936,7 +933,8 @@ class Reddit:
         if self.config.check_for_async:
             self._check_for_async()
         if data and json:
-            raise ClientException("At most one of 'data' or 'json' is supported.")
+            msg = "At most one of 'data' or 'json' is supported."
+            raise ClientException(msg)
         try:
             return self._core.request(
                 data=data,
@@ -953,7 +951,7 @@ class Reddit:
                 if exception.response.text:
                     data = {"reason": exception.response.text}
                 else:
-                    raise exception
+                    raise exception from None
             if set(data) == {"error", "message"}:
                 raise
             explanation = data.get("explanation")
@@ -968,8 +966,8 @@ class Reddit:
 
     @_deprecate_args("id", "url")
     def submission(  # pylint: disable=invalid-name,redefined-builtin
-        self, id: Optional[str] = None, *, url: Optional[str] = None
-    ) -> "praw.models.Submission":
+        self, id: str | None = None, *, url: str | None = None
+    ) -> praw.models.Submission:
         """Return a lazy instance of :class:`.Submission`.
 
         :param id: A Reddit base36 submission ID, e.g., ``"2gmzqe"``.

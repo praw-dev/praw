@@ -1,84 +1,97 @@
 body:
-  - type: textarea
+  - id: bug-description
     attributes:
       label: Describe the Bug
       placeholder: A clear and concise description of what the bug is.
-    id: bug-description
+    type: textarea
     validations:
       required: true
-  - type: textarea
+  - id: desired-result
     attributes:
       label: Desired Result
       placeholder: Describe the desired result.
-    id: desired-result
+    type: textarea
     validations:
       required: true
-  - type: textarea
+  - id: code
     attributes:
-      description: Copy and paste any relevant log/stacktrace output.
-      label: Relevant Logs
-      render: shell
-    id: logs
-  - type: textarea
-    attributes:
-      description: Provide your [Minimal, Complete, and Verifiable](https://stackoverflow.com/help/mcve) code example here, without the Reddit() initialization, so as to not leak private credentials.
+      description: |
+        Provide your [Minimal, Complete, and Verifiable](https://stackoverflow.com/help/mcve)
+        code example here, without the Reddit() initialization, to not leak private credentials.
+        This will be automatically formatted into code, so no need for backticks.
       label: Code to reproduce the bug
       placeholder: "# Insert code here"
-      render: python
-    id: code
-  - type: dropdown
-    attributes:
-      label: My code example does not include the `Reddit()` initialization to prevent credential leakage.
-      options:
-        - "Yes"
-    id: credential-check
+      render: Python
+    type: textarea
     validations:
       required: true
-  - type: dropdown
+  - id: credential-check
+    attributes:
+      label: |
+        The `Reddit()` initialization in my code example does not include the following parameters to prevent credential leakage:
+        `client_secret`, `password`, or `refresh_token`.
+      options:
+        - label: "Yes"
+          required: true
+    type: checkboxes
+  - id: logs
+    attributes:
+      description: |
+        Please copy and paste any relevant log output.
+        This will be automatically formatted into code, so no need for backticks.
+      label: Relevant Logs
+      render: Shell
+    type: textarea
+    validations:
+      required: true
+  - id: previously-worked
     attributes:
       label: This code has previously worked as intended.
       multiple: false
       options:
+        - "Not sure, I haven't used this code before."
         - "Yes"
         - "No"
-    id: previously-worked
+    type: dropdown
     validations:
       required: true
-  - type: input
+  - id: environment
     attributes:
       description: What operating system, version, and environment are you working with.
       label: Operating System/Environment
-      placeholder: macOS Monterey 12.0.0
-    id: environment
+      placeholder: "Example: macOS Ventura 13.0.0"
+    type: input
     validations:
       required: true
-  - type: input
+  - id: python-version
     attributes:
-      description: What implementation and version of Python are you working with. CPython is assumed unless indicated otherwise.
+      description: |
+        What implementation and version of Python are you working with.
+        CPython is assumed unless indicated otherwise.
       label: Python Version
-      placeholder: Python 3.9.1
-    id: python-version
+      placeholder: "Example: 3.11.1"
+    type: input
     validations:
       required: true
-  - type: input
+  - id: praw-version
     attributes:
+      description: What version of PRAW. Obtain this by running `pip show praw`.
       label: PRAW Version
-      placeholder: 7.4.0
-    id: praw-version
+    type: input
     validations:
       required: true
-  - type: input
+  - id: prawcore-version
     attributes:
+      description: What version of Prawcore. Obtain this by running `pip show prawcore`.
       label: Prawcore Version
-      placeholder: 2.3.0
-    id: prawcore-version
+    type: input
     validations:
       required: true
-  - type: textarea
+  - id: anything-else
     attributes:
       description: Links or references? Anything that will give us more context about the issue you are encountering!
       label: Anything else?
-    id: anything-else
+    type: textarea
 description: File a bug report
-labels: ["bug", "unverified"]
+labels: [ "bug", "unverified" ]
 name: Bug Report

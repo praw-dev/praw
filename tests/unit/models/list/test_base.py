@@ -4,27 +4,23 @@ import pytest
 from praw.models.list.base import BaseList
 
 
+class Dummy:
+    def __init__(self):
+        self._objector = DummyObjector
+
+
 class DummyObjector:
     @staticmethod
     def objectify(value):
         return value
 
 
-class Dummy:
-    def __init__(self):
-        self._objector = DummyObjector
-
-
 class TestBaseList:
-    def setup_method(self):
-        self._prev_child_attribute = BaseList.CHILD_ATTRIBUTE
-
-    def teardown_method(self):
-        BaseList.CHILD_ATTRIBUTE = self._prev_child_attribute
-
-    def test__init__CHILD_ATTRIBUTE_not_set(self):
-        with pytest.raises(NotImplementedError):
-            BaseList(None, None)
+    @pytest.fixture(autouse=True)
+    def _patch_base_list(self):
+        _prev_child_attribute = BaseList.CHILD_ATTRIBUTE
+        yield
+        BaseList.CHILD_ATTRIBUTE = _prev_child_attribute
 
     def test__contains__(self):
         BaseList.CHILD_ATTRIBUTE = "praw"
@@ -39,6 +35,10 @@ class TestBaseList:
         base_list = BaseList(Dummy(), {"praw": items})
         for i, item in enumerate(items):
             assert item == base_list[i]
+
+    def test__init__CHILD_ATTRIBUTE_not_set(self):
+        with pytest.raises(NotImplementedError):
+            BaseList(None, None)
 
     def test__iter__(self):
         BaseList.CHILD_ATTRIBUTE = "praw"

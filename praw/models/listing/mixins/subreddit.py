@@ -1,5 +1,7 @@
 """Provide the SubredditListingMixin class."""
-from typing import TYPE_CHECKING, Any, Dict, Iterator, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Iterator
 from urllib.parse import urljoin
 
 from ....util.cache import cachedproperty
@@ -17,17 +19,12 @@ class CommentHelper(PRAWBase):
     """Provide a set of functions to interact with a :class:`.Subreddit`'s comments."""
 
     @property
-    def _path(self) -> str:
+    def _path(self) -> str:  # noqa: ANN001
         return urljoin(self.subreddit._path, "comments/")
 
-    def __init__(self, subreddit: "praw.models.Subreddit"):
-        """Initialize a :class:`.CommentHelper` instance."""
-        super().__init__(subreddit._reddit, _data=None)
-        self.subreddit = subreddit
-
     def __call__(
-        self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Iterator["praw.models.Comment"]:
+        self, **generator_kwargs: str | int | dict[str, str]
+    ) -> Iterator[praw.models.Comment]:
         """Return a :class:`.ListingGenerator` for the :class:`.Subreddit`'s comments.
 
         Additional keyword arguments are passed in the initialization of
@@ -42,6 +39,11 @@ class CommentHelper(PRAWBase):
 
         """
         return ListingGenerator(self._reddit, self._path, **generator_kwargs)
+
+    def __init__(self, subreddit: praw.models.Subreddit | SubredditListingMixin):
+        """Initialize a :class:`.CommentHelper` instance."""
+        super().__init__(subreddit._reddit, _data=None)
+        self.subreddit = subreddit
 
 
 class SubredditListingMixin(BaseListingMixin, GildedListingMixin, RisingListingMixin):
@@ -62,7 +64,7 @@ class SubredditListingMixin(BaseListingMixin, GildedListingMixin, RisingListingM
         """
         return CommentHelper(self)
 
-    def __init__(self, reddit: "praw.Reddit", _data: Optional[Dict[str, Any]]):
+    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any] | None):
         """Initialize a :class:`.SubredditListingMixin` instance.
 
         :param reddit: An instance of :class:`.Reddit`.

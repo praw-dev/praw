@@ -1,5 +1,4 @@
 """List of API endpoints PRAW knows about."""
-
 # flake8: noqa
 # fmt: off
 API_PATH = {
@@ -63,6 +62,7 @@ API_PATH = {
     "flairtemplate_v2":        "r/{subreddit}/api/flairtemplate_v2",
     "flairtemplateclear":      "r/{subreddit}/api/clearflairtemplates/",
     "flairtemplatedelete":     "r/{subreddit}/api/deleteflairtemplate/",
+    "flairtemplatereorder":    "r/{subreddit}/api/flair_template_order",
     "friend":                  "r/{subreddit}/api/friend/",
     "friend_v1":               "api/v1/me/friends/{user}",
     "friends":                 "api/v1/me/friends/",

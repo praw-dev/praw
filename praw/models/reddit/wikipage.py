@@ -1,5 +1,7 @@
 """Provide the WikiPage class."""
-from typing import TYPE_CHECKING, Any, Dict, Generator, Iterator, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Generator, Iterator
 
 from ...const import API_PATH
 from ...util import _deprecate_args
@@ -23,7 +25,7 @@ class WikiPageModeration:
 
     """
 
-    def __init__(self, wikipage: "WikiPage"):
+    def __init__(self, wikipage: WikiPage):
         """Initialize a :class:`.WikiPageModeration` instance.
 
         :param wikipage: The wikipage to moderate.
@@ -31,7 +33,7 @@ class WikiPageModeration:
         """
         self.wikipage = wikipage
 
-    def add(self, redditor: "praw.models.Redditor"):
+    def add(self, redditor: praw.models.Redditor):
         """Add an editor to this :class:`.WikiPage`.
 
         :param redditor: A redditor name or :class:`.Redditor` instance.
@@ -49,7 +51,7 @@ class WikiPageModeration:
         )
         self.wikipage._reddit.post(url, data=data)
 
-    def remove(self, redditor: "praw.models.Redditor"):
+    def remove(self, redditor: praw.models.Redditor):
         """Remove an editor from this :class:`.WikiPage`.
 
         :param redditor: A redditor name or :class:`.Redditor` instance.
@@ -114,7 +116,7 @@ class WikiPageModeration:
             },
         )
 
-    def settings(self) -> Dict[str, Any]:
+    def settings(self) -> dict[str, Any]:
         """Return the settings for this :class:`.WikiPage`."""
         url = API_PATH["wiki_page_settings"].format(
             subreddit=self.wikipage.subreddit, page=self.wikipage.name
@@ -124,7 +126,7 @@ class WikiPageModeration:
     @_deprecate_args("listed", "permlevel")
     def update(
         self, *, listed: bool, permlevel: int, **other_settings: Any
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Update the settings for this :class:`.WikiPage`.
 
         :param listed: Show this page on page list.
@@ -178,11 +180,11 @@ class WikiPage(RedditBase):
     @staticmethod
     def _revision_generator(
         *,
-        generator_kwargs: Dict[str, Any],
-        subreddit: "praw.models.Subreddit",
+        generator_kwargs: dict[str, Any],
+        subreddit: praw.models.Subreddit,
         url: str,
     ) -> Generator[
-        Dict[str, Optional[Union[Redditor, "WikiPage", str, int, bool]]], None, None
+        dict[str, Redditor | WikiPage | str | int | bool | None], None, None
     ]:
         for revision in ListingGenerator(subreddit._reddit, url, **generator_kwargs):
             if revision["author"] is not None:
@@ -209,11 +211,11 @@ class WikiPage(RedditBase):
 
     def __init__(
         self,
-        reddit: "praw.Reddit",
-        subreddit: "praw.models.Subreddit",
+        reddit: praw.Reddit,
+        subreddit: praw.models.Subreddit,
         name: str,
-        revision: Optional[str] = None,
-        _data: Optional[Dict[str, Any]] = None,
+        revision: str | None = None,
+        _data: dict[str, Any] | None = None,
     ):
         """Initialize a :class:`.WikiPage` instance.
 
@@ -237,19 +239,7 @@ class WikiPage(RedditBase):
         """Return a string representation of the instance."""
         return f"{self.subreddit}/{self.name}"
 
-    def _fetch_info(self):
-        return (
-            "wiki_page",
-            {"subreddit": self.subreddit, "page": self.name},
-            {"v": self._revision} if self._revision else None,
-        )
-
-    def _fetch_data(self):
-        name, fields, params = self._fetch_info()
-        path = API_PATH[name].format(**fields)
-        return self._reddit.request(method="GET", params=params, path=path)
-
-    def _fetch(self):
+    def _fetch(self):  # noqa: ANN001
         data = self._fetch_data()
         data = data["data"]
         if data["revision_by"] is not None:
@@ -259,33 +249,14 @@ class WikiPage(RedditBase):
         self.__dict__.update(data)
         self._fetched = True
 
-    @_deprecate_args("content", "reason")
-    def edit(
-        self, *, content: str, reason: Optional[str] = None, **other_settings: Any
-    ):
-        """Edit this wiki page's contents.
-
-        :param content: The updated Markdown content of the page.
-        :param reason: The reason for the revision.
-        :param other_settings: Additional keyword arguments to pass.
-
-        For example, to replace the first wiki page of r/test with the phrase ``"test
-        wiki page"``:
-
-        .. code-block:: python
-
-            page = next(iter(reddit.subreddit("test").wiki))
-            page.edit(content="test wiki page")
-
-        """
-        other_settings.update({"content": content, "page": self.name, "reason": reason})
-        self._reddit.post(
-            API_PATH["wiki_edit"].format(subreddit=self.subreddit), data=other_settings
+    def _fetch_info(self):  # noqa: ANN001
+        return (
+            "wiki_page",
+            {"subreddit": self.subreddit, "page": self.name},
+            {"v": self._revision} if self._revision else None,
         )
 
-    def discussions(
-        self, **generator_kwargs: Any
-    ) -> Iterator["praw.models.Submission"]:
+    def discussions(self, **generator_kwargs: Any) -> Iterator[praw.models.Submission]:
         """Return a :class:`.ListingGenerator` for discussions of a wiki page.
 
         Discussions are site-wide links to a wiki page.
@@ -309,7 +280,29 @@ class WikiPage(RedditBase):
             **generator_kwargs,
         )
 
-    def revision(self, revision: str):
+    @_deprecate_args("content", "reason")
+    def edit(self, *, content: str, reason: str | None = None, **other_settings: Any):
+        """Edit this wiki page's contents.
+
+        :param content: The updated Markdown content of the page.
+        :param reason: The reason for the revision.
+        :param other_settings: Additional keyword arguments to pass.
+
+        For example, to replace the first wiki page of r/test with the phrase ``"test
+        wiki page"``:
+
+        .. code-block:: python
+
+            page = next(iter(reddit.subreddit("test").wiki))
+            page.edit(content="test wiki page")
+
+        """
+        other_settings.update({"content": content, "page": self.name, "reason": reason})
+        self._reddit.post(
+            API_PATH["wiki_edit"].format(subreddit=self.subreddit), data=other_settings
+        )
+
+    def revision(self, revision: str) -> WikiPage:
         """Return a specific version of this page by revision ID.
 
         To view revision ``"1234abc"`` of ``"praw_test"`` in r/test:
@@ -322,8 +315,8 @@ class WikiPage(RedditBase):
         return WikiPage(self.subreddit._reddit, self.subreddit, self.name, revision)
 
     def revisions(
-        self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator["WikiPage", None, None]:
+        self, **generator_kwargs: str | int | dict[str, str]
+    ) -> Generator[WikiPage, None, None]:
         """Return a :class:`.ListingGenerator` for page revisions.
 
         Additional keyword arguments are passed in the initialization of

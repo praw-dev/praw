@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """This is to generate the awards table."""
 import argparse
 import random
@@ -41,7 +42,7 @@ def receive_connection():
 def send_message(client, message):
     """Send message to client and close the connection."""
     print(message)
-    client.send(f"HTTP/1.1 200 OK\r\n\r\n{message}".encode("utf-8"))
+    client.send(f"HTTP/1.1 200 OK\r\n\r\n{message}".encode())
     client.close()
 
 
@@ -62,19 +63,17 @@ def get_request_params(client_id, redirect_uri, thing):
     client = receive_connection()
     data = client.recv(1024).decode("utf-8")
     param_tokens = data.split(" ", 2)[1].split("?", 1)[1].split("&")
-    params = {
-        key: value for (key, value) in [token.split("=") for token in param_tokens]
-    }
+    params = dict([token.split("=") for token in param_tokens])
 
     if state != params["state"]:
         send_message(
             client,
             f"State mismatch. Expected: {state} Received: {params['state']}",
         )
-        return
+        return None
     elif "error" in params:
         send_message(client, params["error"])
-        return
+        return None
 
     reddit.auth.authorize(params["code"])
     thing = list(reddit.info(fullnames=[thing]))[0]
@@ -98,6 +97,7 @@ def fetch_awards(client_id, redirect_uri, thing_fullname):
             "https://gql.reddit.com/", headers=headers, params=params, data=data
         )
         return response.json()
+    return None
 
 
 def main():

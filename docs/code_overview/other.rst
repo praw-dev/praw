@@ -148,6 +148,7 @@ them bound to an attribute of one of the PRAW models.
     other/rule
     other/stylesheet
     other/sublisting
+    other/subredditlistingmixin
     other/subredditmessage
     other/token_manager
     other/trophy

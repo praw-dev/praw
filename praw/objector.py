@@ -1,23 +1,33 @@
 """Provides the Objector class."""
+from __future__ import annotations
+
 from datetime import datetime
 from json import loads
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 from .exceptions import ClientException, RedditAPIException
-from .models.reddit.base import RedditBase
 from .util import snake_case_keys
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw
+
+    from .models.reddit.base import RedditBase
 
 
 class Objector:
     """The objector builds :class:`.RedditBase` objects."""
 
     @classmethod
+    def check_error(cls, data: list[Any] | dict[str, dict[str, str]]):
+        """Raise an error if the argument resolves to an error object."""
+        error = cls.parse_error(data)
+        if error:
+            raise error
+
+    @classmethod
     def parse_error(
-        cls, data: Union[List[Any], Dict[str, Dict[str, str]]]
-    ) -> Optional[RedditAPIException]:
+        cls, data: list[Any] | dict[str, dict[str, str]]
+    ) -> RedditAPIException | None:
         """Convert JSON response into an error object.
 
         :param data: The dict to be converted.
@@ -36,17 +46,11 @@ class Objector:
             return None
         if len(errors) < 1:
             # See `Collection._fetch()`.
-            raise ClientException("successful error response", data)
+            msg = "successful error response"
+            raise ClientException(msg, data)
         return RedditAPIException(errors)
 
-    @classmethod
-    def check_error(cls, data: Union[List[Any], Dict[str, Dict[str, str]]]):
-        """Raise an error if the argument resolves to an error object."""
-        error = cls.parse_error(data)
-        if error:
-            raise error
-
-    def __init__(self, reddit: "praw.Reddit", parsers: Optional[Dict[str, Any]] = None):
+    def __init__(self, reddit: praw.Reddit, parsers: dict[str, Any] | None = None):
         """Initialize an :class:`.Objector` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -55,7 +59,7 @@ class Objector:
         self.parsers = {} if parsers is None else parsers
         self._reddit = reddit
 
-    def _objectify_dict(self, data):
+    def _objectify_dict(self, data):  # noqa: ANN001,PLR0912,PLR0915
         """Create :class:`.RedditBase` objects from dicts.
 
         :param data: The structured data, assumed to be a dict.
@@ -149,7 +153,7 @@ class Objector:
             return self._reddit.redditor(data["name"])
         elif {"parent_id"}.issubset(data):
             parser = self.parsers[self._reddit.config.kinds["comment"]]
-        elif "collection_id" in data.keys():
+        elif "collection_id" in data:
             parser = self.parsers["Collection"]
         elif {"moderators", "moderatorIds", "allUsersLoaded", "subredditId"}.issubset(
             data
@@ -162,7 +166,7 @@ class Objector:
                 moderators.append(mod)
             data["moderators"] = moderators
             parser = self.parsers["moderator-list"]
-        elif "username" in data.keys():
+        elif "username" in data:
             data["name"] = data.pop("username")
             parser = self.parsers[self._reddit.config.kinds["redditor"]]
         elif {"mod_permissions", "name", "sr", "subscribers"}.issubset(data):
@@ -208,9 +212,9 @@ class Objector:
             return data
         return parser.parse(data, self._reddit)
 
-    def objectify(
-        self, data: Optional[Union[Dict[str, Any], List[Any], bool]]
-    ) -> Optional[Union[RedditBase, Dict[str, Any], List[Any], bool]]:
+    def objectify(  # noqa: PLR0911,PLR0912,PLR0915
+        self, data: dict[str, Any] | list[Any] | bool | None
+    ) -> RedditBase | dict[str, Any] | list[Any] | bool | None:
         """Create :class:`.RedditBase` objects from data.
 
         :param data: The structured data.
@@ -240,8 +244,7 @@ class Objector:
             parser = self.parsers[data["kind"]]
             if data["kind"] == "ModeratedList":
                 return parser.parse(data, self._reddit)
-            else:
-                return parser.parse(data["data"], self._reddit)
+            return parser.parse(data["data"], self._reddit)
         if "json" in data and "data" in data["json"]:
             if "websocket_url" in data["json"]["data"]:
                 return data
@@ -250,7 +253,7 @@ class Objector:
             if "rules" in data["json"]["data"]:
                 return self.objectify(loads(data["json"]["data"]["rules"]))
             if "drafts_count" in data["json"]["data"] and all(
-                [key not in data["json"]["data"] for key in ["name", "url"]]
+                key not in data["json"]["data"] for key in ["name", "url"]
             ):  # Draft
                 data["json"]["data"].pop("drafts_count")
                 return self.parsers["Draft"].parse(data["json"]["data"], self._reddit)
@@ -274,7 +277,6 @@ class Objector:
             return parser.parse(data, self._reddit)
         if "rules" in data:
             return self.objectify(data["rules"])
-        elif isinstance(data, dict):
+        if isinstance(data, dict):
             return self._objectify_dict(data)
-
         return data

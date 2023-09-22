@@ -17,6 +17,10 @@ class TestCachedProperty(UnitTest):
 
         ten = cachedproperty(ten, doc="Return 10.")
 
+    def test_doc(self):
+        assert self.Klass.nine.__doc__ == "Return 9."
+        assert self.Klass.ten.__doc__ == "Return 10."
+
     def test_get(self):
         klass = self.Klass()
         assert "nine" not in klass.__dict__
@@ -37,7 +41,3 @@ class TestCachedProperty(UnitTest):
 
         property_repr = repr(self.Klass.ten)
         assert property_repr.startswith("<cachedproperty <function")
-
-    def test_doc(self):
-        assert self.Klass.nine.__doc__ == "Return 9."
-        assert self.Klass.ten.__doc__ == "Return 10."

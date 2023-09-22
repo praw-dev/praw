@@ -1,5 +1,4 @@
 """Provide the DraftList class."""
-
 from .base import BaseList
 
 

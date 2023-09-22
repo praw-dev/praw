@@ -1,20 +1,22 @@
 """Provides the code to load PRAW's configuration file ``praw.ini``."""
+from __future__ import annotations
+
 import configparser
 import os
 import sys
+from pathlib import Path
 from threading import Lock
-from typing import Optional
 
 from .exceptions import ClientException
 
 
 class _NotSet:
-    def __bool__(self):
+    def __bool__(self) -> bool:
         return False
 
     __nonzero__ = __bool__
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "NotSet"
 
 
@@ -30,31 +32,36 @@ class Config:
     }
 
     @staticmethod
-    def _config_boolean(item):
+    def _config_boolean(item: bool | str) -> bool:  # noqa: ANN001
         if isinstance(item, bool):
             return item
         return item.lower() in {"1", "yes", "true", "on"}
 
     @classmethod
-    def _load_config(cls, *, config_interpolation: Optional[str] = None):
+    def _load_config(cls, *, config_interpolation: str | None = None):  # noqa: ANN001
         """Attempt to load settings from various praw.ini files."""
         if config_interpolation is not None:
             interpolator_class = cls.INTERPOLATION_LEVEL[config_interpolation]()
         else:
             interpolator_class = None
+
         config = configparser.ConfigParser(interpolation=interpolator_class)
-        module_dir = os.path.dirname(sys.modules[__name__].__file__)
+        module_dir = Path(sys.modules[__name__].__file__).parent
+
         if "APPDATA" in os.environ:  # Windows
-            os_config_path = os.environ["APPDATA"]
+            os_config_path = Path(os.environ["APPDATA"])
         elif "XDG_CONFIG_HOME" in os.environ:  # Modern Linux
-            os_config_path = os.environ["XDG_CONFIG_HOME"]
+            os_config_path = Path(os.environ["XDG_CONFIG_HOME"])
         elif "HOME" in os.environ:  # Legacy Linux
-            os_config_path = os.path.join(os.environ["HOME"], ".config")
+            os_config_path = Path(os.environ["HOME"]) / ".config"
         else:
             os_config_path = None
-        locations = [os.path.join(module_dir, "praw.ini"), "praw.ini"]
+
+        locations = [str(module_dir / "praw.ini"), "praw.ini"]
+
         if os_config_path is not None:
-            locations.insert(1, os.path.join(os_config_path, "praw.ini"))
+            locations.insert(1, str(os_config_path / "praw.ini"))
+
         config.read(locations)
         cls.CONFIG = config
 
@@ -66,13 +73,14 @@ class Config:
 
         """
         if self._short_url is self.CONFIG_NOT_SET:
-            raise ClientException("No short domain specified.")
+            msg = "No short domain specified."
+            raise ClientException(msg)
         return self._short_url
 
     def __init__(
         self,
         site_name: str,
-        config_interpolation: Optional[str] = None,
+        config_interpolation: str | None = None,
         **settings: str,
     ):
         """Initialize a :class:`.Config` instance."""
@@ -89,17 +97,17 @@ class Config:
 
         self._initialize_attributes()
 
-    def _fetch(self, key):
+    def _fetch(self, key):  # noqa: ANN001
         value = self.custom[key]
         del self.custom[key]
         return value
 
-    def _fetch_default(self, key, *, default=None):
+    def _fetch_default(self, key, *, default=None):  # noqa: ANN001
         if key not in self.custom:
             return default
         return self._fetch(key)
 
-    def _fetch_or_not_set(self, key):
+    def _fetch_or_not_set(self, key):  # noqa: ANN001
         if key in self._settings:  # Passed in values have the highest priority
             return self._fetch(key)
 
@@ -109,7 +117,7 @@ class Config:
         # Environment variables have higher priority than praw.ini settings
         return env_value or ini_value or self.CONFIG_NOT_SET
 
-    def _initialize_attributes(self):
+    def _initialize_attributes(self):  # noqa: ANN001
         self._short_url = self._fetch_default("short_url") or self.CONFIG_NOT_SET
         self.check_for_async = self._config_boolean(
             self._fetch_default("check_for_async", default=True)
@@ -119,6 +127,9 @@ class Config:
         )
         self.warn_comment_sort = self._config_boolean(
             self._fetch_default("warn_comment_sort", default=True)
+        )
+        self.warn_additional_fetch_params = self._config_boolean(
+            self._fetch_default("warn_additional_fetch_params", default=True)
         )
         self.kinds = {
             x: self._fetch(f"{x}_kind")
@@ -158,8 +169,5 @@ class Config:
             try:
                 setattr(self, attribute, conversion(getattr(self, attribute)))
             except ValueError:
-                raise ValueError(
-                    f"An incorrect config type was given for option {attribute}. The"
-                    f" expected type is {conversion.__name__}, but the given value is"
-                    f" {getattr(self, attribute)}."
-                )
+                msg = f"An incorrect config type was given for option {attribute}. The expected type is {conversion.__name__}, but the given value is {getattr(self, attribute)}."
+                raise ValueError(msg) from None

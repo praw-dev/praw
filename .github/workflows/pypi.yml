@@ -1,24 +1,11 @@
 jobs:
-  release:
-    name: Build and release
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install setuptools wheel twine
-    - env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-      name: Build and release
-      run: |
-        python setup.py sdist bdist_wheel
-        twine upload dist/*
+  pypi:
+    name: Upload Python Package
+    secrets: inherit
+    uses: praw-dev/.github/.github/workflows/pypi.yml@main
 name: Upload Python Package
 on:
   release:
-    types: [published]
+    types: [ published ]
+permissions:
+  contents: read
