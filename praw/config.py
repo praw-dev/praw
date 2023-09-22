@@ -119,6 +119,7 @@ class Config:
 
     def _initialize_attributes(self):  # noqa: ANN001
         self._short_url = self._fetch_default("short_url") or self.CONFIG_NOT_SET
+        self.window_size = self._fetch_default("window_size", default=600)
         self.check_for_async = self._config_boolean(
             self._fetch_default("check_for_async", default=True)
         )

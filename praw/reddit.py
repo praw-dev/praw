@@ -546,7 +546,10 @@ class Reddit:
         else:
             self._core = self._read_only_core
             return
-        self._core = self._authorized_core = session(authorizer)
+        self._core = self._authorized_core = session(
+            authorizer=authorizer,
+            window_size=self.config.window_size
+        )
 
     def _prepare_objector(self):  # noqa: ANN001
         mappings = {
@@ -622,13 +625,19 @@ class Reddit:
             self.config.redirect_uri,
         )
         read_only_authorizer = ReadOnlyAuthorizer(authenticator)
-        self._read_only_core = session(read_only_authorizer)
+        self._read_only_core = session(
+            authorizer=read_only_authorizer,
+            window_size=self.config.window_size
+        )
 
         if self.config.username and self.config.password:
             script_authorizer = ScriptAuthorizer(
                 authenticator, self.config.username, self.config.password
             )
-            self._core = self._authorized_core = session(script_authorizer)
+            self._core = self._authorized_core = session(
+                authorizer=script_authorizer,
+                window_size=self.config.window_size
+            )
         else:
             self._prepare_common_authorizer(authenticator)
 
@@ -637,7 +646,10 @@ class Reddit:
             requestor, self.config.client_id, self.config.redirect_uri
         )
         read_only_authorizer = DeviceIDAuthorizer(authenticator)
-        self._read_only_core = session(read_only_authorizer)
+        self._read_only_core = session(
+            authorizer=read_only_authorizer,
+            window_size=self.config.window_size
+        )
         self._prepare_common_authorizer(authenticator)
 
     @_deprecate_args("id", "url")
