@@ -10,22 +10,25 @@ Add the following to your code to log everything available:
 
     import logging
 
-    handler = logging.StreamHandler()
-    handler.setLevel(logging.DEBUG)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.DEBUG)
+    file_handler = logging.handlers.RotatingFileHandler('praw_log.txt', maxBytes=1024*1024*16, backupCount=5)
+    file_handler.setLevel(logging.DEBUG)
     for logger_name in ("praw", "prawcore"):
         logger = logging.getLogger(logger_name)
         logger.setLevel(logging.DEBUG)
-        logger.addHandler(handler)
+        logger.addHandler(stream_handler)
+        logger.addHandler(file_handler)
 
 When properly configured, HTTP requests that are issued should produce output similar to
 the following:
 
 .. code-block:: text
 
-    Fetching: GET https://oauth.reddit.com/api/v1/me
+    Fetching: GET https://oauth.reddit.com/api/v1/me at 1691743155.4952002
     Data: None
     Params: {'raw_json': 1}
-    Response: 200 (876 bytes)
+    Response: 200 (876 bytes) (rst-45:rem-892:used-104 ratelimit) at 1691743156.3847592
 
 Furthermore, any API ratelimits from POST actions that are handled will produce a log
 entry with a message similar to the following message:
