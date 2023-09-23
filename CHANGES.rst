@@ -13,6 +13,10 @@ Unreleased
 - :meth:`~.SubredditRedditorFlairTemplates.reorder` to reorder a subreddit's redditor
   flair templates.
 
+**Changed**
+
+- Drop support for Python 3.7, which is end-of-life on 2023-06-27.
+
 7.7.1 (2023/07/11)
 ------------------
 
