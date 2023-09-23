@@ -13,7 +13,7 @@ Add the following to your code to log everything available:
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.DEBUG)
     file_handler = logging.handlers.RotatingFileHandler(
-        'praw_log.txt', maxBytes=1024*1024*16, backupCount=5
+        "praw_log.txt", maxBytes=1024 * 1024 * 16, backupCount=5
     )
     file_handler.setLevel(logging.DEBUG)
     for logger_name in ("praw", "prawcore"):
