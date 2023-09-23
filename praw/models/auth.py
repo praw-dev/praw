@@ -82,7 +82,7 @@ class Auth(PRAWBase):
             authorizer=ImplicitAuthorizer(
                 authenticator, access_token, expires_in, scope
             ),
-            window_size=self.config.window_size
+            window_size=self.config.window_size,
         )
         self._reddit._core = self._reddit._authorized_core = implicit_session
 
