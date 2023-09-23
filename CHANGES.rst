@@ -12,6 +12,9 @@ Unreleased
   templates.
 - :meth:`~.SubredditRedditorFlairTemplates.reorder` to reorder a subreddit's redditor
   flair templates.
+- :class:`.Reddit` has a new configurable parameter, ``window_size``. This tells PRAW
+  how long reddit's rate limit window is. This defaults to 600 seconds and shouldn't
+  need to be changed unless reddit changes the size of their rate limit window.
 
 7.7.1 (2023/07/11)
 ------------------
