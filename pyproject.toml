@@ -26,6 +26,7 @@ dependencies = [
   "websocket-client >=0.54.0"
 ]
 dynamic = ["version", "description"]
+keywords = "reddit api wrapper"
 license = {file = "LICENSE.txt"}
 maintainers = [
   {name = "Bryce Boe", email = "bbzbryce@gmail.com"},
