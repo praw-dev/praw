@@ -8,7 +8,7 @@ Prerequisites
 -------------
 
 :Python Knowledge: You need to know at least a little Python to use PRAW. PRAW supports
-    `Python 3.7+`_. If you are stuck on a problem, `r/learnpython`_ is a great place to
+    `Python 3.8+`_. If you are stuck on a problem, `r/learnpython`_ is a great place to
     ask for help.
 :Reddit Knowledge: A basic understanding of how Reddit works is a must. In the event you
     are not already familiar with Reddit start at `Reddit Help`_.
@@ -26,7 +26,7 @@ Prerequisites
 
 .. _first steps guide: https://github.com/reddit/reddit/wiki/OAuth2-Quick-Start-Example#first-steps
 
-.. _python 3.7+: https://docs.python.org/3/tutorial/index.html
+.. _python 3.8+: https://docs.python.org/3/tutorial/index.html
 
 .. _r/learnpython: https://www.reddit.com/r/learnpython/
 
