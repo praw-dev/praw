@@ -1,12 +1,25 @@
 jobs:
   pypi-publish:
-    name: Publish Python Package
-    secrets: inherit
-    uses: praw-dev/.github/.github/workflows/pypi.yml@main
-name: Publish Python Package
+    environment: release
+    name: Upload release to PyPI
+    permissions:
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+      - name: Build package
+        run: python -m build
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+name: Upload Python Package
 on:
   release:
     types: [ published ]
-permissions:
-  contents: read
-  id-token: write
