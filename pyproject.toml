@@ -33,6 +33,7 @@ maintainers = [
   {name = "Joel Payne", email = "lilspazjoekp@gmail.com"}
 ]
 name = "praw"
+readme = "README.rst"
 requires-python = "~=3.8"
 
 [project.optional-dependencies]
