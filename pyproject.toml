@@ -46,7 +46,7 @@ dev = [
 lint = [
   "praw[readthedocs]",
   "pre-commit",
-  "ruff >=0.0.*"
+  "ruff >=0.0.291"
 ]
 readthedocs = [
   "furo",
