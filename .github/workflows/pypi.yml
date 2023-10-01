@@ -1,9 +1,9 @@
 jobs:
-  pypi:
-    name: Upload Python Package
+  pypi-publish:
+    name: Publish Python Package
     secrets: inherit
     uses: praw-dev/.github/.github/workflows/pypi.yml@main
-name: Upload Python Package
+name: Publish Python Package
 on:
   release:
     types: [ published ]
