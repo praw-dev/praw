@@ -6,6 +6,10 @@ PRAW follows `semantic versioning <http://semver.org/>`_.
 Unreleased
 ----------
 
+**Fixed**
+
+- An issue where submitting a post with media would fail due to an API change.
+
 **Added**
 
 - :meth:`~.SubredditLinkFlairTemplates.reorder` to reorder a subreddit's link flair
