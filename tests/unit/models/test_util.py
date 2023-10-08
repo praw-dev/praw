@@ -125,7 +125,7 @@ class TestStream(UnitTest):
             assert thing not in seen
             seen.add(thing)
 
-    def test_stream_start_after(
+    def test_comments__with_continue_after_id(
         self,
     ):
         Thing = namedtuple("Thing", ["fullname"])
@@ -148,7 +148,7 @@ class TestStream(UnitTest):
                 return sliced_things
             return [Thing(counter)] + sliced_things[:-1]
 
-        stream = stream_generator(generate, start_after=49)
+        stream = stream_generator(generate, continue_after_id=49)
         expected_fullname = 50
         for _ in range(50):
             thing = next(stream)

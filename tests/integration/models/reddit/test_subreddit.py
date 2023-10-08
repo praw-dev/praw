@@ -954,11 +954,11 @@ class TestSubredditStreams(IntegrationTest):
         # that there are at least 400 comments in the stream.
         assert count < 400
 
-    def test_comments__with_start_after(self, reddit):
-        subreddit = reddit.subreddit("kakapo")
+    def test_comments__with_continue_after_id(self, reddit):
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         initial_stream = subreddit.stream.comments()
         first_ten = [next(initial_stream) for _ in range(10)]
-        generator = subreddit.stream.comments(start_after=first_ten[4].fullname)
+        generator = subreddit.stream.comments(continue_after_id=first_ten[4].fullname)
         for i in range(5):
             comment = next(generator)
             assert isinstance(comment, Comment)

@@ -40,7 +40,7 @@ def permissions_string(
     "skip_existing",
     "attribute_name",
     "exclude_before",
-    "start_after",
+    "continue_after_id",
 )
 def stream_generator(
     function: Callable,
@@ -49,7 +49,7 @@ def stream_generator(
     exclude_before: bool = False,
     pause_after: int | None = None,
     skip_existing: bool = False,
-    start_after: str | None = None,
+    continue_after_id: str | None = None,
     **function_kwargs: Any,
 ) -> Generator[Any, None, None]:
     """Yield new items from ``function`` as they become available.
@@ -68,8 +68,9 @@ def stream_generator(
     :param skip_existing: When ``True``, this does not yield any results from the first
         request thereby skipping any items that existed in the stream prior to starting
         the stream (default: ``False``).
-    :param start_after: The initial string value to use for ``before`` in ``params``.
-        The stream will start from the item following this one (default: ``None``).
+    :param continue_after_id: The initial item ID value to use for ``before`` in
+        ``params``. The stream will continue from the item following this one (default:
+        ``None``).
 
     Additional keyword arguments will be passed to ``function``.
 
@@ -130,7 +131,7 @@ def stream_generator(
             print(comment)
 
     """
-    before_attribute = start_after
+    before_attribute = continue_after_id
     exponential_counter = ExponentialCounter(max_counter=16)
     seen_attributes = BoundedSet(301)
     without_before_counter = 0
