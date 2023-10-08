@@ -72,6 +72,7 @@ order to successfully access a third-party Reddit site:
     (default: ``t3_``).
 :subreddit_kind: The type prefix for subreddits on the :class:`.Reddit` instance
     (default: ``t5_``).
+:window_size: The number of seconds between rate limit resets (default: 600).
 
 .. _misc_options:
 
