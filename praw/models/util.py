@@ -35,7 +35,12 @@ def permissions_string(
 
 
 @_deprecate_args(
-    "function", "pause_after", "skip_existing", "attribute_name", "exclude_before", "start_after"
+    "function",
+    "pause_after",
+    "skip_existing",
+    "attribute_name",
+    "exclude_before",
+    "start_after",
 )
 def stream_generator(
     function: Callable,
