@@ -1549,7 +1549,7 @@ class TestSubreddit(IntegrationTest):
     @mock.patch(
         "websocket.create_connection",
         new=MagicMock(
-            return_value=WebsocketMock("k5rhpg", "k5rhsu", "k5rhx3")
+            return_value=WebsocketMock("16xb01r", "16xb06z", "16xb0aa")
         ),  # update with cassette
     )
     def test_submit_image(self, image_path, reddit):
@@ -1629,6 +1629,7 @@ class TestSubreddit(IntegrationTest):
     @mock.patch(
         "websocket.create_connection", new=MagicMock(side_effect=BlockingIOError)
     )  # happens with timeout=0
+    @pytest.mark.cassette_name("TestSubreddit.test_submit_image__timeout")
     def test_submit_image__timeout_1(self, image_path, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -1643,6 +1644,7 @@ class TestSubreddit(IntegrationTest):
             # happens with timeout=0.00001
         ),
     )
+    @pytest.mark.cassette_name("TestSubreddit.test_submit_image__timeout")
     def test_submit_image__timeout_2(self, image_path, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -1658,6 +1660,7 @@ class TestSubreddit(IntegrationTest):
             ),  # happens with timeout=0.1
         ),
     )
+    @pytest.mark.cassette_name("TestSubreddit.test_submit_image__timeout")
     def test_submit_image__timeout_3(self, image_path, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -1673,6 +1676,7 @@ class TestSubreddit(IntegrationTest):
             ),  # could happen, and PRAW should handle it
         ),
     )
+    @pytest.mark.cassette_name("TestSubreddit.test_submit_image__timeout")
     def test_submit_image__timeout_4(self, image_path, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -1688,6 +1692,7 @@ class TestSubreddit(IntegrationTest):
             ),  # from issue #1124
         ),
     )
+    @pytest.mark.cassette_name("TestSubreddit.test_submit_image__timeout")
     def test_submit_image__timeout_5(self, image_path, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -1848,6 +1853,7 @@ class TestSubreddit(IntegrationTest):
     @mock.patch(
         "websocket.create_connection", new=MagicMock(side_effect=BlockingIOError)
     )  # happens with timeout=0
+    @pytest.mark.cassette_name("TestSubreddit.test_submit_video__timeout")
     def test_submit_video__timeout_1(self, image_path, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -1862,6 +1868,7 @@ class TestSubreddit(IntegrationTest):
             # happens with timeout=0.00001
         ),
     )
+    @pytest.mark.cassette_name("TestSubreddit.test_submit_video__timeout")
     def test_submit_video__timeout_2(self, image_path, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -1877,6 +1884,7 @@ class TestSubreddit(IntegrationTest):
             ),  # happens with timeout=0.1
         ),
     )
+    @pytest.mark.cassette_name("TestSubreddit.test_submit_video__timeout")
     def test_submit_video__timeout_3(self, image_path, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -1892,6 +1900,7 @@ class TestSubreddit(IntegrationTest):
             ),  # could happen, and PRAW should handle it
         ),
     )
+    @pytest.mark.cassette_name("TestSubreddit.test_submit_video__timeout")
     def test_submit_video__timeout_4(self, image_path, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -1907,6 +1916,7 @@ class TestSubreddit(IntegrationTest):
             ),  # from issue #1124
         ),
     )
+    @pytest.mark.cassette_name("TestSubreddit.test_submit_video__timeout")
     def test_submit_video__timeout_5(self, image_path, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
