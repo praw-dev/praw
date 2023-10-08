@@ -12,6 +12,7 @@ Unreleased
   templates.
 - :meth:`~.SubredditRedditorFlairTemplates.reorder` to reorder a subreddit's redditor
   flair templates.
+- :func:`.stream_generator` now accepts the ``continue_after_id`` parameter.
 
 **Changed**
 
