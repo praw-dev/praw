@@ -124,3 +124,33 @@ class TestStream(UnitTest):
             thing = next(stream)
             assert thing not in seen
             seen.add(thing)
+
+    def test_stream_start_after(
+        self,
+    ):
+        Thing = namedtuple("Thing", ["fullname"])
+        initial_things = [Thing(n) for n in reversed(range(100))]
+        counter = 99
+
+        def generate(limit, params=None, **kwargs):
+            nonlocal counter
+            counter += 1
+            sliced_things = initial_things
+            if params:
+                sliced_things = initial_things[
+                    : next(
+                        i
+                        for i, thing in enumerate(initial_things)
+                        if thing.fullname == params["before"]
+                    )
+                ]
+            if counter % 2 == 0:
+                return sliced_things
+            return [Thing(counter)] + sliced_things[:-1]
+
+        stream = stream_generator(generate, start_after=49)
+        expected_fullname = 50
+        for _ in range(50):
+            thing = next(stream)
+            assert thing.fullname == expected_fullname, thing
+            expected_fullname += 1
