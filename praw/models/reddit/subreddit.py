@@ -1294,6 +1294,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             self,
             title: str,
             images: list[dict[str, str]],
+            videos: list[dict[str, str]] = [],  # Add the new 'videos' parameter
             text: str = '',  # Add the new 'text' parameter with a default value of empty string
             *,
             collection_id: str | None = None,
@@ -1360,6 +1361,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         """
         self._validate_gallery(images)
+        self._validate_gallery(videos)  # Assuming the same validation can be applied
+
         data = {
             "api_type": "json",
             "items": [],
@@ -1392,6 +1395,19 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                     ),
                 }
             )
+        for video in videos:
+            data["items"].append(
+                {
+                    "caption": video.get("caption", ""),
+                    "outbound_url": video.get("outbound_url", ""),
+                    "media_id": self._upload_media(
+                        expected_mime_prefix="video",  # Adjust mime type for video
+                        media_path=video["image_path"],  # Assuming the key remains the same
+                        upload_type="gallery",
+                    ),
+                }
+            )
+
         response = self._reddit.request(
             json=data, method="POST", path=API_PATH["submit_gallery_post"]
         )["json"]
