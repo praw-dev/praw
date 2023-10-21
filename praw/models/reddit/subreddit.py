@@ -1293,7 +1293,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             self,
             title: str,
             images: list[dict[str, str]],
-            videos: list[dict[str, str]] = [],
             text: str = '',
             *,
             collection_id: str | None = None,
@@ -1305,7 +1304,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             spoiler: bool = False,
     ) -> praw.models.Submission:
         self._validate_gallery(images)
-        self._validate_gallery(videos)
 
         data = {
             "api_type": "json",
@@ -1335,18 +1333,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                     "media_id": self._upload_media(
                         expected_mime_prefix="image",
                         media_path=image["image_path"],
-                        upload_type="gallery",
-                    ),
-                }
-            )
-        for video in videos:
-            data["items"].append(
-                {
-                    "caption": video.get("caption", ""),
-                    "outbound_url": video.get("outbound_url", ""),
-                    "media_id": self._upload_media(
-                        expected_mime_prefix="video",
-                        media_path=video["video_path"],
                         upload_type="gallery",
                     ),
                 }
