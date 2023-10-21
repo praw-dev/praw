@@ -1638,6 +1638,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         title: str,
         video_path: str,
         *,
+        text: str = None,  # New optional parameter for text
         collection_id: str | None = None,
         discussion_type: str | None = None,
         flair_id: str | None = None,
@@ -1722,6 +1723,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             "resubmit": bool(resubmit),
             "sendreplies": bool(send_replies),
             "title": title,
+            "text": text,  # Add the new 'text' parameter to the data dict
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
             "validate_on_submit": self._reddit.validate_on_submit,
