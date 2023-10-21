@@ -1346,7 +1346,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                     "outbound_url": video.get("outbound_url", ""),
                     "media_id": self._upload_media(
                         expected_mime_prefix="video",
-                        media_path=video["image_path"],
+                        media_path=video["video_path"],
                         upload_type="gallery",
                     ),
                 }
