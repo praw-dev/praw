@@ -1419,6 +1419,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         title: str,
         image_path: str,
         *,
+        text: str = None,  # New optional parameter for text
         collection_id: str | None = None,
         discussion_type: str | None = None,
         flair_id: str | None = None,
@@ -1500,11 +1501,15 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             "spoiler": bool(spoiler),
             "validate_on_submit": self._reddit.validate_on_submit,
         }
+        # Check if text is provided and add to data dictionary
+        if text:
+            data["text"] = text
+
         for key, value in (
-            ("flair_id", flair_id),
-            ("flair_text", flair_text),
-            ("collection_id", collection_id),
-            ("discussion_type", discussion_type),
+                ("flair_id", flair_id),
+                ("flair_text", flair_text),
+                ("collection_id", collection_id),
+                ("discussion_type", discussion_type),
         ):
             if value is not None:
                 data[key] = value
@@ -1516,7 +1521,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return self._submit_media(
             data=data, timeout=timeout, without_websockets=without_websockets
         )
-
     @_deprecate_args(
         "title",
         "selftext",
