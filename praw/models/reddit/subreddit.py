@@ -1238,10 +1238,11 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
 
         """
-        if (bool(selftext) or selftext == "") == bool(url):
+        if not (bool(selftext) or selftext == "" or url):
             msg = "Either 'selftext' or 'url' must be provided."
             raise TypeError(msg)
 
+        # Common data fields
         data = {
             "sr": str(self),
             "resubmit": bool(resubmit),
@@ -1251,16 +1252,19 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             "spoiler": bool(spoiler),
             "validate_on_submit": self._reddit.validate_on_submit,
         }
+
         for key, value in (
-            ("flair_id", flair_id),
-            ("flair_text", flair_text),
-            ("collection_id", collection_id),
-            ("discussion_type", discussion_type),
-            ("draft_id", draft_id),
+                ("flair_id", flair_id),
+                ("flair_text", flair_text),
+                ("collection_id", collection_id),
+                ("discussion_type", discussion_type),
+                ("draft_id", draft_id),
         ):
             if value is not None:
                 data[key] = value
-        if selftext is not None:
+
+        # Handling selftext or url submission
+        if selftext is not None or selftext == "":
             data.update(kind="self")
             if inline_media:
                 body = selftext.format(
@@ -1273,7 +1277,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                 data.update(richtext_json=dumps(converted))
             else:
                 data.update(text=selftext)
-        else:
+        elif url:
             data.update(kind="link", url=url)
 
         return self._reddit.post(API_PATH["submit"], data=data)
