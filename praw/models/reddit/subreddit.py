@@ -1289,13 +1289,12 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         "send_replies",
         "spoiler",
     )
-
     def submit_gallery(
             self,
             title: str,
             images: list[dict[str, str]],
-            videos: list[dict[str, str]] = [],  # Add the new 'videos' parameter
-            text: str = '',  # Add the new 'text' parameter with a default value of empty string
+            videos: list[dict[str, str]] = [],
+            text: str = '',
             *,
             collection_id: str | None = None,
             discussion_type: str | None = None,
@@ -1305,63 +1304,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             send_replies: bool = True,
             spoiler: bool = False,
     ) -> praw.models.Submission:
-        """Add an image gallery submission to the subreddit.
-
-        :param title: The title of the submission.
-        :param images: The images to post in dict with the following structure:
-            ``{"image_path": "path", "caption": "caption", "outbound_url": "url"}``,
-            only ``image_path`` is required.
-        :param collection_id: The UUID of a :class:`.Collection` to add the
-            newly-submitted post to.
-        :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
-            traditional comments (default: ``None``).
-        :param flair_id: The flair template to select (default: ``None``).
-        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
-            this value will set a custom text (default: ``None``). ``flair_id`` is
-            required when ``flair_text`` is provided.
-        :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
-        :param send_replies: When ``True``, messages will be sent to the submission
-            author when comments are made to the submission (default: ``True``).
-        :param spoiler: Whether the submission should be marked asa spoiler (default:
-            ``False``).
-
-        :returns: A :class:`.Submission` object for the newly created submission.
-
-        :raises: :class:`.ClientException` if ``image_path`` in ``images`` refers to a
-            file that is not an image.
-
-        For example, to submit an image gallery to r/test do:
-
-        .. code-block:: python
-
-            title = "My favorite pictures"
-            image = "/path/to/image.png"
-            image2 = "/path/to/image2.png"
-            image3 = "/path/to/image3.png"
-            images = [
-                {"image_path": image},
-                {
-                    "image_path": image2,
-                    "caption": "Image caption 2",
-                },
-                {
-                    "image_path": image3,
-                    "caption": "Image caption 3",
-                    "outbound_url": "https://example.com/link3",
-                },
-            ]
-            reddit.subreddit("test").submit_gallery(title, images)
-
-        .. seealso::
-
-            - :meth:`~.Subreddit.submit` to submit url posts and selftexts
-            - :meth:`~.Subreddit.submit_image` to submit single images
-            - :meth:`~.Subreddit.submit_poll` to submit polls
-            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
-
-        """
         self._validate_gallery(images)
-        self._validate_gallery(videos)  # Assuming the same validation can be applied
+        self._validate_gallery(videos)
 
         data = {
             "api_type": "json",
@@ -1372,14 +1316,14 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             "spoiler": bool(spoiler),
             "sr": str(self),
             "title": title,
-            "text": text,  # Add the new 'text' parameter to the data dict
+            "text": text,
             "validate_on_submit": self._reddit.validate_on_submit,
         }
         for key, value in (
-            ("flair_id", flair_id),
-            ("flair_text", flair_text),
-            ("collection_id", collection_id),
-            ("discussion_type", discussion_type),
+                ("flair_id", flair_id),
+                ("flair_text", flair_text),
+                ("collection_id", collection_id),
+                ("discussion_type", discussion_type),
         ):
             if value is not None:
                 data[key] = value
@@ -1401,8 +1345,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                     "caption": video.get("caption", ""),
                     "outbound_url": video.get("outbound_url", ""),
                     "media_id": self._upload_media(
-                        expected_mime_prefix="video",  # Adjust mime type for video
-                        media_path=video["image_path"],  # Assuming the key remains the same
+                        expected_mime_prefix="video",
+                        media_path=video["image_path"],
                         upload_type="gallery",
                     ),
                 }
