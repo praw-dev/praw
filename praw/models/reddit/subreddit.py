@@ -1294,17 +1294,18 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         "spoiler",
     )
     def submit_gallery(
-        self,
-        title: str,
-        images: list[dict[str, str]],
-        *,
-        collection_id: str | None = None,
-        discussion_type: str | None = None,
-        flair_id: str | None = None,
-        flair_text: str | None = None,
-        nsfw: bool = False,
-        send_replies: bool = True,
-        spoiler: bool = False,
+            self,
+            title: str,
+            images: list[dict[str, str]],
+            text: str = '',  # Add the new 'text' parameter with a default value of empty string
+            *,
+            collection_id: str | None = None,
+            discussion_type: str | None = None,
+            flair_id: str | None = None,
+            flair_text: str | None = None,
+            nsfw: bool = False,
+            send_replies: bool = True,
+            spoiler: bool = False,
     ) -> praw.models.Submission:
         """Add an image gallery submission to the subreddit.
 
@@ -1371,6 +1372,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             "spoiler": bool(spoiler),
             "sr": str(self),
             "title": title,
+            "text": text,  # Add the new 'text' parameter to the data dict
             "validate_on_submit": self._reddit.validate_on_submit,
         }
         for key, value in (
