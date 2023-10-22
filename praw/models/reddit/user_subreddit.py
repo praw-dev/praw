@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import inspect
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Callable
 from warnings import warn
 
 from ...util.cache import cachedproperty
@@ -52,7 +52,7 @@ class UserSubreddit(Subreddit):
     """
 
     @staticmethod
-    def _dict_depreciated_wrapper(func):  # noqa: ANN001,ANN205
+    def _dict_deprecated_wrapper(func: Callable) -> Callable:
         """Show deprecation notice for dict only methods."""
 
         def wrapper(*args: Any, **kwargs: Any):
@@ -112,7 +112,7 @@ class UserSubreddit(Subreddit):
                 setattr(
                     self,
                     name,
-                    self._dict_depreciated_wrapper(getattr(self.__dict__, name)),
+                    self._dict_deprecated_wrapper(getattr(self.__dict__, name)),
                 )
 
         super().__init__(reddit, *args, **kwargs)

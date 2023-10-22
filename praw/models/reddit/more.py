@@ -42,7 +42,7 @@ class MoreComments(PRAWBase):
             children[-1] = "..."
         return f"<{self.__class__.__name__} count={self.count}, children={children!r}>"
 
-    def _continue_comments(self, update):  # noqa: ANN001
+    def _continue_comments(self, update: bool):
         assert not self.children, "Please file a bug report with PRAW."
         parent = self._load_comment(self.parent_id.split("_", 1)[1])
         self._comments = parent.replies
@@ -51,7 +51,7 @@ class MoreComments(PRAWBase):
                 comment.submission = self.submission
         return self._comments
 
-    def _load_comment(self, comment_id):  # noqa: ANN001
+    def _load_comment(self, comment_id: str):
         path = f"{API_PATH['submission'].format(id=self.submission.id)}_/{comment_id}"
         _, comments = self._reddit.get(
             path,

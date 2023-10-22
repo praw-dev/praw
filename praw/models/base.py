@@ -13,7 +13,7 @@ class PRAWBase:
 
     @staticmethod
     def _safely_add_arguments(
-        *, arguments, key, **new_arguments  # noqa: ANN001,ANN003,ANN205
+        *, arguments: dict[str, Any], key: str, **new_arguments: Any
     ):
         """Replace arguments[key] with a deepcopy and update.
 

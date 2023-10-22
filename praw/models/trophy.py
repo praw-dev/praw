@@ -54,4 +54,4 @@ class Trophy(PRAWBase):
 
     def __str__(self) -> str:
         """Return a name of the trophy."""
-        return self.name  # pylint: disable=no-member
+        return self.name

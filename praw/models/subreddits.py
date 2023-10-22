@@ -19,7 +19,7 @@ class Subreddits(PRAWBase):
     """Subreddits is a Listing class that provides various subreddit lists."""
 
     @staticmethod
-    def _to_list(subreddit_list):  # noqa: ANN001,ANN003,ANN205
+    def _to_list(subreddit_list: list[str | praw.models.Subreddit]) -> str:
         return ",".join([str(x) for x in subreddit_list])
 
     def default(

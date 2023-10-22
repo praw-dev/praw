@@ -9,12 +9,13 @@ All other exceptions are subclassed from :class:`.ClientException`.
 """
 from __future__ import annotations
 
+from typing import Any
 from warnings import warn
 
 from .util import _deprecate_args
 
 
-class PRAWException(Exception):  # noqa: N818
+class PRAWException(Exception):
     """The base PRAW Exception that all other exception classes extend."""
 
 
@@ -79,7 +80,7 @@ class ClientException(PRAWException):
 class DuplicateReplaceException(ClientException):
     """Indicate exceptions that involve the replacement of :class:`.MoreComments`."""
 
-    def __init__(self) -> None:
+    def __init__(self):
         """Initialize a :class:`.DuplicateReplaceException` instance."""
         super().__init__(
             "A duplicate comment has been detected. Are you attempting to call"
@@ -101,7 +102,7 @@ class InvalidFlairTemplateID(ClientException):
 class InvalidImplicitAuth(ClientException):
     """Indicate exceptions where an implicit auth type is used incorrectly."""
 
-    def __init__(self) -> None:
+    def __init__(self):
         """Initialize an :class:`.InvalidImplicitAuth` instance."""
         super().__init__("Implicit authorization can only be used with installed apps.")
 
@@ -189,7 +190,7 @@ class WebSocketException(ClientException):
 class MediaPostFailed(WebSocketException):
     """Indicate exceptions where media uploads failed.."""
 
-    def __init__(self) -> None:
+    def __init__(self):
         """Initialize a :class:`.MediaPostFailed` instance."""
         super().__init__(
             "The attempted media upload action has failed. Possible causes include the"
@@ -287,7 +288,7 @@ class APIException(PRAWException):
         self.items = self.parse_exception_list(items)
         super().__init__(*self.items)
 
-    def _get_old_attr(self, attrname):  # noqa: ANN001
+    def _get_old_attr(self, attrname: str) -> Any:
         warn(
             f"Accessing attribute '{attrname}' through APIException is deprecated."
             " This behavior will be removed in PRAW 8.0. Check out"

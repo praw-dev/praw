@@ -85,10 +85,7 @@ class Draft(RedditBase):
         return data
 
     def __init__(
-        self,
-        reddit: praw.Reddit,
-        id: str | None = None,  # pylint: disable=redefined-builtin
-        _data: dict[str, Any] = None,
+        self, reddit: praw.Reddit, id: str | None = None, _data: dict[str, Any] = None
     ):
         """Initialize a :class:`.Draft` instance."""
         if (id, _data).count(None) != 1:
@@ -119,7 +116,7 @@ class Draft(RedditBase):
         for draft in self._reddit.drafts():
             if draft.id == self.id:
                 self.__dict__.update(draft.__dict__)
-                self._fetched = True
+                super()._fetch()
                 return
         msg = (
             f"The currently authenticated user not have a draft with an ID of {self.id}"

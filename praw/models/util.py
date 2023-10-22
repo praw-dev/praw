@@ -189,7 +189,7 @@ class BoundedSet:
         self.max_items = max_items
         self._set = OrderedDict()
 
-    def _access(self, item: Any):  # noqa: ANN001
+    def _access(self, item: Any):
         if item in self._set:
             self._set.move_to_end(item)
 

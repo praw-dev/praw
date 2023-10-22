@@ -7,8 +7,8 @@ from typing import Any, Callable
 from warnings import warn
 
 
-def _deprecate_args(*old_args: str):  # noqa: ANN001
-    def _generate_arg_string(used_args: tuple[str, ...]) -> str:  # noqa: ANN001
+def _deprecate_args(*old_args: str) -> Callable:
+    def _generate_arg_string(used_args: tuple[str, ...]) -> str:
         used_args = list(map(repr, used_args))
         arg_count = len(used_args)
         arg_string = (

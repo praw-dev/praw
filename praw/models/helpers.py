@@ -30,8 +30,8 @@ class DraftHelper(PRAWBase):
     ) -> list[praw.models.Draft] | praw.models.Draft:
         """Return a list of :class:`.Draft` instances.
 
-        :param draft_id: When provided, return :class:`.Draft` instance (default:
-            ``None``).
+        :param draft_id: When provided, this returns a :class:`.Draft` instance
+            (default: ``None``).
 
         :returns: A :class:`.Draft` instance if ``draft_id`` is provided. Otherwise, a
             list of :class:`.Draft` objects.
@@ -54,7 +54,7 @@ class DraftHelper(PRAWBase):
             return Draft(self._reddit, id=draft_id)
         return self._draft_list()
 
-    def _draft_list(self) -> list[praw.models.Draft]:  # noqa: ANN001
+    def _draft_list(self) -> list[praw.models.Draft]:
         """Get a list of :class:`.Draft` instances.
 
         :returns: A list of :class:`.Draft` instances.
@@ -139,9 +139,7 @@ class DraftHelper(PRAWBase):
 class LiveHelper(PRAWBase):
     r"""Provide a set of functions to interact with :class:`.LiveThread`\ s."""
 
-    def __call__(
-        self, id: str
-    ) -> praw.models.LiveThread:  # pylint: disable=invalid-name,redefined-builtin
+    def __call__(self, id: str) -> praw.models.LiveThread:
         """Return a new lazy instance of :class:`.LiveThread`.
 
         This method is intended to be used as:
@@ -193,8 +191,13 @@ class LiveHelper(PRAWBase):
 
         :returns: A generator that yields :class:`.LiveThread` instances.
 
-        Live threads that cannot be matched will not be generated. Requests will be
-        issued in batches for each 100 IDs.
+        :raises: ``prawcore.ServerError`` if invalid live threads are requested.
+
+        Requests will be issued in batches for each 100 IDs.
+
+        .. note::
+
+            This method doesn't support IDs for live updates.
 
         .. warning::
 

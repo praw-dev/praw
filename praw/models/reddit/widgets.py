@@ -301,12 +301,12 @@ class SubredditWidgets(PRAWBase):
             self.items[widget_name] for widget_name in self.layout["topbar"]["order"]
         ]
 
-    def __getattr__(self, attribute: str) -> Any:
+    def __getattr__(self, attr: str) -> Any:
         """Return the value of ``attr``."""
-        if not attribute.startswith("_") and not self._fetched:
+        if not attr.startswith("_") and not self._fetched:
             self._fetch()
-            return getattr(self, attribute)
-        msg = f"{self.__class__.__name__!r} object has no attribute {attribute!r}"
+            return getattr(self, attr)
+        msg = f"{self.__class__.__name__!r} object has no attribute {attr!r}"
         raise AttributeError(msg)
 
     def __init__(self, subreddit: praw.models.Subreddit):
@@ -326,7 +326,7 @@ class SubredditWidgets(PRAWBase):
         """Return an object initialization representation of the instance."""
         return f"SubredditWidgets(subreddit={self.subreddit!r})"
 
-    def _fetch(self):  # noqa: ANN001
+    def _fetch(self):
         data = self._reddit.get(
             API_PATH["widgets"].format(subreddit=self.subreddit),
             params={"progressive_images": self.progressive_images},
@@ -387,7 +387,6 @@ class Widget(PRAWBase):
             return self.id.lower() == other.id.lower()
         return str(other).lower() == self.id.lower()
 
-    # pylint: disable=invalid-name
     def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]):
         """Initialize a :class:`.Widget` instance."""
         self.subreddit = ""  # in case it isn't in _data
@@ -399,7 +398,7 @@ class Widget(PRAWBase):
 class WidgetEncoder(JSONEncoder):
     """Class to encode widget-related objects."""
 
-    def default(self, o: Any) -> Any:  # pylint: disable=E0202
+    def default(self, o: Any) -> Any:
         """Serialize ``PRAWBase`` objects."""
         if isinstance(o, self._subreddit_class):
             return str(o)
@@ -1109,6 +1108,85 @@ class TextArea(Widget):
     """
 
 
+class WidgetModeration:
+    """Class for moderating a particular widget.
+
+    Example usage:
+
+    .. code-block:: python
+
+        widget = reddit.subreddit("test").widgets.sidebar[0]
+        widget.mod.update(shortName="My new title")
+        widget.mod.delete()
+
+    """
+
+    def __init__(
+        self,
+        widget: Widget,
+        subreddit: praw.models.Subreddit | str,
+        reddit: praw.Reddit,
+    ):
+        """Initialize a :class:`.WidgetModeration` instance."""
+        self.widget = widget
+        self._reddit = reddit
+        self._subreddit = subreddit
+
+    def delete(self):
+        """Delete the widget.
+
+        Example usage:
+
+        .. code-block:: python
+
+            widget.mod.delete()
+
+        """
+        path = API_PATH["widget_modify"].format(
+            widget_id=self.widget.id, subreddit=self._subreddit
+        )
+        self._reddit.delete(path)
+
+    def update(self, **kwargs: Any) -> Widget:
+        """Update the widget. Returns the updated widget.
+
+        Parameters differ based on the type of widget. See `Reddit documentation
+        <https://www.reddit.com/dev/api#PUT_api_widget_{widget_id}>`_ or the document of
+        the particular type of widget.
+
+        :returns: The updated :class:`.Widget`.
+
+        For example, update a text widget like so:
+
+        .. code-block:: python
+
+            text_widget.mod.update(shortName="New text area", text="Hello!")
+
+        .. note::
+
+            Most parameters follow the ``lowerCamelCase`` convention. When in doubt,
+            check the Reddit documentation linked above.
+
+        """
+        path = API_PATH["widget_modify"].format(
+            widget_id=self.widget.id, subreddit=self._subreddit
+        )
+        payload = {
+            key: value
+            for key, value in vars(self.widget).items()
+            if not key.startswith("_")
+        }
+        del payload["subreddit"]  # not JSON serializable
+        if "mod" in payload:
+            del payload["mod"]
+        payload.update(kwargs)
+        widget = self._reddit.put(
+            path, data={"json": dumps(payload, cls=WidgetEncoder)}
+        )
+        widget.subreddit = self._subreddit
+        return widget
+
+
 class SubredditWidgetsModeration:
     """Class for moderating a :class:`.Subreddit`'s widgets.
 
@@ -1135,7 +1213,7 @@ class SubredditWidgetsModeration:
         self._subreddit = subreddit
         self._reddit = reddit
 
-    def _create_widget(self, payload: dict[str, Any]) -> WidgetType:  # noqa: ANN001
+    def _create_widget(self, payload: dict[str, Any]) -> WidgetType:
         path = API_PATH["widget_create"].format(subreddit=self._subreddit)
         widget = self._reddit.post(
             path, data={"json": dumps(payload, cls=WidgetEncoder)}
@@ -1147,7 +1225,7 @@ class SubredditWidgetsModeration:
     def add_button_widget(
         self,
         *,
-        buttons: list[dict[str, dict[str, str] | str | int | dict[str, str | int]]],
+        buttons: list[dict[str, dict[str, str | int] | str | int]],
         description: str,
         short_name: str,
         styles: dict[str, str],
@@ -1790,82 +1868,3 @@ class SubredditWidgetsModeration:
         response.raise_for_status()
 
         return f"{upload_url}/{upload_data['key']}"
-
-
-class WidgetModeration:
-    """Class for moderating a particular widget.
-
-    Example usage:
-
-    .. code-block:: python
-
-        widget = reddit.subreddit("test").widgets.sidebar[0]
-        widget.mod.update(shortName="My new title")
-        widget.mod.delete()
-
-    """
-
-    def __init__(
-        self,
-        widget: Widget,
-        subreddit: praw.models.Subreddit | str,
-        reddit: praw.Reddit,
-    ):
-        """Initialize a :class:`.WidgetModeration` instance."""
-        self.widget = widget
-        self._reddit = reddit
-        self._subreddit = subreddit
-
-    def delete(self):
-        """Delete the widget.
-
-        Example usage:
-
-        .. code-block:: python
-
-            widget.mod.delete()
-
-        """
-        path = API_PATH["widget_modify"].format(
-            widget_id=self.widget.id, subreddit=self._subreddit
-        )
-        self._reddit.delete(path)
-
-    def update(self, **kwargs: Any) -> Widget:
-        """Update the widget. Returns the updated widget.
-
-        Parameters differ based on the type of widget. See `Reddit documentation
-        <https://www.reddit.com/dev/api#PUT_api_widget_{widget_id}>`_ or the document of
-        the particular type of widget.
-
-        :returns: The updated :class:`.Widget`.
-
-        For example, update a text widget like so:
-
-        .. code-block:: python
-
-            text_widget.mod.update(shortName="New text area", text="Hello!")
-
-        .. note::
-
-            Most parameters follow the ``lowerCamelCase`` convention. When in doubt,
-            check the Reddit documentation linked above.
-
-        """
-        path = API_PATH["widget_modify"].format(
-            widget_id=self.widget.id, subreddit=self._subreddit
-        )
-        payload = {
-            key: value
-            for key, value in vars(self.widget).items()
-            if not key.startswith("_")
-        }
-        del payload["subreddit"]  # not JSON serializable
-        if "mod" in payload:
-            del payload["mod"]
-        payload.update(kwargs)
-        widget = self._reddit.put(
-            path, data={"json": dumps(payload, cls=WidgetEncoder)}
-        )
-        widget.subreddit = self._subreddit
-        return widget

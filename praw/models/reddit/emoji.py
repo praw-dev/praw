@@ -56,11 +56,11 @@ class Emoji(RedditBase):
         self.subreddit = subreddit
         super().__init__(reddit, _data=_data)
 
-    def _fetch(self):  # noqa: ANN001
+    def _fetch(self):
         for emoji in self.subreddit.emoji:
             if emoji.name == self.name:
                 self.__dict__.update(emoji.__dict__)
-                self._fetched = True
+                super()._fetch()
                 return
         msg = f"r/{self.subreddit} does not have the emoji {self.name}"
         raise ClientException(msg)

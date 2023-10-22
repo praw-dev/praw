@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import re
 from json import dumps
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Generator
 from urllib.parse import urljoin
 from warnings import warn
 
@@ -527,7 +527,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         return SubmissionModeration(self)
 
     @property
-    def _kind(self) -> str:  # noqa: ANN001
+    def _kind(self) -> str:
         """Return the class's kind."""
         return self._reddit.config.kinds["submission"]
 
@@ -577,7 +577,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
     def __init__(
         self,
         reddit: praw.Reddit,
-        id: str | None = None,  # pylint: disable=redefined-builtin
+        id: str | None = None,
         url: str | None = None,
         _data: dict[str, Any] | None = None,
     ):
@@ -608,7 +608,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         self._additional_fetch_params = {}
         self._comments_by_id = {}
 
-    def __setattr__(self, attribute: str, value: Any) -> None:
+    def __setattr__(self, attribute: str, value: Any):
         """Objectify author, subreddit, and poll data attributes."""
         if attribute == "author":
             value = Redditor.from_data(self._reddit, value)
@@ -630,7 +630,12 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             )
         super().__setattr__(attribute, value)
 
-    def _chunk(self, *, chunk_size, other_submissions):  # noqa: ANN001
+    def _chunk(
+        self,
+        *,
+        chunk_size: int,
+        other_submissions: list[praw.models.Submission] | None,
+    ) -> Generator[str, None, None]:
         all_submissions = [self.fullname]
         if other_submissions:
             all_submissions += [x.fullname for x in other_submissions]
@@ -716,7 +721,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             self.__dict__.update(updated)
         return self
 
-    def _fetch(self):  # noqa: ANN001
+    def _fetch(self):
         data = self._fetch_data()
         submission_listing, comment_listing = data
         comment_listing = Listing(self._reddit, _data=comment_listing["data"])
@@ -729,23 +734,22 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         self.__dict__.update(submission.__dict__)
         self.comments._update(comment_listing.children)
+        super()._fetch()
 
-        self._fetched = True
-
-    def _fetch_data(self):  # noqa: ANN001
+    def _fetch_data(self):
         name, fields, params = self._fetch_info()
         params.update(self._additional_fetch_params.copy())
         path = API_PATH[name].format(**fields)
         return self._reddit.request(method="GET", params=params, path=path)
 
-    def _fetch_info(self):  # noqa: ANN001
+    def _fetch_info(self):
         return (
             "submission",
             {"id": self.id},
             {"limit": self.comment_limit, "sort": self.comment_sort},
         )
 
-    def _replace_richtext_links(self, richtext_json: dict):  # noqa: ANN001
+    def _replace_richtext_links(self, richtext_json: dict):
         parsed_media_types = {
             media_id: MEDIA_TYPE_MAPPING[value["e"]]
             for media_id, value in self.media_metadata.items()
