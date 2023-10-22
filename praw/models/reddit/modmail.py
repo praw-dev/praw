@@ -11,6 +11,19 @@ if TYPE_CHECKING:  # pragma: no cover
     import praw
 
 
+class ModmailObject(RedditBase):
+    """A base class for objects within a modmail conversation."""
+
+    AUTHOR_ATTRIBUTE = "author"
+    STR_FIELD = "id"
+
+    def __setattr__(self, attribute: str, value: Any):
+        """Objectify the AUTHOR_ATTRIBUTE attribute."""
+        if attribute == self.AUTHOR_ATTRIBUTE:
+            value = self._reddit._objector.objectify(value)
+        super().__setattr__(attribute, value)
+
+
 class ModmailConversation(RedditBase):
     """A class for modmail conversations.
 
@@ -52,7 +65,7 @@ class ModmailConversation(RedditBase):
     STR_FIELD = "id"
 
     @staticmethod
-    def _convert_conversation_objects(data, reddit):  # noqa: ANN001
+    def _convert_conversation_objects(data: dict[str, Any], reddit: praw.Reddit):
         """Convert messages and mod actions to PRAW objects."""
         result = {"messages": [], "modActions": []}
         for thing in data["objIds"]:
@@ -62,7 +75,7 @@ class ModmailConversation(RedditBase):
         data.update(result)
 
     @staticmethod
-    def _convert_user_summary(data, reddit):  # noqa: ANN001
+    def _convert_user_summary(data: dict[str, Any], reddit: praw.Reddit):
         """Convert dictionaries of recent user history to PRAW objects."""
         parsers = {
             "recentComments": reddit._objector.parsers[reddit.config.kinds["comment"]],
@@ -110,7 +123,7 @@ class ModmailConversation(RedditBase):
     def __init__(
         self,
         reddit: praw.Reddit,
-        id: str | None = None,  # pylint: disable=redefined-builtin
+        id: str | None = None,
         mark_read: bool = False,
         _data: dict[str, Any] | None = None,
     ):
@@ -131,18 +144,20 @@ class ModmailConversation(RedditBase):
 
         self._info_params = {"markRead": True} if mark_read else None
 
-    def _build_conversation_list(self, other_conversations):  # noqa: ANN001
+    def _build_conversation_list(
+        self, other_conversations: list[ModmailConversation]
+    ) -> str:
         """Return a comma-separated list of conversation IDs."""
         conversations = [self] + (other_conversations or [])
         return ",".join(conversation.id for conversation in conversations)
 
-    def _fetch(self):  # noqa: ANN001
+    def _fetch(self):
         data = self._fetch_data()
         other = self._reddit._objector.objectify(data)
         self.__dict__.update(other.__dict__)
-        self._fetched = True
+        super()._fetch()
 
-    def _fetch_info(self):  # noqa: ANN001
+    def _fetch_info(self):
         return "modmail_conversation", {"id": self.id}, self._info_params
 
     def archive(self):
@@ -197,9 +212,7 @@ class ModmailConversation(RedditBase):
         )
 
     @_deprecate_args("other_conversations")
-    def read(
-        self, *, other_conversations: list[ModmailConversation] | None = None
-    ):  # noqa: D207, D301
+    def read(self, *, other_conversations: list[ModmailConversation] | None = None):
         """Mark the conversation(s) as read.
 
         :param other_conversations: A list of other conversations to mark (default:
@@ -302,9 +315,7 @@ class ModmailConversation(RedditBase):
         )
 
     @_deprecate_args("other_conversations")
-    def unread(
-        self, *, other_conversations: list[ModmailConversation] | None = None
-    ):  # noqa: D207, D301
+    def unread(self, *, other_conversations: list[ModmailConversation] | None = None):
         """Mark the conversation(s) as unread.
 
         :param other_conversations: A list of other conversations to mark (default:
@@ -322,19 +333,6 @@ class ModmailConversation(RedditBase):
         """
         data = {"conversationIds": self._build_conversation_list(other_conversations)}
         self._reddit.post(API_PATH["modmail_unread"], data=data)
-
-
-class ModmailObject(RedditBase):
-    """A base class for objects within a modmail conversation."""
-
-    AUTHOR_ATTRIBUTE = "author"
-    STR_FIELD = "id"
-
-    def __setattr__(self, attribute: str, value: Any) -> None:
-        """Objectify the AUTHOR_ATTRIBUTE attribute."""
-        if attribute == self.AUTHOR_ATTRIBUTE:
-            value = self._reddit._objector.objectify(value)
-        super().__setattr__(attribute, value)
 
 
 class ModmailAction(ModmailObject):

@@ -101,14 +101,14 @@ class Multireddit(SubredditListingMixin, RedditBase):
         if "subreddits" in self.__dict__:
             self.subreddits = [Subreddit(reddit, x["name"]) for x in self.subreddits]
 
-    def _fetch(self):  # noqa: ANN001
+    def _fetch(self):
         data = self._fetch_data()
         data = data["data"]
         other = type(self)(self._reddit, _data=data)
         self.__dict__.update(other.__dict__)
-        self._fetched = True
+        super()._fetch()
 
-    def _fetch_info(self):  # noqa: ANN001
+    def _fetch_info(self):
         return (
             "multireddit_api",
             {"multi": self.name, "user": self._author.name},

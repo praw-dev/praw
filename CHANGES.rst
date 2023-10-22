@@ -1,7 +1,7 @@
 Change Log
 ==========
 
-PRAW follows `semantic versioning <http://semver.org/>`_.
+PRAW follows `semantic versioning <https://semver.org/>`_.
 
 Unreleased
 ----------

@@ -58,5 +58,4 @@ repos:
   - repo: https://github.com/LilSpazJoekp/docstrfmt
     hooks:
       - id: docstrfmt
-        require_serial: true
     rev: v1.5.1

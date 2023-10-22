@@ -36,7 +36,7 @@ class CollectionModeration(PRAWBase):
         super().__init__(reddit, _data=None)
         self.collection_id = collection_id
 
-    def _post_fullname(self, post):  # noqa: ANN001
+    def _post_fullname(self, post: str | praw.models.Submission) -> str:
         """Get a post's fullname.
 
         :param post: A fullname, a :class:`.Submission`, a permalink, or an ID.
@@ -240,7 +240,7 @@ class SubredditCollectionsModeration(PRAWBase):
     @_deprecate_args("title", "description", "display_layout")
     def create(
         self, *, description: str, display_layout: str | None = None, title: str
-    ) -> praw.models.Collection:
+    ) -> Collection:
         """Create a new :class:`.Collection`.
 
         The authenticated account must have appropriate moderator permissions in the
@@ -523,7 +523,7 @@ class Collection(RedditBase):
             value = self._reddit._objector.objectify(value)
         super().__setattr__(attribute, value)
 
-    def _fetch(self):  # noqa: ANN001
+    def _fetch(self):
         data = self._fetch_data()
         try:
             self._reddit._objector.check_error(data)
@@ -536,9 +536,9 @@ class Collection(RedditBase):
 
         other = type(self)(self._reddit, _data=data)
         self.__dict__.update(other.__dict__)
-        self._fetched = True
+        super()._fetch()
 
-    def _fetch_info(self):  # noqa: ANN001
+    def _fetch_info(self):
         return "collection", {}, self._info_params
 
     def follow(self):

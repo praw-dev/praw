@@ -31,9 +31,9 @@ class RemovalReason(RedditBase):
     STR_FIELD = "id"
 
     @staticmethod
-    def _warn_reason_id(  # noqa: ANN205
+    def _warn_reason_id(
         *, id_value: str | None, reason_id_value: str | None
-    ):
+    ) -> str | None:
         """Reason ID param is deprecated. Warns if it's used.
 
         :param id_value: Returns the actual value of parameter ``id`` is parameter
@@ -67,7 +67,7 @@ class RemovalReason(RedditBase):
         self,
         reddit: praw.Reddit,
         subreddit: praw.models.Subreddit,
-        id: str | None = None,  # pylint: disable=redefined-builtin
+        id: str | None = None,
         reason_id: str | None = None,
         _data: dict[str, Any] | None = None,
     ):
@@ -90,11 +90,11 @@ class RemovalReason(RedditBase):
         self.subreddit = subreddit
         super().__init__(reddit, _data=_data)
 
-    def _fetch(self):  # noqa: ANN001
+    def _fetch(self):
         for removal_reason in self.subreddit.mod.removal_reasons:
             if removal_reason.id == self.id:
                 self.__dict__.update(removal_reason.__dict__)
-                self._fetched = True
+                super()._fetch()
                 return
         msg = f"Subreddit {self.subreddit} does not have the removal reason {self.id}"
         raise ClientException(msg)
@@ -144,7 +144,7 @@ class SubredditRemovalReasons:
     """Provide a set of functions to a :class:`.Subreddit`'s removal reasons."""
 
     @cachedproperty
-    def _removal_reason_list(self) -> list[RemovalReason]:  # noqa: ANN001
+    def _removal_reason_list(self) -> list[RemovalReason]:
         """Get a list of Removal Reason objects.
 
         :returns: A list of instances of :class:`.RemovalReason`.
@@ -250,5 +250,5 @@ class SubredditRemovalReasons:
         """
         data = {"message": message, "title": title}
         url = API_PATH["removal_reasons_list"].format(subreddit=self.subreddit)
-        id = self._reddit.post(url, data=data)  # noqa: A001
-        return RemovalReason(self._reddit, self.subreddit, id)
+        reason_id = self._reddit.post(url, data=data)
+        return RemovalReason(self._reddit, self.subreddit, reason_id)

@@ -59,7 +59,9 @@ class Objector:
         self.parsers = {} if parsers is None else parsers
         self._reddit = reddit
 
-    def _objectify_dict(self, data):  # noqa: ANN001,PLR0912,PLR0915
+    def _objectify_dict(  # noqa: PLR0912,PLR0915
+        self, data: dict[str:Any]
+    ) -> RedditBase:
         """Create :class:`.RedditBase` objects from dicts.
 
         :param data: The structured data, assumed to be a dict.
@@ -223,7 +225,6 @@ class Objector:
             ``None``.
 
         """
-        # pylint: disable=too-many-return-statements
         if data is None:  # 204 no content
             return None
         if isinstance(data, list):

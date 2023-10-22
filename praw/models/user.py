@@ -133,9 +133,7 @@ class User(PRAWBase):
         return karma_map
 
     @_deprecate_args("use_cache")
-    def me(
-        self, *, use_cache: bool = True
-    ) -> praw.models.Redditor | None:  # pylint: disable=invalid-name
+    def me(self, *, use_cache: bool = True) -> praw.models.Redditor | None:
         """Return a :class:`.Redditor` instance for the authenticated user.
 
         :param use_cache: When ``True``, and if this function has been previously

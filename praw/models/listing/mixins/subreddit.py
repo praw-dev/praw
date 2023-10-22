@@ -19,7 +19,7 @@ class CommentHelper(PRAWBase):
     """Provide a set of functions to interact with a :class:`.Subreddit`'s comments."""
 
     @property
-    def _path(self) -> str:  # noqa: ANN001
+    def _path(self) -> str:
         return urljoin(self.subreddit._path, "comments/")
 
     def __call__(

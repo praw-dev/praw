@@ -63,7 +63,7 @@ class BaseModNotes:
             for note_dict in response["mod_notes"]:
                 yield self._reddit._objector.objectify(note_dict)
 
-    def _ensure_attribute(self, error_message: str, **attributes: Any):  # noqa: ANN001
+    def _ensure_attribute(self, error_message: str, **attributes: Any) -> Any:
         attribute, _value = attributes.popitem()
         value = _value or getattr(self, attribute, None)
         if value is None:
