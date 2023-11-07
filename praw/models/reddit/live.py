@@ -14,7 +14,7 @@ from .mixins import FullnameMixin
 from .redditor import Redditor
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class LiveContributorRelationship:

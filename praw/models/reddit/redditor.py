@@ -13,7 +13,7 @@ from .base import RedditBase
 from .mixins import FullnameMixin, MessageableMixin
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase):

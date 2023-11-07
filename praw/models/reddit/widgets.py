@@ -12,7 +12,7 @@ from ..base import PRAWBase
 from ..list.base import BaseList
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 WidgetType: TypeVar = TypeVar("WidgetType", bound="Widget")
 

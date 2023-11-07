@@ -13,7 +13,7 @@ from .redditor import Redditor
 from .subreddit import Subreddit, SubredditStream
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class Multireddit(SubredditListingMixin, RedditBase):
