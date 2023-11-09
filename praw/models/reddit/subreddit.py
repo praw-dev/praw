@@ -42,7 +42,7 @@ from .wikipage import WikiPage
 if TYPE_CHECKING:  # pragma: no cover
     from requests import Response
 
-    import praw
+    import praw.models
 
 
 class Modmail:

@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Generator
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class ModNoteMixin:

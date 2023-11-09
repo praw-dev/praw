@@ -8,7 +8,7 @@ from ...util import _deprecate_args
 from ..base import PRAWBase
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class MoreComments(PRAWBase):

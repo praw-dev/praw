@@ -22,7 +22,7 @@ from .redditor import Redditor
 from .subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 INLINE_MEDIA_PATTERN = re.compile(
     r"\n\n!?(\[.*?])?\(?((https://((preview|i)\.redd\.it|reddit.com/link).*?)|(?!https)([a-zA-Z0-9]+( \".*?\")?))\)?"

@@ -10,7 +10,7 @@ from .redditor import Redditor
 from .subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):

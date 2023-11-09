@@ -9,7 +9,7 @@ from ...util.cache import cachedproperty
 from .subreddit import Subreddit, SubredditModeration
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class UserSubreddit(Subreddit):

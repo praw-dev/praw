@@ -12,7 +12,7 @@ from .listing.generator import ListingGenerator
 from .util import stream_generator
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class Subreddits(PRAWBase):

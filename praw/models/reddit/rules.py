@@ -11,7 +11,7 @@ from ...util import _deprecate_args, cachedproperty
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class Rule(RedditBase):

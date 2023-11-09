@@ -9,7 +9,7 @@ from ..util import _deprecate_args
 from .reddit.more import MoreComments
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class CommentForest:
