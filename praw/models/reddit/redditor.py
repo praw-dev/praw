@@ -193,7 +193,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             fullname
         ]["name"]
 
-    def _friend(self, *, data: dict[str:Any], method: str):
+    def _friend(self, *, data: dict[str, Any], method: str):
         url = API_PATH["friend_v1"].format(user=self)
         self._reddit.request(data=dumps(data), method=method, path=url)
 

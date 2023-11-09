@@ -6,10 +6,6 @@ PRAW follows `semantic versioning <https://semver.org/>`_.
 Unreleased
 ----------
 
-**Fixed**
-
-- An issue where submitting a post with media would fail due to an API change.
-
 **Added**
 
 - :meth:`~.SubredditLinkFlairTemplates.reorder` to reorder a subreddit's link flair
@@ -18,6 +14,10 @@ Unreleased
   flair templates.
 - :func:`.stream_generator` now accepts the ``continue_after_id`` parameter, which
   starts the stream after a given item ID.
+
+**Fixed**
+
+- An issue where submitting a post with media would fail due to an API change.
 
 **Changed**
 
