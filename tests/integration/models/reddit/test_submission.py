@@ -1,6 +1,6 @@
 import pytest
 
-from praw.exceptions import RedditAPIException
+from praw.exceptions import RedditAPIException, ClientException
 from praw.models import Comment, InlineGif, InlineImage, InlineVideo, Submission
 
 from ... import IntegrationTest
@@ -275,6 +275,15 @@ class TestSubmission(IntegrationTest):
     def test_report(self, reddit):
         reddit.read_only = False
         Submission(reddit, "4b536h").report("praw")
+
+    def test_resolve_from_share_url(self, reddit):
+        url = "https://www.reddit.com/r/redditdev/s/WNauetbiNG"
+        assert reddit.submission(url=url) == "2gmzqe", url
+
+    def test_resolve_from_share_url__invalid_url(self, reddit):
+        url = "https://reddit.com/r/space/s/"
+        with pytest.raises(ClientException):
+            reddit.submission(url=url)
 
     def test_save(self, reddit):
         reddit.read_only = False

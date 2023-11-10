@@ -9,6 +9,7 @@ import time
 from itertools import islice
 from logging import getLogger
 from typing import IO, TYPE_CHECKING, Any, Generator, Iterable
+from urllib.parse import urlparse
 from warnings import warn
 
 from prawcore import (
@@ -643,6 +644,16 @@ class Reddit:
         self._read_only_core = session(read_only_authorizer)
         self._prepare_common_authorizer(authenticator)
 
+    def _resolve_share_url(self, url: str) -> str:
+        """Return the canonical URL for a given share URL."""
+        parts = urlparse(url).path.rstrip("/").split("/")
+        if "s" in parts:  # handling new share urls from mobile apps
+            try:
+                self.get(url)
+            except Redirect as e:
+                return e.response.next.url
+        return url
+
     @_deprecate_args("id", "url")
     def comment(
         self, id: str | None = None, *, url: str | None = None
@@ -658,6 +669,8 @@ class Reddit:
             :meth:`~.Comment.refresh` on the returned :class:`.Comment`.
 
         """
+        if url:
+            url = self._resolve_share_url(url)
         return models.Comment(self, id=id, url=url)
 
     @_deprecate_args("path", "data", "json", "params")
@@ -977,6 +990,8 @@ class Reddit:
         Either ``id`` or ``url`` can be provided, but not both.
 
         """
+        if url:
+            url = self._resolve_share_url(url)
         return models.Submission(self, id=id, url=url)
 
     def username_available(self, name: str) -> bool:
