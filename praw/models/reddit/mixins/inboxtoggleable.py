@@ -8,6 +8,10 @@ class InboxToggleableMixin:
     def disable_inbox_replies(self):
         """Disable inbox replies for the item.
 
+        .. note::
+
+            This can only apply to items created by the authenticated user.
+
         Example usage:
 
         .. code-block:: python
@@ -29,6 +33,10 @@ class InboxToggleableMixin:
 
     def enable_inbox_replies(self):
         """Enable inbox replies for the item.
+
+        .. note::
+
+            This can only apply to items created by the authenticated user.
 
         Example usage:
 
