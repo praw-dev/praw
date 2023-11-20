@@ -42,7 +42,7 @@ repos:
         files: ^(.*\.toml)$
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.5
+    rev: v0.1.6
     hooks:
       - id: ruff
         args: [ --exit-non-zero-on-fix, --fix ]
