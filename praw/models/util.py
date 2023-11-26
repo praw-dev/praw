@@ -46,10 +46,10 @@ def stream_generator(
     function: Callable,
     *,
     attribute_name: str = "fullname",
+    continue_after_id: str | None = None,
     exclude_before: bool = False,
     pause_after: int | None = None,
     skip_existing: bool = False,
-    continue_after_id: str | None = None,
     **function_kwargs: Any,
 ) -> Generator[Any, None, None]:
     """Yield new items from ``function`` as they become available.
