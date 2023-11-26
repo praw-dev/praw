@@ -20,18 +20,19 @@ body:
         code example here, without the Reddit() initialization, to not leak private credentials.
         This will be automatically formatted into code, so no need for backticks.
       label: Code to reproduce the bug
-      placeholder: "# Insert code here"
+      placeholder: Insert code here...
       render: Python
     type: textarea
     validations:
       required: true
   - id: credential-check
     attributes:
-      label: |
+      description: |
         The `Reddit()` initialization in my code example does not include the following parameters to prevent credential leakage:
         `client_secret`, `password`, or `refresh_token`.
+      label: My code does not include sensitive credentials
       options:
-        - label: "Yes"
+        - label: "Yes, I have removed sensitive credentials from my code."
           required: true
     type: checkboxes
   - id: logs
@@ -46,10 +47,10 @@ body:
       required: true
   - id: previously-worked
     attributes:
-      label: This code has previously worked as intended.
+      label: This code has previously worked as intended
       multiple: false
       options:
-        - "Not sure, I haven't used this code before."
+        - "I'm not sure, I haven't used this code before."
         - "Yes"
         - "No"
     type: dropdown
@@ -57,40 +58,33 @@ body:
       required: true
   - id: environment
     attributes:
-      description: What operating system, version, and environment are you working with.
+      description: What operating system, version, and/or environment are you working with?
       label: Operating System/Environment
-      placeholder: "Example: macOS Ventura 13.0.0"
+      placeholder: "Example: macOS Sonoma 14.1.1"
     type: input
     validations:
       required: true
   - id: python-version
     attributes:
       description: |
-        What implementation and version of Python are you working with.
+        What implementation and version of Python are you working with?
         CPython is assumed unless indicated otherwise.
       label: Python Version
-      placeholder: "Example: 3.11.1"
+      placeholder: "Example: 3.12.0"
     type: input
     validations:
       required: true
   - id: praw-version
     attributes:
-      description: What version of PRAW. Obtain this by running `pip show praw`.
+      description: What version of `praw` are you encountering this issue with? Obtain this by running `pip show praw`.
       label: PRAW Version
-    type: input
-    validations:
-      required: true
-  - id: prawcore-version
-    attributes:
-      description: What version of Prawcore. Obtain this by running `pip show prawcore`.
-      label: Prawcore Version
     type: input
     validations:
       required: true
   - id: anything-else
     attributes:
-      description: Links or references? Anything that will give us more context about the issue you are encountering!
-      label: Anything else?
+      description: Anything that will give us more context about the issue you are encountering!
+      label: Links, references, and/or additional comments?
     type: textarea
 description: File a bug report
 labels: [ "bug", "unverified" ]
