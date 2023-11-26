@@ -60,7 +60,7 @@ class Objector:
         self._reddit = reddit
 
     def _objectify_dict(  # noqa: PLR0912,PLR0915
-        self, data: dict[str:Any]
+        self, data: dict[str, Any]
     ) -> RedditBase:
         """Create :class:`.RedditBase` objects from dicts.
 

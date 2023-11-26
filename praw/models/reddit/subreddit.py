@@ -3058,9 +3058,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             )
 
     def _read_and_post_media(
-        self, media_path: str, upload_url: str, upload_data: dict[str, Any]
+        self, file: Path, upload_url: str, upload_data: dict[str, Any]
     ) -> Response:
-        with media_path.open("rb") as media:
+        with file.open("rb") as media:
             return self._reddit._core._requestor._http.post(
                 upload_url, data=upload_data, files={"file": media}
             )
