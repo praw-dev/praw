@@ -236,7 +236,6 @@ class User(PRAWBase):
         :returns: The pinned submission.
 
         :raises: ``prawcore.BadRequest`` when pinning a removed or deleted submission.
-
         :raises: ``prawcore.Forbidden`` when pinning a submission the authenticated user
             is not the author of.
 
