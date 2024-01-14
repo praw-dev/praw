@@ -22,13 +22,10 @@ class cachedproperty:  # noqa: N801
     """
 
     # This to make sphinx run properly
-    # noqa: D102
     def __call__(self, *args: Any, **kwargs: Any):  # pragma: no cover
         """Empty method to make sphinx run properly."""
 
-    def __get__(
-        self, obj: Any | None, objtype: Any | None = None
-    ) -> Any:  # noqa: ANN401
+    def __get__(self, obj: Any | None, objtype: Any | None = None) -> Any:
         """Implement descriptor getter.
 
         Calculate the property's value and then store it in the associated object's

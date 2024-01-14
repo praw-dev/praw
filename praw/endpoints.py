@@ -1,5 +1,4 @@
 """List of API endpoints PRAW knows about."""
-# flake8: noqa
 # fmt: off
 API_PATH = {
     "about_edited":            "r/{subreddit}/about/edited/",

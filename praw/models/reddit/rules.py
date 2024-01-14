@@ -11,7 +11,7 @@ from ...util import _deprecate_args, cachedproperty
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class Rule(RedditBase):
@@ -88,11 +88,11 @@ class Rule(RedditBase):
         self.subreddit = subreddit
         super().__init__(reddit, _data=_data)
 
-    def _fetch(self):  # noqa: ANN001
+    def _fetch(self):
         for rule in self.subreddit.rules:
             if rule.short_name == self.short_name:
                 self.__dict__.update(rule.__dict__)
-                self._fetched = True
+                super()._fetch()
                 return
         msg = f"Subreddit {self.subreddit} does not have the rule {self.short_name}"
         raise ClientException(msg)
@@ -209,7 +209,7 @@ class SubredditRules:
     """
 
     @cachedproperty
-    def _rule_list(self) -> list[Rule]:  # noqa: ANN001
+    def _rule_list(self) -> list[Rule]:
         """Get a list of :class:`.Rule` objects.
 
         :returns: A list of instances of :class:`.Rule`.

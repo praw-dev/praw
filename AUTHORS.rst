@@ -84,4 +84,5 @@ Source Contributors
 - Josh Kim `@jsk56143 <https://github.com/jsk56143>`_
 - Rolf Campbell `@endlisnis <https://github.com/endlisnis>`_
 - zacc `@zacc <https://github.com/zacc>`_
+- c0d3rman `@c0d3rman <https://github.com/c0d3rman>`
 - Add "Name <email (optional)> and github profile link" above this line.

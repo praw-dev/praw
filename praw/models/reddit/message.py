@@ -10,7 +10,7 @@ from .redditor import Redditor
 from .subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
@@ -70,7 +70,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
         return cls(reddit, _data=data)
 
     @property
-    def _kind(self) -> str:  # noqa: ANN001
+    def _kind(self) -> str:
         """Return the class's kind."""
         return self._reddit.config.kinds["message"]
 

@@ -1,6 +1,6 @@
 import pytest
 
-from praw.exceptions import RedditAPIException
+from praw.exceptions import RedditAPIException, ClientException
 from praw.models import Comment, InlineGif, InlineImage, InlineVideo, Submission
 
 from ... import IntegrationTest
@@ -276,6 +276,15 @@ class TestSubmission(IntegrationTest):
         reddit.read_only = False
         Submission(reddit, "4b536h").report("praw")
 
+    def test_resolve_from_share_url(self, reddit):
+        url = "https://www.reddit.com/r/redditdev/s/WNauetbiNG"
+        assert reddit.submission(url=url) == "2gmzqe", url
+
+    def test_resolve_from_share_url__invalid_url(self, reddit):
+        url = "https://reddit.com/r/space/s/"
+        with pytest.raises(ClientException):
+            reddit.submission(url=url)
+
     def test_save(self, reddit):
         reddit.read_only = False
         Submission(reddit, "4b536p").save()
@@ -314,14 +323,14 @@ class TestSubmissionFlair(IntegrationTest):
         expected = [
             {
                 "flair_text": "SATISFIED",
-                "flair_template_id": "680f43b8-1fec-11e3-80d1-12313b0b80bc",  # noqa:E501
+                "flair_template_id": "680f43b8-1fec-11e3-80d1-12313b0b80bc",
                 "flair_text_editable": False,
                 "flair_position": "left",
                 "flair_css_class": "",
             },
             {
                 "flair_text": "STATS",
-                "flair_template_id": "16cabd0a-a68d-11e5-8349-0e8ff96e6679",  # noqa:E501
+                "flair_template_id": "16cabd0a-a68d-11e5-8349-0e8ff96e6679",
                 "flair_text_editable": False,
                 "flair_position": "left",
                 "flair_css_class": "",

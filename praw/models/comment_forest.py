@@ -9,7 +9,7 @@ from ..util import _deprecate_args
 from .reddit.more import MoreComments
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class CommentForest:
@@ -20,7 +20,11 @@ class CommentForest:
     """
 
     @staticmethod
-    def _gather_more_comments(tree, *, parent_tree=None):  # noqa: ANN001,ANN205
+    def _gather_more_comments(
+        tree: list[praw.models.MoreComments],
+        *,
+        parent_tree: list[praw.models.MoreComments] | None = None,
+    ) -> list[MoreComments]:
         """Return a list of :class:`.MoreComments` objects obtained from tree."""
         more_comments = []
         queue = [(None, x) for x in tree]
@@ -57,27 +61,11 @@ class CommentForest:
         """
         return self._comments[index]
 
-    def __init__(
-        self,
-        submission: praw.models.Submission,
-        comments: list[praw.models.Comment] | None = None,
-    ):
-        """Initialize a :class:`.CommentForest` instance.
-
-        :param submission: An instance of :class:`.Submission` that is the parent of the
-            comments.
-        :param comments: Initialize the forest with a list of comments (default:
-            ``None``).
-
-        """
-        self._comments = comments
-        self._submission = submission
-
     def __len__(self) -> int:
         """Return the number of top-level comments in the forest."""
         return len(self._comments)
 
-    def _insert_comment(self, comment):  # noqa: ANN001
+    def _insert_comment(self, comment: praw.models.Comment):
         if comment.name in self._submission._comments_by_id:
             raise DuplicateReplaceException
         comment.submission = self._submission
@@ -91,7 +79,7 @@ class CommentForest:
             parent = self._submission._comments_by_id[comment.parent_id]
             parent.replies._comments.append(comment)
 
-    def _update(self, comments):  # noqa: ANN001
+    def _update(self, comments: list[praw.models.Comment]):
         self._comments = comments
         for comment in comments:
             comment.submission = self._submission
@@ -113,6 +101,22 @@ class CommentForest:
             if not isinstance(comment, MoreComments):
                 queue.extend(comment.replies)
         return comments
+
+    def __init__(
+        self,
+        submission: praw.models.Submission,
+        comments: list[praw.models.Comment] | None = None,
+    ):
+        """Initialize a :class:`.CommentForest` instance.
+
+        :param submission: An instance of :class:`.Submission` that is the parent of the
+            comments.
+        :param comments: Initialize the forest with a list of comments (default:
+            ``None``).
+
+        """
+        self._comments = comments
+        self._submission = submission
 
     @_deprecate_args("limit", "threshold")
     def replace_more(

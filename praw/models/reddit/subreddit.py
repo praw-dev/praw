@@ -42,7 +42,7 @@ from .wikipage import WikiPage
 if TYPE_CHECKING:  # pragma: no cover
     from requests import Response
 
-    import praw
+    import praw.models
 
 
 class Modmail:
@@ -59,7 +59,7 @@ class Modmail:
 
     def __call__(
         self, id: str | None = None, mark_read: bool = False
-    ) -> ModmailConversation:  # noqa: D207, D301
+    ) -> ModmailConversation:
         """Return an individual conversation.
 
         :param id: A reddit base36 conversation ID, e.g., ``"2gmz"``.
@@ -100,7 +100,6 @@ class Modmail:
             print(conversation.user.recent_posts)
 
         """
-        # pylint: disable=invalid-name,redefined-builtin
         return ModmailConversation(self.subreddit._reddit, id=id, mark_read=mark_read)
 
     def __init__(self, subreddit: praw.models.Subreddit):
@@ -166,7 +165,7 @@ class Modmail:
         sort: str | None = None,
         state: str | None = None,
         **generator_kwargs: Any,
-    ) -> Iterator[ModmailConversation]:  # noqa: D207, D301
+    ) -> Iterator[ModmailConversation]:
         """Generate :class:`.ModmailConversation` objects for subreddit(s).
 
         :param after: A base36 modmail conversation id. When provided, the listing
@@ -295,1533 +294,6 @@ class Modmail:
 
         """
         return self.subreddit._reddit.get(API_PATH["modmail_unread_count"])
-
-
-class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBase):
-    """A class for Subreddits.
-
-    To obtain an instance of this class for r/test execute:
-
-    .. code-block:: python
-
-        subreddit = reddit.subreddit("test")
-
-    While r/all is not a real subreddit, it can still be treated like one. The following
-    outputs the titles of the 25 hottest submissions in r/all:
-
-    .. code-block:: python
-
-        for submission in reddit.subreddit("all").hot(limit=25):
-            print(submission.title)
-
-    Multiple subreddits can be combined with a ``+`` like so:
-
-    .. code-block:: python
-
-        for submission in reddit.subreddit("redditdev+learnpython").top(time_filter="all"):
-            print(submission)
-
-    Subreddits can be filtered from combined listings as follows.
-
-    .. note::
-
-        These filters are ignored by certain methods, including :attr:`.comments`,
-        :meth:`.gilded`, and :meth:`.SubredditStream.comments`.
-
-    .. code-block:: python
-
-        for submission in reddit.subreddit("all-redditdev").new():
-            print(submission)
-
-    .. include:: ../../typical_attributes.rst
-
-    ========================= ==========================================================
-    Attribute                 Description
-    ========================= ==========================================================
-    ``can_assign_link_flair`` Whether users can assign their own link flair.
-    ``can_assign_user_flair`` Whether users can assign their own user flair.
-    ``created_utc``           Time the subreddit was created, represented in `Unix
-                              Time`_.
-    ``description``           Subreddit description, in Markdown.
-    ``description_html``      Subreddit description, in HTML.
-    ``display_name``          Name of the subreddit.
-    ``id``                    ID of the subreddit.
-    ``name``                  Fullname of the subreddit.
-    ``over18``                Whether the subreddit is NSFW.
-    ``public_description``    Description of the subreddit, shown in searches and on the
-                              "You must be invited to visit this community" page (if
-                              applicable).
-    ``spoilers_enabled``      Whether the spoiler tag feature is enabled.
-    ``subscribers``           Count of subscribers.
-    ``user_is_banned``        Whether the authenticated user is banned.
-    ``user_is_moderator``     Whether the authenticated user is a moderator.
-    ``user_is_subscriber``    Whether the authenticated user is subscribed.
-    ========================= ==========================================================
-
-    .. note::
-
-        Trying to retrieve attributes of quarantined or private subreddits will result
-        in a 403 error. Trying to retrieve attributes of a banned subreddit will result
-        in a 404 error.
-
-    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
-
-    """
-
-    # pylint: disable=too-many-public-methods
-
-    STR_FIELD = "display_name"
-    MESSAGE_PREFIX = "#"
-
-    @staticmethod
-    def _create_or_update(
-        *,
-        _reddit,  # noqa: ANN001
-        allow_images=None,  # noqa: ANN001
-        allow_post_crossposts=None,  # noqa: ANN001
-        allow_top=None,  # noqa: ANN001
-        collapse_deleted_comments=None,  # noqa: ANN001
-        comment_score_hide_mins=None,  # noqa: ANN001
-        description=None,  # noqa: ANN001
-        domain=None,  # noqa: ANN001
-        exclude_banned_modqueue=None,  # noqa: ANN001
-        header_hover_text=None,  # noqa: ANN001
-        hide_ads=None,  # noqa: ANN001
-        lang=None,  # noqa: ANN001
-        key_color=None,  # noqa: ANN001
-        link_type=None,  # noqa: ANN001
-        name=None,  # noqa: ANN001
-        over_18=None,  # noqa: ANN001
-        public_description=None,  # noqa: ANN001
-        public_traffic=None,  # noqa: ANN001
-        show_media=None,  # noqa: ANN001
-        show_media_preview=None,  # noqa: ANN001
-        spam_comments=None,  # noqa: ANN001
-        spam_links=None,  # noqa: ANN001
-        spam_selfposts=None,  # noqa: ANN001
-        spoilers_enabled=None,  # noqa: ANN001
-        sr=None,  # noqa: ANN001
-        submit_link_label=None,  # noqa: ANN001
-        submit_text=None,  # noqa: ANN001
-        submit_text_label=None,  # noqa: ANN001
-        subreddit_type=None,  # noqa: ANN001
-        suggested_comment_sort=None,  # noqa: ANN001
-        title=None,  # noqa: ANN001
-        wiki_edit_age=None,  # noqa: ANN001
-        wiki_edit_karma=None,  # noqa: ANN001
-        wikimode=None,  # noqa: ANN001
-        **other_settings,  # noqa: ANN001,ANN003
-    ):
-        # pylint: disable=invalid-name,too-many-locals,too-many-arguments
-        model = {
-            "allow_images": allow_images,
-            "allow_post_crossposts": allow_post_crossposts,
-            "allow_top": allow_top,
-            "collapse_deleted_comments": collapse_deleted_comments,
-            "comment_score_hide_mins": comment_score_hide_mins,
-            "description": description,
-            "domain": domain,
-            "exclude_banned_modqueue": exclude_banned_modqueue,
-            "header-title": header_hover_text,  # Remap here - better name
-            "hide_ads": hide_ads,
-            "key_color": key_color,
-            "lang": lang,
-            "link_type": link_type,
-            "name": name,
-            "over_18": over_18,
-            "public_description": public_description,
-            "public_traffic": public_traffic,
-            "show_media": show_media,
-            "show_media_preview": show_media_preview,
-            "spam_comments": spam_comments,
-            "spam_links": spam_links,
-            "spam_selfposts": spam_selfposts,
-            "spoilers_enabled": spoilers_enabled,
-            "sr": sr,
-            "submit_link_label": submit_link_label,
-            "submit_text": submit_text,
-            "submit_text_label": submit_text_label,
-            "suggested_comment_sort": suggested_comment_sort,
-            "title": title,
-            "type": subreddit_type,
-            "wiki_edit_age": wiki_edit_age,
-            "wiki_edit_karma": wiki_edit_karma,
-            "wikimode": wikimode,
-        }
-
-        model.update(other_settings)
-
-        _reddit.post(API_PATH["site_admin"], data=model)
-
-    @staticmethod
-    def _subreddit_list(*, other_subreddits, subreddit):  # noqa: ANN001,ANN205
-        if other_subreddits:
-            return ",".join([str(subreddit)] + [str(x) for x in other_subreddits])
-        return str(subreddit)
-
-    @staticmethod
-    def _validate_gallery(images):  # noqa: ANN001,ANN205
-        for image in images:
-            image_path = image.get("image_path", "")
-            if image_path:
-                if not Path(image_path).is_file():
-                    msg = f"{image_path!r} is not a valid image path."
-                    raise TypeError(msg)
-            else:
-                msg = "'image_path' is required."
-                raise TypeError(msg)
-            if not len(image.get("caption", "")) <= 180:
-                msg = "Caption must be 180 characters or less."
-                raise TypeError(msg)
-
-    @staticmethod
-    def _validate_inline_media(inline_media: praw.models.InlineMedia):  # noqa: ANN001
-        if not Path(inline_media.path).is_file():
-            msg = f"{inline_media.path!r} is not a valid file path."
-            raise ValueError(msg)
-
-    @cachedproperty
-    def banned(self) -> praw.models.reddit.subreddit.SubredditRelationship:
-        """Provide an instance of :class:`.SubredditRelationship`.
-
-        For example, to ban a user try:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").banned.add("spez", ban_reason="...")
-
-        To list the banned users along with any notes, try:
-
-        .. code-block:: python
-
-            for ban in reddit.subreddit("test").banned():
-                print(f"{ban}: {ban.note}")
-
-        """
-        return SubredditRelationship(self, "banned")
-
-    @cachedproperty
-    def collections(self) -> praw.models.reddit.collections.SubredditCollections:
-        r"""Provide an instance of :class:`.SubredditCollections`.
-
-        To see the permalinks of all :class:`.Collection`\ s that belong to a subreddit,
-        try:
-
-        .. code-block:: python
-
-            for collection in reddit.subreddit("test").collections:
-                print(collection.permalink)
-
-        To get a specific :class:`.Collection` by its UUID or permalink, use one of the
-        following:
-
-        .. code-block:: python
-
-            collection = reddit.subreddit("test").collections("some_uuid")
-            collection = reddit.subreddit("test").collections(
-                permalink="https://reddit.com/r/SUBREDDIT/collection/some_uuid"
-            )
-
-        """
-        return self._subreddit_collections_class(self._reddit, self)
-
-    @cachedproperty
-    def contributor(self) -> praw.models.reddit.subreddit.ContributorRelationship:
-        """Provide an instance of :class:`.ContributorRelationship`.
-
-        Contributors are also known as approved submitters.
-
-        To add a contributor try:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").contributor.add("spez")
-
-        """
-        return ContributorRelationship(self, "contributor")
-
-    @cachedproperty
-    def emoji(self) -> SubredditEmoji:
-        """Provide an instance of :class:`.SubredditEmoji`.
-
-        This attribute can be used to discover all emoji for a subreddit:
-
-        .. code-block:: python
-
-            for emoji in reddit.subreddit("test").emoji:
-                print(emoji)
-
-        A single emoji can be lazily retrieved via:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").emoji["emoji_name"]
-
-        .. note::
-
-            Attempting to access attributes of a nonexistent emoji will result in a
-            :class:`.ClientException`.
-
-        """
-        return SubredditEmoji(self)
-
-    @cachedproperty
-    def filters(self) -> praw.models.reddit.subreddit.SubredditFilters:
-        """Provide an instance of :class:`.SubredditFilters`.
-
-        For example, to add a filter, run:
-
-        .. code-block:: python
-
-            reddit.subreddit("all").filters.add("test")
-
-        """
-        return SubredditFilters(self)
-
-    @cachedproperty
-    def flair(self) -> praw.models.reddit.subreddit.SubredditFlair:
-        """Provide an instance of :class:`.SubredditFlair`.
-
-        Use this attribute for interacting with a :class:`.Subreddit`'s flair. For
-        example, to list all the flair for a subreddit which you have the ``flair``
-        moderator permission on try:
-
-        .. code-block:: python
-
-            for flair in reddit.subreddit("test").flair():
-                print(flair)
-
-        Flair templates can be interacted with through this attribute via:
-
-        .. code-block:: python
-
-            for template in reddit.subreddit("test").flair.templates:
-                print(template)
-
-        """
-        return SubredditFlair(self)
-
-    @cachedproperty
-    def mod(self) -> SubredditModeration:
-        """Provide an instance of :class:`.SubredditModeration`.
-
-        For example, to accept a moderation invite from r/test:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").mod.accept_invite()
-
-        """
-        return SubredditModeration(self)
-
-    @cachedproperty
-    def moderator(self) -> praw.models.reddit.subreddit.ModeratorRelationship:
-        """Provide an instance of :class:`.ModeratorRelationship`.
-
-        For example, to add a moderator try:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").moderator.add("spez")
-
-        To list the moderators along with their permissions try:
-
-        .. code-block:: python
-
-            for moderator in reddit.subreddit("test").moderator():
-                print(f"{moderator}: {moderator.mod_permissions}")
-
-        """
-        return ModeratorRelationship(self, "moderator")
-
-    @cachedproperty
-    def modmail(self) -> praw.models.reddit.subreddit.Modmail:
-        """Provide an instance of :class:`.Modmail`.
-
-        For example, to send a new modmail from r/test to u/spez with the subject
-        ``"test"`` along with a message body of ``"hello"``:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").modmail.create(subject="test", body="hello", recipient="spez")
-
-        """
-        return Modmail(self)
-
-    @cachedproperty
-    def muted(self) -> praw.models.reddit.subreddit.SubredditRelationship:
-        """Provide an instance of :class:`.SubredditRelationship`.
-
-        For example, muted users can be iterated through like so:
-
-        .. code-block:: python
-
-            for mute in reddit.subreddit("test").muted():
-                print(f"{mute}: {mute.date}")
-
-        """
-        return SubredditRelationship(self, "muted")
-
-    @cachedproperty
-    def quaran(self) -> praw.models.reddit.subreddit.SubredditQuarantine:
-        """Provide an instance of :class:`.SubredditQuarantine`.
-
-        This property is named ``quaran`` because ``quarantine`` is a subreddit
-        attribute returned by Reddit to indicate whether or not a subreddit is
-        quarantined.
-
-        To opt-in into a quarantined subreddit:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").quaran.opt_in()
-
-        """
-        return SubredditQuarantine(self)
-
-    @cachedproperty
-    def rules(self) -> SubredditRules:
-        """Provide an instance of :class:`.SubredditRules`.
-
-        Use this attribute for interacting with a :class:`.Subreddit`'s rules.
-
-        For example, to list all the rules for a subreddit:
-
-        .. code-block:: python
-
-            for rule in reddit.subreddit("test").rules:
-                print(rule)
-
-        Moderators can also add rules to the subreddit. For example, to make a rule
-        called ``"No spam"`` in r/test:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").rules.mod.add(
-                short_name="No spam", kind="all", description="Do not spam. Spam bad"
-            )
-
-        """
-        return SubredditRules(self)
-
-    @cachedproperty
-    def stream(self) -> praw.models.reddit.subreddit.SubredditStream:
-        """Provide an instance of :class:`.SubredditStream`.
-
-        Streams can be used to indefinitely retrieve new comments made to a subreddit,
-        like:
-
-        .. code-block:: python
-
-            for comment in reddit.subreddit("test").stream.comments():
-                print(comment)
-
-        Additionally, new submissions can be retrieved via the stream. In the following
-        example all submissions are fetched via the special r/all:
-
-        .. code-block:: python
-
-            for submission in reddit.subreddit("all").stream.submissions():
-                print(submission)
-
-        """
-        return SubredditStream(self)
-
-    @cachedproperty
-    def stylesheet(self) -> praw.models.reddit.subreddit.SubredditStylesheet:
-        """Provide an instance of :class:`.SubredditStylesheet`.
-
-        For example, to add the css data ``.test{color:blue}`` to the existing
-        stylesheet:
-
-        .. code-block:: python
-
-            subreddit = reddit.subreddit("test")
-            stylesheet = subreddit.stylesheet()
-            stylesheet.stylesheet += ".test{color:blue}"
-            subreddit.stylesheet.update(stylesheet.stylesheet)
-
-        """
-        return SubredditStylesheet(self)
-
-    @cachedproperty
-    def widgets(self) -> praw.models.SubredditWidgets:
-        """Provide an instance of :class:`.SubredditWidgets`.
-
-        **Example usage**
-
-        Get all sidebar widgets:
-
-        .. code-block:: python
-
-            for widget in reddit.subreddit("test").widgets.sidebar:
-                print(widget)
-
-        Get ID card widget:
-
-        .. code-block:: python
-
-            print(reddit.subreddit("test").widgets.id_card)
-
-        """
-        return SubredditWidgets(self)
-
-    @cachedproperty
-    def wiki(self) -> praw.models.reddit.subreddit.SubredditWiki:
-        """Provide an instance of :class:`.SubredditWiki`.
-
-        This attribute can be used to discover all wikipages for a subreddit:
-
-        .. code-block:: python
-
-            for wikipage in reddit.subreddit("test").wiki:
-                print(wikipage)
-
-        To fetch the content for a given wikipage try:
-
-        .. code-block:: python
-
-            wikipage = reddit.subreddit("test").wiki["proof"]
-            print(wikipage.content_md)
-
-        """
-        return SubredditWiki(self)
-
-    @property
-    def _kind(self) -> str:  # noqa: ANN001
-        """Return the class's kind."""
-        return self._reddit.config.kinds["subreddit"]
-
-    def __init__(
-        self,
-        reddit: praw.Reddit,
-        display_name: str | None = None,
-        _data: dict[str, Any] | None = None,
-    ):
-        """Initialize a :class:`.Subreddit` instance.
-
-        :param reddit: An instance of :class:`.Reddit`.
-        :param display_name: The name of the subreddit.
-
-        .. note::
-
-            This class should not be initialized directly. Instead, obtain an instance
-            via: ``reddit.subreddit("test")``
-
-        """
-        if (display_name, _data).count(None) != 1:
-            msg = "Either 'display_name' or '_data' must be provided."
-            raise TypeError(msg)
-        if display_name:
-            self.display_name = display_name
-        super().__init__(reddit, _data=_data)
-        self._path = API_PATH["subreddit"].format(subreddit=self)
-
-    def _convert_to_fancypants(self, markdown_text: str) -> dict:  # noqa: ANN001
-        """Convert a Markdown string to a dict for use with the ``richtext_json`` param.
-
-        :param markdown_text: A Markdown string to convert.
-
-        :returns: A dict in ``richtext_json`` format.
-
-        """
-        text_data = {"output_mode": "rtjson", "markdown_text": markdown_text}
-        return self._reddit.post(API_PATH["convert_rte_body"], data=text_data)["output"]
-
-    def _fetch(self):  # noqa: ANN001
-        data = self._fetch_data()
-        data = data["data"]
-        other = type(self)(self._reddit, _data=data)
-        self.__dict__.update(other.__dict__)
-        self._fetched = True
-
-    def _fetch_data(self) -> dict:  # noqa: ANN001
-        name, fields, params = self._fetch_info()
-        path = API_PATH[name].format(**fields)
-        return self._reddit.request(method="GET", params=params, path=path)
-
-    def _fetch_info(self):  # noqa: ANN001
-        return "subreddit_about", {"subreddit": self}, None
-
-    def _parse_xml_response(self, response: Response):  # noqa: ANN001
-        """Parse the XML from a response and raise any errors found."""
-        xml = response.text
-        root = XML(xml)
-        tags = [element.tag for element in root]
-        if tags[:4] == ["Code", "Message", "ProposedSize", "MaxSizeAllowed"]:
-            # Returned if image is too big
-            code, message, actual, maximum_size = (element.text for element in root[:4])
-            raise TooLargeMediaException(
-                actual=int(actual), maximum_size=int(maximum_size)
-            )
-
-    def _read_and_post_media(self, media_path, upload_url, upload_data):  # noqa: ANN001
-        with media_path.open("rb") as media:
-            return self._reddit._core._requestor._http.post(
-                upload_url, data=upload_data, files={"file": media}
-            )
-
-    def _submit_media(
-        self, *, data: dict[Any, Any], timeout: int, websocket_url: str | None = None
-    ):
-        """Submit and return an ``image``, ``video``, or ``videogif``.
-
-        This is a helper method for submitting posts that are not link posts or self
-        posts.
-
-        """
-        connection = None
-        if websocket_url is not None:
-            try:
-                connection = websocket.create_connection(websocket_url, timeout=timeout)
-            except (
-                OSError,
-                websocket.WebSocketException,
-                BlockingIOError,
-            ) as ws_exception:
-                msg = "Error establishing websocket connection."
-                raise WebSocketException(msg, ws_exception) from None
-
-        self._reddit.post(API_PATH["submit"], data=data)
-
-        if connection is None:
-            return None
-
-        try:
-            ws_update = loads(connection.recv())
-            connection.close()
-        except (OSError, websocket.WebSocketException, BlockingIOError) as ws_exception:
-            msg = "Websocket error. Check your media file. Your post may still have been created."
-            raise WebSocketException(
-                msg,
-                ws_exception,
-            ) from None
-        if ws_update.get("type") == "failed":
-            raise MediaPostFailed
-        url = ws_update["payload"]["redirect"]
-        return self._reddit.submission(url=url)
-
-    def _upload_inline_media(
-        self, inline_media: praw.models.InlineMedia
-    ):  # noqa: ANN001
-        """Upload media for use in self posts and return ``inline_media``.
-
-        :param inline_media: An :class:`.InlineMedia` object to validate and upload.
-
-        """
-        self._validate_inline_media(inline_media)
-        inline_media.media_id = self._upload_media(
-            media_path=inline_media.path, upload_type="selfpost"
-        )[0]
-        return inline_media
-
-    def _upload_media(
-        self,
-        *,
-        expected_mime_prefix: str | None = None,
-        media_path: str,
-        upload_type: str = "link",
-    ):
-        """Upload media and return its URL and a websocket (Undocumented endpoint).
-
-        :param expected_mime_prefix: If provided, enforce that the media has a mime type
-            that starts with the provided prefix.
-        :param upload_type: One of ``"link"``, ``"gallery"'', or ``"selfpost"``
-            (default: ``"link"``).
-
-        :returns: A tuple containing ``(media_url, websocket_url)`` for the piece of
-            media. The websocket URL can be used to determine when media processing is
-            finished, or it can be ignored.
-
-        """
-        if media_path is None:
-            file = Path(__file__).absolute()
-            media_path = file.parent.parent.parent / "images" / "PRAW logo.png"
-        else:
-            file = Path(media_path)
-
-        file_name = file.name.lower()
-        file_extension = file_name.rpartition(".")[2]
-        mime_type = {
-            "png": "image/png",
-            "mov": "video/quicktime",
-            "mp4": "video/mp4",
-            "jpg": "image/jpeg",
-            "jpeg": "image/jpeg",
-            "gif": "image/gif",
-        }.get(
-            file_extension, "image/jpeg"
-        )  # default to JPEG
-        if (
-            expected_mime_prefix is not None
-            and mime_type.partition("/")[0] != expected_mime_prefix
-        ):
-            msg = f"Expected a mimetype starting with {expected_mime_prefix!r} but got mimetype {mime_type!r} (from file extension {file_extension!r})."
-            raise ClientException(msg)
-        img_data = {"filepath": file_name, "mimetype": mime_type}
-
-        url = API_PATH["media_asset"]
-        # until we learn otherwise, assume this request always succeeds
-        upload_response = self._reddit.post(url, data=img_data)
-        upload_lease = upload_response["args"]
-        upload_url = f"https:{upload_lease['action']}"
-        upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
-
-        response = self._read_and_post_media(file, upload_url, upload_data)
-        if not response.ok:
-            self._parse_xml_response(response)
-        try:
-            response.raise_for_status()
-        except HTTPError as err:
-            raise ServerError(response=err.response) from None
-
-        websocket_url = upload_response["asset"]["websocket_url"]
-
-        if upload_type == "link":
-            return f"{upload_url}/{upload_data['key']}", websocket_url
-        return upload_response["asset"]["asset_id"], websocket_url
-
-    def post_requirements(self) -> dict[str, str | int | bool]:
-        """Get the post requirements for a subreddit.
-
-        :returns: A dict with the various requirements.
-
-        The returned dict contains the following keys:
-
-        - ``domain_blacklist``
-        - ``body_restriction_policy``
-        - ``domain_whitelist``
-        - ``title_regexes``
-        - ``body_blacklisted_strings``
-        - ``body_required_strings``
-        - ``title_text_min_length``
-        - ``is_flair_required``
-        - ``title_text_max_length``
-        - ``body_regexes``
-        - ``link_repost_age``
-        - ``body_text_min_length``
-        - ``link_restriction_policy``
-        - ``body_text_max_length``
-        - ``title_required_strings``
-        - ``title_blacklisted_strings``
-        - ``guidelines_text``
-        - ``guidelines_display_policy``
-
-        For example, to fetch the post requirements for r/test:
-
-        .. code-block:: python
-
-            print(reddit.subreddit("test").post_requirements)
-
-        """
-        return self._reddit.get(
-            API_PATH["post_requirements"].format(subreddit=str(self))
-        )
-
-    def random(self) -> praw.models.Submission | None:
-        """Return a random :class:`.Submission`.
-
-        Returns ``None`` on subreddits that do not support the random feature. One
-        example, at the time of writing, is r/wallpapers.
-
-        For example, to get a random submission off of r/AskReddit:
-
-        .. code-block:: python
-
-            submission = reddit.subreddit("AskReddit").random()
-            print(submission.title)
-
-        """
-        url = API_PATH["subreddit_random"].format(subreddit=self)
-        try:
-            self._reddit.get(url, params={"unique": self._reddit._next_unique})
-        except Redirect as redirect:
-            path = redirect.path
-        try:
-            return self._submission_class(
-                self._reddit, url=urljoin(self._reddit.config.reddit_url, path)
-            )
-        except ClientException:
-            return None
-
-    @_deprecate_args("query", "sort", "syntax", "time_filter")
-    def search(
-        self,
-        query: str,
-        *,
-        sort: str = "relevance",
-        syntax: str = "lucene",
-        time_filter: str = "all",
-        **generator_kwargs: Any,
-    ) -> Iterator[praw.models.Submission]:
-        """Return a :class:`.ListingGenerator` for items that match ``query``.
-
-        :param query: The query string to search for.
-        :param sort: Can be one of: ``"relevance"``, ``"hot"``, ``"top"``, ``"new"``, or
-            ``"comments"``. (default: ``"relevance"``).
-        :param syntax: Can be one of: ``"cloudsearch"``, ``"lucene"``, or ``"plain"``
-            (default: ``"lucene"``).
-        :param time_filter: Can be one of: ``"all"``, ``"day"``, ``"hour"``,
-            ``"month"``, ``"week"``, or ``"year"`` (default: ``"all"``).
-
-        For more information on building a search query see:
-        https://www.reddit.com/wiki/search
-
-        For example, to search all subreddits for ``"praw"`` try:
-
-        .. code-block:: python
-
-            for submission in reddit.subreddit("all").search("praw"):
-                print(submission.title)
-
-        """
-        self._validate_time_filter(time_filter)
-        not_all = self.display_name.lower() != "all"
-        self._safely_add_arguments(
-            arguments=generator_kwargs,
-            key="params",
-            q=query,
-            restrict_sr=not_all,
-            sort=sort,
-            syntax=syntax,
-            t=time_filter,
-        )
-        url = API_PATH["search"].format(subreddit=self)
-        return ListingGenerator(self._reddit, url, **generator_kwargs)
-
-    @_deprecate_args("number")
-    def sticky(self, *, number: int = 1) -> praw.models.Submission:
-        """Return a :class:`.Submission` object for a sticky of the subreddit.
-
-        :param number: Specify which sticky to return. 1 appears at the top (default:
-            ``1``).
-
-        :raises: ``prawcore.NotFound`` if the sticky does not exist.
-
-        For example, to get the stickied post on r/test:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").sticky()
-
-        """
-        url = API_PATH["about_sticky"].format(subreddit=self)
-        try:
-            self._reddit.get(url, params={"num": number})
-        except Redirect as redirect:
-            path = redirect.path
-        return self._submission_class(
-            self._reddit, url=urljoin(self._reddit.config.reddit_url, path)
-        )
-
-    @_deprecate_args(
-        "title",
-        "selftext",
-        "url",
-        "flair_id",
-        "flair_text",
-        "resubmit",
-        "send_replies",
-        "nsfw",
-        "spoiler",
-        "collection_id",
-        "discussion_type",
-        "inline_media",
-        "draft_id",
-    )
-    def submit(
-        self,
-        title: str,
-        *,
-        collection_id: str | None = None,
-        discussion_type: str | None = None,
-        draft_id: str | None = None,
-        flair_id: str | None = None,
-        flair_text: str | None = None,
-        inline_media: dict[str, praw.models.InlineMedia] | None = None,
-        nsfw: bool = False,
-        resubmit: bool = True,
-        selftext: str | None = None,
-        send_replies: bool = True,
-        spoiler: bool = False,
-        url: str | None = None,
-    ) -> praw.models.Submission:  # noqa: D301
-        r"""Add a submission to the :class:`.Subreddit`.
-
-        :param title: The title of the submission.
-        :param collection_id: The UUID of a :class:`.Collection` to add the
-            newly-submitted post to.
-        :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
-            traditional comments (default: ``None``).
-        :param draft_id: The ID of a draft to submit.
-        :param flair_id: The flair template to select (default: ``None``).
-        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
-            this value will set a custom text (default: ``None``). ``flair_id`` is
-            required when ``flair_text`` is provided.
-        :param inline_media: A dict of :class:`.InlineMedia` objects where the key is
-            the placeholder name in ``selftext``.
-        :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
-        :param resubmit: When ``False``, an error will occur if the URL has already been
-            submitted (default: ``True``).
-        :param selftext: The Markdown formatted content for a ``text`` submission. Use
-            an empty string, ``""``, to make a title-only submission.
-        :param send_replies: When ``True``, messages will be sent to the submission
-            author when comments are made to the submission (default: ``True``).
-        :param spoiler: Whether the submission should be marked as a spoiler (default:
-            ``False``).
-        :param url: The URL for a ``link`` submission.
-
-        :returns: A :class:`.Submission` object for the newly created submission.
-
-        Either ``selftext`` or ``url`` can be provided, but not both.
-
-        For example, to submit a URL to r/test do:
-
-        .. code-block:: python
-
-            title = "PRAW documentation"
-            url = "https://praw.readthedocs.io"
-            reddit.subreddit("test").submit(title, url=url)
-
-        For example, to submit a self post with inline media do:
-
-        .. code-block:: python
-
-            from praw.models import InlineGif, InlineImage, InlineVideo
-
-            gif = InlineGif(path="path/to/image.gif", caption="optional caption")
-            image = InlineImage(path="path/to/image.jpg", caption="optional caption")
-            video = InlineVideo(path="path/to/video.mp4", caption="optional caption")
-            selftext = "Text with a gif {gif1} an image {image1} and a video {video1} inline"
-            media = {"gif1": gif, "image1": image, "video1": video}
-            reddit.subreddit("test").submit("title", inline_media=media, selftext=selftext)
-
-        .. note::
-
-            Inserted media will have a padding of ``\\n\\n`` automatically added. This
-            is due to the weirdness with Reddit's API. Using the example above, the
-            result selftext body will look like so:
-
-            .. code-block::
-
-                Text with a gif
-
-                ![gif](u1rchuphryq51 "optional caption")
-
-                an image
-
-                ![img](srnr8tshryq51 "optional caption")
-
-                and video
-
-                ![video](gmc7rvthryq51 "optional caption")
-
-                inline
-
-        .. note::
-
-            To submit a post to a subreddit with the ``"news"`` flair, you can get the
-            flair id like this:
-
-            .. code-block::
-
-                choices = list(subreddit.flair.link_templates.user_selectable())
-                template_id = next(x for x in choices if x["flair_text"] == "news")["flair_template_id"]
-                subreddit.submit("title", flair_id=template_id, url="https://www.news.com/")
-
-        .. seealso::
-
-            - :meth:`~.Subreddit.submit_gallery` to submit more than one image in the
-              same post
-            - :meth:`~.Subreddit.submit_image` to submit images
-            - :meth:`~.Subreddit.submit_poll` to submit polls
-            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
-
-        """
-        if (bool(selftext) or selftext == "") == bool(url):
-            msg = "Either 'selftext' or 'url' must be provided."
-            raise TypeError(msg)
-
-        data = {
-            "sr": str(self),
-            "resubmit": bool(resubmit),
-            "sendreplies": bool(send_replies),
-            "title": title,
-            "nsfw": bool(nsfw),
-            "spoiler": bool(spoiler),
-            "validate_on_submit": self._reddit.validate_on_submit,
-        }
-        for key, value in (
-            ("flair_id", flair_id),
-            ("flair_text", flair_text),
-            ("collection_id", collection_id),
-            ("discussion_type", discussion_type),
-            ("draft_id", draft_id),
-        ):
-            if value is not None:
-                data[key] = value
-        if selftext is not None:
-            data.update(kind="self")
-            if inline_media:
-                body = selftext.format(
-                    **{
-                        placeholder: self._upload_inline_media(media)
-                        for placeholder, media in inline_media.items()
-                    }
-                )
-                converted = self._convert_to_fancypants(body)
-                data.update(richtext_json=dumps(converted))
-            else:
-                data.update(text=selftext)
-        else:
-            data.update(kind="link", url=url)
-
-        return self._reddit.post(API_PATH["submit"], data=data)
-
-    @_deprecate_args(
-        "title",
-        "images",
-        "collection_id",
-        "discussion_type",
-        "flair_id",
-        "flair_text",
-        "nsfw",
-        "send_replies",
-        "spoiler",
-    )
-    def submit_gallery(
-        self,
-        title: str,
-        images: list[dict[str, str]],
-        *,
-        collection_id: str | None = None,
-        discussion_type: str | None = None,
-        flair_id: str | None = None,
-        flair_text: str | None = None,
-        nsfw: bool = False,
-        send_replies: bool = True,
-        spoiler: bool = False,
-    ) -> praw.models.Submission:
-        """Add an image gallery submission to the subreddit.
-
-        :param title: The title of the submission.
-        :param images: The images to post in dict with the following structure:
-            ``{"image_path": "path", "caption": "caption", "outbound_url": "url"}``,
-            only ``image_path`` is required.
-        :param collection_id: The UUID of a :class:`.Collection` to add the
-            newly-submitted post to.
-        :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
-            traditional comments (default: ``None``).
-        :param flair_id: The flair template to select (default: ``None``).
-        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
-            this value will set a custom text (default: ``None``). ``flair_id`` is
-            required when ``flair_text`` is provided.
-        :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
-        :param send_replies: When ``True``, messages will be sent to the submission
-            author when comments are made to the submission (default: ``True``).
-        :param spoiler: Whether the submission should be marked asa spoiler (default:
-            ``False``).
-
-        :returns: A :class:`.Submission` object for the newly created submission.
-
-        :raises: :class:`.ClientException` if ``image_path`` in ``images`` refers to a
-            file that is not an image.
-
-        For example, to submit an image gallery to r/test do:
-
-        .. code-block:: python
-
-            title = "My favorite pictures"
-            image = "/path/to/image.png"
-            image2 = "/path/to/image2.png"
-            image3 = "/path/to/image3.png"
-            images = [
-                {"image_path": image},
-                {
-                    "image_path": image2,
-                    "caption": "Image caption 2",
-                },
-                {
-                    "image_path": image3,
-                    "caption": "Image caption 3",
-                    "outbound_url": "https://example.com/link3",
-                },
-            ]
-            reddit.subreddit("test").submit_gallery(title, images)
-
-        .. seealso::
-
-            - :meth:`~.Subreddit.submit` to submit url posts and selftexts
-            - :meth:`~.Subreddit.submit_image` to submit single images
-            - :meth:`~.Subreddit.submit_poll` to submit polls
-            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
-
-        """
-        self._validate_gallery(images)
-        data = {
-            "api_type": "json",
-            "items": [],
-            "nsfw": bool(nsfw),
-            "sendreplies": bool(send_replies),
-            "show_error_list": True,
-            "spoiler": bool(spoiler),
-            "sr": str(self),
-            "title": title,
-            "validate_on_submit": self._reddit.validate_on_submit,
-        }
-        for key, value in (
-            ("flair_id", flair_id),
-            ("flair_text", flair_text),
-            ("collection_id", collection_id),
-            ("discussion_type", discussion_type),
-        ):
-            if value is not None:
-                data[key] = value
-        for image in images:
-            data["items"].append(
-                {
-                    "caption": image.get("caption", ""),
-                    "outbound_url": image.get("outbound_url", ""),
-                    "media_id": self._upload_media(
-                        expected_mime_prefix="image",
-                        media_path=image["image_path"],
-                        upload_type="gallery",
-                    )[0],
-                }
-            )
-        response = self._reddit.request(
-            json=data, method="POST", path=API_PATH["submit_gallery_post"]
-        )["json"]
-        if response["errors"]:
-            raise RedditAPIException(response["errors"])
-        return self._reddit.submission(url=response["data"]["url"])
-
-    @_deprecate_args(
-        "title",
-        "image_path",
-        "flair_id",
-        "flair_text",
-        "resubmit",
-        "send_replies",
-        "nsfw",
-        "spoiler",
-        "timeout",
-        "collection_id",
-        "without_websockets",
-        "discussion_type",
-    )
-    def submit_image(
-        self,
-        title: str,
-        image_path: str,
-        *,
-        collection_id: str | None = None,
-        discussion_type: str | None = None,
-        flair_id: str | None = None,
-        flair_text: str | None = None,
-        nsfw: bool = False,
-        resubmit: bool = True,
-        send_replies: bool = True,
-        spoiler: bool = False,
-        timeout: int = 10,
-        without_websockets: bool = False,
-    ) -> praw.models.Submission:
-        """Add an image submission to the subreddit.
-
-        :param collection_id: The UUID of a :class:`.Collection` to add the
-            newly-submitted post to.
-        :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
-            traditional comments (default: ``None``).
-        :param flair_id: The flair template to select (default: ``None``).
-        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
-            this value will set a custom text (default: ``None``). ``flair_id`` is
-            required when ``flair_text`` is provided.
-        :param image_path: The path to an image, to upload and post.
-        :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
-        :param resubmit: When ``False``, an error will occur if the URL has already been
-            submitted (default: ``True``).
-        :param send_replies: When ``True``, messages will be sent to the submission
-            author when comments are made to the submission (default: ``True``).
-        :param spoiler: Whether the submission should be marked as a spoiler (default:
-            ``False``).
-        :param timeout: Specifies a particular timeout, in seconds. Use to avoid
-            "Websocket error" exceptions (default: ``10``).
-        :param title: The title of the submission.
-        :param without_websockets: Set to ``True`` to disable use of WebSockets (see
-            note below for an explanation). If ``True``, this method doesn't return
-            anything (default: ``False``).
-
-        :returns: A :class:`.Submission` object for the newly created submission, unless
-            ``without_websockets`` is ``True``.
-
-        :raises: :class:`.ClientException` if ``image_path`` refers to a file that is
-            not an image.
-
-        .. note::
-
-            Reddit's API uses WebSockets to respond with the link of the newly created
-            post. If this fails, the method will raise :class:`.WebSocketException`.
-            Occasionally, the Reddit post will still be created. More often, there is an
-            error with the image file. If you frequently get exceptions but successfully
-            created posts, try setting the ``timeout`` parameter to a value above 10.
-
-            To disable the use of WebSockets, set ``without_websockets=True``. This will
-            make the method return ``None``, though the post will still be created. You
-            may wish to do this if you are running your program in a restricted network
-            environment, or using a proxy that doesn't support WebSockets connections.
-
-        For example, to submit an image to r/test do:
-
-        .. code-block:: python
-
-            title = "My favorite picture"
-            image = "/path/to/image.png"
-            reddit.subreddit("test").submit_image(title, image)
-
-        .. seealso::
-
-            - :meth:`~.Subreddit.submit` to submit url posts and selftexts
-            - :meth:`~.Subreddit.submit_gallery` to submit more than one image in the
-              same post
-            - :meth:`~.Subreddit.submit_poll` to submit polls
-            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
-
-        """
-        data = {
-            "sr": str(self),
-            "resubmit": bool(resubmit),
-            "sendreplies": bool(send_replies),
-            "title": title,
-            "nsfw": bool(nsfw),
-            "spoiler": bool(spoiler),
-            "validate_on_submit": self._reddit.validate_on_submit,
-        }
-        for key, value in (
-            ("flair_id", flair_id),
-            ("flair_text", flair_text),
-            ("collection_id", collection_id),
-            ("discussion_type", discussion_type),
-        ):
-            if value is not None:
-                data[key] = value
-
-        image_url, websocket_url = self._upload_media(
-            expected_mime_prefix="image", media_path=image_path
-        )
-        data.update(kind="image", url=image_url)
-        if without_websockets:
-            websocket_url = None
-        return self._submit_media(
-            data=data, timeout=timeout, websocket_url=websocket_url
-        )
-
-    @_deprecate_args(
-        "title",
-        "selftext",
-        "options",
-        "duration",
-        "flair_id",
-        "flair_text",
-        "resubmit",
-        "send_replies",
-        "nsfw",
-        "spoiler",
-        "collection_id",
-        "discussion_type",
-    )
-    def submit_poll(
-        self,
-        title: str,
-        *,
-        collection_id: str | None = None,
-        discussion_type: str | None = None,
-        duration: int,
-        flair_id: str | None = None,
-        flair_text: str | None = None,
-        nsfw: bool = False,
-        options: list[str],
-        resubmit: bool = True,
-        selftext: str,
-        send_replies: bool = True,
-        spoiler: bool = False,
-    ) -> praw.models.Submission:
-        """Add a poll submission to the subreddit.
-
-        :param title: The title of the submission.
-        :param collection_id: The UUID of a :class:`.Collection` to add the
-            newly-submitted post to.
-        :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
-            traditional comments (default: ``None``).
-        :param duration: The number of days the poll should accept votes, as an ``int``.
-            Valid values are between ``1`` and ``7``, inclusive.
-        :param flair_id: The flair template to select (default: ``None``).
-        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
-            this value will set a custom text (default: ``None``). ``flair_id`` is
-            required when ``flair_text`` is provided.
-        :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
-        :param options: A list of two to six poll options as ``str``.
-        :param resubmit: When ``False``, an error will occur if the URL has already been
-            submitted (default: ``True``).
-        :param selftext: The Markdown formatted content for the submission. Use an empty
-            string, ``""``, to make a submission with no text contents.
-        :param send_replies: When ``True``, messages will be sent to the submission
-            author when comments are made to the submission (default: ``True``).
-        :param spoiler: Whether the submission should be marked as a spoiler (default:
-            ``False``).
-
-        :returns: A :class:`.Submission` object for the newly created submission.
-
-        For example, to submit a poll to r/test do:
-
-        .. code-block:: python
-
-            title = "Do you like PRAW?"
-            reddit.subreddit("test").submit_poll(
-                title, selftext="", options=["Yes", "No"], duration=3
-            )
-
-        .. seealso::
-
-            - :meth:`~.Subreddit.submit` to submit url posts and selftexts
-            - :meth:`~.Subreddit.submit_gallery` to submit more than one image in the
-              same post
-            - :meth:`~.Subreddit.submit_image` to submit single images
-            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
-
-        """
-        data = {
-            "sr": str(self),
-            "text": selftext,
-            "options": options,
-            "duration": duration,
-            "resubmit": bool(resubmit),
-            "sendreplies": bool(send_replies),
-            "title": title,
-            "nsfw": bool(nsfw),
-            "spoiler": bool(spoiler),
-            "validate_on_submit": self._reddit.validate_on_submit,
-        }
-        for key, value in (
-            ("flair_id", flair_id),
-            ("flair_text", flair_text),
-            ("collection_id", collection_id),
-            ("discussion_type", discussion_type),
-        ):
-            if value is not None:
-                data[key] = value
-
-        return self._reddit.post(API_PATH["submit_poll_post"], json=data)
-
-    @_deprecate_args(
-        "title",
-        "video_path",
-        "videogif",
-        "thumbnail_path",
-        "flair_id",
-        "flair_text",
-        "resubmit",
-        "send_replies",
-        "nsfw",
-        "spoiler",
-        "timeout",
-        "collection_id",
-        "without_websockets",
-        "discussion_type",
-    )
-    def submit_video(
-        self,
-        title: str,
-        video_path: str,
-        *,
-        collection_id: str | None = None,
-        discussion_type: str | None = None,
-        flair_id: str | None = None,
-        flair_text: str | None = None,
-        nsfw: bool = False,
-        resubmit: bool = True,
-        send_replies: bool = True,
-        spoiler: bool = False,
-        thumbnail_path: str | None = None,
-        timeout: int = 10,
-        videogif: bool = False,
-        without_websockets: bool = False,
-    ) -> praw.models.Submission:
-        """Add a video or videogif submission to the subreddit.
-
-        :param title: The title of the submission.
-        :param video_path: The path to a video, to upload and post.
-        :param collection_id: The UUID of a :class:`.Collection` to add the
-            newly-submitted post to.
-        :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
-            traditional comments (default: ``None``).
-        :param flair_id: The flair template to select (default: ``None``).
-        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
-            this value will set a custom text (default: ``None``). ``flair_id`` is
-            required when ``flair_text`` is provided.
-        :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
-        :param resubmit: When ``False``, an error will occur if the URL has already been
-            submitted (default: ``True``).
-        :param send_replies: When ``True``, messages will be sent to the submission
-            author when comments are made to the submission (default: ``True``).
-        :param spoiler: Whether the submission should be marked as a spoiler (default:
-            ``False``).
-        :param thumbnail_path: The path to an image, to be uploaded and used as the
-            thumbnail for this video. If not provided, the PRAW logo will be used as the
-            thumbnail.
-        :param timeout: Specifies a particular timeout, in seconds. Use to avoid
-            "Websocket error" exceptions (default: ``10``).
-        :param videogif: If ``True``, the video is uploaded as a videogif, which is
-            essentially a silent video (default: ``False``).
-        :param without_websockets: Set to ``True`` to disable use of WebSockets (see
-            note below for an explanation). If ``True``, this method doesn't return
-            anything (default: ``False``).
-
-        :returns: A :class:`.Submission` object for the newly created submission, unless
-            ``without_websockets`` is ``True``.
-
-        :raises: :class:`.ClientException` if ``video_path`` refers to a file that is
-            not a video.
-
-        .. note::
-
-            Reddit's API uses WebSockets to respond with the link of the newly created
-            post. If this fails, the method will raise :class:`.WebSocketException`.
-            Occasionally, the Reddit post will still be created. More often, there is an
-            error with the image file. If you frequently get exceptions but successfully
-            created posts, try setting the ``timeout`` parameter to a value above 10.
-
-            To disable the use of WebSockets, set ``without_websockets=True``. This will
-            make the method return ``None``, though the post will still be created. You
-            may wish to do this if you are running your program in a restricted network
-            environment, or using a proxy that doesn't support WebSockets connections.
-
-        For example, to submit a video to r/test do:
-
-        .. code-block:: python
-
-            title = "My favorite movie"
-            video = "/path/to/video.mp4"
-            reddit.subreddit("test").submit_video(title, video)
-
-        .. seealso::
-
-            - :meth:`~.Subreddit.submit` to submit url posts and selftexts
-            - :meth:`~.Subreddit.submit_image` to submit images
-            - :meth:`~.Subreddit.submit_gallery` to submit more than one image in the
-              same post
-            - :meth:`~.Subreddit.submit_poll` to submit polls
-
-        """
-        data = {
-            "sr": str(self),
-            "resubmit": bool(resubmit),
-            "sendreplies": bool(send_replies),
-            "title": title,
-            "nsfw": bool(nsfw),
-            "spoiler": bool(spoiler),
-            "validate_on_submit": self._reddit.validate_on_submit,
-        }
-        for key, value in (
-            ("flair_id", flair_id),
-            ("flair_text", flair_text),
-            ("collection_id", collection_id),
-            ("discussion_type", discussion_type),
-        ):
-            if value is not None:
-                data[key] = value
-
-        video_url, websocket_url = self._upload_media(
-            expected_mime_prefix="video", media_path=video_path
-        )
-        data.update(
-            kind="videogif" if videogif else "video",
-            url=video_url,
-            # if thumbnail_path is None, it uploads the PRAW logo
-            video_poster_url=self._upload_media(media_path=thumbnail_path)[0],
-        )
-        if without_websockets:
-            websocket_url = None
-        return self._submit_media(
-            data=data, timeout=timeout, websocket_url=websocket_url
-        )
-
-    @_deprecate_args("other_subreddits")
-    def subscribe(self, *, other_subreddits: list[praw.models.Subreddit] | None = None):
-        """Subscribe to the subreddit.
-
-        :param other_subreddits: When provided, also subscribe to the provided list of
-            subreddits.
-
-        For example, to subscribe to r/test:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").subscribe()
-
-        """
-        data = {
-            "action": "sub",
-            "skip_inital_defaults": True,
-            "sr_name": self._subreddit_list(
-                other_subreddits=other_subreddits, subreddit=self
-            ),
-        }
-        self._reddit.post(API_PATH["subscribe"], data=data)
-
-    def traffic(self) -> dict[str, list[list[int]]]:
-        """Return a dictionary of the :class:`.Subreddit`'s traffic statistics.
-
-        :raises: ``prawcore.NotFound`` when the traffic stats aren't available to the
-            authenticated user, that is, they are not public and the authenticated user
-            is not a moderator of the subreddit.
-
-        The traffic method returns a dict with three keys. The keys are ``day``,
-        ``hour`` and ``month``. Each key contains a list of lists with 3 or 4 values.
-        The first value is a timestamp indicating the start of the category (start of
-        the day for the ``day`` key, start of the hour for the ``hour`` key, etc.). The
-        second, third, and fourth values indicate the unique pageviews, total pageviews,
-        and subscribers, respectively.
-
-        .. note::
-
-            The ``hour`` key does not contain subscribers, and therefore each sub-list
-            contains three values.
-
-        For example, to get the traffic stats for r/test:
-
-        .. code-block:: python
-
-            stats = reddit.subreddit("test").traffic()
-
-        """
-        return self._reddit.get(API_PATH["about_traffic"].format(subreddit=self))
-
-    @_deprecate_args("other_subreddits")
-    def unsubscribe(
-        self, *, other_subreddits: list[praw.models.Subreddit] | None = None
-    ):
-        """Unsubscribe from the subreddit.
-
-        :param other_subreddits: When provided, also unsubscribe from the provided list
-            of subreddits.
-
-        To unsubscribe from r/test:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").unsubscribe()
-
-        """
-        data = {
-            "action": "unsub",
-            "sr_name": self._subreddit_list(
-                other_subreddits=other_subreddits, subreddit=self
-            ),
-        }
-        self._reddit.post(API_PATH["subscribe"], data=data)
-
-
-WidgetEncoder._subreddit_class = Subreddit
 
 
 class SubredditFilters:
@@ -2202,9 +674,20 @@ class SubredditFlairTemplates:
         }
         self.subreddit._reddit.post(url, data=data)
 
-    def _clear(self, *, is_link: bool | None = None):  # noqa: ANN001
+    def _clear(self, *, is_link: bool | None = None):
         url = API_PATH["flairtemplateclear"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data={"flair_type": self.flair_type(is_link)})
+
+    def _reorder(self, flair_list: list, *, is_link: bool | None = None):
+        url = API_PATH["flairtemplatereorder"].format(subreddit=self.subreddit)
+        self.subreddit._reddit.patch(
+            url,
+            params={
+                "flair_type": self.flair_type(is_link),
+                "subreddit": self.subreddit.display_name,
+            },
+            json=flair_list,
+        )
 
     def delete(self, template_id: str):
         """Remove a flair template provided by ``template_id``.
@@ -2219,19 +702,6 @@ class SubredditFlairTemplates:
         """
         url = API_PATH["flairtemplatedelete"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data={"flair_template_id": template_id})
-
-    def _reorder(
-        self, flair_list: list, *, is_link: bool | None = None
-    ):  # noqa: ANN001
-        url = API_PATH["flairtemplatereorder"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.patch(
-            url,
-            params={
-                "flair_type": self.flair_type(is_link),
-                "subreddit": self.subreddit.display_name,
-            },
-            json=flair_list,
-        )
 
     @_deprecate_args(
         "template_id",
@@ -2335,9 +805,7 @@ class SubredditModeration:
     """
 
     @staticmethod
-    def _handle_only(
-        *, generator_kwargs: dict[str, Any], only: str | None
-    ):  # noqa: ANN001
+    def _handle_only(*, generator_kwargs: dict[str, Any], only: str | None):
         if only is not None:
             if only == "submissions":
                 only = "links"
@@ -2871,7 +1339,7 @@ class SubredditModerationStream:
             for message in subreddit.mod.stream.modmail_conversations():
                 print(f"From: {message.owner}, To: {message.participant}")
 
-        """  # noqa: E501
+        """
         if self.subreddit == "mod":
             self.subreddit = self.subreddit._reddit.subreddit("all")
         return stream_generator(
@@ -3224,9 +1692,7 @@ class SubredditStylesheet:
         """
         self.subreddit = subreddit
 
-    def _update_structured_styles(
-        self, style_data: dict[str, str | Any]
-    ):  # noqa: ANN001
+    def _update_structured_styles(self, style_data: dict[str, str | Any]):
         url = API_PATH["structured_styles"].format(subreddit=self.subreddit)
         self.subreddit._reddit.patch(url, data=style_data)
 
@@ -3251,9 +1717,7 @@ class SubredditStylesheet:
                 raise RedditAPIException([[error_type, error_value, None]])
             return response
 
-    def _upload_style_asset(
-        self, *, image_path: str, image_type: str
-    ) -> str:  # noqa: ANN001
+    def _upload_style_asset(self, *, image_path: str, image_type: str) -> str:
         file = Path(image_path)
         data = {"imagetype": image_type, "filepath": file.name}
         data["mimetype"] = "image/jpeg"
@@ -3427,7 +1891,6 @@ class SubredditStylesheet:
             ``img_src``.
 
         :raises: ``prawcore.TooLarge`` if the overall request body is too large.
-
         :raises: :class:`.RedditAPIException` if there are other issues with the
             uploaded image. Unfortunately the exception info might not be very specific,
             so try through the website with the same image to see what the problem
@@ -3450,7 +1913,6 @@ class SubredditStylesheet:
         :param image_path: A path to a jpeg or png image.
 
         :raises: ``prawcore.TooLarge`` if the overall request body is too large.
-
         :raises: :class:`.RedditAPIException` if there are other issues with the
             uploaded image. Unfortunately the exception info might not be very specific,
             so try through the website with the same image to see what the problem
@@ -3483,7 +1945,6 @@ class SubredditStylesheet:
             ``"left"``).
 
         :raises: ``prawcore.TooLarge`` if the overall request body is too large.
-
         :raises: :class:`.RedditAPIException` if there are other issues with the
             uploaded image. Unfortunately the exception info might not be very specific,
             so try through the website with the same image to see what the problem
@@ -3521,7 +1982,6 @@ class SubredditStylesheet:
         Fails if the :class:`.Subreddit` does not have an additional image defined.
 
         :raises: ``prawcore.TooLarge`` if the overall request body is too large.
-
         :raises: :class:`.RedditAPIException` if there are other issues with the
             uploaded image. Unfortunately the exception info might not be very specific,
             so try through the website with the same image to see what the problem
@@ -3550,7 +2010,6 @@ class SubredditStylesheet:
             ``img_src``.
 
         :raises: ``prawcore.TooLarge`` if the overall request body is too large.
-
         :raises: :class:`.RedditAPIException` if there are other issues with the
             uploaded image. Unfortunately the exception info might not be very specific,
             so try through the website with the same image to see what the problem
@@ -3580,7 +2039,6 @@ class SubredditStylesheet:
         Fails if the :class:`.Subreddit` does not have an additional image defined.
 
         :raises: ``prawcore.TooLarge`` if the overall request body is too large.
-
         :raises: :class:`.RedditAPIException` if there are other issues with the
             uploaded image. Unfortunately the exception info might not be very specific,
             so try through the website with the same image to see what the problem
@@ -3602,7 +2060,6 @@ class SubredditStylesheet:
             ``img_src``.
 
         :raises: ``prawcore.TooLarge`` if the overall request body is too large.
-
         :raises: :class:`.RedditAPIException` if there are other issues with the
             uploaded image. Unfortunately the exception info might not be very specific,
             so try through the website with the same image to see what the problem
@@ -3626,7 +2083,6 @@ class SubredditStylesheet:
             ``img_src``.
 
         :raises: ``prawcore.TooLarge`` if the overall request body is too large.
-
         :raises: :class:`.RedditAPIException` if there are other issues with the
             uploaded image. Unfortunately the exception info might not be very specific,
             so try through the website with the same image to see what the problem
@@ -3788,11 +2244,11 @@ class ModeratorRelationship(SubredditRelationship):
     }
 
     @staticmethod
-    def _handle_permissions(  # noqa: ANN205
+    def _handle_permissions(
         *,
         other_settings: dict | None = None,
         permissions: list[str] | None = None,
-    ):
+    ) -> dict[str, Any]:
         other_settings = deepcopy(other_settings) if other_settings else {}
         other_settings["permissions"] = permissions_string(
             known_permissions=ModeratorRelationship.PERMISSIONS, permissions=permissions
@@ -3801,7 +2257,7 @@ class ModeratorRelationship(SubredditRelationship):
 
     def __call__(
         self, redditor: str | praw.models.Redditor | None = None
-    ) -> list[praw.models.Redditor]:  # pylint: disable=arguments-differ
+    ) -> list[praw.models.Redditor]:
         r"""Return a list of :class:`.Redditor`\ s who are moderators.
 
         :param redditor: When provided, return a list containing at most one
@@ -3820,7 +2276,7 @@ class ModeratorRelationship(SubredditRelationship):
         .. note::
 
             Unlike other relationship callables, this relationship is not paginated.
-            Thus it simply returns the full list, rather than an iterator for the
+            Thus, it simply returns the full list, rather than an iterator for the
             results.
 
         To be used like:
@@ -3841,7 +2297,6 @@ class ModeratorRelationship(SubredditRelationship):
         url = API_PATH[f"list_{self.relationship}"].format(subreddit=self.subreddit)
         return self.subreddit._reddit.get(url, params=params)
 
-    # pylint: disable=arguments-differ
     @_deprecate_args("redditor", "permissions")
     def add(
         self,
@@ -3873,7 +2328,6 @@ class ModeratorRelationship(SubredditRelationship):
         )
         super().add(redditor, **other_settings)
 
-    # pylint: enable=arguments-differ
     @_deprecate_args("redditor", "permissions")
     def invite(
         self,
@@ -4034,6 +2488,1530 @@ class ModeratorRelationship(SubredditRelationship):
             permissions=permissions,
         )
         self.subreddit._reddit.post(url, data=data)
+
+
+class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBase):
+    """A class for Subreddits.
+
+    To obtain an instance of this class for r/test execute:
+
+    .. code-block:: python
+
+        subreddit = reddit.subreddit("test")
+
+    While r/all is not a real subreddit, it can still be treated like one. The following
+    outputs the titles of the 25 hottest submissions in r/all:
+
+    .. code-block:: python
+
+        for submission in reddit.subreddit("all").hot(limit=25):
+            print(submission.title)
+
+    Multiple subreddits can be combined with a ``+`` like so:
+
+    .. code-block:: python
+
+        for submission in reddit.subreddit("redditdev+learnpython").top(time_filter="all"):
+            print(submission)
+
+    Subreddits can be filtered from combined listings as follows.
+
+    .. note::
+
+        These filters are ignored by certain methods, including :attr:`.comments`,
+        :meth:`.gilded`, and :meth:`.SubredditStream.comments`.
+
+    .. code-block:: python
+
+        for submission in reddit.subreddit("all-redditdev").new():
+            print(submission)
+
+    .. include:: ../../typical_attributes.rst
+
+    ========================= ==========================================================
+    Attribute                 Description
+    ========================= ==========================================================
+    ``can_assign_link_flair`` Whether users can assign their own link flair.
+    ``can_assign_user_flair`` Whether users can assign their own user flair.
+    ``created_utc``           Time the subreddit was created, represented in `Unix
+                              Time`_.
+    ``description``           Subreddit description, in Markdown.
+    ``description_html``      Subreddit description, in HTML.
+    ``display_name``          Name of the subreddit.
+    ``icon_img``              The URL of the subreddit icon image.
+    ``id``                    ID of the subreddit.
+    ``name``                  Fullname of the subreddit.
+    ``over18``                Whether the subreddit is NSFW.
+    ``public_description``    Description of the subreddit, shown in searches and on the
+                              "You must be invited to visit this community" page (if
+                              applicable).
+    ``spoilers_enabled``      Whether the spoiler tag feature is enabled.
+    ``subscribers``           Count of subscribers.
+    ``user_is_banned``        Whether the authenticated user is banned.
+    ``user_is_moderator``     Whether the authenticated user is a moderator.
+    ``user_is_subscriber``    Whether the authenticated user is subscribed.
+    ========================= ==========================================================
+
+    .. note::
+
+        Trying to retrieve attributes of quarantined or private subreddits will result
+        in a 403 error. Trying to retrieve attributes of a banned subreddit will result
+        in a 404 error.
+
+    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
+
+    """
+
+    STR_FIELD = "display_name"
+    MESSAGE_PREFIX = "#"
+
+    @staticmethod
+    def _create_or_update(
+        *,
+        _reddit: praw.Reddit,
+        allow_images: bool | None = None,
+        allow_post_crossposts: bool | None = None,
+        allow_top: bool | None = None,
+        collapse_deleted_comments: bool | None = None,
+        comment_score_hide_mins: int | None = None,
+        description: str | None = None,
+        domain: str | None = None,
+        exclude_banned_modqueue: bool | None = None,
+        header_hover_text: str | None = None,
+        hide_ads: bool | None = None,
+        lang: str | None = None,
+        key_color: str | None = None,
+        link_type: str | None = None,
+        name: str | None = None,
+        over_18: bool | None = None,
+        public_description: str | None = None,
+        public_traffic: bool | None = None,
+        show_media: bool | None = None,
+        show_media_preview: bool | None = None,
+        spam_comments: bool | None = None,
+        spam_links: bool | None = None,
+        spam_selfposts: bool | None = None,
+        spoilers_enabled: bool | None = None,
+        sr: str | None = None,
+        submit_link_label: str | None = None,
+        submit_text: str | None = None,
+        submit_text_label: str | None = None,
+        subreddit_type: str | None = None,
+        suggested_comment_sort: str | None = None,
+        title: str | None = None,
+        wiki_edit_age: int | None = None,
+        wiki_edit_karma: int | None = None,
+        wikimode: str | None = None,
+        **other_settings: Any,
+    ):
+        model = {
+            "allow_images": allow_images,
+            "allow_post_crossposts": allow_post_crossposts,
+            "allow_top": allow_top,
+            "collapse_deleted_comments": collapse_deleted_comments,
+            "comment_score_hide_mins": comment_score_hide_mins,
+            "description": description,
+            "domain": domain,
+            "exclude_banned_modqueue": exclude_banned_modqueue,
+            "header-title": header_hover_text,  # Remap here - better name
+            "hide_ads": hide_ads,
+            "key_color": key_color,
+            "lang": lang,
+            "link_type": link_type,
+            "name": name,
+            "over_18": over_18,
+            "public_description": public_description,
+            "public_traffic": public_traffic,
+            "show_media": show_media,
+            "show_media_preview": show_media_preview,
+            "spam_comments": spam_comments,
+            "spam_links": spam_links,
+            "spam_selfposts": spam_selfposts,
+            "spoilers_enabled": spoilers_enabled,
+            "sr": sr,
+            "submit_link_label": submit_link_label,
+            "submit_text": submit_text,
+            "submit_text_label": submit_text_label,
+            "suggested_comment_sort": suggested_comment_sort,
+            "title": title,
+            "type": subreddit_type,
+            "wiki_edit_age": wiki_edit_age,
+            "wiki_edit_karma": wiki_edit_karma,
+            "wikimode": wikimode,
+        }
+
+        model.update(other_settings)
+
+        _reddit.post(API_PATH["site_admin"], data=model)
+
+    @staticmethod
+    def _subreddit_list(
+        *,
+        other_subreddits: list[str | praw.models.Subreddit],
+        subreddit: praw.models.Subreddit,
+    ) -> str:
+        if other_subreddits:
+            return ",".join([str(subreddit)] + [str(x) for x in other_subreddits])
+        return str(subreddit)
+
+    @staticmethod
+    def _validate_gallery(images: list[dict[str, str]]):
+        for image in images:
+            image_path = image.get("image_path", "")
+            if image_path:
+                if not Path(image_path).is_file():
+                    msg = f"{image_path!r} is not a valid image path."
+                    raise TypeError(msg)
+            else:
+                msg = "'image_path' is required."
+                raise TypeError(msg)
+            if not len(image.get("caption", "")) <= 180:
+                msg = "Caption must be 180 characters or less."
+                raise TypeError(msg)
+
+    @staticmethod
+    def _validate_inline_media(inline_media: praw.models.InlineMedia):
+        if not Path(inline_media.path).is_file():
+            msg = f"{inline_media.path!r} is not a valid file path."
+            raise ValueError(msg)
+
+    @cachedproperty
+    def banned(self) -> praw.models.reddit.subreddit.SubredditRelationship:
+        """Provide an instance of :class:`.SubredditRelationship`.
+
+        For example, to ban a user try:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").banned.add("spez", ban_reason="...")
+
+        To list the banned users along with any notes, try:
+
+        .. code-block:: python
+
+            for ban in reddit.subreddit("test").banned():
+                print(f"{ban}: {ban.note}")
+
+        """
+        return SubredditRelationship(self, "banned")
+
+    @cachedproperty
+    def collections(self) -> praw.models.reddit.collections.SubredditCollections:
+        r"""Provide an instance of :class:`.SubredditCollections`.
+
+        To see the permalinks of all :class:`.Collection`\ s that belong to a subreddit,
+        try:
+
+        .. code-block:: python
+
+            for collection in reddit.subreddit("test").collections:
+                print(collection.permalink)
+
+        To get a specific :class:`.Collection` by its UUID or permalink, use one of the
+        following:
+
+        .. code-block:: python
+
+            collection = reddit.subreddit("test").collections("some_uuid")
+            collection = reddit.subreddit("test").collections(
+                permalink="https://reddit.com/r/SUBREDDIT/collection/some_uuid"
+            )
+
+        """
+        return self._subreddit_collections_class(self._reddit, self)
+
+    @cachedproperty
+    def contributor(self) -> praw.models.reddit.subreddit.ContributorRelationship:
+        """Provide an instance of :class:`.ContributorRelationship`.
+
+        Contributors are also known as approved submitters.
+
+        To add a contributor try:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").contributor.add("spez")
+
+        """
+        return ContributorRelationship(self, "contributor")
+
+    @cachedproperty
+    def emoji(self) -> SubredditEmoji:
+        """Provide an instance of :class:`.SubredditEmoji`.
+
+        This attribute can be used to discover all emoji for a subreddit:
+
+        .. code-block:: python
+
+            for emoji in reddit.subreddit("test").emoji:
+                print(emoji)
+
+        A single emoji can be lazily retrieved via:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").emoji["emoji_name"]
+
+        .. note::
+
+            Attempting to access attributes of a nonexistent emoji will result in a
+            :class:`.ClientException`.
+
+        """
+        return SubredditEmoji(self)
+
+    @cachedproperty
+    def filters(self) -> praw.models.reddit.subreddit.SubredditFilters:
+        """Provide an instance of :class:`.SubredditFilters`.
+
+        For example, to add a filter, run:
+
+        .. code-block:: python
+
+            reddit.subreddit("all").filters.add("test")
+
+        """
+        return SubredditFilters(self)
+
+    @cachedproperty
+    def flair(self) -> praw.models.reddit.subreddit.SubredditFlair:
+        """Provide an instance of :class:`.SubredditFlair`.
+
+        Use this attribute for interacting with a :class:`.Subreddit`'s flair. For
+        example, to list all the flair for a subreddit which you have the ``flair``
+        moderator permission on try:
+
+        .. code-block:: python
+
+            for flair in reddit.subreddit("test").flair():
+                print(flair)
+
+        Flair templates can be interacted with through this attribute via:
+
+        .. code-block:: python
+
+            for template in reddit.subreddit("test").flair.templates:
+                print(template)
+
+        """
+        return SubredditFlair(self)
+
+    @cachedproperty
+    def mod(self) -> SubredditModeration:
+        """Provide an instance of :class:`.SubredditModeration`.
+
+        For example, to accept a moderation invite from r/test:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").mod.accept_invite()
+
+        """
+        return SubredditModeration(self)
+
+    @cachedproperty
+    def moderator(self) -> praw.models.reddit.subreddit.ModeratorRelationship:
+        """Provide an instance of :class:`.ModeratorRelationship`.
+
+        For example, to add a moderator try:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").moderator.add("spez")
+
+        To list the moderators along with their permissions try:
+
+        .. code-block:: python
+
+            for moderator in reddit.subreddit("test").moderator():
+                print(f"{moderator}: {moderator.mod_permissions}")
+
+        """
+        return ModeratorRelationship(self, "moderator")
+
+    @cachedproperty
+    def modmail(self) -> praw.models.reddit.subreddit.Modmail:
+        """Provide an instance of :class:`.Modmail`.
+
+        For example, to send a new modmail from r/test to u/spez with the subject
+        ``"test"`` along with a message body of ``"hello"``:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").modmail.create(subject="test", body="hello", recipient="spez")
+
+        """
+        return Modmail(self)
+
+    @cachedproperty
+    def muted(self) -> praw.models.reddit.subreddit.SubredditRelationship:
+        """Provide an instance of :class:`.SubredditRelationship`.
+
+        For example, muted users can be iterated through like so:
+
+        .. code-block:: python
+
+            for mute in reddit.subreddit("test").muted():
+                print(f"{mute}: {mute.date}")
+
+        """
+        return SubredditRelationship(self, "muted")
+
+    @cachedproperty
+    def quaran(self) -> praw.models.reddit.subreddit.SubredditQuarantine:
+        """Provide an instance of :class:`.SubredditQuarantine`.
+
+        This property is named ``quaran`` because ``quarantine`` is a subreddit
+        attribute returned by Reddit to indicate whether or not a subreddit is
+        quarantined.
+
+        To opt-in into a quarantined subreddit:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").quaran.opt_in()
+
+        """
+        return SubredditQuarantine(self)
+
+    @cachedproperty
+    def rules(self) -> SubredditRules:
+        """Provide an instance of :class:`.SubredditRules`.
+
+        Use this attribute for interacting with a :class:`.Subreddit`'s rules.
+
+        For example, to list all the rules for a subreddit:
+
+        .. code-block:: python
+
+            for rule in reddit.subreddit("test").rules:
+                print(rule)
+
+        Moderators can also add rules to the subreddit. For example, to make a rule
+        called ``"No spam"`` in r/test:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").rules.mod.add(
+                short_name="No spam", kind="all", description="Do not spam. Spam bad"
+            )
+
+        """
+        return SubredditRules(self)
+
+    @cachedproperty
+    def stream(self) -> praw.models.reddit.subreddit.SubredditStream:
+        """Provide an instance of :class:`.SubredditStream`.
+
+        Streams can be used to indefinitely retrieve new comments made to a subreddit,
+        like:
+
+        .. code-block:: python
+
+            for comment in reddit.subreddit("test").stream.comments():
+                print(comment)
+
+        Additionally, new submissions can be retrieved via the stream. In the following
+        example all submissions are fetched via the special r/all:
+
+        .. code-block:: python
+
+            for submission in reddit.subreddit("all").stream.submissions():
+                print(submission)
+
+        """
+        return SubredditStream(self)
+
+    @cachedproperty
+    def stylesheet(self) -> praw.models.reddit.subreddit.SubredditStylesheet:
+        """Provide an instance of :class:`.SubredditStylesheet`.
+
+        For example, to add the css data ``.test{color:blue}`` to the existing
+        stylesheet:
+
+        .. code-block:: python
+
+            subreddit = reddit.subreddit("test")
+            stylesheet = subreddit.stylesheet()
+            stylesheet.stylesheet += ".test{color:blue}"
+            subreddit.stylesheet.update(stylesheet.stylesheet)
+
+        """
+        return SubredditStylesheet(self)
+
+    @cachedproperty
+    def widgets(self) -> praw.models.SubredditWidgets:
+        """Provide an instance of :class:`.SubredditWidgets`.
+
+        **Example usage**
+
+        Get all sidebar widgets:
+
+        .. code-block:: python
+
+            for widget in reddit.subreddit("test").widgets.sidebar:
+                print(widget)
+
+        Get ID card widget:
+
+        .. code-block:: python
+
+            print(reddit.subreddit("test").widgets.id_card)
+
+        """
+        return SubredditWidgets(self)
+
+    @cachedproperty
+    def wiki(self) -> praw.models.reddit.subreddit.SubredditWiki:
+        """Provide an instance of :class:`.SubredditWiki`.
+
+        This attribute can be used to discover all wikipages for a subreddit:
+
+        .. code-block:: python
+
+            for wikipage in reddit.subreddit("test").wiki:
+                print(wikipage)
+
+        To fetch the content for a given wikipage try:
+
+        .. code-block:: python
+
+            wikipage = reddit.subreddit("test").wiki["proof"]
+            print(wikipage.content_md)
+
+        """
+        return SubredditWiki(self)
+
+    @property
+    def _kind(self) -> str:
+        """Return the class's kind."""
+        return self._reddit.config.kinds["subreddit"]
+
+    def __init__(
+        self,
+        reddit: praw.Reddit,
+        display_name: str | None = None,
+        _data: dict[str, Any] | None = None,
+    ):
+        """Initialize a :class:`.Subreddit` instance.
+
+        :param reddit: An instance of :class:`.Reddit`.
+        :param display_name: The name of the subreddit.
+
+        .. note::
+
+            This class should not be initialized directly. Instead, obtain an instance
+            via:
+
+            .. code-block:: python
+
+                subreddit = reddit.subreddit("test")
+
+        """
+        if (display_name, _data).count(None) != 1:
+            msg = "Either 'display_name' or '_data' must be provided."
+            raise TypeError(msg)
+        if display_name:
+            self.display_name = display_name
+        super().__init__(reddit, _data=_data)
+        self._path = API_PATH["subreddit"].format(subreddit=self)
+
+    def _convert_to_fancypants(self, markdown_text: str) -> dict:
+        """Convert a Markdown string to a dict for use with the ``richtext_json`` param.
+
+        :param markdown_text: A Markdown string to convert.
+
+        :returns: A dict in ``richtext_json`` format.
+
+        """
+        text_data = {"output_mode": "rtjson", "markdown_text": markdown_text}
+        return self._reddit.post(API_PATH["convert_rte_body"], data=text_data)["output"]
+
+    def _fetch(self):
+        data = self._fetch_data()
+        data = data["data"]
+        other = type(self)(self._reddit, _data=data)
+        self.__dict__.update(other.__dict__)
+        super()._fetch()
+
+    def _fetch_info(self):
+        return "subreddit_about", {"subreddit": self}, None
+
+    def _parse_xml_response(self, response: Response):
+        """Parse the XML from a response and raise any errors found."""
+        xml = response.text
+        root = XML(xml)
+        tags = [element.tag for element in root]
+        if tags[:4] == ["Code", "Message", "ProposedSize", "MaxSizeAllowed"]:
+            # Returned if image is too big
+            code, message, actual, maximum_size = (element.text for element in root[:4])
+            raise TooLargeMediaException(
+                actual=int(actual), maximum_size=int(maximum_size)
+            )
+
+    def _read_and_post_media(
+        self, file: Path, upload_url: str, upload_data: dict[str, Any]
+    ) -> Response:
+        with file.open("rb") as media:
+            return self._reddit._core._requestor._http.post(
+                upload_url, data=upload_data, files={"file": media}
+            )
+
+    def _submit_media(
+        self, *, data: dict[Any, Any], timeout: int, without_websockets: bool
+    ):
+        """Submit and return an ``image``, ``video``, or ``videogif``.
+
+        This is a helper method for submitting posts that are not link posts or self
+        posts.
+
+        """
+        response = self._reddit.post(API_PATH["submit"], data=data)
+        websocket_url = response["json"]["data"]["websocket_url"]
+        connection = None
+        if websocket_url is not None and not without_websockets:
+            try:
+                connection = websocket.create_connection(websocket_url, timeout=timeout)
+            except (
+                OSError,
+                websocket.WebSocketException,
+                BlockingIOError,
+            ) as ws_exception:
+                msg = "Error establishing websocket connection."
+                raise WebSocketException(msg, ws_exception) from None
+
+        if connection is None:
+            return None
+
+        try:
+            ws_update = loads(connection.recv())
+            connection.close()
+        except (OSError, websocket.WebSocketException, BlockingIOError) as ws_exception:
+            msg = "Websocket error. Check your media file. Your post may still have been created."
+            raise WebSocketException(
+                msg,
+                ws_exception,
+            ) from None
+        if ws_update.get("type") == "failed":
+            raise MediaPostFailed
+        url = ws_update["payload"]["redirect"]
+        return self._reddit.submission(url=url)
+
+    def _upload_inline_media(self, inline_media: praw.models.InlineMedia):
+        """Upload media for use in self posts and return ``inline_media``.
+
+        :param inline_media: An :class:`.InlineMedia` object to validate and upload.
+
+        """
+        self._validate_inline_media(inline_media)
+        inline_media.media_id = self._upload_media(
+            media_path=inline_media.path, upload_type="selfpost"
+        )
+        return inline_media
+
+    def _upload_media(
+        self,
+        *,
+        expected_mime_prefix: str | None = None,
+        media_path: str,
+        upload_type: str = "link",
+    ):
+        """Upload media and return its URL and a websocket (Undocumented endpoint).
+
+        :param expected_mime_prefix: If provided, enforce that the media has a mime type
+            that starts with the provided prefix.
+        :param upload_type: One of ``"link"``, ``"gallery"'', or ``"selfpost"``
+            (default: ``"link"``).
+
+        :returns: A tuple containing ``(media_url, websocket_url)`` for the piece of
+            media. The websocket URL can be used to determine when media processing is
+            finished, or it can be ignored.
+
+        """
+        if media_path is None:
+            file = Path(__file__).absolute()
+            media_path = file.parent.parent.parent / "images" / "PRAW logo.png"
+        else:
+            file = Path(media_path)
+
+        file_name = file.name.lower()
+        file_extension = file_name.rpartition(".")[2]
+        mime_type = {
+            "png": "image/png",
+            "mov": "video/quicktime",
+            "mp4": "video/mp4",
+            "jpg": "image/jpeg",
+            "jpeg": "image/jpeg",
+            "gif": "image/gif",
+        }.get(
+            file_extension, "image/jpeg"
+        )  # default to JPEG
+        if (
+            expected_mime_prefix is not None
+            and mime_type.partition("/")[0] != expected_mime_prefix
+        ):
+            msg = f"Expected a mimetype starting with {expected_mime_prefix!r} but got mimetype {mime_type!r} (from file extension {file_extension!r})."
+            raise ClientException(msg)
+        img_data = {"filepath": file_name, "mimetype": mime_type}
+
+        url = API_PATH["media_asset"]
+        # until we learn otherwise, assume this request always succeeds
+        upload_response = self._reddit.post(url, data=img_data)
+        upload_lease = upload_response["args"]
+        upload_url = f"https:{upload_lease['action']}"
+        upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
+
+        response = self._read_and_post_media(file, upload_url, upload_data)
+        if not response.ok:
+            self._parse_xml_response(response)
+        try:
+            response.raise_for_status()
+        except HTTPError as err:
+            raise ServerError(response=err.response) from None
+
+        upload_response["asset"]["websocket_url"]
+
+        if upload_type == "link":
+            return f"{upload_url}/{upload_data['key']}"
+        return upload_response["asset"]["asset_id"]
+
+    def post_requirements(self) -> dict[str, str | int | bool]:
+        """Get the post requirements for a subreddit.
+
+        :returns: A dict with the various requirements.
+
+        The returned dict contains the following keys:
+
+        - ``domain_blacklist``
+        - ``body_restriction_policy``
+        - ``domain_whitelist``
+        - ``title_regexes``
+        - ``body_blacklisted_strings``
+        - ``body_required_strings``
+        - ``title_text_min_length``
+        - ``is_flair_required``
+        - ``title_text_max_length``
+        - ``body_regexes``
+        - ``link_repost_age``
+        - ``body_text_min_length``
+        - ``link_restriction_policy``
+        - ``body_text_max_length``
+        - ``title_required_strings``
+        - ``title_blacklisted_strings``
+        - ``guidelines_text``
+        - ``guidelines_display_policy``
+
+        For example, to fetch the post requirements for r/test:
+
+        .. code-block:: python
+
+            print(reddit.subreddit("test").post_requirements)
+
+        """
+        return self._reddit.get(
+            API_PATH["post_requirements"].format(subreddit=str(self))
+        )
+
+    def random(self) -> praw.models.Submission | None:
+        """Return a random :class:`.Submission`.
+
+        Returns ``None`` on subreddits that do not support the random feature. One
+        example, at the time of writing, is r/wallpapers.
+
+        For example, to get a random submission off of r/AskReddit:
+
+        .. code-block:: python
+
+            submission = reddit.subreddit("AskReddit").random()
+            print(submission.title)
+
+        """
+        url = API_PATH["subreddit_random"].format(subreddit=self)
+        try:
+            self._reddit.get(url, params={"unique": self._reddit._next_unique})
+        except Redirect as redirect:
+            path = redirect.path
+        try:
+            return self._submission_class(
+                self._reddit, url=urljoin(self._reddit.config.reddit_url, path)
+            )
+        except ClientException:
+            return None
+
+    @_deprecate_args("query", "sort", "syntax", "time_filter")
+    def search(
+        self,
+        query: str,
+        *,
+        sort: str = "relevance",
+        syntax: str = "lucene",
+        time_filter: str = "all",
+        **generator_kwargs: Any,
+    ) -> Iterator[praw.models.Submission]:
+        """Return a :class:`.ListingGenerator` for items that match ``query``.
+
+        :param query: The query string to search for.
+        :param sort: Can be one of: ``"relevance"``, ``"hot"``, ``"top"``, ``"new"``, or
+            ``"comments"``. (default: ``"relevance"``).
+        :param syntax: Can be one of: ``"cloudsearch"``, ``"lucene"``, or ``"plain"``
+            (default: ``"lucene"``).
+        :param time_filter: Can be one of: ``"all"``, ``"day"``, ``"hour"``,
+            ``"month"``, ``"week"``, or ``"year"`` (default: ``"all"``).
+
+        For more information on building a search query see:
+        https://www.reddit.com/wiki/search
+
+        For example, to search all subreddits for ``"praw"`` try:
+
+        .. code-block:: python
+
+            for submission in reddit.subreddit("all").search("praw"):
+                print(submission.title)
+
+        """
+        self._validate_time_filter(time_filter)
+        not_all = self.display_name.lower() != "all"
+        self._safely_add_arguments(
+            arguments=generator_kwargs,
+            key="params",
+            q=query,
+            restrict_sr=not_all,
+            sort=sort,
+            syntax=syntax,
+            t=time_filter,
+        )
+        url = API_PATH["search"].format(subreddit=self)
+        return ListingGenerator(self._reddit, url, **generator_kwargs)
+
+    @_deprecate_args("number")
+    def sticky(self, *, number: int = 1) -> praw.models.Submission:
+        """Return a :class:`.Submission` object for a sticky of the subreddit.
+
+        :param number: Specify which sticky to return. 1 appears at the top (default:
+            ``1``).
+
+        :raises: ``prawcore.NotFound`` if the sticky does not exist.
+
+        For example, to get the stickied post on r/test:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").sticky()
+
+        """
+        url = API_PATH["about_sticky"].format(subreddit=self)
+        try:
+            self._reddit.get(url, params={"num": number})
+        except Redirect as redirect:
+            path = redirect.path
+        return self._submission_class(
+            self._reddit, url=urljoin(self._reddit.config.reddit_url, path)
+        )
+
+    @_deprecate_args(
+        "title",
+        "selftext",
+        "url",
+        "flair_id",
+        "flair_text",
+        "resubmit",
+        "send_replies",
+        "nsfw",
+        "spoiler",
+        "collection_id",
+        "discussion_type",
+        "inline_media",
+        "draft_id",
+    )
+    def submit(
+        self,
+        title: str,
+        *,
+        collection_id: str | None = None,
+        discussion_type: str | None = None,
+        draft_id: str | None = None,
+        flair_id: str | None = None,
+        flair_text: str | None = None,
+        inline_media: dict[str, praw.models.InlineMedia] | None = None,
+        nsfw: bool = False,
+        resubmit: bool = True,
+        selftext: str | None = None,
+        send_replies: bool = True,
+        spoiler: bool = False,
+        url: str | None = None,
+    ) -> praw.models.Submission:
+        r"""Add a submission to the :class:`.Subreddit`.
+
+        :param title: The title of the submission.
+        :param collection_id: The UUID of a :class:`.Collection` to add the
+            newly-submitted post to.
+        :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
+            traditional comments (default: ``None``).
+        :param draft_id: The ID of a draft to submit.
+        :param flair_id: The flair template to select (default: ``None``).
+        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
+            this value will set a custom text (default: ``None``). ``flair_id`` is
+            required when ``flair_text`` is provided.
+        :param inline_media: A dict of :class:`.InlineMedia` objects where the key is
+            the placeholder name in ``selftext``.
+        :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
+        :param resubmit: When ``False``, an error will occur if the URL has already been
+            submitted (default: ``True``).
+        :param selftext: The Markdown formatted content for a ``text`` submission. Use
+            an empty string, ``""``, to make a title-only submission.
+        :param send_replies: When ``True``, messages will be sent to the submission
+            author when comments are made to the submission (default: ``True``).
+        :param spoiler: Whether the submission should be marked as a spoiler (default:
+            ``False``).
+        :param url: The URL for a ``link`` submission.
+
+        :returns: A :class:`.Submission` object for the newly created submission.
+
+        Either ``selftext`` or ``url`` can be provided, but not both.
+
+        For example, to submit a URL to r/test do:
+
+        .. code-block:: python
+
+            title = "PRAW documentation"
+            url = "https://praw.readthedocs.io"
+            reddit.subreddit("test").submit(title, url=url)
+
+        For example, to submit a self post with inline media do:
+
+        .. code-block:: python
+
+            from praw.models import InlineGif, InlineImage, InlineVideo
+
+            gif = InlineGif(path="path/to/image.gif", caption="optional caption")
+            image = InlineImage(path="path/to/image.jpg", caption="optional caption")
+            video = InlineVideo(path="path/to/video.mp4", caption="optional caption")
+            selftext = "Text with a gif {gif1} an image {image1} and a video {video1} inline"
+            media = {"gif1": gif, "image1": image, "video1": video}
+            reddit.subreddit("test").submit("title", inline_media=media, selftext=selftext)
+
+        .. note::
+
+            Inserted media will have a padding of ``\\n\\n`` automatically added. This
+            is due to the weirdness with Reddit's API. Using the example above, the
+            result selftext body will look like so:
+
+            .. code-block::
+
+                Text with a gif
+
+                ![gif](u1rchuphryq51 "optional caption")
+
+                an image
+
+                ![img](srnr8tshryq51 "optional caption")
+
+                and video
+
+                ![video](gmc7rvthryq51 "optional caption")
+
+                inline
+
+        .. note::
+
+            To submit a post to a subreddit with the ``"news"`` flair, you can get the
+            flair id like this:
+
+            .. code-block::
+
+                choices = list(subreddit.flair.link_templates.user_selectable())
+                template_id = next(x for x in choices if x["flair_text"] == "news")["flair_template_id"]
+                subreddit.submit("title", flair_id=template_id, url="https://www.news.com/")
+
+        .. seealso::
+
+            - :meth:`~.Subreddit.submit_gallery` to submit more than one image in the
+              same post
+            - :meth:`~.Subreddit.submit_image` to submit images
+            - :meth:`~.Subreddit.submit_poll` to submit polls
+            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
+
+        """
+        if (bool(selftext) or selftext == "") == bool(url):
+            msg = "Either 'selftext' or 'url' must be provided."
+            raise TypeError(msg)
+
+        data = {
+            "sr": str(self),
+            "resubmit": bool(resubmit),
+            "sendreplies": bool(send_replies),
+            "title": title,
+            "nsfw": bool(nsfw),
+            "spoiler": bool(spoiler),
+            "validate_on_submit": self._reddit.validate_on_submit,
+        }
+        for key, value in (
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+            ("collection_id", collection_id),
+            ("discussion_type", discussion_type),
+            ("draft_id", draft_id),
+        ):
+            if value is not None:
+                data[key] = value
+        if selftext is not None:
+            data.update(kind="self")
+            if inline_media:
+                body = selftext.format(
+                    **{
+                        placeholder: self._upload_inline_media(media)
+                        for placeholder, media in inline_media.items()
+                    }
+                )
+                converted = self._convert_to_fancypants(body)
+                data.update(richtext_json=dumps(converted))
+            else:
+                data.update(text=selftext)
+        else:
+            data.update(kind="link", url=url)
+
+        return self._reddit.post(API_PATH["submit"], data=data)
+
+    @_deprecate_args(
+        "title",
+        "images",
+        "collection_id",
+        "discussion_type",
+        "flair_id",
+        "flair_text",
+        "nsfw",
+        "send_replies",
+        "spoiler",
+    )
+    def submit_gallery(
+        self,
+        title: str,
+        images: list[dict[str, str]],
+        *,
+        collection_id: str | None = None,
+        discussion_type: str | None = None,
+        flair_id: str | None = None,
+        flair_text: str | None = None,
+        nsfw: bool = False,
+        send_replies: bool = True,
+        spoiler: bool = False,
+    ) -> praw.models.Submission:
+        """Add an image gallery submission to the subreddit.
+
+        :param title: The title of the submission.
+        :param images: The images to post in dict with the following structure:
+            ``{"image_path": "path", "caption": "caption", "outbound_url": "url"}``,
+            only ``image_path`` is required.
+        :param collection_id: The UUID of a :class:`.Collection` to add the
+            newly-submitted post to.
+        :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
+            traditional comments (default: ``None``).
+        :param flair_id: The flair template to select (default: ``None``).
+        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
+            this value will set a custom text (default: ``None``). ``flair_id`` is
+            required when ``flair_text`` is provided.
+        :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
+        :param send_replies: When ``True``, messages will be sent to the submission
+            author when comments are made to the submission (default: ``True``).
+        :param spoiler: Whether the submission should be marked asa spoiler (default:
+            ``False``).
+
+        :returns: A :class:`.Submission` object for the newly created submission.
+
+        :raises: :class:`.ClientException` if ``image_path`` in ``images`` refers to a
+            file that is not an image.
+
+        For example, to submit an image gallery to r/test do:
+
+        .. code-block:: python
+
+            title = "My favorite pictures"
+            image = "/path/to/image.png"
+            image2 = "/path/to/image2.png"
+            image3 = "/path/to/image3.png"
+            images = [
+                {"image_path": image},
+                {
+                    "image_path": image2,
+                    "caption": "Image caption 2",
+                },
+                {
+                    "image_path": image3,
+                    "caption": "Image caption 3",
+                    "outbound_url": "https://example.com/link3",
+                },
+            ]
+            reddit.subreddit("test").submit_gallery(title, images)
+
+        .. seealso::
+
+            - :meth:`~.Subreddit.submit` to submit url posts and selftexts
+            - :meth:`~.Subreddit.submit_image` to submit single images
+            - :meth:`~.Subreddit.submit_poll` to submit polls
+            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
+
+        """
+        self._validate_gallery(images)
+        data = {
+            "api_type": "json",
+            "items": [],
+            "nsfw": bool(nsfw),
+            "sendreplies": bool(send_replies),
+            "show_error_list": True,
+            "spoiler": bool(spoiler),
+            "sr": str(self),
+            "title": title,
+            "validate_on_submit": self._reddit.validate_on_submit,
+        }
+        for key, value in (
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+            ("collection_id", collection_id),
+            ("discussion_type", discussion_type),
+        ):
+            if value is not None:
+                data[key] = value
+        for image in images:
+            data["items"].append(
+                {
+                    "caption": image.get("caption", ""),
+                    "outbound_url": image.get("outbound_url", ""),
+                    "media_id": self._upload_media(
+                        expected_mime_prefix="image",
+                        media_path=image["image_path"],
+                        upload_type="gallery",
+                    ),
+                }
+            )
+        response = self._reddit.request(
+            json=data, method="POST", path=API_PATH["submit_gallery_post"]
+        )["json"]
+        if response["errors"]:
+            raise RedditAPIException(response["errors"])
+        return self._reddit.submission(url=response["data"]["url"])
+
+    @_deprecate_args(
+        "title",
+        "image_path",
+        "flair_id",
+        "flair_text",
+        "resubmit",
+        "send_replies",
+        "nsfw",
+        "spoiler",
+        "timeout",
+        "collection_id",
+        "without_websockets",
+        "discussion_type",
+    )
+    def submit_image(
+        self,
+        title: str,
+        image_path: str,
+        *,
+        collection_id: str | None = None,
+        discussion_type: str | None = None,
+        flair_id: str | None = None,
+        flair_text: str | None = None,
+        nsfw: bool = False,
+        resubmit: bool = True,
+        send_replies: bool = True,
+        spoiler: bool = False,
+        timeout: int = 10,
+        without_websockets: bool = False,
+    ) -> praw.models.Submission | None:
+        """Add an image submission to the subreddit.
+
+        :param collection_id: The UUID of a :class:`.Collection` to add the
+            newly-submitted post to.
+        :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
+            traditional comments (default: ``None``).
+        :param flair_id: The flair template to select (default: ``None``).
+        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
+            this value will set a custom text (default: ``None``). ``flair_id`` is
+            required when ``flair_text`` is provided.
+        :param image_path: The path to an image, to upload and post.
+        :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
+        :param resubmit: When ``False``, an error will occur if the URL has already been
+            submitted (default: ``True``).
+        :param send_replies: When ``True``, messages will be sent to the submission
+            author when comments are made to the submission (default: ``True``).
+        :param spoiler: Whether the submission should be marked as a spoiler (default:
+            ``False``).
+        :param timeout: Specifies a particular timeout, in seconds. Use to avoid
+            "Websocket error" exceptions (default: ``10``).
+        :param title: The title of the submission.
+        :param without_websockets: Set to ``True`` to disable use of WebSockets (see
+            note below for an explanation). If ``True``, this method doesn't return
+            anything (default: ``False``).
+
+        :returns: A :class:`.Submission` object for the newly created submission, unless
+            ``without_websockets`` is ``True``.
+
+        :raises: :class:`.ClientException` if ``image_path`` refers to a file that is
+            not an image.
+
+        .. note::
+
+            Reddit's API uses WebSockets to respond with the link of the newly created
+            post. If this fails, the method will raise :class:`.WebSocketException`.
+            Occasionally, the Reddit post will still be created. More often, there is an
+            error with the image file. If you frequently get exceptions but successfully
+            created posts, try setting the ``timeout`` parameter to a value above 10.
+
+            To disable the use of WebSockets, set ``without_websockets=True``. This will
+            make the method return ``None``, though the post will still be created. You
+            may wish to do this if you are running your program in a restricted network
+            environment, or using a proxy that doesn't support WebSockets connections.
+
+        For example, to submit an image to r/test do:
+
+        .. code-block:: python
+
+            title = "My favorite picture"
+            image = "/path/to/image.png"
+            reddit.subreddit("test").submit_image(title, image)
+
+        .. seealso::
+
+            - :meth:`~.Subreddit.submit` to submit url posts and selftexts
+            - :meth:`~.Subreddit.submit_gallery` to submit more than one image in the
+              same post
+            - :meth:`~.Subreddit.submit_poll` to submit polls
+            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
+
+        """
+        data = {
+            "sr": str(self),
+            "resubmit": bool(resubmit),
+            "sendreplies": bool(send_replies),
+            "title": title,
+            "nsfw": bool(nsfw),
+            "spoiler": bool(spoiler),
+            "validate_on_submit": self._reddit.validate_on_submit,
+        }
+        for key, value in (
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+            ("collection_id", collection_id),
+            ("discussion_type", discussion_type),
+        ):
+            if value is not None:
+                data[key] = value
+
+        image_url = self._upload_media(
+            expected_mime_prefix="image", media_path=image_path
+        )
+        data.update(kind="image", url=image_url)
+        return self._submit_media(
+            data=data, timeout=timeout, without_websockets=without_websockets
+        )
+
+    @_deprecate_args(
+        "title",
+        "selftext",
+        "options",
+        "duration",
+        "flair_id",
+        "flair_text",
+        "resubmit",
+        "send_replies",
+        "nsfw",
+        "spoiler",
+        "collection_id",
+        "discussion_type",
+    )
+    def submit_poll(
+        self,
+        title: str,
+        *,
+        collection_id: str | None = None,
+        discussion_type: str | None = None,
+        duration: int,
+        flair_id: str | None = None,
+        flair_text: str | None = None,
+        nsfw: bool = False,
+        options: list[str],
+        resubmit: bool = True,
+        selftext: str,
+        send_replies: bool = True,
+        spoiler: bool = False,
+    ) -> praw.models.Submission:
+        """Add a poll submission to the subreddit.
+
+        :param title: The title of the submission.
+        :param collection_id: The UUID of a :class:`.Collection` to add the
+            newly-submitted post to.
+        :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
+            traditional comments (default: ``None``).
+        :param duration: The number of days the poll should accept votes, as an ``int``.
+            Valid values are between ``1`` and ``7``, inclusive.
+        :param flair_id: The flair template to select (default: ``None``).
+        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
+            this value will set a custom text (default: ``None``). ``flair_id`` is
+            required when ``flair_text`` is provided.
+        :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
+        :param options: A list of two to six poll options as ``str``.
+        :param resubmit: When ``False``, an error will occur if the URL has already been
+            submitted (default: ``True``).
+        :param selftext: The Markdown formatted content for the submission. Use an empty
+            string, ``""``, to make a submission with no text contents.
+        :param send_replies: When ``True``, messages will be sent to the submission
+            author when comments are made to the submission (default: ``True``).
+        :param spoiler: Whether the submission should be marked as a spoiler (default:
+            ``False``).
+
+        :returns: A :class:`.Submission` object for the newly created submission.
+
+        For example, to submit a poll to r/test do:
+
+        .. code-block:: python
+
+            title = "Do you like PRAW?"
+            reddit.subreddit("test").submit_poll(
+                title, selftext="", options=["Yes", "No"], duration=3
+            )
+
+        .. seealso::
+
+            - :meth:`~.Subreddit.submit` to submit url posts and selftexts
+            - :meth:`~.Subreddit.submit_gallery` to submit more than one image in the
+              same post
+            - :meth:`~.Subreddit.submit_image` to submit single images
+            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
+
+        """
+        data = {
+            "sr": str(self),
+            "text": selftext,
+            "options": options,
+            "duration": duration,
+            "resubmit": bool(resubmit),
+            "sendreplies": bool(send_replies),
+            "title": title,
+            "nsfw": bool(nsfw),
+            "spoiler": bool(spoiler),
+            "validate_on_submit": self._reddit.validate_on_submit,
+        }
+        for key, value in (
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+            ("collection_id", collection_id),
+            ("discussion_type", discussion_type),
+        ):
+            if value is not None:
+                data[key] = value
+
+        return self._reddit.post(API_PATH["submit_poll_post"], json=data)
+
+    @_deprecate_args(
+        "title",
+        "video_path",
+        "videogif",
+        "thumbnail_path",
+        "flair_id",
+        "flair_text",
+        "resubmit",
+        "send_replies",
+        "nsfw",
+        "spoiler",
+        "timeout",
+        "collection_id",
+        "without_websockets",
+        "discussion_type",
+    )
+    def submit_video(
+        self,
+        title: str,
+        video_path: str,
+        *,
+        collection_id: str | None = None,
+        discussion_type: str | None = None,
+        flair_id: str | None = None,
+        flair_text: str | None = None,
+        nsfw: bool = False,
+        resubmit: bool = True,
+        send_replies: bool = True,
+        spoiler: bool = False,
+        thumbnail_path: str | None = None,
+        timeout: int = 10,
+        videogif: bool = False,
+        without_websockets: bool = False,
+    ) -> praw.models.Submission | None:
+        """Add a video or videogif submission to the subreddit.
+
+        :param title: The title of the submission.
+        :param video_path: The path to a video, to upload and post.
+        :param collection_id: The UUID of a :class:`.Collection` to add the
+            newly-submitted post to.
+        :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
+            traditional comments (default: ``None``).
+        :param flair_id: The flair template to select (default: ``None``).
+        :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
+            this value will set a custom text (default: ``None``). ``flair_id`` is
+            required when ``flair_text`` is provided.
+        :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
+        :param resubmit: When ``False``, an error will occur if the URL has already been
+            submitted (default: ``True``).
+        :param send_replies: When ``True``, messages will be sent to the submission
+            author when comments are made to the submission (default: ``True``).
+        :param spoiler: Whether the submission should be marked as a spoiler (default:
+            ``False``).
+        :param thumbnail_path: The path to an image, to be uploaded and used as the
+            thumbnail for this video. If not provided, the PRAW logo will be used as the
+            thumbnail.
+        :param timeout: Specifies a particular timeout, in seconds. Use to avoid
+            "Websocket error" exceptions (default: ``10``).
+        :param videogif: If ``True``, the video is uploaded as a videogif, which is
+            essentially a silent video (default: ``False``).
+        :param without_websockets: Set to ``True`` to disable use of WebSockets (see
+            note below for an explanation). If ``True``, this method doesn't return
+            anything (default: ``False``).
+
+        :returns: A :class:`.Submission` object for the newly created submission, unless
+            ``without_websockets`` is ``True``.
+
+        :raises: :class:`.ClientException` if ``video_path`` refers to a file that is
+            not a video.
+
+        .. note::
+
+            Reddit's API uses WebSockets to respond with the link of the newly created
+            post. If this fails, the method will raise :class:`.WebSocketException`.
+            Occasionally, the Reddit post will still be created. More often, there is an
+            error with the image file. If you frequently get exceptions but successfully
+            created posts, try setting the ``timeout`` parameter to a value above 10.
+
+            To disable the use of WebSockets, set ``without_websockets=True``. This will
+            make the method return ``None``, though the post will still be created. You
+            may wish to do this if you are running your program in a restricted network
+            environment, or using a proxy that doesn't support WebSockets connections.
+
+        For example, to submit a video to r/test do:
+
+        .. code-block:: python
+
+            title = "My favorite movie"
+            video = "/path/to/video.mp4"
+            reddit.subreddit("test").submit_video(title, video)
+
+        .. seealso::
+
+            - :meth:`~.Subreddit.submit` to submit url posts and selftexts
+            - :meth:`~.Subreddit.submit_image` to submit images
+            - :meth:`~.Subreddit.submit_gallery` to submit more than one image in the
+              same post
+            - :meth:`~.Subreddit.submit_poll` to submit polls
+
+        """
+        data = {
+            "sr": str(self),
+            "resubmit": bool(resubmit),
+            "sendreplies": bool(send_replies),
+            "title": title,
+            "nsfw": bool(nsfw),
+            "spoiler": bool(spoiler),
+            "validate_on_submit": self._reddit.validate_on_submit,
+        }
+        for key, value in (
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+            ("collection_id", collection_id),
+            ("discussion_type", discussion_type),
+        ):
+            if value is not None:
+                data[key] = value
+
+        video_url = self._upload_media(
+            expected_mime_prefix="video", media_path=video_path
+        )
+        data.update(
+            kind="videogif" if videogif else "video",
+            url=video_url,
+            # if thumbnail_path is None, it uploads the PRAW logo
+            video_poster_url=self._upload_media(media_path=thumbnail_path),
+        )
+        return self._submit_media(
+            data=data, timeout=timeout, without_websockets=without_websockets
+        )
+
+    @_deprecate_args("other_subreddits")
+    def subscribe(self, *, other_subreddits: list[praw.models.Subreddit] | None = None):
+        """Subscribe to the subreddit.
+
+        :param other_subreddits: When provided, also subscribe to the provided list of
+            subreddits.
+
+        For example, to subscribe to r/test:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").subscribe()
+
+        """
+        data = {
+            "action": "sub",
+            "skip_inital_defaults": True,
+            "sr_name": self._subreddit_list(
+                other_subreddits=other_subreddits, subreddit=self
+            ),
+        }
+        self._reddit.post(API_PATH["subscribe"], data=data)
+
+    def traffic(self) -> dict[str, list[list[int]]]:
+        """Return a dictionary of the :class:`.Subreddit`'s traffic statistics.
+
+        :raises: ``prawcore.NotFound`` when the traffic stats aren't available to the
+            authenticated user, that is, they are not public and the authenticated user
+            is not a moderator of the subreddit.
+
+        The traffic method returns a dict with three keys. The keys are ``day``,
+        ``hour`` and ``month``. Each key contains a list of lists with 3 or 4 values.
+        The first value is a timestamp indicating the start of the category (start of
+        the day for the ``day`` key, start of the hour for the ``hour`` key, etc.). The
+        second, third, and fourth values indicate the unique pageviews, total pageviews,
+        and subscribers, respectively.
+
+        .. note::
+
+            The ``hour`` key does not contain subscribers, and therefore each sub-list
+            contains three values.
+
+        For example, to get the traffic stats for r/test:
+
+        .. code-block:: python
+
+            stats = reddit.subreddit("test").traffic()
+
+        """
+        return self._reddit.get(API_PATH["about_traffic"].format(subreddit=self))
+
+    @_deprecate_args("other_subreddits")
+    def unsubscribe(
+        self, *, other_subreddits: list[praw.models.Subreddit] | None = None
+    ):
+        """Unsubscribe from the subreddit.
+
+        :param other_subreddits: When provided, also unsubscribe from the provided list
+            of subreddits.
+
+        To unsubscribe from r/test:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").unsubscribe()
+
+        """
+        data = {
+            "action": "unsub",
+            "sr_name": self._subreddit_list(
+                other_subreddits=other_subreddits, subreddit=self
+            ),
+        }
+        self._reddit.post(API_PATH["subscribe"], data=data)
+
+
+WidgetEncoder._subreddit_class = Subreddit
 
 
 class SubredditLinkFlairTemplates(SubredditFlairTemplates):

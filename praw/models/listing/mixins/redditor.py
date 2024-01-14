@@ -10,7 +10,7 @@ from .base import BaseListingMixin
 from .gilded import GildedListingMixin
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class SubListing(BaseListingMixin):

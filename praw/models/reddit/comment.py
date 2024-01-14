@@ -17,7 +17,7 @@ from .mixins import (
 from .redditor import Redditor
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
@@ -89,7 +89,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return CommentModeration(self)
 
     @property
-    def _kind(self):  # noqa: ANN001
+    def _kind(self):
         """Return the class's kind."""
         return self._reddit.config.kinds["comment"]
 
@@ -138,14 +138,13 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         """Update the :class:`.Submission` associated with the :class:`.Comment`."""
         submission._comments_by_id[self.fullname] = self
         self._submission = submission
-        # pylint: disable=not-an-iterable
         for reply in getattr(self, "replies", []):
             reply.submission = submission
 
     def __init__(
         self,
         reddit: praw.Reddit,
-        id: str | None = None,  # pylint: disable=redefined-builtin
+        id: str | None = None,
         url: str | None = None,
         _data: dict[str, Any] | None = None,
     ):
@@ -168,7 +167,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         self,
         attribute: str,
         value: str | Redditor | CommentForest | praw.models.Subreddit,
-    ) -> None:
+    ):
         """Objectify author, replies, and subreddit."""
         if attribute == "author":
             value = Redditor.from_data(self._reddit, value)
@@ -182,12 +181,12 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             value = self._reddit.subreddit(value)
         super().__setattr__(attribute, value)
 
-    def _extract_submission_id(self):  # noqa: ANN001
+    def _extract_submission_id(self):
         if "context" in self.__dict__:
             return self.context.rsplit("/", 4)[1]
         return self.link_id.split("_", 1)[1]
 
-    def _fetch(self):  # noqa: ANN001
+    def _fetch(self):
         data = self._fetch_data()
         data = data["data"]
 
@@ -198,12 +197,14 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         comment_data = data["children"][0]["data"]
         other = type(self)(self._reddit, _data=comment_data)
         self.__dict__.update(other.__dict__)
-        self._fetched = True
+        super()._fetch()
 
-    def _fetch_info(self):  # noqa: ANN001
+    def _fetch_info(self):
         return "info", {}, {"id": self.fullname}
 
-    def parent(self) -> Comment | praw.models.Submission:
+    def parent(
+        self,
+    ) -> Comment | praw.models.Submission:
         """Return the parent of the comment.
 
         The returned parent will be an instance of either :class:`.Comment`, or
@@ -253,14 +254,12 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         to :meth:`.refresh` it would make at least 31 network requests.
 
         """
-        # pylint: disable=no-member
         if self.parent_id == self.submission.fullname:
             return self.submission
 
         if self.parent_id in self.submission._comments_by_id:
             # The Comment already exists, so simply return it
             return self.submission._comments_by_id[self.parent_id]
-        # pylint: enable=no-member
 
         parent = Comment(self._reddit, self.parent_id.split("_", 1)[1])
         parent._submission = self.submission

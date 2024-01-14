@@ -16,7 +16,7 @@ class RedditBase(PRAWBase):
     """Base class that represents actual Reddit objects."""
 
     @staticmethod
-    def _url_parts(url):  # noqa: ANN001,ANN205
+    def _url_parts(url: str) -> list[str]:
         parsed = urlparse(url)
         if not parsed.netloc:
             raise InvalidURL(url)
@@ -79,15 +79,15 @@ class RedditBase(PRAWBase):
         """Return a string representation of the instance."""
         return getattr(self, self.STR_FIELD)
 
-    def _fetch(self):  # pragma: no cover
+    def _fetch(self):
         self._fetched = True
 
-    def _fetch_data(self):  # noqa: ANN001
+    def _fetch_data(self):
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
         return self._reddit.request(method="GET", params=params, path=path)
 
-    def _reset_attributes(self, *attributes):  # noqa: ANN001,ANN002
+    def _reset_attributes(self, *attributes: str):
         for attribute in attributes:
             if attribute in self.__dict__:
                 del self.__dict__[attribute]

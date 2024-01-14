@@ -7,7 +7,7 @@ import packaging.version
 
 CHANGELOG_HEADER = (
     "Change Log\n==========\n\n"
-    "PRAW follows `semantic versioning <http://semver.org/>`_.\n\n"
+    "PRAW follows `semantic versioning <https://semver.org/>`_.\n\n"
 )
 UNRELEASED_HEADER = "Unreleased\n----------\n\n"
 

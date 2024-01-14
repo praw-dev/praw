@@ -6,6 +6,7 @@ import os
 import sys
 from pathlib import Path
 from threading import Lock
+from typing import Any
 
 from .exceptions import ClientException
 
@@ -32,13 +33,13 @@ class Config:
     }
 
     @staticmethod
-    def _config_boolean(item: bool | str) -> bool:  # noqa: ANN001
+    def _config_boolean(item: bool | str) -> bool:
         if isinstance(item, bool):
             return item
         return item.lower() in {"1", "yes", "true", "on"}
 
     @classmethod
-    def _load_config(cls, *, config_interpolation: str | None = None):  # noqa: ANN001
+    def _load_config(cls, *, config_interpolation: str | None = None):
         """Attempt to load settings from various praw.ini files."""
         if config_interpolation is not None:
             interpolator_class = cls.INTERPOLATION_LEVEL[config_interpolation]()
@@ -97,17 +98,19 @@ class Config:
 
         self._initialize_attributes()
 
-    def _fetch(self, key):  # noqa: ANN001
+    def _fetch(self, key: str) -> Any:
         value = self.custom[key]
         del self.custom[key]
         return value
 
-    def _fetch_default(self, key, *, default=None):  # noqa: ANN001
+    def _fetch_default(
+        self, key: str, *, default: bool | float | str | None = None
+    ) -> Any:
         if key not in self.custom:
             return default
         return self._fetch(key)
 
-    def _fetch_or_not_set(self, key):  # noqa: ANN001
+    def _fetch_or_not_set(self, key: str) -> Any | _NotSet:
         if key in self._settings:  # Passed in values have the highest priority
             return self._fetch(key)
 
@@ -117,7 +120,7 @@ class Config:
         # Environment variables have higher priority than praw.ini settings
         return env_value or ini_value or self.CONFIG_NOT_SET
 
-    def _initialize_attributes(self):  # noqa: ANN001
+    def _initialize_attributes(self):
         self._short_url = self._fetch_default("short_url") or self.CONFIG_NOT_SET
         self.check_for_async = self._config_boolean(
             self._fetch_default("check_for_async", default=True)

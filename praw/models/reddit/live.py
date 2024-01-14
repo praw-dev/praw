@@ -1,7 +1,7 @@
 """Provide the LiveThread class."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterator
+from typing import TYPE_CHECKING, Any, Iterable, Iterator
 
 from ...const import API_PATH
 from ...util import _deprecate_args
@@ -14,14 +14,14 @@ from .mixins import FullnameMixin
 from .redditor import Redditor
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class LiveContributorRelationship:
     """Provide methods to interact with live threads' contributors."""
 
     @staticmethod
-    def _handle_permissions(permissions):  # noqa: ANN001,ANN205
+    def _handle_permissions(permissions: Iterable[str]) -> str:
         permissions = {"all"} if permissions is None else set(permissions)
         return ",".join(f"+{x}" for x in permissions)
 
@@ -377,7 +377,7 @@ class LiveThread(RedditBase):
         self,
         reddit: praw.Reddit,
         id: str | None = None,
-        _data: dict[str, Any] | None = None,  # pylint: disable=redefined-builtin
+        _data: dict[str, Any] | None = None,
     ):
         """Initialize a :class:`.LiveThread` instance.
 
@@ -392,14 +392,14 @@ class LiveThread(RedditBase):
             self.id = id
         super().__init__(reddit, _data=_data)
 
-    def _fetch(self):  # noqa: ANN001
+    def _fetch(self):
         data = self._fetch_data()
         data = data["data"]
         other = type(self)(self._reddit, _data=data)
         self.__dict__.update(other.__dict__)
-        self._fetched = True
+        super()._fetch()
 
-    def _fetch_info(self):  # noqa: ANN001
+    def _fetch_info(self):
         return "liveabout", {"id": self.id}, None
 
     def discussions(
@@ -428,11 +428,12 @@ class LiveThread(RedditBase):
         url = API_PATH["live_discussions"].format(id=self.id)
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
-    def report(self, type: str):  # pylint: disable=redefined-builtin
+    def report(self, type: str):
         """Report the thread violating the Reddit rules.
 
-        :param type: One of ``"spam"``, ``"vote-manipulation"``, ``"personal-
-            information"``, ``"sexualizing-minors"``, or ``"site-breaking"``.
+        :param type: One of ``"spam"``, ``"vote-manipulation"``,
+            ``"personal-information"``, ``"sexualizing-minors"``, or
+            ``"site-breaking"``.
 
         Usage:
 
@@ -789,14 +790,14 @@ class LiveUpdate(FullnameMixin, RedditBase):
             msg = "Either 'thread_id' and 'update_id', or '_data' must be provided."
             raise TypeError(msg)
 
-    def __setattr__(self, attribute: str, value: Any) -> None:
+    def __setattr__(self, attribute: str, value: Any):
         """Objectify author."""
         if attribute == "author":
             value = Redditor(self._reddit, name=value)
         super().__setattr__(attribute, value)
 
-    def _fetch(self):  # noqa: ANN001
+    def _fetch(self):
         url = API_PATH["live_focus"].format(thread_id=self.thread.id, update_id=self.id)
         other = self._reddit.get(url)[0]
         self.__dict__.update(other.__dict__)
-        self._fetched = True
+        super()._fetch()
