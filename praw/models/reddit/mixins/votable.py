@@ -7,7 +7,7 @@ from ....const import API_PATH
 class VotableMixin:
     """Interface for :class:`.RedditBase` classes that can be voted on."""
 
-    def _vote(self, direction: int):  # noqa: ANN001
+    def _vote(self, direction: int):
         self._reddit.post(
             API_PATH["vote"], data={"dir": str(direction), "id": self.fullname}
         )

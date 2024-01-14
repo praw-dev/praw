@@ -17,7 +17,7 @@ from .reddit.redditor import Redditor
 from .reddit.subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class User(PRAWBase):
@@ -133,9 +133,7 @@ class User(PRAWBase):
         return karma_map
 
     @_deprecate_args("use_cache")
-    def me(
-        self, *, use_cache: bool = True
-    ) -> praw.models.Redditor | None:  # pylint: disable=invalid-name
+    def me(self, *, use_cache: bool = True) -> praw.models.Redditor | None:
         """Return a :class:`.Redditor` instance for the authenticated user.
 
         :param use_cache: When ``True``, and if this function has been previously
@@ -238,7 +236,6 @@ class User(PRAWBase):
         :returns: The pinned submission.
 
         :raises: ``prawcore.BadRequest`` when pinning a removed or deleted submission.
-
         :raises: ``prawcore.Forbidden`` when pinning a submission the authenticated user
             is not the author of.
 

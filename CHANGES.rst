@@ -1,7 +1,7 @@
 Change Log
 ==========
 
-PRAW follows `semantic versioning <http://semver.org/>`_.
+PRAW follows `semantic versioning <https://semver.org/>`_.
 
 Unreleased
 ----------
@@ -12,9 +12,17 @@ Unreleased
   templates.
 - :meth:`~.SubredditRedditorFlairTemplates.reorder` to reorder a subreddit's redditor
   flair templates.
-- :class:`.Reddit` has a new configurable parameter, ``window_size``. This tells PRAW
-  how long reddit's rate limit window is. This defaults to 600 seconds and shouldn't
-  need to be changed unless reddit changes the size of their rate limit window.
+- :func:`.stream_generator` now accepts the ``continue_after_id`` parameter, which
+  starts the stream after a given item ID.
+- Support for new share URL format created from Reddit's mobile apps.
+
+**Fixed**
+
+- An issue where submitting a post with media would fail due to an API change.
+
+**Changed**
+
+- Drop support for Python 3.7, which is end-of-life on 2023-06-27.
 
 7.7.1 (2023/07/11)
 ------------------

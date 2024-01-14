@@ -217,6 +217,15 @@ class TestComment(IntegrationTest):
         reddit.read_only = False
         Comment(reddit, "d0335z3").report("custom")
 
+    def test_resolve_from_share_url(self, reddit):
+        url = "https://www.reddit.com/r/redditdev/s/nGnQE1QkLC"
+        assert reddit.comment(url=url) == "cklhv0f", url
+
+    def test_resolve_from_share_url__invalid_url(self, reddit):
+        url = "https://www.reddit.com/r/redditdev/s/WNauetbiNG"
+        with pytest.raises(ClientException):
+            reddit.comment(url=url)
+
     def test_save(self, reddit):
         reddit.read_only = False
         Comment(reddit, "d1680wu").save(category="foo")

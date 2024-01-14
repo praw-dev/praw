@@ -13,11 +13,11 @@ classifiers = [
   "Operating System :: OS Independent",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
   "Topic :: Utilities"
 ]
 dependencies = [
@@ -26,6 +26,7 @@ dependencies = [
   "websocket-client >=0.54.0"
 ]
 dynamic = ["version", "description"]
+keywords = ["reddit", "api", "wrapper"]
 license = {file = "LICENSE.txt"}
 maintainers = [
   {name = "Bryce Boe", email = "bbzbryce@gmail.com"},
@@ -33,7 +34,8 @@ maintainers = [
   {name = "Joel Payne", email = "lilspazjoekp@gmail.com"}
 ]
 name = "praw"
-requires-python = "~=3.7"
+readme = "README.rst"
+requires-python = "~=3.8"
 
 [project.optional-dependencies]
 ci = ["coveralls"]
@@ -45,7 +47,7 @@ dev = [
 lint = [
   "praw[readthedocs]",
   "pre-commit",
-  "ruff >=0.0.*"
+  "ruff >=0.0.291"
 ]
 readthedocs = [
   "furo",
@@ -77,7 +79,7 @@ profile = 'black'
 skip_glob = '.venv*'
 
 [tool.ruff]
-target-version = "py37"
+target-version = "py38"
 include = [
   "praw/**/*.py"
 ]
@@ -90,6 +92,7 @@ ignore = [
   "D203", # 1 blank line required before class docstring
   "D213", # Multi-line docstring summary should start at the second line
   "E501", # line-length
+  "N818", # exception name should be named with an Error suffix
   "PLR0913", # too many arguments
   "PLR2004", # Magic value used in comparison,
   "S101" # use of assert

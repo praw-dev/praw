@@ -64,7 +64,7 @@ class BaseTokenManager(ABC):
             raise RuntimeError(msg)
         self._reddit = value
 
-    def __init__(self) -> None:
+    def __init__(self):
         """Initialize a :class:`.BaseTokenManager` instance."""
         self._reddit = None
 
@@ -120,7 +120,7 @@ class SQLiteTokenManager(BaseTokenManager):
     """
 
     @_deprecate_args("database", "key")
-    def __init__(self, *, database: str, key: str) -> None:
+    def __init__(self, *, database: str, key: str):
         """Initialize a :class:`.SQLiteTokenManager` instance.
 
         :param database: The path to the SQLite database.
@@ -143,7 +143,7 @@ class SQLiteTokenManager(BaseTokenManager):
         self._connection.commit()
         self.key = key
 
-    def _get(self):  # noqa: ANN001
+    def _get(self):
         cursor = self._connection.execute(
             "SELECT refresh_token FROM tokens WHERE id=?", (self.key,)
         )
@@ -152,7 +152,7 @@ class SQLiteTokenManager(BaseTokenManager):
             raise KeyError
         return result[0]
 
-    def _set(self, refresh_token):  # noqa: ANN001
+    def _set(self, refresh_token: str):
         """Set the refresh token in the database.
 
         This function will overwrite an existing value if the corresponding ``key``
@@ -166,7 +166,7 @@ class SQLiteTokenManager(BaseTokenManager):
         self._connection.commit()
 
     def is_registered(self) -> bool:
-        """Return whether or not ``key`` already has a ``refresh_token``."""
+        """Return whether ``key`` already has a ``refresh_token``."""
         cursor = self._connection.execute(
             "SELECT refresh_token FROM tokens WHERE id=?", (self.key,)
         )

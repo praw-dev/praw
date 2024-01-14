@@ -11,7 +11,7 @@ from .base import RedditBase
 from .redditor import Redditor
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class WikiPageModeration:
@@ -239,7 +239,7 @@ class WikiPage(RedditBase):
         """Return a string representation of the instance."""
         return f"{self.subreddit}/{self.name}"
 
-    def _fetch(self):  # noqa: ANN001
+    def _fetch(self):
         data = self._fetch_data()
         data = data["data"]
         if data["revision_by"] is not None:
@@ -247,9 +247,9 @@ class WikiPage(RedditBase):
                 self._reddit, _data=data["revision_by"]["data"]
             )
         self.__dict__.update(data)
-        self._fetched = True
+        super()._fetch()
 
-    def _fetch_info(self):  # noqa: ANN001
+    def _fetch_info(self):
         return (
             "wiki_page",
             {"subreddit": self.subreddit, "page": self.name},

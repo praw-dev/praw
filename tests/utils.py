@@ -31,7 +31,7 @@ def ensure_environment_variables():
 
 def ensure_integration_test(cassette):
     if cassette.is_recording():
-        is_integration_test = not cassette.is_empty()
+        is_integration_test = bool(cassette.interactions)
         action = "record"
     else:
         is_integration_test = any(

@@ -1,5 +1,3 @@
-default_language_version:
-  python: python3.11
 repos:
   - repo: local
     hooks:
@@ -20,7 +18,7 @@ repos:
         types: [ python ]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
       - id: check-added-large-files
       - id: check-executables-have-shebangs
@@ -44,7 +42,7 @@ repos:
         files: ^(.*\.toml)$
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.287
+    rev: v0.1.11
     hooks:
       - id: ruff
         args: [ --exit-non-zero-on-fix, --fix ]
@@ -53,10 +51,9 @@ repos:
   - repo: https://github.com/psf/black
     hooks:
       - id: black
-    rev: 23.9.1
+    rev: 23.12.1
 
   - repo: https://github.com/LilSpazJoekp/docstrfmt
     hooks:
       - id: docstrfmt
-        require_serial: true
-    rev: v1.5.1
+    rev: v1.6.1

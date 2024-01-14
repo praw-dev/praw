@@ -13,7 +13,7 @@ from .base import RedditBase
 from .mixins import FullnameMixin, MessageableMixin
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase):
@@ -130,12 +130,12 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         return RedditorStream(self)
 
     @property
-    def _kind(self) -> str:  # noqa: ANN001
+    def _kind(self) -> str:
         """Return the class's kind."""
         return self._reddit.config.kinds["redditor"]
 
     @property
-    def _path(self) -> str:  # noqa: ANN001
+    def _path(self) -> str:
         return API_PATH["user"].format(user=self)
 
     def __init__(
@@ -168,7 +168,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             self._fullname = fullname
         super().__init__(reddit, _data=_data, _extra_attribute_to_check="_fullname")
 
-    def __setattr__(self, name: str, value: Any) -> None:
+    def __setattr__(self, name: str, value: Any):
         """Objectify the subreddit attribute."""
         if name == "subreddit" and value:
             from .user_subreddit import UserSubreddit
@@ -176,24 +176,24 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             value = UserSubreddit(reddit=self._reddit, _data=value)
         super().__setattr__(name, value)
 
-    def _fetch(self):  # noqa: ANN001
+    def _fetch(self):
         data = self._fetch_data()
         data = data["data"]
         other = type(self)(self._reddit, _data=data)
         self.__dict__.update(other.__dict__)
-        self._fetched = True
+        super()._fetch()
 
-    def _fetch_info(self):  # noqa: ANN001
+    def _fetch_info(self):
         if hasattr(self, "_fullname"):
             self.name = self._fetch_username(self._fullname)
         return "user_about", {"user": self.name}, None
 
-    def _fetch_username(self, fullname):  # noqa: ANN001
+    def _fetch_username(self, fullname: str):
         return self._reddit.get(API_PATH["user_by_fullname"], params={"ids": fullname})[
             fullname
         ]["name"]
 
-    def _friend(self, *, data, method):  # noqa: ANN001
+    def _friend(self, *, data: dict[str, Any], method: str):
         url = API_PATH["friend_v1"].format(user=self)
         self._reddit.request(data=dumps(data), method=method, path=url)
 

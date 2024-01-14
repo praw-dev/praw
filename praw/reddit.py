@@ -9,6 +9,7 @@ import time
 from itertools import islice
 from logging import getLogger
 from typing import IO, TYPE_CHECKING, Any, Generator, Iterable
+from urllib.parse import urlparse
 from warnings import warn
 
 from prawcore import (
@@ -82,7 +83,7 @@ class Reddit:
     _ratelimit_regex = re.compile(r"([0-9]{1,3}) (milliseconds?|seconds?|minutes?)")
 
     @property
-    def _next_unique(self) -> int:  # noqa: ANN001
+    def _next_unique(self) -> int:
         value = self._unique_counter
         self._unique_counter += 1
         return value
@@ -139,7 +140,7 @@ class Reddit:
         """Handle the context manager open."""
         return self
 
-    def __exit__(self, *_args):
+    def __exit__(self, *_: object):
         """Handle the context manager close."""
 
     @_deprecate_args(
@@ -158,7 +159,7 @@ class Reddit:
         requestor_kwargs: dict[str, Any] | None = None,
         token_manager: BaseTokenManager | None = None,
         **config_settings: str | bool | int | None,
-    ):  # noqa: D207, D301
+    ):
         """Initialize a :class:`.Reddit` instance.
 
         :param site_name: The name of a section in your ``praw.ini`` file from which to
@@ -436,7 +437,7 @@ class Reddit:
 
         """
 
-    def _check_for_async(self):  # noqa: ANN001
+    def _check_for_async(self):
         if self.config.check_for_async:  # pragma: no cover
             try:
                 shell = get_ipython().__class__.__name__
@@ -448,10 +449,8 @@ class Reddit:
             try:
                 asyncio.get_running_loop()
                 in_async = True
-            except (  # noqa: S110: Quietly fail if any exception occurs during the check
-                Exception  # noqa: BLE001
-            ):
-                pass
+            except Exception:  # noqa: BLE001,S110
+                pass  # Quietly fail if any exception occurs during the check
             if in_async:
                 logger.warning(
                     "It appears that you are using PRAW in an asynchronous"
@@ -462,7 +461,7 @@ class Reddit:
                     " for more info.\n",
                 )
 
-    def _check_for_update(self):  # noqa: ANN001
+    def _check_for_update(self):
         if UPDATE_CHECKER_MISSING:
             return
         if not Reddit.update_checked and self.config.check_for_updates:
@@ -520,7 +519,9 @@ class Reddit:
             )
         )
 
-    def _prepare_common_authorizer(self, authenticator):  # noqa: ANN001
+    def _prepare_common_authorizer(
+        self, authenticator: prawcore.auth.BaseAuthenticator
+    ):
         if self._token_manager is not None:
             warn(
                 "Token managers have been deprecated and will be removed in the near"
@@ -550,7 +551,7 @@ class Reddit:
             authorizer=authorizer, window_size=self.config.window_size
         )
 
-    def _prepare_objector(self):  # noqa: ANN001
+    def _prepare_objector(self):
         mappings = {
             self.config.kinds["comment"]: models.Comment,
             self.config.kinds["message"]: models.Message,
@@ -599,7 +600,10 @@ class Reddit:
         self._objector = Objector(self, mappings)
 
     def _prepare_prawcore(
-        self, *, requestor_class=None, requestor_kwargs=None  # noqa: ANN001
+        self,
+        *,
+        requestor_class: type[prawcore.requestor.Requestor] = None,
+        requestor_kwargs: Any | None = None,
     ):
         requestor_class = requestor_class or Requestor
         requestor_kwargs = requestor_kwargs or {}
@@ -616,7 +620,7 @@ class Reddit:
         else:
             self._prepare_untrusted_prawcore(requestor)
 
-    def _prepare_trusted_prawcore(self, requestor):  # noqa: ANN001
+    def _prepare_trusted_prawcore(self, requestor: prawcore.requestor.Requestor):
         authenticator = TrustedAuthenticator(
             requestor,
             self.config.client_id,
@@ -638,7 +642,7 @@ class Reddit:
         else:
             self._prepare_common_authorizer(authenticator)
 
-    def _prepare_untrusted_prawcore(self, requestor):  # noqa: ANN001
+    def _prepare_untrusted_prawcore(self, requestor: prawcore.requestor.Requestor):
         authenticator = UntrustedAuthenticator(
             requestor, self.config.client_id, self.config.redirect_uri
         )
@@ -648,12 +652,19 @@ class Reddit:
         )
         self._prepare_common_authorizer(authenticator)
 
+    def _resolve_share_url(self, url: str) -> str:
+        """Return the canonical URL for a given share URL."""
+        parts = urlparse(url).path.rstrip("/").split("/")
+        if "s" in parts:  # handling new share urls from mobile apps
+            try:
+                self.get(url)
+            except Redirect as e:
+                return e.response.next.url
+        return url
+
     @_deprecate_args("id", "url")
     def comment(
-        self,  # pylint: disable=invalid-name
-        id: str | None = None,  # pylint: disable=redefined-builtin noqa: A002
-        *,
-        url: str | None = None,
+        self, id: str | None = None, *, url: str | None = None
     ) -> models.Comment:
         """Return a lazy instance of :class:`.Comment`.
 
@@ -666,6 +677,8 @@ class Reddit:
             :meth:`~.Comment.refresh` on the returned :class:`.Comment`.
 
         """
+        if url:
+            url = self._resolve_share_url(url)
         return models.Comment(self, id=id, url=url)
 
     @_deprecate_args("path", "data", "json", "params")
@@ -857,8 +870,9 @@ class Reddit:
                 if seconds is None:
                     break
                 second_string = "second" if seconds == 1 else "seconds"
-                stmt = f"Rate limit hit, sleeping for {seconds} {second_string}"
-                logger.debug(stmt)
+                logger.debug(
+                    "Rate limit hit, sleeping for %d %s", seconds, second_string
+                )
                 time.sleep(seconds)
         raise last_exception
 
@@ -973,7 +987,7 @@ class Reddit:
             ) from exception
 
     @_deprecate_args("id", "url")
-    def submission(  # pylint: disable=invalid-name,redefined-builtin
+    def submission(
         self, id: str | None = None, *, url: str | None = None
     ) -> praw.models.Submission:
         """Return a lazy instance of :class:`.Submission`.
@@ -984,6 +998,8 @@ class Reddit:
         Either ``id`` or ``url`` can be provided, but not both.
 
         """
+        if url:
+            url = self._resolve_share_url(url)
         return models.Submission(self, id=id, url=url)
 
     def username_available(self, name: str) -> bool:

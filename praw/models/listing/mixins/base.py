@@ -15,7 +15,7 @@ class BaseListingMixin(PRAWBase):
     VALID_TIME_FILTERS = {"all", "day", "hour", "month", "week", "year"}
 
     @staticmethod
-    def _validate_time_filter(time_filter):  # noqa: ANN001
+    def _validate_time_filter(time_filter: str):
         """Validate ``time_filter``.
 
         :raises: :py:class:`ValueError` if ``time_filter`` is not valid.
@@ -28,7 +28,7 @@ class BaseListingMixin(PRAWBase):
             msg = f"'time_filter' must be one of: {valid_time_filters}"
             raise ValueError(msg)
 
-    def _prepare(self, *, arguments, sort):  # noqa: ANN001
+    def _prepare(self, *, arguments: dict[str, Any], sort: str) -> str:
         """Fix for :class:`.Redditor` methods that use a query param rather than subpath."""
         if self.__dict__.get("_listing_use_sort"):
             self._safely_add_arguments(arguments=arguments, key="params", sort=sort)

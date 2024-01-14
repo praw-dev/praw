@@ -19,7 +19,7 @@ from .savable import SavableMixin
 from .votable import VotableMixin
 
 if TYPE_CHECKING:  # pragma: no cover
-    import praw
+    import praw.models
 
 
 class ThingModerationMixin(ModNoteMixin):
@@ -194,7 +194,7 @@ class ThingModerationMixin(ModNoteMixin):
         *,
         message: str,
         title: str = "ignored",
-        type: str = "public",  # pylint: disable=redefined-builtin
+        type: str = "public",
     ) -> praw.models.Comment | None:
         """Send a removal message for a :class:`.Comment` or :class:`.Submission`.
 

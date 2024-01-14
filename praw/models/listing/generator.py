@@ -52,7 +52,7 @@ class ListingGenerator(PRAWBase, Iterator):
         self.url = url
         self.yielded = 0
 
-    def __iter__(self):  # noqa: ANN204
+    def __iter__(self) -> Any:
         """Permit :class:`.ListingGenerator` to operate as an iterator."""
         return self
 
@@ -68,7 +68,7 @@ class ListingGenerator(PRAWBase, Iterator):
         self.yielded += 1
         return self._listing[self._list_index - 1]
 
-    def _extract_sublist(self, listing):  # noqa: ANN001
+    def _extract_sublist(self, listing: dict[str, Any] | list[Any]):
         if isinstance(listing, list):
             return listing[1]  # for submission duplicates
         if isinstance(listing, dict):
@@ -82,7 +82,7 @@ class ListingGenerator(PRAWBase, Iterator):
                 raise ValueError(msg)
         return listing
 
-    def _next_batch(self):  # noqa: ANN001
+    def _next_batch(self):
         if self._exhausted:
             raise StopIteration
 
