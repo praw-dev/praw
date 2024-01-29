@@ -1,4 +1,5 @@
 """Provide the InboxableMixin class."""
+
 from ....const import API_PATH
 
 

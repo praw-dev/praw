@@ -1,4 +1,5 @@
 """Test praw.models.listing.generator."""
+
 import pytest
 
 from praw.models.listing.generator import ListingGenerator

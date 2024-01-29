@@ -1,4 +1,5 @@
 """Provide the Stylesheet class."""
+
 from .base import PRAWBase
 
 

@@ -1,4 +1,5 @@
 """Provide the Preferences class."""
+
 from __future__ import annotations
 
 from json import dumps

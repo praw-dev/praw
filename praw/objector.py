@@ -1,4 +1,5 @@
 """Provides the Objector class."""
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -178,9 +179,11 @@ class Objector:
             subreddit_parser = self.parsers[self._reddit.config.kinds["subreddit"]]
             user_subreddit_parser = self.parsers["UserSubreddit"]
             subreddits = {
-                subreddit["name"]: user_subreddit_parser.parse(subreddit, self._reddit)
-                if subreddit["display_name_prefixed"].startswith("u/")
-                else subreddit_parser.parse(subreddit, self._reddit)
+                subreddit["name"]: (
+                    user_subreddit_parser.parse(subreddit, self._reddit)
+                    if subreddit["display_name_prefixed"].startswith("u/")
+                    else subreddit_parser.parse(subreddit, self._reddit)
+                )
                 for subreddit in data.pop("subreddits")
             }
             for draft in data["drafts"]:

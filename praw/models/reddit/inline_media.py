@@ -1,4 +1,5 @@
 """Provide classes related to inline media."""
+
 from __future__ import annotations
 
 from ..util import _deprecate_args

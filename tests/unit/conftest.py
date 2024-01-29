@@ -1,4 +1,5 @@
 """Prepare pytest for unit tests."""
+
 import pytest
 
 from praw import Reddit

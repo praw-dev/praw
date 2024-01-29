@@ -1,4 +1,5 @@
 """Provide the RedditBase class."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any

@@ -1,4 +1,5 @@
 """Provides classes for interacting with moderator notes."""
+
 from itertools import islice
 from typing import TYPE_CHECKING, Any, Generator, List, Optional, Tuple, Union
 

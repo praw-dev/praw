@@ -1,4 +1,5 @@
 """Package providing reddit class mixins."""
+
 from __future__ import annotations
 
 from json import dumps

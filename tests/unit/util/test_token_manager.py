@@ -1,4 +1,5 @@
 """Test praw.util.refresh_token_manager."""
+
 import sys
 from pathlib import Path
 from tempfile import NamedTemporaryFile
