@@ -1,4 +1,5 @@
 """Test praw.reddit."""
+
 from base64 import urlsafe_b64encode
 
 import pytest

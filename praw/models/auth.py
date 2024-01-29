@@ -1,4 +1,5 @@
 """Provide the Auth class."""
+
 from __future__ import annotations
 
 from prawcore import Authorizer, ImplicitAuthorizer, UntrustedAuthenticator, session

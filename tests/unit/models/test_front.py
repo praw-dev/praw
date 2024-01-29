@@ -1,4 +1,5 @@
 """Test praw.models.front."""
+
 import pytest
 
 from .. import UnitTest

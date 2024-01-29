@@ -1,4 +1,5 @@
 """Provide the ReportableMixin class."""
+
 from ....const import API_PATH
 
 

@@ -1,4 +1,5 @@
 """Contains functions dealing with snake case conversions."""
+
 from __future__ import annotations
 
 import re

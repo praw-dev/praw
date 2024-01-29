@@ -1,4 +1,5 @@
 """Provide the RedditorList class."""
+
 from .base import BaseList
 
 

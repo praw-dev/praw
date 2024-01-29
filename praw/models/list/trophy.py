@@ -1,4 +1,5 @@
 """Provide the TrophyList class."""
+
 from .base import BaseList
 
 

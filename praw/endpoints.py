@@ -1,4 +1,5 @@
 """List of API endpoints PRAW knows about."""
+
 # fmt: off
 API_PATH = {
     "about_edited":            "r/{subreddit}/about/edited/",

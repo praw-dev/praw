@@ -1,4 +1,5 @@
 """Test praw.models.preferences."""
+
 from praw.models import Preferences
 
 from .. import UnitTest

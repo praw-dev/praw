@@ -11,6 +11,7 @@ PRAW users will create their own token manager classes suitable for their needs.
     Tokens managers have been deprecated and will be removed in the near future.
 
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

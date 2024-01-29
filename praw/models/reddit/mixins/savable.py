@@ -1,4 +1,5 @@
 """Provide the SavableMixin class."""
+
 from __future__ import annotations
 
 from ....const import API_PATH

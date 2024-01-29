@@ -1,4 +1,5 @@
 """Test praw.models.subreddits."""
+
 import pytest
 
 from praw.models import Subreddit

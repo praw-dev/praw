@@ -1,4 +1,5 @@
 """Provide the GildableMixin class."""
+
 from warnings import warn
 
 from ....const import API_PATH

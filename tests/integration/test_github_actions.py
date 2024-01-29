@@ -4,6 +4,7 @@ This test makes real network requests, so environment variables should be specif
 GitHub Actions.
 
 """
+
 import os
 
 import pytest

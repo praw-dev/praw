@@ -1,6 +1,5 @@
 """Test praw.models.poll."""
 
-
 import pytest
 
 from praw.models import PollData, PollOption

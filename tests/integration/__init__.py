@@ -1,4 +1,5 @@
 """PRAW Integration test suite."""
+
 import os
 from urllib.parse import quote_plus
 

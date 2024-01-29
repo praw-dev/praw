@@ -1,4 +1,5 @@
 """Provide the InboxToggleableMixin class."""
+
 from ....const import API_PATH
 
 

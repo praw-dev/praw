@@ -1,4 +1,5 @@
 """Provide the ModNote class."""
+
 from __future__ import annotations
 
 from ..endpoints import API_PATH

@@ -1,4 +1,5 @@
 """Provide the ModeratedList class."""
+
 from .base import BaseList
 
 

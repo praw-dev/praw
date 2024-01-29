@@ -8,5 +8,6 @@ else is handled by PRAW so you needn't worry about violating them.
 More information about PRAW can be found at https://github.com/praw-dev/praw.
 
 """
+
 from .const import __version__
 from .reddit import Reddit
