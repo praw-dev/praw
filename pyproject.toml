@@ -83,6 +83,8 @@ target-version = "py38"
 include = [
   "praw/**/*.py"
 ]
+
+[tool.ruff.lint]
 ignore = [
   "A002", # shadowing built-in
   "ANN101", # missing type annotation for self in method
@@ -97,6 +99,7 @@ ignore = [
   "PLR2004", # Magic value used in comparison,
   "S101" # use of assert
 ]
+ignore-init-module-imports = true
 select = [
   "A", # flake8-builtins
   "ANN", # flake8-annotations
@@ -137,14 +140,13 @@ select = [
   "W", # pycodestyle warnings
   "UP" # pyupgrade
 ]
-ignore-init-module-imports = true
 
-[tool.ruff.flake8-annotations]
+[tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
 mypy-init-return = true
 suppress-dummy-args = true
 suppress-none-returning = true
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 "praw/models/mod_notes.py" = ["FA100"]
