@@ -189,10 +189,3 @@ PRAW's source (v4.0.0+) is provided under the `Simplified BSD License
 
 Earlier versions of PRAW were released under `GPLv3
 <https://github.com/praw-dev/praw/blob/0c88697fdc26e75f87b68e2feb11e101e90ce215/COPYING>`_.
-
-Sponsors
---------
-
-.. image:: https://github.com/praw-dev/praw/blob/36fa3060b8938815feb45d07541877c8ce994cbb/docs/package_info/NucleiLogo.png
-    :alt: Nuclei
-    :target: https://nuclei.ai
