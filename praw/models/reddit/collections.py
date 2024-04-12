@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Generator
+from typing import TYPE_CHECKING, Any
 
 from ...const import API_PATH
 from ...exceptions import ClientException
@@ -14,6 +14,8 @@ from .submission import Submission
 from .subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Iterator
+
     import praw.models
 
 
@@ -489,7 +491,7 @@ class Collection(RedditBase):
             "include_links": True,
         }
 
-    def __iter__(self) -> Generator[Any, None, None]:
+    def __iter__(self) -> Iterator:
         """Provide a way to iterate over the posts in this :class:`.Collection`.
 
         Example usage:
