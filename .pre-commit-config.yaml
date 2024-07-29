@@ -42,7 +42,7 @@ repos:
         files: ^(.*\.toml)$
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.0
+    rev: v0.5.5
     hooks:
       - id: ruff
         args: [ --exit-non-zero-on-fix, --fix ]
@@ -56,4 +56,4 @@ repos:
   - repo: https://github.com/LilSpazJoekp/docstrfmt
     hooks:
       - id: docstrfmt
-    rev: v1.6.1
+    rev: v1.8.0
