@@ -86,7 +86,7 @@ class PollData(PRAWBase):
             return None
         return self.option(self._user_selection)
 
-    def __setattr__(self, attribute: str, value: Any) -> None:
+    def __setattr__(self, attribute: str, value: Any):
         """Objectify the options attribute, and save user_selection."""
         if attribute == "options" and isinstance(value, list):
             value = [PollOption(self._reddit, option) for option in value]
