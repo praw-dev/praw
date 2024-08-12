@@ -518,7 +518,7 @@ class Collection(RedditBase):
         """
         return len(self.link_ids)
 
-    def __setattr__(self, attribute: str, value: Any) -> None:
+    def __setattr__(self, attribute: str, value: Any):
         """Objectify author, subreddit, and sorted_links attributes."""
         if attribute == "author_name":
             self.author = self._reddit.redditor(value)

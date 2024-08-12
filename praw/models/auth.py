@@ -58,7 +58,7 @@ class Auth(PRAWBase):
         return authorizer.refresh_token
 
     @_deprecate_args("access_token", "expires_in", "scope")
-    def implicit(self, *, access_token: str, expires_in: int, scope: str) -> None:
+    def implicit(self, *, access_token: str, expires_in: int, scope: str):
         """Set the active authorization to be an implicit authorization.
 
         :param access_token: The access_token obtained from Reddit's callback.

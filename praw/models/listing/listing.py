@@ -21,7 +21,7 @@ class Listing(PRAWBase):
         """Return the number of items in the Listing."""
         return len(getattr(self, self.CHILD_ATTRIBUTE))
 
-    def __setattr__(self, attribute: str, value: Any) -> None:
+    def __setattr__(self, attribute: str, value: Any):
         """Objectify the ``CHILD_ATTRIBUTE`` attribute."""
         if attribute == self.CHILD_ATTRIBUTE:
             value = self._reddit._objector.objectify(value)

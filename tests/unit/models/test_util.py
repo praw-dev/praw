@@ -105,26 +105,6 @@ class TestPermissionsString(UnitTest):
 
 
 class TestStream(UnitTest):
-    def test_stream(
-        self,
-    ):
-        Thing = namedtuple("Thing", ["fullname"])
-        initial_things = [Thing(n) for n in reversed(range(100))]
-        counter = 99
-
-        def generate(limit, **kwargs):
-            nonlocal counter
-            counter += 1
-            if counter % 2 == 0:
-                return initial_things
-            return [Thing(counter)] + initial_things[:-1]
-
-        stream = stream_generator(generate)
-        seen = set()
-        for _ in range(400):
-            thing = next(stream)
-            assert thing not in seen
-            seen.add(thing)
 
     def test_comments__with_continue_after_id(
         self,
@@ -155,3 +135,24 @@ class TestStream(UnitTest):
             thing = next(stream)
             assert thing.fullname == expected_fullname, thing
             expected_fullname += 1
+
+    def test_stream(
+        self,
+    ):
+        Thing = namedtuple("Thing", ["fullname"])
+        initial_things = [Thing(n) for n in reversed(range(100))]
+        counter = 99
+
+        def generate(limit, **kwargs):
+            nonlocal counter
+            counter += 1
+            if counter % 2 == 0:
+                return initial_things
+            return [Thing(counter)] + initial_things[:-1]
+
+        stream = stream_generator(generate)
+        seen = set()
+        for _ in range(400):
+            thing = next(stream)
+            assert thing not in seen
+            seen.add(thing)
