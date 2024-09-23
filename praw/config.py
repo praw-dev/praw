@@ -135,6 +135,7 @@ class Config:
         self.warn_additional_fetch_params = self._config_boolean(
             self._fetch_default("warn_additional_fetch_params", default=True)
         )
+        self.window_size = self._fetch_default("window_size", default=600)
         self.kinds = {
             x: self._fetch(f"{x}_kind")
             for x in [

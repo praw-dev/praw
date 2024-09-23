@@ -53,7 +53,9 @@ class Auth(PRAWBase):
         authenticator = self._reddit._read_only_core._authorizer._authenticator
         authorizer = Authorizer(authenticator)
         authorizer.authorize(code)
-        authorized_session = session(authorizer)
+        authorized_session = session(
+            authorizer=authorizer, window_size=self._reddit.config.window_size
+        )
         self._reddit._core = self._reddit._authorized_core = authorized_session
         return authorizer.refresh_token
 
@@ -78,7 +80,10 @@ class Auth(PRAWBase):
         if not isinstance(authenticator, UntrustedAuthenticator):
             raise InvalidImplicitAuth
         implicit_session = session(
-            ImplicitAuthorizer(authenticator, access_token, expires_in, scope)
+            authorizer=ImplicitAuthorizer(
+                authenticator, access_token, expires_in, scope
+            ),
+            window_size=self._reddit.config.window_size,
         )
         self._reddit._core = self._reddit._authorized_core = implicit_session
 
