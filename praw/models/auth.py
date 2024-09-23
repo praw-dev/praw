@@ -54,7 +54,7 @@ class Auth(PRAWBase):
         authorizer = Authorizer(authenticator)
         authorizer.authorize(code)
         authorized_session = session(
-            authorizer=authorizer, window_size=self.config.window_size
+            authorizer=authorizer, window_size=self._reddit.config.window_size
         )
         self._reddit._core = self._reddit._authorized_core = authorized_session
         return authorizer.refresh_token
