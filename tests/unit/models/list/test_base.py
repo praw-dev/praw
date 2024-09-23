@@ -1,4 +1,5 @@
 """Test praw.models.list.base."""
+
 import pytest
 
 from praw.models.list.base import BaseList

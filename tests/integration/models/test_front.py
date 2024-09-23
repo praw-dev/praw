@@ -1,4 +1,5 @@
 """Test praw.models.front."""
+
 from .. import IntegrationTest
 
 

@@ -1,4 +1,5 @@
 """Provide the Redditors class."""
+
 from __future__ import annotations
 
 from itertools import islice

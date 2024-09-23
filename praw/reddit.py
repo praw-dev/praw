@@ -1,4 +1,5 @@
 """Provide the Reddit class."""
+
 from __future__ import annotations
 
 import asyncio
@@ -94,7 +95,7 @@ class Reddit:
         return self._core == self._read_only_core
 
     @read_only.setter
-    def read_only(self, value: bool) -> None:
+    def read_only(self, value: bool):
         """Set or unset the use of the ReadOnlyAuthorizer.
 
         :raises: :class:`.ClientException` when attempting to unset ``read_only`` and
@@ -440,6 +441,7 @@ class Reddit:
     def _check_for_async(self):
         if self.config.check_for_async:  # pragma: no cover
             try:
+                # noinspection PyUnresolvedReferences
                 shell = get_ipython().__class__.__name__
                 if shell == "ZMQInteractiveShell":
                     return

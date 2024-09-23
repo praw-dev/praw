@@ -1,4 +1,5 @@
 """Test praw.models.listing.generator."""
+
 from ... import IntegrationTest
 
 

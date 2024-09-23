@@ -1,4 +1,5 @@
 """Provide the helper classes."""
+
 from __future__ import annotations
 
 from json import dumps
@@ -73,10 +74,9 @@ class DraftHelper(PRAWBase):
         selftext: str | None = None,
         send_replies: bool = True,
         spoiler: bool = False,
-        subreddit: str
-        | praw.models.Subreddit
-        | praw.models.UserSubreddit
-        | None = None,
+        subreddit: (
+            str | praw.models.Subreddit | praw.models.UserSubreddit | None
+        ) = None,
         title: str | None = None,
         url: str | None = None,
         **draft_kwargs: Any,

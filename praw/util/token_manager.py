@@ -11,6 +11,7 @@ PRAW users will create their own token manager classes suitable for their needs.
     Tokens managers have been deprecated and will be removed in the near future.
 
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -84,7 +85,7 @@ class FileTokenManager(BaseTokenManager):
 
     """
 
-    def __init__(self, filename: str) -> None:
+    def __init__(self, filename: str):
         """Initialize a :class:`.FileTokenManager` instance.
 
         :param filename: The file the contains the refresh token.

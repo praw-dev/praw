@@ -1,4 +1,5 @@
 """Provide the Redditor class."""
+
 from __future__ import annotations
 
 from json import dumps

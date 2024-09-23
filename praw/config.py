@@ -1,4 +1,5 @@
 """Provides the code to load PRAW's configuration file ``praw.ini``."""
+
 from __future__ import annotations
 
 import configparser

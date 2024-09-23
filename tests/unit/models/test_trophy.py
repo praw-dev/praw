@@ -1,4 +1,5 @@
 """Test praw.models.Trophy."""
+
 import pytest
 
 from praw.models.trophy import Trophy

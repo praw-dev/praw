@@ -1,4 +1,5 @@
 """Test praw.models.subreddit."""
+
 import socket
 from json import dumps
 from unittest import mock

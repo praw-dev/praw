@@ -1,4 +1,5 @@
 """Test praw.models.ModNote."""
+
 from praw.models.mod_note import ModNote
 
 from .. import UnitTest

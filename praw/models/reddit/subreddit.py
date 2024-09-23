@@ -1,4 +1,5 @@
 """Provide the Subreddit class."""
+
 from __future__ import annotations
 
 import contextlib
@@ -2173,9 +2174,7 @@ class SubredditWiki:
         new.edit(content=content, reason=reason, **other_settings)
         return new
 
-    def revisions(
-        self, **generator_kwargs: Any
-    ) -> Generator[
+    def revisions(self, **generator_kwargs: Any) -> Generator[
         dict[str, praw.models.Redditor | WikiPage | str | int | bool | None],
         None,
         None,

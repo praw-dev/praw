@@ -1,4 +1,5 @@
 """Test praw.models.auth."""
+
 import pytest
 
 from praw import Reddit

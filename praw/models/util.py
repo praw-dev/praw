@@ -1,4 +1,5 @@
 """Provide helper classes used by other models."""
+
 from __future__ import annotations
 
 import random

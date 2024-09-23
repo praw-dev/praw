@@ -18,7 +18,7 @@ repos:
         types: [ python ]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       - id: check-added-large-files
       - id: check-executables-have-shebangs
@@ -42,7 +42,7 @@ repos:
         files: ^(.*\.toml)$
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.11
+    rev: v0.6.2
     hooks:
       - id: ruff
         args: [ --exit-non-zero-on-fix, --fix ]
@@ -51,9 +51,9 @@ repos:
   - repo: https://github.com/psf/black
     hooks:
       - id: black
-    rev: 23.12.1
+    rev: 24.8.0
 
   - repo: https://github.com/LilSpazJoekp/docstrfmt
     hooks:
       - id: docstrfmt
-    rev: v1.6.1
+    rev: v1.8.0

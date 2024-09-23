@@ -1,4 +1,5 @@
 """Provide classes related to widgets."""
+
 from __future__ import annotations
 
 from json import JSONEncoder, dumps

@@ -1,4 +1,5 @@
 """Test praw.objector."""
+
 import pytest
 
 from praw.exceptions import RedditAPIException
