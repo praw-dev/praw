@@ -15,6 +15,9 @@ Unreleased
 - :func:`.stream_generator` now accepts the ``continue_after_id`` parameter, which
   starts the stream after a given item ID.
 - Support for new share URL format created from Reddit's mobile apps.
+- :class:`.Reddit` has a new configurable parameter, ``window_size``. This tells PRAW
+  how long reddit's rate limit window is. This defaults to 600 seconds and shouldn't
+  need to be changed unless reddit changes the size of their rate limit window.
 
 **Fixed**
 

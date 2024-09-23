@@ -72,7 +72,6 @@ order to successfully access a third-party Reddit site:
     (default: ``t3_``).
 :subreddit_kind: The type prefix for subreddits on the :class:`.Reddit` instance
     (default: ``t5_``).
-:window_size: The number of seconds between rate limit resets (default: 600).
 
 .. _misc_options:
 
@@ -98,6 +97,7 @@ These are options that do not belong in another category, but still play a part 
     throwing an exception.
 :warn_comment_sort: When ``true``, log a warning when the ``comment_sort`` attribute of
     a submission is updated after ``_fetch()`` has been called (default: ``true``).
+:window_size: The number of seconds between rate limit resets (default: 600).
 
 .. _custom_options:
 

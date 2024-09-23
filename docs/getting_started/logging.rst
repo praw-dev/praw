@@ -10,6 +10,19 @@ Add the following to your code to log everything available:
 
     import logging
 
+    handler = logging.StreamHandler()
+    handler.setLevel(logging.DEBUG)
+    for logger_name in ("praw", "prawcore"):
+        logger = logging.getLogger(logger_name)
+        logger.setLevel(logging.DEBUG)
+        logger.addHandler(handler)
+
+Or you can use the following to write the logs to a file for longer running bots or scripts when you need to look back at what the bot did hours ago.
+
+.. code-block:: python
+
+    import logging
+
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.DEBUG)
     file_handler = logging.handlers.RotatingFileHandler(
