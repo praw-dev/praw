@@ -17,7 +17,8 @@ Add the following to your code to log everything available:
         logger.setLevel(logging.DEBUG)
         logger.addHandler(handler)
 
-Or you can use the following to write the logs to a file for longer running bots or scripts when you need to look back at what the bot did hours ago.
+Or you can use the following to write the logs to a file for longer running bots or
+scripts when you need to look back at what the bot did hours ago.
 
 .. code-block:: python
 
