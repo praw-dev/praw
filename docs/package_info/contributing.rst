@@ -133,8 +133,7 @@ Linting_:
               arg1,
               arg2,
               optional_arg1=None,
-          ):
-              ...
+          ): ...
 
   There is some exceptions to this:
 
@@ -144,8 +143,7 @@ Linting_:
     .. code-block:: python
 
         class ExampleClass:
-            def pair(self, left, right):
-                ...
+            def pair(self, left, right): ...
 
   - If there is one or two mandatory arguments and some optional arguments, then the
     mandatory arguments may be positional (as long as it adheres to the previous point),
@@ -171,8 +169,7 @@ Linting_:
                 send_replies=True,
                 spoiler=False,
                 url=None,
-            ):
-                ...
+            ): ...
 
 Testing
 -------
@@ -250,18 +247,15 @@ Examples:
     @pytest.mark.recorder_kwargs(allow_playback_repeats=True)
     class TestClass:
         @pytest.mark.recorder_kwargs(match_requests_on=["uri", "method", "body"])
-        def test_example(self):
-            ...
+        def test_example(self): ...
 
         @pytest.mark.cassette_name("TestClass.test_example")
         @pytest.mark.recorder_kwargs(match_requests_on=["uri", "method", "body"])
-        def test_example__different_assertion(self):
-            ...
+        def test_example__different_assertion(self): ...
 
         @pytest.mark.add_placeholder(generated_data_a=generate_data_a())
         @pytest.mark.add_placeholder(generated_data_b=generate_data_b())
-        def test_example__with_generated_placeholders(self):
-            ...
+        def test_example__with_generated_placeholders(self): ...
 
 Documentation
 -------------
