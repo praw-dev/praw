@@ -21,7 +21,7 @@ classifiers = [
   "Topic :: Utilities"
 ]
 dependencies = [
-  "prawcore >=2.1, <3",
+  "prawcore >=2.4, <3",
   "update_checker >=0.18",
   "websocket-client >=0.54.0"
 ]
