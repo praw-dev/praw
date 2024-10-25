@@ -2,7 +2,7 @@
 
 from .endpoints import API_PATH  # noqa: F401
 
-__version__ = "7.8.1"
+__version__ = "7.8.2.dev0"
 
 USER_AGENT_FORMAT = f"{{}} PRAW/{__version__}"
 
