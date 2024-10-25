@@ -6,6 +6,9 @@ PRAW follows `semantic versioning <https://semver.org/>`_.
 Unreleased
 ----------
 
+7.8.1 (2024/10/25)
+------------------
+
 **Changed**
 
 - Bumped prawcore to 2.4.0.
