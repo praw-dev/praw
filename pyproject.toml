@@ -23,7 +23,7 @@ classifiers = [
 dependencies = [
   "prawcore@git+https://github.com/Ousret/prawcore@feat-niquests",
   "update_checker >=0.18",
-  "websocket-client >=0.54.0"
+  "niquests[ws]>=3.10,<4"
 ]
 dynamic = ["version", "description"]
 keywords = ["reddit", "api", "wrapper"]

@@ -5,6 +5,7 @@ from json import dumps
 from unittest import mock
 from unittest.mock import MagicMock
 
+import niquests
 import pytest
 import requests
 import websocket
@@ -1223,6 +1224,10 @@ class WebsocketMock:
     def make_dict(cls, post_id):
         return {"payload": {"redirect": cls.POST_URL.format(post_id)}}
 
+    @property
+    def closed(self) -> bool:
+        return False
+
     def __call__(self, *args, **kwargs):
         return self
 
@@ -1233,12 +1238,25 @@ class WebsocketMock:
     def close(self, *args, **kwargs):
         pass
 
-    def recv(self):
+    def next_payload(self):
         if not self.post_ids:
-            raise websocket.WebSocketTimeoutException()
+            raise niquests.ReadTimeout
         assert 0 <= self.i + 1 < len(self.post_ids)
         self.i += 1
         return dumps(self.make_dict(self.post_ids[self.i]))
+
+
+class ResponseWithWebSocketExtMock:
+
+    def __init__(self, fake_extension: WebsocketMock):
+        self.extension = fake_extension
+
+    @property
+    def status_code(self) -> int:
+        return 101
+
+    def raise_for_status(self):
+        return self
 
 
 class WebsocketMockException:
@@ -1548,9 +1566,11 @@ class TestSubreddit(IntegrationTest):
         assert submission.link_flair_text == flair_text
 
     @mock.patch(
-        "websocket.create_connection",
+        "niquests.Session.get",
         new=MagicMock(
-            return_value=WebsocketMock("16xb01r", "16xb06z", "16xb0aa")
+            return_value=ResponseWithWebSocketExtMock(
+                WebsocketMock("16xb01r", "16xb06z", "16xb0aa")
+            )
         ),  # update with cassette
     )
     def test_submit_image(self, image_path, reddit):
@@ -1565,7 +1585,8 @@ class TestSubreddit(IntegrationTest):
 
     @pytest.mark.cassette_name("TestSubreddit.test_submit_image")
     @mock.patch(
-        "websocket.create_connection", new=MagicMock(return_value=WebsocketMock())
+        "niquests.Session.get",
+        new=MagicMock(return_value=ResponseWithWebSocketExtMock(WebsocketMock())),
     )
     def test_submit_image__bad_websocket(self, image_path, reddit):
         reddit.read_only = False
@@ -1576,8 +1597,10 @@ class TestSubreddit(IntegrationTest):
                 subreddit.submit_image("Test Title", image)
 
     @mock.patch(
-        "websocket.create_connection",
-        new=MagicMock(return_value=WebsocketMock("ah3gqo")),
+        "niquests.Session.get",
+        new=MagicMock(
+            return_value=ResponseWithWebSocketExtMock(WebsocketMock("ah3gqo"))
+        ),
     )  # update with cassette
     def test_submit_image__flair(self, image_path, reddit):
         flair_id = "6bd28436-1aa7-11e9-9902-0e05ab0fad46"
@@ -1628,73 +1651,10 @@ class TestSubreddit(IntegrationTest):
         reddit._core._requestor._http.post = _post
 
     @mock.patch(
-        "websocket.create_connection", new=MagicMock(side_effect=BlockingIOError)
+        "niquests.Session.get", new=MagicMock(side_effect=niquests.Timeout)
     )  # happens with timeout=0
     @pytest.mark.cassette_name("TestSubreddit.test_submit_image")
     def test_submit_image__timeout_1(self, image_path, reddit):
-        reddit.read_only = False
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        image = image_path("test.jpg")
-        with pytest.raises(WebSocketException):
-            subreddit.submit_image("Test Title", image)
-
-    @mock.patch(
-        "websocket.create_connection",
-        new=MagicMock(
-            side_effect=socket.timeout
-            # happens with timeout=0.00001
-        ),
-    )
-    @pytest.mark.cassette_name("TestSubreddit.test_submit_image")
-    def test_submit_image__timeout_2(self, image_path, reddit):
-        reddit.read_only = False
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        image = image_path("test.jpg")
-        with pytest.raises(WebSocketException):
-            subreddit.submit_image("Test Title", image)
-
-    @mock.patch(
-        "websocket.create_connection",
-        new=MagicMock(
-            return_value=WebsocketMockException(
-                recv_exc=websocket.WebSocketTimeoutException()
-            ),  # happens with timeout=0.1
-        ),
-    )
-    @pytest.mark.cassette_name("TestSubreddit.test_submit_image")
-    def test_submit_image__timeout_3(self, image_path, reddit):
-        reddit.read_only = False
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        image = image_path("test.jpg")
-        with pytest.raises(WebSocketException):
-            subreddit.submit_image("Test Title", image)
-
-    @mock.patch(
-        "websocket.create_connection",
-        new=MagicMock(
-            return_value=WebsocketMockException(
-                close_exc=websocket.WebSocketTimeoutException()
-            ),  # could happen, and PRAW should handle it
-        ),
-    )
-    @pytest.mark.cassette_name("TestSubreddit.test_submit_image")
-    def test_submit_image__timeout_4(self, image_path, reddit):
-        reddit.read_only = False
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        image = image_path("test.jpg")
-        with pytest.raises(WebSocketException):
-            subreddit.submit_image("Test Title", image)
-
-    @mock.patch(
-        "websocket.create_connection",
-        new=MagicMock(
-            return_value=WebsocketMockException(
-                recv_exc=websocket.WebSocketConnectionClosedException()
-            ),  # from issue #1124
-        ),
-    )
-    @pytest.mark.cassette_name("TestSubreddit.test_submit_image")
-    def test_submit_image__timeout_5(self, image_path, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         image = image_path("test.jpg")
@@ -1712,8 +1672,10 @@ class TestSubreddit(IntegrationTest):
             assert submission is None
 
     @mock.patch(
-        "websocket.create_connection",
-        new=MagicMock(return_value=WebsocketMock("k5s3b3")),
+        "niquests.Session.get",
+        new=MagicMock(
+            return_value=ResponseWithWebSocketExtMock(WebsocketMock("k5s3b3"))
+        ),
     )  # update with cassette
     def test_submit_image_chat(self, image_path, reddit):
         reddit.read_only = False
@@ -1785,9 +1747,11 @@ class TestSubreddit(IntegrationTest):
         assert submission.discussion_type == "CHAT"
 
     @mock.patch(
-        "websocket.create_connection",
+        "niquests.Session.get",
         new=MagicMock(
-            return_value=WebsocketMock("k5rsq3", "k5rt9d"),  # update with cassette
+            return_value=ResponseWithWebSocketExtMock(
+                WebsocketMock("k5rsq3", "k5rt9d")
+            ),  # update with cassette
         ),
     )
     def test_submit_video(self, image_path, reddit):
@@ -1802,7 +1766,8 @@ class TestSubreddit(IntegrationTest):
 
     @pytest.mark.cassette_name("TestSubreddit.test_submit_video")
     @mock.patch(
-        "websocket.create_connection", new=MagicMock(return_value=WebsocketMock())
+        "niquests.Session.get",
+        new=MagicMock(return_value=ResponseWithWebSocketExtMock(WebsocketMock())),
     )
     def test_submit_video__bad_websocket(self, image_path, reddit):
         reddit.read_only = False
@@ -1813,8 +1778,10 @@ class TestSubreddit(IntegrationTest):
                 subreddit.submit_video("Test Title", video)
 
     @mock.patch(
-        "websocket.create_connection",
-        new=MagicMock(return_value=WebsocketMock("ahells")),
+        "niquests.Session.get",
+        new=MagicMock(
+            return_value=ResponseWithWebSocketExtMock(WebsocketMock("ahells"))
+        ),
     )  # update with cassette
     def test_submit_video__flair(self, image_path, reddit):
         flair_id = "6bd28436-1aa7-11e9-9902-0e05ab0fad46"
@@ -1830,9 +1797,9 @@ class TestSubreddit(IntegrationTest):
         assert submission.link_flair_text == flair_text
 
     @mock.patch(
-        "websocket.create_connection",
+        "niquests.Session.get",
         new=MagicMock(
-            return_value=WebsocketMock("k5rvt5", "k5rwbo")
+            return_value=ResponseWithWebSocketExtMock(WebsocketMock("k5rvt5", "k5rwbo"))
         ),  # update with cassette
     )
     def test_submit_video__thumbnail(self, image_path, reddit):
@@ -1852,7 +1819,7 @@ class TestSubreddit(IntegrationTest):
             assert submission.title == "Test Title"
 
     @mock.patch(
-        "websocket.create_connection", new=MagicMock(side_effect=BlockingIOError)
+        "niquests.Session.get", new=MagicMock(side_effect=niquests.Timeout)
     )  # happens with timeout=0
     @pytest.mark.cassette_name("TestSubreddit.test_submit_video")
     def test_submit_video__timeout_1(self, image_path, reddit):
@@ -1863,72 +1830,11 @@ class TestSubreddit(IntegrationTest):
             subreddit.submit_video("Test Title", video)
 
     @mock.patch(
-        "websocket.create_connection",
+        "niquests.Session.get",
         new=MagicMock(
-            side_effect=socket.timeout
-            # happens with timeout=0.00001
-        ),
-    )
-    @pytest.mark.cassette_name("TestSubreddit.test_submit_video")
-    def test_submit_video__timeout_2(self, image_path, reddit):
-        reddit.read_only = False
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        video = image_path("test.mov")
-        with pytest.raises(WebSocketException):
-            subreddit.submit_video("Test Title", video)
-
-    @mock.patch(
-        "websocket.create_connection",
-        new=MagicMock(
-            return_value=WebsocketMockException(
-                recv_exc=websocket.WebSocketTimeoutException()
-            ),  # happens with timeout=0.1
-        ),
-    )
-    @pytest.mark.cassette_name("TestSubreddit.test_submit_video")
-    def test_submit_video__timeout_3(self, image_path, reddit):
-        reddit.read_only = False
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        video = image_path("test.mov")
-        with pytest.raises(WebSocketException):
-            subreddit.submit_video("Test Title", video)
-
-    @mock.patch(
-        "websocket.create_connection",
-        new=MagicMock(
-            return_value=WebsocketMockException(
-                close_exc=websocket.WebSocketTimeoutException()
-            ),  # could happen, and PRAW should handle it
-        ),
-    )
-    @pytest.mark.cassette_name("TestSubreddit.test_submit_video")
-    def test_submit_video__timeout_4(self, image_path, reddit):
-        reddit.read_only = False
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        video = image_path("test.mov")
-        with pytest.raises(WebSocketException):
-            subreddit.submit_video("Test Title", video)
-
-    @mock.patch(
-        "websocket.create_connection",
-        new=MagicMock(
-            return_value=WebsocketMockException(
-                close_exc=websocket.WebSocketConnectionClosedException()
-            ),  # from issue #1124
-        ),
-    )
-    @pytest.mark.cassette_name("TestSubreddit.test_submit_video")
-    def test_submit_video__timeout_5(self, image_path, reddit):
-        reddit.read_only = False
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        video = image_path("test.mov")
-        with pytest.raises(WebSocketException):
-            subreddit.submit_video("Test Title", video)
-
-    @mock.patch(
-        "websocket.create_connection",
-        new=MagicMock(
-            return_value=WebsocketMock("k5s10u", "k5s11v"),  # update with cassette
+            return_value=ResponseWithWebSocketExtMock(
+                WebsocketMock("k5s10u", "k5s11v")
+            ),  # update with cassette
         ),
     )
     def test_submit_video__videogif(self, image_path, reddit):
@@ -1952,8 +1858,10 @@ class TestSubreddit(IntegrationTest):
             assert submission is None
 
     @mock.patch(
-        "websocket.create_connection",
-        new=MagicMock(return_value=WebsocketMock("flnyhf")),
+        "niquests.Session.get",
+        new=MagicMock(
+            return_value=ResponseWithWebSocketExtMock(WebsocketMock("flnyhf"))
+        ),
     )  # update with cassette
     def test_submit_video_chat(self, image_path, reddit):
         reddit.read_only = False

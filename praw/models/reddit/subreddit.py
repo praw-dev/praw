@@ -13,10 +13,9 @@ from urllib.parse import urljoin
 from warnings import warn
 from xml.etree.ElementTree import XML
 
-import websocket
+from niquests.exceptions import HTTPError, ReadTimeout, Timeout
 from prawcore import Redirect
 from prawcore.exceptions import ServerError
-from requests.exceptions import HTTPError
 
 from ...const import API_PATH, JPEG_HEADER
 from ...exceptions import (
@@ -3067,30 +3066,40 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         """
         response = self._reddit.post(API_PATH["submit"], data=data)
         websocket_url = response["json"]["data"]["websocket_url"]
-        connection = None
+        ws_response = None
         if websocket_url is not None and not without_websockets:
             try:
-                connection = websocket.create_connection(websocket_url, timeout=timeout)
+                ws_response = self._reddit._core._requestor._http.get(
+                    websocket_url,
+                    timeout=timeout,
+                ).raise_for_status()
             except (
-                OSError,
-                websocket.WebSocketException,
-                BlockingIOError,
+                HTTPError,
+                Timeout,
             ) as ws_exception:
                 msg = "Error establishing websocket connection."
                 raise WebSocketException(msg, ws_exception) from None
 
-        if connection is None:
+        if ws_response is None:
             return None
 
         try:
-            ws_update = loads(connection.recv())
-            connection.close()
-        except (OSError, websocket.WebSocketException, BlockingIOError) as ws_exception:
+            ws_update = loads(ws_response.extension.next_payload())
+        except (
+            ReadTimeout,
+            HTTPError,
+        ) as ws_exception:
             msg = "Websocket error. Check your media file. Your post may still have been created."
             raise WebSocketException(
                 msg,
                 ws_exception,
             ) from None
+        finally:
+            if (
+                ws_response.extension is not None
+                and ws_response.extension.closed is False
+            ):
+                ws_response.extension.close()
         if ws_update.get("type") == "failed":
             raise MediaPostFailed
         url = ws_update["payload"]["redirect"]
