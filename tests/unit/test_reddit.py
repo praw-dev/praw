@@ -5,7 +5,7 @@ from unittest import mock
 from unittest.mock import MagicMock
 
 import pytest
-import requests
+import niquests
 from prawcore import Requestor
 from prawcore.exceptions import BadRequest
 
@@ -37,7 +37,7 @@ class TestReddit(UnitTest):
     @staticmethod
     def patch_request(*args, **kwargs):
         """Patch requests to return mock data on specific url."""
-        response = requests.Response()
+        response = niquests.Response()
         response._content = '{"name":"username"}'.encode("utf-8")
         response.status_code = 200
         return response

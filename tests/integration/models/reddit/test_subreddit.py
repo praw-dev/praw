@@ -1,14 +1,11 @@
 """Test praw.models.subreddit."""
 
-import socket
 from json import dumps
 from unittest import mock
 from unittest.mock import MagicMock
 
 import niquests
 import pytest
-import requests
-import websocket
 from prawcore import BadRequest, Forbidden, NotFound, RequestException, TooLarge
 
 from praw.const import PNG_HEADER
@@ -1634,7 +1631,7 @@ class TestSubreddit(IntegrationTest):
         def patch_request(url, *args, **kwargs):
             """Patch requests to return mock data on specific url."""
             if "https://reddit-uploaded-media.s3-accelerate.amazonaws.com" in url:
-                response = requests.Response()
+                response = niquests.Response()
                 response._content = mock_data.encode("utf-8")
                 response.encoding = "utf-8"
                 response.status_code = 400

@@ -4,8 +4,8 @@ import os
 from urllib.parse import quote_plus
 
 import betamax
+import niquests
 import pytest
-import requests
 from betamax.cassette import Cassette
 
 from praw import Reddit
@@ -70,7 +70,7 @@ class IntegrationTest:
     @pytest.fixture(autouse=True)
     def recorder(self):
         """Configure Betamax."""
-        session = requests.Session()
+        session = niquests.Session()
         recorder = betamax.Betamax(session)
         recorder.register_serializer(PrettyJSONSerializer)
         with betamax.Betamax.configure() as config:
