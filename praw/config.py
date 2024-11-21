@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import configparser
+import importlib
+import importlib.resources
 import os
-import sys
 from pathlib import Path
 from threading import Lock
 from typing import Any
@@ -48,7 +49,8 @@ class Config:
             interpolator_class = None
 
         config = configparser.ConfigParser(interpolation=interpolator_class)
-        module_dir = Path(sys.modules[__name__].__file__).parent
+        with importlib.resources.open_text(__package__, "praw.ini") as hdl:
+            config.read_file(hdl)
 
         if "APPDATA" in os.environ:  # Windows
             os_config_path = Path(os.environ["APPDATA"])
@@ -59,10 +61,10 @@ class Config:
         else:
             os_config_path = None
 
-        locations = [str(module_dir / "praw.ini"), "praw.ini"]
+        locations = ["praw.ini"]
 
         if os_config_path is not None:
-            locations.insert(1, str(os_config_path / "praw.ini"))
+            locations.insert(0, str(os_config_path / "praw.ini"))
 
         config.read(locations)
         cls.CONFIG = config
