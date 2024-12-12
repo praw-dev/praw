@@ -1,3 +1,7 @@
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.9"
 formats:
   - htmlzip
 python:
@@ -6,5 +10,5 @@ python:
       extra_requirements:
         - readthedocs
       path: .
-  version: 3.8
+  version: "3.9"
 version: 2
