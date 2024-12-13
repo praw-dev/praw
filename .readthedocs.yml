@@ -10,5 +10,4 @@ python:
       extra_requirements:
         - readthedocs
       path: .
-  version: "3.9"
 version: 2
