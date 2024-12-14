@@ -1,6 +1,7 @@
 import json
 import pickle
 from unittest import mock
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -53,7 +54,7 @@ class TestSubreddit(UnitTest):
         assert hash(subreddit2) != hash(subreddit3)
         assert hash(subreddit1) != hash(subreddit3)
 
-    @mock.patch("websocket.create_connection")
+    @mock.patch("niquests.Session.get")
     @mock.patch(
         "praw.models.Subreddit._upload_media",
         return_value=("fake_media_url", "fake_websocket_url"),
@@ -64,14 +65,23 @@ class TestSubreddit(UnitTest):
     def test_invalid_media(
         self, _mock_post, _mock_upload_media, connection_mock, reddit
     ):
-        connection_mock().recv.return_value = json.dumps(
-            {"payload": {}, "type": "failed"}
+        connection_mock.return_value = MagicMock(
+            status_code=101,
+            raise_for_status=MagicMock(
+                return_value=MagicMock(
+                    extension=MagicMock(
+                        next_payload=MagicMock(
+                            return_value=json.dumps({"payload": {}, "type": "failed"})
+                        )
+                    ),
+                )
+            ),
         )
         with pytest.raises(MediaPostFailed):
             reddit.subreddit("test").submit_image("Test", "dummy path")
 
     @mock.patch("praw.models.Subreddit._read_and_post_media")
-    @mock.patch("websocket.create_connection")
+    @mock.patch("niquests.Session.get")
     @mock.patch(
         "praw.Reddit.post",
         return_value={

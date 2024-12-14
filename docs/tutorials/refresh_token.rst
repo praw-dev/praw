@@ -14,9 +14,9 @@ following:
 
 .. code-block:: python
 
-    import requests
+    import niquests
 
-    response = requests.get(
+    response = niquests.get(
         "https://www.reddit.com/api/v1/scopes.json",
         headers={"User-Agent": "fetch-scopes by u/bboe"},
     )

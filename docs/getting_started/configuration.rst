@@ -23,10 +23,10 @@ Environment variables have the highest priority, followed by keyword arguments t
 Using an HTTP or HTTPS proxy with PRAW
 --------------------------------------
 
-PRAW internally relies upon the requests_ package to handle HTTP requests. Requests
+PRAW internally relies upon the niquests_ package to handle HTTP requests. Niquests
 supports use of ``HTTP_PROXY`` and ``HTTPS_PROXY`` environment variables in order to
 proxy HTTP and HTTPS requests respectively [`ref
-<https://requests.readthedocs.io/en/master/user/advanced/#proxies>`_].
+<https://niquests.readthedocs.io/en/latest/user/advanced.html#proxies>`_].
 
 Given that PRAW exclusively communicates with Reddit via HTTPS, only the ``HTTPS_PROXY``
 option should be required.
@@ -41,19 +41,19 @@ variable can be provided on the command line like so:
 Configuring a custom requests Session
 -------------------------------------
 
-PRAW uses requests_ to handle networking. If your use-case requires custom
+PRAW uses niquests_ to handle networking. If your use-case requires custom
 configuration, it is possible to configure a custom Session_ instance and then use it
 with PRAW.
 
 For example, some networks use self-signed SSL certificates when connecting to HTTPS
-sites. By default, this would raise an exception in requests_. To use a self-signed SSL
-certificate without an exception from requests_, first export the certificate as a
+sites. By default, this would raise an exception in niquests_. To use a self-signed SSL
+certificate without an exception from niquests_, first export the certificate as a
 ``.pem`` file. Then configure PRAW like so:
 
 .. code-block:: python
 
     import praw
-    from requests import Session
+    from niquests import Session
 
 
     session = Session()
@@ -69,11 +69,11 @@ certificate without an exception from requests_, first export the certificate as
 
 The code above creates a custom Session_ instance and `configures it to use a custom
 certificate
-<https://requests.readthedocs.io/en/master/user/advanced/#ssl-cert-verification>`_, then
-passes it as a parameter when creating the :class:`.Reddit` instance. Note that the
+<https://niquests.readthedocs.io/en/latest/user/advanced.html#ssl-cert-verification>`_,
+then passes it as a parameter when creating the :class:`.Reddit` instance. Note that the
 example above uses a :ref:`password_flow` authentication type, but this method will work
 for any authentication type.
 
-.. _requests: https://requests.readthedocs.io
+.. _niquests: https://niquests.readthedocs.io
 
-.. _session: https://2.python-requests.org/en/master/api/#requests.Session
+.. _session: https://niquests.readthedocs.io/en/latest/user/advanced.html
