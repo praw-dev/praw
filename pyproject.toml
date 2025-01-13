@@ -150,3 +150,4 @@ suppress-none-returning = true
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 "praw/models/mod_notes.py" = ["FA100"]
+"praw/models/reddit/collections.py" = ["A005"]
