@@ -41,12 +41,6 @@ class TestRedditor(IntegrationTest):
         redditor = reddit.redditor(fullname=self.FRIEND_FULLNAME)
         assert redditor.name == self.FRIEND
 
-    def test_gild__no_creddits(self, reddit):
-        reddit.read_only = False
-        with pytest.raises(RedditAPIException) as excinfo:
-            reddit.redditor("subreddit_stats").gild()
-        assert excinfo.value.items[0].error_type == "INSUFFICIENT_CREDDITS"
-
     def test_message(self, reddit):
         reddit.read_only = False
         redditor = reddit.redditor("subreddit_stats")

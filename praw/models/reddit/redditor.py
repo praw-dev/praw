@@ -261,23 +261,6 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         return self._reddit.get(API_PATH["friend_v1"].format(user=self))
 
-    def gild(self, *, months: int = 1):
-        """Gild the :class:`.Redditor`.
-
-        :param months: Specifies the number of months to gild up to 36 (default: ``1``).
-
-        For example, to gild :class:`.Redditor` u/spez for 1 month:
-
-        .. code-block:: python
-
-            reddit.redditor("spez").gild(months=1)
-
-        """
-        if months < 1 or months > 36:
-            msg = "months must be between 1 and 36"
-            raise TypeError(msg)
-        self._reddit.post(API_PATH["gild_user"].format(username=self), data={"months": months})
-
     def moderated(self) -> list[praw.models.Subreddit]:
         """Return a list of the redditor's moderated subreddits.
 

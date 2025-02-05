@@ -22,7 +22,8 @@ Unreleased
 **Removed**
 
 - Remove ``APIException`` class.
-- Remove ``Comment.gild`` and ``Submission.gild`` methods.
+- Remove ``Comment.award`` and ``Submission.award`` methods.
+- Remove ``Comment.gild``, ``Redditor.gild``, and ``Submission.gild`` methods.
 - Remove ``Redditor.gilded`` and ``Subreddit.gilded`` methods.
 - Remove ``Redditor.gildings`` method.
 - Remove ``Subreddits.gold`` method.
@@ -308,8 +309,8 @@ Unreleased
 - Ability to specify modmail mute duration.
 - Add method :meth:`.invited` to get invited moderators of a subreddit.
 - Ability to submit text/self posts with inline media.
-- Add method :meth:`.Submission.award` and :meth:`.Comment.award` with the ability to
-  specify type of award, anonymity, and message when awarding a submission or comment.
+- Add method ``Submission.award`` and ``Comment.award`` with the ability to specify type
+  of award, anonymity, and message when awarding a submission or comment.
 - Ability to specify subreddits by name using the `subreddits` parameter in
   :meth:`.Reddit.info`.
 - A check to see if PRAW is running in an asynchronous environment and will advise the
@@ -328,8 +329,8 @@ Unreleased
 **Deprecated**
 
 - ``Subreddits.gold`` is superseded by :meth:`.Subreddits.premium`.
-- ``.Submission.gild`` is superseded by :meth:`.Submission.award`.
-- ``.Comment.gild`` is superseded by :meth:`.Comment.award`.
+- ``Submission.gild`` is superseded by ``Submission.award``.
+- ``Comment.gild`` is superseded by ``Comment.award``.
 
 **Fixed**
 
