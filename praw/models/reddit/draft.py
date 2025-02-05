@@ -74,12 +74,10 @@ class Draft(RedditBase):
             "title": title,
         }
         if subreddit:
-            data.update(
-                {
-                    "subreddit": subreddit.fullname,
-                    "target": ("profile" if subreddit.display_name.startswith("u_") else "subreddit"),
-                }
-            )
+            data.update({
+                "subreddit": subreddit.fullname,
+                "target": ("profile" if subreddit.display_name.startswith("u_") else "subreddit"),
+            })
         data.update(draft_kwargs)
         return data
 

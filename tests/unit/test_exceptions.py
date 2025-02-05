@@ -151,6 +151,16 @@ class TestRedditErrorItem:
         assert error == error2
         assert error != 0
 
+    def test_hash(self):
+        resp = {
+            "error_type": "BAD_SOMETHING",
+            "field": "some_field",
+            "message": "invalid something",
+        }
+        error = RedditErrorItem(**resp)
+        error2 = RedditErrorItem(**resp)
+        assert hash(error) == hash(error2)
+
     def test_property(self):
         error = RedditErrorItem(
             "BAD_SOMETHING", field="some_field", message="invalid something"

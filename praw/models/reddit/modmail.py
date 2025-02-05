@@ -265,9 +265,10 @@ class ModmailConversation(RedditBase):
             message_id = response["conversation"]["objIds"][-1]["id"]
             message_data = response["messages"][message_id]
             return self._reddit._objector.objectify(message_data)
-        for message in response.messages:  # noqa: RET503
+        for message in response.messages:
             if message.id == response.obj_ids[-1]["id"]:
-                return message
+                break
+        return message
 
     def unarchive(self):
         """Unarchive the conversation.

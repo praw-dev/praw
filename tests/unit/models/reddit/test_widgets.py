@@ -36,6 +36,24 @@ class TestWidgetEncoder(UnitTest):
         assert dumps(data, cls=WidgetEncoder) == '[1, "two", {"3": 3}, "four"]'
 
 
+class TestWidget(UnitTest):
+    def test_equality(self):
+        widget1 = Widget(None, {"id": "a"})
+        widget2 = Widget(None, {"id": "b"})
+        widget3 = Widget(None, {"id": "A"})
+        assert widget1 == widget1
+        assert widget1 != widget2
+        assert widget1 == widget3
+
+    def test_hash(self):
+        widget1 = Widget(None, {"id": "a"})
+        widget2 = Widget(None, {"id": "b"})
+        widget3 = Widget(None, {"id": "A"})
+        assert hash(widget1) == hash(widget1)
+        assert hash(widget1) != hash(widget2)
+        assert hash(widget1) == hash(widget3)
+
+
 class TestWidgets(UnitTest):
     def test_bad_attribute(self, reddit):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)

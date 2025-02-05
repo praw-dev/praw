@@ -21,6 +21,7 @@ classifiers = [
   "Topic :: Utilities"
 ]
 dependencies = [
+  "defusedxml ==0.7.1",
   "prawcore >=2.4, <3",
   "update_checker >=0.18",
   "websocket-client >=0.54.0"
@@ -75,6 +76,7 @@ include = [
   "praw/**/*.py"
 ]
 line-length = 120
+preview = true
 
 [tool.ruff.lint]
 ignore = [
@@ -85,6 +87,7 @@ ignore = [
   "D213", # Multi-line docstring summary should start at the second line
   "E501", # line-length
   "N818", # exception name should be named with an Error suffix
+  "PLR0904", # too many public methods
   "PLR0913", # too many arguments
   "PLR2004", # Magic value used in comparison,
   "S101" # use of assert

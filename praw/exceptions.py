@@ -43,6 +43,10 @@ class RedditErrorItem:
             )
         return super().__eq__(other)
 
+    def __hash__(self) -> int:
+        """Return the hash of the current instance."""
+        return hash(self.__class__.__name__) ^ hash((self.error_type, self.message, self.field))
+
     @_deprecate_args("error_type", "message", "field")
     def __init__(
         self,

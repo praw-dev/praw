@@ -14,6 +14,12 @@ class InlineMedia:
         """Return whether the other instance equals the current."""
         return all(getattr(self, attr) == getattr(other, attr) for attr in ["TYPE", "path", "caption", "media_id"])
 
+    def __hash__(self) -> int:
+        """Return the hash of the current instance."""
+        return hash(self.__class__.__name__) ^ hash(
+            tuple(getattr(self, attr) for attr in ["TYPE", "path", "caption", "media_id"])
+        )
+
     @_deprecate_args("path", "caption")
     def __init__(self, *, caption: str = None, path: str):
         """Initialize an :class:`.InlineMedia` instance.

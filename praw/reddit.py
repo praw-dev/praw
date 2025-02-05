@@ -253,7 +253,7 @@ class Reddit:
             " constructor, or as an environment variable."
         )
         for attribute in ("client_id", "user_agent"):
-            if getattr(self.config, attribute) in (self.config.CONFIG_NOT_SET, None):
+            if getattr(self.config, attribute) in {self.config.CONFIG_NOT_SET, None}:
                 raise MissingRequiredAttributeException(required_message.format(attribute))
         if self.config.client_secret is self.config.CONFIG_NOT_SET:
             msg = f"{required_message.format('client_secret')}\nFor installed applications this value must be set to None via a keyword argument to the Reddit class constructor."

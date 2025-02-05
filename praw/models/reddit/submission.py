@@ -681,12 +681,9 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         if INLINE_MEDIA_PATTERN.search(body) and self.media_metadata:
             is_richtext_json = True
         if inline_media:
-            body = body.format(
-                **{
-                    placeholder: self.subreddit._upload_inline_media(media)
-                    for placeholder, media in inline_media.items()
-                }
-            )
+            body = body.format(**{
+                placeholder: self.subreddit._upload_inline_media(media) for placeholder, media in inline_media.items()
+            })
             is_richtext_json = True
         if is_richtext_json:
             richtext_json = self.subreddit._convert_to_fancypants(body)
@@ -748,7 +745,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         for index, element in enumerate(richtext_json["document"][:]):
             element_items = element.get("c")
             if isinstance(element_items, str):
-                assert element.get("e") in ["gif", "img", "video"], (
+                assert element.get("e") in {"gif", "img", "video"}, (
                     "Unexpected richtext JSON schema. Please file a bug report with PRAW."
                 )  # make sure this is an inline element
                 continue  # pragma: no cover
