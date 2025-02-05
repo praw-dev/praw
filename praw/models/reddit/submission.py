@@ -675,7 +675,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         """
         data = {
             "thing_id": self.fullname,
-            "validate_on_submit": self._reddit.validate_on_submit,
+            "validate_on_submit": True,
         }
         is_richtext_json = False
         if INLINE_MEDIA_PATTERN.search(body) and self.media_metadata:

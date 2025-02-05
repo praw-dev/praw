@@ -65,12 +65,3 @@ class TestDeprecation(UnitTest):
                 warning_info.list[1].message.args[0]
                 == "'Redditor.subreddit' is no longer a dict and is now an UserSubreddit object. Using 'keys' is deprecated and will be removed in PRAW 8."
             )
-
-    def test_validate_on_submit(self, reddit):
-        with pytest.raises(DeprecationWarning):
-            reddit.validate_on_submit
-        reddit.validate_on_submit = True
-        assert reddit.validate_on_submit
-        reddit.validate_on_submit = False
-        with pytest.raises(DeprecationWarning):
-            reddit.validate_on_submit

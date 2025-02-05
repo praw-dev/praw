@@ -112,31 +112,6 @@ class Reddit:
         else:
             self._core = self._authorized_core
 
-    @property
-    def validate_on_submit(self) -> bool:
-        """Get validate_on_submit.
-
-        .. deprecated:: 7.0
-
-            If property :attr:`.validate_on_submit` is set to ``False``, the behavior is
-            deprecated by Reddit. This attribute will be removed around May-June 2020.
-
-        """
-        value = self._validate_on_submit
-        if value is False:
-            warn(
-                "Reddit will check for validation on all posts around May-June 2020. It"
-                " is recommended to check for validation by setting"
-                " reddit.validate_on_submit to True.",
-                category=DeprecationWarning,
-                stacklevel=3,
-            )
-        return value
-
-    @validate_on_submit.setter
-    def validate_on_submit(self, val: bool):
-        self._validate_on_submit = val
-
     def __enter__(self):  # noqa: ANN204
         """Handle the context manager open."""
         return self
@@ -228,7 +203,6 @@ class Reddit:
         self._objector = None
         self._token_manager = token_manager
         self._unique_counter = 0
-        self._validate_on_submit = False
 
         try:
             config_section = (
