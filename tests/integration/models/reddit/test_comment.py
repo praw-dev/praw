@@ -82,12 +82,6 @@ class TestComment(IntegrationTest):
         comment = Comment(reddit, "dcc9snh")
         comment.enable_inbox_replies()
 
-    @pytest.mark.cassette_name("TestComment.test_award")
-    def test_gild(self, reddit):
-        reddit.read_only = False
-        award_data = Comment(reddit, "g7cmlgc").gild()
-        assert award_data["gildings"]["gid_2"] == 1
-
     def test_invalid(self, reddit):
         with pytest.raises(PRAWException) as excinfo:
             Comment(reddit, "0").body

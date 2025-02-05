@@ -1,15 +1,12 @@
 """Provide the GildableMixin class."""
 
-from warnings import warn
 
 from ....const import API_PATH
-from ....util import _deprecate_args
 
 
 class GildableMixin:
     """Interface for classes that can be gilded."""
 
-    @_deprecate_args("gild_type", "is_anonymous", "message")
     def award(
         self,
         *,
@@ -19,7 +16,7 @@ class GildableMixin:
     ) -> dict:
         """Award the author of the item.
 
-        :param gild_type: Type of award to give. See table below for currently know
+        :param gild_type: Type of award to give. See table below for currently known
             global award types.
         :param is_anonymous: If ``True``, the authenticated user's username will not be
             revealed to the recipient.
@@ -107,12 +104,3 @@ class GildableMixin:
             "message": message,
         }
         return self._reddit.post(API_PATH["award_thing"], params=params)
-
-    def gild(self) -> dict:
-        """Alias for :meth:`.award` to maintain backwards compatibility."""
-        warn(
-            "'.gild' has been renamed to '.award'.",
-            category=DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.award()

@@ -219,12 +219,6 @@ class TestSubmission(IntegrationTest):
         submission = Submission(reddit, "6ckfdz")
         submission.enable_inbox_replies()
 
-    @pytest.mark.cassette_name("TestSubmission.test_award")
-    def test_gild(self, reddit):
-        reddit.read_only = False
-        award_data = Submission(reddit, "j3kyoo").gild()
-        assert award_data["gildings"]["gid_2"] == 1
-
     def test_gilded(self, reddit):
         assert Submission(reddit, "2gmzqe").gilded == 1
 
