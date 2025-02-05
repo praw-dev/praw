@@ -198,7 +198,7 @@ class Reddit:
 
         .. |Session| replace:: ``Session``
 
-        .. _session: https://2.python-requests.org/en/master/api/#requests.Session
+        .. _session: https://requests.readthedocs.io/en/stable/api/#request-sessions
 
         .. code-block:: python
 
