@@ -3,7 +3,7 @@
 import pytest
 
 from praw import Reddit
-from praw.exceptions import APIException, WebSocketException
+from praw.exceptions import WebSocketException
 from praw.models.reddit.user_subreddit import UserSubreddit
 from praw.util.token_manager import FileTokenManager
 
@@ -12,15 +12,6 @@ from . import UnitTest
 
 @pytest.mark.filterwarnings("error", category=DeprecationWarning)
 class TestDeprecation(UnitTest):
-    def test_api_exception(self):
-        exc = APIException(["test", "testing", "test"])
-        with pytest.raises(DeprecationWarning):
-            exc.error_type
-        with pytest.raises(DeprecationWarning):
-            exc.message
-        with pytest.raises(DeprecationWarning):
-            exc.field
-
     def test_conversations_after_argument(self, reddit):
         with pytest.deprecated_call():
             reddit.subreddit("all").modmail.conversations(after="after")

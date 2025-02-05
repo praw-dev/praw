@@ -26,7 +26,7 @@ class TestRedditor(IntegrationTest):
         reddit.read_only = False
         with pytest.raises(RedditAPIException) as excinfo:
             reddit.redditor(self.FRIEND.lower()).friend(note="praw")
-        assert excinfo.value.error_type == "GOLD_REQUIRED"
+        assert excinfo.value.items[0].error_type == "GOLD_REQUIRED"
 
     def test_friend_info(self, reddit):
         reddit.read_only = False
@@ -45,7 +45,7 @@ class TestRedditor(IntegrationTest):
         reddit.read_only = False
         with pytest.raises(RedditAPIException) as excinfo:
             reddit.redditor("subreddit_stats").gild()
-        assert excinfo.value.error_type == "INSUFFICIENT_CREDDITS"
+        assert excinfo.value.items[0].error_type == "INSUFFICIENT_CREDDITS"
 
     def test_message(self, reddit):
         reddit.read_only = False
@@ -107,7 +107,7 @@ class TestRedditor(IntegrationTest):
         redditor = reddit.redditor("thisusershouldnotexist")
         with pytest.raises(RedditAPIException) as excinfo:
             redditor.trophies()
-        assert excinfo.value.error_type == "USER_DOESNT_EXIST"
+        assert excinfo.value.items[0].error_type == "USER_DOESNT_EXIST"
 
     def test_unblock(self, reddit):
         reddit.read_only = False
@@ -266,7 +266,7 @@ class TestRedditorListings(IntegrationTest):
         redditor.block()
         with pytest.raises(RedditAPIException) as excinfo:
             redditor.trust()
-        assert excinfo.value.error_type == "CANT_WHITELIST_AN_ENEMY"
+        assert excinfo.value.items[0].error_type == "CANT_WHITELIST_AN_ENEMY"
 
     def test_upvoted(self, reddit):
         reddit.read_only = False

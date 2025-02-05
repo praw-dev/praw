@@ -10,7 +10,6 @@ All other exceptions are subclassed from :class:`.ClientException`.
 
 from __future__ import annotations
 
-from typing import Any
 from warnings import warn
 
 from .util import _deprecate_args
@@ -202,15 +201,8 @@ class MediaPostFailed(WebSocketException):
         )
 
 
-class APIException(PRAWException):
-    """Old class preserved for alias purposes.
-
-    .. deprecated:: 7.0
-
-        Class :class:`.APIException` has been deprecated in favor of
-        :class:`.RedditAPIException`. This class will be removed in PRAW 8.0.
-
-    """
+class RedditAPIException(PRAWException):
+    """Container for error messages from Reddit's API."""
 
     @staticmethod
     def parse_exception_list(
@@ -230,79 +222,17 @@ class APIException(PRAWException):
             for exception in exceptions
         ]
 
-    @property
-    def error_type(self) -> str:
-        """Get error_type.
-
-        .. deprecated:: 7.0
-
-            Accessing attributes through instances of :class:`.RedditAPIException` is
-            deprecated. This behavior will be removed in PRAW 8.0. Check out the
-            :ref:`PRAW 7 Migration tutorial <Exception_Handling>` on how to migrate code
-            from this behavior.
-
-        """
-        return self._get_old_attr("error_type")
-
-    @property
-    def field(self) -> str:
-        """Get field.
-
-        .. deprecated:: 7.0
-
-            Accessing attributes through instances of :class:`.RedditAPIException` is
-            deprecated. This behavior will be removed in PRAW 8.0. Check out the
-            :ref:`PRAW 7 Migration tutorial <Exception_Handling>` on how to migrate code
-            from this behavior.
-
-        """
-        return self._get_old_attr("field")
-
-    @property
-    def message(self) -> str:
-        """Get message.
-
-        .. deprecated:: 7.0
-
-            Accessing attributes through instances of :class:`.RedditAPIException` is
-            deprecated. This behavior will be removed in PRAW 8.0. Check out the
-            :ref:`PRAW 7 Migration tutorial <Exception_Handling>` on how to migrate code
-            from this behavior.
-
-        """
-        return self._get_old_attr("message")
-
     def __init__(
         self,
-        items: list[RedditErrorItem | list[str] | str] | str,
-        *optional_args: str,
+        items: list[RedditErrorItem | list[str] | str]
     ):
         """Initialize a :class:`.RedditAPIException` instance.
 
         :param items: Either a list of instances of :class:`.RedditErrorItem` or a list
             containing lists of unformed errors.
-        :param optional_args: Takes the second and third arguments that
-            :class:`.APIException` used to take.
 
         """
-        if isinstance(items, str):
-            items = [[items, *optional_args]]
-        elif isinstance(items, list) and isinstance(items[0], str):
+        if isinstance(items, list) and isinstance(items[0], str):
             items = [items]
         self.items = self.parse_exception_list(items)
         super().__init__(*self.items)
-
-    def _get_old_attr(self, attrname: str) -> Any:
-        warn(
-            f"Accessing attribute '{attrname}' through APIException is deprecated."
-            " This behavior will be removed in PRAW 8.0. Check out"
-            " https://praw.readthedocs.io/en/latest/package_info/praw7_migration.html"
-            " to learn how to migrate your code.",
-            category=DeprecationWarning,
-            stacklevel=3,
-        )
-        return getattr(self.items[0], attrname)
-
-
-class RedditAPIException(APIException):
-    """Container for error messages from Reddit's API."""

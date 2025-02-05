@@ -170,7 +170,7 @@ class TestReddit(UnitTest):
     def test_post_ratelimit__invalid_rate_limit_message(self, mock_sleep, reddit):
         with pytest.raises(RedditAPIException) as exception:
             reddit.post("test")
-        assert exception.value.message == "Some unexpected error message"
+        assert exception.value.items[0].message == "Some unexpected error message"
         mock_sleep.assert_not_called()
 
     @mock.patch(
@@ -195,7 +195,7 @@ class TestReddit(UnitTest):
         with pytest.raises(RedditAPIException) as exception:
             reddit.post("test")
         assert (
-            exception.value.message
+            exception.value.items[0].message
             == "You are doing that too much. Try again in 1 minute."
         )
 
@@ -222,7 +222,7 @@ class TestReddit(UnitTest):
         with pytest.raises(RedditAPIException) as exception:
             reddit.post("test")
         assert (
-            exception.value.message
+            exception.value.items[0].message
             == "You are doing that too much. Try again in 6 seconds."
         )
         mock_sleep.assert_not_called()
@@ -358,7 +358,7 @@ class TestReddit(UnitTest):
         with pytest.raises(RedditAPIException) as exception:
             reddit.post("test")
         assert (
-            exception.value.message
+            exception.value.items[0].message
             == "You are doing that too much. Try again in 1 second."
         )
         mock_sleep.assert_has_calls([mock.call(6), mock.call(4), mock.call(2)])

@@ -6,6 +6,10 @@ PRAW follows `semantic versioning <https://semver.org/>`_.
 Unreleased
 ----------
 
+**Removed**
+
+- Removed ``APIException`` class.
+
 7.8.1 (2024/10/25)
 ------------------
 
@@ -405,10 +409,10 @@ Unreleased
 
 - Introduced a data class, :class:`.RedditErrorItem`, to represent an individual error
   item returned from Reddit.
-- Class :class:`.RedditAPIException` now serves as a container for the
+- Class ``RedditAPIException`` now serves as a container for the
   :class:`.RedditErrorItem`\ s. You can access the items by doing
   ``RedditAPIException.items``, which returns a list.
-- :class:`.APIException` is an alias to :class:`.RedditAPIException`.
+- ``APIException`` is an alias to :class:`.RedditAPIException`.
 - Parameter ``discussion_type`` to methods :meth:`~.Subreddit.submit`,
   :meth:`~.Subreddit.submit_image`, and :meth:`~.Subreddit.submit_video` to support
   submitting as a live discussion (set to ``"CHAT"``).
@@ -431,7 +435,7 @@ Unreleased
 
 **Deprecated**
 
-- :class:`.APIException` is deprecated and slated for removal in PRAW 8.0.
+- ``APIException`` is deprecated and slated for removal in PRAW 8.0.
 
 **Fixed**
 
@@ -440,7 +444,7 @@ Unreleased
 
 **Removed**
 
-- Converting :class:`.APIException` to string will no longer escape unicode characters.
+- Converting ``APIException`` to string will no longer escape unicode characters.
 - Module ``praw.models.modaction`` no longer exists. Please use the module
   ``praw.models.mod_action``, or directly import ``ModAction`` from ``praw.models``.
 - Methods :meth:`.SubredditLinkFlairTemplates.update` and
