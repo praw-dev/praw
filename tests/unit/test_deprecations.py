@@ -5,7 +5,6 @@ import pytest
 from praw import Reddit
 from praw.exceptions import WebSocketException
 from praw.models.reddit.user_subreddit import UserSubreddit
-from praw.util.token_manager import FileTokenManager
 
 from . import UnitTest
 
@@ -15,16 +14,6 @@ class TestDeprecation(UnitTest):
     def test_conversations_after_argument(self, reddit):
         with pytest.deprecated_call():
             reddit.subreddit("all").modmail.conversations(after="after")
-
-    def test_reddit_token_manager(self):
-        with pytest.raises(DeprecationWarning):
-            Reddit(
-                token_manager=FileTokenManager("name"),
-                client_id="dummy",
-                client_secret=None,
-                redirect_uri="dummy",
-                user_agent="dummy",
-            )
 
     def test_subreddit_rules_call(self, reddit):
         with pytest.raises(DeprecationWarning) as excinfo:

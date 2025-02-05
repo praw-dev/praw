@@ -11,7 +11,6 @@ from itertools import islice
 from logging import getLogger
 from typing import IO, TYPE_CHECKING, Any
 from urllib.parse import urlparse
-from warnings import warn
 
 from prawcore import (
     Authorizer,
@@ -51,8 +50,6 @@ if TYPE_CHECKING:  # pragma: no cover
     import prawcore
 
     import praw.models
-
-    from .util.token_manager import BaseTokenManager
 
 Comment = models.Comment
 Redditor = models.Redditor
@@ -119,13 +116,6 @@ class Reddit:
     def __exit__(self, *_: object):
         """Handle the context manager close."""
 
-    @_deprecate_args(
-        "site_name",
-        "config_interpolation",
-        "requestor_class",
-        "requestor_kwargs",
-        "token_manager",
-    )
     def __init__(
         self,
         site_name: str | None = None,
@@ -133,7 +123,6 @@ class Reddit:
         config_interpolation: str | None = None,
         requestor_class: type[prawcore.requestor.Requestor] | None = None,
         requestor_kwargs: dict[str, Any] | None = None,
-        token_manager: BaseTokenManager | None = None,
         **config_settings: str | bool | int | None,
     ):
         """Initialize a :class:`.Reddit` instance.
@@ -151,10 +140,6 @@ class Reddit:
             set, use ``prawcore.Requestor`` (default: ``None``).
         :param requestor_kwargs: Dictionary with additional keyword arguments used to
             initialize the requestor (default: ``None``).
-        :param token_manager: When provided, the passed instance, a subclass of
-            :class:`.BaseTokenManager`, will manage tokens via two callback functions.
-            This parameter must be provided in order to work with refresh tokens
-            (default: ``None``).
 
         Additional keyword arguments will be used to initialize the :class:`.Config`
         object. This can be used to specify configuration settings during instantiation
@@ -201,7 +186,6 @@ class Reddit:
         """
         self._core = self._authorized_core = self._read_only_core = None
         self._objector = None
-        self._token_manager = token_manager
         self._unique_counter = 0
 
         try:
@@ -490,25 +474,7 @@ class Reddit:
         )
 
     def _prepare_common_authorizer(self, authenticator: prawcore.auth.BaseAuthenticator):
-        if self._token_manager is not None:
-            warn(
-                "Token managers have been deprecated and will be removed in the near"
-                " future. See https://www.reddit.com/r/redditdev/comments/olk5e6/"
-                "followup_oauth2_api_changes_regarding_refresh/ for more details.",
-                category=DeprecationWarning,
-                stacklevel=2,
-            )
-            if self.config.refresh_token:
-                msg = "'refresh_token' setting cannot be provided when providing 'token_manager'"
-                raise TypeError(msg)
-
-            self._token_manager.reddit = self
-            authorizer = Authorizer(
-                authenticator,
-                post_refresh_callback=self._token_manager.post_refresh_callback,
-                pre_refresh_callback=self._token_manager.pre_refresh_callback,
-            )
-        elif self.config.refresh_token:
+        if self.config.refresh_token:
             authorizer = Authorizer(authenticator, refresh_token=self.config.refresh_token)
         else:
             self._core = self._read_only_core
