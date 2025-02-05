@@ -181,7 +181,6 @@ submissions, each bound to an instance of :class:`.Submission`. There are severa
 that you can iterate through:
 
 - controversial
-- gilded
 - hot
 - new
 - rising

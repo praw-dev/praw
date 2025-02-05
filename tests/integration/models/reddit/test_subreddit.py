@@ -403,11 +403,6 @@ class TestSubredditListings(IntegrationTest):
         submissions = list(subreddit.controversial())
         assert len(submissions) == 100
 
-    def test_gilded(self, reddit):
-        subreddit = reddit.subreddit("askreddit")
-        submissions = list(subreddit.gilded())
-        assert len(submissions) >= 50
-
     def test_hot(self, reddit):
         subreddit = reddit.subreddit("askreddit")
         submissions = list(subreddit.hot())

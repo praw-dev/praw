@@ -219,9 +219,6 @@ class TestSubmission(IntegrationTest):
         submission = Submission(reddit, "6ckfdz")
         submission.enable_inbox_replies()
 
-    def test_gilded(self, reddit):
-        assert Submission(reddit, "2gmzqe").gilded == 1
-
     def test_hide(self, reddit):
         reddit.read_only = False
         Submission(reddit, "4b1tfm").hide()

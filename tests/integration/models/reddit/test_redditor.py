@@ -163,28 +163,6 @@ class TestRedditorListings(IntegrationTest):
         with pytest.raises(Forbidden):
             list(redditor.downvoted())
 
-    def test_gilded(self, reddit):
-        redditor = reddit.redditor("spez")
-        items = list(redditor.gilded(limit=50))
-        assert len(items) == 50
-
-    def test_gildings(self, reddit):
-        reddit.read_only = False
-        redditor = reddit.redditor(reddit.config.username)
-        items = list(redditor.gildings())
-        assert isinstance(items, list)
-
-    def test_gildings__in_read_only_mode(self, reddit):
-        redditor = reddit.redditor(reddit.config.username)
-        with pytest.raises(Forbidden):
-            list(redditor.gildings())
-
-    def test_gildings__other_user(self, reddit):
-        reddit.read_only = False
-        redditor = reddit.redditor("spez")
-        with pytest.raises(Forbidden):
-            list(redditor.gildings())
-
     def test_hidden(self, reddit):
         reddit.read_only = False
         redditor = reddit.redditor(reddit.config.username)

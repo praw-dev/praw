@@ -56,8 +56,6 @@ class Preferences:
         :param clickgadget: Show me links I've recently viewed.
         :param collapse_read_messages: Collapse messages after I've read them.
         :param compress: Compress the link display.
-        :param creddit_autorenew: Use a creddit to automatically renew my gold if it
-            expires.
         :param default_comment_sort: Default comment sort (one of ``"confidence"``,
             ``"top"``, ``"new"``, ``"controversial"``, ``"old"``, ``"random"``,
             ``"qa"``, or ``"live"``).

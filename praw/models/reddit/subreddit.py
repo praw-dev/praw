@@ -2397,8 +2397,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
     .. note::
 
-        These filters are ignored by certain methods, including :attr:`.comments`,
-        :meth:`.gilded`, and :meth:`.SubredditStream.comments`.
+        These filters are ignored by certain methods, including :attr:`.comments`, and
+        :meth:`.SubredditStream.comments`.
 
     .. code-block:: python
 

@@ -9,7 +9,6 @@ from ....util.cache import cachedproperty
 from ...base import PRAWBase
 from ..generator import ListingGenerator
 from .base import BaseListingMixin
-from .gilded import GildedListingMixin
 from .rising import RisingListingMixin
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -47,7 +46,7 @@ class CommentHelper(PRAWBase):
         self.subreddit = subreddit
 
 
-class SubredditListingMixin(BaseListingMixin, GildedListingMixin, RisingListingMixin):
+class SubredditListingMixin(BaseListingMixin, RisingListingMixin):
     """Adds additional methods pertaining to subreddit-like instances."""
 
     @cachedproperty

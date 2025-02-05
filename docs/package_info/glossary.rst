@@ -6,12 +6,6 @@ Glossary
 - ``Access Token``: A temporary token to allow access to the Reddit API. Lasts for one
   hour.
 
-.. _creddit:
-
-- ``Creddit``: Back when the only award was ``Reddit Gold``, a creddit was equal to one
-  month of Reddit Gold. Creddits have been converted to ``Reddit Coins``. See :ref:`this
-  <gild>` for more info about the old Reddit Gold system.
-
 .. _fullname:
 
 - ``Fullname``: The fullname of an object is the object's type followed by an underscore
@@ -44,12 +38,6 @@ Glossary
 
   - ``t6`` These object represent ``Award``\ s, such as ``Reddit Gold`` or ``Reddit
     Silver``.
-
-.. _gild:
-
-- ``Gild``: Back when the only award was ``Reddit Gold``, gilding a post meant awarding
-  one month of Reddit Gold. Currently, gilding means awarding one month of ``Reddit
-  Platinum``, or giving a ``Platinum`` award.
 
 .. _websocket:
 

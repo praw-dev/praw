@@ -31,7 +31,6 @@ Scope            Description
 ================ ======================================================================
 account          Update preferences and related account information. Will not have
                  access to your email or password.
-creddits         Spend my reddit gold creddits on giving gold to other users.
 edit             Edit and delete my comments and submissions.
 flair            Select my subreddit flair. Change link flair on my submissions.
 history          Access my voting history and comments or submissions I've saved or
