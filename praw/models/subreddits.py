@@ -57,7 +57,7 @@ class Subreddits(PRAWBase):
         :class:`.ListingGenerator`.
 
         """
-        return ListingGenerator(self._reddit, API_PATH["subreddits_gold"], **generator_kwargs)
+        return ListingGenerator(self._reddit, API_PATH["subreddits_premium"], **generator_kwargs)
 
     def recommended(
         self,
