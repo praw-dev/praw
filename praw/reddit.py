@@ -799,21 +799,6 @@ class Reddit:
         """
         return self._objectify_request(data=data, json=json, method="PUT", path=path)
 
-    def random_subreddit(self, *, nsfw: bool = False) -> praw.models.Subreddit:
-        """Return a random lazy instance of :class:`.Subreddit`.
-
-        :param nsfw: Return a random NSFW (not safe for work) subreddit (default:
-            ``False``).
-
-        """
-        url = API_PATH["subreddit"].format(subreddit="randnsfw" if nsfw else "random")
-        path = None
-        try:
-            self.get(url, params={"unique": self._next_unique})
-        except Redirect as redirect:
-            path = redirect.path
-        return models.Subreddit(self, path.split("/")[2])
-
     def redditor(self, name: str | None = None, *, fullname: str | None = None) -> praw.models.Redditor:
         """Return a lazy instance of :class:`.Redditor`.
 

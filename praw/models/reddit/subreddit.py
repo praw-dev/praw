@@ -3074,30 +3074,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         """
         return self._reddit.get(API_PATH["post_requirements"].format(subreddit=str(self)))
 
-    def random(self) -> praw.models.Submission | None:
-        """Return a random :class:`.Submission`.
-
-        Returns ``None`` on subreddits that do not support the random feature. One
-        example, at the time of writing, is r/wallpapers.
-
-        For example, to get a random submission off of r/AskReddit:
-
-        .. code-block:: python
-
-            submission = reddit.subreddit("AskReddit").random()
-            print(submission.title)
-
-        """
-        url = API_PATH["subreddit_random"].format(subreddit=self)
-        try:
-            self._reddit.get(url, params={"unique": self._reddit._next_unique})
-        except Redirect as redirect:
-            path = redirect.path
-        try:
-            return self._submission_class(self._reddit, url=urljoin(self._reddit.config.reddit_url, path))
-        except ClientException:
-            return None
-
     def search(
         self,
         query: str,

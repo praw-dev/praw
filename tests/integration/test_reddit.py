@@ -37,10 +37,6 @@ class TestDomainListing(IntegrationTest):
         submissions = list(reddit.domain("youtube.com").new())
         assert len(submissions) == 100
 
-    def test_random_rising(self, reddit):
-        submissions = list(reddit.domain("youtube.com").random_rising())
-        assert len(submissions) == 100
-
     def test_rising(self, reddit):
         list(reddit.domain("youtube.com").rising())
 
@@ -201,20 +197,6 @@ class TestReddit(IntegrationTest):
         notes = list(reddit.notes.things(thing))
         assert len(notes) == 10
         assert notes[0].user == thing.author
-
-    def test_random_subreddit(self, reddit):
-        names = set()
-        for i in range(3):
-            names.add(reddit.random_subreddit().display_name)
-        assert len(names) == 3
-
-    def test_subreddit_with_randnsfw(self, reddit):
-        subreddit = reddit.subreddit("randnsfw")
-        assert subreddit.display_name != "randnsfw"
-        assert subreddit.over18
-
-    def test_subreddit_with_random(self, reddit):
-        assert reddit.subreddit("random").display_name != "random"
 
     @pytest.mark.add_placeholder(AVAILABLE_NAME="prawtestuserabcd1234")
     def test_username_available__available(self, reddit):

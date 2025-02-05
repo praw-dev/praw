@@ -177,7 +177,6 @@ API_PATH = {
     "subreddit_about":         "r/{subreddit}/about/",
     "subreddit_filter":        "api/filter/user/{user}/f/{special}/r/{subreddit}",
     "subreddit_filter_list":   "api/filter/user/{user}/f/{special}",
-    "subreddit_random":        "r/{subreddit}/random/",
     "subreddit_settings":      "r/{subreddit}/about/edit/",
     "subreddit_stylesheet":    "r/{subreddit}/api/subreddit_stylesheet/",
     "subreddits_by_topic":     "api/subreddits_by_topic",

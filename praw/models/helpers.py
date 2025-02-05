@@ -307,13 +307,6 @@ class SubredditHelper(PRAWBase):
         :param display_name: The name of the subreddit.
 
         """
-        lower_name = display_name.lower()
-
-        if lower_name == "random":
-            return self._reddit.random_subreddit()
-        if lower_name == "randnsfw":
-            return self._reddit.random_subreddit(nsfw=True)
-
         return Subreddit(self._reddit, display_name=display_name)
 
     def create(

@@ -413,11 +413,6 @@ class TestSubredditListings(IntegrationTest):
         submissions = list(subreddit.new())
         assert len(submissions) == 100
 
-    def test_random_rising(self, reddit):
-        subreddit = reddit.subreddit("askreddit")
-        submissions = list(subreddit.random_rising())
-        assert len(submissions) == 100
-
     def test_rising(self, reddit):
         subreddit = reddit.subreddit("askreddit")
         submissions = list(subreddit.rising())
@@ -1351,20 +1346,6 @@ class TestSubreddit(IntegrationTest):
             "guidelines_display_policy",
         ]
         assert list(data) == tags
-
-    def test_random(self, reddit):
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        submissions = [
-            subreddit.random(),
-            subreddit.random(),
-            subreddit.random(),
-            subreddit.random(),
-        ]
-        assert len(submissions) == len(set(submissions))
-
-    def test_random__returns_none(self, reddit):
-        subreddit = reddit.subreddit("wallpapers")
-        assert subreddit.random() is None
 
     def test_search(self, reddit):
         subreddit = reddit.subreddit("all")

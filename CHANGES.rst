@@ -21,6 +21,8 @@ Unreleased
 
 **Removed**
 
+- Remove ``Reddit.random_subreddit``, ``Subreddit.random``, and
+  ``Subreddit.random_rising``.
 - Remove ``APIException`` class.
 - Remove ``Comment.award`` and ``Submission.award`` methods.
 - Remove ``Comment.gild``, ``Redditor.gild``, and ``Submission.gild`` methods.
@@ -632,9 +634,8 @@ Unreleased
 
 **Fixed**
 
-- :meth:`.Subreddit.random` returns ``None`` instead of raising
-  :class:`.ClientException` when the subreddit does not support generating random
-  submissions.
+- ``Subreddit.random`` returns ``None`` instead of raising :class:`.ClientException`
+  when the subreddit does not support generating random submissions.
 
 **Other**
 
@@ -1162,8 +1163,8 @@ to help with updating your code to PRAW 4. If you require additional help please
 - :meth:`.ModeratorRelationship.update` to update a moderator's permissions.
 - :meth:`.ModeratorRelationship.update_invite` to update an invited moderator's
   permissions.
-- :meth:`.Front.random_rising`, :meth:`.Subreddit.random_rising` and
-  :meth:`.Multireddit.random_rising`.
+- ``Front.random_rising``, ``Subreddit.random_rising`` and
+  ``Multireddit.random_rising``.
 - :class:`.WikiPage` supports a revision argument.
 - :meth:`.SubredditWiki.revisions` to obtain a list of recent revisions to a subreddit.
 - :meth:`.WikiPage.revisions` to obtain a list of revisions for a wiki page.
