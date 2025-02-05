@@ -1,6 +1,5 @@
 """Provide the GildableMixin class."""
 
-
 from ....const import API_PATH
 
 

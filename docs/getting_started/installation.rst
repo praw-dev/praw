@@ -1,7 +1,7 @@
 Installing PRAW
 ===============
 
-PRAW supports Python 3.8+. The recommended way to install PRAW is via ``pip``.
+PRAW supports Python 3.9+. The recommended way to install PRAW is via ``pip``.
 
 .. code-block:: bash
 

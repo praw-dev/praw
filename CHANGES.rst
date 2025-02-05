@@ -6,8 +6,14 @@ PRAW follows `semantic versioning <https://semver.org/>`_.
 Unreleased
 ----------
 
+**Added**
+
+- Add support for Python 3.13.
+
 **Changed**
 
+- Bumped prawcore to 3.0.1.
+- Drop support for Python 3.8, which was end-of-life on 2024-10-07.
 - Change ``Reddit.user.me`` to raise :class:`.ReadOnlyException` when called in
   :attr:`.read_only` mode.
 - The ``subreddit`` attribute of :class:`.Redditor` is a :class:`.UserSubreddit`
@@ -23,6 +29,7 @@ Unreleased
 - Remove ``Reddit.validate_on_submit`` configuration attribute.
 - Remove ``WebSocketException.original_exception`` method.
 - Remove the ``after`` argument for :meth:`.conversations`.
+- Remove key ``reset_timestamp`` from :meth:`.limits`.
 
 7.8.1 (2024/10/25)
 ------------------
