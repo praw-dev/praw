@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterator
+from typing import TYPE_CHECKING, Any
 from urllib.parse import quote
 from warnings import warn
 
@@ -12,6 +12,8 @@ from ...util import _deprecate_args, cachedproperty
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Iterator
+
     import praw.models
 
 

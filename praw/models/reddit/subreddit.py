@@ -8,7 +8,7 @@ from csv import writer
 from io import StringIO
 from json import dumps, loads
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Generator, Iterator
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
 from warnings import warn
 from xml.etree.ElementTree import XML
@@ -41,6 +41,8 @@ from .widgets import SubredditWidgets, WidgetEncoder
 from .wikipage import WikiPage
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Generator, Iterator
+
     from requests import Response
 
     import praw.models
@@ -2174,7 +2176,9 @@ class SubredditWiki:
         new.edit(content=content, reason=reason, **other_settings)
         return new
 
-    def revisions(self, **generator_kwargs: Any) -> Generator[
+    def revisions(
+        self, **generator_kwargs: Any
+    ) -> Generator[
         dict[str, praw.models.Redditor | WikiPage | str | int | bool | None],
         None,
         None,
@@ -3142,9 +3146,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             "jpg": "image/jpeg",
             "jpeg": "image/jpeg",
             "gif": "image/gif",
-        }.get(
-            file_extension, "image/jpeg"
-        )  # default to JPEG
+        }.get(file_extension, "image/jpeg")  # default to JPEG
         if (
             expected_mime_prefix is not None
             and mime_type.partition("/")[0] != expected_mime_prefix

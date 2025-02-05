@@ -52,7 +52,7 @@ class TestRedditor(UnitTest):
         assert redditor1 == redditor2
         assert redditor2 != redditor3
         assert redditor1 != redditor3
-        assert "dummy1" == redditor1
+        assert redditor1 == "dummy1"
         assert redditor2 == "dummy1"
 
     def test_fullname(self, reddit):
@@ -103,4 +103,4 @@ class TestRedditorListings(UnitTest):
             generator = getattr(redditor, listing)(params=params)
             assert params == {"dummy": "value"}
             assert listing == generator.params["sort"]
-            assert "value" == generator.params["dummy"]
+            assert generator.params["dummy"] == "value"

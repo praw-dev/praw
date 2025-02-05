@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterator
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
 
 from ....util.cache import cachedproperty
@@ -13,6 +13,8 @@ from .gilded import GildedListingMixin
 from .rising import RisingListingMixin
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Iterator
+
     import praw.models
 
 

@@ -57,7 +57,7 @@ placeholders = {
 
 
 placeholders["basic_auth"] = b64encode(
-    f"{placeholders['client_id']}:{placeholders['client_secret']}".encode("utf-8")
+    f"{placeholders['client_id']}:{placeholders['client_secret']}".encode()
 ).decode("utf-8")
 
 

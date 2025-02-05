@@ -49,15 +49,14 @@ def main():
             return 1
         if current_version in versions:
             break
-        else:
-            if retry_count >= max_retry_count:
-                sys.stderr.write(
-                    f"Current version {current_version!s} failed to build\n"
-                )
-                return 1
-            sys.stdout.write("Waiting 30 seconds for build to finish\n")
-            retry_count += 1
-            time.sleep(30)
+        if retry_count >= max_retry_count:
+            sys.stderr.write(
+                f"Current version {current_version!s} failed to build\n"
+            )
+            return 1
+        sys.stdout.write("Waiting 30 seconds for build to finish\n")
+        retry_count += 1
+        time.sleep(30)
     aggregated_versions = {}
     for version in versions:
         aggregated_versions.setdefault(version.major, [])

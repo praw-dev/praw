@@ -38,7 +38,7 @@ class TestReddit(UnitTest):
     def patch_request(*args, **kwargs):
         """Patch requests to return mock data on specific url."""
         response = requests.Response()
-        response._content = '{"name":"username"}'.encode("utf-8")
+        response._content = b'{"name":"username"}'
         response.status_code = 200
         return response
 

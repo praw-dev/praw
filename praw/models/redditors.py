@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from itertools import islice
 from types import SimpleNamespace
-from typing import TYPE_CHECKING, Iterable, Iterator
+from typing import TYPE_CHECKING
 
 import prawcore
 
@@ -14,6 +14,8 @@ from .listing.generator import ListingGenerator
 from .util import stream_generator
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Iterable, Iterator
+
     import praw.models
 
 

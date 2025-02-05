@@ -17,6 +17,29 @@ repos:
         pass_filenames: false
         types: [ python ]
 
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    hooks:
+      - id: ruff
+        args: [ --exit-non-zero-on-fix, --fix ]
+        files: ^(praw/.*.py)$
+    rev: v0.9.4
+
+  - repo: https://github.com/LilSpazJoekp/docstrfmt
+    hooks:
+      - id: docstrfmt
+    rev: v1.9.0
+
+  - repo: https://github.com/MarcoGorelli/auto-walrus
+    hooks:
+      - id: auto-walrus
+    rev: 0.3.4
+
+  - repo: https://github.com/pappasam/toml-sort
+    hooks:
+      - id: toml-sort-fix
+        files: ^(.*\.toml)$
+    rev: v0.24.2
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
@@ -31,29 +54,7 @@ repos:
       - id: name-tests-test
         args: [ --pytest-test-first ]
         files: ^tests/integration/.*\.py|tests/unit/.*\.py$
+      - id: no-commit-to-branch
       - id: sort-simple-yaml
         files: ^(\.github/workflows/.*\.ya?ml|\.readthedocs.ya?ml)$
       - id: trailing-whitespace
-
-  - repo: https://github.com/pappasam/toml-sort
-    rev: v0.24.2
-    hooks:
-      - id: toml-sort-fix
-        files: ^(.*\.toml)$
-
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.4
-    hooks:
-      - id: ruff
-        args: [ --exit-non-zero-on-fix, --fix ]
-        files: ^(praw/.*.py)$
-
-  - repo: https://github.com/psf/black
-    hooks:
-      - id: black
-    rev: 25.1.0
-
-  - repo: https://github.com/LilSpazJoekp/docstrfmt
-    hooks:
-      - id: docstrfmt
-    rev: v1.9.0

@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterator
+from typing import TYPE_CHECKING, Any
 
 from ..base import PRAWBase
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Iterator
+
     import praw
 
 

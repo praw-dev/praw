@@ -21,8 +21,7 @@ class Objector:
     @classmethod
     def check_error(cls, data: list[Any] | dict[str, dict[str, str]]):
         """Raise an error if the argument resolves to an error object."""
-        error = cls.parse_error(data)
-        if error:
+        if error := cls.parse_error(data):
             raise error
 
     @classmethod

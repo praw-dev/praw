@@ -53,7 +53,7 @@ class TestUser(IntegrationTest):
         for subreddit in karma:
             assert isinstance(subreddit, Subreddit)
             keys = sorted(karma[subreddit].keys())
-            assert ["comment_karma", "link_karma"] == keys
+            assert keys == ["comment_karma", "link_karma"]
 
     def test_me(self, reddit):
         reddit.read_only = False

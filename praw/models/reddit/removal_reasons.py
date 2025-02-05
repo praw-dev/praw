@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterator
+from typing import TYPE_CHECKING, Any
 from warnings import warn
 
 from ...const import API_PATH
@@ -11,6 +11,8 @@ from ...util import _deprecate_args, cachedproperty
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Iterator
+
     import praw
 
 

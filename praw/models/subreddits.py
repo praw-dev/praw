@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterator
+from typing import TYPE_CHECKING, Any
 from warnings import warn
 
 from ..const import API_PATH
@@ -13,6 +13,8 @@ from .listing.generator import ListingGenerator
 from .util import stream_generator
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Iterator
+
     import praw.models
 
 

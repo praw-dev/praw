@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterator
+from typing import TYPE_CHECKING
 
 from ..const import API_PATH
 from ..util import _deprecate_args
@@ -11,6 +11,8 @@ from .listing.generator import ListingGenerator
 from .util import stream_generator
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Iterator
+
     import praw.models
 
 

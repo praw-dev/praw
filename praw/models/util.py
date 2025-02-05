@@ -5,9 +5,12 @@ from __future__ import annotations
 import random
 import time
 from collections import OrderedDict
-from typing import Any, Callable, Generator
+from typing import TYPE_CHECKING, Any, Callable
 
 from ..util import _deprecate_args
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 
 @_deprecate_args("permissions", "known_permissions")

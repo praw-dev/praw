@@ -67,28 +67,18 @@ test = [
 "Issue Tracker" = "https://github.com/praw-dev/praw/issues"
 "Source Code" = "https://github.com/praw-dev/praw"
 
-[tool.black]
-extend_exclude = '/(\.venv.*)/'
-line-length = 88
-
 [tool.docstrfmt]
 extend_exclude = ['./docs/examples/']
 
-[tool.isort]
-profile = 'black'
-skip_glob = '.venv*'
-
 [tool.ruff]
-target-version = "py38"
 include = [
   "praw/**/*.py"
 ]
+line-length = 88
 
 [tool.ruff.lint]
 ignore = [
   "A002", # shadowing built-in
-  "ANN101", # missing type annotation for self in method
-  "ANN102", # missing type annotation for cls in classmethod
   "ANN202", # missing return type for private method
   "ANN401", # typing.Any usage
   "D203", # 1 blank line required before class docstring
@@ -99,7 +89,6 @@ ignore = [
   "PLR2004", # Magic value used in comparison,
   "S101" # use of assert
 ]
-ignore-init-module-imports = true
 select = [
   "A", # flake8-builtins
   "ANN", # flake8-annotations
@@ -147,7 +136,11 @@ mypy-init-return = true
 suppress-dummy-args = true
 suppress-none-returning = true
 
+[tool.ruff.lint.flake8-builtins]
+builtins-ignorelist = ["id"]
+
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 "praw/models/mod_notes.py" = ["FA100"]
 "praw/models/reddit/collections.py" = ["A005"]
+"tests/*.py" = ["SLF001"]

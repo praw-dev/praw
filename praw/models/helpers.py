@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from json import dumps
-from typing import TYPE_CHECKING, Any, Generator
+from typing import TYPE_CHECKING, Any
 
 from ..const import API_PATH
 from ..util import _deprecate_args
@@ -13,6 +13,8 @@ from .reddit.live import LiveThread
 from .reddit.multi import Multireddit, Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Generator
+
     import praw.models
 
 

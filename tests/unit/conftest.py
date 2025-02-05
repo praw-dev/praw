@@ -11,7 +11,7 @@ def reddit():
     reddit = Reddit(client_id="dummy", client_secret="dummy", user_agent="dummy")
     # Unit tests should never issue requests
     reddit._core.request = dummy_request
-    yield reddit
+    return reddit
 
 
 def dummy_request(*args, **kwargs):

@@ -9,7 +9,7 @@ import re
 import time
 from itertools import islice
 from logging import getLogger
-from typing import IO, TYPE_CHECKING, Any, Generator, Iterable
+from typing import IO, TYPE_CHECKING, Any
 from urllib.parse import urlparse
 from warnings import warn
 
@@ -46,6 +46,8 @@ except ImportError:  # pragma: no cover
     UPDATE_CHECKER_MISSING = True
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Generator, Iterable
+
     import prawcore
 
     import praw.models

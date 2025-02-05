@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 from json import dumps
-from typing import TYPE_CHECKING, Any, Generator
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
 from warnings import warn
 
@@ -23,6 +23,8 @@ from .redditor import Redditor
 from .subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Generator
+
     import praw.models
 
 INLINE_MEDIA_PATTERN = re.compile(
