@@ -132,7 +132,6 @@ them bound to an attribute of one of the PRAW models.
     other/inboxablemixin
     other/listinggenerator
     other/mod_action
-    other/mod_note
     other/moderatedlist
     other/modmail
     other/modmailmessage

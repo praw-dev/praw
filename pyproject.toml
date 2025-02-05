@@ -52,7 +52,8 @@ lint = [
 ]
 readthedocs = [
   "furo",
-  "sphinx"
+  "sphinx",
+  "sphinx-autodoc-typehints"
 ]
 test = [
   "betamax >=0.8, <0.9",
