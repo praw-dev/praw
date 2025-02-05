@@ -109,8 +109,6 @@ API_PATH = {
     "mod_notes":               "api/mod/notes",
     "mod_notes_bulk":          "api/mod/notes/recent",
     "moderated":               "user/{user}/moderated_subreddits/",
-    "moderator_messages":      "r/{subreddit}/message/moderator/",
-    "moderator_unread":        "r/{subreddit}/message/moderator/unread/",
     "modmail_archive":         "api/mod/conversations/{id}/archive",
     "modmail_bulk_read":       "api/mod/conversations/bulk/read",
     "modmail_conversation":    "api/mod/conversations/{id}",

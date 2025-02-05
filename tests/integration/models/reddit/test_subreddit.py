@@ -459,15 +459,6 @@ class TestSubredditModeration(IntegrationTest):
             count += 1
         assert count > 0
 
-    def test_inbox(self, reddit):
-        reddit.read_only = False
-        count = 0
-        subreddit = reddit.subreddit("all")
-        for item in subreddit.mod.inbox():
-            assert isinstance(item, SubredditMessage)
-            count += 1
-        assert count == 100
-
     def test_log(self, reddit):
         reddit.read_only = False
         count = 0
@@ -601,15 +592,6 @@ class TestSubredditModeration(IntegrationTest):
             count += 1
         assert count > 0
 
-    def test_unread(self, reddit):
-        reddit.read_only = False
-        count = 0
-        subreddit = reddit.subreddit("all")
-        for item in subreddit.mod.unread():
-            assert isinstance(item, SubredditMessage)
-            count += 1
-        assert count > 0
-
     def test_update(self, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -679,13 +661,6 @@ class TestSubredditModerationStreams(IntegrationTest):
         generator = subreddit.mod.stream.unmoderated()
         for i in range(10):
             assert isinstance(next(generator), (Comment, Submission))
-
-    def test_unread(self, reddit):
-        reddit.read_only = False
-        subreddit = reddit.subreddit("mod")
-        generator = subreddit.mod.stream.unread()
-        for i in range(2):
-            assert isinstance(next(generator), SubredditMessage)
 
 
 class TestSubredditModmail(IntegrationTest):

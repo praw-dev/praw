@@ -28,6 +28,8 @@ Unreleased
 - Remove ``Comment.gild``, ``Redditor.gild``, and ``Submission.gild`` methods.
 - Remove ``Redditor.gilded`` and ``Subreddit.gilded`` methods.
 - Remove ``Redditor.gildings`` method.
+- Remove ``Subreddit.mod.inbox``, ``Subreddit.mod.unread``, and
+  ``Subreddit.mod.stream.unread`` methods.
 - Remove ``Subreddits.gold`` method.
 - Remove :class:`.Reddit` keyword argument ``token_manager`` and all associated token
   managers.
@@ -524,8 +526,8 @@ Unreleased
   :meth:`.SubredditModeration.spam`
 - Add :meth:`~.SubredditModerationStream.unmoderated` to allow streaming of
   :meth:`.SubredditModeration.unmoderated`
-- Add :meth:`~.SubredditModerationStream.unread` to allow streaming of
-  :meth:`.SubredditModeration.unread`
+- Add ``SubredditModerationStream.unread`` to allow streaming of
+  ``SubredditModeration.unread``
 - Parameter ``exclude_before`` to :func:`.stream_generator` to allow
   :meth:`~.SubredditModerationStream.modmail_conversations` to work
 - Parameters ``allowable_content`` and ``max_emojis`` to
@@ -1158,7 +1160,7 @@ to help with updating your code to PRAW 4. If you require additional help please
   ``praw.models.reddit.submission.SubmissionModeration.unlock`` to change a Submission's
   lock state.
 - :meth:`.SubredditFlairTemplates.delete` to delete a single flair template.
-- :meth:`.SubredditModeration.unread` to iterate over unread moderation messages.
+- ``SubredditModeration.unread`` to iterate over unread moderation messages.
 - :meth:`.ModeratorRelationship.invite` to invite a moderator to a subreddit.
 - :meth:`.ModeratorRelationship.update` to update a moderator's permissions.
 - :meth:`.ModeratorRelationship.update_invite` to update an invited moderator's
