@@ -98,9 +98,7 @@ class CollectionModeration(PRAWBase):
             :meth:`~.SubredditCollectionsModeration.create`
 
         """
-        self._reddit.post(
-            API_PATH["collection_delete"], data={"collection_id": self.collection_id}
-        )
+        self._reddit.post(API_PATH["collection_delete"], data={"collection_id": self.collection_id})
 
     def remove_post(self, submission: praw.models.Submission):
         """Remove a post from the collection.
@@ -241,9 +239,7 @@ class SubredditCollectionsModeration(PRAWBase):
         self.subreddit_fullname = sub_fullname
 
     @_deprecate_args("title", "description", "display_layout")
-    def create(
-        self, *, description: str, display_layout: str | None = None, title: str
-    ) -> Collection:
+    def create(self, *, description: str, display_layout: str | None = None, title: str) -> Collection:
         """Create a new :class:`.Collection`.
 
         The authenticated account must have appropriate moderator permissions in the
@@ -353,9 +349,7 @@ class SubredditCollections(PRAWBase):
         if (collection_id is None) == (permalink is None):
             msg = "Exactly one of 'collection_id' or 'permalink' must be provided."
             raise TypeError(msg)
-        return Collection(
-            self._reddit, collection_id=collection_id, permalink=permalink
-        )
+        return Collection(self._reddit, collection_id=collection_id, permalink=permalink)
 
     def __init__(
         self,

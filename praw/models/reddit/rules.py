@@ -183,9 +183,7 @@ class RuleModeration:
             "violation_reason": violation_reason,
         }.items():
             data[name] = getattr(self.rule, name) if value is None else value
-        updated_rule = self.rule._reddit.post(
-            API_PATH["update_subreddit_rule"], data=data
-        )[0]
+        updated_rule = self.rule._reddit.post(API_PATH["update_subreddit_rule"], data=data)[0]
         updated_rule.subreddit = self.rule.subreddit
         return updated_rule
 
@@ -273,9 +271,7 @@ class SubredditRules:
             category=DeprecationWarning,
             stacklevel=2,
         )
-        return self._reddit.request(
-            method="GET", path=API_PATH["rules"].format(subreddit=self.subreddit)
-        )
+        return self._reddit.request(method="GET", path=API_PATH["rules"].format(subreddit=self.subreddit))
 
     def __getitem__(self, short_name: str | int | slice) -> praw.models.Rule:
         """Return the :class:`.Rule` for the subreddit with short_name ``short_name``.
@@ -409,13 +405,9 @@ class SubredditRulesModeration:
             "description": description,
             "kind": kind,
             "short_name": short_name,
-            "violation_reason": (
-                short_name if violation_reason is None else violation_reason
-            ),
+            "violation_reason": (short_name if violation_reason is None else violation_reason),
         }
-        new_rule = self.subreddit_rules._reddit.post(
-            API_PATH["add_subreddit_rule"], data=data
-        )[0]
+        new_rule = self.subreddit_rules._reddit.post(API_PATH["add_subreddit_rule"], data=data)[0]
         new_rule.subreddit = self.subreddit_rules.subreddit
         return new_rule
 
@@ -439,16 +431,12 @@ class SubredditRulesModeration:
             new_rule_list = subreddit.rules.mod.reorder(new_rules)
 
         """
-        order_string = quote(
-            ",".join([rule.short_name for rule in rule_list]), safe=","
-        )
+        order_string = quote(",".join([rule.short_name for rule in rule_list]), safe=",")
         data = {
             "r": str(self.subreddit_rules.subreddit),
             "new_rule_order": order_string,
         }
-        response = self.subreddit_rules._reddit.post(
-            API_PATH["reorder_subreddit_rules"], data=data
-        )
+        response = self.subreddit_rules._reddit.post(API_PATH["reorder_subreddit_rules"], data=data)
         for rule in response:
             rule.subreddit = self.subreddit_rules.subreddit
         return response

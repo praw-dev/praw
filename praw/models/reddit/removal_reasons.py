@@ -34,9 +34,7 @@ class RemovalReason(RedditBase):
     STR_FIELD = "id"
 
     @staticmethod
-    def _warn_reason_id(
-        *, id_value: str | None, reason_id_value: str | None
-    ) -> str | None:
+    def _warn_reason_id(*, id_value: str | None, reason_id_value: str | None) -> str | None:
         """Reason ID param is deprecated. Warns if it's used.
 
         :param id_value: Returns the actual value of parameter ``id`` is parameter
@@ -153,13 +151,9 @@ class SubredditRemovalReasons:
         :returns: A list of instances of :class:`.RemovalReason`.
 
         """
-        response = self._reddit.get(
-            API_PATH["removal_reasons_list"].format(subreddit=self.subreddit)
-        )
+        response = self._reddit.get(API_PATH["removal_reasons_list"].format(subreddit=self.subreddit))
         return [
-            RemovalReason(
-                self._reddit, self.subreddit, _data=response["data"][reason_id]
-            )
+            RemovalReason(self._reddit, self.subreddit, _data=response["data"][reason_id])
             for reason_id in response["order"]
         ]
 

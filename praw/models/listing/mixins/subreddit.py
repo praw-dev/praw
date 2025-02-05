@@ -25,9 +25,7 @@ class CommentHelper(PRAWBase):
     def _path(self) -> str:
         return urljoin(self.subreddit._path, "comments/")
 
-    def __call__(
-        self, **generator_kwargs: str | int | dict[str, str]
-    ) -> Iterator[praw.models.Comment]:
+    def __call__(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.Comment]:
         """Return a :class:`.ListingGenerator` for the :class:`.Subreddit`'s comments.
 
         Additional keyword arguments are passed in the initialization of

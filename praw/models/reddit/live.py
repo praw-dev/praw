@@ -405,9 +405,7 @@ class LiveThread(RedditBase):
     def _fetch_info(self):
         return "liveabout", {"id": self.id}, None
 
-    def discussions(
-        self, **generator_kwargs: str | int | dict[str, str]
-    ) -> Iterator[praw.models.Submission]:
+    def discussions(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.Submission]:
         """Get submissions linking to the thread.
 
         :param generator_kwargs: keyword arguments passed to :class:`.ListingGenerator`
@@ -449,9 +447,7 @@ class LiveThread(RedditBase):
         url = API_PATH["live_report"].format(id=self.id)
         self._reddit.post(url, data={"type": type})
 
-    def updates(
-        self, **generator_kwargs: str | int | dict[str, str]
-    ) -> Iterator[praw.models.LiveUpdate]:
+    def updates(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.LiveUpdate]:
         """Return a :class:`.ListingGenerator` yields :class:`.LiveUpdate` s.
 
         :param generator_kwargs: keyword arguments passed to :class:`.ListingGenerator`
@@ -583,10 +579,7 @@ class LiveThreadContribution:
             return
         # get settings from Reddit (not cache)
         thread = LiveThread(self.thread._reddit, self.thread.id)
-        data = {
-            key: getattr(thread, key) if value is None else value
-            for key, value in settings.items()
-        }
+        data = {key: getattr(thread, key) if value is None else value for key, value in settings.items()}
 
         url = API_PATH["live_update_thread"].format(id=self.thread.id)
         # prawcore (0.7.0) Session.request() modifies `data` kwarg
@@ -614,9 +607,7 @@ class LiveThreadStream:
         """
         self.live_thread = live_thread
 
-    def updates(
-        self, **stream_options: dict[str, Any]
-    ) -> Iterator[praw.models.LiveUpdate]:
+    def updates(self, **stream_options: dict[str, Any]) -> Iterator[praw.models.LiveUpdate]:
         """Yield new updates to the live thread as they become available.
 
         :param skip_existing: Set to ``True`` to only fetch items created after the

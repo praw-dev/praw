@@ -192,9 +192,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         return "user_about", {"user": self.name}, None
 
     def _fetch_username(self, fullname: str):
-        return self._reddit.get(API_PATH["user_by_fullname"], params={"ids": fullname})[
-            fullname
-        ]["name"]
+        return self._reddit.get(API_PATH["user_by_fullname"], params={"ids": fullname})[fullname]["name"]
 
     def _friend(self, *, data: dict[str, Any], method: str):
         url = API_PATH["friend_v1"].format(user=self)
@@ -292,9 +290,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         if months < 1 or months > 36:
             msg = "months must be between 1 and 36"
             raise TypeError(msg)
-        self._reddit.post(
-            API_PATH["gild_user"].format(username=self), data={"months": months}
-        )
+        self._reddit.post(API_PATH["gild_user"].format(username=self), data={"months": months})
 
     def moderated(self) -> list[praw.models.Subreddit]:
         """Return a list of the redditor's moderated subreddits.
@@ -455,9 +451,7 @@ class RedditorStream:
         """
         self.redditor = redditor
 
-    def comments(
-        self, **stream_options: str | int | dict[str, str]
-    ) -> Generator[praw.models.Comment, None, None]:
+    def comments(self, **stream_options: str | int | dict[str, str]) -> Generator[praw.models.Comment, None, None]:
         """Yield new comments as they become available.
 
         Comments are yielded oldest first. Up to 100 historical comments will initially

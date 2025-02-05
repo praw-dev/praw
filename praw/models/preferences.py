@@ -203,6 +203,4 @@ class Preferences:
             reddit.user.preferences.update(**{"third_party_data_personalized_ads": False})
 
         """
-        return self._reddit.patch(
-            API_PATH["preferences"], data={"json": dumps(preferences)}
-        )
+        return self._reddit.patch(API_PATH["preferences"], data={"json": dumps(preferences)})

@@ -29,6 +29,4 @@ class GildedListingMixin(PRAWBase):
                 print(item.id)
 
         """
-        return ListingGenerator(
-            self._reddit, urljoin(self._path, "gilded"), **generator_kwargs
-        )
+        return ListingGenerator(self._reddit, urljoin(self._path, "gilded"), **generator_kwargs)

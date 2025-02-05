@@ -29,6 +29,4 @@ class Front(SubredditListingMixin):
         :class:`.ListingGenerator`.
 
         """
-        return ListingGenerator(
-            self._reddit, urljoin(self._path, "best"), **generator_kwargs
-        )
+        return ListingGenerator(self._reddit, urljoin(self._path, "best"), **generator_kwargs)

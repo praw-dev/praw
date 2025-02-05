@@ -135,19 +135,13 @@ class SQLiteTokenManager(BaseTokenManager):
         import sqlite3
 
         self._connection = sqlite3.connect(database)
-        self._connection.execute(
-            "CREATE TABLE IF NOT EXISTS tokens (id, refresh_token, updated_at)"
-        )
-        self._connection.execute(
-            "CREATE UNIQUE INDEX IF NOT EXISTS ux_tokens_id on tokens(id)"
-        )
+        self._connection.execute("CREATE TABLE IF NOT EXISTS tokens (id, refresh_token, updated_at)")
+        self._connection.execute("CREATE UNIQUE INDEX IF NOT EXISTS ux_tokens_id on tokens(id)")
         self._connection.commit()
         self.key = key
 
     def _get(self):
-        cursor = self._connection.execute(
-            "SELECT refresh_token FROM tokens WHERE id=?", (self.key,)
-        )
+        cursor = self._connection.execute("SELECT refresh_token FROM tokens WHERE id=?", (self.key,))
         result = cursor.fetchone()
         if result is None:
             raise KeyError
@@ -168,9 +162,7 @@ class SQLiteTokenManager(BaseTokenManager):
 
     def is_registered(self) -> bool:
         """Return whether ``key`` already has a ``refresh_token``."""
-        cursor = self._connection.execute(
-            "SELECT refresh_token FROM tokens WHERE id=?", (self.key,)
-        )
+        cursor = self._connection.execute("SELECT refresh_token FROM tokens WHERE id=?", (self.key,))
         return cursor.fetchone() is not None
 
     def post_refresh_callback(self, authorizer: prawcore.auth.BaseAuthorizer):

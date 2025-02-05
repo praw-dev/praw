@@ -74,7 +74,7 @@ extend_exclude = ['./docs/examples/']
 include = [
   "praw/**/*.py"
 ]
-line-length = 88
+line-length = 120
 
 [tool.ruff.lint]
 ignore = [

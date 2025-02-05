@@ -17,9 +17,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class SubmissionListingMixin(PRAWBase):
     """Adds additional methods pertaining to :class:`.Submission` instances."""
 
-    def duplicates(
-        self, **generator_kwargs: str | int | dict[str, str]
-    ) -> Iterator[praw.models.Submission]:
+    def duplicates(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.Submission]:
         """Return a :class:`.ListingGenerator` for the submission's duplicates.
 
         Additional keyword arguments are passed in the initialization of

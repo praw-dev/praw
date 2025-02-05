@@ -14,9 +14,7 @@ if TYPE_CHECKING:
 
 
 @_deprecate_args("permissions", "known_permissions")
-def permissions_string(
-    *, known_permissions: set[str], permissions: list[str] | None
-) -> str:
+def permissions_string(*, known_permissions: set[str], permissions: list[str] | None) -> str:
     """Return a comma separated string of permission changes.
 
     :param known_permissions: A set of strings representing the available permissions.

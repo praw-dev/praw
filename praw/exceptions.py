@@ -65,8 +65,7 @@ class RedditErrorItem:
     def __repr__(self) -> str:
         """Return an object initialization representation of the instance."""
         return (
-            f"{self.__class__.__name__}(error_type={self.error_type!r},"
-            f" message={self.message!r}, field={self.field!r})"
+            f"{self.__class__.__name__}(error_type={self.error_type!r}, message={self.message!r}, field={self.field!r})"
         )
 
     def __str__(self) -> str:
@@ -84,8 +83,7 @@ class DuplicateReplaceException(ClientException):
     def __init__(self):
         """Initialize a :class:`.DuplicateReplaceException` instance."""
         super().__init__(
-            "A duplicate comment has been detected. Are you attempting to call"
-            " 'replace_more_comments' more than once?"
+            "A duplicate comment has been detected. Are you attempting to call 'replace_more_comments' more than once?"
         )
 
 
@@ -145,8 +143,7 @@ class TooLargeMediaException(ClientException):
         self.maximum_size = maximum_size
         self.actual = actual
         super().__init__(
-            f"The media that you uploaded was too large (maximum size is {maximum_size}"
-            f" bytes, uploaded {actual} bytes)"
+            f"The media that you uploaded was too large (maximum size is {maximum_size} bytes, uploaded {actual} bytes)"
         )
 
 

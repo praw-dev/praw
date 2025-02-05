@@ -12,10 +12,7 @@ class InlineMedia:
 
     def __eq__(self, other: InlineMedia) -> bool:
         """Return whether the other instance equals the current."""
-        return all(
-            getattr(self, attr) == getattr(other, attr)
-            for attr in ["TYPE", "path", "caption", "media_id"]
-        )
+        return all(getattr(self, attr) == getattr(other, attr) for attr in ["TYPE", "path", "caption", "media_id"])
 
     @_deprecate_args("path", "caption")
     def __init__(self, *, caption: str = None, path: str):

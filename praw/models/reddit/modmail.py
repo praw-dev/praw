@@ -107,9 +107,7 @@ class ModmailConversation(RedditBase):
         :param reddit: An instance of :class:`.Reddit`.
 
         """
-        data["authors"] = [
-            reddit._objector.objectify(author) for author in data["authors"]
-        ]
+        data["authors"] = [reddit._objector.objectify(author) for author in data["authors"]]
         for entity in "owner", "participant":
             data[entity] = reddit._objector.objectify(data[entity])
 
@@ -145,9 +143,7 @@ class ModmailConversation(RedditBase):
 
         self._info_params = {"markRead": True} if mark_read else None
 
-    def _build_conversation_list(
-        self, other_conversations: list[ModmailConversation]
-    ) -> str:
+    def _build_conversation_list(self, other_conversations: list[ModmailConversation]) -> str:
         """Return a comma-separated list of conversation IDs."""
         conversations = [self] + (other_conversations or [])
         return ",".join(conversation.id for conversation in conversations)
@@ -233,9 +229,7 @@ class ModmailConversation(RedditBase):
         self._reddit.post(API_PATH["modmail_read"], data=data)
 
     @_deprecate_args("body", "author_hidden", "internal")
-    def reply(
-        self, *, author_hidden: bool = False, body: str, internal: bool = False
-    ) -> ModmailMessage:
+    def reply(self, *, author_hidden: bool = False, body: str, internal: bool = False) -> ModmailMessage:
         """Reply to the conversation.
 
         :param author_hidden: When ``True``, author is hidden from non-moderators
@@ -265,9 +259,7 @@ class ModmailConversation(RedditBase):
             "isAuthorHidden": author_hidden,
             "isInternal": internal,
         }
-        response = self._reddit.post(
-            API_PATH["modmail_conversation"].format(id=self.id), data=data
-        )
+        response = self._reddit.post(API_PATH["modmail_conversation"].format(id=self.id), data=data)
         if isinstance(response, dict):
             # Reddit recently changed the response format, so we need to handle both in case they change it back
             message_id = response["conversation"]["objIds"][-1]["id"]
@@ -311,9 +303,7 @@ class ModmailConversation(RedditBase):
             reddit.subreddit("test").modmail("2gmz").unmute()
 
         """
-        self._reddit.request(
-            method="POST", path=API_PATH["modmail_unmute"].format(id=self.id)
-        )
+        self._reddit.request(method="POST", path=API_PATH["modmail_unmute"].format(id=self.id))
 
     @_deprecate_args("other_conversations")
     def unread(self, *, other_conversations: list[ModmailConversation] | None = None):

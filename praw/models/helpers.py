@@ -28,9 +28,7 @@ class DraftHelper(PRAWBase):
 
     """
 
-    def __call__(
-        self, draft_id: str | None = None
-    ) -> list[praw.models.Draft] | praw.models.Draft:
+    def __call__(self, draft_id: str | None = None) -> list[praw.models.Draft] | praw.models.Draft:
         """Return a list of :class:`.Draft` instances.
 
         :param draft_id: When provided, this returns a :class:`.Draft` instance
@@ -76,9 +74,7 @@ class DraftHelper(PRAWBase):
         selftext: str | None = None,
         send_replies: bool = True,
         spoiler: bool = False,
-        subreddit: (
-            str | praw.models.Subreddit | praw.models.UserSubreddit | None
-        ) = None,
+        subreddit: (str | praw.models.Subreddit | praw.models.UserSubreddit | None) = None,
         title: str | None = None,
         url: str | None = None,
         **draft_kwargs: Any,
@@ -248,9 +244,7 @@ class MultiredditHelper(PRAWBase):
     """Provide a set of functions to interact with multireddits."""
 
     @_deprecate_args("redditor", "name")
-    def __call__(
-        self, *, name: str, redditor: str | praw.models.Redditor
-    ) -> praw.models.Multireddit:
+    def __call__(self, *, name: str, redditor: str | praw.models.Redditor) -> praw.models.Multireddit:
         """Return a lazy instance of :class:`.Multireddit`.
 
         :param name: The name of the multireddit.
@@ -313,9 +307,7 @@ class MultiredditHelper(PRAWBase):
             "visibility": visibility,
             "weighting_scheme": weighting_scheme,
         }
-        return self._reddit.post(
-            API_PATH["multireddit_base"], data={"model": dumps(model)}
-        )
+        return self._reddit.post(API_PATH["multireddit_base"], data={"model": dumps(model)})
 
 
 class SubredditHelper(PRAWBase):

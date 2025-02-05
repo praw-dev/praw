@@ -13,9 +13,7 @@ class PRAWBase:
     """Superclass for all models in PRAW."""
 
     @staticmethod
-    def _safely_add_arguments(
-        *, arguments: dict[str, Any], key: str, **new_arguments: Any
-    ):
+    def _safely_add_arguments(*, arguments: dict[str, Any], key: str, **new_arguments: Any):
         """Replace arguments[key] with a deepcopy and update.
 
         This method is often called when new parameters need to be added to a request.

@@ -26,9 +26,7 @@ class BaseListingMixin(PRAWBase):
 
         """
         if time_filter not in BaseListingMixin.VALID_TIME_FILTERS:
-            valid_time_filters = ", ".join(
-                map("{!r}".format, BaseListingMixin.VALID_TIME_FILTERS)
-            )
+            valid_time_filters = ", ".join(map("{!r}".format, BaseListingMixin.VALID_TIME_FILTERS))
             msg = f"'time_filter' must be one of: {valid_time_filters}"
             raise ValueError(msg)
 
@@ -71,9 +69,7 @@ class BaseListingMixin(PRAWBase):
 
         """
         self._validate_time_filter(time_filter)
-        self._safely_add_arguments(
-            arguments=generator_kwargs, key="params", t=time_filter
-        )
+        self._safely_add_arguments(arguments=generator_kwargs, key="params", t=time_filter)
         url = self._prepare(arguments=generator_kwargs, sort="controversial")
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
@@ -151,8 +147,6 @@ class BaseListingMixin(PRAWBase):
 
         """
         self._validate_time_filter(time_filter)
-        self._safely_add_arguments(
-            arguments=generator_kwargs, key="params", t=time_filter
-        )
+        self._safely_add_arguments(arguments=generator_kwargs, key="params", t=time_filter)
         url = self._prepare(arguments=generator_kwargs, sort="top")
         return ListingGenerator(self._reddit, url, **generator_kwargs)

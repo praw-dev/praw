@@ -129,9 +129,7 @@ class ThingModerationMixin(ModNoteMixin):
             :meth:`.unignore_reports`
 
         """
-        self.thing._reddit.post(
-            API_PATH["ignore_reports"], data={"id": self.thing.fullname}
-        )
+        self.thing._reddit.post(API_PATH["ignore_reports"], data={"id": self.thing.fullname})
 
     def lock(self):
         """Lock a :class:`.Comment` or :class:`.Submission`.
@@ -155,9 +153,7 @@ class ThingModerationMixin(ModNoteMixin):
         self.thing._reddit.post(API_PATH["lock"], data={"id": self.thing.fullname})
 
     @_deprecate_args("spam", "mod_note", "reason_id")
-    def remove(
-        self, *, mod_note: str = "", spam: bool = False, reason_id: str | None = None
-    ):
+    def remove(self, *, mod_note: str = "", spam: bool = False, reason_id: str | None = None):
         """Remove a :class:`.Comment` or :class:`.Submission`.
 
         :param mod_note: A message for the other moderators.
@@ -284,9 +280,7 @@ class ThingModerationMixin(ModNoteMixin):
             :meth:`.ignore_reports`
 
         """
-        self.thing._reddit.post(
-            API_PATH["unignore_reports"], data={"id": self.thing.fullname}
-        )
+        self.thing._reddit.post(API_PATH["unignore_reports"], data={"id": self.thing.fullname})
 
     def unlock(self):
         """Unlock a :class:`.Comment` or :class:`.Submission`.
