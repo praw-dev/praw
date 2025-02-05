@@ -19,7 +19,7 @@ PRAW: The Python Reddit API Wrapper
 
 .. image:: https://coveralls.io/repos/github/praw-dev/praw/badge.svg
     :alt: Coveralls Coverage
-    :target: https://coveralls.io/github/praw-dev/praw?branch=master
+    :target: https://coveralls.io/github/praw-dev/praw?branch=main
 
 .. image:: https://api.securityscorecards.dev/projects/github.com/praw-dev/praw/badge
     :alt: OpenSSF Scorecard
@@ -59,7 +59,7 @@ To install the latest development version of PRAW run the following instead:
 
 .. code-block:: bash
 
-    pip install --upgrade https://github.com/praw-dev/praw/archive/master.zip
+    pip install --upgrade https://github.com/praw-dev/praw/archive/main.zip
 
 For instructions on installing Python and pip see "The Hitchhiker's Guide to Python"
 `Installation Guides <https://docs.python-guide.org/en/latest/starting/installation/>`_.

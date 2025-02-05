@@ -130,4 +130,4 @@ Please also read `Contributing to PRAW`_.
 
 .. _slack: https://join.slack.com/t/praw/shared_invite/enQtOTUwMDcxOTQ0NzY5LWVkMGQ3ZDk5YmQ5MDEwYTZmMmJkMTJkNjBkNTY3OTU0Y2E2NGRlY2ZhZTAzMWZmMWRiMTMwYjdjODkxOGYyZjY
 
-.. _unreleased: https://github.com/praw-dev/praw/blob/master/CHANGES.rst#unreleased
+.. _unreleased: https://github.com/praw-dev/praw/blob/main/CHANGES.rst#unreleased

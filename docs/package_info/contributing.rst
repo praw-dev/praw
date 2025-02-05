@@ -304,7 +304,7 @@ Please also read the `Contributing Guidelines`_
 
 .. _commit 280525c16ba28cdd69cdbb272a0e2764b1c7e6a0: https://github.com/praw-dev/praw/commit/280525c16ba28cdd69cdbb272a0e2764b1c7e6a0
 
-.. _contributing guidelines: https://github.com/praw-dev/praw/blob/master/.github/CONTRIBUTING.rst
+.. _contributing guidelines: https://github.com/praw-dev/praw/blob/main/.github/CONTRIBUTING.rst
 
 .. _coveralls: https://coveralls.io/github/praw-dev/praw
 
