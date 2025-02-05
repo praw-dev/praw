@@ -52,8 +52,7 @@ class CommentForest:
             self._comments.append(comment)
         else:
             assert comment.parent_id in self._submission._comments_by_id, (
-                "PRAW Error occurred. Please file a bug report and include the code"
-                " that caused the error."
+                "PRAW Error occurred. Please file a bug report and include the code that caused the error."
             )
             parent = self._submission._comments_by_id[comment.parent_id]
             parent.replies._comments.append(comment)
@@ -120,9 +119,7 @@ class CommentForest:
             comment.submission = self._submission
 
     @_deprecate_args("limit", "threshold")
-    def replace_more(
-        self, *, limit: int | None = 32, threshold: int = 0
-    ) -> list[praw.models.MoreComments]:
+    def replace_more(self, *, limit: int | None = 32, threshold: int = 0) -> list[praw.models.MoreComments]:
         """Update the comment forest by resolving instances of :class:`.MoreComments`.
 
         :param limit: The maximum number of :class:`.MoreComments` instances to replace.
@@ -194,9 +191,7 @@ class CommentForest:
                 remaining -= 1
 
             # Add new MoreComment objects to the heap of more_comments
-            for more in self._gather_more_comments(
-                new_comments, parent_tree=self._comments
-            ):
+            for more in self._gather_more_comments(new_comments, parent_tree=self._comments):
                 more.submission = self._submission
                 heappush(more_comments, more)
             # Insert all items into the tree

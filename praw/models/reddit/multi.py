@@ -129,9 +129,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
             reddit.multireddit(redditor="bboe", name="test").add(subreddit)
 
         """
-        url = API_PATH["multireddit_update"].format(
-            multi=self.name, user=self._author, subreddit=subreddit
-        )
+        url = API_PATH["multireddit_update"].format(multi=self.name, user=self._author, subreddit=subreddit)
         self._reddit.put(url, data={"model": dumps({"name": str(subreddit)})})
         self._reset_attributes("subreddits")
 
@@ -158,9 +156,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         data = {
             "display_name": display_name,
             "from": self.path,
-            "to": API_PATH["multireddit"].format(
-                multi=name, user=self._reddit.user.me()
-            ),
+            "to": API_PATH["multireddit"].format(multi=name, user=self._reddit.user.me()),
         }
         return self._reddit.post(API_PATH["multireddit_copy"], data=data)
 
@@ -174,9 +170,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
             reddit.multireddit(redditor="bboe", name="test").delete()
 
         """
-        path = API_PATH["multireddit_api"].format(
-            multi=self.name, user=self._author.name
-        )
+        path = API_PATH["multireddit_api"].format(multi=self.name, user=self._author.name)
         self._reddit.delete(path)
 
     def remove(self, subreddit: praw.models.Subreddit):
@@ -192,9 +186,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
             reddit.multireddit(redditor="bboe", name="test").remove(subreddit)
 
         """
-        url = API_PATH["multireddit_update"].format(
-            multi=self.name, user=self._author, subreddit=subreddit
-        )
+        url = API_PATH["multireddit_update"].format(multi=self.name, user=self._author, subreddit=subreddit)
         self._reddit.delete(url, data={"model": dumps({"name": str(subreddit)})})
         self._reset_attributes("subreddits")
 
@@ -230,11 +222,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         """
         if "subreddits" in updated_settings:
-            updated_settings["subreddits"] = [
-                {"name": str(sub)} for sub in updated_settings["subreddits"]
-            ]
-        path = API_PATH["multireddit_api"].format(
-            multi=self.name, user=self._author.name
-        )
+            updated_settings["subreddits"] = [{"name": str(sub)} for sub in updated_settings["subreddits"]]
+        path = API_PATH["multireddit_api"].format(multi=self.name, user=self._author.name)
         new = self._reddit.put(path, data={"model": dumps(updated_settings)})
         self.__dict__.update(new.__dict__)

@@ -41,9 +41,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
     STR_FIELD = "id"
 
     @classmethod
-    def parse(
-        cls, data: dict[str, Any], reddit: praw.Reddit
-    ) -> Message | SubredditMessage:
+    def parse(cls, data: dict[str, Any], reddit: praw.Reddit) -> Message | SubredditMessage:
         """Return an instance of :class:`.Message` or :class:`.SubredditMessage` from ``data``.
 
         :param data: The structured data.

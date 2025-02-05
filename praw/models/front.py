@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterator
+from typing import TYPE_CHECKING
 from urllib.parse import urljoin
 
 from .listing.generator import ListingGenerator
 from .listing.mixins import SubredditListingMixin
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Iterator
+
     import praw.models
 
 
@@ -27,6 +29,4 @@ class Front(SubredditListingMixin):
         :class:`.ListingGenerator`.
 
         """
-        return ListingGenerator(
-            self._reddit, urljoin(self._path, "best"), **generator_kwargs
-        )
+        return ListingGenerator(self._reddit, urljoin(self._path, "best"), **generator_kwargs)

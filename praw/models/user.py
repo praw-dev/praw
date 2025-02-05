@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterator
+from typing import TYPE_CHECKING
 from warnings import warn
 
 from prawcore import Conflict
@@ -18,6 +18,8 @@ from .reddit.redditor import Redditor
 from .reddit.subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Iterator
+
     import praw.models
 
 
@@ -66,9 +68,7 @@ class User(PRAWBase):
         r"""Return a :class:`.RedditorList` of blocked :class:`.Redditor`\ s."""
         return self._reddit.get(API_PATH["blocked"])
 
-    def contributor_subreddits(
-        self, **generator_kwargs: str | int | dict[str, str]
-    ) -> Iterator[praw.models.Subreddit]:
+    def contributor_subreddits(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.Subreddit]:
         r"""Return a :class:`.ListingGenerator` of contributor :class:`.Subreddit`\ s.
 
         These are subreddits in which the user is an approved user.
@@ -84,9 +84,7 @@ class User(PRAWBase):
                 print(str(subreddit))
 
         """
-        return ListingGenerator(
-            self._reddit, API_PATH["my_contributor"], **generator_kwargs
-        )
+        return ListingGenerator(self._reddit, API_PATH["my_contributor"], **generator_kwargs)
 
     @_deprecate_args("user")
     def friends(
@@ -105,11 +103,7 @@ class User(PRAWBase):
             the specified :class:`.Redditor`.
 
         """
-        endpoint = (
-            API_PATH["friends"]
-            if user is None
-            else API_PATH["friend_v1"].format(user=str(user))
-        )
+        endpoint = API_PATH["friends"] if user is None else API_PATH["friend_v1"].format(user=str(user))
         return self._reddit.get(endpoint)
 
     def karma(self) -> dict[praw.models.Subreddit, dict[str, int]]:
@@ -171,9 +165,7 @@ class User(PRAWBase):
             self._me = Redditor(self._reddit, _data=user_data)
         return self._me
 
-    def moderator_subreddits(
-        self, **generator_kwargs: str | int | dict[str, str]
-    ) -> Iterator[praw.models.Subreddit]:
+    def moderator_subreddits(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.Subreddit]:
         """Return a :class:`.ListingGenerator` subreddits that the user moderates.
 
         Additional keyword arguments are passed in the initialization of
@@ -191,17 +183,13 @@ class User(PRAWBase):
             :meth:`.Redditor.moderated`
 
         """
-        return ListingGenerator(
-            self._reddit, API_PATH["my_moderator"], **generator_kwargs
-        )
+        return ListingGenerator(self._reddit, API_PATH["my_moderator"], **generator_kwargs)
 
     def multireddits(self) -> list[praw.models.Multireddit]:
         r"""Return a list of :class:`.Multireddit`\ s belonging to the user."""
         return self._reddit.get(API_PATH["my_multireddits"])
 
-    def pin(
-        self, submission: praw.models.Submission, *, num: int = None, state: bool = True
-    ) -> praw.models.Submission:
+    def pin(self, submission: praw.models.Submission, *, num: int = None, state: bool = True) -> praw.models.Submission:
         """Set the pin state of a submission on the authenticated user's profile.
 
         :param submission: An instance of :class:`.Submission` that will be
@@ -257,9 +245,7 @@ class User(PRAWBase):
         except Conflict:
             pass
 
-    def subreddits(
-        self, **generator_kwargs: str | int | dict[str, str]
-    ) -> Iterator[praw.models.Subreddit]:
+    def subreddits(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.Subreddit]:
         r"""Return a :class:`.ListingGenerator` of :class:`.Subreddit`\ s the user is subscribed to.
 
         Additional keyword arguments are passed in the initialization of
@@ -273,9 +259,7 @@ class User(PRAWBase):
                 print(str(subreddit))
 
         """
-        return ListingGenerator(
-            self._reddit, API_PATH["my_subreddits"], **generator_kwargs
-        )
+        return ListingGenerator(self._reddit, API_PATH["my_subreddits"], **generator_kwargs)
 
     def trusted(self) -> list[praw.models.Redditor]:
         r"""Return a :class:`.RedditorList` of trusted :class:`.Redditor`\ s.

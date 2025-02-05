@@ -22,7 +22,7 @@ class TestMessage(UnitTest):
         assert message1 == message2
         assert message2 != message3
         assert message1 != message3
-        assert "1" == message1
+        assert message1 == "1"
         assert message1 == "1"
 
     def test_fullname(self, reddit):

@@ -74,22 +74,14 @@ class Draft(RedditBase):
             "title": title,
         }
         if subreddit:
-            data.update(
-                {
-                    "subreddit": subreddit.fullname,
-                    "target": (
-                        "profile"
-                        if subreddit.display_name.startswith("u_")
-                        else "subreddit"
-                    ),
-                }
-            )
+            data.update({
+                "subreddit": subreddit.fullname,
+                "target": ("profile" if subreddit.display_name.startswith("u_") else "subreddit"),
+            })
         data.update(draft_kwargs)
         return data
 
-    def __init__(
-        self, reddit: praw.Reddit, id: str | None = None, _data: dict[str, Any] = None
-    ):
+    def __init__(self, reddit: praw.Reddit, id: str | None = None, _data: dict[str, Any] = None):
         """Initialize a :class:`.Draft` instance."""
         if (id, _data).count(None) != 1:
             msg = "Exactly one of 'id' or '_data' must be provided."
@@ -108,9 +100,7 @@ class Draft(RedditBase):
     def __repr__(self) -> str:
         """Return an object initialization representation of the instance."""
         if self._fetched:
-            subreddit = (
-                f" subreddit={self.subreddit.display_name!r}" if self.subreddit else ""
-            )
+            subreddit = f" subreddit={self.subreddit.display_name!r}" if self.subreddit else ""
             title = f" title={self.title!r}" if self.title else ""
             return f"{self.__class__.__name__}(id={self.id!r}{subreddit}{title})"
         return f"{self.__class__.__name__}(id={self.id!r})"
@@ -121,9 +111,7 @@ class Draft(RedditBase):
                 self.__dict__.update(draft.__dict__)
                 super()._fetch()
                 return
-        msg = (
-            f"The currently authenticated user not have a draft with an ID of {self.id}"
-        )
+        msg = f"The currently authenticated user not have a draft with an ID of {self.id}"
         raise ClientException(msg)
 
     def delete(self):
@@ -147,9 +135,7 @@ class Draft(RedditBase):
         nsfw: bool | None = None,
         selftext: str | None = None,
         spoiler: bool | None = None,
-        subreddit: (
-            str | praw.models.Subreddit | praw.models.UserSubreddit | None
-        ) = None,
+        subreddit: (str | praw.models.Subreddit | praw.models.UserSubreddit | None) = None,
         title: str | None = None,
         url: str | None = None,
         **submit_kwargs: Any,
@@ -240,9 +226,7 @@ class Draft(RedditBase):
         selftext: str | None = None,
         send_replies: bool | None = None,
         spoiler: bool | None = None,
-        subreddit: (
-            str | praw.models.Subreddit | praw.models.UserSubreddit | None
-        ) = None,
+        subreddit: (str | praw.models.Subreddit | praw.models.UserSubreddit | None) = None,
         title: str | None = None,
         url: str | None = None,
         **draft_kwargs: Any,

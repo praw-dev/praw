@@ -39,7 +39,7 @@ class TestDraft(UnitTest):
         assert draft1 == draft2
         assert draft2 != draft3
         assert draft1 != draft3
-        assert "dummy1" == draft1
+        assert draft1 == "dummy1"
         assert draft2 == "dummy1"
 
         draft1 = Draft(

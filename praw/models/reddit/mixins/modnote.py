@@ -2,18 +2,18 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Generator
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Generator
+
     import praw.models
 
 
 class ModNoteMixin:
     """Interface for classes that can have a moderator note set on them."""
 
-    def author_notes(
-        self, **generator_kwargs: Any
-    ) -> Generator[praw.models.ModNote, None, None]:
+    def author_notes(self, **generator_kwargs: Any) -> Generator[praw.models.ModNote, None, None]:
         """Get the moderator notes for the author of this object in the subreddit it's posted in.
 
         :param generator_kwargs: Additional keyword arguments are passed in the
@@ -29,13 +29,9 @@ class ModNoteMixin:
                 print(f"{note.label}: {note.note}")
 
         """
-        return self.thing.subreddit.mod.notes.redditors(
-            self.thing.author, **generator_kwargs
-        )
+        return self.thing.subreddit.mod.notes.redditors(self.thing.author, **generator_kwargs)
 
-    def create_note(
-        self, *, label: str | None = None, note: str, **other_settings: Any
-    ) -> praw.models.ModNote:
+    def create_note(self, *, label: str | None = None, note: str, **other_settings: Any) -> praw.models.ModNote:
         """Create a moderator note on the author of this object in the subreddit it's posted in.
 
         :param label: The label for the note. As of this writing, this can be one of the
@@ -56,6 +52,4 @@ class ModNoteMixin:
             reddit.submission("92dd8").mod.create_note(label="HELPFUL_USER", note="Test note")
 
         """
-        return self.thing.subreddit.mod.notes.create(
-            label=label, note=note, thing=self.thing, **other_settings
-        )
+        return self.thing.subreddit.mod.notes.create(label=label, note=note, thing=self.thing, **other_settings)

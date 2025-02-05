@@ -8,12 +8,12 @@ from csv import writer
 from io import StringIO
 from json import dumps, loads
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Generator, Iterator
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
 from warnings import warn
-from xml.etree.ElementTree import XML
 
 import websocket
+from defusedxml import ElementTree
 from prawcore import Redirect
 from prawcore.exceptions import ServerError
 from requests.exceptions import HTTPError
@@ -41,6 +41,8 @@ from .widgets import SubredditWidgets, WidgetEncoder
 from .wikipage import WikiPage
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Generator, Iterator
+
     from requests import Response
 
     import praw.models
@@ -58,9 +60,7 @@ class Modmail:
 
     """
 
-    def __call__(
-        self, id: str | None = None, mark_read: bool = False
-    ) -> ModmailConversation:
+    def __call__(self, id: str | None = None, mark_read: bool = False) -> ModmailConversation:
         """Return an individual conversation.
 
         :param id: A reddit base36 conversation ID, e.g., ``"2gmz"``.
@@ -107,9 +107,7 @@ class Modmail:
         """Initialize a :class:`.Modmail` instance."""
         self.subreddit = subreddit
 
-    def _build_subreddit_list(
-        self, other_subreddits: list[praw.models.Subreddit] | None
-    ):
+    def _build_subreddit_list(self, other_subreddits: list[praw.models.Subreddit] | None):
         """Return a comma-separated list of subreddit display names."""
         subreddits = [self.subreddit] + (other_subreddits or [])
         return ",".join(str(subreddit) for subreddit in subreddits)
@@ -150,12 +148,8 @@ class Modmail:
         params = {"entity": self._build_subreddit_list(other_subreddits)}
         if state:
             params["state"] = state
-        response = self.subreddit._reddit.post(
-            API_PATH["modmail_bulk_read"], params=params
-        )
-        return [
-            self(conversation_id) for conversation_id in response["conversation_ids"]
-        ]
+        response = self.subreddit._reddit.post(API_PATH["modmail_bulk_read"], params=params)
+        return [self(conversation_id) for conversation_id in response["conversation_ids"]]
 
     @_deprecate_args("after", "other_subreddits", "sort", "state")
     def conversations(
@@ -206,17 +200,14 @@ class Modmail:
         params = {}
         if after:
             warn(
-                "The 'after' argument is deprecated and should be moved to the 'params'"
-                " dictionary argument.",
+                "The 'after' argument is deprecated and should be moved to the 'params' dictionary argument.",
                 category=DeprecationWarning,
                 stacklevel=3,
             )
             params["after"] = after
         if self.subreddit != "all":
             params["entity"] = self._build_subreddit_list(other_subreddits)
-        Subreddit._safely_add_arguments(
-            arguments=generator_kwargs, key="params", sort=sort, state=state, **params
-        )
+        Subreddit._safely_add_arguments(arguments=generator_kwargs, key="params", sort=sort, state=state, **params)
         return ListingGenerator(
             self.subreddit._reddit,
             API_PATH["modmail_conversations"],
@@ -331,9 +322,7 @@ class SubredditFilters:
                 ...
 
         """
-        url = API_PATH["subreddit_filter_list"].format(
-            special=self.subreddit, user=self.subreddit._reddit.user.me()
-        )
+        url = API_PATH["subreddit_filter_list"].format(special=self.subreddit, user=self.subreddit._reddit.user.me())
         params = {"unique": self.subreddit._reddit._next_unique}
         response_data = self.subreddit._reddit.get(url, params=params)
         yield from response_data.subreddits
@@ -439,9 +428,7 @@ class SubredditFlair:
                 print(flair)
 
         """
-        Subreddit._safely_add_arguments(
-            arguments=generator_kwargs, key="params", name=redditor
-        )
+        Subreddit._safely_add_arguments(arguments=generator_kwargs, key="params", name=redditor)
         generator_kwargs.setdefault("limit", None)
         url = API_PATH["flairlist"].format(subreddit=self.subreddit)
         return ListingGenerator(self.subreddit._reddit, url, **generator_kwargs)
@@ -564,9 +551,7 @@ class SubredditFlair:
     @_deprecate_args("flair_list", "text", "css_class")
     def update(
         self,
-        flair_list: Iterator[
-            str | praw.models.Redditor | dict[str, str | praw.models.Redditor]
-        ],
+        flair_list: Iterator[str | praw.models.Redditor | dict[str, str | praw.models.Redditor]],
         *,
         text: str = "",
         css_class: str = "",
@@ -601,13 +586,11 @@ class SubredditFlair:
         temp_lines = StringIO()
         for item in flair_list:
             if isinstance(item, dict):
-                writer(temp_lines).writerow(
-                    [
-                        str(item["user"]),
-                        item.get("flair_text", text),
-                        item.get("flair_css_class", css_class),
-                    ]
-                )
+                writer(temp_lines).writerow([
+                    str(item["user"]),
+                    item.get("flair_text", text),
+                    item.get("flair_css_class", css_class),
+                ])
             else:
                 writer(temp_lines).writerow([str(item), text, css_class])
 
@@ -782,9 +765,7 @@ class SubredditFlairTemplates:
             "text_editable": text_editable,
         }
         if fetch:
-            _existing_data = [
-                template for template in iter(self) if template["id"] == template_id
-            ]
+            _existing_data = [template for template in iter(self) if template["id"] == template_id]
             if len(_existing_data) != 1:
                 raise InvalidFlairTemplateID(template_id)
             existing_data = _existing_data[0]
@@ -810,9 +791,7 @@ class SubredditModeration:
         if only is not None:
             if only == "submissions":
                 only = "links"
-            RedditBase._safely_add_arguments(
-                arguments=generator_kwargs, key="params", only=only
-            )
+            RedditBase._safely_add_arguments(arguments=generator_kwargs, key="params", only=only)
 
     @cachedproperty
     def notes(self) -> praw.models.SubredditModNotes:
@@ -830,7 +809,7 @@ class SubredditModeration:
                 print(f"{note.label}: {note.note}")
 
         """
-        from praw.models.mod_notes import SubredditModNotes
+        from praw.models.mod_notes import SubredditModNotes  # noqa: PLC0415
 
         return SubredditModNotes(self.subreddit._reddit, subreddit=self.subreddit)
 
@@ -982,9 +961,7 @@ class SubredditModeration:
 
         """
         params = {"mod": str(mod) if mod else mod, "type": action}
-        Subreddit._safely_add_arguments(
-            arguments=generator_kwargs, key="params", **params
-        )
+        Subreddit._safely_add_arguments(arguments=generator_kwargs, key="params", **params)
         return ListingGenerator(
             self.subreddit._reddit,
             API_PATH["about_log"].format(subreddit=self.subreddit),
@@ -1372,9 +1349,7 @@ class SubredditModerationStream:
                 print(item)
 
         """
-        return stream_generator(
-            self.subreddit.mod.modqueue, only=only, **stream_options
-        )
+        return stream_generator(self.subreddit.mod.modqueue, only=only, **stream_options)
 
     @_deprecate_args("only")
     def reports(
@@ -1418,9 +1393,7 @@ class SubredditModerationStream:
         """
         return stream_generator(self.subreddit.mod.spam, only=only, **stream_options)
 
-    def unmoderated(
-        self, **stream_options: Any
-    ) -> Generator[praw.models.Submission, None, None]:
+    def unmoderated(self, **stream_options: Any) -> Generator[praw.models.Submission, None, None]:
         r"""Yield unmoderated :class:`.Submission`\ s as they become available.
 
         Keyword arguments are passed to :func:`.stream_generator`.
@@ -1435,9 +1408,7 @@ class SubredditModerationStream:
         """
         return stream_generator(self.subreddit.mod.unmoderated, **stream_options)
 
-    def unread(
-        self, **stream_options: Any
-    ) -> Generator[praw.models.SubredditMessage, None, None]:
+    def unread(self, **stream_options: Any) -> Generator[praw.models.SubredditMessage, None, None]:
         """Yield unread old modmail messages as they become available.
 
         Keyword arguments are passed to :func:`.stream_generator`.
@@ -1543,9 +1514,7 @@ class SubredditRelationship:
         :class:`.ListingGenerator`.
 
         """
-        Subreddit._safely_add_arguments(
-            arguments=generator_kwargs, key="params", user=redditor
-        )
+        Subreddit._safely_add_arguments(arguments=generator_kwargs, key="params", user=redditor)
         url = API_PATH[f"list_{self.relationship}"].format(subreddit=self.subreddit)
         return ListingGenerator(self.subreddit._reddit, url, **generator_kwargs)
 
@@ -1592,9 +1561,7 @@ class SubredditStream:
         """
         self.subreddit = subreddit
 
-    def comments(
-        self, **stream_options: Any
-    ) -> Generator[praw.models.Comment, None, None]:
+    def comments(self, **stream_options: Any) -> Generator[praw.models.Comment, None, None]:
         """Yield new comments as they become available.
 
         Comments are yielded oldest first. Up to 100 historical comments will initially
@@ -1626,9 +1593,7 @@ class SubredditStream:
         """
         return stream_generator(self.subreddit.comments, **stream_options)
 
-    def submissions(
-        self, **stream_options: Any
-    ) -> Generator[praw.models.Submission, None, None]:
+    def submissions(self, **stream_options: Any) -> Generator[praw.models.Submission, None, None]:
         r"""Yield new :class:`.Submission`\ s as they become available.
 
         Submissions are yielded oldest first. Up to 100 historical submissions will
@@ -1697,24 +1662,20 @@ class SubredditStylesheet:
         url = API_PATH["structured_styles"].format(subreddit=self.subreddit)
         self.subreddit._reddit.patch(url, data=style_data)
 
-    def _upload_image(
-        self, *, data: dict[str, str | Any], image_path: str
-    ) -> dict[str, Any]:
+    def _upload_image(self, *, data: dict[str, str | Any], image_path: str) -> dict[str, Any]:
         with Path(image_path).open("rb") as image:
             header = image.read(len(JPEG_HEADER))
             image.seek(0)
             data["img_type"] = "jpg" if header == JPEG_HEADER else "png"
             url = API_PATH["upload_image"].format(subreddit=self.subreddit)
-            response = self.subreddit._reddit.post(
-                url, data=data, files={"file": image}
-            )
+            response = self.subreddit._reddit.post(url, data=data, files={"file": image})
             if response["errors"]:
                 error_type = response["errors"][0]
                 error_value = response.get("errors_values", [""])[0]
-                assert error_type in [
+                assert error_type in {
                     "BAD_CSS_NAME",
                     "IMAGE_ERROR",
-                ], "Please file a bug with PRAW."
+                }, "Please file a bug with PRAW."
                 raise RedditAPIException([[error_type, error_value, None]])
             return response
 
@@ -1904,9 +1865,7 @@ class SubredditStylesheet:
             reddit.subreddit("test").stylesheet.upload(name="smile", image_path="img.png")
 
         """
-        return self._upload_image(
-            data={"name": name, "upload_type": "img"}, image_path=image_path
-        )
+        return self._upload_image(data={"name": name, "upload_type": "img"}, image_path=image_path)
 
     def upload_banner(self, image_path: str):
         """Upload an image for the :class:`.Subreddit`'s (redesign) banner image.
@@ -1927,9 +1886,7 @@ class SubredditStylesheet:
 
         """
         image_type = "bannerBackgroundImage"
-        image_url = self._upload_style_asset(
-            image_path=image_path, image_type=image_type
-        )
+        image_url = self._upload_style_asset(image_path=image_path, image_type=image_type)
         self._update_structured_styles({image_type: image_url})
 
     @_deprecate_args("image_path", "align")
@@ -1967,9 +1924,7 @@ class SubredditStylesheet:
             alignment["bannerPositionedImagePosition"] = align
 
         image_type = "bannerPositionedImage"
-        image_url = self._upload_style_asset(
-            image_path=image_path, image_type=image_type
-        )
+        image_url = self._upload_style_asset(image_path=image_path, image_type=image_type)
         style_data = {image_type: image_url}
         if alignment:
             style_data.update(alignment)
@@ -1997,9 +1952,7 @@ class SubredditStylesheet:
 
         """
         image_type = "secondaryBannerPositionedImage"
-        image_url = self._upload_style_asset(
-            image_path=image_path, image_type=image_type
-        )
+        image_url = self._upload_style_asset(image_path=image_path, image_type=image_type)
         self._update_structured_styles({image_type: image_url})
 
     def upload_header(self, image_path: str) -> dict[str, str]:
@@ -2047,9 +2000,7 @@ class SubredditStylesheet:
 
         """
         image_type = "mobileBannerImage"
-        image_url = self._upload_style_asset(
-            image_path=image_path, image_type=image_type
-        )
+        image_url = self._upload_style_asset(image_path=image_path, image_type=image_type)
         self._update_structured_styles({image_type: image_url})
 
     def upload_mobile_header(self, image_path: str) -> dict[str, str]:
@@ -2174,7 +2125,9 @@ class SubredditWiki:
         new.edit(content=content, reason=reason, **other_settings)
         return new
 
-    def revisions(self, **generator_kwargs: Any) -> Generator[
+    def revisions(
+        self, **generator_kwargs: Any
+    ) -> Generator[
         dict[str, praw.models.Redditor | WikiPage | str | int | bool | None],
         None,
         None,
@@ -2193,9 +2146,7 @@ class SubredditWiki:
 
         """
         url = API_PATH["wiki_revisions"].format(subreddit=self.subreddit)
-        return WikiPage._revision_generator(
-            generator_kwargs=generator_kwargs, subreddit=self.subreddit, url=url
-        )
+        return WikiPage._revision_generator(generator_kwargs=generator_kwargs, subreddit=self.subreddit, url=url)
 
 
 class ContributorRelationship(SubredditRelationship):
@@ -2214,9 +2165,7 @@ class ContributorRelationship(SubredditRelationship):
 
     def leave(self):
         """Abdicate the contributor position."""
-        self.subreddit._reddit.post(
-            API_PATH["leavecontributor"], data={"id": self.subreddit.fullname}
-        )
+        self.subreddit._reddit.post(API_PATH["leavecontributor"], data={"id": self.subreddit.fullname})
 
 
 class ModeratorRelationship(SubredditRelationship):
@@ -2254,9 +2203,7 @@ class ModeratorRelationship(SubredditRelationship):
         )
         return other_settings
 
-    def __call__(
-        self, redditor: str | praw.models.Redditor | None = None
-    ) -> list[praw.models.Redditor]:
+    def __call__(self, redditor: str | praw.models.Redditor | None = None) -> list[praw.models.Redditor]:
         r"""Return a list of :class:`.Redditor`\ s who are moderators.
 
         :param redditor: When provided, return a list containing at most one
@@ -2322,9 +2269,7 @@ class ModeratorRelationship(SubredditRelationship):
             reddit.subreddit("test").moderator.add("spez", permissions=["posts", "mail"])
 
         """
-        other_settings = self._handle_permissions(
-            other_settings=other_settings, permissions=permissions
-        )
+        other_settings = self._handle_permissions(other_settings=other_settings, permissions=permissions)
         super().add(redditor, **other_settings)
 
     @_deprecate_args("redditor", "permissions")
@@ -2351,9 +2296,7 @@ class ModeratorRelationship(SubredditRelationship):
             reddit.subreddit("test").moderator.invite("spez", permissions=["posts", "mail"])
 
         """
-        data = self._handle_permissions(
-            other_settings=other_settings, permissions=permissions
-        )
+        data = self._handle_permissions(other_settings=other_settings, permissions=permissions)
         data.update({"name": str(redditor), "type": "moderator_invite"})
         url = API_PATH["friend"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
@@ -2403,9 +2346,7 @@ class ModeratorRelationship(SubredditRelationship):
             reddit.subreddit("test").moderator.leave()
 
         """
-        self.remove(
-            self.subreddit._reddit.config.username or self.subreddit._reddit.user.me()
-        )
+        self.remove(self.subreddit._reddit.config.username or self.subreddit._reddit.user.me())
 
     def remove_invite(self, redditor: str | praw.models.Redditor):
         """Remove the moderator invite for ``redditor``.
@@ -2642,6 +2583,17 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         model.update(other_settings)
 
         _reddit.post(API_PATH["site_admin"], data=model)
+
+    @staticmethod
+    def _parse_xml_response(response: Response):
+        """Parse the XML from a response and raise any errors found."""
+        xml = response.text
+        root = ElementTree.fromstring(xml)
+        tags = [element.tag for element in root]
+        if tags[:4] == ["Code", "Message", "ProposedSize", "MaxSizeAllowed"]:
+            # Returned if image is too big
+            _code, _message, actual, maximum_size = (element.text for element in root[:4])
+            raise TooLargeMediaException(actual=int(actual), maximum_size=int(maximum_size))
 
     @staticmethod
     def _subreddit_list(
@@ -3036,29 +2988,11 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def _fetch_info(self):
         return "subreddit_about", {"subreddit": self}, None
 
-    def _parse_xml_response(self, response: Response):
-        """Parse the XML from a response and raise any errors found."""
-        xml = response.text
-        root = XML(xml)
-        tags = [element.tag for element in root]
-        if tags[:4] == ["Code", "Message", "ProposedSize", "MaxSizeAllowed"]:
-            # Returned if image is too big
-            code, message, actual, maximum_size = (element.text for element in root[:4])
-            raise TooLargeMediaException(
-                actual=int(actual), maximum_size=int(maximum_size)
-            )
-
-    def _read_and_post_media(
-        self, file: Path, upload_url: str, upload_data: dict[str, Any]
-    ) -> Response:
+    def _read_and_post_media(self, file: Path, upload_url: str, upload_data: dict[str, Any]) -> Response:
         with file.open("rb") as media:
-            return self._reddit._core._requestor._http.post(
-                upload_url, data=upload_data, files={"file": media}
-            )
+            return self._reddit._core._requestor._http.post(upload_url, data=upload_data, files={"file": media})
 
-    def _submit_media(
-        self, *, data: dict[Any, Any], timeout: int, without_websockets: bool
-    ):
+    def _submit_media(self, *, data: dict[Any, Any], timeout: int, without_websockets: bool):
         """Submit and return an ``image``, ``video``, or ``videogif``.
 
         This is a helper method for submitting posts that are not link posts or self
@@ -3103,9 +3037,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         """
         self._validate_inline_media(inline_media)
-        inline_media.media_id = self._upload_media(
-            media_path=inline_media.path, upload_type="selfpost"
-        )
+        inline_media.media_id = self._upload_media(media_path=inline_media.path, upload_type="selfpost")
         return inline_media
 
     def _upload_media(
@@ -3142,13 +3074,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             "jpg": "image/jpeg",
             "jpeg": "image/jpeg",
             "gif": "image/gif",
-        }.get(
-            file_extension, "image/jpeg"
-        )  # default to JPEG
-        if (
-            expected_mime_prefix is not None
-            and mime_type.partition("/")[0] != expected_mime_prefix
-        ):
+        }.get(file_extension, "image/jpeg")  # default to JPEG
+        if expected_mime_prefix is not None and mime_type.partition("/")[0] != expected_mime_prefix:
             msg = f"Expected a mimetype starting with {expected_mime_prefix!r} but got mimetype {mime_type!r} (from file extension {file_extension!r})."
             raise ClientException(msg)
         img_data = {"filepath": file_name, "mimetype": mime_type}
@@ -3207,9 +3134,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             print(reddit.subreddit("test").post_requirements)
 
         """
-        return self._reddit.get(
-            API_PATH["post_requirements"].format(subreddit=str(self))
-        )
+        return self._reddit.get(API_PATH["post_requirements"].format(subreddit=str(self)))
 
     def random(self) -> praw.models.Submission | None:
         """Return a random :class:`.Submission`.
@@ -3231,9 +3156,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         except Redirect as redirect:
             path = redirect.path
         try:
-            return self._submission_class(
-                self._reddit, url=urljoin(self._reddit.config.reddit_url, path)
-            )
+            return self._submission_class(self._reddit, url=urljoin(self._reddit.config.reddit_url, path))
         except ClientException:
             return None
 
@@ -3303,9 +3226,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             self._reddit.get(url, params={"num": number})
         except Redirect as redirect:
             path = redirect.path
-        return self._submission_class(
-            self._reddit, url=urljoin(self._reddit.config.reddit_url, path)
-        )
+        return self._submission_class(self._reddit, url=urljoin(self._reddit.config.reddit_url, path))
 
     @_deprecate_args(
         "title",
@@ -3431,7 +3352,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
 
         """
-        if (bool(selftext) or selftext == "") == bool(url):
+        if (bool(selftext) or selftext == "") == bool(url):  # noqa: PLC1901
             msg = "Either 'selftext' or 'url' must be provided."
             raise TypeError(msg)
 
@@ -3456,12 +3377,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         if selftext is not None:
             data.update(kind="self")
             if inline_media:
-                body = selftext.format(
-                    **{
-                        placeholder: self._upload_inline_media(media)
-                        for placeholder, media in inline_media.items()
-                    }
-                )
+                body = selftext.format(**{
+                    placeholder: self._upload_inline_media(media) for placeholder, media in inline_media.items()
+                })
                 converted = self._convert_to_fancypants(body)
                 data.update(richtext_json=dumps(converted))
             else:
@@ -3571,20 +3489,16 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             if value is not None:
                 data[key] = value
         for image in images:
-            data["items"].append(
-                {
-                    "caption": image.get("caption", ""),
-                    "outbound_url": image.get("outbound_url", ""),
-                    "media_id": self._upload_media(
-                        expected_mime_prefix="image",
-                        media_path=image["image_path"],
-                        upload_type="gallery",
-                    ),
-                }
-            )
-        response = self._reddit.request(
-            json=data, method="POST", path=API_PATH["submit_gallery_post"]
-        )["json"]
+            data["items"].append({
+                "caption": image.get("caption", ""),
+                "outbound_url": image.get("outbound_url", ""),
+                "media_id": self._upload_media(
+                    expected_mime_prefix="image",
+                    media_path=image["image_path"],
+                    upload_type="gallery",
+                ),
+            })
+        response = self._reddit.request(json=data, method="POST", path=API_PATH["submit_gallery_post"])["json"]
         if response["errors"]:
             raise RedditAPIException(response["errors"])
         return self._reddit.submission(url=response["data"]["url"])
@@ -3698,13 +3612,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             if value is not None:
                 data[key] = value
 
-        image_url = self._upload_media(
-            expected_mime_prefix="image", media_path=image_path
-        )
+        image_url = self._upload_media(expected_mime_prefix="image", media_path=image_path)
         data.update(kind="image", url=image_url)
-        return self._submit_media(
-            data=data, timeout=timeout, without_websockets=without_websockets
-        )
+        return self._submit_media(data=data, timeout=timeout, without_websockets=without_websockets)
 
     @_deprecate_args(
         "title",
@@ -3921,18 +3831,14 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             if value is not None:
                 data[key] = value
 
-        video_url = self._upload_media(
-            expected_mime_prefix="video", media_path=video_path
-        )
+        video_url = self._upload_media(expected_mime_prefix="video", media_path=video_path)
         data.update(
             kind="videogif" if videogif else "video",
             url=video_url,
             # if thumbnail_path is None, it uploads the PRAW logo
             video_poster_url=self._upload_media(media_path=thumbnail_path),
         )
-        return self._submit_media(
-            data=data, timeout=timeout, without_websockets=without_websockets
-        )
+        return self._submit_media(data=data, timeout=timeout, without_websockets=without_websockets)
 
     @_deprecate_args("other_subreddits")
     def subscribe(self, *, other_subreddits: list[praw.models.Subreddit] | None = None):
@@ -3951,9 +3857,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         data = {
             "action": "sub",
             "skip_inital_defaults": True,
-            "sr_name": self._subreddit_list(
-                other_subreddits=other_subreddits, subreddit=self
-            ),
+            "sr_name": self._subreddit_list(other_subreddits=other_subreddits, subreddit=self),
         }
         self._reddit.post(API_PATH["subscribe"], data=data)
 
@@ -3986,9 +3890,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return self._reddit.get(API_PATH["about_traffic"].format(subreddit=self))
 
     @_deprecate_args("other_subreddits")
-    def unsubscribe(
-        self, *, other_subreddits: list[praw.models.Subreddit] | None = None
-    ):
+    def unsubscribe(self, *, other_subreddits: list[praw.models.Subreddit] | None = None):
         """Unsubscribe from the subreddit.
 
         :param other_subreddits: When provided, also unsubscribe from the provided list
@@ -4003,9 +3905,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         """
         data = {
             "action": "unsub",
-            "sr_name": self._subreddit_list(
-                other_subreddits=other_subreddits, subreddit=self
-            ),
+            "sr_name": self._subreddit_list(other_subreddits=other_subreddits, subreddit=self),
         }
         self._reddit.post(API_PATH["subscribe"], data=data)
 
@@ -4137,9 +4037,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         """
         url = API_PATH["flairselector"].format(subreddit=self.subreddit)
-        yield from self.subreddit._reddit.post(url, data={"is_newlink": True})[
-            "choices"
-        ]
+        yield from self.subreddit._reddit.post(url, data={"is_newlink": True})["choices"]
 
 
 class SubredditRedditorFlairTemplates(SubredditFlairTemplates):

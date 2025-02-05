@@ -58,7 +58,7 @@ class TestLiveThread(UnitTest):
         assert thread1 != thread2  # live thread ID in a URL is case sensitive
         assert thread2 != thread3
         assert thread1 != thread3
-        assert "dummy1" == thread1
+        assert thread1 == "dummy1"
         assert thread2 != "dummy1"
         assert thread2 == "Dummy1"
 

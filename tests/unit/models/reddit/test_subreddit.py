@@ -35,7 +35,7 @@ class TestSubreddit(UnitTest):
         assert subreddit1 == subreddit2
         assert subreddit2 != subreddit3
         assert subreddit1 != subreddit3
-        assert "dummy1" == subreddit1
+        assert subreddit1 == "dummy1"
         assert subreddit2 == "dummy1"
 
     def test_fullname(self, reddit):
@@ -242,4 +242,4 @@ class TestSubredditWiki(UnitTest):
         subreddit = Subreddit(reddit, display_name="name")
         wikipage = subreddit.wiki["Foo"]
         assert isinstance(wikipage, WikiPage)
-        assert "foo" == wikipage.name
+        assert wikipage.name == "foo"

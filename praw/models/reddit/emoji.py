@@ -76,9 +76,7 @@ class Emoji(RedditBase):
             reddit.subreddit("test").emoji["emoji"].delete()
 
         """
-        url = API_PATH["emoji_delete"].format(
-            emoji_name=self.name, subreddit=self.subreddit
-        )
+        url = API_PATH["emoji_delete"].format(emoji_name=self.name, subreddit=self.subreddit)
         self._reddit.delete(url)
 
     @_deprecate_args("mod_flair_only", "post_flair_allowed", "user_flair_allowed")
@@ -173,14 +171,8 @@ class SubredditEmoji:
                 print(emoji)
 
         """
-        response = self._reddit.get(
-            API_PATH["emoji_list"].format(subreddit=self.subreddit)
-        )
-        subreddit_keys = [
-            key
-            for key in response
-            if key.startswith(self._reddit.config.kinds["subreddit"])
-        ]
+        response = self._reddit.get(API_PATH["emoji_list"].format(subreddit=self.subreddit))
+        subreddit_keys = [key for key in response if key.startswith(self._reddit.config.kinds["subreddit"])]
         assert len(subreddit_keys) == 1
         for emoji_name, emoji_data in response[subreddit_keys[0]].items():
             yield Emoji(self._reddit, self.subreddit, emoji_name, _data=emoji_data)
@@ -229,9 +221,7 @@ class SubredditEmoji:
         upload_url = f"https:{upload_lease['action']}"
 
         with file.open("rb") as image:
-            response = self._reddit._core._requestor._http.post(
-                upload_url, data=upload_data, files={"file": image}
-            )
+            response = self._reddit._core._requestor._http.post(upload_url, data=upload_data, files={"file": image})
         response.raise_for_status()
 
         data = {

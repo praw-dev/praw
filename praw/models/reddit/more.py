@@ -21,6 +21,10 @@ class MoreComments(PRAWBase):
             return self.count == other.count and self.children == other.children
         return super().__eq__(other)
 
+    def __hash__(self) -> int:
+        """Return the hash of the current instance."""
+        return hash(self.__class__.__name__) ^ hash(str(self))
+
     def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]):
         """Initialize a :class:`.MoreComments` instance."""
         self.count = self.parent_id = None

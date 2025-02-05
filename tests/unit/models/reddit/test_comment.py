@@ -54,7 +54,7 @@ class TestComment(UnitTest):
         assert comment1 == comment2
         assert comment2 != comment3
         assert comment1 != comment3
-        assert "dummy1" == comment1
+        assert comment1 == "dummy1"
         assert comment2 == "dummy1"
 
     def test_hash(self, reddit):

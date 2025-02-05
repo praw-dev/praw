@@ -291,16 +291,12 @@ class SubredditWidgets(PRAWBase):
     @cachedproperty
     def sidebar(self) -> list[praw.models.Widget]:
         r"""Get a list of :class:`.Widget`\ s that make up the sidebar."""
-        return [
-            self.items[widget_name] for widget_name in self.layout["sidebar"]["order"]
-        ]
+        return [self.items[widget_name] for widget_name in self.layout["sidebar"]["order"]]
 
     @cachedproperty
     def topbar(self) -> list[praw.models.Menu]:
         r"""Get a list of :class:`.Widget`\ s that make up the top bar."""
-        return [
-            self.items[widget_name] for widget_name in self.layout["topbar"]["order"]
-        ]
+        return [self.items[widget_name] for widget_name in self.layout["topbar"]["order"]]
 
     def __getattr__(self, attr: str) -> Any:
         """Return the value of ``attr``."""
@@ -387,6 +383,10 @@ class Widget(PRAWBase):
         if isinstance(other, Widget):
             return self.id.lower() == other.id.lower()
         return str(other).lower() == self.id.lower()
+
+    def __hash__(self) -> int:
+        """Return the hash of the current instance."""
+        return hash(self.__class__.__name__) ^ hash(self.id.lower())
 
     def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]):
         """Initialize a :class:`.Widget` instance."""
@@ -707,9 +707,7 @@ class CustomWidget(Widget):
 
     def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]):
         """Initialize a :class:`.CustomWidget` instance."""
-        _data["imageData"] = [
-            ImageData(reddit, data) for data in _data.pop("imageData")
-        ]
+        _data["imageData"] = [ImageData(reddit, data) for data in _data.pop("imageData")]
         super().__init__(reddit, _data=_data)
 
 
@@ -1143,9 +1141,7 @@ class WidgetModeration:
             widget.mod.delete()
 
         """
-        path = API_PATH["widget_modify"].format(
-            widget_id=self.widget.id, subreddit=self._subreddit
-        )
+        path = API_PATH["widget_modify"].format(widget_id=self.widget.id, subreddit=self._subreddit)
         self._reddit.delete(path)
 
     def update(self, **kwargs: Any) -> Widget:
@@ -1169,21 +1165,13 @@ class WidgetModeration:
             check the Reddit documentation linked above.
 
         """
-        path = API_PATH["widget_modify"].format(
-            widget_id=self.widget.id, subreddit=self._subreddit
-        )
-        payload = {
-            key: value
-            for key, value in vars(self.widget).items()
-            if not key.startswith("_")
-        }
+        path = API_PATH["widget_modify"].format(widget_id=self.widget.id, subreddit=self._subreddit)
+        payload = {key: value for key, value in vars(self.widget).items() if not key.startswith("_")}
         del payload["subreddit"]  # not JSON serializable
         if "mod" in payload:
             del payload["mod"]
         payload.update(kwargs)
-        widget = self._reddit.put(
-            path, data={"json": dumps(payload, cls=WidgetEncoder)}
-        )
+        widget = self._reddit.put(path, data={"json": dumps(payload, cls=WidgetEncoder)})
         widget.subreddit = self._subreddit
         return widget
 
@@ -1216,9 +1204,7 @@ class SubredditWidgetsModeration:
 
     def _create_widget(self, payload: dict[str, Any]) -> WidgetType:
         path = API_PATH["widget_create"].format(subreddit=self._subreddit)
-        widget = self._reddit.post(
-            path, data={"json": dumps(payload, cls=WidgetEncoder)}
-        )
+        widget = self._reddit.post(path, data={"json": dumps(payload, cls=WidgetEncoder)})
         widget.subreddit = self._subreddit
         return widget
 
@@ -1362,9 +1348,7 @@ class SubredditWidgetsModeration:
         button_widget.update(other_settings)
         return self._create_widget(button_widget)
 
-    @_deprecate_args(
-        "short_name", "google_calendar_id", "requires_sync", "configuration", "styles"
-    )
+    @_deprecate_args("short_name", "google_calendar_id", "requires_sync", "configuration", "styles")
     def add_calendar(
         self,
         *,
@@ -1816,12 +1800,8 @@ class SubredditWidgetsModeration:
             widgets.mod.reorder(order)
 
         """
-        order = [
-            thing.id if isinstance(thing, Widget) else str(thing) for thing in new_order
-        ]
-        path = API_PATH["widget_order"].format(
-            subreddit=self._subreddit, section=section
-        )
+        order = [thing.id if isinstance(thing, Widget) else str(thing) for thing in new_order]
+        path = API_PATH["widget_order"].format(subreddit=self._subreddit, section=section)
         self._reddit.patch(path, data={"json": dumps(order), "section": section})
 
     def upload_image(self, file_path: str) -> str:
@@ -1863,9 +1843,7 @@ class SubredditWidgetsModeration:
         upload_url = f"https:{upload_lease['action']}"
 
         with file.open("rb") as image:
-            response = self._reddit._core._requestor._http.post(
-                upload_url, data=upload_data, files={"file": image}
-            )
+            response = self._reddit._core._requestor._http.post(upload_url, data=upload_data, files={"file": image})
         response.raise_for_status()
 
         return f"{upload_url}/{upload_data['key']}"

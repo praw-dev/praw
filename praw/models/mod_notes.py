@@ -1,21 +1,23 @@
 """Provides classes for interacting with moderator notes."""
 
+from __future__ import annotations
+
 from itertools import islice
-from typing import TYPE_CHECKING, Any, Generator, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any
 
 from ..const import API_PATH
 from .base import PRAWBase
 from .listing.generator import ListingGenerator
 from .reddit.comment import Comment
-from .reddit.redditor import Redditor
 from .reddit.submission import Submission
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Generator
+
     import praw.models
 
-RedditorType = Union[Redditor, str]
-SubredditType = Union["praw.models.Subreddit", str]
-ThingType = Union[Comment, Submission]
+    from .reddit.redditor import Redditor
+    from .reddit.subreddit import Subreddit
 
 
 class BaseModNotes:
@@ -23,7 +25,7 @@ class BaseModNotes:
 
     def __init__(
         self,
-        reddit: "praw.Reddit",
+        reddit: praw.Reddit,
     ):
         """Initialize a :class:`.BaseModNotes` instance.
 
@@ -34,8 +36,8 @@ class BaseModNotes:
 
     def _all_generator(
         self,
-        redditor: RedditorType,
-        subreddit: SubredditType,
+        redditor: Redditor | str,
+        subreddit: Subreddit | str,
         **generator_kwargs: Any,
     ):
         PRAWBase._safely_add_arguments(
@@ -47,8 +49,8 @@ class BaseModNotes:
         return ListingGenerator(self._reddit, API_PATH["mod_notes"], **generator_kwargs)
 
     def _bulk_generator(
-        self, redditors: List[RedditorType], subreddits: List[SubredditType]
-    ) -> Generator["praw.models.ModNote", None, None]:
+        self, redditors: list[Redditor | str], subreddits: list[Subreddit | str]
+    ) -> Generator[praw.models.ModNote, None, None]:
         subreddits_iter = iter(subreddits)
         redditors_iter = iter(redditors)
         while True:
@@ -74,29 +76,27 @@ class BaseModNotes:
     def _notes(
         self,
         all_notes: bool,
-        redditors: List[RedditorType],
-        subreddits: List[SubredditType],
+        redditors: list[Redditor | str],
+        subreddits: list[Subreddit | str],
         **generator_kwargs: Any,
-    ) -> Generator["praw.models.ModNote", None, None]:
+    ) -> Generator[praw.models.ModNote, None, None]:
         if all_notes:
             for subreddit in subreddits:
                 for redditor in redditors:
-                    yield from self._all_generator(
-                        redditor, subreddit, **generator_kwargs
-                    )
+                    yield from self._all_generator(redditor, subreddit, **generator_kwargs)
         else:
             yield from self._bulk_generator(redditors, subreddits)
 
     def create(
         self,
         *,
-        label: Optional[str] = None,
+        label: str | None = None,
         note: str,
-        redditor: Optional[RedditorType] = None,
-        subreddit: Optional[SubredditType] = None,
-        thing: Optional[Union[Comment, Submission, str]] = None,
+        redditor: Redditor | str | None = None,
+        subreddit: Subreddit | str | None = None,
+        thing: Comment | Submission | str | None = None,
         **other_settings: Any,
-    ) -> "praw.models.ModNote":
+    ) -> praw.models.ModNote:
         """Create a :class:`.ModNote` for a redditor in the specified subreddit.
 
         :param label: The label for the note. As of this writing, this can be one of the
@@ -150,10 +150,7 @@ class BaseModNotes:
             if isinstance(thing, str):
                 reddit_id = thing
                 # this is to minimize the number of requests
-                if not (
-                    getattr(self, "redditor", redditor)
-                    and getattr(self, "subreddit", subreddit)
-                ):
+                if not (getattr(self, "redditor", redditor) and getattr(self, "subreddit", subreddit)):
                     # only fetch if we are missing either redditor or subreddit
                     thing = next(self._reddit.info(fullnames=[thing]))
             else:
@@ -187,9 +184,9 @@ class BaseModNotes:
         self,
         *,
         delete_all: bool = False,
-        note_id: Optional[str] = None,
-        redditor: Optional[RedditorType] = None,
-        subreddit: Optional[SubredditType] = None,
+        note_id: str | None = None,
+        redditor: Redditor | str | None = None,
+        subreddit: Subreddit | str | None = None,
     ):
         """Delete note(s) for a redditor.
 
@@ -292,7 +289,7 @@ class RedditorModNotes(BaseModNotes):
 
     """
 
-    def __init__(self, reddit: "praw.Reddit", redditor: RedditorType):
+    def __init__(self, reddit: praw.Reddit, redditor: Redditor | str):
         """Initialize a :class:`.RedditorModNotes` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -304,10 +301,10 @@ class RedditorModNotes(BaseModNotes):
 
     def subreddits(
         self,
-        *subreddits: SubredditType,
-        all_notes: Optional[bool] = None,
+        *subreddits: Subreddit | str,
+        all_notes: bool | None = None,
         **generator_kwargs: Any,
-    ) -> Generator["praw.models.ModNote", None, None]:
+    ) -> Generator[praw.models.ModNote, None, None]:
         """Return notes for this :class:`.Redditor` from one or more subreddits.
 
         :param subreddits: One or more subreddits to retrieve the notes from. Must be
@@ -388,7 +385,7 @@ class SubredditModNotes(BaseModNotes):
 
     """
 
-    def __init__(self, reddit: "praw.Reddit", subreddit: SubredditType):
+    def __init__(self, reddit: praw.Reddit, subreddit: Subreddit | str):
         """Initialize a :class:`.SubredditModNotes` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -400,10 +397,10 @@ class SubredditModNotes(BaseModNotes):
 
     def redditors(
         self,
-        *redditors: RedditorType,
-        all_notes: Optional[bool] = None,
+        *redditors: Redditor | str,
+        all_notes: bool | None = None,
         **generator_kwargs: Any,
-    ) -> Generator["praw.models.ModNote", None, None]:
+    ) -> Generator[praw.models.ModNote, None, None]:
         """Return notes from this :class:`.Subreddit` for one or more redditors.
 
         :param redditors: One or more redditors to retrieve notes for. Must be either a
@@ -492,12 +489,12 @@ class RedditModNotes(BaseModNotes):
         self,
         *,
         all_notes: bool = False,
-        pairs: Optional[List[Tuple[SubredditType, RedditorType]]] = None,
-        redditors: Optional[List[RedditorType]] = None,
-        subreddits: Optional[List[SubredditType]] = None,
-        things: Optional[List[ThingType]] = None,
+        pairs: list[tuple[Subreddit | str, Redditor | str]] | None = None,
+        redditors: list[Redditor | str] | None = None,
+        subreddits: list[Subreddit | str] | None = None,
+        things: list[Comment | Submission] | None = None,
         **generator_kwargs: Any,
-    ) -> Generator["praw.models.ModNote", None, None]:
+    ) -> Generator[praw.models.ModNote, None, None]:
         """Get note(s) for each subreddit/user pair, or ``None`` if they don't have any.
 
         :param all_notes: Whether to return all notes or only the latest note for each
@@ -608,10 +605,7 @@ class RedditModNotes(BaseModNotes):
         if not (pairs + redditors + subreddits + things):
             msg = "Either the 'pairs', 'redditors', 'subreddits', or 'things' parameters must be provided."
             raise TypeError(msg)
-        if (
-            len(redditors) * len(subreddits) == 0
-            and len(redditors) + len(subreddits) > 0
-        ):
+        if len(redditors) * len(subreddits) == 0 and len(redditors) + len(subreddits) > 0:
             raise TypeError(
                 "'redditors' must be non-empty if 'subreddits' is not empty."
                 if len(subreddits) > 0
@@ -620,37 +614,27 @@ class RedditModNotes(BaseModNotes):
 
         merged_redditors = []
         merged_subreddits = []
-        items = (
-            pairs
-            + [
-                (subreddit, redditor)
-                for redditor in set(redditors)
-                for subreddit in set(subreddits)
-            ]
-            + things
-        )
+        items = pairs + [(subreddit, redditor) for redditor in set(redditors) for subreddit in set(subreddits)] + things
 
         for item in items:
             if isinstance(item, (Comment, Submission)):
                 merged_redditors.append(item.author.name)
                 merged_subreddits.append(item.subreddit.display_name)
-            elif isinstance(item, Tuple):
+            elif isinstance(item, tuple):
                 subreddit, redditor = item
                 merged_redditors.append(redditor)
                 merged_subreddits.append(subreddit)
             else:
                 msg = f"Cannot get subreddit and author fields from type {type(item)}"
                 raise ValueError(msg)
-        return self._notes(
-            all_notes, merged_redditors, merged_subreddits, **generator_kwargs
-        )
+        return self._notes(all_notes, merged_redditors, merged_subreddits, **generator_kwargs)
 
     def things(
         self,
-        *things: ThingType,
-        all_notes: Optional[bool] = None,
+        *things: Comment | Submission,
+        all_notes: bool | None = None,
         **generator_kwargs: Any,
-    ) -> Generator["praw.models.ModNote", None, None]:
+    ) -> Generator[praw.models.ModNote, None, None]:
         """Return notes associated with the author of a :class:`.Comment` or :class:`.Submission`.
 
         :param things: One or more things to return notes on. Must be a

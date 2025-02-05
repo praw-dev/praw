@@ -7,11 +7,13 @@ sys.path.insert(1, "..")
 
 from praw import __version__  # noqa: E402
 
+autodoc_typehints = "description"
 copyright = datetime.today().strftime("%Y, Bryce Boe")
 exclude_patterns = ["_build"]
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
+    "sphinx_autodoc_typehints",
 ]
 html_theme = "furo"
 htmlhelp_basename = "PRAW"

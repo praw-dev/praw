@@ -173,10 +173,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         if attribute == "author":
             value = Redditor.from_data(self._reddit, value)
         elif attribute == "replies":
-            if value == "":
-                value = []
-            else:
-                value = self._reddit._objector.objectify(value).children
+            value = [] if value == "" else self._reddit._objector.objectify(value).children  # noqa: PLC1901
             attribute = "_replies"
         elif attribute == "subreddit":
             value = self._reddit.subreddit(value)

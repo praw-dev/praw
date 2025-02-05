@@ -12,11 +12,7 @@ def _deprecate_args(*old_args: str) -> Callable:
     def _generate_arg_string(used_args: tuple[str, ...]) -> str:
         used_args = list(map(repr, used_args))
         arg_count = len(used_args)
-        arg_string = (
-            " and ".join(used_args)
-            if arg_count < 3
-            else f"{', '.join(used_args[:-1])}, and {used_args[-1]}"
-        )
+        arg_string = " and ".join(used_args) if arg_count < 3 else f"{', '.join(used_args[:-1])}, and {used_args[-1]}"
         arg_string += f" as {'' if arg_count > 1 else 'a '}"
         arg_string += "keyword argument"
         return arg_string + ("s" if arg_count > 1 else "")

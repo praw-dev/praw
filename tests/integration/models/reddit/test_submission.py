@@ -1,6 +1,6 @@
 import pytest
 
-from praw.exceptions import RedditAPIException, ClientException
+from praw.exceptions import ClientException, RedditAPIException
 from praw.models import Comment, InlineGif, InlineImage, InlineVideo, Submission
 
 from ... import IntegrationTest

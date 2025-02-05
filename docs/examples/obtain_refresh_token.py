@@ -56,7 +56,7 @@ def main():
             f"State mismatch. Expected: {state} Received: {params['state']}",
         )
         return 1
-    elif "error" in params:
+    if "error" in params:
         send_message(client, params["error"])
         return 1
 

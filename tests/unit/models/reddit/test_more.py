@@ -12,6 +12,13 @@ class TestComment(UnitTest):
         assert more == more2
         assert more != 5
 
+    def test_hash(self):
+        more = MoreComments(None, {"children": ["a", "b", "c", "d"], "count": 4})
+        more2 = MoreComments(None, {"children": ["a", "b", "c", "d"], "count": 4})
+        more3 = MoreComments(None, {"children": ["a", "b", "c", "d", "e"], "count": 5})
+        assert hash(more) == hash(more2)
+        assert hash(more) != hash(more3)
+
     def test_pickle(self, reddit):
         more = MoreComments(reddit, {"children": ["a", "b"], "count": 4})
         for level in range(pickle.HIGHEST_PROTOCOL + 1):

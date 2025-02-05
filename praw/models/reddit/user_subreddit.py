@@ -237,6 +237,4 @@ class UserSubredditModeration(SubredditModeration):
             current_settings[new] = current_settings.pop(old)
 
         current_settings.update(settings)
-        return UserSubreddit._create_or_update(
-            _reddit=self.subreddit._reddit, **current_settings
-        )
+        return UserSubreddit._create_or_update(_reddit=self.subreddit._reddit, **current_settings)

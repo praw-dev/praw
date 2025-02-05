@@ -96,13 +96,13 @@ class FileTokenManager(BaseTokenManager):
 
     def post_refresh_callback(self, authorizer: prawcore.auth.BaseAuthorizer):
         """Update the saved copy of the refresh token."""
-        with Path(self._filename).open("w") as fp:
+        with Path(self._filename).open("w", encoding="utf-8") as fp:
             fp.write(authorizer.refresh_token)
 
     def pre_refresh_callback(self, authorizer: prawcore.auth.BaseAuthorizer):
         """Load the refresh token from the file."""
         if authorizer.refresh_token is None:
-            with Path(self._filename).open() as fp:
+            with Path(self._filename).open(encoding="utf-8") as fp:
                 authorizer.refresh_token = fp.read().strip()
 
 
@@ -132,22 +132,16 @@ class SQLiteTokenManager(BaseTokenManager):
 
         """
         super().__init__()
-        import sqlite3
+        import sqlite3  # noqa: PLC0415
 
         self._connection = sqlite3.connect(database)
-        self._connection.execute(
-            "CREATE TABLE IF NOT EXISTS tokens (id, refresh_token, updated_at)"
-        )
-        self._connection.execute(
-            "CREATE UNIQUE INDEX IF NOT EXISTS ux_tokens_id on tokens(id)"
-        )
+        self._connection.execute("CREATE TABLE IF NOT EXISTS tokens (id, refresh_token, updated_at)")
+        self._connection.execute("CREATE UNIQUE INDEX IF NOT EXISTS ux_tokens_id on tokens(id)")
         self._connection.commit()
         self.key = key
 
     def _get(self):
-        cursor = self._connection.execute(
-            "SELECT refresh_token FROM tokens WHERE id=?", (self.key,)
-        )
+        cursor = self._connection.execute("SELECT refresh_token FROM tokens WHERE id=?", (self.key,))
         result = cursor.fetchone()
         if result is None:
             raise KeyError
@@ -168,9 +162,7 @@ class SQLiteTokenManager(BaseTokenManager):
 
     def is_registered(self) -> bool:
         """Return whether ``key`` already has a ``refresh_token``."""
-        cursor = self._connection.execute(
-            "SELECT refresh_token FROM tokens WHERE id=?", (self.key,)
-        )
+        cursor = self._connection.execute("SELECT refresh_token FROM tokens WHERE id=?", (self.key,))
         return cursor.fetchone() is not None
 
     def post_refresh_callback(self, authorizer: prawcore.auth.BaseAuthorizer):

@@ -5,15 +5,16 @@ from __future__ import annotations
 import random
 import time
 from collections import OrderedDict
-from typing import Any, Callable, Generator
+from typing import TYPE_CHECKING, Any, Callable
 
 from ..util import _deprecate_args
 
+if TYPE_CHECKING:
+    from collections.abc import Generator
+
 
 @_deprecate_args("permissions", "known_permissions")
-def permissions_string(
-    *, known_permissions: set[str], permissions: list[str] | None
-) -> str:
+def permissions_string(*, known_permissions: set[str], permissions: list[str] | None) -> str:
     """Return a comma separated string of permission changes.
 
     :param known_permissions: A set of strings representing the available permissions.

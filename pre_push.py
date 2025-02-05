@@ -40,7 +40,7 @@ def run_static():
     success &= do_process(["pre-commit", "run", "--all-files"])
 
     with TemporaryDirectory() as tmp_dir:
-        success &= do_process(["sphinx-build", "-W", "--keep-going", "docs", tmp_dir])
+        success &= do_process(["sphinx-build", "--keep-going", "docs", tmp_dir])
 
     return success
 

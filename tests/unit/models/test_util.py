@@ -79,29 +79,29 @@ class TestPermissionsString(UnitTest):
     PERMISSIONS = {"a", "b", "c"}
 
     def test_permissions_string__all_explicit(self):
-        assert "-all,+b,+a,+c" == permissions_string(
+        assert permissions_string(
             known_permissions=self.PERMISSIONS, permissions=["b", "a", "c"]
-        )
+        ) == "-all,+b,+a,+c"
 
     def test_permissions_string__empty_list(self):
-        assert "-all" == permissions_string(known_permissions=set(), permissions=[])
-        assert "-all,-a,-b,-c" == permissions_string(
+        assert permissions_string(known_permissions=set(), permissions=[]) == "-all"
+        assert permissions_string(
             known_permissions=self.PERMISSIONS, permissions=[]
-        )
+        ) == "-all,-a,-b,-c"
 
     def test_permissions_string__none(self):
-        assert "+all" == permissions_string(known_permissions=set(), permissions=None)
-        assert "+all" == permissions_string(
+        assert permissions_string(known_permissions=set(), permissions=None) == "+all"
+        assert permissions_string(
             known_permissions=self.PERMISSIONS, permissions=None
-        )
+        ) == "+all"
 
     def test_permissions_string__with_additional_permissions(self):
-        assert "-all,+d" == permissions_string(
+        assert permissions_string(
             known_permissions=set(), permissions=["d"]
-        )
-        assert "-all,-a,-b,-c,+d" == permissions_string(
+        ) == "-all,+d"
+        assert permissions_string(
             known_permissions=self.PERMISSIONS, permissions=["d"]
-        )
+        ) == "-all,-a,-b,-c,+d"
 
 
 class TestStream(UnitTest):

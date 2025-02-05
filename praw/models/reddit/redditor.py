@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from json import dumps
-from typing import TYPE_CHECKING, Any, Generator
+from typing import TYPE_CHECKING, Any
 
 from ...const import API_PATH
 from ...util import _deprecate_args
@@ -14,6 +14,8 @@ from .base import RedditBase
 from .mixins import FullnameMixin, MessageableMixin
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Generator
+
     import praw.models
 
 
@@ -103,7 +105,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
                 print(f"{note.label}: {note.note}")
 
         """
-        from praw.models.mod_notes import RedditorModNotes
+        from praw.models.mod_notes import RedditorModNotes  # noqa: PLC0415
 
         return RedditorModNotes(self._reddit, self)
 
@@ -172,7 +174,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def __setattr__(self, name: str, value: Any):
         """Objectify the subreddit attribute."""
         if name == "subreddit" and value:
-            from .user_subreddit import UserSubreddit
+            from .user_subreddit import UserSubreddit  # noqa: PLC0415
 
             value = UserSubreddit(reddit=self._reddit, _data=value)
         super().__setattr__(name, value)
@@ -190,9 +192,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         return "user_about", {"user": self.name}, None
 
     def _fetch_username(self, fullname: str):
-        return self._reddit.get(API_PATH["user_by_fullname"], params={"ids": fullname})[
-            fullname
-        ]["name"]
+        return self._reddit.get(API_PATH["user_by_fullname"], params={"ids": fullname})[fullname]["name"]
 
     def _friend(self, *, data: dict[str, Any], method: str):
         url = API_PATH["friend_v1"].format(user=self)
@@ -290,9 +290,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         if months < 1 or months > 36:
             msg = "months must be between 1 and 36"
             raise TypeError(msg)
-        self._reddit.post(
-            API_PATH["gild_user"].format(username=self), data={"months": months}
-        )
+        self._reddit.post(API_PATH["gild_user"].format(username=self), data={"months": months})
 
     def moderated(self) -> list[praw.models.Subreddit]:
         """Return a list of the redditor's moderated subreddits.
@@ -453,9 +451,7 @@ class RedditorStream:
         """
         self.redditor = redditor
 
-    def comments(
-        self, **stream_options: str | int | dict[str, str]
-    ) -> Generator[praw.models.Comment, None, None]:
+    def comments(self, **stream_options: str | int | dict[str, str]) -> Generator[praw.models.Comment, None, None]:
         """Yield new comments as they become available.
 
         Comments are yielded oldest first. Up to 100 historical comments will initially

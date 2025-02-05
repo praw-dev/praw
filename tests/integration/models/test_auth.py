@@ -9,7 +9,7 @@ from .. import IntegrationTest
 
 
 class TestAuthImplicit(IntegrationTest):
-    @pytest.fixture()
+    @pytest.fixture
     def reddit(self, recorder):
         return Reddit(
             client_id=pytest.placeholders.client_id,
@@ -35,7 +35,7 @@ class TestAuthScript(IntegrationTest):
 
 
 class TestAuthWeb(IntegrationTest):
-    @pytest.fixture()
+    @pytest.fixture
     def reddit(self, recorder):
         return Reddit(
             client_id=pytest.placeholders.client_id,

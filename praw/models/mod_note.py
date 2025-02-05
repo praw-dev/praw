@@ -53,6 +53,10 @@ class ModNote(PRAWBase):
             return self.id == other
         return super().__eq__(other)
 
+    def __hash__(self) -> int:
+        """Return the hash of the current instance."""
+        return hash(self.__class__.__name__) ^ hash(self.id)
+
     def delete(self):
         """Delete this note.
 

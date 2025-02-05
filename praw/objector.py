@@ -21,14 +21,11 @@ class Objector:
     @classmethod
     def check_error(cls, data: list[Any] | dict[str, dict[str, str]]):
         """Raise an error if the argument resolves to an error object."""
-        error = cls.parse_error(data)
-        if error:
+        if error := cls.parse_error(data):
             raise error
 
     @classmethod
-    def parse_error(
-        cls, data: list[Any] | dict[str, dict[str, str]]
-    ) -> RedditAPIException | None:
+    def parse_error(cls, data: list[Any] | dict[str, dict[str, str]]) -> RedditAPIException | None:
         """Convert JSON response into an error object.
 
         :param data: The dict to be converted.
@@ -75,11 +72,7 @@ class Objector:
             "conversation",
         }.intersection(data):
             # fetched conversation
-            data.update(
-                data.pop("conversation")
-                if "conversation" in data
-                else data.pop("conversations")
-            )
+            data.update(data.pop("conversation") if "conversation" in data else data.pop("conversations"))
             parser = self.parsers["ModmailConversation"]
             parser._convert_conversation_objects(data, self._reddit)
         elif {"messages", "modActions"}.issubset(data) or {
@@ -95,12 +88,11 @@ class Objector:
             for conversation_id in data["conversationIds"]:
                 conversation = data["conversations"][conversation_id]
                 # set if the numMessages is same as number of messages in objIds
-                if conversation["numMessages"] == len(
-                    [obj for obj in conversation["objIds"] if obj["key"] == "messages"]
-                ):
+                if conversation["numMessages"] == len([
+                    obj for obj in conversation["objIds"] if obj["key"] == "messages"
+                ]):
                     conversation["messages"] = [
-                        self.objectify(data["messages"][obj_id["id"]])
-                        for obj_id in conversation["objIds"]
+                        self.objectify(data["messages"][obj_id["id"]]) for obj_id in conversation["objIds"]
                     ]
                 conversations.append(conversation)
             data["conversations"] = conversations
@@ -140,10 +132,8 @@ class Objector:
         }.issubset(data):
             parser = self.parsers[self._reddit.config.kinds["redditor"]]
         elif {"text", "url"}.issubset(data):
-            if "color" in data or "linkUrl" in data:
-                parser = self.parsers["Button"]
-            else:
-                parser = self.parsers["MenuLink"]
+            key = "Button" if "color" in data or "linkUrl" in data else "MenuLink"
+            parser = self.parsers[key]
         elif {"children", "text"}.issubset(data):
             parser = self.parsers["Submenu"]
         elif {"height", "url", "width"}.issubset(data):
@@ -158,9 +148,7 @@ class Objector:
             parser = self.parsers[self._reddit.config.kinds["comment"]]
         elif "collection_id" in data:
             parser = self.parsers["Collection"]
-        elif {"moderators", "moderatorIds", "allUsersLoaded", "subredditId"}.issubset(
-            data
-        ):
+        elif {"moderators", "moderatorIds", "allUsersLoaded", "subredditId"}.issubset(data):
             data = snake_case_keys(data)
             moderators = []
             for mod_id in data["moderator_ids"]:
@@ -189,9 +177,7 @@ class Objector:
             for draft in data["drafts"]:
                 if draft["subreddit"]:
                     draft["subreddit"] = subreddits[draft["subreddit"]]
-                draft["modified"] = datetime.fromtimestamp(
-                    draft["modified"] / 1000
-                ).astimezone()
+                draft["modified"] = datetime.fromtimestamp(draft["modified"] / 1000).astimezone()
             parser = self.parsers["DraftList"]
         elif {"mod_action_data", "user_note_data"}.issubset(data):
             data["moderator"] = self._reddit.redditor(data["operator"])
@@ -238,9 +224,7 @@ class Objector:
             errors = data["json"]["errors"]
             if len(errors) > 0:
                 raise RedditAPIException(errors)
-        if "kind" in data and (
-            "shortName" in data or data["kind"] in ("menu", "moderators")
-        ):
+        if "kind" in data and ("shortName" in data or data["kind"] in {"menu", "moderators"}):
             # This is a widget
             parser = self.parsers.get(data["kind"], self.parsers["widget"])
             return parser.parse(data, self._reddit)
@@ -265,14 +249,10 @@ class Objector:
                 # The URL is the URL to the submission, so it's removed.
                 del data["json"]["data"]["url"]
                 parser = self.parsers[self._reddit.config.kinds["submission"]]
-                if data["json"]["data"]["id"].startswith(
-                    f"{self._reddit.config.kinds['submission']}_"
-                ):
+                if data["json"]["data"]["id"].startswith(f"{self._reddit.config.kinds['submission']}_"):
                     # With polls, Reddit returns a fullname but calls it an "id". This
                     # fixes this by coercing the fullname into an id.
-                    data["json"]["data"]["id"] = data["json"]["data"]["id"].split(
-                        "_", 1
-                    )[1]
+                    data["json"]["data"]["id"] = data["json"]["data"]["id"].split("_", 1)[1]
             else:
                 parser = self.parsers["LiveUpdateEvent"]
             return parser.parse(data["json"]["data"], self._reddit)

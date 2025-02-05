@@ -1262,14 +1262,13 @@ class WebsocketMockException:
     def recv(self):
         if self._recv_exc is not None:
             raise self._recv_exc
-        else:
-            return dumps(
-                {
-                    "payload": {
-                        "redirect": "https://reddit.com/r/<TEST_SUBREDDIT>/comments/abcdef/test_title/"
-                    }
+        return dumps(
+            {
+                "payload": {
+                    "redirect": "https://reddit.com/r/<TEST_SUBREDDIT>/comments/abcdef/test_title/"
                 }
-            )
+            }
+        )
 
 
 class TestSubreddit(IntegrationTest):
@@ -1433,7 +1432,7 @@ class TestSubreddit(IntegrationTest):
         image = InlineImage(image_path("test.png"), "optional caption")
         video = InlineVideo(image_path("test.mp4"), "optional caption")
         selftext = (
-            "Text with a gif {gif1} an image {image1} and a video {video1}" " inline"
+            "Text with a gif {gif1} an image {image1} and a video {video1} inline"
         )
         media = {"gif1": gif, "image1": image, "video1": video}
         submission = subreddit.submit("title", inline_media=media, selftext=selftext)

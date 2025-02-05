@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
-from typing import Any, Iterator
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
 
 from ....util import _deprecate_args
 from ...base import PRAWBase
 from ..generator import ListingGenerator
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 class BaseListingMixin(PRAWBase):
@@ -23,9 +26,7 @@ class BaseListingMixin(PRAWBase):
 
         """
         if time_filter not in BaseListingMixin.VALID_TIME_FILTERS:
-            valid_time_filters = ", ".join(
-                map("{!r}".format, BaseListingMixin.VALID_TIME_FILTERS)
-            )
+            valid_time_filters = ", ".join(map("{!r}".format, BaseListingMixin.VALID_TIME_FILTERS))
             msg = f"'time_filter' must be one of: {valid_time_filters}"
             raise ValueError(msg)
 
@@ -68,9 +69,7 @@ class BaseListingMixin(PRAWBase):
 
         """
         self._validate_time_filter(time_filter)
-        self._safely_add_arguments(
-            arguments=generator_kwargs, key="params", t=time_filter
-        )
+        self._safely_add_arguments(arguments=generator_kwargs, key="params", t=time_filter)
         url = self._prepare(arguments=generator_kwargs, sort="controversial")
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
@@ -148,8 +147,6 @@ class BaseListingMixin(PRAWBase):
 
         """
         self._validate_time_filter(time_filter)
-        self._safely_add_arguments(
-            arguments=generator_kwargs, key="params", t=time_filter
-        )
+        self._safely_add_arguments(arguments=generator_kwargs, key="params", t=time_filter)
         url = self._prepare(arguments=generator_kwargs, sort="top")
         return ListingGenerator(self._reddit, url, **generator_kwargs)

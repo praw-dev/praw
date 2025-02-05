@@ -71,7 +71,7 @@ def get_request_params(client_id, redirect_uri, thing):
             f"State mismatch. Expected: {state} Received: {params['state']}",
         )
         return None
-    elif "error" in params:
+    if "error" in params:
         send_message(client, params["error"])
         return None
 
@@ -255,13 +255,12 @@ def main():
         )
     if out_file is None:
         print(final_content)
+    elif isdir(split(out_file)[0]):
+        with open(out_file, "w") as f:
+            f.write(final_content)
+        print(f"Successfully written awards to {out_file!r}")
     else:
-        if isdir(split(out_file)[0]):
-            with open(out_file, "w") as f:
-                f.write(final_content)
-            print(f"Successfully written awards to {out_file!r}")
-        else:
-            print(f"THe directory, {split(out_file)[0]!r}, does not exist.")
+        print(f"The directory, {split(out_file)[0]!r}, does not exist.")
 
 
 def validate_award_json(award_json, award_type):

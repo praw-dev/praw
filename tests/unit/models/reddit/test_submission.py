@@ -87,7 +87,7 @@ class TestSubmission(UnitTest):
         assert submission1 == submission2
         assert submission2 != submission3
         assert submission1 != submission3
-        assert "dummy1" == submission1
+        assert submission1 == "dummy1"
         assert submission2 == "dummy1"
 
     def test_fullname(self, reddit):
