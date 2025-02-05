@@ -10,8 +10,6 @@ All other exceptions are subclassed from :class:`.ClientException`.
 
 from __future__ import annotations
 
-from warnings import warn
-
 from .util import _deprecate_args
 
 
@@ -153,27 +151,7 @@ class TooLargeMediaException(ClientException):
 class WebSocketException(ClientException):
     """Indicate exceptions caused by use of WebSockets."""
 
-    @property
-    def original_exception(self) -> Exception:
-        """Access the ``original_exception`` attribute (now deprecated)."""
-        warn(
-            "Accessing the attribute 'original_exception' is deprecated. Please rewrite"
-            " your code in such a way that this attribute does not need to be used. It"
-            " will be removed in PRAW 8.0.",
-            category=DeprecationWarning,
-            stacklevel=2,
-        )
-        return self._original_exception
-
-    @original_exception.setter
-    def original_exception(self, value: Exception):
-        self._original_exception = value
-
-    @original_exception.deleter
-    def original_exception(self):
-        del self._original_exception
-
-    def __init__(self, message: str, exception: Exception | None):
+    def __init__(self, message: str):
         """Initialize a :class:`.WebSocketException` instance.
 
         :param message: The exception message.
@@ -185,7 +163,6 @@ class WebSocketException(ClientException):
 
         """
         super().__init__(message)
-        self._original_exception = exception
 
 
 class MediaPostFailed(WebSocketException):
@@ -197,7 +174,6 @@ class MediaPostFailed(WebSocketException):
             "The attempted media upload action has failed. Possible causes include the"
             " corruption of media files. Check that the media file can be opened on"
             " your local machine.",
-            None,
         )
 
 

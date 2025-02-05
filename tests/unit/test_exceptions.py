@@ -170,23 +170,9 @@ class TestRedditErrorItem:
 
 
 class TestWebSocketException:
-    @pytest.mark.filterwarnings("ignore", category=DeprecationWarning)
-    def test_exception_attr(self):
-        exc = WebSocketException(None, None)
-        assert exc.original_exception is None
-        assert isinstance(WebSocketException(None, Exception()), Exception)
-        assert (
-            str(WebSocketException(None, Exception("test")).original_exception)
-            == "test"
-        )
-        exc.original_exception = Exception()
-        assert isinstance(exc.original_exception, Exception)
-        del exc.original_exception
-        assert "_original_exception" not in vars(exc)
-
     def test_inheritance(self):
         assert issubclass(WebSocketException, ClientException)
 
     def test_str(self):
-        assert str(WebSocketException("", None)) == ""
-        assert str(WebSocketException("error message", None)) == "error message"
+        assert str(WebSocketException("")) == ""
+        assert str(WebSocketException("error message")) == "error message"

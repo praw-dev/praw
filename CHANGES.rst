@@ -8,7 +8,8 @@ Unreleased
 
 **Removed**
 
-- Removed ``APIException`` class.
+- Remove ``APIException`` class.
+- Remove ``WebSocketException.original_exception`` method.
 
 7.8.1 (2024/10/25)
 ------------------
@@ -342,8 +343,8 @@ Unreleased
 
 **Deprecated**
 
-- :attr:`.WebSocketException.original_exception` is deprecated and slated for removal in
-  PRAW 8.0.
+- ``WebSocketException.original_exception`` is deprecated and slated for removal in PRAW
+  8.0.
 
 **Fixed**
 

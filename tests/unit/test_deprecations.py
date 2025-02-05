@@ -74,12 +74,3 @@ class TestDeprecation(UnitTest):
         reddit.validate_on_submit = False
         with pytest.raises(DeprecationWarning):
             reddit.validate_on_submit
-
-    def test_web_socket_exception_attribute(self):
-        exc = WebSocketException("Test", Exception("Test"))
-        with pytest.raises(DeprecationWarning) as excinfo:
-            _ = exc.original_exception
-        assert (
-            excinfo.value.args[0]
-            == "Accessing the attribute 'original_exception' is deprecated. Please rewrite your code in such a way that this attribute does not need to be used. It will be removed in PRAW 8.0."
-        )

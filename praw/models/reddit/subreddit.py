@@ -3009,9 +3009,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                 OSError,
                 websocket.WebSocketException,
                 BlockingIOError,
-            ) as ws_exception:
+            ):
                 msg = "Error establishing websocket connection."
-                raise WebSocketException(msg, ws_exception) from None
+                raise WebSocketException(msg) from None
 
         if connection is None:
             return None
@@ -3019,11 +3019,10 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         try:
             ws_update = loads(connection.recv())
             connection.close()
-        except (OSError, websocket.WebSocketException, BlockingIOError) as ws_exception:
+        except (OSError, websocket.WebSocketException, BlockingIOError):
             msg = "Websocket error. Check your media file. Your post may still have been created."
             raise WebSocketException(
                 msg,
-                ws_exception,
             ) from None
         if ws_update.get("type") == "failed":
             raise MediaPostFailed
