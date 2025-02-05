@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 from urllib.parse import quote
-from warnings import warn
 
 from ...const import API_PATH
 from ...exceptions import ClientException
@@ -246,32 +245,6 @@ class SubredditRules:
 
         """
         return SubredditRulesModeration(self)
-
-    def __call__(self) -> list[praw.models.Rule]:
-        r"""Return a list of :class:`.Rule`\ s (Deprecated).
-
-        :returns: A list of instances of :class:`.Rule`.
-
-        .. deprecated:: 7.1
-
-            Use the iterator by removing the call to :class:`.SubredditRules`. For
-            example, in order to use the iterator:
-
-            .. code-block:: python
-
-                for rule in reddit.subreddit("test").rules:
-                    print(rule)
-
-        """
-        warn(
-            "Calling SubredditRules to get a list of rules is deprecated. Remove the"
-            " parentheses to use the iterator. View the PRAW documentation on how to"
-            " change the code in order to use the iterator"
-            " (https://praw.readthedocs.io/en/latest/code_overview/other/subredditrules.html#praw.models.reddit.rules.SubredditRules.__call__).",
-            category=DeprecationWarning,
-            stacklevel=2,
-        )
-        return self._reddit.request(method="GET", path=API_PATH["rules"].format(subreddit=self.subreddit))
 
     def __getitem__(self, short_name: str | int | slice) -> praw.models.Rule:
         """Return the :class:`.Rule` for the subreddit with short_name ``short_name``.

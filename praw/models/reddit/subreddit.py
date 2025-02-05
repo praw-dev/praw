@@ -151,32 +151,15 @@ class Modmail:
         response = self.subreddit._reddit.post(API_PATH["modmail_bulk_read"], params=params)
         return [self(conversation_id) for conversation_id in response["conversation_ids"]]
 
-    @_deprecate_args("after", "other_subreddits", "sort", "state")
     def conversations(
         self,
         *,
-        after: str | None = None,
         other_subreddits: list[praw.models.Subreddit] | None = None,
         sort: str | None = None,
         state: str | None = None,
         **generator_kwargs: Any,
     ) -> Iterator[ModmailConversation]:
         """Generate :class:`.ModmailConversation` objects for subreddit(s).
-
-        :param after: A base36 modmail conversation id. When provided, the listing
-            begins after this conversation (default: ``None``).
-
-            .. deprecated:: 7.4.0
-
-                This parameter is deprecated and will be removed in PRAW 8.0. This
-                method will automatically fetch the next batch. Please pass it in the
-                ``params`` argument like so:
-
-                .. code-block:: python
-
-                    for convo in subreddit.modmail.conversations(params={"after": "qovbn"}):
-                        # process conversation
-                        ...
 
         :param other_subreddits: A list of :class:`.Subreddit` instances for which to
             fetch conversations (default: ``None``).
@@ -198,13 +181,6 @@ class Modmail:
 
         """
         params = {}
-        if after:
-            warn(
-                "The 'after' argument is deprecated and should be moved to the 'params' dictionary argument.",
-                category=DeprecationWarning,
-                stacklevel=3,
-            )
-            params["after"] = after
         if self.subreddit != "all":
             params["entity"] = self._build_subreddit_list(other_subreddits)
         Subreddit._safely_add_arguments(arguments=generator_kwargs, key="params", sort=sort, state=state, **params)

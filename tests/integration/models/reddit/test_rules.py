@@ -39,11 +39,6 @@ class TestRule(IntegrationTest):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         assert len(list(subreddit.rules)) == (len(rules) - 1)
 
-    @pytest.mark.filterwarnings("ignore", category=DeprecationWarning)
-    def test_iter_call(self, reddit):
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        assert subreddit.rules()["rules"][0]["short_name"] == "Test post 12"
-
     @pytest.mark.cassette_name("TestRule.test_iter_rules")
     def test_iter_rule_int(self, reddit):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
