@@ -26,10 +26,6 @@ class TestDeprecation(UnitTest):
                 user_agent="dummy",
             )
 
-    def test_reddit_user_me_read_only(self, reddit):
-        with pytest.raises(DeprecationWarning):
-            reddit.user.me()
-
     def test_subreddit_rules_call(self, reddit):
         with pytest.raises(DeprecationWarning) as excinfo:
             reddit.subreddit("test").rules()

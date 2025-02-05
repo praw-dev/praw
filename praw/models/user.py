@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-from warnings import warn
 
 from prawcore import Conflict
 
@@ -127,7 +126,6 @@ class User(PRAWBase):
             karma_map[subreddit] = row
         return karma_map
 
-    @_deprecate_args("use_cache")
     def me(self, *, use_cache: bool = True) -> praw.models.Redditor | None:
         """Return a :class:`.Redditor` instance for the authenticated user.
 
@@ -140,24 +138,8 @@ class User(PRAWBase):
             to refresh the cached value. Prefer using separate :class:`.Reddit`
             instances, however, for distinct authorizations.
 
-        .. deprecated:: 7.2
-
-            In :attr:`.read_only` mode this method returns ``None``. In PRAW 8 this
-            method will raise :class:`.ReadOnlyException` when called in
-            :attr:`.read_only` mode. To operate in PRAW 8 mode, set the config variable
-            ``praw8_raise_exception_on_me`` to ``True``.
-
         """
         if self._reddit.read_only:
-            if not self._reddit.config.custom.get("praw8_raise_exception_on_me"):
-                warn(
-                    "The 'None' return value is deprecated, and will raise a"
-                    " ReadOnlyException beginning with PRAW 8. See documentation for"
-                    " forward compatibility options.",
-                    category=DeprecationWarning,
-                    stacklevel=2,
-                )
-                return None
             msg = "`user.me()` does not work in read_only mode"
             raise ReadOnlyException(msg)
         if "_me" not in self.__dict__ or not use_cache:
