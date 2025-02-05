@@ -9,8 +9,9 @@ Unreleased
 **Removed**
 
 - Remove ``APIException`` class.
-- Remove ``WebSocketException.original_exception`` method.
+- Remove ``Subreddits.gold`` method.
 - Remove ``Reddit.validate_on_submit`` configuration attribute.
+- Remove ``WebSocketException.original_exception`` method.
 
 7.8.1 (2024/10/25)
 ------------------
@@ -305,7 +306,7 @@ Unreleased
 
 **Deprecated**
 
-- :meth:`.Subreddits.gold` is superseded by :meth:`.Subreddits.premium`.
+- ``Subreddits.gold`` is superseded by :meth:`.Subreddits.premium`.
 - :meth:`.Submission.gild` is superseded by :meth:`.Submission.award`.
 - :meth:`.Comment.gild` is superseded by :meth:`.Comment.award`.
 
@@ -1126,7 +1127,7 @@ to help with updating your code to PRAW 4. If you require additional help please
   permit blocking unwanted user contact.
 - :meth:`.LiveHelper.create` to create new live threads.
 - :meth:`.Redditor.unblock` to undo a block.
-- :meth:`.Subreddits.gold` to iterate through gold subreddits.
+- ``Subreddits.gold`` to iterate through gold subreddits.
 - :meth:`.Subreddits.search` to search for subreddits by name and description.
 - :meth:`.Subreddits.stream` to obtain newly created subreddits in near realtime.
 - :meth:`.User.karma` to retrieve the current user's subreddit karma.

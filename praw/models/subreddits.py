@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
-from warnings import warn
+from typing import TYPE_CHECKING
 
 from ..const import API_PATH
 from ..util import _deprecate_args
@@ -33,15 +32,6 @@ class Subreddits(PRAWBase):
 
         """
         return ListingGenerator(self._reddit, API_PATH["subreddits_default"], **generator_kwargs)
-
-    def gold(self, **generator_kwargs: Any) -> Iterator[praw.models.Subreddit]:
-        """Alias for :meth:`.premium` to maintain backwards compatibility."""
-        warn(
-            "'subreddits.gold' has be renamed to 'subreddits.premium'.",
-            category=DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.premium(**generator_kwargs)
 
     def new(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.Subreddit]:
         """Return a :class:`.ListingGenerator` for new subreddits.
