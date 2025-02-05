@@ -33,18 +33,3 @@ class TestDeprecation(UnitTest):
             excinfo.value.args[0]
             == "Calling SubredditRules to get a list of rules is deprecated. Remove the parentheses to use the iterator. View the PRAW documentation on how to change the code in order to use the iterator (https://praw.readthedocs.io/en/latest/code_overview/other/subredditrules.html#praw.models.reddit.rules.SubredditRules.__call__)."
         )
-
-    def test_user_subreddit_as_dict(self):
-        user_subreddit = UserSubreddit(None, display_name="test")
-        with pytest.deprecated_call() as warning_info:
-            display_name = user_subreddit["display_name"]
-            assert display_name == "test"
-            assert (
-                warning_info.list[0].message.args[0]
-                == "'Redditor.subreddit' is no longer a dict and is now an UserSubreddit object. Accessing attributes using string indices is deprecated."
-            )
-            assert user_subreddit.keys() == user_subreddit.__dict__.keys()
-            assert (
-                warning_info.list[1].message.args[0]
-                == "'Redditor.subreddit' is no longer a dict and is now an UserSubreddit object. Using 'keys' is deprecated and will be removed in PRAW 8."
-            )

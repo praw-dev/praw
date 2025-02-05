@@ -34,43 +34,32 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         Suspended/banned accounts will only return the ``name`` and ``is_suspended``
         attributes.
 
-    =================================== ================================================
-    Attribute                           Description
-    =================================== ================================================
-    ``comment_karma``                   The comment karma for the :class:`.Redditor`.
-    ``comments``                        Provide an instance of :class:`.SubListing` for
-                                        comment access.
-    ``submissions``                     Provide an instance of :class:`.SubListing` for
-                                        submission access.
-    ``created_utc``                     Time the account was created, represented in
-                                        `Unix Time`_.
-    ``has_verified_email``              Whether or not the :class:`.Redditor` has
-                                        verified their email.
-    ``icon_img``                        The url of the Redditors' avatar.
-    ``id``                              The ID of the :class:`.Redditor`.
-    ``is_employee``                     Whether or not the :class:`.Redditor` is a
-                                        Reddit employee.
-    ``is_friend``                       Whether or not the :class:`.Redditor` is friends
-                                        with the authenticated user.
-    ``is_mod``                          Whether or not the :class:`.Redditor` mods any
-                                        subreddits.
-    ``is_gold``                         Whether or not the :class:`.Redditor` has active
-                                        Reddit Premium status.
-    ``is_suspended``                    Whether or not the :class:`.Redditor` is
-                                        currently suspended.
-    ``link_karma``                      The link karma for the :class:`.Redditor`.
-    ``name``                            The Redditor's username.
-    ``subreddit``                       If the :class:`.Redditor` has created a
-                                        user-subreddit, provides a dictionary of
-                                        additional attributes. See below.
-    ``subreddit["banner_img"]``         The URL of the user-subreddit banner.
-    ``subreddit["name"]``               The fullname of the user-subreddit.
-    ``subreddit["over_18"]``            Whether or not the user-subreddit is NSFW.
-    ``subreddit["public_description"]`` The public description of the user-subreddit.
-    ``subreddit["subscribers"]``        The number of users subscribed to the
-                                        user-subreddit.
-    ``subreddit["title"]``              The title of the user-subreddit.
-    =================================== ================================================
+    ====================== =============================================================
+    Attribute              Description
+    ====================== =============================================================
+    ``comment_karma``      The comment karma for the :class:`.Redditor`.
+    ``comments``           Provide an instance of :class:`.SubListing` for comment
+                           access.
+    ``submissions``        Provide an instance of :class:`.SubListing` for submission
+                           access.
+    ``created_utc``        Time the account was created, represented in `Unix Time`_.
+    ``has_verified_email`` Whether or not the :class:`.Redditor` has verified their
+                           email.
+    ``icon_img``           The url of the Redditors' avatar.
+    ``id``                 The ID of the :class:`.Redditor`.
+    ``is_employee``        Whether or not the :class:`.Redditor` is a Reddit employee.
+    ``is_friend``          Whether or not the :class:`.Redditor` is friends with the
+                           authenticated user.
+    ``is_mod``             Whether or not the :class:`.Redditor` mods any subreddits.
+    ``is_gold``            Whether or not the :class:`.Redditor` has active Reddit
+                           Premium status.
+    ``is_suspended``       Whether or not the :class:`.Redditor` is currently suspended.
+    ``link_karma``         The link karma for the :class:`.Redditor`.
+    ``name``               The Redditor's username.
+    ``subreddit``          If the :class:`.Redditor` has created a user-subreddit,
+                           provides a :class:`.UserSubreddit` with additional
+                           attributes.
+    ====================== =============================================================
 
     .. _unix time: https://en.wikipedia.org/wiki/Unix_time
 

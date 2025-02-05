@@ -10,6 +10,8 @@ Unreleased
 
 - Change ``Reddit.user.me`` to raise :class:`.ReadOnlyException` when called in
   :attr:`.read_only` mode.
+- The ``subreddit`` attribute of :class:`.Redditor` is a :class:`.UserSubreddit`
+  instance.
 
 **Removed**
 
@@ -221,7 +223,8 @@ Unreleased
 
 **Deprecated**
 
-- The ``subreddit`` attribute of :class:`.Redditor` is no longer a dict.
+- The ``subreddit`` attribute of :class:`.Redditor` will no longer function as a
+  ``dict``.
 - Legacy modmail is slated for deprecation by Reddit in June 2021. See
   https://www.reddit.com/r/modnews/comments/mar9ha/even_more_modmail_improvements/ for
   more info.
