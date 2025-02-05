@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING, Any
 
 from ...const import API_PATH
 from ...exceptions import ClientException
-from ...util import _deprecate_args
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -79,7 +78,6 @@ class Emoji(RedditBase):
         url = API_PATH["emoji_delete"].format(emoji_name=self.name, subreddit=self.subreddit)
         self._reddit.delete(url)
 
-    @_deprecate_args("mod_flair_only", "post_flair_allowed", "user_flair_allowed")
     def update(
         self,
         *,

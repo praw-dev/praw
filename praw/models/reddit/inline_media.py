@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from ..util import _deprecate_args
-
 
 class InlineMedia:
     """Provides a way to embed media in self posts."""
@@ -20,7 +18,6 @@ class InlineMedia:
             tuple(getattr(self, attr) for attr in ["TYPE", "path", "caption", "media_id"])
         )
 
-    @_deprecate_args("path", "caption")
     def __init__(self, *, caption: str = None, path: str):
         """Initialize an :class:`.InlineMedia` instance.
 

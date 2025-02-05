@@ -184,9 +184,9 @@ class TestSubreddit(UnitTest):
     def test_submit_inline_media__invalid_path(self, reddit):
         message = "'invalid_image_path' is not a valid file path."
         subreddit = Subreddit(reddit, display_name="name")
-        gif = InlineGif("invalid_image_path", "optional caption")
-        image = InlineImage("invalid_image_path", "optional caption")
-        video = InlineVideo("invalid_image_path", "optional caption")
+        gif = InlineGif(caption="optional caption", path="invalid_image_path")
+        image = InlineImage(caption="optional caption", path="invalid_image_path")
+        video = InlineVideo(caption="optional caption", path="invalid_image_path")
         selftext = "Text with {gif1}, {image1}, and {video1} inline"
         media = {"gif1": gif, "image1": image, "video1": video}
         with pytest.raises(ValueError) as excinfo:

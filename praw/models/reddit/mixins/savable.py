@@ -3,13 +3,11 @@
 from __future__ import annotations
 
 from ....const import API_PATH
-from ....util import _deprecate_args
 
 
 class SavableMixin:
     """Interface for :class:`.RedditBase` classes that can be saved."""
 
-    @_deprecate_args("category")
     def save(self, *, category: str | None = None):
         """Save the object.
 

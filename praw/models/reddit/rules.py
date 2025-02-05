@@ -7,7 +7,7 @@ from urllib.parse import quote
 
 from ...const import API_PATH
 from ...exceptions import ClientException
-from ...util import _deprecate_args, cachedproperty
+from ...util import cachedproperty
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -139,7 +139,6 @@ class RuleModeration:
         }
         self.rule._reddit.post(API_PATH["remove_subreddit_rule"], data=data)
 
-    @_deprecate_args("description", "kind", "short_name", "violation_reason")
     def update(
         self,
         *,
@@ -343,7 +342,6 @@ class SubredditRulesModeration:
         """Initialize a :class:`.SubredditRulesModeration` instance."""
         self.subreddit_rules = subreddit_rules
 
-    @_deprecate_args("short_name", "kind", "description", "violation_reason")
     def add(
         self,
         *,

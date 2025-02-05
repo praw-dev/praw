@@ -5,7 +5,6 @@ from __future__ import annotations
 from prawcore import Authorizer, ImplicitAuthorizer, UntrustedAuthenticator, session
 
 from ..exceptions import InvalidImplicitAuth, MissingRequiredAttributeException
-from ..util import _deprecate_args
 from .base import PRAWBase
 
 
@@ -57,7 +56,6 @@ class Auth(PRAWBase):
         self._reddit._core = self._reddit._authorized_core = authorized_session
         return authorizer.refresh_token
 
-    @_deprecate_args("access_token", "expires_in", "scope")
     def implicit(self, *, access_token: str, expires_in: int, scope: str):
         """Set the active authorization to be an implicit authorization.
 
@@ -94,7 +92,6 @@ class Auth(PRAWBase):
             authorizer.refresh()
         return authorizer.scopes
 
-    @_deprecate_args("scopes", "state", "duration", "implicit")
     def url(
         self,
         *,

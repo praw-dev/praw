@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, TypeVar
 
 from ...const import API_PATH
-from ...util import _deprecate_args
 from ...util.cache import cachedproperty
 from ..base import PRAWBase
 from ..list.base import BaseList
@@ -1208,7 +1207,6 @@ class SubredditWidgetsModeration:
         widget.subreddit = self._subreddit
         return widget
 
-    @_deprecate_args("short_name", "description", "buttons", "styles")
     def add_button_widget(
         self,
         *,
@@ -1348,7 +1346,6 @@ class SubredditWidgetsModeration:
         button_widget.update(other_settings)
         return self._create_widget(button_widget)
 
-    @_deprecate_args("short_name", "google_calendar_id", "requires_sync", "configuration", "styles")
     def add_calendar(
         self,
         *,
@@ -1421,7 +1418,6 @@ class SubredditWidgetsModeration:
         calendar.update(other_settings)
         return self._create_widget(calendar)
 
-    @_deprecate_args("short_name", "data", "styles", "description")
     def add_community_list(
         self,
         *,
@@ -1465,7 +1461,6 @@ class SubredditWidgetsModeration:
         community_list.update(other_settings)
         return self._create_widget(community_list)
 
-    @_deprecate_args("short_name", "text", "css", "height", "image_data", "styles")
     def add_custom_widget(
         self,
         *,
@@ -1556,7 +1551,6 @@ class SubredditWidgetsModeration:
         custom_widget.update(other_settings)
         return self._create_widget(custom_widget)
 
-    @_deprecate_args("short_name", "data", "styles")
     def add_image_widget(
         self,
         *,
@@ -1629,7 +1623,6 @@ class SubredditWidgetsModeration:
         image_widget.update(other_settings)
         return self._create_widget(image_widget)
 
-    @_deprecate_args("data")
     def add_menu(
         self,
         *,
@@ -1692,7 +1685,6 @@ class SubredditWidgetsModeration:
         menu.update(other_settings)
         return self._create_widget(menu)
 
-    @_deprecate_args("short_name", "display", "order", "styles")
     def add_post_flair_widget(
         self,
         *,
@@ -1742,7 +1734,6 @@ class SubredditWidgetsModeration:
         post_flair.update(other_settings)
         return self._create_widget(post_flair)
 
-    @_deprecate_args("short_name", "text", "styles")
     def add_text_area(
         self,
         *,
@@ -1781,7 +1772,6 @@ class SubredditWidgetsModeration:
         text_area.update(other_settings)
         return self._create_widget(text_area)
 
-    @_deprecate_args("new_order", "section")
     def reorder(self, new_order: list[Widget | str], *, section: str = "sidebar"):
         """Reorder the widgets.
 

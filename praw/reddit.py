@@ -34,7 +34,6 @@ from .exceptions import (
     RedditAPIException,
 )
 from .objector import Objector
-from .util import _deprecate_args
 
 try:
     from update_checker import update_check
@@ -584,7 +583,6 @@ class Reddit:
                 return e.response.next.url
         return url
 
-    @_deprecate_args("id", "url")
     def comment(self, id: str | None = None, *, url: str | None = None) -> models.Comment:
         """Return a lazy instance of :class:`.Comment`.
 
@@ -601,7 +599,6 @@ class Reddit:
             url = self._resolve_share_url(url)
         return models.Comment(self, id=id, url=url)
 
-    @_deprecate_args("path", "data", "json", "params")
     def delete(
         self,
         path: str,
@@ -631,7 +628,6 @@ class Reddit:
         """
         return models.DomainListing(self, domain)
 
-    @_deprecate_args("path", "params")
     def get(
         self,
         path: str,
@@ -646,7 +642,6 @@ class Reddit:
         """
         return self._objectify_request(method="GET", params=params, path=path)
 
-    @_deprecate_args("fullnames", "url", "subreddits")
     def info(
         self,
         *,
@@ -716,7 +711,6 @@ class Reddit:
 
         return generator(url)
 
-    @_deprecate_args("path", "data", "json")
     def patch(
         self,
         path: str,
@@ -738,7 +732,6 @@ class Reddit:
         """
         return self._objectify_request(data=data, json=json, method="PATCH", params=params, path=path)
 
-    @_deprecate_args("path", "data", "files", "params", "json")
     def post(
         self,
         path: str,
@@ -787,7 +780,6 @@ class Reddit:
                 time.sleep(seconds)
         raise last_exception
 
-    @_deprecate_args("path", "data", "json")
     def put(
         self,
         path: str,
@@ -807,7 +799,6 @@ class Reddit:
         """
         return self._objectify_request(data=data, json=json, method="PUT", path=path)
 
-    @_deprecate_args("nsfw")
     def random_subreddit(self, *, nsfw: bool = False) -> praw.models.Subreddit:
         """Return a random lazy instance of :class:`.Subreddit`.
 
@@ -823,7 +814,6 @@ class Reddit:
             path = redirect.path
         return models.Subreddit(self, path.split("/")[2])
 
-    @_deprecate_args("name", "fullname")
     def redditor(self, name: str | None = None, *, fullname: str | None = None) -> praw.models.Redditor:
         """Return a lazy instance of :class:`.Redditor`.
 
@@ -835,7 +825,6 @@ class Reddit:
         """
         return models.Redditor(self, name=name, fullname=fullname)
 
-    @_deprecate_args("method", "path", "params", "data", "files", "json")
     def request(
         self,
         *,
@@ -893,7 +882,6 @@ class Reddit:
                 field = None
             raise RedditAPIException([data["reason"], explanation, field]) from exception
 
-    @_deprecate_args("id", "url")
     def submission(self, id: str | None = None, *, url: str | None = None) -> praw.models.Submission:
         """Return a lazy instance of :class:`.Submission`.
 

@@ -6,7 +6,6 @@ from json import dumps
 from typing import TYPE_CHECKING, Any
 
 from ...const import API_PATH
-from ...util import _deprecate_args
 from ...util.cache import cachedproperty
 from ..listing.mixins import RedditorListingMixin
 from ..util import stream_generator
@@ -223,7 +222,6 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         self._reddit.post(API_PATH["remove_whitelisted"], data={"name": self.name})
 
-    @_deprecate_args("note")
     def friend(self, *, note: str = None):
         """Friend the :class:`.Redditor`.
 
@@ -263,7 +261,6 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         return self._reddit.get(API_PATH["friend_v1"].format(user=self))
 
-    @_deprecate_args("months")
     def gild(self, *, months: int = 1):
         """Gild the :class:`.Redditor`.
 

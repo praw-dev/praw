@@ -7,7 +7,7 @@ from json import dumps
 from typing import TYPE_CHECKING, Any
 
 from ...const import API_PATH
-from ...util import _deprecate_args, cachedproperty
+from ...util import cachedproperty
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
 from .redditor import Redditor
@@ -133,7 +133,6 @@ class Multireddit(SubredditListingMixin, RedditBase):
         self._reddit.put(url, data={"model": dumps({"name": str(subreddit)})})
         self._reset_attributes("subreddits")
 
-    @_deprecate_args("display_name")
     def copy(self, *, display_name: str | None = None) -> praw.models.Multireddit:
         """Copy this multireddit and return the new multireddit.
 

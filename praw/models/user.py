@@ -9,7 +9,6 @@ from prawcore import Conflict
 from ..const import API_PATH
 from ..exceptions import ReadOnlyException
 from ..models import Preferences
-from ..util import _deprecate_args
 from ..util.cache import cachedproperty
 from .base import PRAWBase
 from .listing.generator import ListingGenerator
@@ -85,7 +84,6 @@ class User(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH["my_contributor"], **generator_kwargs)
 
-    @_deprecate_args("user")
     def friends(
         self, *, user: str | praw.models.Redditor | None = None
     ) -> list[praw.models.Redditor] | praw.models.Redditor:

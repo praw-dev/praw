@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from ...const import API_PATH
-from ...util import _deprecate_args, snake_case_keys
+from ...util import snake_case_keys
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -181,7 +181,6 @@ class ModmailConversation(RedditBase):
         """
         self._reddit.post(API_PATH["modmail_highlight"].format(id=self.id))
 
-    @_deprecate_args("num_days")
     def mute(self, *, num_days: int = 3):
         """Mute the non-mod user associated with the conversation.
 
@@ -208,7 +207,6 @@ class ModmailConversation(RedditBase):
             path=API_PATH["modmail_mute"].format(id=self.id),
         )
 
-    @_deprecate_args("other_conversations")
     def read(self, *, other_conversations: list[ModmailConversation] | None = None):
         """Mark the conversation(s) as read.
 
@@ -228,7 +226,6 @@ class ModmailConversation(RedditBase):
         data = {"conversationIds": self._build_conversation_list(other_conversations)}
         self._reddit.post(API_PATH["modmail_read"], data=data)
 
-    @_deprecate_args("body", "author_hidden", "internal")
     def reply(self, *, author_hidden: bool = False, body: str, internal: bool = False) -> ModmailMessage:
         """Reply to the conversation.
 
@@ -306,7 +303,6 @@ class ModmailConversation(RedditBase):
         """
         self._reddit.request(method="POST", path=API_PATH["modmail_unmute"].format(id=self.id))
 
-    @_deprecate_args("other_conversations")
     def unread(self, *, other_conversations: list[ModmailConversation] | None = None):
         """Mark the conversation(s) as unread.
 

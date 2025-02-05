@@ -10,8 +10,6 @@ All other exceptions are subclassed from :class:`.ClientException`.
 
 from __future__ import annotations
 
-from .util import _deprecate_args
-
 
 class PRAWException(Exception):
     """The base PRAW Exception that all other exception classes extend."""
@@ -44,7 +42,6 @@ class RedditErrorItem:
         """Return the hash of the current instance."""
         return hash(self.__class__.__name__) ^ hash((self.error_type, self.message, self.field))
 
-    @_deprecate_args("error_type", "message", "field")
     def __init__(
         self,
         error_type: str,
@@ -110,7 +107,6 @@ class InvalidImplicitAuth(ClientException):
 class InvalidURL(ClientException):
     """Indicate exceptions where an invalid URL is entered."""
 
-    @_deprecate_args("url", "message")
     def __init__(self, url: str, *, message: str = "Invalid URL: {}"):
         """Initialize an :class:`.InvalidURL` instance.
 
@@ -133,7 +129,6 @@ class ReadOnlyException(ClientException):
 class TooLargeMediaException(ClientException):
     """Indicate exceptions from uploading media that's too large."""
 
-    @_deprecate_args("maximum_size", "actual")
     def __init__(self, *, actual: int, maximum_size: int):
         """Initialize a :class:`.TooLargeMediaException` instance.
 

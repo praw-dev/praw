@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ..const import API_PATH
-from ..util import _deprecate_args
 from . import Subreddit
 from .base import PRAWBase
 from .listing.generator import ListingGenerator
@@ -102,7 +101,6 @@ class Subreddits(PRAWBase):
         self._safely_add_arguments(arguments=generator_kwargs, key="params", q=query)
         return ListingGenerator(self._reddit, API_PATH["subreddits_search"], **generator_kwargs)
 
-    @_deprecate_args("query", "include_nsfw", "exact")
     def search_by_name(
         self,
         query: str,

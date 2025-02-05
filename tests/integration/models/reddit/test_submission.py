@@ -9,9 +9,9 @@ from ... import IntegrationTest
 class TestSubmission(IntegrationTest):
     @staticmethod
     def _inline_media(image_path):
-        gif = InlineGif(image_path("test.gif"), "optional caption")
-        image = InlineImage(image_path("test.png"), "optional caption")
-        video = InlineVideo(image_path("test.mp4"), "optional caption")
+        gif = InlineGif(caption="optional caption", path=image_path("test.gif"))
+        image = InlineImage(caption="optional caption", path=image_path("test.png"))
+        video = InlineVideo(caption="optional caption", path=image_path("test.mp4"))
         return {"gif1": gif, "image1": image, "video1": video}
 
     @staticmethod

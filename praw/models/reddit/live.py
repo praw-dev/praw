@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from ...const import API_PATH
-from ...util import _deprecate_args
 from ...util.cache import cachedproperty
 from ..list.redditor import RedditorList
 from ..listing.generator import ListingGenerator
@@ -71,7 +70,6 @@ class LiveContributorRelationship:
         url = API_PATH["live_accept_invite"].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
-    @_deprecate_args("redditor", "permissions")
     def invite(
         self,
         redditor: str | praw.models.Redditor,
@@ -173,7 +171,6 @@ class LiveContributorRelationship:
         url = API_PATH["live_remove_invite"].format(id=self.thread.id)
         self.thread._reddit.post(url, data=data)
 
-    @_deprecate_args("redditor", "permissions")
     def update(
         self,
         redditor: str | praw.models.Redditor,
@@ -217,7 +214,6 @@ class LiveContributorRelationship:
         }
         self.thread._reddit.post(url, data=data)
 
-    @_deprecate_args("redditor", "permissions")
     def update_invite(
         self,
         redditor: str | praw.models.Redditor,
@@ -524,7 +520,6 @@ class LiveThreadContribution:
         url = API_PATH["live_close"].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
-    @_deprecate_args("title", "description", "nsfw", "resources")
     def update(
         self,
         *,

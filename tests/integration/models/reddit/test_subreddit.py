@@ -1428,9 +1428,9 @@ class TestSubreddit(IntegrationTest):
     def test_submit__selftext_inline_media(self, image_path, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        gif = InlineGif(image_path("test.gif"), "optional caption")
-        image = InlineImage(image_path("test.png"), "optional caption")
-        video = InlineVideo(image_path("test.mp4"), "optional caption")
+        gif = InlineGif(caption="optional caption", path=image_path("test.gif"))
+        image = InlineImage(caption="optional caption", path=image_path("test.png"))
+        video = InlineVideo(caption="optional caption", path=image_path("test.mp4"))
         selftext = (
             "Text with a gif {gif1} an image {image1} and a video {video1} inline"
         )
