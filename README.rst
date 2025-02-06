@@ -17,10 +17,6 @@ PRAW: The Python Reddit API Wrapper
     :alt: GitHub Actions Status
     :target: https://github.com/praw-dev/praw/actions/workflows/ci.yml
 
-.. image:: https://coveralls.io/repos/github/praw-dev/praw/badge.svg
-    :alt: Coveralls Coverage
-    :target: https://coveralls.io/github/praw-dev/praw?branch=main
-
 .. image:: https://api.securityscorecards.dev/projects/github.com/praw-dev/praw/badge
     :alt: OpenSSF Scorecard
     :target: https://api.securityscorecards.dev/projects/github.com/praw-dev/praw

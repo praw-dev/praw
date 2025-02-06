@@ -39,7 +39,6 @@ readme = "README.rst"
 requires-python = "~=3.8"
 
 [project.optional-dependencies]
-ci = ["coveralls"]
 dev = [
   "packaging",
   "praw[lint]",
