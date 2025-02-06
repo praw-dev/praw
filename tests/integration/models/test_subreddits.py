@@ -58,16 +58,6 @@ class TestSubreddits(IntegrationTest):
         assert len(subreddits) > 1
         assert all(isinstance(x, Subreddit) for x in subreddits)
 
-    def test_search_by_topic(self, reddit):
-        subreddits = reddit.subreddits.search_by_topic("python")
-        assert isinstance(subreddits, list)
-        assert len(subreddits) > 1
-        assert all(isinstance(x, Subreddit) for x in subreddits)
-
-        subreddits = reddit.subreddits.search_by_topic("xvfx2741r")
-        assert isinstance(subreddits, list)
-        assert len(subreddits) == 0
-
     def test_stream(self, reddit):
         generator = reddit.subreddits.stream()
         for _i in range(101):

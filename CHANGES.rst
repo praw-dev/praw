@@ -30,6 +30,7 @@ Unreleased
 - Remove ``Redditor.gildings`` method.
 - Remove ``Subreddit.mod.inbox``, ``Subreddit.mod.unread``, and
   ``Subreddit.mod.stream.unread`` methods.
+- Remove ``Subreddits.search_by_topic`` method.
 - Remove ``Subreddits.gold`` method.
 - Remove :class:`.Reddit` keyword argument ``token_manager`` and all associated token
   managers.
@@ -1051,8 +1052,7 @@ as described below:
 
 **Added**
 
-- :meth:`.Subreddits.search_by_topic` to search subreddits by topic. (see:
-  https://www.reddit.com/dev/api/#GET_api_subreddits_by_topic).
+- ``Subreddits.search_by_topic`` to search subreddits by topic.
 - :meth:`.LiveHelper.__call__` to provide interface to
   ``praw.models.LiveThread.__init__``.
 - :class:`.SubredditFilters` to work with filters for special subreddits, like

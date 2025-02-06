@@ -121,19 +121,6 @@ class Subreddits(PRAWBase):
         )
         return [self._reddit.subreddit(x) for x in result["names"]]
 
-    def search_by_topic(self, query: str) -> list[praw.models.Subreddit]:
-        """Return list of Subreddits whose topics match ``query``.
-
-        :param query: Search for subreddits relevant to the search topic.
-
-        .. note::
-
-            As of 09/01/2020, this endpoint always returns 404.
-
-        """
-        result = self._reddit.get(API_PATH["subreddits_by_topic"], params={"query": query})
-        return [self._reddit.subreddit(x["name"]) for x in result if x.get("name")]
-
     def stream(self, **stream_options: str | int | dict[str, str]) -> Iterator[praw.models.Subreddit]:
         """Yield new subreddits as they are created.
 
