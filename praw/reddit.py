@@ -11,7 +11,6 @@ from itertools import islice
 from logging import getLogger
 from typing import IO, TYPE_CHECKING, Any
 from urllib.parse import urlparse
-from warnings import warn
 
 from prawcore import (
     Authorizer,
@@ -35,7 +34,6 @@ from .exceptions import (
     RedditAPIException,
 )
 from .objector import Objector
-from .util import _deprecate_args
 
 try:
     from update_checker import update_check
@@ -51,8 +49,6 @@ if TYPE_CHECKING:  # pragma: no cover
     import prawcore
 
     import praw.models
-
-    from .util.token_manager import BaseTokenManager
 
 Comment = models.Comment
 Redditor = models.Redditor
@@ -112,31 +108,6 @@ class Reddit:
         else:
             self._core = self._authorized_core
 
-    @property
-    def validate_on_submit(self) -> bool:
-        """Get validate_on_submit.
-
-        .. deprecated:: 7.0
-
-            If property :attr:`.validate_on_submit` is set to ``False``, the behavior is
-            deprecated by Reddit. This attribute will be removed around May-June 2020.
-
-        """
-        value = self._validate_on_submit
-        if value is False:
-            warn(
-                "Reddit will check for validation on all posts around May-June 2020. It"
-                " is recommended to check for validation by setting"
-                " reddit.validate_on_submit to True.",
-                category=DeprecationWarning,
-                stacklevel=3,
-            )
-        return value
-
-    @validate_on_submit.setter
-    def validate_on_submit(self, val: bool):
-        self._validate_on_submit = val
-
     def __enter__(self):  # noqa: ANN204
         """Handle the context manager open."""
         return self
@@ -144,13 +115,6 @@ class Reddit:
     def __exit__(self, *_: object):
         """Handle the context manager close."""
 
-    @_deprecate_args(
-        "site_name",
-        "config_interpolation",
-        "requestor_class",
-        "requestor_kwargs",
-        "token_manager",
-    )
     def __init__(
         self,
         site_name: str | None = None,
@@ -158,7 +122,6 @@ class Reddit:
         config_interpolation: str | None = None,
         requestor_class: type[prawcore.requestor.Requestor] | None = None,
         requestor_kwargs: dict[str, Any] | None = None,
-        token_manager: BaseTokenManager | None = None,
         **config_settings: str | bool | int | None,
     ):
         """Initialize a :class:`.Reddit` instance.
@@ -176,10 +139,6 @@ class Reddit:
             set, use ``prawcore.Requestor`` (default: ``None``).
         :param requestor_kwargs: Dictionary with additional keyword arguments used to
             initialize the requestor (default: ``None``).
-        :param token_manager: When provided, the passed instance, a subclass of
-            :class:`.BaseTokenManager`, will manage tokens via two callback functions.
-            This parameter must be provided in order to work with refresh tokens
-            (default: ``None``).
 
         Additional keyword arguments will be used to initialize the :class:`.Config`
         object. This can be used to specify configuration settings during instantiation
@@ -226,9 +185,7 @@ class Reddit:
         """
         self._core = self._authorized_core = self._read_only_core = None
         self._objector = None
-        self._token_manager = token_manager
         self._unique_counter = 0
-        self._validate_on_submit = False
 
         try:
             config_section = (
@@ -516,25 +473,7 @@ class Reddit:
         )
 
     def _prepare_common_authorizer(self, authenticator: prawcore.auth.BaseAuthenticator):
-        if self._token_manager is not None:
-            warn(
-                "Token managers have been deprecated and will be removed in the near"
-                " future. See https://www.reddit.com/r/redditdev/comments/olk5e6/"
-                "followup_oauth2_api_changes_regarding_refresh/ for more details.",
-                category=DeprecationWarning,
-                stacklevel=2,
-            )
-            if self.config.refresh_token:
-                msg = "'refresh_token' setting cannot be provided when providing 'token_manager'"
-                raise TypeError(msg)
-
-            self._token_manager.reddit = self
-            authorizer = Authorizer(
-                authenticator,
-                post_refresh_callback=self._token_manager.post_refresh_callback,
-                pre_refresh_callback=self._token_manager.pre_refresh_callback,
-            )
-        elif self.config.refresh_token:
+        if self.config.refresh_token:
             authorizer = Authorizer(authenticator, refresh_token=self.config.refresh_token)
         else:
             self._core = self._read_only_core
@@ -644,7 +583,6 @@ class Reddit:
                 return e.response.next.url
         return url
 
-    @_deprecate_args("id", "url")
     def comment(self, id: str | None = None, *, url: str | None = None) -> models.Comment:
         """Return a lazy instance of :class:`.Comment`.
 
@@ -661,7 +599,6 @@ class Reddit:
             url = self._resolve_share_url(url)
         return models.Comment(self, id=id, url=url)
 
-    @_deprecate_args("path", "data", "json", "params")
     def delete(
         self,
         path: str,
@@ -691,7 +628,6 @@ class Reddit:
         """
         return models.DomainListing(self, domain)
 
-    @_deprecate_args("path", "params")
     def get(
         self,
         path: str,
@@ -706,7 +642,6 @@ class Reddit:
         """
         return self._objectify_request(method="GET", params=params, path=path)
 
-    @_deprecate_args("fullnames", "url", "subreddits")
     def info(
         self,
         *,
@@ -776,7 +711,6 @@ class Reddit:
 
         return generator(url)
 
-    @_deprecate_args("path", "data", "json")
     def patch(
         self,
         path: str,
@@ -798,7 +732,6 @@ class Reddit:
         """
         return self._objectify_request(data=data, json=json, method="PATCH", params=params, path=path)
 
-    @_deprecate_args("path", "data", "files", "params", "json")
     def post(
         self,
         path: str,
@@ -847,7 +780,6 @@ class Reddit:
                 time.sleep(seconds)
         raise last_exception
 
-    @_deprecate_args("path", "data", "json")
     def put(
         self,
         path: str,
@@ -867,23 +799,6 @@ class Reddit:
         """
         return self._objectify_request(data=data, json=json, method="PUT", path=path)
 
-    @_deprecate_args("nsfw")
-    def random_subreddit(self, *, nsfw: bool = False) -> praw.models.Subreddit:
-        """Return a random lazy instance of :class:`.Subreddit`.
-
-        :param nsfw: Return a random NSFW (not safe for work) subreddit (default:
-            ``False``).
-
-        """
-        url = API_PATH["subreddit"].format(subreddit="randnsfw" if nsfw else "random")
-        path = None
-        try:
-            self.get(url, params={"unique": self._next_unique})
-        except Redirect as redirect:
-            path = redirect.path
-        return models.Subreddit(self, path.split("/")[2])
-
-    @_deprecate_args("name", "fullname")
     def redditor(self, name: str | None = None, *, fullname: str | None = None) -> praw.models.Redditor:
         """Return a lazy instance of :class:`.Redditor`.
 
@@ -895,7 +810,6 @@ class Reddit:
         """
         return models.Redditor(self, name=name, fullname=fullname)
 
-    @_deprecate_args("method", "path", "params", "data", "files", "json")
     def request(
         self,
         *,
@@ -953,7 +867,6 @@ class Reddit:
                 field = None
             raise RedditAPIException([data["reason"], explanation, field]) from exception
 
-    @_deprecate_args("id", "url")
     def submission(self, id: str | None = None, *, url: str | None = None) -> praw.models.Submission:
         """Return a lazy instance of :class:`.Submission`.
 

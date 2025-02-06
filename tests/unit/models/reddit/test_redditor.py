@@ -59,16 +59,6 @@ class TestRedditor(UnitTest):
         redditor = Redditor(reddit, _data={"name": "name", "id": "dummy"})
         assert redditor.fullname == "t2_dummy"
 
-    def test_guild__max(self, reddit):
-        with pytest.raises(TypeError) as excinfo:
-            Redditor(reddit, name="RedditorName").gild(months=37)
-        assert str(excinfo.value) == "months must be between 1 and 36"
-
-    def test_guild__min(self, reddit):
-        with pytest.raises(TypeError) as excinfo:
-            Redditor(reddit, name="RedditorName").gild(months=0)
-        assert str(excinfo.value) == "months must be between 1 and 36"
-
     def test_hash(self, reddit):
         redditor1 = Redditor(reddit, _data={"name": "dummy1", "n": 1})
         redditor2 = Redditor(reddit, _data={"name": "Dummy1", "n": 2})

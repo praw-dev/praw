@@ -6,6 +6,39 @@ PRAW follows `semantic versioning <https://semver.org/>`_.
 Unreleased
 ----------
 
+**Added**
+
+- Add support for Python 3.13.
+
+**Changed**
+
+- Bumped prawcore to 3.0.1.
+- Drop support for Python 3.8, which was end-of-life on 2024-10-07.
+- Change ``Reddit.user.me`` to raise :class:`.ReadOnlyException` when called in
+  :attr:`.read_only` mode.
+- The ``subreddit`` attribute of :class:`.Redditor` is a :class:`.UserSubreddit`
+  instance.
+
+**Removed**
+
+- Remove ``Reddit.random_subreddit``, ``Subreddit.random``, and
+  ``Subreddit.random_rising``.
+- Remove ``APIException`` class.
+- Remove ``Comment.award`` and ``Submission.award`` methods.
+- Remove ``Comment.gild``, ``Redditor.gild``, and ``Submission.gild`` methods.
+- Remove ``Redditor.gilded`` and ``Subreddit.gilded`` methods.
+- Remove ``Redditor.gildings`` method.
+- Remove ``Subreddit.mod.inbox``, ``Subreddit.mod.unread``, and
+  ``Subreddit.mod.stream.unread`` methods.
+- Remove ``Subreddits.search_by_topic`` method.
+- Remove ``Subreddits.gold`` method.
+- Remove :class:`.Reddit` keyword argument ``token_manager`` and all associated token
+  managers.
+- Remove ``Reddit.validate_on_submit`` configuration attribute.
+- Remove ``WebSocketException.original_exception`` method.
+- Remove the ``after`` argument for :meth:`.conversations`.
+- Remove key ``reset_timestamp`` from :meth:`.limits`.
+
 7.8.1 (2024/10/25)
 ------------------
 
@@ -197,7 +230,7 @@ Unreleased
 - :meth:`.trusted` to retrieve a :class:`.RedditorList` of trusted users.
 - :meth:`.trust` to add a user to the trusted list.
 - :meth:`.distrust` to remove a user from the trusted list.
-- :class:`.SQLiteTokenManager` (may not work on Windows).
+- ``SQLiteTokenManager`` (may not work on Windows).
 
 **Changed**
 
@@ -208,7 +241,8 @@ Unreleased
 
 **Deprecated**
 
-- The ``subreddit`` attribute of :class:`.Redditor` is no longer a dict.
+- The ``subreddit`` attribute of :class:`.Redditor` will no longer function as a
+  ``dict``.
 - Legacy modmail is slated for deprecation by Reddit in June 2021. See
   https://www.reddit.com/r/modnews/comments/mar9ha/even_more_modmail_improvements/ for
   more info.
@@ -232,7 +266,7 @@ Unreleased
 **Added**
 
 - :class:`.Reddit` keyword argument ``token_manager``.
-- :class:`.FileTokenManager` and its parent abstract class :class:`.BaseTokenManager`.
+- ``FileTokenManager`` and its parent abstract class ``BaseTokenManager``.
 
 **Deprecated**
 
@@ -242,9 +276,9 @@ Unreleased
   an instance of :class:`.Reddit`, and via the ``PRAW_REFRESH_TOKEN`` environment
   variable. To be prepared for PRAW 8, use the new :class:`.Reddit` keyword argument
   ``token_manager``. See :ref:`refresh_token` in PRAW's documentation for an example.
-- :meth:`.me` will no longer return ``None`` when called in :attr:`.read_only` mode
-  starting in PRAW 8. A :py:class:`DeprecationWarning` will be issued. To switch forward
-  to the PRAW 8 behavior set ``praw8_raise_exception_on_me=True`` in your
+- ``Reddit.user.me`` will no longer return ``None`` when called in :attr:`.read_only`
+  mode starting in PRAW 8. A :py:class:`DeprecationWarning` will be issued. To switch
+  forward to the PRAW 8 behavior set ``praw8_raise_exception_on_me=True`` in your
   :class:`.Reddit` call.
 
 7.1.4 (2021/02/07)
@@ -280,8 +314,8 @@ Unreleased
 - Ability to specify modmail mute duration.
 - Add method :meth:`.invited` to get invited moderators of a subreddit.
 - Ability to submit text/self posts with inline media.
-- Add method :meth:`.Submission.award` and :meth:`.Comment.award` with the ability to
-  specify type of award, anonymity, and message when awarding a submission or comment.
+- Add method ``Submission.award`` and ``Comment.award`` with the ability to specify type
+  of award, anonymity, and message when awarding a submission or comment.
 - Ability to specify subreddits by name using the `subreddits` parameter in
   :meth:`.Reddit.info`.
 - A check to see if PRAW is running in an asynchronous environment and will advise the
@@ -299,9 +333,9 @@ Unreleased
 
 **Deprecated**
 
-- :meth:`.Subreddits.gold` is superseded by :meth:`.Subreddits.premium`.
-- :meth:`.Submission.gild` is superseded by :meth:`.Submission.award`.
-- :meth:`.Comment.gild` is superseded by :meth:`.Comment.award`.
+- ``Subreddits.gold`` is superseded by :meth:`.Subreddits.premium`.
+- ``Submission.gild`` is superseded by ``Submission.award``.
+- ``Comment.gild`` is superseded by ``Comment.award``.
 
 **Fixed**
 
@@ -338,8 +372,8 @@ Unreleased
 
 **Deprecated**
 
-- :attr:`.WebSocketException.original_exception` is deprecated and slated for removal in
-  PRAW 8.0.
+- ``WebSocketException.original_exception`` is deprecated and slated for removal in PRAW
+  8.0.
 
 **Fixed**
 
@@ -405,10 +439,10 @@ Unreleased
 
 - Introduced a data class, :class:`.RedditErrorItem`, to represent an individual error
   item returned from Reddit.
-- Class :class:`.RedditAPIException` now serves as a container for the
+- Class ``RedditAPIException`` now serves as a container for the
   :class:`.RedditErrorItem`\ s. You can access the items by doing
   ``RedditAPIException.items``, which returns a list.
-- :class:`.APIException` is an alias to :class:`.RedditAPIException`.
+- ``APIException`` is an alias to :class:`.RedditAPIException`.
 - Parameter ``discussion_type`` to methods :meth:`~.Subreddit.submit`,
   :meth:`~.Subreddit.submit_image`, and :meth:`~.Subreddit.submit_video` to support
   submitting as a live discussion (set to ``"CHAT"``).
@@ -431,7 +465,7 @@ Unreleased
 
 **Deprecated**
 
-- :class:`.APIException` is deprecated and slated for removal in PRAW 8.0.
+- ``APIException`` is deprecated and slated for removal in PRAW 8.0.
 
 **Fixed**
 
@@ -440,7 +474,7 @@ Unreleased
 
 **Removed**
 
-- Converting :class:`.APIException` to string will no longer escape unicode characters.
+- Converting ``APIException`` to string will no longer escape unicode characters.
 - Module ``praw.models.modaction`` no longer exists. Please use the module
   ``praw.models.mod_action``, or directly import ``ModAction`` from ``praw.models``.
 - Methods :meth:`.SubredditLinkFlairTemplates.update` and
@@ -493,8 +527,8 @@ Unreleased
   :meth:`.SubredditModeration.spam`
 - Add :meth:`~.SubredditModerationStream.unmoderated` to allow streaming of
   :meth:`.SubredditModeration.unmoderated`
-- Add :meth:`~.SubredditModerationStream.unread` to allow streaming of
-  :meth:`.SubredditModeration.unread`
+- Add ``SubredditModerationStream.unread`` to allow streaming of
+  ``SubredditModeration.unread``
 - Parameter ``exclude_before`` to :func:`.stream_generator` to allow
   :meth:`~.SubredditModerationStream.modmail_conversations` to work
 - Parameters ``allowable_content`` and ``max_emojis`` to
@@ -603,9 +637,8 @@ Unreleased
 
 **Fixed**
 
-- :meth:`.Subreddit.random` returns ``None`` instead of raising
-  :class:`.ClientException` when the subreddit does not support generating random
-  submissions.
+- ``Subreddit.random`` returns ``None`` instead of raising :class:`.ClientException`
+  when the subreddit does not support generating random submissions.
 
 **Other**
 
@@ -1019,8 +1052,7 @@ as described below:
 
 **Added**
 
-- :meth:`.Subreddits.search_by_topic` to search subreddits by topic. (see:
-  https://www.reddit.com/dev/api/#GET_api_subreddits_by_topic).
+- ``Subreddits.search_by_topic`` to search subreddits by topic.
 - :meth:`.LiveHelper.__call__` to provide interface to
   ``praw.models.LiveThread.__init__``.
 - :class:`.SubredditFilters` to work with filters for special subreddits, like
@@ -1120,7 +1152,7 @@ to help with updating your code to PRAW 4. If you require additional help please
   permit blocking unwanted user contact.
 - :meth:`.LiveHelper.create` to create new live threads.
 - :meth:`.Redditor.unblock` to undo a block.
-- :meth:`.Subreddits.gold` to iterate through gold subreddits.
+- ``Subreddits.gold`` to iterate through gold subreddits.
 - :meth:`.Subreddits.search` to search for subreddits by name and description.
 - :meth:`.Subreddits.stream` to obtain newly created subreddits in near realtime.
 - :meth:`.User.karma` to retrieve the current user's subreddit karma.
@@ -1128,13 +1160,13 @@ to help with updating your code to PRAW 4. If you require additional help please
   ``praw.models.reddit.submission.SubmissionModeration.unlock`` to change a Submission's
   lock state.
 - :meth:`.SubredditFlairTemplates.delete` to delete a single flair template.
-- :meth:`.SubredditModeration.unread` to iterate over unread moderation messages.
+- ``SubredditModeration.unread`` to iterate over unread moderation messages.
 - :meth:`.ModeratorRelationship.invite` to invite a moderator to a subreddit.
 - :meth:`.ModeratorRelationship.update` to update a moderator's permissions.
 - :meth:`.ModeratorRelationship.update_invite` to update an invited moderator's
   permissions.
-- :meth:`.Front.random_rising`, :meth:`.Subreddit.random_rising` and
-  :meth:`.Multireddit.random_rising`.
+- ``Front.random_rising``, ``Subreddit.random_rising`` and
+  ``Multireddit.random_rising``.
 - :class:`.WikiPage` supports a revision argument.
 - :meth:`.SubredditWiki.revisions` to obtain a list of recent revisions to a subreddit.
 - :meth:`.WikiPage.revisions` to obtain a list of revisions for a wiki page.

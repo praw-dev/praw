@@ -6,7 +6,6 @@ from json import dumps
 from typing import TYPE_CHECKING, Any
 
 from ..const import API_PATH
-from ..util import _deprecate_args
 from .base import PRAWBase
 from .reddit.draft import Draft
 from .reddit.live import LiveThread
@@ -151,7 +150,6 @@ class LiveHelper(PRAWBase):
         """
         return LiveThread(self._reddit, id=id)
 
-    @_deprecate_args("title", "description", "nsfw", "resources")
     def create(
         self,
         title: str,
@@ -243,7 +241,6 @@ class LiveHelper(PRAWBase):
 class MultiredditHelper(PRAWBase):
     """Provide a set of functions to interact with multireddits."""
 
-    @_deprecate_args("redditor", "name")
     def __call__(self, *, name: str, redditor: str | praw.models.Redditor) -> praw.models.Multireddit:
         """Return a lazy instance of :class:`.Multireddit`.
 
@@ -255,15 +252,6 @@ class MultiredditHelper(PRAWBase):
         path = f"/user/{redditor}/m/{name}"
         return Multireddit(self._reddit, _data={"name": name, "path": path})
 
-    @_deprecate_args(
-        "display_name",
-        "subreddits",
-        "description_md",
-        "icon_name",
-        "key_color",
-        "visibility",
-        "weighting_scheme",
-    )
     def create(
         self,
         *,
@@ -319,16 +307,8 @@ class SubredditHelper(PRAWBase):
         :param display_name: The name of the subreddit.
 
         """
-        lower_name = display_name.lower()
-
-        if lower_name == "random":
-            return self._reddit.random_subreddit()
-        if lower_name == "randnsfw":
-            return self._reddit.random_subreddit(nsfw=True)
-
         return Subreddit(self._reddit, display_name=display_name)
 
-    @_deprecate_args("name", "title", "link_type", "subreddit_type", "wikimode")
     def create(
         self,
         name: str,

@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from ...const import API_PATH
-from ...util import _deprecate_args
 from ...util.cache import cachedproperty
 from ..listing.generator import ListingGenerator
 from .base import RedditBase
@@ -120,7 +119,6 @@ class WikiPageModeration:
         url = API_PATH["wiki_page_settings"].format(subreddit=self.wikipage.subreddit, page=self.wikipage.name)
         return self.wikipage._reddit.get(url)["data"]
 
-    @_deprecate_args("listed", "permlevel")
     def update(self, *, listed: bool, permlevel: int, **other_settings: Any) -> dict[str, Any]:
         """Update the settings for this :class:`.WikiPage`.
 
@@ -260,7 +258,6 @@ class WikiPage(RedditBase):
             **generator_kwargs,
         )
 
-    @_deprecate_args("content", "reason")
     def edit(self, *, content: str, reason: str | None = None, **other_settings: Any):
         """Edit this wiki page's contents.
 

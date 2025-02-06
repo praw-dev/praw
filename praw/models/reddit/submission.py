@@ -12,7 +12,7 @@ from prawcore import Conflict
 
 from ...const import API_PATH
 from ...exceptions import InvalidURL
-from ...util import _deprecate_args, cachedproperty
+from ...util import cachedproperty
 from ..comment_forest import CommentForest
 from ..listing.listing import Listing
 from ..listing.mixins import SubmissionListingMixin
@@ -63,7 +63,6 @@ class SubmissionFlair:
         url = API_PATH["flairselector"].format(subreddit=self.submission.subreddit)
         return self.submission._reddit.post(url, data={"link": self.submission.fullname})["choices"]
 
-    @_deprecate_args("flair_template_id", "text")
     def select(self, flair_template_id: str, *, text: str | None = None):
         """Select flair for submission.
 
@@ -113,7 +112,6 @@ class SubmissionModeration(ThingModerationMixin, ModNoteMixin):
         """
         self.thing = submission
 
-    @_deprecate_args("state")
     def contest_mode(self, *, state: bool = True):
         """Set contest mode for the comments of this submission.
 
@@ -138,7 +136,6 @@ class SubmissionModeration(ThingModerationMixin, ModNoteMixin):
         """
         self.thing._reddit.post(API_PATH["contest_mode"], data={"id": self.thing.fullname, "state": state})
 
-    @_deprecate_args("text", "css_class", "flair_template_id")
     def flair(
         self,
         *,
@@ -264,7 +261,6 @@ class SubmissionModeration(ThingModerationMixin, ModNoteMixin):
         """
         self.thing._reddit.post(API_PATH["spoiler"], data={"id": self.thing.fullname})
 
-    @_deprecate_args("state", "bottom")
     def sticky(self, *, bottom: bool = True, state: bool = True) -> praw.models.Submission:
         """Set the submission's sticky state in its subreddit.
 
@@ -300,7 +296,6 @@ class SubmissionModeration(ThingModerationMixin, ModNoteMixin):
         except Conflict:
             pass
 
-    @_deprecate_args("sort")
     def suggested_sort(self, *, sort: str = "blank"):
         """Set the suggested sort for the comments of the submission.
 
@@ -675,7 +670,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         """
         data = {
             "thing_id": self.fullname,
-            "validate_on_submit": self._reddit.validate_on_submit,
+            "validate_on_submit": True,
         }
         is_richtext_json = False
         if INLINE_MEDIA_PATTERN.search(body) and self.media_metadata:
@@ -794,15 +789,6 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
             )
         self._additional_fetch_params[key] = value
 
-    @_deprecate_args(
-        "subreddit",
-        "title",
-        "send_replies",
-        "flair_id",
-        "flair_text",
-        "nsfw",
-        "spoiler",
-    )
     def crosspost(
         self,
         subreddit: praw.models.Subreddit,
@@ -866,7 +852,6 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         return self._reddit.post(API_PATH["submit"], data=data)
 
-    @_deprecate_args("other_submissions")
     def hide(self, *, other_submissions: list[praw.models.Submission] | None = None):
         """Hide :class:`.Submission`.
 
@@ -905,7 +890,6 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         data = {"links": self.fullname}
         self._reddit.post(API_PATH["store_visits"], data=data)
 
-    @_deprecate_args("other_submissions")
     def unhide(self, *, other_submissions: list[praw.models.Submission] | None = None):
         """Unhide :class:`.Submission`.
 

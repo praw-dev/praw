@@ -19,7 +19,7 @@ class TestRemovalReason(UnitTest):
         reason2 = RemovalReason(reddit, subreddit=reddit.subreddit("a"), id="2")
         reason3 = RemovalReason(reddit, subreddit=reddit.subreddit("b"), id="1")
         reason4 = RemovalReason(reddit, subreddit=reddit.subreddit("A"), id="x")
-        reason5 = RemovalReason(reddit, subreddit=reddit.subreddit("a"), reason_id="X")
+        reason5 = RemovalReason(reddit, subreddit=reddit.subreddit("a"), id="X")
         assert reason1 == reason1
         assert reason1 == "x"
         assert reason2 == reason2
@@ -41,15 +41,13 @@ class TestRemovalReason(UnitTest):
             )
         with pytest.raises(ValueError):
             RemovalReason(reddit, subreddit=reddit.subreddit("a"), id="")
-        with pytest.raises(ValueError):
-            RemovalReason(reddit, subreddit=reddit.subreddit("a"), reason_id="")
 
     def test_hash(self, reddit):
         reason1 = RemovalReason(reddit, subreddit=reddit.subreddit("a"), id="x")
         reason2 = RemovalReason(reddit, subreddit=reddit.subreddit("a"), id="2")
         reason3 = RemovalReason(reddit, subreddit=reddit.subreddit("b"), id="1")
         reason4 = RemovalReason(reddit, subreddit=reddit.subreddit("A"), id="x")
-        reason5 = RemovalReason(reddit, subreddit=reddit.subreddit("a"), reason_id="X")
+        reason5 = RemovalReason(reddit, subreddit=reddit.subreddit("a"), id="X")
         assert hash(reason1) == hash(reason1)
         assert hash(reason2) == hash(reason2)
         assert hash(reason3) == hash(reason3)

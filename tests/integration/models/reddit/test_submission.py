@@ -9,9 +9,9 @@ from ... import IntegrationTest
 class TestSubmission(IntegrationTest):
     @staticmethod
     def _inline_media(image_path):
-        gif = InlineGif(image_path("test.gif"), "optional caption")
-        image = InlineImage(image_path("test.png"), "optional caption")
-        video = InlineVideo(image_path("test.mp4"), "optional caption")
+        gif = InlineGif(caption="optional caption", path=image_path("test.gif"))
+        image = InlineImage(caption="optional caption", path=image_path("test.png"))
+        video = InlineVideo(caption="optional caption", path=image_path("test.mp4"))
         return {"gif1": gif, "image1": image, "video1": video}
 
     @staticmethod
@@ -21,31 +21,6 @@ class TestSubmission(IntegrationTest):
         if return_rtjson:
             return submission, submission.rtjson
         return submission
-
-    @pytest.mark.cassette_name("TestSubmission.test_award")
-    def test_award(self, reddit):
-        reddit.read_only = False
-        award_data = Submission(reddit, "j3kyoo").award()
-        assert award_data["gildings"]["gid_2"] == 1
-
-    def test_award__not_enough_coins(self, reddit):
-        reddit.read_only = False
-        with pytest.raises(RedditAPIException) as excinfo:
-            Submission(reddit, "j3fkiw").award(
-                gild_type="award_2385c499-a1fb-44ec-b9b7-d260f3dc55de"
-            )
-        exception = excinfo.value
-        assert exception.error_type == "INSUFFICIENT_COINS_WITH_AMOUNT"
-
-    @pytest.mark.cassette_name("TestSubmission.test_award__self_gild")
-    def test_award__self_gild(self, reddit):
-        reddit.read_only = False
-        with pytest.raises(RedditAPIException) as excinfo:
-            Submission(reddit, "j3fkiw").award(
-                gild_type="award_2385c499-a1fb-44ec-b9b7-d260f3dc55de"
-            )
-        exception = excinfo.value
-        assert exception.error_type == "SELF_GILDING_NOT_ALLOWED"
 
     def test_clear_vote(self, reddit):
         reddit.read_only = False
@@ -218,15 +193,6 @@ class TestSubmission(IntegrationTest):
         reddit.read_only = False
         submission = Submission(reddit, "6ckfdz")
         submission.enable_inbox_replies()
-
-    @pytest.mark.cassette_name("TestSubmission.test_award")
-    def test_gild(self, reddit):
-        reddit.read_only = False
-        award_data = Submission(reddit, "j3kyoo").gild()
-        assert award_data["gildings"]["gid_2"] == 1
-
-    def test_gilded(self, reddit):
-        assert Submission(reddit, "2gmzqe").gilded == 1
 
     def test_hide(self, reddit):
         reddit.read_only = False

@@ -403,11 +403,6 @@ class TestSubredditListings(IntegrationTest):
         submissions = list(subreddit.controversial())
         assert len(submissions) == 100
 
-    def test_gilded(self, reddit):
-        subreddit = reddit.subreddit("askreddit")
-        submissions = list(subreddit.gilded())
-        assert len(submissions) >= 50
-
     def test_hot(self, reddit):
         subreddit = reddit.subreddit("askreddit")
         submissions = list(subreddit.hot())
@@ -416,11 +411,6 @@ class TestSubredditListings(IntegrationTest):
     def test_new(self, reddit):
         subreddit = reddit.subreddit("askreddit")
         submissions = list(subreddit.new())
-        assert len(submissions) == 100
-
-    def test_random_rising(self, reddit):
-        subreddit = reddit.subreddit("askreddit")
-        submissions = list(subreddit.random_rising())
         assert len(submissions) == 100
 
     def test_rising(self, reddit):
@@ -468,15 +458,6 @@ class TestSubredditModeration(IntegrationTest):
             assert isinstance(item, Submission)
             count += 1
         assert count > 0
-
-    def test_inbox(self, reddit):
-        reddit.read_only = False
-        count = 0
-        subreddit = reddit.subreddit("all")
-        for item in subreddit.mod.inbox():
-            assert isinstance(item, SubredditMessage)
-            count += 1
-        assert count == 100
 
     def test_log(self, reddit):
         reddit.read_only = False
@@ -611,15 +592,6 @@ class TestSubredditModeration(IntegrationTest):
             count += 1
         assert count > 0
 
-    def test_unread(self, reddit):
-        reddit.read_only = False
-        count = 0
-        subreddit = reddit.subreddit("all")
-        for item in subreddit.mod.unread():
-            assert isinstance(item, SubredditMessage)
-            count += 1
-        assert count > 0
-
     def test_update(self, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -689,13 +661,6 @@ class TestSubredditModerationStreams(IntegrationTest):
         generator = subreddit.mod.stream.unmoderated()
         for i in range(10):
             assert isinstance(next(generator), (Comment, Submission))
-
-    def test_unread(self, reddit):
-        reddit.read_only = False
-        subreddit = reddit.subreddit("mod")
-        generator = subreddit.mod.stream.unread()
-        for i in range(2):
-            assert isinstance(next(generator), SubredditMessage)
 
 
 class TestSubredditModmail(IntegrationTest):
@@ -1357,20 +1322,6 @@ class TestSubreddit(IntegrationTest):
         ]
         assert list(data) == tags
 
-    def test_random(self, reddit):
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        submissions = [
-            subreddit.random(),
-            subreddit.random(),
-            subreddit.random(),
-            subreddit.random(),
-        ]
-        assert len(submissions) == len(set(submissions))
-
-    def test_random__returns_none(self, reddit):
-        subreddit = reddit.subreddit("wallpapers")
-        assert subreddit.random() is None
-
     def test_search(self, reddit):
         subreddit = reddit.subreddit("all")
         for item in subreddit.search(
@@ -1428,9 +1379,9 @@ class TestSubreddit(IntegrationTest):
     def test_submit__selftext_inline_media(self, image_path, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        gif = InlineGif(image_path("test.gif"), "optional caption")
-        image = InlineImage(image_path("test.png"), "optional caption")
-        video = InlineVideo(image_path("test.mp4"), "optional caption")
+        gif = InlineGif(caption="optional caption", path=image_path("test.gif"))
+        image = InlineImage(caption="optional caption", path=image_path("test.png"))
+        video = InlineVideo(caption="optional caption", path=image_path("test.mp4"))
         selftext = (
             "Text with a gif {gif1} an image {image1} and a video {video1} inline"
         )

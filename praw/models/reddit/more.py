@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from ...const import API_PATH
-from ...util import _deprecate_args
 from ..base import PRAWBase
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -68,7 +67,6 @@ class MoreComments(PRAWBase):
         assert len(comments.children) == 1, "Please file a bug report with PRAW."
         return comments.children[0]
 
-    @_deprecate_args("update")
     def comments(self, *, update: bool = True) -> list[praw.models.Comment]:
         """Fetch and return the comments for a single :class:`.MoreComments` object."""
         if self._comments is None:

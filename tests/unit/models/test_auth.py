@@ -61,7 +61,7 @@ class TestAuth(UnitTest):
             web_app().auth.implicit(access_token="dummy token", expires_in=10, scope="")
 
     def test_limits(self):
-        expected = {"remaining": None, "reset_timestamp": None, "used": None}
+        expected = {"remaining": None, "used": None}
         for app in [
             installed_app(),
             script_app(),

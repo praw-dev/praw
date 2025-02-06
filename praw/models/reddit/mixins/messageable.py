@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ....const import API_PATH
-from ....util import _deprecate_args
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw
@@ -14,7 +13,6 @@ if TYPE_CHECKING:  # pragma: no cover
 class MessageableMixin:
     """Interface for classes that can be messaged."""
 
-    @_deprecate_args("subject", "message", "from_subreddit")
     def message(
         self,
         *,

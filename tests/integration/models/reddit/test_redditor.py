@@ -26,7 +26,7 @@ class TestRedditor(IntegrationTest):
         reddit.read_only = False
         with pytest.raises(RedditAPIException) as excinfo:
             reddit.redditor(self.FRIEND.lower()).friend(note="praw")
-        assert excinfo.value.error_type == "GOLD_REQUIRED"
+        assert excinfo.value.items[0].error_type == "GOLD_REQUIRED"
 
     def test_friend_info(self, reddit):
         reddit.read_only = False
@@ -40,12 +40,6 @@ class TestRedditor(IntegrationTest):
         reddit.read_only = False
         redditor = reddit.redditor(fullname=self.FRIEND_FULLNAME)
         assert redditor.name == self.FRIEND
-
-    def test_gild__no_creddits(self, reddit):
-        reddit.read_only = False
-        with pytest.raises(RedditAPIException) as excinfo:
-            reddit.redditor("subreddit_stats").gild()
-        assert excinfo.value.error_type == "INSUFFICIENT_CREDDITS"
 
     def test_message(self, reddit):
         reddit.read_only = False
@@ -107,7 +101,7 @@ class TestRedditor(IntegrationTest):
         redditor = reddit.redditor("thisusershouldnotexist")
         with pytest.raises(RedditAPIException) as excinfo:
             redditor.trophies()
-        assert excinfo.value.error_type == "USER_DOESNT_EXIST"
+        assert excinfo.value.items[0].error_type == "USER_DOESNT_EXIST"
 
     def test_unblock(self, reddit):
         reddit.read_only = False
@@ -162,28 +156,6 @@ class TestRedditorListings(IntegrationTest):
         redditor = reddit.redditor("spez")
         with pytest.raises(Forbidden):
             list(redditor.downvoted())
-
-    def test_gilded(self, reddit):
-        redditor = reddit.redditor("spez")
-        items = list(redditor.gilded(limit=50))
-        assert len(items) == 50
-
-    def test_gildings(self, reddit):
-        reddit.read_only = False
-        redditor = reddit.redditor(reddit.config.username)
-        items = list(redditor.gildings())
-        assert isinstance(items, list)
-
-    def test_gildings__in_read_only_mode(self, reddit):
-        redditor = reddit.redditor(reddit.config.username)
-        with pytest.raises(Forbidden):
-            list(redditor.gildings())
-
-    def test_gildings__other_user(self, reddit):
-        reddit.read_only = False
-        redditor = reddit.redditor("spez")
-        with pytest.raises(Forbidden):
-            list(redditor.gildings())
 
     def test_hidden(self, reddit):
         reddit.read_only = False
@@ -266,7 +238,7 @@ class TestRedditorListings(IntegrationTest):
         redditor.block()
         with pytest.raises(RedditAPIException) as excinfo:
             redditor.trust()
-        assert excinfo.value.error_type == "CANT_WHITELIST_AN_ENEMY"
+        assert excinfo.value.items[0].error_type == "CANT_WHITELIST_AN_ENEMY"
 
     def test_upvoted(self, reddit):
         reddit.read_only = False

@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any
 
 from ...const import API_PATH
 from ...exceptions import ClientException
-from ...util import _deprecate_args
 from ...util.cache import cachedproperty
 from ..base import PRAWBase
 from .base import RedditBase
@@ -238,7 +237,6 @@ class SubredditCollectionsModeration(PRAWBase):
         super().__init__(reddit, _data)
         self.subreddit_fullname = sub_fullname
 
-    @_deprecate_args("title", "description", "display_layout")
     def create(self, *, description: str, display_layout: str | None = None, title: str) -> Collection:
         """Create a new :class:`.Collection`.
 

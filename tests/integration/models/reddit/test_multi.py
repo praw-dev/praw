@@ -75,11 +75,6 @@ class TestMultiredditListings(IntegrationTest):
         submissions = list(multi.controversial())
         assert len(submissions) == 100
 
-    def test_gilded(self, reddit):
-        multi = reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
-        submissions = list(multi.gilded())
-        assert len(submissions) == 100
-
     def test_hot(self, reddit):
         multi = reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
         submissions = list(multi.hot())
@@ -95,11 +90,6 @@ class TestMultiredditListings(IntegrationTest):
         multi = reddit.user.multireddits()[0]
         submissions = list(multi.new())
         assert len(submissions) == 100
-
-    def test_random_rising(self, reddit):
-        multi = reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")
-        submissions = list(multi.random_rising())
-        assert len(submissions) > 0
 
     def test_rising(self, reddit):
         multi = reddit.multireddit(redditor="kjoneslol", name="sfwpornnetwork")

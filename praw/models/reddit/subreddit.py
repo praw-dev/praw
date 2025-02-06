@@ -10,7 +10,6 @@ from json import dumps, loads
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
-from warnings import warn
 
 import websocket
 from defusedxml import ElementTree
@@ -27,7 +26,7 @@ from ...exceptions import (
     TooLargeMediaException,
     WebSocketException,
 )
-from ...util import _deprecate_args, cachedproperty
+from ...util import cachedproperty
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
 from ..util import permissions_string, stream_generator
@@ -112,7 +111,6 @@ class Modmail:
         subreddits = [self.subreddit] + (other_subreddits or [])
         return ",".join(str(subreddit) for subreddit in subreddits)
 
-    @_deprecate_args("other_subreddits", "state")
     def bulk_read(
         self,
         *,
@@ -151,32 +149,15 @@ class Modmail:
         response = self.subreddit._reddit.post(API_PATH["modmail_bulk_read"], params=params)
         return [self(conversation_id) for conversation_id in response["conversation_ids"]]
 
-    @_deprecate_args("after", "other_subreddits", "sort", "state")
     def conversations(
         self,
         *,
-        after: str | None = None,
         other_subreddits: list[praw.models.Subreddit] | None = None,
         sort: str | None = None,
         state: str | None = None,
         **generator_kwargs: Any,
     ) -> Iterator[ModmailConversation]:
         """Generate :class:`.ModmailConversation` objects for subreddit(s).
-
-        :param after: A base36 modmail conversation id. When provided, the listing
-            begins after this conversation (default: ``None``).
-
-            .. deprecated:: 7.4.0
-
-                This parameter is deprecated and will be removed in PRAW 8.0. This
-                method will automatically fetch the next batch. Please pass it in the
-                ``params`` argument like so:
-
-                .. code-block:: python
-
-                    for convo in subreddit.modmail.conversations(params={"after": "qovbn"}):
-                        # process conversation
-                        ...
 
         :param other_subreddits: A list of :class:`.Subreddit` instances for which to
             fetch conversations (default: ``None``).
@@ -198,13 +179,6 @@ class Modmail:
 
         """
         params = {}
-        if after:
-            warn(
-                "The 'after' argument is deprecated and should be moved to the 'params' dictionary argument.",
-                category=DeprecationWarning,
-                stacklevel=3,
-            )
-            params["after"] = after
         if self.subreddit != "all":
             params["entity"] = self._build_subreddit_list(other_subreddits)
         Subreddit._safely_add_arguments(arguments=generator_kwargs, key="params", sort=sort, state=state, **params)
@@ -214,7 +188,6 @@ class Modmail:
             **generator_kwargs,
         )
 
-    @_deprecate_args("subject", "body", "recipient", "author_hidden")
     def create(
         self,
         *,
@@ -441,7 +414,6 @@ class SubredditFlair:
         """
         self.subreddit = subreddit
 
-    @_deprecate_args("position", "self_assign", "link_position", "link_self_assign")
     def configure(
         self,
         *,
@@ -503,7 +475,6 @@ class SubredditFlair:
         """
         return self.update(x["user"] for x in self())
 
-    @_deprecate_args("redditor", "text", "css_class", "flair_template_id")
     def set(  # noqa: A003
         self,
         redditor: praw.models.Redditor | str,
@@ -548,7 +519,6 @@ class SubredditFlair:
             url = API_PATH["flair"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
 
-    @_deprecate_args("flair_list", "text", "css_class")
     def update(
         self,
         flair_list: Iterator[str | praw.models.Redditor | dict[str, str | praw.models.Redditor]],
@@ -687,18 +657,6 @@ class SubredditFlairTemplates:
         url = API_PATH["flairtemplatedelete"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data={"flair_template_id": template_id})
 
-    @_deprecate_args(
-        "template_id",
-        "text",
-        "css_class",
-        "text_editable",
-        "background_color",
-        "text_color",
-        "mod_only",
-        "allowable_content",
-        "max_emojis",
-        "fetch",
-    )
     def update(
         self,
         template_id: str,
@@ -869,7 +827,6 @@ class SubredditModeration:
         url = API_PATH["accept_mod_invite"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url)
 
-    @_deprecate_args("only")
     def edited(
         self, *, only: str | None = None, **generator_kwargs: Any
     ) -> Iterator[praw.models.Comment | praw.models.Submission]:
@@ -896,46 +853,6 @@ class SubredditModeration:
             **generator_kwargs,
         )
 
-    def inbox(self, **generator_kwargs: Any) -> Iterator[praw.models.SubredditMessage]:
-        """Return a :class:`.ListingGenerator` for moderator messages.
-
-        .. warning::
-
-            Legacy modmail is being deprecated in June 2021. Please see
-            https://www.reddit.com/r/modnews/comments/mar9ha/even_more_modmail_improvements/
-            for more info.
-
-        Additional keyword arguments are passed in the initialization of
-        :class:`.ListingGenerator`.
-
-        .. seealso::
-
-            :meth:`.unread` for unread moderator messages.
-
-        To print the last 5 moderator mail messages and their replies, try:
-
-        .. code-block:: python
-
-            for message in reddit.subreddit("mod").mod.inbox(limit=5):
-                print(f"From: {message.author}, Body: {message.body}")
-                for reply in message.replies:
-                    print(f"From: {reply.author}, Body: {reply.body}")
-
-        """
-        warn(
-            "Legacy modmail is being deprecated in June 2021. Please see"
-            " https://www.reddit.com/r/modnews/comments/mar9ha/even_more_modmail_improvements/"
-            " for more info.",
-            category=DeprecationWarning,
-            stacklevel=3,
-        )
-        return ListingGenerator(
-            self.subreddit._reddit,
-            API_PATH["moderator_messages"].format(subreddit=self.subreddit),
-            **generator_kwargs,
-        )
-
-    @_deprecate_args("action", "mod")
     def log(
         self,
         *,
@@ -968,7 +885,6 @@ class SubredditModeration:
             **generator_kwargs,
         )
 
-    @_deprecate_args("only")
     def modqueue(
         self, *, only: str | None = None, **generator_kwargs: Any
     ) -> Iterator[praw.models.Submission | praw.models.Comment]:
@@ -995,7 +911,6 @@ class SubredditModeration:
             **generator_kwargs,
         )
 
-    @_deprecate_args("only")
     def reports(
         self, *, only: str | None = None, **generator_kwargs: Any
     ) -> Iterator[praw.models.Submission | praw.models.Comment]:
@@ -1028,7 +943,6 @@ class SubredditModeration:
         url = API_PATH["subreddit_settings"].format(subreddit=self.subreddit)
         return self.subreddit._reddit.get(url)["data"]
 
-    @_deprecate_args("only")
     def spam(
         self, *, only: str | None = None, **generator_kwargs: Any
     ) -> Iterator[praw.models.Submission | praw.models.Comment]:
@@ -1072,43 +986,6 @@ class SubredditModeration:
         return ListingGenerator(
             self.subreddit._reddit,
             API_PATH["about_unmoderated"].format(subreddit=self.subreddit),
-            **generator_kwargs,
-        )
-
-    def unread(self, **generator_kwargs: Any) -> Iterator[praw.models.SubredditMessage]:
-        """Return a :class:`.ListingGenerator` for unread moderator messages.
-
-        .. warning::
-
-            Legacy modmail is being deprecated in June 2021. Please see
-            https://www.reddit.com/r/modnews/comments/mar9ha/even_more_modmail_improvements/
-            for more info.
-
-        Additional keyword arguments are passed in the initialization of
-        :class:`.ListingGenerator`.
-
-        .. seealso::
-
-            :meth:`.inbox` for all messages.
-
-        To print the mail in the unread modmail queue try:
-
-        .. code-block:: python
-
-            for message in reddit.subreddit("mod").mod.unread():
-                print(f"From: {message.author}, To: {message.dest}")
-
-        """
-        warn(
-            "Legacy modmail is being deprecated in June 2021. Please see"
-            " https://www.reddit.com/r/modnews/comments/mar9ha/even_more_modmail_improvements/"
-            " for more info.",
-            category=DeprecationWarning,
-            stacklevel=3,
-        )
-        return ListingGenerator(
-            self.subreddit._reddit,
-            API_PATH["moderator_unread"].format(subreddit=self.subreddit),
             **generator_kwargs,
         )
 
@@ -1233,7 +1110,6 @@ class SubredditModerationStream:
         """
         self.subreddit = subreddit
 
-    @_deprecate_args("only")
     def edited(
         self, *, only: str | None = None, **stream_options: Any
     ) -> Generator[praw.models.Comment | praw.models.Submission, None, None]:
@@ -1255,7 +1131,6 @@ class SubredditModerationStream:
         """
         return stream_generator(self.subreddit.mod.edited, only=only, **stream_options)
 
-    @_deprecate_args("action", "mod")
     def log(
         self,
         *,
@@ -1286,7 +1161,6 @@ class SubredditModerationStream:
             **stream_options,
         )
 
-    @_deprecate_args("other_subreddits", "sort", "state")
     def modmail_conversations(
         self,
         *,
@@ -1330,7 +1204,6 @@ class SubredditModerationStream:
             **stream_options,
         )
 
-    @_deprecate_args("only")
     def modqueue(
         self, *, only: str | None = None, **stream_options: Any
     ) -> Generator[praw.models.Comment | praw.models.Submission, None, None]:
@@ -1351,7 +1224,6 @@ class SubredditModerationStream:
         """
         return stream_generator(self.subreddit.mod.modqueue, only=only, **stream_options)
 
-    @_deprecate_args("only")
     def reports(
         self, *, only: str | None = None, **stream_options: Any
     ) -> Generator[praw.models.Comment | praw.models.Submission, None, None]:
@@ -1372,7 +1244,6 @@ class SubredditModerationStream:
         """
         return stream_generator(self.subreddit.mod.reports, only=only, **stream_options)
 
-    @_deprecate_args("only")
     def spam(
         self, *, only: str | None = None, **stream_options: Any
     ) -> Generator[praw.models.Comment | praw.models.Submission, None, None]:
@@ -1407,25 +1278,6 @@ class SubredditModerationStream:
 
         """
         return stream_generator(self.subreddit.mod.unmoderated, **stream_options)
-
-    def unread(self, **stream_options: Any) -> Generator[praw.models.SubredditMessage, None, None]:
-        """Yield unread old modmail messages as they become available.
-
-        Keyword arguments are passed to :func:`.stream_generator`.
-
-        .. seealso::
-
-            :meth:`.SubredditModeration.inbox` for all messages.
-
-        To print new mail in the unread modmail queue try:
-
-        .. code-block:: python
-
-            for message in reddit.subreddit("mod").mod.stream.unread():
-                print(f"From: {message.author}, To: {message.dest}")
-
-        """
-        return stream_generator(self.subreddit.mod.unread, **stream_options)
 
 
 class SubredditQuarantine:
@@ -1821,7 +1673,6 @@ class SubredditStylesheet:
         url = API_PATH["delete_sr_icon"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url)
 
-    @_deprecate_args("stylesheet", "reason")
     def update(self, stylesheet: str, *, reason: str | None = None):
         """Update the :class:`.Subreddit`'s stylesheet.
 
@@ -1841,7 +1692,6 @@ class SubredditStylesheet:
         url = API_PATH["subreddit_stylesheet"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
 
-    @_deprecate_args("name", "image_path")
     def upload(self, *, image_path: str, name: str) -> dict[str, str]:
         """Upload an image to the :class:`.Subreddit`.
 
@@ -1889,7 +1739,6 @@ class SubredditStylesheet:
         image_url = self._upload_style_asset(image_path=image_path, image_type=image_type)
         self._update_structured_styles({image_type: image_url})
 
-    @_deprecate_args("image_path", "align")
     def upload_banner_additional_image(
         self,
         image_path: str,
@@ -2094,7 +1943,6 @@ class SubredditWiki:
         for page_name in response["data"]:
             yield WikiPage(self.subreddit._reddit, self.subreddit, page_name)
 
-    @_deprecate_args("name", "content", "reason")
     def create(
         self,
         *,
@@ -2243,7 +2091,6 @@ class ModeratorRelationship(SubredditRelationship):
         url = API_PATH[f"list_{self.relationship}"].format(subreddit=self.subreddit)
         return self.subreddit._reddit.get(url, params=params)
 
-    @_deprecate_args("redditor", "permissions")
     def add(
         self,
         redditor: str | praw.models.Redditor,
@@ -2272,7 +2119,6 @@ class ModeratorRelationship(SubredditRelationship):
         other_settings = self._handle_permissions(other_settings=other_settings, permissions=permissions)
         super().add(redditor, **other_settings)
 
-    @_deprecate_args("redditor", "permissions")
     def invite(
         self,
         redditor: str | praw.models.Redditor,
@@ -2301,7 +2147,6 @@ class ModeratorRelationship(SubredditRelationship):
         url = API_PATH["friend"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
 
-    @_deprecate_args("redditor")
     def invited(
         self,
         *,
@@ -2364,7 +2209,6 @@ class ModeratorRelationship(SubredditRelationship):
         url = API_PATH["unfriend"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
 
-    @_deprecate_args("redditor", "permissions")
     def update(
         self,
         redditor: str | praw.models.Redditor,
@@ -2399,7 +2243,6 @@ class ModeratorRelationship(SubredditRelationship):
         )
         self.subreddit._reddit.post(url, data=data)
 
-    @_deprecate_args("redditor", "permissions")
     def update_invite(
         self,
         redditor: str | praw.models.Redditor,
@@ -2458,8 +2301,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
     .. note::
 
-        These filters are ignored by certain methods, including :attr:`.comments`,
-        :meth:`.gilded`, and :meth:`.SubredditStream.comments`.
+        These filters are ignored by certain methods, including :attr:`.comments`, and
+        :meth:`.SubredditStream.comments`.
 
     .. code-block:: python
 
@@ -3009,9 +2852,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                 OSError,
                 websocket.WebSocketException,
                 BlockingIOError,
-            ) as ws_exception:
+            ):
                 msg = "Error establishing websocket connection."
-                raise WebSocketException(msg, ws_exception) from None
+                raise WebSocketException(msg) from None
 
         if connection is None:
             return None
@@ -3019,11 +2862,10 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         try:
             ws_update = loads(connection.recv())
             connection.close()
-        except (OSError, websocket.WebSocketException, BlockingIOError) as ws_exception:
+        except (OSError, websocket.WebSocketException, BlockingIOError):
             msg = "Websocket error. Check your media file. Your post may still have been created."
             raise WebSocketException(
                 msg,
-                ws_exception,
             ) from None
         if ws_update.get("type") == "failed":
             raise MediaPostFailed
@@ -3136,31 +2978,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         """
         return self._reddit.get(API_PATH["post_requirements"].format(subreddit=str(self)))
 
-    def random(self) -> praw.models.Submission | None:
-        """Return a random :class:`.Submission`.
-
-        Returns ``None`` on subreddits that do not support the random feature. One
-        example, at the time of writing, is r/wallpapers.
-
-        For example, to get a random submission off of r/AskReddit:
-
-        .. code-block:: python
-
-            submission = reddit.subreddit("AskReddit").random()
-            print(submission.title)
-
-        """
-        url = API_PATH["subreddit_random"].format(subreddit=self)
-        try:
-            self._reddit.get(url, params={"unique": self._reddit._next_unique})
-        except Redirect as redirect:
-            path = redirect.path
-        try:
-            return self._submission_class(self._reddit, url=urljoin(self._reddit.config.reddit_url, path))
-        except ClientException:
-            return None
-
-    @_deprecate_args("query", "sort", "syntax", "time_filter")
     def search(
         self,
         query: str,
@@ -3205,7 +3022,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         url = API_PATH["search"].format(subreddit=self)
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
-    @_deprecate_args("number")
     def sticky(self, *, number: int = 1) -> praw.models.Submission:
         """Return a :class:`.Submission` object for a sticky of the subreddit.
 
@@ -3228,21 +3044,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             path = redirect.path
         return self._submission_class(self._reddit, url=urljoin(self._reddit.config.reddit_url, path))
 
-    @_deprecate_args(
-        "title",
-        "selftext",
-        "url",
-        "flair_id",
-        "flair_text",
-        "resubmit",
-        "send_replies",
-        "nsfw",
-        "spoiler",
-        "collection_id",
-        "discussion_type",
-        "inline_media",
-        "draft_id",
-    )
     def submit(
         self,
         title: str,
@@ -3363,7 +3164,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             "title": title,
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
-            "validate_on_submit": self._reddit.validate_on_submit,
+            "validate_on_submit": True,
         }
         for key, value in (
             ("flair_id", flair_id),
@@ -3389,17 +3190,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         return self._reddit.post(API_PATH["submit"], data=data)
 
-    @_deprecate_args(
-        "title",
-        "images",
-        "collection_id",
-        "discussion_type",
-        "flair_id",
-        "flair_text",
-        "nsfw",
-        "send_replies",
-        "spoiler",
-    )
     def submit_gallery(
         self,
         title: str,
@@ -3478,7 +3268,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             "spoiler": bool(spoiler),
             "sr": str(self),
             "title": title,
-            "validate_on_submit": self._reddit.validate_on_submit,
+            "validate_on_submit": True,
         }
         for key, value in (
             ("flair_id", flair_id),
@@ -3503,20 +3293,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             raise RedditAPIException(response["errors"])
         return self._reddit.submission(url=response["data"]["url"])
 
-    @_deprecate_args(
-        "title",
-        "image_path",
-        "flair_id",
-        "flair_text",
-        "resubmit",
-        "send_replies",
-        "nsfw",
-        "spoiler",
-        "timeout",
-        "collection_id",
-        "without_websockets",
-        "discussion_type",
-    )
     def submit_image(
         self,
         title: str,
@@ -3601,7 +3377,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             "title": title,
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
-            "validate_on_submit": self._reddit.validate_on_submit,
+            "validate_on_submit": True,
         }
         for key, value in (
             ("flair_id", flair_id),
@@ -3616,20 +3392,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         data.update(kind="image", url=image_url)
         return self._submit_media(data=data, timeout=timeout, without_websockets=without_websockets)
 
-    @_deprecate_args(
-        "title",
-        "selftext",
-        "options",
-        "duration",
-        "flair_id",
-        "flair_text",
-        "resubmit",
-        "send_replies",
-        "nsfw",
-        "spoiler",
-        "collection_id",
-        "discussion_type",
-    )
     def submit_poll(
         self,
         title: str,
@@ -3700,7 +3462,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             "title": title,
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
-            "validate_on_submit": self._reddit.validate_on_submit,
+            "validate_on_submit": True,
         }
         for key, value in (
             ("flair_id", flair_id),
@@ -3713,22 +3475,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         return self._reddit.post(API_PATH["submit_poll_post"], json=data)
 
-    @_deprecate_args(
-        "title",
-        "video_path",
-        "videogif",
-        "thumbnail_path",
-        "flair_id",
-        "flair_text",
-        "resubmit",
-        "send_replies",
-        "nsfw",
-        "spoiler",
-        "timeout",
-        "collection_id",
-        "without_websockets",
-        "discussion_type",
-    )
     def submit_video(
         self,
         title: str,
@@ -3820,7 +3566,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             "title": title,
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
-            "validate_on_submit": self._reddit.validate_on_submit,
+            "validate_on_submit": True,
         }
         for key, value in (
             ("flair_id", flair_id),
@@ -3840,7 +3586,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         )
         return self._submit_media(data=data, timeout=timeout, without_websockets=without_websockets)
 
-    @_deprecate_args("other_subreddits")
     def subscribe(self, *, other_subreddits: list[praw.models.Subreddit] | None = None):
         """Subscribe to the subreddit.
 
@@ -3889,7 +3634,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         """
         return self._reddit.get(API_PATH["about_traffic"].format(subreddit=self))
 
-    @_deprecate_args("other_subreddits")
     def unsubscribe(self, *, other_subreddits: list[praw.models.Subreddit] | None = None):
         """Unsubscribe from the subreddit.
 
@@ -3932,16 +3676,6 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         url = API_PATH["link_flair"].format(subreddit=self.subreddit)
         yield from self.subreddit._reddit.get(url)
 
-    @_deprecate_args(
-        "text",
-        "css_class",
-        "text_editable",
-        "background_color",
-        "text_color",
-        "mod_only",
-        "allowable_content",
-        "max_emojis",
-    )
     def add(
         self,
         text: str,
@@ -4060,16 +3794,6 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         params = {"unique": self.subreddit._reddit._next_unique}
         yield from self.subreddit._reddit.get(url, params=params)
 
-    @_deprecate_args(
-        "text",
-        "css_class",
-        "text_editable",
-        "background_color",
-        "text_color",
-        "mod_only",
-        "allowable_content",
-        "max_emojis",
-    )
     def add(
         self,
         text: str,
