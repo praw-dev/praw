@@ -8,11 +8,10 @@ from typing import TYPE_CHECKING, Any
 
 from praw.const import API_PATH
 from praw.models.listing.mixins import SubredditListingMixin
+from praw.models.reddit.base import RedditBase
+from praw.models.reddit.redditor import Redditor
+from praw.models.reddit.subreddit import Subreddit, SubredditStream
 from praw.util import cachedproperty
-
-from .base import RedditBase
-from .redditor import Redditor
-from .subreddit import Subreddit, SubredditStream
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw.models

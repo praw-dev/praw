@@ -6,17 +6,16 @@ from json import dumps
 from typing import TYPE_CHECKING, Optional
 
 from praw.const import API_PATH
-
-from .editable import EditableMixin
-from .fullname import FullnameMixin
-from .inboxable import InboxableMixin
-from .inboxtoggleable import InboxToggleableMixin
-from .messageable import MessageableMixin
-from .modnote import ModNoteMixin
-from .replyable import ReplyableMixin
-from .reportable import ReportableMixin
-from .savable import SavableMixin
-from .votable import VotableMixin
+from praw.models.reddit.mixins.editable import EditableMixin
+from praw.models.reddit.mixins.fullname import FullnameMixin
+from praw.models.reddit.mixins.inboxable import InboxableMixin
+from praw.models.reddit.mixins.inboxtoggleable import InboxToggleableMixin
+from praw.models.reddit.mixins.messageable import MessageableMixin
+from praw.models.reddit.mixins.modnote import ModNoteMixin
+from praw.models.reddit.mixins.replyable import ReplyableMixin
+from praw.models.reddit.mixins.reportable import ReportableMixin
+from praw.models.reddit.mixins.savable import SavableMixin
+from praw.models.reddit.mixins.votable import VotableMixin
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw.models

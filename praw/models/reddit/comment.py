@@ -7,16 +7,10 @@ from typing import TYPE_CHECKING, Any
 from praw.const import API_PATH
 from praw.exceptions import ClientException, InvalidURL
 from praw.models.comment_forest import CommentForest
+from praw.models.reddit.base import RedditBase
+from praw.models.reddit.mixins import FullnameMixin, InboxableMixin, ThingModerationMixin, UserContentMixin
+from praw.models.reddit.redditor import Redditor
 from praw.util.cache import cachedproperty
-
-from .base import RedditBase
-from .mixins import (
-    FullnameMixin,
-    InboxableMixin,
-    ThingModerationMixin,
-    UserContentMixin,
-)
-from .redditor import Redditor
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw.models

@@ -7,11 +7,10 @@ from typing import TYPE_CHECKING, Any
 
 from praw.const import API_PATH
 from praw.models.listing.mixins import RedditorListingMixin
+from praw.models.reddit.base import RedditBase
+from praw.models.reddit.mixins import FullnameMixin, MessageableMixin
 from praw.models.util import stream_generator
 from praw.util.cache import cachedproperty
-
-from .base import RedditBase
-from .mixins import FullnameMixin, MessageableMixin
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Generator
@@ -163,7 +162,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def __setattr__(self, name: str, value: Any) -> None:
         """Objectify the subreddit attribute."""
         if name == "subreddit" and value:
-            from .user_subreddit import UserSubreddit  # noqa: PLC0415
+            from praw.models.reddit.user_subreddit import UserSubreddit  # noqa: PLC0415
 
             value = UserSubreddit(reddit=self._reddit, _data=value)
         super().__setattr__(name, value)

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from .base import PRAWBase
+from praw.models.base import PRAWBase
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw

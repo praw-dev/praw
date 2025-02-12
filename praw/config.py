@@ -11,7 +11,7 @@ from threading import Lock
 from types import MappingProxyType
 from typing import Any
 
-from .exceptions import ClientException
+from praw.exceptions import ClientException
 
 
 class _NotSet:

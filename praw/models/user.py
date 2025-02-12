@@ -9,12 +9,11 @@ from prawcore import Conflict
 from praw.const import API_PATH
 from praw.exceptions import ReadOnlyException
 from praw.models import Preferences
+from praw.models.base import PRAWBase
+from praw.models.listing.generator import ListingGenerator
+from praw.models.reddit.redditor import Redditor
+from praw.models.reddit.subreddit import Subreddit
 from praw.util.cache import cachedproperty
-
-from .base import PRAWBase
-from .listing.generator import ListingGenerator
-from .reddit.redditor import Redditor
-from .reddit.subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Iterator

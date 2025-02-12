@@ -6,19 +6,17 @@ from itertools import islice
 from typing import TYPE_CHECKING, Any
 
 from praw.const import API_PATH
-
-from .base import PRAWBase
-from .listing.generator import ListingGenerator
-from .reddit.comment import Comment
-from .reddit.submission import Submission
+from praw.models.base import PRAWBase
+from praw.models.listing.generator import ListingGenerator
+from praw.models.reddit.comment import Comment
+from praw.models.reddit.submission import Submission
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Generator
 
     import praw.models
-
-    from .reddit.redditor import Redditor
-    from .reddit.subreddit import Subreddit
+    from praw.models.reddit.redditor import Redditor
+    from praw.models.reddit.subreddit import Subreddit
 
 
 class BaseModNotes:

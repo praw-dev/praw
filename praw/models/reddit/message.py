@@ -5,11 +5,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from praw.const import API_PATH
-
-from .base import RedditBase
-from .mixins import FullnameMixin, InboxableMixin, ReplyableMixin
-from .redditor import Redditor
-from .subreddit import Subreddit
+from praw.models.reddit.base import RedditBase
+from praw.models.reddit.mixins import FullnameMixin, InboxableMixin, ReplyableMixin
+from praw.models.reddit.redditor import Redditor
+from praw.models.reddit.subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw.models

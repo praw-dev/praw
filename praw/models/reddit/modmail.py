@@ -5,9 +5,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from praw.const import API_PATH
+from praw.models.reddit.base import RedditBase
 from praw.util import snake_case_keys
-
-from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw

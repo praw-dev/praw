@@ -7,11 +7,10 @@ from typing import TYPE_CHECKING, Any
 from praw.const import API_PATH
 from praw.exceptions import ClientException
 from praw.models.base import PRAWBase
+from praw.models.reddit.base import RedditBase
+from praw.models.reddit.submission import Submission
+from praw.models.reddit.subreddit import Subreddit
 from praw.util.cache import cachedproperty
-
-from .base import RedditBase
-from .submission import Submission
-from .subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Generator, Iterator

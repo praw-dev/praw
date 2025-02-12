@@ -7,8 +7,7 @@ from copy import deepcopy
 from typing import TYPE_CHECKING, Any
 
 from praw.models.base import PRAWBase
-
-from .listing import FlairListing, ModNoteListing
+from praw.models.listing.listing import FlairListing, ModNoteListing
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw

@@ -1,6 +1,6 @@
 """Provide the Stylesheet class."""
 
-from .base import PRAWBase
+from praw.models.base import PRAWBase
 
 
 class Stylesheet(PRAWBase):

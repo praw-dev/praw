@@ -5,11 +5,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from praw.const import API_PATH
-
-from . import Subreddit
-from .base import PRAWBase
-from .listing.generator import ListingGenerator
-from .util import stream_generator
+from praw.models import Subreddit
+from praw.models.base import PRAWBase
+from praw.models.listing.generator import ListingGenerator
+from praw.models.util import stream_generator
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Iterator

@@ -6,11 +6,10 @@ from json import dumps
 from typing import TYPE_CHECKING, Any
 
 from praw.const import API_PATH
-
-from .base import PRAWBase
-from .reddit.draft import Draft
-from .reddit.live import LiveThread
-from .reddit.multi import Multireddit, Subreddit
+from praw.models.base import PRAWBase
+from praw.models.reddit.draft import Draft
+from praw.models.reddit.live import LiveThread
+from praw.models.reddit.multi import Multireddit, Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Generator

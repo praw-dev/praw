@@ -7,12 +7,11 @@ from typing import TYPE_CHECKING, Any
 from praw.const import API_PATH
 from praw.models.list.redditor import RedditorList
 from praw.models.listing.generator import ListingGenerator
+from praw.models.reddit.base import RedditBase
+from praw.models.reddit.mixins import FullnameMixin
+from praw.models.reddit.redditor import Redditor
 from praw.models.util import stream_generator
 from praw.util.cache import cachedproperty
-
-from .base import RedditBase
-from .mixins import FullnameMixin
-from .redditor import Redditor
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Iterable, Iterator

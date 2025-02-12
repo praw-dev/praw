@@ -28,17 +28,16 @@ from praw.exceptions import (
 )
 from praw.models.listing.generator import ListingGenerator
 from praw.models.listing.mixins import SubredditListingMixin
+from praw.models.reddit.base import RedditBase
+from praw.models.reddit.emoji import SubredditEmoji
+from praw.models.reddit.mixins import FullnameMixin, MessageableMixin
+from praw.models.reddit.modmail import ModmailConversation
+from praw.models.reddit.removal_reasons import SubredditRemovalReasons
+from praw.models.reddit.rules import SubredditRules
+from praw.models.reddit.widgets import SubredditWidgets, WidgetEncoder
+from praw.models.reddit.wikipage import WikiPage
 from praw.models.util import permissions_string, stream_generator
 from praw.util import cachedproperty
-
-from .base import RedditBase
-from .emoji import SubredditEmoji
-from .mixins import FullnameMixin, MessageableMixin
-from .modmail import ModmailConversation
-from .removal_reasons import SubredditRemovalReasons
-from .rules import SubredditRules
-from .widgets import SubredditWidgets, WidgetEncoder
-from .wikipage import WikiPage
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Generator, Iterator

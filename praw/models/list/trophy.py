@@ -1,6 +1,6 @@
 """Provide the TrophyList class."""
 
-from .base import BaseList
+from praw.models.list.base import BaseList
 
 
 class TrophyList(BaseList):

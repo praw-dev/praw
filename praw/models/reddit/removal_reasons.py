@@ -6,9 +6,8 @@ from typing import TYPE_CHECKING, Any
 
 from praw.const import API_PATH
 from praw.exceptions import ClientException
+from praw.models.reddit.base import RedditBase
 from praw.util import cachedproperty
-
-from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Iterator

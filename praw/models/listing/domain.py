@@ -5,8 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from praw.const import API_PATH
-
-from .mixins import BaseListingMixin, RisingListingMixin
+from praw.models.listing.mixins import BaseListingMixin, RisingListingMixin
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw

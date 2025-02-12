@@ -3,8 +3,7 @@
 from __future__ import annotations
 
 from praw.endpoints import API_PATH
-
-from .base import PRAWBase
+from praw.models.base import PRAWBase
 
 
 class ModNote(PRAWBase):

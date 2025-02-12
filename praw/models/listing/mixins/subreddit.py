@@ -7,10 +7,9 @@ from urllib.parse import urljoin
 
 from praw.models.base import PRAWBase
 from praw.models.listing.generator import ListingGenerator
+from praw.models.listing.mixins.base import BaseListingMixin
+from praw.models.listing.mixins.rising import RisingListingMixin
 from praw.util.cache import cachedproperty
-
-from .base import BaseListingMixin
-from .rising import RisingListingMixin
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Iterator

@@ -25,15 +25,11 @@ from prawcore import (
 )
 from prawcore.exceptions import BadRequest
 
-from . import models
-from .config import Config
-from .const import API_PATH, USER_AGENT_FORMAT, __version__
-from .exceptions import (
-    ClientException,
-    MissingRequiredAttributeException,
-    RedditAPIException,
-)
-from .objector import Objector
+from praw import models
+from praw.config import Config
+from praw.const import API_PATH, USER_AGENT_FORMAT, __version__
+from praw.exceptions import ClientException, MissingRequiredAttributeException, RedditAPIException
+from praw.objector import Objector
 
 try:
     from update_checker import update_check

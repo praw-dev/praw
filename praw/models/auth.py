@@ -5,8 +5,7 @@ from __future__ import annotations
 from prawcore import Authorizer, ImplicitAuthorizer, UntrustedAuthenticator, session
 
 from praw.exceptions import InvalidImplicitAuth, MissingRequiredAttributeException
-
-from .base import PRAWBase
+from praw.models.base import PRAWBase
 
 
 class Auth(PRAWBase):

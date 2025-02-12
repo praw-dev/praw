@@ -9,10 +9,9 @@ from typing import TYPE_CHECKING
 import prawcore
 
 from praw.const import API_PATH
-
-from .base import PRAWBase
-from .listing.generator import ListingGenerator
-from .util import stream_generator
+from praw.models.base import PRAWBase
+from praw.models.listing.generator import ListingGenerator
+from praw.models.util import stream_generator
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Iterable, Iterator

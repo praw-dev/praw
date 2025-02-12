@@ -15,13 +15,12 @@ from praw.exceptions import InvalidURL
 from praw.models.comment_forest import CommentForest
 from praw.models.listing.listing import Listing
 from praw.models.listing.mixins import SubmissionListingMixin
+from praw.models.reddit.base import RedditBase
+from praw.models.reddit.mixins import FullnameMixin, ModNoteMixin, ThingModerationMixin, UserContentMixin
+from praw.models.reddit.poll import PollData
+from praw.models.reddit.redditor import Redditor
+from praw.models.reddit.subreddit import Subreddit
 from praw.util import cachedproperty
-
-from .base import RedditBase
-from .mixins import FullnameMixin, ModNoteMixin, ThingModerationMixin, UserContentMixin
-from .poll import PollData
-from .redditor import Redditor
-from .subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Generator

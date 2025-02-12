@@ -7,8 +7,7 @@ from typing import TYPE_CHECKING, Any
 
 from praw.const import API_PATH
 from praw.exceptions import ClientException
-
-from .base import RedditBase
+from praw.models.reddit.base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw
