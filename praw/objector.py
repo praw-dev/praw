@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any
 from praw.exceptions import ClientException, RedditAPIException
 from praw.util import snake_case_keys
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw
     from praw.models.reddit.base import RedditBase
 

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any
 from praw.const import API_PATH
 from praw.models.base import PRAWBase
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw.models
 
 

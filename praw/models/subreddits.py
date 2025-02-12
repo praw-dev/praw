@@ -10,7 +10,7 @@ from praw.models.base import PRAWBase
 from praw.models.listing.generator import ListingGenerator
 from praw.models.util import stream_generator
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Iterator
 
     import praw.models

@@ -8,7 +8,7 @@ from praw.const import API_PATH
 from praw.models.base import PRAWBase
 from praw.models.listing.generator import ListingGenerator
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Iterator
 
     import praw.models

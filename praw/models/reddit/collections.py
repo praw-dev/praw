@@ -12,7 +12,7 @@ from praw.models.reddit.submission import Submission
 from praw.models.reddit.subreddit import Subreddit
 from praw.util.cache import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Generator, Iterator
 
     import praw.models

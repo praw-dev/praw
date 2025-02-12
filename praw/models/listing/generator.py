@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any
 from praw.models.base import PRAWBase
 from praw.models.listing.listing import FlairListing, ModNoteListing
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw
 
 

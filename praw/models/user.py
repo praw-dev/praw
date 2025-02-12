@@ -15,7 +15,7 @@ from praw.models.reddit.redditor import Redditor
 from praw.models.reddit.subreddit import Subreddit
 from praw.util.cache import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Iterator
 
     import praw.models

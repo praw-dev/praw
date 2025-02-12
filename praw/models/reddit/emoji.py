@@ -9,7 +9,7 @@ from praw.const import API_PATH
 from praw.exceptions import ClientException
 from praw.models.reddit.base import RedditBase
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw
 
 

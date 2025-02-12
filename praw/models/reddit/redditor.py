@@ -12,7 +12,7 @@ from praw.models.reddit.mixins import FullnameMixin, MessageableMixin
 from praw.models.util import stream_generator
 from praw.util.cache import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Generator
 
     import praw.models

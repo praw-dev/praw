@@ -13,7 +13,7 @@ from praw.models.reddit.redditor import Redditor
 from praw.models.util import stream_generator
 from praw.util.cache import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
 
     import praw.models

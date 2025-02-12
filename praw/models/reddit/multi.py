@@ -13,7 +13,7 @@ from praw.models.reddit.redditor import Redditor
 from praw.models.reddit.subreddit import Subreddit, SubredditStream
 from praw.util import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw.models
 
 

@@ -10,7 +10,7 @@ from praw.exceptions import ClientException
 from praw.models.reddit.base import RedditBase
 from praw.util import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Iterator
 
     import praw.models

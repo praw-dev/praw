@@ -8,7 +8,7 @@ from urllib.parse import urljoin
 from praw.models.listing.generator import ListingGenerator
 from praw.models.listing.mixins import SubredditListingMixin
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Iterator
 
     import praw.models

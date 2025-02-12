@@ -39,7 +39,7 @@ from praw.models.reddit.wikipage import WikiPage
 from praw.models.util import permissions_string, stream_generator
 from praw.util import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Generator, Iterator
 
     from requests import Response

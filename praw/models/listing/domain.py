@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from praw.const import API_PATH
 from praw.models.listing.mixins import BaseListingMixin, RisingListingMixin
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw
 
 

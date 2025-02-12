@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any
 from praw.models.reddit.subreddit import Subreddit, SubredditModeration
 from praw.util.cache import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw.models
 
 

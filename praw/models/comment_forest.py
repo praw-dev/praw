@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 from praw.exceptions import DuplicateReplaceException
 from praw.models.reddit.more import MoreComments
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw.models
 
 

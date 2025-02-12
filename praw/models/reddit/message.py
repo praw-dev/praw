@@ -10,7 +10,7 @@ from praw.models.reddit.mixins import FullnameMixin, InboxableMixin, ReplyableMi
 from praw.models.reddit.redditor import Redditor
 from praw.models.reddit.subreddit import Subreddit
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw.models
 
 

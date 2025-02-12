@@ -12,7 +12,7 @@ from praw.models.reddit.mixins import FullnameMixin, InboxableMixin, ThingModera
 from praw.models.reddit.redditor import Redditor
 from praw.util.cache import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw.models
 
 

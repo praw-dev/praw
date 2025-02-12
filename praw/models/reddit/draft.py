@@ -10,7 +10,7 @@ from praw.models.reddit.base import RedditBase
 from praw.models.reddit.subreddit import Subreddit
 from praw.models.reddit.user_subreddit import UserSubreddit
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw.models
 
 

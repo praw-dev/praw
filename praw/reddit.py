@@ -39,7 +39,7 @@ except ImportError:  # pragma: no cover
     update_check = None
     UPDATE_CHECKER_MISSING = True
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Generator, Iterable
 
     import prawcore

@@ -8,7 +8,7 @@ from praw.const import API_PATH
 from praw.models.reddit.base import RedditBase
 from praw.util import snake_case_keys
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw
 
 

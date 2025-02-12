@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any
 
 from praw.models.base import PRAWBase
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw
 
 

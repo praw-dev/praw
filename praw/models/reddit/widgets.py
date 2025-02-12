@@ -11,7 +11,7 @@ from praw.models.base import PRAWBase
 from praw.models.list.base import BaseList
 from praw.util.cache import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw.models
 
 WidgetType: TypeVar = TypeVar("WidgetType", bound="Widget")

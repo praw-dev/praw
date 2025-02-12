@@ -11,7 +11,7 @@ from praw.models.listing.generator import ListingGenerator
 from praw.models.reddit.comment import Comment
 from praw.models.reddit.submission import Submission
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Generator
 
     import praw.models
