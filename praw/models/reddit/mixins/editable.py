@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ....const import API_PATH
+from praw.const import API_PATH
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw.models
@@ -13,7 +13,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class EditableMixin:
     """Interface for classes that can be edited and deleted."""
 
-    def delete(self):
+    def delete(self) -> None:
         """Delete the object.
 
         Example usage:

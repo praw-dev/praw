@@ -5,8 +5,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
 
-from ...base import PRAWBase
-from ..generator import ListingGenerator
+from praw.models.base import PRAWBase
+from praw.models.listing.generator import ListingGenerator
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -18,7 +18,7 @@ class BaseListingMixin(PRAWBase):
     VALID_TIME_FILTERS = {"all", "day", "hour", "month", "week", "year"}
 
     @staticmethod
-    def _validate_time_filter(time_filter: str):
+    def _validate_time_filter(time_filter: str) -> None:
         """Validate ``time_filter``.
 
         :raises: :py:class:`ValueError` if ``time_filter`` is not valid.

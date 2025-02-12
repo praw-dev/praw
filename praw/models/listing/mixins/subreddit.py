@@ -5,9 +5,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
 
-from ....util.cache import cachedproperty
-from ...base import PRAWBase
-from ..generator import ListingGenerator
+from praw.models.base import PRAWBase
+from praw.models.listing.generator import ListingGenerator
+from praw.util.cache import cachedproperty
+
 from .base import BaseListingMixin
 from .rising import RisingListingMixin
 
@@ -40,7 +41,7 @@ class CommentHelper(PRAWBase):
         """
         return ListingGenerator(self._reddit, self._path, **generator_kwargs)
 
-    def __init__(self, subreddit: praw.models.Subreddit | SubredditListingMixin):
+    def __init__(self, subreddit: praw.models.Subreddit | SubredditListingMixin) -> None:
         """Initialize a :class:`.CommentHelper` instance."""
         super().__init__(subreddit._reddit, _data=None)
         self.subreddit = subreddit
@@ -64,7 +65,7 @@ class SubredditListingMixin(BaseListingMixin, RisingListingMixin):
         """
         return CommentHelper(self)
 
-    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any] | None):
+    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any] | None) -> None:
         """Initialize a :class:`.SubredditListingMixin` instance.
 
         :param reddit: An instance of :class:`.Reddit`.

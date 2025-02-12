@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from ...const import API_PATH
-from ..base import PRAWBase
+from praw.const import API_PATH
+from praw.models.base import PRAWBase
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw.models
@@ -24,7 +24,7 @@ class MoreComments(PRAWBase):
         """Return the hash of the current instance."""
         return hash(self.__class__.__name__) ^ hash(str(self))
 
-    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]):
+    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]) -> None:
         """Initialize a :class:`.MoreComments` instance."""
         self.count = self.parent_id = None
         self.children = []

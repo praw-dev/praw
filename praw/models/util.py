@@ -175,16 +175,16 @@ class BoundedSet:
         self._access(item)
         return item in self._set
 
-    def __init__(self, max_items: int):
+    def __init__(self, max_items: int) -> None:
         """Initialize a :class:`.BoundedSet` instance."""
         self.max_items = max_items
         self._set = OrderedDict()
 
-    def _access(self, item: Any):
+    def _access(self, item: Any) -> None:
         if item in self._set:
             self._set.move_to_end(item)
 
-    def add(self, item: Any):
+    def add(self, item: Any) -> None:
         """Add an item to the set discarding the oldest item if necessary."""
         self._access(item)
         self._set[item] = None
@@ -195,7 +195,7 @@ class BoundedSet:
 class ExponentialCounter:
     """A class to provide an exponential counter with jitter."""
 
-    def __init__(self, max_counter: int):
+    def __init__(self, max_counter: int) -> None:
         """Initialize an :class:`.ExponentialCounter` instance.
 
         :param max_counter: The maximum base value.
@@ -215,6 +215,6 @@ class ExponentialCounter:
         self._base = min(self._base * 2, self._max)
         return value
 
-    def reset(self):
+    def reset(self) -> None:
         """Reset the counter to 1."""
         self._base = 1

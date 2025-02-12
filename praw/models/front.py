@@ -17,7 +17,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class Front(SubredditListingMixin):
     """Front is a Listing class that represents the front page."""
 
-    def __init__(self, reddit: praw.Reddit):
+    def __init__(self, reddit: praw.Reddit) -> None:
         """Initialize a :class:`.Front` instance."""
         super().__init__(reddit, _data=None)
         self._path = "/"

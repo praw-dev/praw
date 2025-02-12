@@ -6,7 +6,8 @@ from collections.abc import Iterator
 from copy import deepcopy
 from typing import TYPE_CHECKING, Any
 
-from ..base import PRAWBase
+from praw.models.base import PRAWBase
+
 from .listing import FlairListing, ModNoteListing
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -31,7 +32,7 @@ class ListingGenerator(PRAWBase, Iterator):
         url: str,
         limit: int = 100,
         params: dict[str, str | int] | None = None,
-    ):
+    ) -> None:
         """Initialize a :class:`.ListingGenerator` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -84,7 +85,7 @@ class ListingGenerator(PRAWBase, Iterator):
                 raise ValueError(msg)
         return listing
 
-    def _next_batch(self):
+    def _next_batch(self) -> None:
         if self._exhausted:
             raise StopIteration
 

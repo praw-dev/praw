@@ -41,7 +41,7 @@ class Config:
         return item.lower() in {"1", "yes", "true", "on"}
 
     @classmethod
-    def _load_config(cls, *, config_interpolation: str | None = None):
+    def _load_config(cls, *, config_interpolation: str | None = None) -> None:
         """Attempt to load settings from various praw.ini files."""
         if config_interpolation is not None:
             interpolator_class = cls.INTERPOLATION_LEVEL[config_interpolation]()
@@ -86,7 +86,7 @@ class Config:
         site_name: str,
         config_interpolation: str | None = None,
         **settings: str,
-    ):
+    ) -> None:
         """Initialize a :class:`.Config` instance."""
         with Config.LOCK:
             if Config.CONFIG is None:
@@ -121,7 +121,7 @@ class Config:
         # Environment variables have higher priority than praw.ini settings
         return env_value or ini_value or self.CONFIG_NOT_SET
 
-    def _initialize_attributes(self):
+    def _initialize_attributes(self) -> None:
         self._short_url = self._fetch_default("short_url") or self.CONFIG_NOT_SET
         self.check_for_async = self._config_boolean(self._fetch_default("check_for_async", default=True))
         self.check_for_updates = self._config_boolean(self._fetch_or_not_set("check_for_updates"))

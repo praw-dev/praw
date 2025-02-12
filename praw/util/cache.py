@@ -39,7 +39,7 @@ class cachedproperty:  # noqa: N801
         value = obj.__dict__[self.func.__name__] = self.func(obj)
         return value
 
-    def __init__(self, func: Callable[[Any], Any], doc: str | None = None):
+    def __init__(self, func: Callable[[Any], Any], doc: str | None = None) -> None:
         """Initialize a :class:`.cachedproperty` instance."""
         self.func = self.__wrapped__ = func
 

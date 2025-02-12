@@ -5,10 +5,11 @@ from __future__ import annotations
 from json import dumps
 from typing import TYPE_CHECKING, Any
 
-from ...const import API_PATH
-from ...util.cache import cachedproperty
-from ..listing.mixins import RedditorListingMixin
-from ..util import stream_generator
+from praw.const import API_PATH
+from praw.models.listing.mixins import RedditorListingMixin
+from praw.models.util import stream_generator
+from praw.util.cache import cachedproperty
+
 from .base import RedditBase
 from .mixins import FullnameMixin, MessageableMixin
 
@@ -135,7 +136,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         name: str | None = None,
         fullname: str | None = None,
         _data: dict[str, Any] | None = None,
-    ):
+    ) -> None:
         """Initialize a :class:`.Redditor` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -159,7 +160,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             self._fullname = fullname
         super().__init__(reddit, _data=_data, _extra_attribute_to_check="_fullname")
 
-    def __setattr__(self, name: str, value: Any):
+    def __setattr__(self, name: str, value: Any) -> None:
         """Objectify the subreddit attribute."""
         if name == "subreddit" and value:
             from .user_subreddit import UserSubreddit  # noqa: PLC0415
@@ -167,7 +168,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             value = UserSubreddit(reddit=self._reddit, _data=value)
         super().__setattr__(name, value)
 
-    def _fetch(self):
+    def _fetch(self) -> None:
         data = self._fetch_data()
         data = data["data"]
         other = type(self)(self._reddit, _data=data)
@@ -182,11 +183,11 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def _fetch_username(self, fullname: str):
         return self._reddit.get(API_PATH["user_by_fullname"], params={"ids": fullname})[fullname]["name"]
 
-    def _friend(self, *, data: dict[str, Any], method: str):
+    def _friend(self, *, data: dict[str, Any], method: str) -> None:
         url = API_PATH["friend_v1"].format(user=self)
         self._reddit.request(data=dumps(data), method=method, path=url)
 
-    def block(self):
+    def block(self) -> None:
         """Block the :class:`.Redditor`.
 
         For example, to block :class:`.Redditor` u/spez:
@@ -206,7 +207,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         self._reddit.post(API_PATH["block_user"], params={"name": self.name})
 
-    def distrust(self):
+    def distrust(self) -> None:
         """Remove the :class:`.Redditor` from your whitelist of trusted users.
 
         For example, to remove :class:`.Redditor` u/spez from your whitelist:
@@ -222,7 +223,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         self._reddit.post(API_PATH["remove_whitelisted"], data={"name": self.name})
 
-    def friend(self, *, note: str = None):
+    def friend(self, *, note: str | None = None) -> None:
         """Friend the :class:`.Redditor`.
 
         :param note: A note to save along with the relationship. Requires Reddit Premium
@@ -339,7 +340,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         return list(self._reddit.get(API_PATH["trophies"].format(user=self)))
 
-    def trust(self):
+    def trust(self) -> None:
         """Add the :class:`.Redditor` to your whitelist of trusted users.
 
         Trusted users will always be able to send you PMs.
@@ -378,7 +379,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         self._reddit.post(API_PATH["add_whitelisted"], data={"name": self.name})
 
-    def unblock(self):
+    def unblock(self) -> None:
         """Unblock the :class:`.Redditor`.
 
         For example, to unblock :class:`.Redditor` u/spez:
@@ -396,7 +397,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         url = API_PATH["unfriend"].format(subreddit="all")
         self._reddit.post(url, data=data)
 
-    def unfriend(self):
+    def unfriend(self) -> None:
         """Unfriend the :class:`.Redditor`.
 
         For example, to unfriend :class:`.Redditor` u/spez:
@@ -412,7 +413,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
 class RedditorStream:
     """Provides submission and comment streams."""
 
-    def __init__(self, redditor: praw.models.Redditor):
+    def __init__(self, redditor: praw.models.Redditor) -> None:
         """Initialize a :class:`.RedditorStream` instance.
 
         :param redditor: The redditor associated with the streams.

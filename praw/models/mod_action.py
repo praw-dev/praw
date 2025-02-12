@@ -19,5 +19,5 @@ class ModAction(PRAWBase):
         return self._reddit.redditor(self._mod)
 
     @mod.setter
-    def mod(self, value: str | praw.models.Redditor):
+    def mod(self, value: str | praw.models.Redditor) -> None:
         self._mod = value

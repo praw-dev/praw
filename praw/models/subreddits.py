@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ..const import API_PATH
+from praw.const import API_PATH
+
 from . import Subreddit
 from .base import PRAWBase
 from .listing.generator import ListingGenerator

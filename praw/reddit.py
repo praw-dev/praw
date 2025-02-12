@@ -93,7 +93,7 @@ class Reddit:
         return self._core == self._read_only_core
 
     @read_only.setter
-    def read_only(self, value: bool):
+    def read_only(self, value: bool) -> None:
         """Set or unset the use of the ReadOnlyAuthorizer.
 
         :raises: :class:`.ClientException` when attempting to unset ``read_only`` and
@@ -123,7 +123,7 @@ class Reddit:
         requestor_class: type[prawcore.requestor.Requestor] | None = None,
         requestor_kwargs: dict[str, Any] | None = None,
         **config_settings: str | bool | int | None,
-    ):
+    ) -> None:
         """Initialize a :class:`.Reddit` instance.
 
         :param site_name: The name of a section in your ``praw.ini`` file from which to
@@ -389,7 +389,7 @@ class Reddit:
 
         """
 
-    def _check_for_async(self):
+    def _check_for_async(self) -> None:
         if self.config.check_for_async:  # pragma: no cover
             try:
                 # noinspection PyUnresolvedReferences
@@ -414,7 +414,7 @@ class Reddit:
                     " for more info.\n",
                 )
 
-    def _check_for_update(self):
+    def _check_for_update(self) -> None:
         if UPDATE_CHECKER_MISSING:
             return
         if not Reddit.update_checked and self.config.check_for_updates:
@@ -472,7 +472,7 @@ class Reddit:
             )
         )
 
-    def _prepare_common_authorizer(self, authenticator: prawcore.auth.BaseAuthenticator):
+    def _prepare_common_authorizer(self, authenticator: prawcore.auth.BaseAuthenticator) -> None:
         if self.config.refresh_token:
             authorizer = Authorizer(authenticator, refresh_token=self.config.refresh_token)
         else:
@@ -480,7 +480,7 @@ class Reddit:
             return
         self._core = self._authorized_core = session(authorizer=authorizer, window_size=self.config.window_size)
 
-    def _prepare_objector(self):
+    def _prepare_objector(self) -> None:
         mappings = {
             self.config.kinds["comment"]: models.Comment,
             self.config.kinds["message"]: models.Message,
@@ -531,9 +531,9 @@ class Reddit:
     def _prepare_prawcore(
         self,
         *,
-        requestor_class: type[prawcore.requestor.Requestor] = None,
+        requestor_class: type[prawcore.requestor.Requestor] | None = None,
         requestor_kwargs: Any | None = None,
-    ):
+    ) -> None:
         requestor_class = requestor_class or Requestor
         requestor_kwargs = requestor_kwargs or {}
 
@@ -549,7 +549,7 @@ class Reddit:
         else:
             self._prepare_untrusted_prawcore(requestor)
 
-    def _prepare_trusted_prawcore(self, requestor: prawcore.requestor.Requestor):
+    def _prepare_trusted_prawcore(self, requestor: prawcore.requestor.Requestor) -> None:
         authenticator = TrustedAuthenticator(
             requestor,
             self.config.client_id,
@@ -567,7 +567,7 @@ class Reddit:
         else:
             self._prepare_common_authorizer(authenticator)
 
-    def _prepare_untrusted_prawcore(self, requestor: prawcore.requestor.Requestor):
+    def _prepare_untrusted_prawcore(self, requestor: prawcore.requestor.Requestor) -> None:
         authenticator = UntrustedAuthenticator(requestor, self.config.client_id, self.config.redirect_uri)
         read_only_authorizer = DeviceIDAuthorizer(authenticator)
         self._read_only_core = session(authorizer=read_only_authorizer, window_size=self.config.window_size)

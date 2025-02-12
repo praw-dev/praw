@@ -18,7 +18,7 @@ class InlineMedia:
             tuple(getattr(self, attr) for attr in ["TYPE", "path", "caption", "media_id"])
         )
 
-    def __init__(self, *, caption: str = None, path: str):
+    def __init__(self, *, caption: str | None = None, path: str) -> None:
         """Initialize an :class:`.InlineMedia` instance.
 
         :param caption: An optional caption to add to the image (default: ``None``).

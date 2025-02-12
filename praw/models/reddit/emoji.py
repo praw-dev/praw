@@ -5,8 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from ...const import API_PATH
-from ...exceptions import ClientException
+from praw.const import API_PATH
+from praw.exceptions import ClientException
+
 from .base import RedditBase
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -50,13 +51,13 @@ class Emoji(RedditBase):
         subreddit: praw.models.Subreddit,
         name: str,
         _data: dict[str, Any] | None = None,
-    ):
+    ) -> None:
         """Initialize an :class:`.Emoji` instance."""
         self.name = name
         self.subreddit = subreddit
         super().__init__(reddit, _data=_data)
 
-    def _fetch(self):
+    def _fetch(self) -> None:
         for emoji in self.subreddit.emoji:
             if emoji.name == self.name:
                 self.__dict__.update(emoji.__dict__)
@@ -65,7 +66,7 @@ class Emoji(RedditBase):
         msg = f"r/{self.subreddit} does not have the emoji {self.name}"
         raise ClientException(msg)
 
-    def delete(self):
+    def delete(self) -> None:
         """Delete an emoji from this subreddit by :class:`.Emoji`.
 
         To delete ``"emoji"`` as an emoji on r/test try:
@@ -84,7 +85,7 @@ class Emoji(RedditBase):
         mod_flair_only: bool | None = None,
         post_flair_allowed: bool | None = None,
         user_flair_allowed: bool | None = None,
-    ):
+    ) -> None:
         """Update the permissions of an emoji in this subreddit.
 
         :param mod_flair_only: Indicate whether the emoji is restricted to mod use only.
@@ -149,7 +150,7 @@ class SubredditEmoji:
         """
         return Emoji(self._reddit, self.subreddit, name)
 
-    def __init__(self, subreddit: praw.models.Subreddit):
+    def __init__(self, subreddit: praw.models.Subreddit) -> None:
         """Initialize a :class:`.SubredditEmoji` instance.
 
         :param subreddit: The subreddit whose emoji are affected.

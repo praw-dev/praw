@@ -6,9 +6,10 @@ import re
 from json import dumps
 from typing import TYPE_CHECKING, Any
 
-from ...const import API_PATH
-from ...util import cachedproperty
-from ..listing.mixins import SubredditListingMixin
+from praw.const import API_PATH
+from praw.models.listing.mixins import SubredditListingMixin
+from praw.util import cachedproperty
+
 from .base import RedditBase
 from .redditor import Redditor
 from .subreddit import Subreddit, SubredditStream
@@ -92,7 +93,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         """
         return SubredditStream(self)
 
-    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]):
+    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]) -> None:
         """Initialize a :class:`.Multireddit` instance."""
         self.path = None
         super().__init__(reddit, _data=_data)
@@ -102,7 +103,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         if "subreddits" in self.__dict__:
             self.subreddits = [Subreddit(reddit, x["name"]) for x in self.subreddits]
 
-    def _fetch(self):
+    def _fetch(self) -> None:
         data = self._fetch_data()
         data = data["data"]
         other = type(self)(self._reddit, _data=data)
@@ -116,7 +117,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
             None,
         )
 
-    def add(self, subreddit: praw.models.Subreddit):
+    def add(self, subreddit: praw.models.Subreddit) -> None:
         """Add a subreddit to this multireddit.
 
         :param subreddit: The subreddit to add to this multi.
@@ -159,7 +160,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         }
         return self._reddit.post(API_PATH["multireddit_copy"], data=data)
 
-    def delete(self):
+    def delete(self) -> None:
         """Delete this multireddit.
 
         For example, to delete multireddit ``bboe/test``:
@@ -172,7 +173,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         path = API_PATH["multireddit_api"].format(multi=self.name, user=self._author.name)
         self._reddit.delete(path)
 
-    def remove(self, subreddit: praw.models.Subreddit):
+    def remove(self, subreddit: praw.models.Subreddit) -> None:
         """Remove a subreddit from this multireddit.
 
         :param subreddit: The subreddit to remove from this multi.
@@ -192,7 +193,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
     def update(
         self,
         **updated_settings: str | list[str | praw.models.Subreddit | dict[str, str]],
-    ):
+    ) -> None:
         """Update this multireddit.
 
         Keyword arguments are passed for settings that should be updated. They can any

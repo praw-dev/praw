@@ -5,7 +5,7 @@ from __future__ import annotations
 from json import dumps
 from typing import TYPE_CHECKING
 
-from ..const import API_PATH
+from praw.const import API_PATH
 
 if TYPE_CHECKING:  # pragma: no cover
     import praw
@@ -35,7 +35,7 @@ class Preferences:
         """
         return self._reddit.get(API_PATH["preferences"])
 
-    def __init__(self, reddit: praw.Reddit):
+    def __init__(self, reddit: praw.Reddit) -> None:
         """Initialize a :class:`.Preferences` instance.
 
         :param reddit: The :class:`.Reddit` instance.

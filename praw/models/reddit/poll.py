@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from ...util import cachedproperty
-from ..base import PRAWBase
+from praw.models.base import PRAWBase
+from praw.util import cachedproperty
 
 
 class PollOption(PRAWBase):
@@ -86,7 +86,7 @@ class PollData(PRAWBase):
             return None
         return self.option(self._user_selection)
 
-    def __setattr__(self, attribute: str, value: Any):
+    def __setattr__(self, attribute: str, value: Any) -> None:
         """Objectify the options attribute, and save user_selection."""
         if attribute == "options" and isinstance(value, list):
             value = [PollOption(self._reddit, option) for option in value]

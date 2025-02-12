@@ -19,7 +19,7 @@ class Objector:
     """The objector builds :class:`.RedditBase` objects."""
 
     @classmethod
-    def check_error(cls, data: list[Any] | dict[str, dict[str, str]]):
+    def check_error(cls, data: list[Any] | dict[str, dict[str, str]]) -> None:
         """Raise an error if the argument resolves to an error object."""
         if error := cls.parse_error(data):
             raise error
@@ -48,7 +48,7 @@ class Objector:
             raise ClientException(msg, data)
         return RedditAPIException(errors)
 
-    def __init__(self, reddit: praw.Reddit, parsers: dict[str, Any] | None = None):
+    def __init__(self, reddit: praw.Reddit, parsers: dict[str, Any] | None = None) -> None:
         """Initialize an :class:`.Objector` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -57,9 +57,7 @@ class Objector:
         self.parsers = {} if parsers is None else parsers
         self._reddit = reddit
 
-    def _objectify_dict(  # noqa: PLR0912,PLR0915
-        self, data: dict[str, Any]
-    ) -> RedditBase:
+    def _objectify_dict(self, data: dict[str, Any]) -> RedditBase:
         """Create :class:`.RedditBase` objects from dicts.
 
         :param data: The structured data, assumed to be a dict.
@@ -203,7 +201,7 @@ class Objector:
             return data
         return parser.parse(data, self._reddit)
 
-    def objectify(  # noqa: PLR0911,PLR0912,PLR0915
+    def objectify(
         self, data: dict[str, Any] | list[Any] | bool | None
     ) -> RedditBase | dict[str, Any] | list[Any] | bool | None:
         """Create :class:`.RedditBase` objects from data.

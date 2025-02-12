@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ..const import API_PATH
+from praw.const import API_PATH
+
 from .base import PRAWBase
 from .listing.generator import ListingGenerator
 from .util import stream_generator
@@ -18,7 +19,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class Inbox(PRAWBase):
     """Inbox is a Listing class that represents the inbox."""
 
-    def all(  # noqa: A003
+    def all(
         self, **generator_kwargs: str | int | dict[str, str]
     ) -> Iterator[praw.models.Message | praw.models.Comment]:
         """Return a :class:`.ListingGenerator` for all inbox comments and messages.
@@ -36,7 +37,7 @@ class Inbox(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH["inbox"], **generator_kwargs)
 
-    def collapse(self, items: list[praw.models.Message]):
+    def collapse(self, items: list[praw.models.Message]) -> None:
         """Mark an inbox message as collapsed.
 
         :param items: A list containing instances of :class:`.Message`.
@@ -81,7 +82,7 @@ class Inbox(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH["comment_replies"], **generator_kwargs)
 
-    def mark_all_read(self):
+    def mark_all_read(self) -> None:
         """Mark all messages as read with just one API call.
 
         Example usage:
@@ -98,7 +99,7 @@ class Inbox(PRAWBase):
         """
         self._reddit.post(API_PATH["read_all_messages"])
 
-    def mark_read(self, items: list[praw.models.Comment | praw.models.Message]):
+    def mark_read(self, items: list[praw.models.Comment | praw.models.Message]) -> None:
         """Mark Comments or Messages as read.
 
         :param items: A list containing instances of :class:`.Comment` and/or
@@ -130,7 +131,7 @@ class Inbox(PRAWBase):
             self._reddit.post(API_PATH["read_message"], data=data)
             items = items[25:]
 
-    def mark_unread(self, items: list[praw.models.Comment | praw.models.Message]):
+    def mark_unread(self, items: list[praw.models.Comment | praw.models.Message]) -> None:
         """Unmark Comments or Messages as read.
 
         :param items: A list containing instances of :class:`.Comment` and/or
@@ -189,7 +190,7 @@ class Inbox(PRAWBase):
 
         """
         listing = self._reddit.get(API_PATH["message"].format(id=message_id))
-        messages = {message.fullname: message for message in [listing[0]] + listing[0].replies}
+        messages = {message.fullname: message for message in [listing[0], *listing[0].replies]}
         for _fullname, message in messages.items():
             message.parent = messages.get(message.parent_id, None)
         return messages[f"t4_{message_id.lower()}"]
@@ -262,7 +263,7 @@ class Inbox(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH["submission_replies"], **generator_kwargs)
 
-    def uncollapse(self, items: list[praw.models.Message]):
+    def uncollapse(self, items: list[praw.models.Message]) -> None:
         """Mark an inbox message as uncollapsed.
 
         :param items: A list containing instances of :class:`.Message`.

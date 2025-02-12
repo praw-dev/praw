@@ -8,7 +8,8 @@ from typing import TYPE_CHECKING
 
 import prawcore
 
-from ..const import API_PATH
+from praw.const import API_PATH
+
 from .base import PRAWBase
 from .listing.generator import ListingGenerator
 from .util import stream_generator

@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ....const import API_PATH
-from ...base import PRAWBase
-from ..generator import ListingGenerator
+from praw.const import API_PATH
+from praw.models.base import PRAWBase
+from praw.models.listing.generator import ListingGenerator
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Iterator

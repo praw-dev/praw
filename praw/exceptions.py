@@ -48,7 +48,7 @@ class RedditErrorItem:
         *,
         field: str | None = None,
         message: str | None = None,
-    ):
+    ) -> None:
         """Initialize a :class:`.RedditErrorItem` instance.
 
         :param error_type: The error type set on Reddit's end.
@@ -78,7 +78,7 @@ class ClientException(PRAWException):
 class DuplicateReplaceException(ClientException):
     """Indicate exceptions that involve the replacement of :class:`.MoreComments`."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize a :class:`.DuplicateReplaceException` instance."""
         super().__init__(
             "A duplicate comment has been detected. Are you attempting to call 'replace_more_comments' more than once?"
@@ -88,7 +88,7 @@ class DuplicateReplaceException(ClientException):
 class InvalidFlairTemplateID(ClientException):
     """Indicate exceptions where an invalid flair template ID is given."""
 
-    def __init__(self, template_id: str):
+    def __init__(self, template_id: str) -> None:
         """Initialize an :class:`.InvalidFlairTemplateID` instance."""
         super().__init__(
             f"The flair template ID '{template_id}' is invalid. If you are trying to"
@@ -99,7 +99,7 @@ class InvalidFlairTemplateID(ClientException):
 class InvalidImplicitAuth(ClientException):
     """Indicate exceptions where an implicit auth type is used incorrectly."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize an :class:`.InvalidImplicitAuth` instance."""
         super().__init__("Implicit authorization can only be used with installed apps.")
 
@@ -107,7 +107,7 @@ class InvalidImplicitAuth(ClientException):
 class InvalidURL(ClientException):
     """Indicate exceptions where an invalid URL is entered."""
 
-    def __init__(self, url: str, *, message: str = "Invalid URL: {}"):
+    def __init__(self, url: str, *, message: str = "Invalid URL: {}") -> None:
         """Initialize an :class:`.InvalidURL` instance.
 
         :param url: The invalid URL.
@@ -129,7 +129,7 @@ class ReadOnlyException(ClientException):
 class TooLargeMediaException(ClientException):
     """Indicate exceptions from uploading media that's too large."""
 
-    def __init__(self, *, actual: int, maximum_size: int):
+    def __init__(self, *, actual: int, maximum_size: int) -> None:
         """Initialize a :class:`.TooLargeMediaException` instance.
 
         :param actual: The actual size of the uploaded media.
@@ -146,7 +146,7 @@ class TooLargeMediaException(ClientException):
 class WebSocketException(ClientException):
     """Indicate exceptions caused by use of WebSockets."""
 
-    def __init__(self, message: str):
+    def __init__(self, message: str) -> None:
         """Initialize a :class:`.WebSocketException` instance.
 
         :param message: The exception message.
@@ -158,7 +158,7 @@ class WebSocketException(ClientException):
 class MediaPostFailed(WebSocketException):
     """Indicate exceptions where media uploads failed.."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize a :class:`.MediaPostFailed` instance."""
         super().__init__(
             "The attempted media upload action has failed. Possible causes include the"
@@ -188,7 +188,7 @@ class RedditAPIException(PRAWException):
             for exception in exceptions
         ]
 
-    def __init__(self, items: list[RedditErrorItem | list[str] | str]):
+    def __init__(self, items: list[RedditErrorItem | list[str] | str]) -> None:
         """Initialize a :class:`.RedditAPIException` instance.
 
         :param items: Either a list of instances of :class:`.RedditErrorItem` or a list

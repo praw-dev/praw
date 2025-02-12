@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-from ....const import API_PATH
+from praw.const import API_PATH
 
 
 class SavableMixin:
     """Interface for :class:`.RedditBase` classes that can be saved."""
 
-    def save(self, *, category: str | None = None):
+    def save(self, *, category: str | None = None) -> None:
         """Save the object.
 
         :param category: The category to save to. If the authenticated user does not
@@ -31,7 +31,7 @@ class SavableMixin:
         """
         self._reddit.post(API_PATH["save"], data={"category": category, "id": self.fullname})
 
-    def unsave(self):
+    def unsave(self) -> None:
         """Unsave the object.
 
         Example usage:
