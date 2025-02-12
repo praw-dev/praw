@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ....const import API_PATH
+from praw.const import API_PATH
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw.models
 
 

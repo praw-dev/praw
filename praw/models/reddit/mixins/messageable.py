@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ....const import API_PATH
+from praw.const import API_PATH
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw
 
 
@@ -19,7 +19,7 @@ class MessageableMixin:
         from_subreddit: praw.models.Subreddit | str | None = None,
         message: str,
         subject: str,
-    ):
+    ) -> None:
         """Send a message to a :class:`.Redditor` or a :class:`.Subreddit`'s moderators (modmail).
 
         :param from_subreddit: A :class:`.Subreddit` instance or string to send the

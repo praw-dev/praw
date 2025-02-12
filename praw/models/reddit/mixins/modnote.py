@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-if TYPE_CHECKING:  # pragma: no cover
-    from collections.abc import Generator
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
     import praw.models
 
@@ -13,7 +13,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class ModNoteMixin:
     """Interface for classes that can have a moderator note set on them."""
 
-    def author_notes(self, **generator_kwargs: Any) -> Generator[praw.models.ModNote, None, None]:
+    def author_notes(self, **generator_kwargs: Any) -> Iterator[praw.models.ModNote]:
         """Get the moderator notes for the author of this object in the subreddit it's posted in.
 
         :param generator_kwargs: Additional keyword arguments are passed in the

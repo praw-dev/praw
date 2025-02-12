@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from ...const import API_PATH
-from .base import RedditBase
-from .mixins import FullnameMixin, InboxableMixin, ReplyableMixin
-from .redditor import Redditor
-from .subreddit import Subreddit
+from praw.const import API_PATH
+from praw.models.reddit.base import RedditBase
+from praw.models.reddit.mixins import FullnameMixin, InboxableMixin, ReplyableMixin
+from praw.models.reddit.redditor import Redditor
+from praw.models.reddit.subreddit import Subreddit
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw.models
 
 
@@ -58,7 +58,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
 
         if data["replies"]:
             replies = data["replies"]
-            data["replies"] = reddit._objector.objectify(replies["data"]["children"])
+            data["replies"] = reddit._objector.objectify(data=replies["data"]["children"])
         else:
             data["replies"] = []
 
@@ -81,10 +81,10 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
         return self._parent
 
     @parent.setter
-    def parent(self, value: praw.models.Message | None):
+    def parent(self, value: praw.models.Message | None) -> None:
         self._parent = value
 
-    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]):
+    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]) -> None:
         """Initialize a :class:`.Message` instance."""
         super().__init__(reddit, _data=_data, _fetched=True)
         self._parent = None
@@ -92,7 +92,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
             if reply.parent_id == self.fullname:
                 reply.parent = self
 
-    def delete(self):
+    def delete(self) -> None:
         """Delete the message.
 
         .. note::
@@ -136,7 +136,7 @@ class SubredditMessage(Message):
 
     """
 
-    def mute(self):
+    def mute(self) -> None:
         """Mute the sender of this :class:`.SubredditMessage`.
 
         For example, to mute the sender of the first :class:`.SubredditMessage` in the
@@ -154,7 +154,7 @@ class SubredditMessage(Message):
         """
         self._reddit.post(API_PATH["mute_sender"], data={"id": self.fullname})
 
-    def unmute(self):
+    def unmute(self) -> None:
         """Unmute the sender of this :class:`.SubredditMessage`.
 
         For example, to unmute the sender of the first :class:`.SubredditMessage` in the

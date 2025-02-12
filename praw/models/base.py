@@ -5,7 +5,7 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import TYPE_CHECKING, Any
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw
 
 
@@ -13,7 +13,7 @@ class PRAWBase:
     """Superclass for all models in PRAW."""
 
     @staticmethod
-    def _safely_add_arguments(*, arguments: dict[str, Any], key: str, **new_arguments: Any):
+    def _safely_add_arguments(*, arguments: dict[str, Any], key: str, **new_arguments: Any) -> None:
         """Replace arguments[key] with a deepcopy and update.
 
         This method is often called when new parameters need to be added to a request.
@@ -35,7 +35,7 @@ class PRAWBase:
         """
         return cls(reddit, _data=data)
 
-    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any] | None):
+    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any] | None) -> None:
         """Initialize a :class:`.PRAWBase` instance.
 
         :param reddit: An instance of :class:`.Reddit`.

@@ -1,6 +1,11 @@
 [build-system]
-build-backend = "flit_core.buildapi"
-requires = ["flit_core >=3.4,<4"]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[dependency-groups]
+dev = [
+  "tox-uv>=1.22.1"
+]
 
 [project]
 authors = [{name = "Bryce Boe", email = "bbzbryce@gmail.com"}]
@@ -22,7 +27,7 @@ classifiers = [
 ]
 dependencies = [
   "defusedxml ==0.7.1",
-  "prawcore >=3.0.1, <4",
+  "prawcore >=3.0.2, <4",
   "update_checker >=0.18",
   "websocket-client >=0.54.0"
 ]
@@ -71,26 +76,29 @@ test = [
 [tool.docstrfmt]
 extend_exclude = ['./docs/examples/']
 
+[tool.hatch.version]
+path = "praw/const.py"
+
 [tool.ruff]
 include = [
-  "praw/**/*.py"
+  "praw/**.py"
 ]
 line-length = 120
 preview = true
 
 [tool.ruff.lint]
 ignore = [
-  "A002", # shadowing built-in
-  "ANN202", # missing return type for private method
-  "ANN401", # typing.Any usage
-  "D203", # 1 blank line required before class docstring
-  "D213", # Multi-line docstring summary should start at the second line
-  "E501", # line-length
-  "N818", # exception name should be named with an Error suffix
-  "PLR0904", # too many public methods
-  "PLR0913", # too many arguments
-  "PLR2004", # Magic value used in comparison,
-  "S101" # use of assert
+  "ANN401", # any-type
+  "D203", # incorrect-blank-line-before-class
+  "D213", # multi-line-summary-second-line
+  "E501", # Line too long
+  "PLR0904", # Too many public methods
+  "PLR0911", # Too many return statements
+  "PLR0912", # Too many branches
+  "PLR0913", # Too many arguments in function definition
+  "PLR0915", # Too many statements
+  "S101", # use of assert
+  "SLF001" # Private member accessed
 ]
 select = [
   "A", # flake8-builtins
@@ -101,18 +109,20 @@ select = [
   "C4", # flake8-comprehensions
   "D", # pydocstyle
   "DTZ", # flake8-datetimez
-  "E", # pycodestyle errors
+  "E", # pycodestyle
   "EM", # flake8-errmsg
   "ERA", # eradicate
   "EXE", # flake8-executable
   "F", # pyflakes
   "FA", # flake8-future-annotations
-  "FIX", # flake8-fix me
+  "FBT", # flake8-boolean-trap
+  "FIX", # flake8-fixme
   "FLY", # flynt
   "G", # flake8-logging-format
   "I", # isort
   "INP", # flake8-no-pep420
   "ISC", # flake8-implicit-str-concat
+  "LOG", # flake8-logging
   "N", # pep8-naming
   "PIE", # flake8-pie
   "PGH", # pygrep-hooks
@@ -123,24 +133,29 @@ select = [
   "Q", # flake8-quotes
   "RET", # flake8-return
   "RSE", # flake8-raise
+  "RUF", # ruff-specific
   "S", # bandit
   "SIM", # flake8-simplify
+  "SLF", # flake8-self
   "T10", # flake8-debugger
   "T20", # flake8-print
   "TCH", # flake8-type-checking
   "TD", # flake8-todos
-  "W", # pycodestyle warnings
-  "UP" # pyupgrade
+  "TID", # flake8-tidy-imports
+  "TRY", # tryceratops
+  "UP", # pyupgrade
+  "W" # pycodestyle
 ]
 
 [tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
-mypy-init-return = true
 suppress-dummy-args = true
-suppress-none-returning = true
 
 [tool.ruff.lint.flake8-builtins]
 builtins-ignorelist = ["id"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]

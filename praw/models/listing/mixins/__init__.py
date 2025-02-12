@@ -1,7 +1,7 @@
 """Package providing models that pertain to listing mixins."""
 
-from .base import BaseListingMixin
-from .redditor import RedditorListingMixin
-from .rising import RisingListingMixin
-from .submission import SubmissionListingMixin
-from .subreddit import SubredditListingMixin
+from praw.models.listing.mixins.base import BaseListingMixin
+from praw.models.listing.mixins.redditor import RedditorListingMixin
+from praw.models.listing.mixins.rising import RisingListingMixin
+from praw.models.listing.mixins.submission import SubmissionListingMixin
+from praw.models.listing.mixins.subreddit import SubredditListingMixin

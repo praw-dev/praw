@@ -5,14 +5,14 @@ from __future__ import annotations
 from json import dumps
 from typing import TYPE_CHECKING, Any
 
-from ..const import API_PATH
-from .base import PRAWBase
-from .reddit.draft import Draft
-from .reddit.live import LiveThread
-from .reddit.multi import Multireddit, Subreddit
+from praw.const import API_PATH
+from praw.models.base import PRAWBase
+from praw.models.reddit.draft import Draft
+from praw.models.reddit.live import LiveThread
+from praw.models.reddit.multi import Multireddit, Subreddit
 
-if TYPE_CHECKING:  # pragma: no cover
-    from collections.abc import Generator
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
     import praw.models
 
@@ -156,7 +156,7 @@ class LiveHelper(PRAWBase):
         *,
         description: str | None = None,
         nsfw: bool = False,
-        resources: str = None,
+        resources: str | None = None,
     ) -> praw.models.LiveThread:
         """Create a new :class:`.LiveThread`.
 
@@ -180,7 +180,7 @@ class LiveHelper(PRAWBase):
             },
         )
 
-    def info(self, ids: list[str]) -> Generator[praw.models.LiveThread, None, None]:
+    def info(self, ids: list[str]) -> Iterator[praw.models.LiveThread]:
         """Fetch information about each live thread in ``ids``.
 
         :param ids: A list of IDs for a live thread.
@@ -213,7 +213,7 @@ class LiveHelper(PRAWBase):
             msg = "ids must be a list"
             raise TypeError(msg)
 
-        def generator():
+        def generator() -> Iterator[praw.models.LiveThread]:
             for position in range(0, len(ids), 100):
                 ids_chunk = ids[position : position + 100]
                 url = API_PATH["live_info"].format(ids=",".join(ids_chunk))

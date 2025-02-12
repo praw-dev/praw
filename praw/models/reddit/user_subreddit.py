@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from ...util.cache import cachedproperty
-from .subreddit import Subreddit, SubredditModeration
+from praw.models.reddit.subreddit import Subreddit, SubredditModeration
+from praw.util.cache import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw.models
 
 
@@ -63,7 +63,7 @@ class UserSubreddit(Subreddit):
         """
         return UserSubredditModeration(self)
 
-    def __init__(self, reddit: praw.Reddit, *args: Any, **kwargs: Any):
+    def __init__(self, reddit: praw.Reddit, *args: Any, **kwargs: Any) -> None:
         """Initialize an :class:`.UserSubreddit` instance.
 
         :param reddit: An instance of :class:`.Reddit`.

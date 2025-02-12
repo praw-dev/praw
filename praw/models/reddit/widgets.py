@@ -6,12 +6,12 @@ from json import JSONEncoder, dumps
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, TypeVar
 
-from ...const import API_PATH
-from ...util.cache import cachedproperty
-from ..base import PRAWBase
-from ..list.base import BaseList
+from praw.const import API_PATH
+from praw.models.base import PRAWBase
+from praw.models.list.base import BaseList
+from praw.util.cache import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw.models
 
 WidgetType: TypeVar = TypeVar("WidgetType", bound="Widget")
@@ -266,7 +266,7 @@ class SubredditWidgets(PRAWBase):
         items = {}
         for item_name, data in self._raw_items.items():
             data["subreddit"] = self.subreddit
-            items[item_name] = self._reddit._objector.objectify(data)
+            items[item_name] = self._reddit._objector.objectify(data=data)
         return items
 
     @cachedproperty
@@ -305,7 +305,7 @@ class SubredditWidgets(PRAWBase):
         msg = f"{self.__class__.__name__!r} object has no attribute {attr!r}"
         raise AttributeError(msg)
 
-    def __init__(self, subreddit: praw.models.Subreddit):
+    def __init__(self, subreddit: praw.models.Subreddit) -> None:
         """Initialize a :class:`.SubredditWidgets` instance.
 
         :param subreddit: The :class:`.Subreddit` the widgets belong to.
@@ -322,7 +322,7 @@ class SubredditWidgets(PRAWBase):
         """Return an object initialization representation of the instance."""
         return f"SubredditWidgets(subreddit={self.subreddit!r})"
 
-    def _fetch(self):
+    def _fetch(self) -> None:
         data = self._reddit.get(
             API_PATH["widgets"].format(subreddit=self.subreddit),
             params={"progressive_images": self.progressive_images},
@@ -344,7 +344,7 @@ class SubredditWidgets(PRAWBase):
 
         self._fetched = True
 
-    def refresh(self):
+    def refresh(self) -> None:
         """Refresh the :class:`.Subreddit`'s widgets.
 
         By default, PRAW will not request progressively loading images from Reddit. To
@@ -387,7 +387,7 @@ class Widget(PRAWBase):
         """Return the hash of the current instance."""
         return hash(self.__class__.__name__) ^ hash(self.id.lower())
 
-    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]):
+    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]) -> None:
         """Initialize a :class:`.Widget` instance."""
         self.subreddit = ""  # in case it isn't in _data
         self.id = ""  # in case it isn't in _data
@@ -704,7 +704,7 @@ class CustomWidget(Widget):
 
     """
 
-    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]):
+    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]) -> None:
         """Initialize a :class:`.CustomWidget` instance."""
         _data["imageData"] = [ImageData(reddit, data) for data in _data.pop("imageData")]
         super().__init__(reddit, _data=_data)
@@ -925,7 +925,7 @@ class ModeratorsWidget(Widget, BaseList):
 
     CHILD_ATTRIBUTE = "mods"
 
-    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]):
+    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]) -> None:
         """Initialize a :class:`.ModeratorsWidget` instance."""
         if self.CHILD_ATTRIBUTE not in _data:
             # .mod.update() sometimes returns payload without "mods" field
@@ -1041,7 +1041,7 @@ class RulesWidget(Widget, BaseList):
 
     CHILD_ATTRIBUTE = "data"
 
-    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]):
+    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]) -> None:
         """Initialize a :class:`.RulesWidget` instance."""
         if self.CHILD_ATTRIBUTE not in _data:
             # .mod.update() sometimes returns payload without "data" field
@@ -1124,13 +1124,13 @@ class WidgetModeration:
         widget: Widget,
         subreddit: praw.models.Subreddit | str,
         reddit: praw.Reddit,
-    ):
+    ) -> None:
         """Initialize a :class:`.WidgetModeration` instance."""
         self.widget = widget
         self._reddit = reddit
         self._subreddit = subreddit
 
-    def delete(self):
+    def delete(self) -> None:
         """Delete the widget.
 
         Example usage:
@@ -1167,8 +1167,7 @@ class WidgetModeration:
         path = API_PATH["widget_modify"].format(widget_id=self.widget.id, subreddit=self._subreddit)
         payload = {key: value for key, value in vars(self.widget).items() if not key.startswith("_")}
         del payload["subreddit"]  # not JSON serializable
-        if "mod" in payload:
-            del payload["mod"]
+        payload.pop("mod", None)
         payload.update(kwargs)
         widget = self._reddit.put(path, data={"json": dumps(payload, cls=WidgetEncoder)})
         widget.subreddit = self._subreddit
@@ -1196,7 +1195,7 @@ class SubredditWidgetsModeration:
 
     """
 
-    def __init__(self, subreddit: praw.models.Subreddit, reddit: praw.Reddit):
+    def __init__(self, subreddit: praw.models.Subreddit, reddit: praw.Reddit) -> None:
         """Initialize a :class:`.SubredditWidgetsModeration` instance."""
         self._subreddit = subreddit
         self._reddit = reddit
@@ -1772,7 +1771,7 @@ class SubredditWidgetsModeration:
         text_area.update(other_settings)
         return self._create_widget(text_area)
 
-    def reorder(self, new_order: list[Widget | str], *, section: str = "sidebar"):
+    def reorder(self, new_order: list[Widget | str], *, section: str = "sidebar") -> None:
         """Reorder the widgets.
 
         :param new_order: A list of widgets. Represented as a list that contains

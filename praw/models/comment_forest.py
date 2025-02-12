@@ -5,10 +5,10 @@ from __future__ import annotations
 from heapq import heappop, heappush
 from typing import TYPE_CHECKING
 
-from ..exceptions import DuplicateReplaceException
-from .reddit.more import MoreComments
+from praw.exceptions import DuplicateReplaceException
+from praw.models.reddit.more import MoreComments
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw.models
 
 
@@ -43,7 +43,7 @@ class CommentForest:
         """Return the number of top-level comments in the forest."""
         return len(self._comments)
 
-    def _insert_comment(self, comment: praw.models.Comment):
+    def _insert_comment(self, comment: praw.models.Comment) -> None:
         if comment.name in self._submission._comments_by_id:
             raise DuplicateReplaceException
         comment.submission = self._submission
@@ -56,7 +56,7 @@ class CommentForest:
             parent = self._submission._comments_by_id[comment.parent_id]
             parent.replies._comments.append(comment)
 
-    def list(  # noqa: A003
+    def list(
         self,
     ) -> list[praw.models.Comment | praw.models.MoreComments]:
         """Return a flattened list of all comments.
@@ -100,7 +100,7 @@ class CommentForest:
         self,
         submission: praw.models.Submission,
         comments: list[praw.models.Comment] | None = None,
-    ):
+    ) -> None:
         """Initialize a :class:`.CommentForest` instance.
 
         :param submission: An instance of :class:`.Submission` that is the parent of the
@@ -112,7 +112,7 @@ class CommentForest:
         self._comments = comments
         self._submission = submission
 
-    def _update(self, comments: list[praw.models.Comment]):
+    def _update(self, comments: list[praw.models.Comment]) -> None:
         self._comments = comments
         for comment in comments:
             comment.submission = self._submission
@@ -179,7 +179,7 @@ class CommentForest:
         # Fetch largest more_comments until reaching the limit or the threshold
         while more_comments:
             item = heappop(more_comments)
-            if remaining is not None and remaining <= 0 or item.count < threshold:
+            if (remaining is not None and remaining <= 0) or item.count < threshold:
                 skipped.append(item)
                 item._remove_from.remove(item)
                 continue

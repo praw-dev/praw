@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from .base import PRAWBase
+from praw.models.base import PRAWBase
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw
 
 
@@ -41,7 +41,7 @@ class Trophy(PRAWBase):
         """Return the hash of the current instance."""
         return hash(self.__class__.__name__) ^ hash(self.name)
 
-    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]):
+    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]) -> None:
         """Initialize a :class:`.Trophy` instance.
 
         :param reddit: An instance of :class:`.Reddit`.

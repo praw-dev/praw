@@ -5,11 +5,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
 
-from ...endpoints import API_PATH
-from ...exceptions import InvalidURL
-from ..base import PRAWBase
+from praw.endpoints import API_PATH
+from praw.exceptions import InvalidURL
+from praw.models.base import PRAWBase
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw
 
 
@@ -45,10 +45,11 @@ class RedditBase(PRAWBase):
         self,
         reddit: praw.Reddit,
         _data: dict[str, Any] | None,
+        *,
         _extra_attribute_to_check: str | None = None,
         _fetched: bool = False,
         _str_field: bool = True,
-    ):
+    ) -> None:
         """Initialize a :class:`.RedditBase` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -74,15 +75,15 @@ class RedditBase(PRAWBase):
         """Return a string representation of the instance."""
         return getattr(self, self.STR_FIELD)
 
-    def _fetch(self):
+    def _fetch(self) -> None:
         self._fetched = True
 
-    def _fetch_data(self):
+    def _fetch_data(self) -> Any:
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
         return self._reddit.request(method="GET", params=params, path=path)
 
-    def _reset_attributes(self, *attributes: str):
+    def _reset_attributes(self, *attributes: str) -> None:
         for attribute in attributes:
             if attribute in self.__dict__:
                 del self.__dict__[attribute]

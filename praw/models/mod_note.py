@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from ..endpoints import API_PATH
-from .base import PRAWBase
+from praw.endpoints import API_PATH
+from praw.models.base import PRAWBase
 
 
 class ModNote(PRAWBase):
@@ -57,7 +57,7 @@ class ModNote(PRAWBase):
         """Return the hash of the current instance."""
         return hash(self.__class__.__name__) ^ hash(self.id)
 
-    def delete(self):
+    def delete(self) -> None:
         """Delete this note.
 
         For example, to delete the last note for u/spez from r/test, try:

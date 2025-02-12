@@ -4,14 +4,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from ...const import API_PATH
-from ...util.cache import cachedproperty
-from ..listing.generator import ListingGenerator
-from .base import RedditBase
-from .redditor import Redditor
+from praw.const import API_PATH
+from praw.models.listing.generator import ListingGenerator
+from praw.models.reddit.base import RedditBase
+from praw.models.reddit.redditor import Redditor
+from praw.util.cache import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
-    from collections.abc import Generator, Iterator
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
     import praw.models
 
@@ -27,7 +27,7 @@ class WikiPageModeration:
 
     """
 
-    def __init__(self, wikipage: WikiPage):
+    def __init__(self, wikipage: WikiPage) -> None:
         """Initialize a :class:`.WikiPageModeration` instance.
 
         :param wikipage: The wikipage to moderate.
@@ -35,7 +35,7 @@ class WikiPageModeration:
         """
         self.wikipage = wikipage
 
-    def add(self, redditor: praw.models.Redditor):
+    def add(self, redditor: praw.models.Redditor) -> None:
         """Add an editor to this :class:`.WikiPage`.
 
         :param redditor: A redditor name or :class:`.Redditor` instance.
@@ -51,7 +51,7 @@ class WikiPageModeration:
         url = API_PATH["wiki_page_editor"].format(subreddit=self.wikipage.subreddit, method="add")
         self.wikipage._reddit.post(url, data=data)
 
-    def remove(self, redditor: praw.models.Redditor):
+    def remove(self, redditor: praw.models.Redditor) -> None:
         """Remove an editor from this :class:`.WikiPage`.
 
         :param redditor: A redditor name or :class:`.Redditor` instance.
@@ -67,7 +67,7 @@ class WikiPageModeration:
         url = API_PATH["wiki_page_editor"].format(subreddit=self.wikipage.subreddit, method="del")
         self.wikipage._reddit.post(url, data=data)
 
-    def revert(self):
+    def revert(self) -> None:
         """Revert a wikipage back to a specific revision.
 
         To revert the page ``"praw_test"`` in r/test to revision ``"1234abc"``, try
@@ -174,7 +174,7 @@ class WikiPage(RedditBase):
         generator_kwargs: dict[str, Any],
         subreddit: praw.models.Subreddit,
         url: str,
-    ) -> Generator[dict[str, Redditor | WikiPage | str | int | bool | None], None, None]:
+    ) -> Iterator[dict[str, Redditor | WikiPage | str | int | bool | None]]:
         for revision in ListingGenerator(subreddit._reddit, url, **generator_kwargs):
             if revision["author"] is not None:
                 revision["author"] = Redditor(subreddit._reddit, _data=revision["author"]["data"])
@@ -201,7 +201,7 @@ class WikiPage(RedditBase):
         name: str,
         revision: str | None = None,
         _data: dict[str, Any] | None = None,
-    ):
+    ) -> None:
         """Initialize a :class:`.WikiPage` instance.
 
         :param revision: A specific revision ID to fetch. By default, fetches the most
@@ -221,7 +221,7 @@ class WikiPage(RedditBase):
         """Return a string representation of the instance."""
         return f"{self.subreddit}/{self.name}"
 
-    def _fetch(self):
+    def _fetch(self) -> None:
         data = self._fetch_data()
         data = data["data"]
         if data["revision_by"] is not None:
@@ -229,7 +229,7 @@ class WikiPage(RedditBase):
         self.__dict__.update(data)
         super()._fetch()
 
-    def _fetch_info(self):
+    def _fetch_info(self) -> tuple[str, dict[str, str], dict[str, str] | None]:
         return (
             "wiki_page",
             {"subreddit": self.subreddit, "page": self.name},
@@ -258,7 +258,7 @@ class WikiPage(RedditBase):
             **generator_kwargs,
         )
 
-    def edit(self, *, content: str, reason: str | None = None, **other_settings: Any):
+    def edit(self, *, content: str, reason: str | None = None, **other_settings: Any) -> None:
         """Edit this wiki page's contents.
 
         :param content: The updated Markdown content of the page.
@@ -289,7 +289,7 @@ class WikiPage(RedditBase):
         """
         return WikiPage(self.subreddit._reddit, self.subreddit, self.name, revision)
 
-    def revisions(self, **generator_kwargs: str | int | dict[str, str]) -> Generator[WikiPage, None, None]:
+    def revisions(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[WikiPage]:
         """Return a :class:`.ListingGenerator` for page revisions.
 
         Additional keyword arguments are passed in the initialization of

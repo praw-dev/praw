@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from ...const import API_PATH
-from ...exceptions import ClientException
-from .base import RedditBase
-from .subreddit import Subreddit
-from .user_subreddit import UserSubreddit
+from praw.const import API_PATH
+from praw.exceptions import ClientException
+from praw.models.reddit.base import RedditBase
+from praw.models.reddit.subreddit import Subreddit
+from praw.models.reddit.user_subreddit import UserSubreddit
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw.models
 
 
@@ -81,7 +81,7 @@ class Draft(RedditBase):
         data.update(draft_kwargs)
         return data
 
-    def __init__(self, reddit: praw.Reddit, id: str | None = None, _data: dict[str, Any] = None):
+    def __init__(self, reddit: praw.Reddit, id: str | None = None, _data: dict[str, Any] | None = None) -> None:
         """Initialize a :class:`.Draft` instance."""
         if (id, _data).count(None) != 1:
             msg = "Exactly one of 'id' or '_data' must be provided."
@@ -105,7 +105,7 @@ class Draft(RedditBase):
             return f"{self.__class__.__name__}(id={self.id!r}{subreddit}{title})"
         return f"{self.__class__.__name__}(id={self.id!r})"
 
-    def _fetch(self):
+    def _fetch(self) -> None:
         for draft in self._reddit.drafts():
             if draft.id == self.id:
                 self.__dict__.update(draft.__dict__)
@@ -114,7 +114,7 @@ class Draft(RedditBase):
         msg = f"The currently authenticated user not have a draft with an ID of {self.id}"
         raise ClientException(msg)
 
-    def delete(self):
+    def delete(self) -> None:
         """Delete the :class:`.Draft`.
 
         Example usage:
@@ -208,12 +208,12 @@ class Draft(RedditBase):
             if value is not None:
                 submit_kwargs[key] = value
         if isinstance(subreddit, str):
-            _subreddit = self._reddit.subreddit(subreddit)
+            subreddit_ = self._reddit.subreddit(subreddit)
         elif isinstance(subreddit, (Subreddit, UserSubreddit)):
-            _subreddit = subreddit
+            subreddit_ = subreddit
         else:
-            _subreddit = self.subreddit
-        return _subreddit.submit(**submit_kwargs)
+            subreddit_ = self.subreddit
+        return subreddit_.submit(**submit_kwargs)
 
     def update(
         self,
@@ -230,7 +230,7 @@ class Draft(RedditBase):
         title: str | None = None,
         url: str | None = None,
         **draft_kwargs: Any,
-    ):
+    ) -> None:
         """Update the :class:`.Draft`.
 
         .. note::
@@ -287,6 +287,6 @@ class Draft(RedditBase):
             **draft_kwargs,
         )
         data["id"] = self.id
-        _new_draft = self._reddit.put(API_PATH["draft"], data=data)
-        _new_draft._fetch()
-        self.__dict__.update(_new_draft.__dict__)
+        new_draft = self._reddit.put(API_PATH["draft"], data=data)
+        new_draft._fetch()
+        self.__dict__.update(new_draft.__dict__)

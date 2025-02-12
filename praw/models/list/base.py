@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from ..base import PRAWBase
+from praw.models.base import PRAWBase
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Iterator
 
     import praw
@@ -25,7 +25,7 @@ class BaseList(PRAWBase):
         """Return the item at position index in the list."""
         return getattr(self, self.CHILD_ATTRIBUTE)[index]
 
-    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]):
+    def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]) -> None:
         """Initialize a :class:`.BaseList` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -39,7 +39,7 @@ class BaseList(PRAWBase):
 
         child_list = getattr(self, self.CHILD_ATTRIBUTE)
         for index, item in enumerate(child_list):
-            child_list[index] = reddit._objector.objectify(item)
+            child_list[index] = reddit._objector.objectify(data=item)
 
     def __iter__(self) -> Iterator[Any]:
         """Return an iterator to the list."""

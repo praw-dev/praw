@@ -5,15 +5,15 @@ from __future__ import annotations
 from json import dumps
 from typing import TYPE_CHECKING, Any
 
-from ...const import API_PATH
-from ...util.cache import cachedproperty
-from ..listing.mixins import RedditorListingMixin
-from ..util import stream_generator
-from .base import RedditBase
-from .mixins import FullnameMixin, MessageableMixin
+from praw.const import API_PATH
+from praw.models.listing.mixins import RedditorListingMixin
+from praw.models.reddit.base import RedditBase
+from praw.models.reddit.mixins import FullnameMixin, MessageableMixin
+from praw.models.util import stream_generator
+from praw.util.cache import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
-    from collections.abc import Generator
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
     import praw.models
 
@@ -135,7 +135,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         name: str | None = None,
         fullname: str | None = None,
         _data: dict[str, Any] | None = None,
-    ):
+    ) -> None:
         """Initialize a :class:`.Redditor` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -145,7 +145,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         Exactly one of ``name``, ``fullname`` or ``_data`` must be provided.
 
         """
-        if (name, fullname, _data).count(None) != 2:
+        if sum(1 for value in (name, fullname, _data) if value is not None) != 1:
             msg = "Exactly one of 'name', 'fullname', or '_data' must be provided."
             raise TypeError(msg)
         if _data:
@@ -159,34 +159,34 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
             self._fullname = fullname
         super().__init__(reddit, _data=_data, _extra_attribute_to_check="_fullname")
 
-    def __setattr__(self, name: str, value: Any):
+    def __setattr__(self, name: str, value: Any) -> None:
         """Objectify the subreddit attribute."""
         if name == "subreddit" and value:
-            from .user_subreddit import UserSubreddit  # noqa: PLC0415
+            from praw.models.reddit.user_subreddit import UserSubreddit  # noqa: PLC0415
 
             value = UserSubreddit(reddit=self._reddit, _data=value)
         super().__setattr__(name, value)
 
-    def _fetch(self):
+    def _fetch(self) -> None:
         data = self._fetch_data()
         data = data["data"]
         other = type(self)(self._reddit, _data=data)
         self.__dict__.update(other.__dict__)
         super()._fetch()
 
-    def _fetch_info(self):
+    def _fetch_info(self) -> tuple[str, dict[str, str], None]:
         if hasattr(self, "_fullname"):
             self.name = self._fetch_username(self._fullname)
         return "user_about", {"user": self.name}, None
 
-    def _fetch_username(self, fullname: str):
+    def _fetch_username(self, fullname: str) -> str:
         return self._reddit.get(API_PATH["user_by_fullname"], params={"ids": fullname})[fullname]["name"]
 
-    def _friend(self, *, data: dict[str, Any], method: str):
+    def _friend(self, *, data: dict[str, Any], method: str) -> None:
         url = API_PATH["friend_v1"].format(user=self)
         self._reddit.request(data=dumps(data), method=method, path=url)
 
-    def block(self):
+    def block(self) -> None:
         """Block the :class:`.Redditor`.
 
         For example, to block :class:`.Redditor` u/spez:
@@ -206,7 +206,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         self._reddit.post(API_PATH["block_user"], params={"name": self.name})
 
-    def distrust(self):
+    def distrust(self) -> None:
         """Remove the :class:`.Redditor` from your whitelist of trusted users.
 
         For example, to remove :class:`.Redditor` u/spez from your whitelist:
@@ -222,7 +222,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         self._reddit.post(API_PATH["remove_whitelisted"], data={"name": self.name})
 
-    def friend(self, *, note: str = None):
+    def friend(self, *, note: str | None = None) -> None:
         """Friend the :class:`.Redditor`.
 
         :param note: A note to save along with the relationship. Requires Reddit Premium
@@ -339,7 +339,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         return list(self._reddit.get(API_PATH["trophies"].format(user=self)))
 
-    def trust(self):
+    def trust(self) -> None:
         """Add the :class:`.Redditor` to your whitelist of trusted users.
 
         Trusted users will always be able to send you PMs.
@@ -378,7 +378,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         self._reddit.post(API_PATH["add_whitelisted"], data={"name": self.name})
 
-    def unblock(self):
+    def unblock(self) -> None:
         """Unblock the :class:`.Redditor`.
 
         For example, to unblock :class:`.Redditor` u/spez:
@@ -396,7 +396,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         url = API_PATH["unfriend"].format(subreddit="all")
         self._reddit.post(url, data=data)
 
-    def unfriend(self):
+    def unfriend(self) -> None:
         """Unfriend the :class:`.Redditor`.
 
         For example, to unfriend :class:`.Redditor` u/spez:
@@ -412,7 +412,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
 class RedditorStream:
     """Provides submission and comment streams."""
 
-    def __init__(self, redditor: praw.models.Redditor):
+    def __init__(self, redditor: praw.models.Redditor) -> None:
         """Initialize a :class:`.RedditorStream` instance.
 
         :param redditor: The redditor associated with the streams.
@@ -420,7 +420,7 @@ class RedditorStream:
         """
         self.redditor = redditor
 
-    def comments(self, **stream_options: str | int | dict[str, str]) -> Generator[praw.models.Comment, None, None]:
+    def comments(self, **stream_options: str | int | dict[str, str]) -> Iterator[praw.models.Comment]:
         """Yield new comments as they become available.
 
         Comments are yielded oldest first. Up to 100 historical comments will initially
@@ -438,9 +438,7 @@ class RedditorStream:
         """
         return stream_generator(self.redditor.comments.new, **stream_options)
 
-    def submissions(
-        self, **stream_options: str | int | dict[str, str]
-    ) -> Generator[praw.models.Submission, None, None]:
+    def submissions(self, **stream_options: str | int | dict[str, str]) -> Iterator[praw.models.Submission]:
         """Yield new submissions as they become available.
 
         Submissions are yielded oldest first. Up to 100 historical submissions will

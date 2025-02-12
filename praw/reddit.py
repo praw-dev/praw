@@ -25,15 +25,11 @@ from prawcore import (
 )
 from prawcore.exceptions import BadRequest
 
-from . import models
-from .config import Config
-from .const import API_PATH, USER_AGENT_FORMAT, __version__
-from .exceptions import (
-    ClientException,
-    MissingRequiredAttributeException,
-    RedditAPIException,
-)
-from .objector import Objector
+from praw import models
+from praw.config import Config
+from praw.const import API_PATH, USER_AGENT_FORMAT, __version__
+from praw.exceptions import ClientException, MissingRequiredAttributeException, RedditAPIException
+from praw.objector import Objector
 
 try:
     from update_checker import update_check
@@ -43,7 +39,7 @@ except ImportError:  # pragma: no cover
     update_check = None
     UPDATE_CHECKER_MISSING = True
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Generator, Iterable
 
     import prawcore
@@ -93,7 +89,7 @@ class Reddit:
         return self._core == self._read_only_core
 
     @read_only.setter
-    def read_only(self, value: bool):
+    def read_only(self, value: bool) -> None:
         """Set or unset the use of the ReadOnlyAuthorizer.
 
         :raises: :class:`.ClientException` when attempting to unset ``read_only`` and
@@ -112,7 +108,7 @@ class Reddit:
         """Handle the context manager open."""
         return self
 
-    def __exit__(self, *_: object):
+    def __exit__(self, *_: object) -> None:
         """Handle the context manager close."""
 
     def __init__(
@@ -123,7 +119,7 @@ class Reddit:
         requestor_class: type[prawcore.requestor.Requestor] | None = None,
         requestor_kwargs: dict[str, Any] | None = None,
         **config_settings: str | bool | int | None,
-    ):
+    ) -> None:
         """Initialize a :class:`.Reddit` instance.
 
         :param site_name: The name of a section in your ``praw.ini`` file from which to
@@ -184,7 +180,7 @@ class Reddit:
 
         """
         self._core = self._authorized_core = self._read_only_core = None
-        self._objector = None
+        self._objector: Objector
         self._unique_counter = 0
 
         try:
@@ -389,7 +385,7 @@ class Reddit:
 
         """
 
-    def _check_for_async(self):
+    def _check_for_async(self) -> None:
         if self.config.check_for_async:  # pragma: no cover
             try:
                 # noinspection PyUnresolvedReferences
@@ -414,7 +410,7 @@ class Reddit:
                     " for more info.\n",
                 )
 
-    def _check_for_update(self):
+    def _check_for_update(self) -> None:
         if UPDATE_CHECKER_MISSING:
             return
         if not Reddit.update_checked and self.config.check_for_updates:
@@ -462,7 +458,7 @@ class Reddit:
 
         """
         return self._objector.objectify(
-            self.request(
+            data=self.request(
                 data=data,
                 files=files,
                 json=json,
@@ -472,7 +468,7 @@ class Reddit:
             )
         )
 
-    def _prepare_common_authorizer(self, authenticator: prawcore.auth.BaseAuthenticator):
+    def _prepare_common_authorizer(self, authenticator: prawcore.auth.BaseAuthenticator) -> None:
         if self.config.refresh_token:
             authorizer = Authorizer(authenticator, refresh_token=self.config.refresh_token)
         else:
@@ -480,7 +476,7 @@ class Reddit:
             return
         self._core = self._authorized_core = session(authorizer=authorizer, window_size=self.config.window_size)
 
-    def _prepare_objector(self):
+    def _prepare_objector(self) -> None:
         mappings = {
             self.config.kinds["comment"]: models.Comment,
             self.config.kinds["message"]: models.Message,
@@ -531,9 +527,9 @@ class Reddit:
     def _prepare_prawcore(
         self,
         *,
-        requestor_class: type[prawcore.requestor.Requestor] = None,
+        requestor_class: type[prawcore.requestor.Requestor] | None = None,
         requestor_kwargs: Any | None = None,
-    ):
+    ) -> None:
         requestor_class = requestor_class or Requestor
         requestor_kwargs = requestor_kwargs or {}
 
@@ -549,7 +545,7 @@ class Reddit:
         else:
             self._prepare_untrusted_prawcore(requestor)
 
-    def _prepare_trusted_prawcore(self, requestor: prawcore.requestor.Requestor):
+    def _prepare_trusted_prawcore(self, requestor: prawcore.requestor.Requestor) -> None:
         authenticator = TrustedAuthenticator(
             requestor,
             self.config.client_id,
@@ -567,7 +563,7 @@ class Reddit:
         else:
             self._prepare_common_authorizer(authenticator)
 
-    def _prepare_untrusted_prawcore(self, requestor: prawcore.requestor.Requestor):
+    def _prepare_untrusted_prawcore(self, requestor: prawcore.requestor.Requestor) -> None:
         authenticator = UntrustedAuthenticator(requestor, self.config.client_id, self.config.redirect_uri)
         read_only_authorizer = DeviceIDAuthorizer(authenticator)
         self._read_only_core = session(authorizer=read_only_authorizer, window_size=self.config.window_size)
@@ -679,8 +675,8 @@ class Reddit:
             ``"https://www.youtube.com"`` will provide a different set of submissions.
 
         """
-        none_count = (fullnames, url, subreddits).count(None)
-        if none_count != 2:
+        set_count = sum(1 for value in (fullnames, url, subreddits) if value is not None)
+        if set_count != 1:
             msg = "Either 'fullnames', 'url', or 'subreddits' must be provided."
             raise TypeError(msg)
 
@@ -694,7 +690,13 @@ class Reddit:
 
             api_parameter_name = "id" if is_using_fullnames else "sr_name"
 
-            def generator(names: Iterable[str | praw.models.Subreddit]):
+            def generator(
+                names: Iterable[str | praw.models.Subreddit],
+            ) -> Generator[
+                praw.models.Subreddit | praw.models.Comment | praw.models.Submission,
+                None,
+                None,
+            ]:
                 iterable = iter(names) if is_using_fullnames else iter([str(item) for item in names])
                 while True:
                     chunk = list(islice(iterable, 100))
@@ -705,7 +707,13 @@ class Reddit:
 
             return generator(ids_or_names)
 
-        def generator(_url: str):
+        def generator(
+            _url: str,
+        ) -> Generator[
+            praw.models.Subreddit | praw.models.Comment | praw.models.Submission,
+            None,
+            None,
+        ]:
             params = {"url": _url}
             yield from self.get(API_PATH["info"], params=params)
 

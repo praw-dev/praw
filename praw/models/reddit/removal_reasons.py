@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from ...const import API_PATH
-from ...exceptions import ClientException
-from ...util import cachedproperty
-from .base import RedditBase
+from praw.const import API_PATH
+from praw.exceptions import ClientException
+from praw.models.reddit.base import RedditBase
+from praw.util import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Iterator
 
     import praw
@@ -48,7 +48,7 @@ class RemovalReason(RedditBase):
         subreddit: praw.models.Subreddit,
         id: str | None = None,
         _data: dict[str, Any] | None = None,
-    ):
+    ) -> None:
         """Initialize a :class:`.RemovalReason` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -65,7 +65,7 @@ class RemovalReason(RedditBase):
         self.subreddit = subreddit
         super().__init__(reddit, _data=_data)
 
-    def _fetch(self):
+    def _fetch(self) -> None:
         for removal_reason in self.subreddit.mod.removal_reasons:
             if removal_reason.id == self.id:
                 self.__dict__.update(removal_reason.__dict__)
@@ -74,7 +74,7 @@ class RemovalReason(RedditBase):
         msg = f"Subreddit {self.subreddit} does not have the removal reason {self.id}"
         raise ClientException(msg)
 
-    def delete(self):
+    def delete(self) -> None:
         """Delete a removal reason from this subreddit.
 
         To delete ``"141vv5c16py7d"`` from r/test try:
@@ -87,7 +87,7 @@ class RemovalReason(RedditBase):
         url = API_PATH["removal_reason"].format(subreddit=self.subreddit, id=self.id)
         self._reddit.delete(url)
 
-    def update(self, *, message: str | None = None, title: str | None = None):
+    def update(self, *, message: str | None = None, title: str | None = None) -> None:
         """Update the removal reason from this subreddit.
 
         .. note::
@@ -178,7 +178,7 @@ class SubredditRemovalReasons:
             return self._removal_reason_list[reason_id]
         return RemovalReason(self._reddit, self.subreddit, reason_id)
 
-    def __init__(self, subreddit: praw.models.Subreddit):
+    def __init__(self, subreddit: praw.models.Subreddit) -> None:
         """Initialize a :class:`.SubredditRemovalReasons` instance.
 
         :param subreddit: The subreddit whose removal reasons to work with.

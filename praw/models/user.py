@@ -6,16 +6,16 @@ from typing import TYPE_CHECKING
 
 from prawcore import Conflict
 
-from ..const import API_PATH
-from ..exceptions import ReadOnlyException
-from ..models import Preferences
-from ..util.cache import cachedproperty
-from .base import PRAWBase
-from .listing.generator import ListingGenerator
-from .reddit.redditor import Redditor
-from .reddit.subreddit import Subreddit
+from praw.const import API_PATH
+from praw.exceptions import ReadOnlyException
+from praw.models import Preferences
+from praw.models.base import PRAWBase
+from praw.models.listing.generator import ListingGenerator
+from praw.models.reddit.redditor import Redditor
+from praw.models.reddit.subreddit import Subreddit
+from praw.util.cache import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Iterator
 
     import praw.models
@@ -54,7 +54,7 @@ class User(PRAWBase):
         """
         return Preferences(self._reddit)
 
-    def __init__(self, reddit: praw.Reddit):
+    def __init__(self, reddit: praw.Reddit) -> None:
         """Initialize an :class:`.User` instance.
 
         This class is intended to be interfaced with through ``reddit.user``.
@@ -169,7 +169,9 @@ class User(PRAWBase):
         r"""Return a list of :class:`.Multireddit`\ s belonging to the user."""
         return self._reddit.get(API_PATH["my_multireddits"])
 
-    def pin(self, submission: praw.models.Submission, *, num: int = None, state: bool = True) -> praw.models.Submission:
+    def pin(
+        self, submission: praw.models.Submission, *, num: int | None = None, state: bool = True
+    ) -> praw.models.Submission:
         """Set the pin state of a submission on the authenticated user's profile.
 
         :param submission: An instance of :class:`.Submission` that will be

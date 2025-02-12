@@ -4,20 +4,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from ...const import API_PATH
-from ...exceptions import ClientException, InvalidURL
-from ...util.cache import cachedproperty
-from ..comment_forest import CommentForest
-from .base import RedditBase
-from .mixins import (
-    FullnameMixin,
-    InboxableMixin,
-    ThingModerationMixin,
-    UserContentMixin,
-)
-from .redditor import Redditor
+from praw.const import API_PATH
+from praw.exceptions import ClientException, InvalidURL
+from praw.models.comment_forest import CommentForest
+from praw.models.reddit.base import RedditBase
+from praw.models.reddit.mixins import FullnameMixin, InboxableMixin, ThingModerationMixin, UserContentMixin
+from praw.models.reddit.redditor import Redditor
+from praw.util.cache import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw.models
 
 
@@ -90,7 +85,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return CommentModeration(self)
 
     @property
-    def _kind(self):
+    def _kind(self) -> str:
         """Return the class's kind."""
         return self._reddit.config.kinds["comment"]
 
@@ -135,7 +130,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return self._submission
 
     @submission.setter
-    def submission(self, submission: praw.models.Submission):
+    def submission(self, submission: praw.models.Submission) -> None:
         """Update the :class:`.Submission` associated with the :class:`.Comment`."""
         submission._comments_by_id[self.fullname] = self
         self._submission = submission
@@ -148,9 +143,9 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         id: str | None = None,
         url: str | None = None,
         _data: dict[str, Any] | None = None,
-    ):
+    ) -> None:
         """Initialize a :class:`.Comment` instance."""
-        if (id, url, _data).count(None) != 2:
+        if sum(1 for value in (id, url, _data) if value is not None) != 1:
             msg = "Exactly one of 'id', 'url', or '_data' must be provided."
             raise TypeError(msg)
         fetched = False
@@ -168,23 +163,23 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         self,
         attribute: str,
         value: str | Redditor | CommentForest | praw.models.Subreddit,
-    ):
+    ) -> None:
         """Objectify author, replies, and subreddit."""
         if attribute == "author":
             value = Redditor.from_data(self._reddit, value)
         elif attribute == "replies":
-            value = [] if value == "" else self._reddit._objector.objectify(value).children  # noqa: PLC1901
+            value = [] if value == "" else self._reddit._objector.objectify(data=value).children  # noqa: PLC1901
             attribute = "_replies"
         elif attribute == "subreddit":
             value = self._reddit.subreddit(value)
         super().__setattr__(attribute, value)
 
-    def _extract_submission_id(self):
+    def _extract_submission_id(self) -> str:
         if "context" in self.__dict__:
             return self.context.rsplit("/", 4)[1]
         return self.link_id.split("_", 1)[1]
 
-    def _fetch(self):
+    def _fetch(self) -> None:
         data = self._fetch_data()
         data = data["data"]
 
@@ -197,7 +192,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         self.__dict__.update(other.__dict__)
         super()._fetch()
 
-    def _fetch_info(self):
+    def _fetch_info(self) -> tuple[str, dict, dict[str, str]]:
         return "info", {}, {"id": self.fullname}
 
     def parent(
@@ -327,7 +322,7 @@ class CommentModeration(ThingModerationMixin):
 
     REMOVAL_MESSAGE_API = "removal_comment_message"
 
-    def __init__(self, comment: praw.models.Comment):
+    def __init__(self, comment: praw.models.Comment) -> None:
         """Initialize a :class:`.CommentModeration` instance.
 
         :param comment: The comment to moderate.
@@ -335,7 +330,7 @@ class CommentModeration(ThingModerationMixin):
         """
         self.thing = comment
 
-    def show(self):
+    def show(self) -> None:
         """Uncollapse a :class:`.Comment` that has been collapsed by Crowd Control.
 
         Example usage:

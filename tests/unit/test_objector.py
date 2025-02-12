@@ -17,7 +17,7 @@ class TestObjector(UnitTest):
             objector.check_error(error_response)
 
     def test_objectify_returns_None_for_None(self, reddit):
-        assert reddit._objector.objectify(None) is None
+        assert reddit._objector.objectify(data=None) is None
 
     def test_parse_error(self, reddit):
         objector = reddit._objector

@@ -12,12 +12,17 @@ Unreleased
 
 **Changed**
 
-- Bumped prawcore to 3.0.1.
+- Bumped prawcore to 3.0.2.
 - Drop support for Python 3.8, which was end-of-life on 2024-10-07.
 - Change ``Reddit.user.me`` to raise :class:`.ReadOnlyException` when called in
   :attr:`.read_only` mode.
 - The ``subreddit`` attribute of :class:`.Redditor` is a :class:`.UserSubreddit`
   instance.
+- The ``data`` argument to ``Objector.objectify`` must now be passed by keyword.
+- The ``mark_read`` argument to ``subreddit.modmail`` (:class:`.ModmailConversation`)
+  must now be passed by keyword.
+- The ``flair_type`` argument to :class:`.SubredditFlairTemplates` must be passed by
+  keyword.
 
 **Removed**
 

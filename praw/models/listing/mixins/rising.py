@@ -5,10 +5,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from urllib.parse import urljoin
 
-from ...base import PRAWBase
-from ..generator import ListingGenerator
+from praw.models.base import PRAWBase
+from praw.models.listing.generator import ListingGenerator
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Iterator
 
     import praw.models

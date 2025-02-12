@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from .base import PRAWBase
+from praw.models.base import PRAWBase
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import praw.models
 
 
@@ -19,5 +19,5 @@ class ModAction(PRAWBase):
         return self._reddit.redditor(self._mod)
 
     @mod.setter
-    def mod(self, value: str | praw.models.Redditor):
+    def mod(self, value: str | praw.models.Redditor) -> None:
         self._mod = value

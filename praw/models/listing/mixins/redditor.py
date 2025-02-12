@@ -5,11 +5,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from urllib.parse import urljoin
 
-from ....util.cache import cachedproperty
-from ..generator import ListingGenerator
-from .base import BaseListingMixin
+from praw.models.listing.generator import ListingGenerator
+from praw.models.listing.mixins.base import BaseListingMixin
+from praw.util.cache import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Iterator
 
     import praw.models
@@ -18,7 +18,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class SubListing(BaseListingMixin):
     """Helper class for generating :class:`.ListingGenerator` objects."""
 
-    def __init__(self, reddit: praw.Reddit, base_path: str, subpath: str):
+    def __init__(self, reddit: praw.Reddit, base_path: str, subpath: str) -> None:
         """Initialize a :class:`.SubListing` instance.
 
         :param reddit: An instance of :class:`.Reddit`.

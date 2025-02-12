@@ -4,15 +4,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from ...const import API_PATH
-from ...exceptions import ClientException
-from ...util.cache import cachedproperty
-from ..base import PRAWBase
-from .base import RedditBase
-from .submission import Submission
-from .subreddit import Subreddit
+from praw.const import API_PATH
+from praw.exceptions import ClientException
+from praw.models.base import PRAWBase
+from praw.models.reddit.base import RedditBase
+from praw.models.reddit.submission import Submission
+from praw.models.reddit.subreddit import Subreddit
+from praw.util.cache import cachedproperty
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Iterator
 
     import praw.models
@@ -29,7 +29,7 @@ class CollectionModeration(PRAWBase):
 
     """
 
-    def __init__(self, reddit: praw.Reddit, collection_id: str):
+    def __init__(self, reddit: praw.Reddit, collection_id: str) -> None:
         """Initialize a :class:`.CollectionModeration` instance.
 
         :param collection_id: The ID of a :class:`.Collection`.
@@ -58,7 +58,7 @@ class CollectionModeration(PRAWBase):
         except ClientException:
             return self._reddit.submission(post).fullname
 
-    def add_post(self, submission: praw.models.Submission):
+    def add_post(self, submission: praw.models.Submission) -> None:
         """Add a post to the collection.
 
         :param submission: The post to add, a :class:`.Submission`, its permalink as a
@@ -83,7 +83,7 @@ class CollectionModeration(PRAWBase):
             data={"collection_id": self.collection_id, "link_fullname": link_fullname},
         )
 
-    def delete(self):
+    def delete(self) -> None:
         """Delete this collection.
 
         Example usage:
@@ -99,7 +99,7 @@ class CollectionModeration(PRAWBase):
         """
         self._reddit.post(API_PATH["collection_delete"], data={"collection_id": self.collection_id})
 
-    def remove_post(self, submission: praw.models.Submission):
+    def remove_post(self, submission: praw.models.Submission) -> None:
         """Remove a post from the collection.
 
         :param submission: The post to remove, a :class:`.Submission`, its permalink as
@@ -124,7 +124,7 @@ class CollectionModeration(PRAWBase):
             data={"collection_id": self.collection_id, "link_fullname": link_fullname},
         )
 
-    def reorder(self, links: list[str | praw.models.Submission]):
+    def reorder(self, links: list[str | praw.models.Submission]) -> None:
         r"""Reorder posts in the collection.
 
         :param links: A list of :class:`.Submission`\ s or a ``str`` that is either a
@@ -146,7 +146,7 @@ class CollectionModeration(PRAWBase):
             data={"collection_id": self.collection_id, "link_ids": link_ids},
         )
 
-    def update_description(self, description: str):
+    def update_description(self, description: str) -> None:
         """Update the collection's description.
 
         :param description: The new description.
@@ -168,7 +168,7 @@ class CollectionModeration(PRAWBase):
             data={"collection_id": self.collection_id, "description": description},
         )
 
-    def update_display_layout(self, display_layout: str):
+    def update_display_layout(self, display_layout: str) -> None:
         """Update the collection's display layout.
 
         :param display_layout: Either ``"TIMELINE"`` for events or discussions or
@@ -193,7 +193,7 @@ class CollectionModeration(PRAWBase):
             },
         )
 
-    def update_title(self, title: str):
+    def update_title(self, title: str) -> None:
         """Update the collection's title.
 
         :param title: The new title.
@@ -232,7 +232,7 @@ class SubredditCollectionsModeration(PRAWBase):
         reddit: praw.Reddit,
         sub_fullname: str,
         _data: dict[str, Any] | None = None,
-    ):
+    ) -> None:
         """Initialize a :class:`.SubredditCollectionsModeration` instance."""
         super().__init__(reddit, _data)
         self.subreddit_fullname = sub_fullname
@@ -354,12 +354,12 @@ class SubredditCollections(PRAWBase):
         reddit: praw.Reddit,
         subreddit: praw.models.Subreddit,
         _data: dict[str, Any] | None = None,
-    ):
+    ) -> None:
         """Initialize a :class:`.SubredditCollections` instance."""
         super().__init__(reddit, _data)
         self.subreddit = subreddit
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Collection]:
         r"""Iterate over the :class:`.Subreddit`'s :class:`.Collection`\ s.
 
         Example usage:
@@ -454,10 +454,10 @@ class Collection(RedditBase):
     def __init__(
         self,
         reddit: praw.Reddit,
-        _data: dict[str, Any] = None,
+        _data: dict[str, Any] | None = None,
         collection_id: str | None = None,
         permalink: str | None = None,
-    ):
+    ) -> None:
         """Initialize a :class:`.Collection` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -466,7 +466,7 @@ class Collection(RedditBase):
         :param permalink: The permalink of the :class:`.Collection`.
 
         """
-        if (_data, collection_id, permalink).count(None) != 2:
+        if sum(1 for value in (_data, collection_id, permalink) if value is not None) != 1:
             msg = "Exactly one of '_data', 'collection_id', or 'permalink' must be provided."
             raise TypeError(msg)
 
@@ -483,7 +483,7 @@ class Collection(RedditBase):
             "include_links": True,
         }
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator[praw.models.Submission]:
         """Provide a way to iterate over the posts in this :class:`.Collection`.
 
         Example usage:
@@ -510,15 +510,15 @@ class Collection(RedditBase):
         """
         return len(self.link_ids)
 
-    def __setattr__(self, attribute: str, value: Any):
+    def __setattr__(self, attribute: str, value: Any) -> None:
         """Objectify author, subreddit, and sorted_links attributes."""
         if attribute == "author_name":
             self.author = self._reddit.redditor(value)
         elif attribute == "sorted_links":
-            value = self._reddit._objector.objectify(value)
+            value = self._reddit._objector.objectify(data=value)
         super().__setattr__(attribute, value)
 
-    def _fetch(self):
+    def _fetch(self) -> None:
         data = self._fetch_data()
         try:
             self._reddit._objector.check_error(data)
@@ -533,10 +533,10 @@ class Collection(RedditBase):
         self.__dict__.update(other.__dict__)
         super()._fetch()
 
-    def _fetch_info(self):
+    def _fetch_info(self) -> tuple[str, dict, dict[str, bool | str]]:
         return "collection", {}, self._info_params
 
-    def follow(self):
+    def follow(self) -> None:
         """Follow this :class:`.Collection`.
 
         Example usage:
@@ -555,7 +555,7 @@ class Collection(RedditBase):
             data={"collection_id": self.collection_id, "follow": True},
         )
 
-    def unfollow(self):
+    def unfollow(self) -> None:
         """Unfollow this :class:`.Collection`.
 
         Example usage:

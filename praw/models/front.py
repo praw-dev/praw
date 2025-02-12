@@ -5,10 +5,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from urllib.parse import urljoin
 
-from .listing.generator import ListingGenerator
-from .listing.mixins import SubredditListingMixin
+from praw.models.listing.generator import ListingGenerator
+from praw.models.listing.mixins import SubredditListingMixin
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from collections.abc import Iterator
 
     import praw.models
@@ -17,7 +17,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class Front(SubredditListingMixin):
     """Front is a Listing class that represents the front page."""
 
-    def __init__(self, reddit: praw.Reddit):
+    def __init__(self, reddit: praw.Reddit) -> None:
         """Initialize a :class:`.Front` instance."""
         super().__init__(reddit, _data=None)
         self._path = "/"

@@ -9,5 +9,5 @@ More information about PRAW can be found at https://github.com/praw-dev/praw.
 
 """
 
-from .const import __version__
-from .reddit import Reddit
+from praw.const import __version__
+from praw.reddit import Reddit
