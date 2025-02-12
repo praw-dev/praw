@@ -180,7 +180,7 @@ class Reddit:
 
         """
         self._core = self._authorized_core = self._read_only_core = None
-        self._objector = None
+        self._objector: Objector
         self._unique_counter = 0
 
         try:

@@ -2,13 +2,19 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from praw.models.base import PRAWBase
+
+if TYPE_CHECKING:
+    from praw.models.reddit.base import RedditBase
 
 
 class Listing(PRAWBase):
     """A listing is a collection of :class:`.RedditBase` instances."""
+
+    if TYPE_CHECKING:
+        after: Any
 
     AFTER_PARAM = "after"
     CHILD_ATTRIBUTE = "children"
@@ -63,6 +69,9 @@ class ModmailConversationsListing(Listing):
     """Special Listing for handling :class:`.ModmailConversation` lists."""
 
     CHILD_ATTRIBUTE = "conversations"
+
+    if TYPE_CHECKING:
+        conversations: list[RedditBase]
 
     @property
     def after(self) -> str | None:

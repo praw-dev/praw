@@ -7,10 +7,11 @@ from copy import deepcopy
 from typing import TYPE_CHECKING, Any
 
 from praw.models.base import PRAWBase
-from praw.models.listing.listing import FlairListing, ModNoteListing
+from praw.models.listing.listing import FlairListing, Listing, ModNoteListing
 
 if TYPE_CHECKING:
     import praw
+    from praw.models.reddit.base import RedditBase
 
 
 class ListingGenerator(PRAWBase, Iterator):
@@ -47,30 +48,31 @@ class ListingGenerator(PRAWBase, Iterator):
         super().__init__(reddit, _data=None)
         self._exhausted = False
         self._listing = None
-        self._list_index = None
+        self._list_index: int
         self.limit = limit
         self.params = deepcopy(params) if params else {}
         self.params["limit"] = limit or 1024
         self.url = url
         self.yielded = 0
 
-    def __iter__(self) -> Any:
+    def __iter__(self) -> ListingGenerator:
         """Permit :class:`.ListingGenerator` to operate as an iterator."""
         return self
 
-    def __next__(self) -> Any:
+    def __next__(self) -> RedditBase:
         """Permit :class:`.ListingGenerator` to operate as a generator."""
         if self.limit is not None and self.yielded >= self.limit:
             raise StopIteration
 
         if self._listing is None or self._list_index >= len(self._listing):
             self._next_batch()
+        assert self._listing is not None
 
         self._list_index += 1
         self.yielded += 1
         return self._listing[self._list_index - 1]
 
-    def _extract_sublist(self, listing: dict[str, Any] | list[Any] | Any) -> Any:
+    def _extract_sublist(self, listing: dict[str, Any] | list[Listing]) -> Listing:
         if isinstance(listing, list):
             return listing[1]  # for submission duplicates
         if isinstance(listing, dict):
