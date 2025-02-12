@@ -1,6 +1,6 @@
 [build-system]
-build-backend = "flit_core.buildapi"
-requires = ["flit_core >=3.4,<4"]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
 
 [dependency-groups]
 dev = [
@@ -75,6 +75,9 @@ test = [
 
 [tool.docstrfmt]
 extend_exclude = ['./docs/examples/']
+
+[tool.hatch.version]
+path = "praw/const.py"
 
 [tool.ruff]
 include = [
