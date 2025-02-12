@@ -13,7 +13,7 @@ from praw.models.reddit.subreddit import Subreddit
 from praw.util.cache import cachedproperty
 
 if TYPE_CHECKING:
-    from collections.abc import Generator, Iterator
+    from collections.abc import Iterator
 
     import praw.models
 
@@ -359,7 +359,7 @@ class SubredditCollections(PRAWBase):
         super().__init__(reddit, _data)
         self.subreddit = subreddit
 
-    def __iter__(self) -> Generator[Collection, None, None]:
+    def __iter__(self) -> Iterator[Collection]:
         r"""Iterate over the :class:`.Subreddit`'s :class:`.Collection`\ s.
 
         Example usage:

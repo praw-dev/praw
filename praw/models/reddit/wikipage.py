@@ -11,7 +11,7 @@ from praw.models.reddit.redditor import Redditor
 from praw.util.cache import cachedproperty
 
 if TYPE_CHECKING:
-    from collections.abc import Generator, Iterator
+    from collections.abc import Iterator
 
     import praw.models
 
@@ -174,7 +174,7 @@ class WikiPage(RedditBase):
         generator_kwargs: dict[str, Any],
         subreddit: praw.models.Subreddit,
         url: str,
-    ) -> Generator[dict[str, Redditor | WikiPage | str | int | bool | None], None, None]:
+    ) -> Iterator[dict[str, Redditor | WikiPage | str | int | bool | None]]:
         for revision in ListingGenerator(subreddit._reddit, url, **generator_kwargs):
             if revision["author"] is not None:
                 revision["author"] = Redditor(subreddit._reddit, _data=revision["author"]["data"])
@@ -289,7 +289,7 @@ class WikiPage(RedditBase):
         """
         return WikiPage(self.subreddit._reddit, self.subreddit, self.name, revision)
 
-    def revisions(self, **generator_kwargs: str | int | dict[str, str]) -> Generator[WikiPage, None, None]:
+    def revisions(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[WikiPage]:
         """Return a :class:`.ListingGenerator` for page revisions.
 
         Additional keyword arguments are passed in the initialization of

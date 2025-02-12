@@ -13,7 +13,7 @@ from praw.models.util import stream_generator
 from praw.util.cache import cachedproperty
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import Iterator
 
     import praw.models
 
@@ -420,7 +420,7 @@ class RedditorStream:
         """
         self.redditor = redditor
 
-    def comments(self, **stream_options: str | int | dict[str, str]) -> Generator[praw.models.Comment, None, None]:
+    def comments(self, **stream_options: str | int | dict[str, str]) -> Iterator[praw.models.Comment]:
         """Yield new comments as they become available.
 
         Comments are yielded oldest first. Up to 100 historical comments will initially
@@ -438,9 +438,7 @@ class RedditorStream:
         """
         return stream_generator(self.redditor.comments.new, **stream_options)
 
-    def submissions(
-        self, **stream_options: str | int | dict[str, str]
-    ) -> Generator[praw.models.Submission, None, None]:
+    def submissions(self, **stream_options: str | int | dict[str, str]) -> Iterator[praw.models.Submission]:
         """Yield new submissions as they become available.
 
         Submissions are yielded oldest first. Up to 100 historical submissions will

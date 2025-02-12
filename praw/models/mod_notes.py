@@ -12,7 +12,7 @@ from praw.models.reddit.comment import Comment
 from praw.models.reddit.submission import Submission
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import Iterator
 
     import praw.models
     from praw.models.reddit.redditor import Redditor
@@ -49,7 +49,7 @@ class BaseModNotes:
 
     def _bulk_generator(
         self, redditors: list[Redditor | str], subreddits: list[Subreddit | str]
-    ) -> Generator[praw.models.ModNote, None, None]:
+    ) -> Iterator[praw.models.ModNote]:
         subreddits_iter = iter(subreddits)
         redditors_iter = iter(redditors)
         while True:
@@ -79,7 +79,7 @@ class BaseModNotes:
         redditors: list[Redditor | str],
         subreddits: list[Subreddit | str],
         **generator_kwargs: Any,
-    ) -> Generator[praw.models.ModNote, None, None]:
+    ) -> Iterator[praw.models.ModNote]:
         if all_notes:
             for subreddit in subreddits:
                 for redditor in redditors:
@@ -304,7 +304,7 @@ class RedditorModNotes(BaseModNotes):
         *subreddits: Subreddit | str,
         all_notes: bool | None = None,
         **generator_kwargs: Any,
-    ) -> Generator[praw.models.ModNote, None, None]:
+    ) -> Iterator[praw.models.ModNote]:
         """Return notes for this :class:`.Redditor` from one or more subreddits.
 
         :param subreddits: One or more subreddits to retrieve the notes from. Must be
@@ -400,7 +400,7 @@ class SubredditModNotes(BaseModNotes):
         *redditors: Redditor | str,
         all_notes: bool | None = None,
         **generator_kwargs: Any,
-    ) -> Generator[praw.models.ModNote, None, None]:
+    ) -> Iterator[praw.models.ModNote]:
         """Return notes from this :class:`.Subreddit` for one or more redditors.
 
         :param redditors: One or more redditors to retrieve notes for. Must be either a
@@ -494,7 +494,7 @@ class RedditModNotes(BaseModNotes):
         subreddits: list[Subreddit | str] | None = None,
         things: list[Comment | Submission] | None = None,
         **generator_kwargs: Any,
-    ) -> Generator[praw.models.ModNote, None, None]:
+    ) -> Iterator[praw.models.ModNote]:
         """Get note(s) for each subreddit/user pair, or ``None`` if they don't have any.
 
         :param all_notes: Whether to return all notes or only the latest note for each
@@ -636,7 +636,7 @@ class RedditModNotes(BaseModNotes):
         *things: Comment | Submission,
         all_notes: bool | None = None,
         **generator_kwargs: Any,
-    ) -> Generator[praw.models.ModNote, None, None]:
+    ) -> Iterator[praw.models.ModNote]:
         """Return notes associated with the author of a :class:`.Comment` or :class:`.Submission`.
 
         :param things: One or more things to return notes on. Must be a

@@ -224,7 +224,7 @@ class Modmail:
         }
         return self.subreddit._reddit.post(API_PATH["modmail_conversations"], data=data)
 
-    def subreddits(self) -> Generator[praw.models.Subreddit, None, None]:
+    def subreddits(self) -> Iterator[praw.models.Subreddit]:
         """Yield subreddits using the new modmail that the user moderates.
 
         For example:
@@ -284,7 +284,7 @@ class SubredditFilters:
         """
         self.subreddit = subreddit
 
-    def __iter__(self) -> Generator[praw.models.Subreddit, None, None]:
+    def __iter__(self) -> Iterator[praw.models.Subreddit]:
         """Iterate through the special :class:`.Subreddit`'s filters.
 
         This method should be invoked as:
@@ -597,7 +597,7 @@ class SubredditFlairTemplates:
         """
         self.subreddit = subreddit
 
-    def __iter__(self) -> Generator[None, None, None]:
+    def __iter__(self) -> Iterator[None]:
         """Abstract method to return flair templates."""
         raise NotImplementedError
 
@@ -1112,7 +1112,7 @@ class SubredditModerationStream:
 
     def edited(
         self, *, only: str | None = None, **stream_options: Any
-    ) -> Generator[praw.models.Comment | praw.models.Submission, None, None]:
+    ) -> Iterator[praw.models.Comment | praw.models.Submission]:
         """Yield edited comments and submissions as they become available.
 
         :param only: If specified, one of ``"comments"`` or ``"submissions"`` to yield
@@ -1137,7 +1137,7 @@ class SubredditModerationStream:
         action: str | None = None,
         mod: str | praw.models.Redditor | None = None,
         **stream_options: Any,
-    ) -> Generator[praw.models.ModAction, None, None]:
+    ) -> Iterator[praw.models.ModAction]:
         """Yield moderator log entries as they become available.
 
         :param action: If given, only return log entries for the specified action.
@@ -1168,7 +1168,7 @@ class SubredditModerationStream:
         sort: str | None = None,
         state: str | None = None,
         **stream_options: Any,
-    ) -> Generator[ModmailConversation, None, None]:
+    ) -> Iterator[ModmailConversation]:
         """Yield new-modmail conversations as they become available.
 
         :param other_subreddits: A list of :class:`.Subreddit` instances for which to
@@ -1206,7 +1206,7 @@ class SubredditModerationStream:
 
     def modqueue(
         self, *, only: str | None = None, **stream_options: Any
-    ) -> Generator[praw.models.Comment | praw.models.Submission, None, None]:
+    ) -> Iterator[praw.models.Comment | praw.models.Submission]:
         r"""Yield :class:`.Comment`\ s and :class:`.Submission`\ s in the modqueue as they become available.
 
         :param only: If specified, one of ``"comments"`` or ``"submissions"`` to yield
@@ -1226,7 +1226,7 @@ class SubredditModerationStream:
 
     def reports(
         self, *, only: str | None = None, **stream_options: Any
-    ) -> Generator[praw.models.Comment | praw.models.Submission, None, None]:
+    ) -> Iterator[praw.models.Comment | praw.models.Submission]:
         r"""Yield reported :class:`.Comment`\ s and :class:`.Submission`\ s as they become available.
 
         :param only: If specified, one of ``"comments"`` or ``"submissions"`` to yield
@@ -1246,7 +1246,7 @@ class SubredditModerationStream:
 
     def spam(
         self, *, only: str | None = None, **stream_options: Any
-    ) -> Generator[praw.models.Comment | praw.models.Submission, None, None]:
+    ) -> Iterator[praw.models.Comment | praw.models.Submission]:
         r"""Yield spam :class:`.Comment`\ s and :class:`.Submission`\ s as they become available.
 
         :param only: If specified, one of ``"comments"`` or ``"submissions"`` to yield
@@ -1264,7 +1264,7 @@ class SubredditModerationStream:
         """
         return stream_generator(self.subreddit.mod.spam, only=only, **stream_options)
 
-    def unmoderated(self, **stream_options: Any) -> Generator[praw.models.Submission, None, None]:
+    def unmoderated(self, **stream_options: Any) -> Iterator[praw.models.Submission]:
         r"""Yield unmoderated :class:`.Submission`\ s as they become available.
 
         Keyword arguments are passed to :func:`.stream_generator`.
@@ -1413,7 +1413,7 @@ class SubredditStream:
         """
         self.subreddit = subreddit
 
-    def comments(self, **stream_options: Any) -> Generator[praw.models.Comment, None, None]:
+    def comments(self, **stream_options: Any) -> Iterator[praw.models.Comment]:
         """Yield new comments as they become available.
 
         Comments are yielded oldest first. Up to 100 historical comments will initially
@@ -1445,7 +1445,7 @@ class SubredditStream:
         """
         return stream_generator(self.subreddit.comments, **stream_options)
 
-    def submissions(self, **stream_options: Any) -> Generator[praw.models.Submission, None, None]:
+    def submissions(self, **stream_options: Any) -> Iterator[praw.models.Submission]:
         r"""Yield new :class:`.Submission`\ s as they become available.
 
         Submissions are yielded oldest first. Up to 100 historical submissions will
@@ -1925,7 +1925,7 @@ class SubredditWiki:
         self.contributor = SubredditRelationship(subreddit, "wikicontributor")
         self.subreddit = subreddit
 
-    def __iter__(self) -> Generator[WikiPage, None, None]:
+    def __iter__(self) -> Iterator[WikiPage]:
         """Iterate through the pages of the wiki.
 
         This method is to be used to discover all wikipages for a subreddit:
@@ -3661,7 +3661,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
     def __iter__(
         self,
-    ) -> Generator[dict[str, str | int | bool | list[dict[str, str]]], None, None]:
+    ) -> Iterator[dict[str, str | int | bool | list[dict[str, str]]]]:
         """Iterate through the link flair templates as a moderator.
 
         For example:
@@ -3758,7 +3758,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
     def user_selectable(
         self,
-    ) -> Generator[dict[str, str | bool], None, None]:
+    ) -> Iterator[dict[str, str | bool]]:
         """Iterate through the link flair templates as a regular user.
 
         For example:
@@ -3778,7 +3778,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
 
     def __iter__(
         self,
-    ) -> Generator[dict[str, str | int | bool | list[dict[str, str]]], None, None]:
+    ) -> Iterator[dict[str, str | int | bool | list[dict[str, str]]]]:
         """Iterate through the user flair templates.
 
         For example:

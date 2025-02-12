@@ -23,7 +23,7 @@ from praw.models.reddit.subreddit import Subreddit
 from praw.util import cachedproperty
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import Iterator
 
     import praw.models
 
@@ -621,7 +621,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         *,
         chunk_size: int,
         other_submissions: list[praw.models.Submission] | None,
-    ) -> Generator[str, None, None]:
+    ) -> Iterator[str]:
         all_submissions = [self.fullname]
         if other_submissions:
             all_submissions += [x.fullname for x in other_submissions]

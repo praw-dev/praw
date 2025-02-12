@@ -12,7 +12,7 @@ from praw.models.reddit.live import LiveThread
 from praw.models.reddit.multi import Multireddit, Subreddit
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import Iterator
 
     import praw.models
 
@@ -180,7 +180,7 @@ class LiveHelper(PRAWBase):
             },
         )
 
-    def info(self, ids: list[str]) -> Generator[praw.models.LiveThread, None, None]:
+    def info(self, ids: list[str]) -> Iterator[praw.models.LiveThread]:
         """Fetch information about each live thread in ``ids``.
 
         :param ids: A list of IDs for a live thread.
@@ -213,7 +213,7 @@ class LiveHelper(PRAWBase):
             msg = "ids must be a list"
             raise TypeError(msg)
 
-        def generator() -> Generator[praw.models.LiveThread, None, None]:
+        def generator() -> Iterator[praw.models.LiveThread]:
             for position in range(0, len(ids), 100):
                 ids_chunk = ids[position : position + 100]
                 url = API_PATH["live_info"].format(ids=",".join(ids_chunk))
