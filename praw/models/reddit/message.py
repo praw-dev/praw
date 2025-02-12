@@ -59,7 +59,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
 
         if data["replies"]:
             replies = data["replies"]
-            data["replies"] = reddit._objector.objectify(replies["data"]["children"])
+            data["replies"] = reddit._objector.objectify(data=replies["data"]["children"])
         else:
             data["replies"] = []
 

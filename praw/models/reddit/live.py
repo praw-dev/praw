@@ -399,7 +399,7 @@ class LiveThread(RedditBase):
         self.__dict__.update(other.__dict__)
         super()._fetch()
 
-    def _fetch_info(self):
+    def _fetch_info(self) -> tuple[str, dict[str, str], None]:
         return "liveabout", {"id": self.id}, None
 
     def discussions(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.Submission]:
@@ -426,7 +426,7 @@ class LiveThread(RedditBase):
         url = API_PATH["live_discussions"].format(id=self.id)
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
-    def report(self, type: str) -> None:
+    def report(self, type: str) -> None:  # noqa: A002
         """Report the thread violating the Reddit rules.
 
         :param type: One of ``"spam"``, ``"vote-manipulation"``,

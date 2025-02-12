@@ -112,7 +112,7 @@ class Reddit:
         """Handle the context manager open."""
         return self
 
-    def __exit__(self, *_: object):
+    def __exit__(self, *_: object) -> None:
         """Handle the context manager close."""
 
     def __init__(
@@ -462,7 +462,7 @@ class Reddit:
 
         """
         return self._objector.objectify(
-            self.request(
+            data=self.request(
                 data=data,
                 files=files,
                 json=json,
@@ -679,8 +679,8 @@ class Reddit:
             ``"https://www.youtube.com"`` will provide a different set of submissions.
 
         """
-        none_count = (fullnames, url, subreddits).count(None)
-        if none_count != 2:
+        set_count = sum(1 for value in (fullnames, url, subreddits) if value is not None)
+        if set_count != 1:
             msg = "Either 'fullnames', 'url', or 'subreddits' must be provided."
             raise TypeError(msg)
 
@@ -694,7 +694,13 @@ class Reddit:
 
             api_parameter_name = "id" if is_using_fullnames else "sr_name"
 
-            def generator(names: Iterable[str | praw.models.Subreddit]):
+            def generator(
+                names: Iterable[str | praw.models.Subreddit],
+            ) -> Generator[
+                praw.models.Subreddit | praw.models.Comment | praw.models.Submission,
+                None,
+                None,
+            ]:
                 iterable = iter(names) if is_using_fullnames else iter([str(item) for item in names])
                 while True:
                     chunk = list(islice(iterable, 100))
@@ -705,7 +711,13 @@ class Reddit:
 
             return generator(ids_or_names)
 
-        def generator(_url: str):
+        def generator(
+            _url: str,
+        ) -> Generator[
+            praw.models.Subreddit | praw.models.Comment | praw.models.Submission,
+            None,
+            None,
+        ]:
             params = {"url": _url}
             yield from self.get(API_PATH["info"], params=params)
 

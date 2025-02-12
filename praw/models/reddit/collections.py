@@ -14,7 +14,7 @@ from .submission import Submission
 from .subreddit import Subreddit
 
 if TYPE_CHECKING:  # pragma: no cover
-    from collections.abc import Iterator
+    from collections.abc import Generator, Iterator
 
     import praw.models
 
@@ -360,7 +360,7 @@ class SubredditCollections(PRAWBase):
         super().__init__(reddit, _data)
         self.subreddit = subreddit
 
-    def __iter__(self):
+    def __iter__(self) -> Generator[Collection, None, None]:
         r"""Iterate over the :class:`.Subreddit`'s :class:`.Collection`\ s.
 
         Example usage:
@@ -467,7 +467,7 @@ class Collection(RedditBase):
         :param permalink: The permalink of the :class:`.Collection`.
 
         """
-        if (_data, collection_id, permalink).count(None) != 2:
+        if sum(1 for value in (_data, collection_id, permalink) if value is not None) != 1:
             msg = "Exactly one of '_data', 'collection_id', or 'permalink' must be provided."
             raise TypeError(msg)
 
@@ -484,7 +484,7 @@ class Collection(RedditBase):
             "include_links": True,
         }
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator[praw.models.Submission]:
         """Provide a way to iterate over the posts in this :class:`.Collection`.
 
         Example usage:
@@ -516,7 +516,7 @@ class Collection(RedditBase):
         if attribute == "author_name":
             self.author = self._reddit.redditor(value)
         elif attribute == "sorted_links":
-            value = self._reddit._objector.objectify(value)
+            value = self._reddit._objector.objectify(data=value)
         super().__setattr__(attribute, value)
 
     def _fetch(self) -> None:
@@ -534,7 +534,7 @@ class Collection(RedditBase):
         self.__dict__.update(other.__dict__)
         super()._fetch()
 
-    def _fetch_info(self):
+    def _fetch_info(self) -> tuple[str, dict, dict[str, bool | str]]:
         return "collection", {}, self._info_params
 
     def follow(self) -> None:

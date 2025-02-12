@@ -48,6 +48,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
     """
 
+    SLUG_CUTOFF_LENGTH = 21
     STR_FIELD = "path"
     RE_INVALID = re.compile(r"[\W_]+", re.UNICODE)
 
@@ -61,8 +62,8 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         """
         title = Multireddit.RE_INVALID.sub("_", title).strip("_").lower()
-        if len(title) > 21:  # truncate to nearest word
-            title = title[:21]
+        if len(title) > Multireddit.SLUG_CUTOFF_LENGTH:  # truncate to nearest word
+            title = title[: Multireddit.SLUG_CUTOFF_LENGTH]
             last_word = title.rfind("_")
             if last_word > 0:
                 title = title[:last_word]
@@ -110,7 +111,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         self.__dict__.update(other.__dict__)
         super()._fetch()
 
-    def _fetch_info(self):
+    def _fetch_info(self) -> tuple[str, dict[str, str], None]:
         return (
             "multireddit_api",
             {"multi": self.name, "user": self._author.name},

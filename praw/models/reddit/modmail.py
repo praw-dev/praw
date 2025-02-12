@@ -22,7 +22,7 @@ class ModmailObject(RedditBase):
     def __setattr__(self, attribute: str, value: Any) -> None:
         """Objectify the AUTHOR_ATTRIBUTE attribute."""
         if attribute == self.AUTHOR_ATTRIBUTE:
-            value = self._reddit._objector.objectify(value)
+            value = self._reddit._objector.objectify(data=value)
         super().__setattr__(attribute, value)
 
 
@@ -64,6 +64,7 @@ class ModmailConversation(RedditBase):
 
     """
 
+    DEFAULT_NUMBER_OF_MUTE_DAYS = 3
     STR_FIELD = "id"
 
     @staticmethod
@@ -73,7 +74,7 @@ class ModmailConversation(RedditBase):
         for thing in data["objIds"]:
             key = thing["key"]
             thing_data = data[key][thing["id"]]
-            result[key].append(reddit._objector.objectify(thing_data))
+            result[key].append(reddit._objector.objectify(data=thing_data))
         data.update(result)
 
     @staticmethod
@@ -108,13 +109,13 @@ class ModmailConversation(RedditBase):
         :param reddit: An instance of :class:`.Reddit`.
 
         """
-        data["authors"] = [reddit._objector.objectify(author) for author in data["authors"]]
+        data["authors"] = [reddit._objector.objectify(data=author) for author in data["authors"]]
         for entity in "owner", "participant":
-            data[entity] = reddit._objector.objectify(data[entity])
+            data[entity] = reddit._objector.objectify(data=data[entity])
 
         if data.get("user"):
             cls._convert_user_summary(data["user"], reddit)
-            data["user"] = reddit._objector.objectify(data["user"])
+            data["user"] = reddit._objector.objectify(data=data["user"])
 
         data = snake_case_keys(data)
 
@@ -124,6 +125,7 @@ class ModmailConversation(RedditBase):
         self,
         reddit: praw.Reddit,
         id: str | None = None,
+        *,
         mark_read: bool = False,
         _data: dict[str, Any] | None = None,
     ) -> None:
@@ -151,11 +153,11 @@ class ModmailConversation(RedditBase):
 
     def _fetch(self) -> None:
         data = self._fetch_data()
-        other = self._reddit._objector.objectify(data)
+        other = self._reddit._objector.objectify(data=data)
         self.__dict__.update(other.__dict__)
         super()._fetch()
 
-    def _fetch_info(self):
+    def _fetch_info(self) -> tuple[str, dict[str, str], dict[str, bool] | None]:
         return "modmail_conversation", {"id": self.id}, self._info_params
 
     def archive(self) -> None:
@@ -182,7 +184,7 @@ class ModmailConversation(RedditBase):
         """
         self._reddit.post(API_PATH["modmail_highlight"].format(id=self.id))
 
-    def mute(self, *, num_days: int = 3) -> None:
+    def mute(self, *, num_days: int = DEFAULT_NUMBER_OF_MUTE_DAYS) -> None:
         """Mute the non-mod user associated with the conversation.
 
         :param num_days: Duration of mute in days. Valid options are ``3``, ``7``, or
@@ -201,7 +203,7 @@ class ModmailConversation(RedditBase):
             reddit.subreddit("test").modmail("2gmz").mute(num_days=7)
 
         """
-        params = {"num_hours": num_days * 24} if num_days != 3 else {}
+        params = {"num_hours": num_days * 24} if num_days != self.DEFAULT_NUMBER_OF_MUTE_DAYS else {}
         self._reddit.request(
             method="POST",
             params=params,
@@ -262,7 +264,7 @@ class ModmailConversation(RedditBase):
             # Reddit recently changed the response format, so we need to handle both in case they change it back
             message_id = response["conversation"]["objIds"][-1]["id"]
             message_data = response["messages"][message_id]
-            return self._reddit._objector.objectify(message_data)
+            return self._reddit._objector.objectify(data=message_data)
         for message in response.messages:
             if message.id == response.obj_ids[-1]["id"]:
                 break

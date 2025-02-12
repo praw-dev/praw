@@ -296,7 +296,7 @@ class Inbox(PRAWBase):
         self,
         *,
         mark_read: bool = False,
-        **generator_kwargs: str | int | dict[str, str],
+        **generator_kwargs: str | int | dict[str, str] | None,
     ) -> Iterator[praw.models.Comment | praw.models.Message]:
         """Return a :class:`.ListingGenerator` for unread comments and messages.
 

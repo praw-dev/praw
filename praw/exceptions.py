@@ -11,7 +11,7 @@ All other exceptions are subclassed from :class:`.ClientException`.
 from __future__ import annotations
 
 
-class PRAWException(Exception):
+class PRAWException(Exception):  # noqa: N818
     """The base PRAW Exception that all other exception classes extend."""
 
 

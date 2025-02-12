@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class BaseListingMixin(PRAWBase):
     """Adds minimum set of methods that apply to all listing objects."""
 
-    VALID_TIME_FILTERS = {"all", "day", "hour", "month", "week", "year"}
+    VALID_TIME_FILTERS = frozenset({"all", "day", "hour", "month", "week", "year"})
 
     @staticmethod
     def _validate_time_filter(time_filter: str) -> None:

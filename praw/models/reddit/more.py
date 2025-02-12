@@ -14,6 +14,8 @@ if TYPE_CHECKING:  # pragma: no cover
 class MoreComments(PRAWBase):
     """A class indicating there are more comments."""
 
+    MAX_COMMENTS_IN_REPR = 4
+
     def __eq__(self, other: str | MoreComments) -> bool:
         """Return ``True`` if these :class:`.MoreComments` instances are the same."""
         if isinstance(other, self.__class__):
@@ -41,12 +43,12 @@ class MoreComments(PRAWBase):
 
     def __repr__(self) -> str:
         """Return an object initialization representation of the instance."""
-        children = self.children[:4]
-        if len(self.children) > 4:
+        children = self.children[: self.MAX_COMMENTS_IN_REPR]
+        if len(self.children) > self.MAX_COMMENTS_IN_REPR:
             children[-1] = "..."
         return f"<{self.__class__.__name__} count={self.count}, children={children!r}>"
 
-    def _continue_comments(self, update: bool):
+    def _continue_comments(self, *, update: bool) -> list[praw.models.Comment]:
         assert not self.children, "Please file a bug report with PRAW."
         parent = self._load_comment(self.parent_id.split("_", 1)[1])
         self._comments = parent.replies
@@ -55,7 +57,7 @@ class MoreComments(PRAWBase):
                 comment.submission = self.submission
         return self._comments
 
-    def _load_comment(self, comment_id: str):
+    def _load_comment(self, comment_id: str) -> praw.models.Comment:
         path = f"{API_PATH['submission'].format(id=self.submission.id)}_/{comment_id}"
         _, comments = self._reddit.get(
             path,
@@ -71,7 +73,7 @@ class MoreComments(PRAWBase):
         """Fetch and return the comments for a single :class:`.MoreComments` object."""
         if self._comments is None:
             if self.count == 0:  # Handle "continue this thread"
-                return self._continue_comments(update)
+                return self._continue_comments(update=update)
             assert self.children, "Please file a bug report with PRAW."
             data = {
                 "children": ",".join(self.children),

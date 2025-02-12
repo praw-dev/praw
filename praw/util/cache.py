@@ -22,8 +22,8 @@ class cachedproperty:  # noqa: N801
 
     """
 
-    # This to make sphinx run properly
-    def __call__(self, *args: Any, **kwargs: Any):  # pragma: no cover
+    # This definition prevents sphinx from outputting errors like `<cachedproperty <function ...>> is not a callable object`
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:  # pragma: no cover
         """Empty method to make sphinx run properly."""
 
     def __get__(self, obj: Any | None, objtype: Any | None = None) -> Any:

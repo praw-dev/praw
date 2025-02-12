@@ -146,7 +146,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         Exactly one of ``name``, ``fullname`` or ``_data`` must be provided.
 
         """
-        if (name, fullname, _data).count(None) != 2:
+        if sum(1 for value in (name, fullname, _data) if value is not None) != 1:
             msg = "Exactly one of 'name', 'fullname', or '_data' must be provided."
             raise TypeError(msg)
         if _data:
@@ -175,12 +175,12 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         self.__dict__.update(other.__dict__)
         super()._fetch()
 
-    def _fetch_info(self):
+    def _fetch_info(self) -> tuple[str, dict[str, str], None]:
         if hasattr(self, "_fullname"):
             self.name = self._fetch_username(self._fullname)
         return "user_about", {"user": self.name}, None
 
-    def _fetch_username(self, fullname: str):
+    def _fetch_username(self, fullname: str) -> str:
         return self._reddit.get(API_PATH["user_by_fullname"], params={"ids": fullname})[fullname]["name"]
 
     def _friend(self, *, data: dict[str, Any], method: str) -> None:

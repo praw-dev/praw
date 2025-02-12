@@ -45,6 +45,7 @@ class RedditBase(PRAWBase):
         self,
         reddit: praw.Reddit,
         _data: dict[str, Any] | None,
+        *,
         _extra_attribute_to_check: str | None = None,
         _fetched: bool = False,
         _str_field: bool = True,
@@ -77,7 +78,7 @@ class RedditBase(PRAWBase):
     def _fetch(self) -> None:
         self._fetched = True
 
-    def _fetch_data(self):
+    def _fetch_data(self) -> Any:
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
         return self._reddit.request(method="GET", params=params, path=path)

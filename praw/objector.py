@@ -57,7 +57,7 @@ class Objector:
         self.parsers = {} if parsers is None else parsers
         self._reddit = reddit
 
-    def _objectify_dict(self, data: dict[str, Any]) -> RedditBase:
+    def _objectify_dict(self, *, data: dict[str, Any]) -> RedditBase:
         """Create :class:`.RedditBase` objects from dicts.
 
         :param data: The structured data, assumed to be a dict.
@@ -90,7 +90,7 @@ class Objector:
                     obj for obj in conversation["objIds"] if obj["key"] == "messages"
                 ]):
                     conversation["messages"] = [
-                        self.objectify(data["messages"][obj_id["id"]]) for obj_id in conversation["objIds"]
+                        self.objectify(data=data["messages"][obj_id["id"]]) for obj_id in conversation["objIds"]
                     ]
                 conversations.append(conversation)
             data["conversations"] = conversations
@@ -193,7 +193,7 @@ class Objector:
             and {"mod_action_data", "user_note_data"}.issubset(data["created"])
         ):
             data = data["created"]
-            return self._objectify_dict(data)
+            return self._objectify_dict(data=data)
         else:
             if "user" in data:
                 parser = self.parsers[self._reddit.config.kinds["redditor"]]
@@ -202,7 +202,7 @@ class Objector:
         return parser.parse(data, self._reddit)
 
     def objectify(
-        self, data: dict[str, Any] | list[Any] | bool | None
+        self, *, data: dict[str, Any] | list[Any] | bool | None
     ) -> RedditBase | dict[str, Any] | list[Any] | bool | None:
         """Create :class:`.RedditBase` objects from data.
 
@@ -215,7 +215,7 @@ class Objector:
         if data is None:  # 204 no content
             return None
         if isinstance(data, list):
-            return [self.objectify(item) for item in data]
+            return [self.objectify(data=item) for item in data]
         if isinstance(data, bool):  # Reddit.username_available
             return data
         if "json" in data and "errors" in data["json"]:
@@ -235,9 +235,9 @@ class Objector:
             if "websocket_url" in data["json"]["data"]:
                 return data
             if "things" in data["json"]["data"]:  # Submission.reply
-                return self.objectify(data["json"]["data"]["things"])
+                return self.objectify(data=data["json"]["data"]["things"])
             if "rules" in data["json"]["data"]:
-                return self.objectify(loads(data["json"]["data"]["rules"]))
+                return self.objectify(data=loads(data["json"]["data"]["rules"]))
             if "drafts_count" in data["json"]["data"] and all(
                 key not in data["json"]["data"] for key in ["name", "url"]
             ):  # Draft
@@ -258,7 +258,7 @@ class Objector:
             parser = self.parsers["Draft"]
             return parser.parse(data, self._reddit)
         if "rules" in data:
-            return self.objectify(data["rules"])
+            return self.objectify(data=data["rules"])
         if isinstance(data, dict):
-            return self._objectify_dict(data)
+            return self._objectify_dict(data=data)
         return data

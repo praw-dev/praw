@@ -370,7 +370,7 @@ class SubmissionModeration(ThingModerationMixin, ModNoteMixin):
                        automatically collapsed.
         2     Moderate Comments from new users and users with negative karma in the
                        subreddit are automatically collapsed.
-        3     Strict   Comments from users who haven’t joined the subreddit, new users,
+        3     Strict   Comments from users who haven't joined the subreddit, new users,
                        and users with negative karma in the subreddit are automatically
                        collapsed.
         ===== ======== ================================================================
@@ -577,7 +577,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         Either ``id`` or ``url`` can be provided, but not both.
 
         """
-        if (id, url, _data).count(None) != 2:
+        if sum(1 for value in (id, url, _data) if value is not None) != 1:
             msg = "Exactly one of 'id', 'url', or '_data' must be provided."
             raise TypeError(msg)
         self.comment_limit = 2048
@@ -720,13 +720,13 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         self.comments._update(comment_listing.children)
         super()._fetch()
 
-    def _fetch_data(self):
+    def _fetch_data(self) -> dict:
         name, fields, params = self._fetch_info()
         params.update(self._additional_fetch_params.copy())
         path = API_PATH[name].format(**fields)
         return self._reddit.request(method="GET", params=params, path=path)
 
-    def _fetch_info(self):
+    def _fetch_info(self) -> tuple[str, dict[str, str], dict[str, int | str]]:
         return (
             "submission",
             {"id": self.id},

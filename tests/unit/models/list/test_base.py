@@ -12,8 +12,8 @@ class Dummy:
 
 class DummyObjector:
     @staticmethod
-    def objectify(value):
-        return value
+    def objectify(*, data):
+        return data
 
 
 class TestBaseList:

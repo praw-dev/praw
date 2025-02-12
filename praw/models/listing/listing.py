@@ -24,7 +24,7 @@ class Listing(PRAWBase):
     def __setattr__(self, attribute: str, value: Any) -> None:
         """Objectify the ``CHILD_ATTRIBUTE`` attribute."""
         if attribute == self.CHILD_ATTRIBUTE:
-            value = self._reddit._objector.objectify(value)
+            value = self._reddit._objector.objectify(data=value)
         super().__setattr__(attribute, value)
 
 

@@ -266,7 +266,7 @@ class SubredditWidgets(PRAWBase):
         items = {}
         for item_name, data in self._raw_items.items():
             data["subreddit"] = self.subreddit
-            items[item_name] = self._reddit._objector.objectify(data)
+            items[item_name] = self._reddit._objector.objectify(data=data)
         return items
 
     @cachedproperty
