@@ -56,7 +56,7 @@ lint = [
 ]
 readthedocs = [
   "furo",
-  "sphinx",
+  "sphinx ==8.1.*",
   "sphinx-autodoc-typehints"
 ]
 test = [
