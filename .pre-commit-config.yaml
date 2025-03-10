@@ -22,12 +22,12 @@ repos:
       - id: ruff
         args: [ --exit-non-zero-on-fix, --fix ]
         files: ^(praw/.*.py)$
-    rev: v0.9.6
+    rev: v0.9.10
 
   - repo: https://github.com/LilSpazJoekp/docstrfmt
     hooks:
       - id: docstrfmt
-    rev: v1.9.0
+    rev: v1.10.0
 
   - repo: https://github.com/MarcoGorelli/auto-walrus
     hooks:
