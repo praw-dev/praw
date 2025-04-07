@@ -22,7 +22,7 @@ repos:
       - id: ruff
         args: [ --exit-non-zero-on-fix, --fix ]
         files: ^(praw/.*.py)$
-    rev: v0.11.2
+    rev: v0.11.4
 
   - repo: https://github.com/LilSpazJoekp/docstrfmt
     hooks:
