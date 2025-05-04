@@ -33,6 +33,9 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     ``id``            The ID of the comment.
     ``is_submitter``  Whether or not the comment author is also the author of the
                       submission.
+    ``likes``         The user's current vote status on the comment: ``True`` if
+                      upvoted, ``False`` if downvoted, and ``None`` if not voted or not
+                      logged in.
     ``link_id``       The submission ID that the comment belongs to.
     ``parent_id``     The ID of the parent comment (prefixed with ``t1_``). If it is a
                       top-level comment, this returns the submission ID instead

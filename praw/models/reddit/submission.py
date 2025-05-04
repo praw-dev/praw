@@ -414,6 +414,9 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
     ``is_original_content``    Whether or not the submission has been set as original
                                content.
     ``is_self``                Whether or not the submission is a selfpost (text-only).
+    ``likes``                  The user's current vote status on the submission:
+                               ``True`` if upvoted, ``False`` if downvoted, and ``None``
+                               if not voted or not logged in.
     ``link_flair_template_id`` The link flair's ID.
     ``link_flair_text``        The link flair's text content, or ``None`` if not
                                flaired.
