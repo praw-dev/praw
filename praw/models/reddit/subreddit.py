@@ -3077,8 +3077,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
         :param resubmit: When ``False``, an error will occur if the URL has already been
             submitted (default: ``True``).
-        :param selftext: The Markdown formatted content for a ``text`` submission. Use
-            an empty string, ``""``, to make a title-only submission.
+        :param selftext: The Markdown formatted content for a ``text`` submission or an
+            optional post body for ``link`` submissions. Use an empty string, ``""``, to
+            make a title-only submission.
         :param send_replies: When ``True``, messages will be sent to the submission
             author when comments are made to the submission (default: ``True``).
         :param spoiler: Whether the submission should be marked as a spoiler (default:
@@ -3087,7 +3088,10 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         :returns: A :class:`.Submission` object for the newly created submission.
 
-        Either ``selftext`` or ``url`` can be provided, but not both.
+        Provide ``selftext`` alone for a ``text`` submission. ``selftext`` can accompany
+        a ``url`` for a ``link`` submission. ``selftext`` that accompanies a ``link``
+        submission is optional. ``selftext`` for ``link`` submissions does not support
+        ``inline_media``.
 
         For example, to submit a URL to r/test do:
 
@@ -3152,8 +3156,10 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
 
         """
-        if (bool(selftext) or selftext == "") == bool(url):  # noqa: PLC1901
-            msg = "Either 'selftext' or 'url' must be provided."
+        # link posts can now include selftext (no longer exclusive)
+        # test for empty string in selftext for title-only submissions
+        if not url and not (bool(selftext) or selftext == ""):  # noqa: PLC1901
+            msg = "Submission requires either 'selftext' or 'url' to be provided."
             raise TypeError(msg)
 
         data = {
@@ -3174,7 +3180,15 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         ):
             if value is not None:
                 data[key] = value
-        if selftext is not None:
+        if url is not None:
+            data.update(kind="link", url=url)
+            if inline_media:
+                err_msg = "Link submission support for inline media in body text is unknown and unimplemented."
+                raise NotImplementedError(err_msg)
+            # we can ignore an empty string for selftext here b/c body text is optional for link posts
+            if selftext:
+                data.update(text=selftext)
+        elif selftext is not None:
             data.update(kind="self")
             if inline_media:
                 body = selftext.format(**{
@@ -3184,8 +3198,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                 data.update(richtext_json=dumps(converted))
             else:
                 data.update(text=selftext)
-        else:
-            data.update(kind="link", url=url)
 
         return self._reddit.post(API_PATH["submit"], data=data)
 
@@ -3199,6 +3211,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         flair_id: str | None = None,
         flair_text: str | None = None,
         nsfw: bool = False,
+        selftext: str | None = None,
         send_replies: bool = True,
         spoiler: bool = False,
     ) -> praw.models.Submission:
@@ -3217,6 +3230,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             this value will set a custom text (default: ``None``). ``flair_id`` is
             required when ``flair_text`` is provided.
         :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
+        :param selftext: Optional Markdown-formatted post body content (default:
+            ``None``).
         :param send_replies: When ``True``, messages will be sent to the submission
             author when comments are made to the submission (default: ``True``).
         :param spoiler: Whether the submission should be marked asa spoiler (default:
@@ -3274,6 +3289,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             ("flair_text", flair_text),
             ("collection_id", collection_id),
             ("discussion_type", discussion_type),
+            ("text", selftext),
         ):
             if value is not None:
                 data[key] = value
@@ -3303,6 +3319,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         flair_text: str | None = None,
         nsfw: bool = False,
         resubmit: bool = True,
+        selftext: str | None = None,
         send_replies: bool = True,
         spoiler: bool = False,
         timeout: int = 10,
@@ -3322,6 +3339,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
         :param resubmit: When ``False``, an error will occur if the URL has already been
             submitted (default: ``True``).
+        :param selftext: Optional Markdown-formatted post body content (default:
+            ``None``).
         :param send_replies: When ``True``, messages will be sent to the submission
             author when comments are made to the submission (default: ``True``).
         :param spoiler: Whether the submission should be marked as a spoiler (default:
@@ -3383,6 +3402,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             ("flair_text", flair_text),
             ("collection_id", collection_id),
             ("discussion_type", discussion_type),
+            ("text", selftext),
         ):
             if value is not None:
                 data[key] = value
@@ -3485,6 +3505,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         flair_text: str | None = None,
         nsfw: bool = False,
         resubmit: bool = True,
+        selftext: str | None = None,
         send_replies: bool = True,
         spoiler: bool = False,
         thumbnail_path: str | None = None,
@@ -3507,6 +3528,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
         :param resubmit: When ``False``, an error will occur if the URL has already been
             submitted (default: ``True``).
+        :param selftext: Optional Markdown-formatted post body content (default:
+            ``None``).
         :param send_replies: When ``True``, messages will be sent to the submission
             author when comments are made to the submission (default: ``True``).
         :param spoiler: Whether the submission should be marked as a spoiler (default:
@@ -3572,6 +3595,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             ("flair_text", flair_text),
             ("collection_id", collection_id),
             ("discussion_type", discussion_type),
+            ("text", selftext),
         ):
             if value is not None:
                 data[key] = value
