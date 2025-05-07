@@ -3183,10 +3183,15 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         if url is not None:
             data.update(kind="link", url=url)
             if inline_media:
-                err_msg = "Link submission support for inline media in body text is unknown and unimplemented."
-                raise NotImplementedError(err_msg)
+                # this will never work: reddit API ignores richtext_json for link posts
+                # so throw an exception here instead of allowing silent failure?
+                body = selftext.format(**{
+                    placeholder: self._upload_inline_media(media) for placeholder, media in inline_media.items()
+                })
+                converted = self._convert_to_fancypants(body)
+                data.update(richtext_json=dumps(converted))
             # we can ignore an empty string for selftext here b/c body text is optional for link posts
-            if selftext:
+            elif selftext:
                 data.update(text=selftext)
         elif selftext is not None:
             data.update(kind="self")
