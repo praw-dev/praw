@@ -1413,6 +1413,34 @@ class TestSubreddit(IntegrationTest):
         assert submission.url == url
         assert submission.title == "Test Title"
 
+    def test_submit__url_selftext(self, reddit):
+        url = "https://praw.readthedocs.org/en/stable/"
+        selftext = "Testing **PRAW** link submission *with markdown selftext*."
+        reddit.read_only = False
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
+        submission = subreddit.submit("Test Title", url=url, selftext=selftext)
+        assert submission.selftext == selftext
+        assert submission.author == pytest.placeholders.username
+        assert submission.url == url
+        assert submission.title == "Test Title"
+
+    def test_submit__url_selftext_inline_media(self, image_path, reddit):
+        reddit.read_only = False
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
+        gif = InlineGif(caption="optional caption", path=image_path("test.gif"))
+        image = InlineImage(caption="optional caption", path=image_path("test.png"))
+        video = InlineVideo(caption="optional caption", path=image_path("test.mp4"))
+        url = "https://praw.readthedocs.org/en/stable/"
+        selftext = (
+            "Text with a gif {gif1} an image {image1} and a video {video1} inline"
+        )
+        media = {"gif1": gif, "image1": image, "video1": video}
+        submission = subreddit.submit("title", url=url, inline_media=media, selftext=selftext)
+        assert submission.author == pytest.placeholders.username
+        # inline media is NOT supported for link submission optional body text
+        assert submission.selftext == ''
+        assert submission.title == "title"
+
     def test_submit__verify_invalid(self, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -1576,6 +1604,23 @@ class TestSubreddit(IntegrationTest):
         with pytest.raises(TooLargeMediaException):
             subreddit.submit_image("test", tempfile.name)
         reddit._core._requestor._http.post = _post
+
+    @mock.patch(
+        "websocket.create_connection",
+        new=MagicMock(
+            return_value=WebsocketMock("1kh2top")
+        ),  # update with cassette
+    )
+    def test_submit_image__selftext(self, image_path, reddit):
+        reddit.read_only = False
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
+        image = image_path("test.png")
+        selftext = "Testing **PRAW** image submission *with markdown selftext*."
+        title = "Testing PRAW image submission with selftext"
+        submission = subreddit.submit_image(title, image, selftext=selftext)
+        assert submission.selftext == selftext
+        assert submission.is_reddit_media_domain
+        assert submission.title == title
 
     @mock.patch(
         "websocket.create_connection", new=MagicMock(side_effect=BlockingIOError)

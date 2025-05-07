@@ -125,19 +125,12 @@ class TestSubreddit(UnitTest):
         assert str(subreddit) == "name"
 
     def test_submit_failure(self, reddit):
-        message = "Either 'selftext' or 'url' must be provided."
+        # `selftext` and `url` are no longer mutually exclusive
+        message = "Submission requires either 'selftext' or 'url' to be provided."
         subreddit = Subreddit(reddit, display_name="name")
 
         with pytest.raises(TypeError) as excinfo:
             subreddit.submit("Cool title")
-        assert str(excinfo.value) == message
-
-        with pytest.raises(TypeError) as excinfo:
-            subreddit.submit("Cool title", selftext="a", url="b")
-        assert str(excinfo.value) == message
-
-        with pytest.raises(TypeError) as excinfo:
-            subreddit.submit("Cool title", selftext="", url="b")
         assert str(excinfo.value) == message
 
     def test_submit_gallery__invalid_path(self, reddit):
