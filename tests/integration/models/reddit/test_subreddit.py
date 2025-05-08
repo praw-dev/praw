@@ -1424,23 +1424,6 @@ class TestSubreddit(IntegrationTest):
         assert submission.url == url
         assert submission.title == "Test Title"
 
-    def test_submit__url_selftext_inline_media(self, image_path, reddit):
-        reddit.read_only = False
-        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        gif = InlineGif(caption="optional caption", path=image_path("test.gif"))
-        image = InlineImage(caption="optional caption", path=image_path("test.png"))
-        video = InlineVideo(caption="optional caption", path=image_path("test.mp4"))
-        url = "https://praw.readthedocs.org/en/stable/"
-        selftext = (
-            "Text with a gif {gif1} an image {image1} and a video {video1} inline"
-        )
-        media = {"gif1": gif, "image1": image, "video1": video}
-        submission = subreddit.submit("title", url=url, inline_media=media, selftext=selftext)
-        assert submission.author == pytest.placeholders.username
-        # inline media is NOT supported for link submission optional body text
-        assert submission.selftext == ''
-        assert submission.title == "title"
-
     def test_submit__verify_invalid(self, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -1524,6 +1507,38 @@ class TestSubreddit(IntegrationTest):
         )
         assert submission.link_flair_css_class == flair_class
         assert submission.link_flair_text == flair_text
+
+    def test_submit_gallery__selftext(self, image_path, reddit):
+        reddit.read_only = False
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
+        images = [
+            {"image_path": image_path("test.png")},
+            {"image_path": image_path("test.jpg"), "caption": "test.jpg"},
+            {
+                "image_path": image_path("test.gif"),
+                "outbound_url": "https://example.com",
+            },
+            {
+                "image_path": image_path("test.png"),
+                "caption": "test.png",
+                "outbound_url": "https://example.com",
+            },
+        ]
+        selftext = "Testing **PRAW** gallery submission *with markdown selftext*."
+        title = "Test PRAW Gallery with Selftext"
+        submission = subreddit.submit_gallery(title, images, selftext=selftext)
+        assert submission.author == pytest.placeholders.username
+        assert submission.is_gallery
+        assert submission.title == title
+        assert submission.selftext == selftext
+        items = submission.gallery_data["items"]
+        assert isinstance(submission.gallery_data["items"], list)
+        for i, item in enumerate(items):
+            test_data = images[i]
+            test_data.pop("image_path")
+            item.pop("id")
+            item.pop("media_id")
+            assert item == test_data
 
     @mock.patch(
         "websocket.create_connection",
@@ -1823,6 +1838,25 @@ class TestSubreddit(IntegrationTest):
         )
         assert submission.link_flair_css_class == flair_class
         assert submission.link_flair_text == flair_text
+
+    @mock.patch(
+        "websocket.create_connection",
+        new=MagicMock(
+            return_value=WebsocketMock("1khjcs5", "1khjcuj"),  # update with cassette
+        ),
+    )
+    def test_submit_video__selftext(self, image_path, reddit):
+        reddit.read_only = False
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
+        for i, file_name in enumerate(("test.mov", "test.mp4")):
+            title = f"Test Title {i}"
+            selftext = f"Testing **PRAW** video submission *with markdown selftext* for {file_name}."
+            video = image_path(file_name)
+            submission = subreddit.submit_video(title, video, selftext=selftext)
+            assert submission.author == pytest.placeholders.username
+            assert submission.is_video
+            assert submission.title == title
+            assert submission.selftext == selftext
 
     @mock.patch(
         "websocket.create_connection",

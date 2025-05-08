@@ -124,13 +124,30 @@ class TestSubreddit(UnitTest):
         subreddit = Subreddit(reddit, _data={"display_name": "name", "id": "dummy"})
         assert str(subreddit) == "name"
 
-    def test_submit_failure(self, reddit):
+    def test_submit__failure(self, reddit):
         # `selftext` and `url` are no longer mutually exclusive
         message = "Submission requires either 'selftext' or 'url' to be provided."
         subreddit = Subreddit(reddit, display_name="name")
 
         with pytest.raises(TypeError) as excinfo:
             subreddit.submit("Cool title")
+        assert str(excinfo.value) == message
+
+    def test_submit__url_selftext_inline_media_disallowed(self, reddit):
+        # `selftext` and `url` are no longer mutually exclusive, 
+        # but `inline_media` is not supported for link post selftext
+        message = "As of 2025-05-07, `inline_media` is not supported for link post selftext. Only Markdown text can be added to non-self posts."
+        subreddit = Subreddit(reddit, display_name="name")
+        gif = InlineGif(caption="optional caption", path="test.gif")
+        image = InlineImage(caption="optional caption", path="test.png")
+        video = InlineVideo(caption="optional caption", path="test.mp4")
+        selftext = "Text with {gif1}, {image1}, and {video1} inline"
+        media = {"gif1": gif, "image1": image, "video1": video}
+        with pytest.raises(TypeError) as excinfo:
+            subreddit.submit("Cool title", 
+                             url="https://praw.readthedocs.org/en/stable/", 
+                             inline_media=media, 
+                             selftext=selftext)
         assert str(excinfo.value) == message
 
     def test_submit_gallery__invalid_path(self, reddit):

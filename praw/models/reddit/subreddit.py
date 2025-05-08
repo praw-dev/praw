@@ -2889,13 +2889,14 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         self,
         *,
         expected_mime_prefix: str | None = None,
-        media_path: str,
+        media_path: str | None,
         upload_type: str = "link",
     ) -> str:
         """Upload media and return its URL and a websocket (Undocumented endpoint).
 
         :param expected_mime_prefix: If provided, enforce that the media has a mime type
             that starts with the provided prefix.
+        :param media_path: The path to the media file to upload. Default is the PRAW logo.
         :param upload_type: One of ``"link"``, ``"gallery"'', or ``"selfpost"``
             (default: ``"link"``).
 
@@ -2903,8 +2904,11 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         """
         if media_path is None:
-            file = Path(__file__).absolute()
-            media_path = file.parent.parent.parent / "images" / "PRAW logo.png"
+            # if we're uploading without a media path, assume we're uploading a PRAW logo
+            # this default is commonly used when ``video_poster_url`` is not provided in ``submit_video``
+            module_path = Path(__file__).absolute()
+            logo_path = module_path.parent.parent.parent / "images" / "PRAW logo.png"
+            file = Path(logo_path)
         else:
             file = Path(media_path)
 
@@ -3073,7 +3077,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             this value will set a custom text (default: ``None``). ``flair_id`` is
             required when ``flair_text`` is provided.
         :param inline_media: A dict of :class:`.InlineMedia` objects where the key is
-            the placeholder name in ``selftext``.
+            the placeholder name in ``selftext``. Link post selftext does not support
+            inline media.
         :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
         :param resubmit: When ``False``, an error will occur if the URL has already been
             submitted (default: ``True``).
@@ -3183,13 +3188,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         if url is not None:
             data.update(kind="link", url=url)
             if inline_media:
-                # this will never work: reddit API ignores richtext_json for link posts
-                # so throw an exception here instead of allowing silent failure?
-                body = selftext.format(**{
-                    placeholder: self._upload_inline_media(media) for placeholder, media in inline_media.items()
-                })
-                converted = self._convert_to_fancypants(body)
-                data.update(richtext_json=dumps(converted))
+                msg = "As of 2025-05-07, `inline_media` is not supported for link post selftext. Only Markdown text can be added to non-self posts."
+                raise TypeError(msg)
             # we can ignore an empty string for selftext here b/c body text is optional for link posts
             elif selftext:
                 data.update(text=selftext)
