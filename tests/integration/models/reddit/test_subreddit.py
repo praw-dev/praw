@@ -1508,24 +1508,33 @@ class TestSubreddit(IntegrationTest):
         assert submission.link_flair_css_class == flair_class
         assert submission.link_flair_text == flair_text
 
+    @mock.patch(
+        "websocket.create_connection",
+        new=MagicMock(
+            return_value=WebsocketMock("1khu9tf")
+        ),  # update with cassette
+    )
     def test_submit_gallery__selftext(self, image_path, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         images = [
             {"image_path": image_path("test.png")},
-            {"image_path": image_path("test.jpg"), "caption": "test.jpg"},
+            {
+                "image_path": image_path("test.jpg"),
+                "caption": "A JPG image.",
+            },
             {
                 "image_path": image_path("test.gif"),
                 "outbound_url": "https://example.com",
             },
             {
                 "image_path": image_path("test.png"),
-                "caption": "test.png",
+                "caption": "A PNG image.",
                 "outbound_url": "https://example.com",
             },
         ]
         selftext = "Testing **PRAW** gallery submission *with markdown selftext*."
-        title = "Test PRAW Gallery with Selftext"
+        title = "Testing PRAW Gallery with Selftext"
         submission = subreddit.submit_gallery(title, images, selftext=selftext)
         assert submission.author == pytest.placeholders.username
         assert submission.is_gallery
@@ -1842,7 +1851,7 @@ class TestSubreddit(IntegrationTest):
     @mock.patch(
         "websocket.create_connection",
         new=MagicMock(
-            return_value=WebsocketMock("1khjcs5", "1khjcuj"),  # update with cassette
+            return_value=WebsocketMock("1khufe0", "1khufen"),  # update with cassette
         ),
     )
     def test_submit_video__selftext(self, image_path, reddit):
@@ -1850,7 +1859,9 @@ class TestSubreddit(IntegrationTest):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         for i, file_name in enumerate(("test.mov", "test.mp4")):
             title = f"Test Title {i}"
-            selftext = f"Testing **PRAW** video submission *with markdown selftext* for {file_name}."
+            # note: pytest will replace any instance of `test` (subreddit name) with
+            # the literal value ``placeholder_test_subreddit`` in CI, making CI tests fail.
+            selftext = f"Testing **PRAW** video submission *with markdown selftext*."
             video = image_path(file_name)
             submission = subreddit.submit_video(title, video, selftext=selftext)
             assert submission.author == pytest.placeholders.username
