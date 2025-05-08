@@ -1413,6 +1413,17 @@ class TestSubreddit(IntegrationTest):
         assert submission.url == url
         assert submission.title == "Test Title"
 
+    def test_submit__url_selftext(self, reddit):
+        url = "https://praw.readthedocs.org/en/stable/"
+        selftext = "Testing **PRAW** link submission *with markdown selftext*."
+        reddit.read_only = False
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
+        submission = subreddit.submit("Test Title", url=url, selftext=selftext)
+        assert submission.selftext == selftext
+        assert submission.author == pytest.placeholders.username
+        assert submission.url == url
+        assert submission.title == "Test Title"
+
     def test_submit__verify_invalid(self, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -1500,6 +1511,47 @@ class TestSubreddit(IntegrationTest):
     @mock.patch(
         "websocket.create_connection",
         new=MagicMock(
+            return_value=WebsocketMock("1khu9tf")
+        ),  # update with cassette
+    )
+    def test_submit_gallery__selftext(self, image_path, reddit):
+        reddit.read_only = False
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
+        images = [
+            {"image_path": image_path("test.png")},
+            {
+                "image_path": image_path("test.jpg"),
+                "caption": "A JPG image.",
+            },
+            {
+                "image_path": image_path("test.gif"),
+                "outbound_url": "https://example.com",
+            },
+            {
+                "image_path": image_path("test.png"),
+                "caption": "A PNG image.",
+                "outbound_url": "https://example.com",
+            },
+        ]
+        selftext = "Testing **PRAW** gallery submission *with markdown selftext*."
+        title = "Testing PRAW Gallery with Selftext"
+        submission = subreddit.submit_gallery(title, images, selftext=selftext)
+        assert submission.author == pytest.placeholders.username
+        assert submission.is_gallery
+        assert submission.title == title
+        assert submission.selftext == selftext
+        items = submission.gallery_data["items"]
+        assert isinstance(submission.gallery_data["items"], list)
+        for i, item in enumerate(items):
+            test_data = images[i]
+            test_data.pop("image_path")
+            item.pop("id")
+            item.pop("media_id")
+            assert item == test_data
+
+    @mock.patch(
+        "websocket.create_connection",
+        new=MagicMock(
             return_value=WebsocketMock("16xb01r", "16xb06z", "16xb0aa")
         ),  # update with cassette
     )
@@ -1576,6 +1628,23 @@ class TestSubreddit(IntegrationTest):
         with pytest.raises(TooLargeMediaException):
             subreddit.submit_image("test", tempfile.name)
         reddit._core._requestor._http.post = _post
+
+    @mock.patch(
+        "websocket.create_connection",
+        new=MagicMock(
+            return_value=WebsocketMock("1kh2top")
+        ),  # update with cassette
+    )
+    def test_submit_image__selftext(self, image_path, reddit):
+        reddit.read_only = False
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
+        image = image_path("test.png")
+        selftext = "Testing **PRAW** image submission *with markdown selftext*."
+        title = "Testing PRAW image submission with selftext"
+        submission = subreddit.submit_image(title, image, selftext=selftext)
+        assert submission.selftext == selftext
+        assert submission.is_reddit_media_domain
+        assert submission.title == title
 
     @mock.patch(
         "websocket.create_connection", new=MagicMock(side_effect=BlockingIOError)
@@ -1778,6 +1847,27 @@ class TestSubreddit(IntegrationTest):
         )
         assert submission.link_flair_css_class == flair_class
         assert submission.link_flair_text == flair_text
+
+    @mock.patch(
+        "websocket.create_connection",
+        new=MagicMock(
+            return_value=WebsocketMock("1khufe0", "1khufen"),  # update with cassette
+        ),
+    )
+    def test_submit_video__selftext(self, image_path, reddit):
+        reddit.read_only = False
+        subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
+        for i, file_name in enumerate(("test.mov", "test.mp4")):
+            title = f"Test Title {i}"
+            # note: pytest will replace any instance of `test` (subreddit name) with
+            # the literal value ``placeholder_test_subreddit`` in CI, making CI tests fail.
+            selftext = f"Testing **PRAW** video submission *with markdown selftext*."
+            video = image_path(file_name)
+            submission = subreddit.submit_video(title, video, selftext=selftext)
+            assert submission.author == pytest.placeholders.username
+            assert submission.is_video
+            assert submission.title == title
+            assert submission.selftext == selftext
 
     @mock.patch(
         "websocket.create_connection",
