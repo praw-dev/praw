@@ -27,9 +27,9 @@ Unreleased
   keyword.
 - The ``selftext`` and ``url`` arguments to :meth:`.Subreddit.submit` are no longer
   mutually exclusive. When ``url`` is provided ``selftext`` will be used as optional
-  body text to accompany the link submission. An exception is raised when trying
-  to use ``inline_media`` with ``selftext`` for a ``url`` submission because Reddit
-  does not support inline media in body text for link submissions.
+  body text to accompany the link submission. An exception is raised when trying to use
+  ``inline_media`` with ``selftext`` for a ``url`` submission because Reddit does not
+  support inline media in body text for link submissions.
 - :meth:`.Subreddit.submit_video`, :meth:`.Subreddit.submit_gallery`, and
   :meth:`.Subreddit.submit_image` now accept an optional Markdown-formatted ``selftext``
   parameter.
