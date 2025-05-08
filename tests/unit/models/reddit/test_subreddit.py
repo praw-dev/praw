@@ -134,7 +134,7 @@ class TestSubreddit(UnitTest):
         assert str(excinfo.value) == message
 
     def test_submit__url_selftext_inline_media_disallowed(self, reddit):
-        # `selftext` and `url` are no longer mutually exclusive, 
+        # `selftext` and `url` are no longer mutually exclusive,
         # but `inline_media` is not supported for link post selftext
         message = "As of 2025-05-07, `inline_media` is not supported for link post selftext. Only Markdown text can be added to non-self posts."
         subreddit = Subreddit(reddit, display_name="name")
@@ -144,9 +144,9 @@ class TestSubreddit(UnitTest):
         selftext = "Text with {gif1}, {image1}, and {video1} inline"
         media = {"gif1": gif, "image1": image, "video1": video}
         with pytest.raises(TypeError) as excinfo:
-            subreddit.submit("Cool title", 
-                             url="https://praw.readthedocs.org/en/stable/", 
-                             inline_media=media, 
+            subreddit.submit("Cool title",
+                             url="https://praw.readthedocs.org/en/stable/",
+                             inline_media=media,
                              selftext=selftext)
         assert str(excinfo.value) == message
 
