@@ -2896,7 +2896,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         :param expected_mime_prefix: If provided, enforce that the media has a mime type
             that starts with the provided prefix.
-        :param media_path: The path to the media file to upload. Default is the PRAW logo.
+        :param media_path: The path to the media file to upload. Default is the PRAW
+            logo.
         :param upload_type: One of ``"link"``, ``"gallery"'', or ``"selfpost"``
             (default: ``"link"``).
 
@@ -3191,7 +3192,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                 msg = "As of 2025-05-07, `inline_media` is not supported for link post selftext. Only Markdown text can be added to non-self posts."
                 raise TypeError(msg)
             # we can ignore an empty string for selftext here b/c body text is optional for link posts
-            elif selftext:
+            if selftext:
                 data.update(text=selftext)
         elif selftext is not None:
             data.update(kind="self")
