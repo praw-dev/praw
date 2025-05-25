@@ -31,6 +31,7 @@ Scope            Description
 ================ ======================================================================
 account          Update preferences and related account information. Will not have
                  access to your email or password.
+announcements    Access to inbox announcements.
 edit             Edit and delete my comments and submissions.
 flair            Select my subreddit flair. Change link flair on my submissions.
 history          Access my voting history and comments or submissions I've saved or
@@ -43,6 +44,7 @@ modcontributors  Add/remove users to approved user lists and ban/unban or mute/u
 modflair         Manage and assign flair in subreddits I moderate.
 modlog           Access the moderation log in subreddits I moderate.
 modmail          Access and manage modmail via mod.reddit.com.
+modnote          Access mod notes for subreddits I moderate.
 modothers        Invite or remove other moderators from subreddits I moderate.
 modposts         Approve, remove, mark nsfw, and distinguish content in subreddits I
                  moderate.
