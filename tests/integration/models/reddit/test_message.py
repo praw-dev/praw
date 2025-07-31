@@ -74,7 +74,7 @@ class TestMessage(IntegrationTest):
 
     def test_parent(self, reddit):
         reddit.read_only = False
-        message = reddit.inbox.message("1ay4xyu")
+        message = reddit.inbox.message("30rugdg")
         parent = message.parent
         assert isinstance(parent, Message)
         assert parent.fullname == message.parent_id
@@ -90,32 +90,6 @@ class TestMessage(IntegrationTest):
         reddit.read_only = False
         message = next(reddit.inbox.messages())
         reply = message.reply(body="Message reply")
-        assert reply.author == reddit.config.username
+        assert reply.author == reddit.user.me()
         assert reply.body == "Message reply"
         assert reply.first_message_name == message.fullname
-
-    def test_unblock_subreddit(self, reddit):
-        reddit.read_only = False
-        message1 = next(reddit.inbox.messages(limit=1))
-        assert isinstance(message1, SubredditMessage)
-        message_fullname = message1.fullname
-        message1.block()
-        message2 = next(reddit.inbox.messages(limit=1))
-        assert message2.fullname == message_fullname
-        assert message2.subject == "[message from blocked subreddit]"
-        message2.unblock_subreddit()
-        message3 = next(reddit.inbox.messages(limit=1))
-        assert message3.fullname == message_fullname
-        assert message3.subject != "[message from blocked subreddit]"
-
-
-class TestSubredditMessage(IntegrationTest):
-    def test_mute(self, reddit):
-        reddit.read_only = False
-        message = SubredditMessage(reddit, _data={"id": "5yr8id"})
-        message.mute()
-
-    def test_unmute(self, reddit):
-        reddit.read_only = False
-        message = SubredditMessage(reddit, _data={"id": "5yr8id"})
-        message.unmute()

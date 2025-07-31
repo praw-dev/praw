@@ -50,7 +50,7 @@ class Config:
             interpolator_class = None
 
         config = configparser.ConfigParser(interpolation=interpolator_class)
-        with importlib.resources.open_text(__package__, "praw.ini") as hdl:
+        with importlib.resources.files(__package__).joinpath("praw.ini").open("r") as hdl:
             config.read_file(hdl)
 
         if "APPDATA" in os.environ:  # Windows
