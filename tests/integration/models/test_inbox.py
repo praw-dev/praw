@@ -44,15 +44,19 @@ class TestInbox(IntegrationTest):
         reddit.inbox.mark_all_read()
         assert not list(reddit.inbox.unread())
 
-    @pytest.mark.recorder_kwargs(match_requests_on=["uri", "method", "body"])
     def test_mark_read(self, reddit):
         reddit.read_only = False
-        reddit.inbox.mark_read(list(reddit.inbox.unread()))
+        unread_messages = list(reddit.inbox.unread(limit=10, mark_read=False))
+        reddit.inbox.mark_read(unread_messages)
+        for read_message in list(reddit.inbox.unread(limit=10, mark_read=False)):
+            assert read_message.id not in unread_messages
 
-    @pytest.mark.recorder_kwargs(match_requests_on=["uri", "method", "body"])
     def test_mark_unread(self, reddit):
         reddit.read_only = False
-        reddit.inbox.mark_unread(list(reddit.inbox.all()))
+        messages = list(reddit.inbox.all(limit=10))
+        reddit.inbox.mark_unread(messages)
+        for message in list(reddit.inbox.unread(limit=10, mark_read=False)):
+            assert message.id in messages
 
     def test_mention__refresh(self, reddit):
         reddit.read_only = False
@@ -70,8 +74,8 @@ class TestInbox(IntegrationTest):
 
     def test_message(self, reddit):
         reddit.read_only = False
-        message = reddit.inbox.message("6vzfan")
-        assert message.name.split("_", 1)[1] == "6vzfan"
+        message = reddit.inbox.message("30rhflk")
+        assert message.name.split("_", 1)[1] == "30rhflk"
         assert isinstance(message, Message)
         assert isinstance(message.author, Redditor)
         assert isinstance(message.dest, Subreddit)
@@ -83,12 +87,10 @@ class TestInbox(IntegrationTest):
         with pytest.raises(Forbidden):
             reddit.inbox.message("6i8om7")
 
-    @pytest.mark.recorder_kwargs(match_requests_on=["uri", "method", "body"])
     def test_message_collapse(self, reddit):
         reddit.read_only = False
         reddit.inbox.collapse(list(reddit.inbox.messages()))
 
-    @pytest.mark.recorder_kwargs(match_requests_on=["uri", "method", "body"])
     def test_message_uncollapse(self, reddit):
         reddit.read_only = False
         reddit.inbox.uncollapse(list(reddit.inbox.messages()))
@@ -96,17 +98,17 @@ class TestInbox(IntegrationTest):
     def test_messages(self, reddit):
         reddit.read_only = False
         count = 0
-        for item in reddit.inbox.messages(limit=64):
+        for item in reddit.inbox.messages(limit=100):
             assert isinstance(item, Message)
             count += 1
-        assert count == 64
+        assert count == 100
 
     def test_sent(self, reddit):
         reddit.read_only = False
         count = 0
         for item in reddit.inbox.sent(limit=64):
             assert isinstance(item, Message)
-            assert item.author == reddit.config.username
+            assert item.author == reddit.user.me()
             count += 1
         assert count == 64
 
