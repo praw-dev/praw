@@ -1,0 +1,125 @@
+{
+  "description": "The PRAW library's architecture is centered around the Reddit Client, which acts as the primary orchestrator for all interactions with the Reddit API. This client relies on the Configuration Manager to load and manage its operational settings, ensuring proper initialization. For actual network communication and secure authentication, the Reddit Client delegates to the Low-Level API Connector (an external dependency, `prawcore`), which handles the intricacies of HTTP requests and OAuth2. Upon receiving raw JSON responses from the API via the Low-Level API Connector, the Reddit Client forwards this data to the Object Transformer. The Object Transformer is responsible for converting these raw responses into structured Python objects, which are instances of the Reddit Data Models (e.g., `Subreddit`, `Submission`). These data models represent the various entities within Reddit and can, in turn, initiate further requests through the Reddit Client to fetch related data. Complementing this core interaction, the Listing & Streaming component provides efficient mechanisms for iterating over collections of Reddit items, including real-time data streams, by fetching data through the Reddit Client and generating instances of the Reddit Data Models for consumption. This design ensures a clear separation of concerns, with the Reddit Client managing the overall flow, specialized components handling data transformation and retrieval, and a robust set of data models representing the API's entities.",
+  "components": [
+    {
+      "name": "Reddit Client",
+      "description": "The primary interface for interacting with the Reddit API, managing authentication and request dispatch.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw/reddit.py",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Configuration Manager",
+      "description": "Manages loading and accessing PRAW's configuration settings.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw/config.py",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/config.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "Low-Level API Connector",
+      "description": "An external dependency responsible for actual HTTP communication and OAuth2 authentication with the Reddit API.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "prawcore",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 527,
+          "reference_end_line": 546
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Object Transformer",
+      "description": "Converts raw JSON data from the Reddit API into structured PRAW Python objects.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw/objector.py",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Reddit Data Models",
+      "description": "A collection of classes representing various Reddit entities (e.g., `Subreddit`, `Submission`, `Comment`).",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.reddit",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Listing & Streaming",
+      "description": "Provides mechanisms for efficiently retrieving and iterating over collections of Reddit items, including real-time data streams.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.listing",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/listing",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "loads settings from",
+      "src_name": "Reddit Client",
+      "dst_name": "Configuration Manager"
+    },
+    {
+      "relation": "delegates requests to",
+      "src_name": "Reddit Client",
+      "dst_name": "Low-Level API Connector"
+    },
+    {
+      "relation": "returns raw response to",
+      "src_name": "Low-Level API Connector",
+      "dst_name": "Reddit Client"
+    },
+    {
+      "relation": "sends raw data to",
+      "src_name": "Reddit Client",
+      "dst_name": "Object Transformer"
+    },
+    {
+      "relation": "instantiates",
+      "src_name": "Object Transformer",
+      "dst_name": "Reddit Data Models"
+    },
+    {
+      "relation": "initiates requests via",
+      "src_name": "Reddit Data Models",
+      "dst_name": "Reddit Client"
+    },
+    {
+      "relation": "fetches data via",
+      "src_name": "Listing & Streaming",
+      "dst_name": "Reddit Client"
+    },
+    {
+      "relation": "generates",
+      "src_name": "Listing & Streaming",
+      "dst_name": "Reddit Data Models"
+    }
+  ]
+}

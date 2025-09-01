@@ -1,0 +1,150 @@
+name: CodeBoarding Documentation update workflow
+
+on:
+  schedule:
+    - cron: '0 20 * * 0'  # Every Sunday at 8:00 PM UTC
+  workflow_dispatch:
+    inputs:
+      repository_url:
+        description: 'Repository URL to analyze'
+        required: false
+        default: 'https://github.com/praw-dev/praw'
+        type: string
+      source_branch:
+        description: 'Source branch to analyze'
+        required: false
+        default: 'main'
+        type: string
+      target_branch:
+        description: 'Target branch for documentation'
+        required: false
+        default: 'main'
+        type: string
+      output_directory:
+        description: 'Output directory for documentation files'
+        required: false
+        default: '.codeboarding'
+        type: string
+      output_format:
+        description: 'Output format for documentation'
+        required: false
+        default: '.rst'
+        type: choice
+        options:
+          - '.rst'
+          - '.md'
+          - '.mdx'
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0  # Required to access branch history
+
+      # Determine branches based on context
+      - name: Set branch variables
+        id: set-branches
+        run: |
+          if [ "${{ github.event.inputs.source_branch }}" != "" ] && [ "${{ github.event.inputs.target_branch }}" != "" ]; then
+            echo "source_branch=${{ github.event.inputs.source_branch }}" >> $GITHUB_OUTPUT
+            echo "target_branch=${{ github.event.inputs.target_branch }}" >> $GITHUB_OUTPUT
+            echo "repository_url=${{ github.event.inputs.repository_url || format('https://github.com/{0}', github.repository) }}" >> $GITHUB_OUTPUT
+          else
+            echo "source_branch=main" >> $GITHUB_OUTPUT
+            echo "target_branch=main" >> $GITHUB_OUTPUT
+            echo "repository_url=https://github.com/${{ github.repository }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Fetch CodeBoarding Documentation
+        timeout-minutes: 30
+        id: codeboarding
+        uses: CodeBoarding/CodeBoarding-GHAction@0.1.2
+        with:
+          repository_url: ${{ steps.set-branches.outputs.repository_url }}
+          source_branch: ${{ steps.set-branches.outputs.source_branch }}
+          target_branch: ${{ steps.set-branches.outputs.target_branch }}
+          output_directory: ${{ github.event.inputs.output_directory || '.codeboarding' }}
+          output_format: ${{ github.event.inputs.output_format || '.rst' }}
+
+      - name: Display Action Results
+        run: |
+          echo "Documentation files created: ${{ steps.codeboarding.outputs.markdown_files_created }}"
+          echo "JSON files created: ${{ steps.codeboarding.outputs.json_files_created }}"
+          echo "Documentation directory: ${{ steps.codeboarding.outputs.output_directory }}"
+          echo "JSON directory: ${{ steps.codeboarding.outputs.json_directory }}"
+          echo "Has changes: ${{ steps.codeboarding.outputs.has_changes }}"
+
+      # Move .rst files from .codeboarding/ to docs/architecture_overview/ folder
+      - name: Move .rst files to architecture overview
+        run: |
+          # Create docs/architecture_overview directory if it doesn't exist
+          mkdir -p docs/architecture_overview
+          
+          # Check if .codeboarding/ exists and contains .rst files
+          if [ -d ".codeboarding" ] && [ -n "$(find .codeboarding -name '*.rst' -type f)" ]; then
+            echo "Moving .rst files from .codeboarding/ to docs/architecture_overview/"
+            
+            # Copy .rst files to docs/architecture_overview folder
+            cp .codeboarding/*.rst docs/architecture_overview/ 2>/dev/null || echo "No .rst files found to copy"
+            
+            # Also copy any subdirectories with .rst files
+            find .codeboarding -type d -exec sh -c '
+              for dir do
+                if [ -n "$(find "$dir" -maxdepth 1 -name "*.rst" -type f)" ]; then
+                  echo "Copying .rst files from $dir"
+                  cp "$dir"/*.rst docs/architecture_overview/ 2>/dev/null || echo "No .rst files found in $dir"
+                fi
+              done
+            ' sh {} +
+            
+            echo ".rst files moved to architecture overview successfully"
+          else
+            echo "No .codeboarding/ directory or .rst files found"
+          fi
+
+      # Check if we have any changes to commit
+      - name: Check for changes
+        id: git-changes
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "has_git_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_git_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push changes
+        if: steps.git-changes.outputs.has_git_changes == 'true' && steps.codeboarding.outputs.has_changes == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "docs: update codeboarding documentation
+
+          ## 📚 Documentation Update
+          This commit contains updated documentation files fetched from the CodeBoarding service.
+          
+          ### 📊 Summary
+          - Documentation files created/updated: ${{ steps.codeboarding.outputs.markdown_files_created }}
+          - JSON files created/updated: ${{ steps.codeboarding.outputs.json_files_created }}
+          - Documentation directory: ${{ steps.codeboarding.outputs.output_directory }}/
+          - JSON directory: ${{ steps.codeboarding.outputs.json_directory }}/
+          - Output format: ${{ github.event.inputs.output_format || '.rst' }}
+          - Repository analyzed: ${{ steps.set-branches.outputs.repository_url }}
+          - Source branch: ${{ steps.set-branches.outputs.source_branch }}
+          - Target branch: ${{ steps.set-branches.outputs.target_branch }}
+          
+          🤖 This commit was automatically generated by the CodeBoarding documentation update workflow."
+          git push
