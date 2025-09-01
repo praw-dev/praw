@@ -28,12 +28,12 @@ on:
       output_format:
         description: 'Output format for documentation'
         required: false
-        default: '.md'
+        default: '.rst'
         type: choice
         options:
+          - '.rst'
           - '.md'
           - '.mdx'
-          - '.rst'
   push:
     branches:
       - master
@@ -77,7 +77,7 @@ jobs:
           source_branch: ${{ steps.set-branches.outputs.source_branch }}
           target_branch: ${{ steps.set-branches.outputs.target_branch }}
           output_directory: ${{ github.event.inputs.output_directory || '.codeboarding' }}
-          output_format: ${{ github.event.inputs.output_format || '.md' }}
+          output_format: ${{ github.event.inputs.output_format || '.rst' }}
 
       - name: Display Action Results
         run: |
@@ -113,7 +113,7 @@ jobs:
           - JSON files created/updated: ${{ steps.codeboarding.outputs.json_files_created }}
           - Documentation directory: ${{ steps.codeboarding.outputs.output_directory }}/
           - JSON directory: ${{ steps.codeboarding.outputs.json_directory }}/
-          - Output format: ${{ github.event.inputs.output_format || '.md' }}
+          - Output format: ${{ github.event.inputs.output_format || '.rst' }}
           - Repository analyzed: ${{ steps.set-branches.outputs.repository_url }}
           - Source branch: ${{ steps.set-branches.outputs.source_branch }}
           - Target branch: ${{ steps.set-branches.outputs.target_branch }}
