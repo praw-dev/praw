@@ -41,7 +41,7 @@ maintainers = [
 ]
 name = "praw"
 readme = "README.rst"
-requires-python = "~=3.9"
+requires-python = ">=3.9"
 
 [project.optional-dependencies]
 dev = [

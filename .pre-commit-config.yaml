@@ -22,7 +22,7 @@ repos:
       - id: ruff
         args: [ --exit-non-zero-on-fix, --fix ]
         files: ^(praw/.*.py)$
-    rev: v0.11.13
+    rev: v0.12.8
 
   - repo: https://github.com/LilSpazJoekp/docstrfmt
     hooks:
@@ -41,7 +41,7 @@ repos:
     rev: v0.24.2
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
       - id: check-executables-have-shebangs
