@@ -5,6 +5,7 @@ PRAW's documentation is organized into the following sections:
 
 - :ref:`getting_started`
 - :ref:`code_overview`
+- :ref:`architecture_overview`
 - :ref:`tutorial`
 - :ref:`package_info`
 
@@ -40,6 +41,18 @@ application. See :ref:`oauth` for information on using **installed** application
     code_overview/praw_models
     code_overview/exceptions
     code_overview/other
+
+.. _architecture_overview:
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Architecture Overview
+
+    architecture_overview/overview
+    architecture_overview/API_Client_Core
+    architecture_overview/Object_Transformation_Layer
+    architecture_overview/Reddit_Data_Models
+    architecture_overview/Listing_Stream_Processors
 
 .. _tutorial:
 

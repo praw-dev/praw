@@ -14,6 +14,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinx_autodoc_typehints",
+    "sphinxcontrib.mermaid",
 ]
 html_theme = "furo"
 htmlhelp_basename = "PRAW"

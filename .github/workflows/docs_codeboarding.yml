@@ -87,6 +87,34 @@ jobs:
           echo "JSON directory: ${{ steps.codeboarding.outputs.json_directory }}"
           echo "Has changes: ${{ steps.codeboarding.outputs.has_changes }}"
 
+      # Move .rst files from docs/architecture_overview/ to .codeboarding folder
+      - name: Move architecture overview .rst files
+        run: |
+          # Create .codeboarding directory if it doesn't exist
+          mkdir -p .codeboarding
+          
+          # Check if docs/architecture_overview/ exists and contains .rst files
+          if [ -d "docs/architecture_overview" ] && [ -n "$(find docs/architecture_overview -name '*.rst' -type f)" ]; then
+            echo "Moving .rst files from docs/architecture_overview/ to .codeboarding/"
+            
+            # Copy .rst files to .codeboarding folder
+            cp docs/architecture_overview/*.rst .codeboarding/ 2>/dev/null || echo "No .rst files found to copy"
+            
+            # Also copy any subdirectories with .rst files
+            find docs/architecture_overview -type d -exec sh -c '
+              for dir do
+                if [ -n "$(find "$dir" -maxdepth 1 -name "*.rst" -type f)" ]; then
+                  echo "Copying .rst files from $dir"
+                  cp "$dir"/*.rst .codeboarding/ 2>/dev/null || echo "No .rst files found in $dir"
+                fi
+              done
+            ' sh {} +
+            
+            echo "Architecture overview .rst files moved successfully"
+          else
+            echo "No docs/architecture_overview/ directory or .rst files found"
+          fi
+
       # Check if we have any changes to commit
       - name: Check for changes
         id: git-changes
