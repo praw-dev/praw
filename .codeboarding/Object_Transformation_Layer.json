@@ -1,0 +1,92 @@
+{
+  "description": "The `praw.objector` subsystem is designed to seamlessly convert raw data from the Reddit API into usable PRAW objects while providing robust error handling. The `Objector` class serves as the central entry point, orchestrating the objectification and error-checking processes. The `objectify` method, with the assistance of `_objectify_dict`, recursively transforms complex data structures into their corresponding PRAW object representations. Concurrently, the `check_error` method, by delegating to `parse_error`, ensures that any API-reported errors are properly identified and converted into structured exceptions, maintaining the integrity and reliability of the data processing pipeline. This clear separation of concerns between data transformation and error management allows for a modular and maintainable architecture.",
+  "components": [
+    {
+      "name": "praw.objector.Objector",
+      "description": "The central orchestrator of the transformation process, converting raw JSON responses into structured Python objects and managing error detection. It acts as the primary interface for the objectification process.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.objector.Objector",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py",
+          "reference_start_line": 17,
+          "reference_end_line": 263
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "praw.objector.Objector:objectify",
+      "description": "Implements the core recursive logic for data transformation, traversing raw JSON data, identifying appropriate PRAW object types, and instantiating them. This method is the heart of the data mapping functionality.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.objector.Objector:objectify",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py",
+          "reference_start_line": 199,
+          "reference_end_line": 279
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "praw.objector.Objector:_objectify_dict",
+      "description": "A specialized helper method for `objectify`, focusing on converting individual dictionary elements within the raw data into their corresponding PRAW object representations. It handles the granular conversion of data structures.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.objector.Objector:_objectify_dict",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py",
+          "reference_start_line": 46,
+          "reference_end_line": 197
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "praw.objector.Objector:check_error",
+      "description": "Responsible for scanning API responses for error indicators and delegating to `parse_error` if an error is detected. This ensures robust error handling within the transformation pipeline.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.objector.Objector:check_error",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py",
+          "reference_start_line": 6,
+          "reference_end_line": 11
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "praw.objector.Objector:parse_error",
+      "description": "Interprets raw error data from the API response, converting it into a structured format or raising a specific exception relevant to the PRAW library. This component standardizes error reporting.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.objector.Objector:parse_error",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py",
+          "reference_start_line": 13,
+          "reference_end_line": 44
+        }
+      ],
+      "can_expand": false
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "invokes",
+      "src_name": "praw.objector.Objector",
+      "dst_name": "praw.objector.Objector:objectify"
+    },
+    {
+      "relation": "invokes",
+      "src_name": "praw.objector.Objector",
+      "dst_name": "praw.objector.Objector:check_error"
+    },
+    {
+      "relation": "utilizes",
+      "src_name": "praw.objector.Objector:objectify",
+      "dst_name": "praw.objector.Objector:_objectify_dict"
+    },
+    {
+      "relation": "delegates to",
+      "src_name": "praw.objector.Objector:check_error",
+      "dst_name": "praw.objector.Objector:parse_error"
+    }
+  ]
+}

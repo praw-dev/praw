@@ -1,0 +1,98 @@
+{
+  "description": "The `Exception Handling` subsystem is encapsulated within the `praw.exceptions` module, primarily defined by the `praw/praw/exceptions.py` file. It provides a dedicated mechanism for handling and representing errors specific to the PRAW library and the Reddit API.",
+  "components": [
+    {
+      "name": "PRAWException",
+      "description": "The foundational base class for all custom exceptions within the PRAW library. It ensures a consistent interface and common attributes for all PRAW-specific errors, acting as the root of the exception hierarchy.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "PRAWException",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/exceptions.py",
+          "reference_start_line": 14,
+          "reference_end_line": 15
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "Specific PRAW Exception Classes",
+      "description": "A set of specialized exception classes (e.g., `APIException`, `ClientException`) that inherit from `PRAWException`. These classes represent distinct error conditions, such as those returned by the Reddit API or client-side operational failures, and encapsulate parsed error details for specific contexts.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "APIException",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/exceptions.py",
+          "reference_start_line": 170,
+          "reference_end_line": 201
+        },
+        {
+          "qualified_name": "ClientException",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/exceptions.py",
+          "reference_start_line": 74,
+          "reference_end_line": 75
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "RedditErrorItem",
+      "description": "A lightweight data structure that encapsulates the details of a single error item. It stores parsed information such as the error message, associated field, and type, as extracted from raw API responses.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "RedditErrorItem",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/exceptions.py",
+          "reference_start_line": 18,
+          "reference_end_line": 71
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "parse_exception_list",
+      "description": "A utility function responsible for processing raw error data, typically a list of error messages or codes received from Reddit API responses. It transforms this raw data into a structured collection of `RedditErrorItem` objects.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "parse_exception_list",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/exceptions.py",
+          "reference_start_line": 173,
+          "reference_end_line": 189
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "error_message",
+      "description": "A utility function dedicated to formatting a list of `RedditErrorItem` objects into a concise and informative error string. This string is suitable for display to developers or for logging purposes.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "error_message",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/exceptions.py",
+          "reference_start_line": 21,
+          "reference_end_line": 29
+        }
+      ],
+      "can_expand": false
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "inherits from",
+      "src_name": "Specific PRAW Exception Classes",
+      "dst_name": "PRAWException"
+    },
+    {
+      "relation": "invokes",
+      "src_name": "Specific PRAW Exception Classes",
+      "dst_name": "parse_exception_list"
+    },
+    {
+      "relation": "calls",
+      "src_name": "Specific PRAW Exception Classes",
+      "dst_name": "error_message"
+    },
+    {
+      "relation": "creates and returns",
+      "src_name": "parse_exception_list",
+      "dst_name": "RedditErrorItem"
+    }
+  ]
+}

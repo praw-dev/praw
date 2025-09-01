@@ -1,0 +1,184 @@
+{
+  "description": "The PRAW Reddit API client is structured around the `API Client Core`, which serves as the primary interface for users. This core is set up by the `Client Initializer`, configuring essential components like the HTTP client and response parsing. User interactions, such as fetching data or creating posts, are handled by `API Operation Methods`. These methods delegate the actual HTTP communication to the `Request Executor`, which may consult the `Async Checker` for proper asynchronous execution. Upon receiving a raw response, the `Request Executor` passes it to the `Response Objectifier` for transformation into structured Python objects, which are then returned to the `API Operation Methods`. Throughout this process, the `Rate Limit Manager` is consulted to ensure adherence to Reddit's API usage policies, with the `API Client Core` overseeing and managing these interactions.",
+  "components": [
+    {
+      "name": "API Client Core",
+      "description": "Serves as the main entry point for users to interact with the Reddit API. It orchestrates all underlying operations, manages the client's state, and exposes a high-level, object-oriented interface.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.reddit.Reddit",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 57,
+          "reference_end_line": 901
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Client Initializer",
+      "description": "Sets up the API Client Core instance, including configuring the underlying HTTP client (prawcore) and the response objectification mechanism. It integrates `prawcore` for HTTP requests and the `Objector` for response parsing.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.reddit.Reddit.__init__",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit._prepare_prawcore",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 527,
+          "reference_end_line": 546
+        },
+        {
+          "qualified_name": "praw.reddit._prepare_objector",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 479,
+          "reference_end_line": 525
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Request Executor",
+      "description": "Executes the raw HTTP requests to the Reddit API, handling the low-level communication details.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.reddit.Reddit.request",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "Response Objectifier",
+      "description": "Transforms the raw JSON responses from the API into structured PRAW Python objects, making them easier to consume and work with.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.reddit.Reddit._objectify_request",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Rate Limit Manager",
+      "description": "Monitors and enforces Reddit's API rate limits, pausing requests when necessary to prevent exceeding usage quotas and ensuring compliance.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.reddit.Reddit._handle_rate_limit",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "API Operation Methods",
+      "description": "Provide specific, high-level methods for common API operations (e.g., fetching data, creating posts, deleting resources), abstracting the underlying request and response handling details from the end-user.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.reddit.Reddit.get",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit.post",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit.delete",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit.patch",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit.put",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Async Checker",
+      "description": "Manages and verifies the asynchronous context for operations, ensuring proper execution in async environments.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.reddit._check_for_async",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 388,
+          "reference_end_line": 411
+        }
+      ],
+      "can_expand": false
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "initializes",
+      "src_name": "Client Initializer",
+      "dst_name": "API Client Core"
+    },
+    {
+      "relation": "manages",
+      "src_name": "API Client Core",
+      "dst_name": "Request Executor"
+    },
+    {
+      "relation": "manages",
+      "src_name": "API Client Core",
+      "dst_name": "Response Objectifier"
+    },
+    {
+      "relation": "manages",
+      "src_name": "API Client Core",
+      "dst_name": "Rate Limit Manager"
+    },
+    {
+      "relation": "exposes",
+      "src_name": "API Client Core",
+      "dst_name": "API Operation Methods"
+    },
+    {
+      "relation": "invokes",
+      "src_name": "API Operation Methods",
+      "dst_name": "Request Executor"
+    },
+    {
+      "relation": "checks",
+      "src_name": "Request Executor",
+      "dst_name": "Async Checker"
+    },
+    {
+      "relation": "returns raw response to",
+      "src_name": "Request Executor",
+      "dst_name": "Response Objectifier"
+    },
+    {
+      "relation": "transforms for",
+      "src_name": "Response Objectifier",
+      "dst_name": "API Operation Methods"
+    },
+    {
+      "relation": "consults",
+      "src_name": "API Operation Methods",
+      "dst_name": "Rate Limit Manager"
+    }
+  ]
+}
