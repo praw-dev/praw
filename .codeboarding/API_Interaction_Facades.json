@@ -1,0 +1,158 @@
+{
+  "description": "The `API Interaction Facades` subsystem encompasses high-level, domain-specific interfaces for interacting with the Reddit API. It abstracts complex operations and data retrieval patterns, grouping functionalities related to listing/streaming, subreddit management, moderation tools, and user/authentication specific actions.",
+  "components": [
+    {
+      "name": "Subreddit",
+      "description": "Primary facade for all subreddit-related operations, including content submission, moderation, flair management, appearance customization, and data retrieval. It provides a high-level interface for interacting with a specific subreddit.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.reddit.subreddit.Subreddit",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/subreddit.py",
+          "reference_start_line": 2446,
+          "reference_end_line": 2446
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Redditor",
+      "description": "Represents a Reddit user and provides methods for user-specific actions such as profile interaction, friendship management, and accessing user-generated content (submissions, comments).",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.reddit.redditor.Redditor",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/redditor.py",
+          "reference_start_line": 421,
+          "reference_end_line": 421
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Modmail",
+      "description": "Manages modmail conversations within a specific subreddit, enabling functionalities like reading, replying to, and managing modmail threads.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.reddit.modmail.Modmail",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/modmail.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "ModNotes",
+      "description": "Facilitates the creation, retrieval, and deletion of moderator notes associated with various Reddit entities (e.g., users, submissions).",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.mod_notes.ModNotes",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/mod_notes.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Auth",
+      "description": "Manages the authentication and authorization processes with the Reddit API, ensuring all outgoing requests are properly credentialed and secure.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.auth.Auth",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/auth.py",
+          "reference_start_line": 11,
+          "reference_end_line": 125
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "ListingGenerator",
+      "description": "Provides an iterable interface for fetching paginated data from various Reddit API endpoints, handling the underlying pagination logic transparently.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.listing.generator.ListingGenerator",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/listing/generator.py",
+          "reference_start_line": 17,
+          "reference_end_line": 103
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "stream_generator",
+      "description": "Offers a resilient and generic streaming mechanism for continuous data retrieval from Reddit, incorporating features like rate limiting, duplicate detection, and exponential backoff for robust operation.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.util.stream_generator",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/util.py",
+          "reference_start_line": 36,
+          "reference_end_line": 163
+        }
+      ],
+      "can_expand": true
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "delegates to",
+      "src_name": "Subreddit",
+      "dst_name": "Modmail"
+    },
+    {
+      "relation": "interacts with",
+      "src_name": "Subreddit",
+      "dst_name": "ModNotes"
+    },
+    {
+      "relation": "utilizes",
+      "src_name": "Subreddit",
+      "dst_name": "ListingGenerator"
+    },
+    {
+      "relation": "leverages",
+      "src_name": "Subreddit",
+      "dst_name": "stream_generator"
+    },
+    {
+      "relation": "relies on",
+      "src_name": "Subreddit",
+      "dst_name": "Auth"
+    },
+    {
+      "relation": "utilizes",
+      "src_name": "Redditor",
+      "dst_name": "ListingGenerator"
+    },
+    {
+      "relation": "leverages",
+      "src_name": "Redditor",
+      "dst_name": "stream_generator"
+    },
+    {
+      "relation": "relies on",
+      "src_name": "Redditor",
+      "dst_name": "Auth"
+    },
+    {
+      "relation": "relies on",
+      "src_name": "Modmail",
+      "dst_name": "Auth"
+    },
+    {
+      "relation": "relies on",
+      "src_name": "ModNotes",
+      "dst_name": "Auth"
+    },
+    {
+      "relation": "relies on",
+      "src_name": "ListingGenerator",
+      "dst_name": "Auth"
+    },
+    {
+      "relation": "relies on",
+      "src_name": "stream_generator",
+      "dst_name": "Auth"
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "description": "PRAW (Python Reddit API Wrapper) is structured around a clear separation of concerns, facilitating robust and flexible interaction with the Reddit API. At its core, the API Client Core (`praw.reddit.Reddit`) serves as the central communication hub, managing all HTTP requests, authentication, and rate limiting. It relies on the Configuration Manager (`praw.config.Config`) to load and provide necessary settings, ensuring proper API access.\n\nUpon receiving raw JSON responses from the Reddit API, the API Client Core forwards this data to the Object Hydrator (`praw.objector.Objector`). The Object Hydrator is responsible for transforming these generic JSON structures into rich, interactive Python objects, which are instances of the Reddit Data Models (e.g., `praw.models.reddit.submission.Submission`, `praw.models.reddit.comment.Comment`, `praw.models.reddit.redditor.Redditor`, `praw.models.reddit.subreddit.Subreddit`). These models encapsulate Reddit entities and provide methods for further interaction.\n\nTo simplify complex API operations, API Interaction Facades provide high-level, domain-specific interfaces. These facades, such as `praw.models.listing.generator.ListingGenerator` for listing content, `praw.models.util.stream_generator` for streaming, and various methods within `praw.models.reddit.subreddit.Subreddit`, `praw.models.reddit.modmail`, `praw.models.mod_notes`, `praw.models.reddit.redditor.Redditor`, and `praw.models.auth.Auth`, abstract the underlying API calls. They send requests through the API Client Core and operate on the Reddit Data Models, allowing developers to interact with Reddit entities in an intuitive, object-oriented manner. The Reddit Data Models themselves can also initiate requests back through the API Client Core for entity-specific actions.",
+  "components": [
+    {
+      "name": "API Client Core",
+      "description": "The central component for all Reddit API communication, handling HTTP requests, authentication, and rate limiting. It acts as the primary interface for other components to communicate with Reddit.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.reddit.Reddit",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 57,
+          "reference_end_line": 901
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Configuration Manager",
+      "description": "Responsible for loading, parsing, and providing PRAW's configuration settings from various sources (e.g., `praw.ini`, environment variables).",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.config.Config",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/config.py",
+          "reference_start_line": 52,
+          "reference_end_line": 52
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Object Hydrator",
+      "description": "Transforms raw JSON data received from the Reddit API into rich, interactive Python objects (PRAW models), converting generic API responses into type-safe and method-rich objects.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.objector.Objector",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py",
+          "reference_start_line": 17,
+          "reference_end_line": 263
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Reddit Data Models",
+      "description": "A comprehensive collection of classes representing various Reddit entities (e.g., `Submission`, `Comment`, `Redditor`, `Subreddit`). These objects encapsulate data and provide entity-specific methods for interaction.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.reddit.submission.Submission",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/submission.py",
+          "reference_start_line": 716,
+          "reference_end_line": 716
+        },
+        {
+          "qualified_name": "praw.models.reddit.comment.Comment",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/comment.py",
+          "reference_start_line": 328,
+          "reference_end_line": 328
+        },
+        {
+          "qualified_name": "praw.models.reddit.redditor.Redditor",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/redditor.py",
+          "reference_start_line": 421,
+          "reference_end_line": 421
+        },
+        {
+          "qualified_name": "praw.models.reddit.subreddit.Subreddit",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/subreddit.py",
+          "reference_start_line": 2446,
+          "reference_end_line": 2446
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "API Interaction Facades",
+      "description": "Provides high-level, domain-specific interfaces for interacting with the Reddit API, abstracting complex operations and data retrieval patterns. This component groups functionalities like listing/streaming, subreddit management, moderation tools, and user/authentication specific actions.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.listing.generator.ListingGenerator",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/listing/generator.py",
+          "reference_start_line": 17,
+          "reference_end_line": 103
+        },
+        {
+          "qualified_name": "praw.models.util.stream_generator",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/util.py",
+          "reference_start_line": 36,
+          "reference_end_line": 163
+        },
+        {
+          "qualified_name": "praw.models.reddit.subreddit.Subreddit",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/subreddit.py",
+          "reference_start_line": 2446,
+          "reference_end_line": 2446
+        },
+        {
+          "qualified_name": "praw.models.reddit.modmail",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/modmail.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.models.mod_notes",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/mod_notes.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.models.reddit.redditor.Redditor",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/redditor.py",
+          "reference_start_line": 421,
+          "reference_end_line": 421
+        },
+        {
+          "qualified_name": "praw.models.auth.Auth",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/auth.py",
+          "reference_start_line": 11,
+          "reference_end_line": 125
+        }
+      ],
+      "can_expand": true
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "provides settings to",
+      "src_name": "Configuration Manager",
+      "dst_name": "API Client Core"
+    },
+    {
+      "relation": "reads configuration from",
+      "src_name": "API Client Core",
+      "dst_name": "Configuration Manager"
+    },
+    {
+      "relation": "sends requests via",
+      "src_name": "API Interaction Facades",
+      "dst_name": "API Client Core"
+    },
+    {
+      "relation": "executes actions for",
+      "src_name": "API Client Core",
+      "dst_name": "API Interaction Facades"
+    },
+    {
+      "relation": "sends raw API response to",
+      "src_name": "API Client Core",
+      "dst_name": "Object Hydrator"
+    },
+    {
+      "relation": "returns PRAW objects to",
+      "src_name": "Object Hydrator",
+      "dst_name": "API Client Core"
+    },
+    {
+      "relation": "creates and populates",
+      "src_name": "API Client Core",
+      "dst_name": "Reddit Data Models"
+    },
+    {
+      "relation": "operates on",
+      "src_name": "API Interaction Facades",
+      "dst_name": "Reddit Data Models"
+    },
+    {
+      "relation": "are managed by",
+      "src_name": "Reddit Data Models",
+      "dst_name": "API Interaction Facades"
+    },
+    {
+      "relation": "initiate requests via",
+      "src_name": "Reddit Data Models",
+      "dst_name": "API Client Core"
+    }
+  ]
+}
