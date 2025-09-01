@@ -11,8 +11,7 @@
           "reference_start_line": 17,
           "reference_end_line": 263
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "praw.objector.Objector:objectify",
@@ -24,8 +23,7 @@
           "reference_start_line": 199,
           "reference_end_line": 279
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "praw.objector.Objector:_objectify_dict",
@@ -37,8 +35,7 @@
           "reference_start_line": 46,
           "reference_end_line": 197
         }
-      ],
-      "can_expand": false
+      ]
     },
     {
       "name": "praw.objector.Objector:check_error",
@@ -50,8 +47,7 @@
           "reference_start_line": 6,
           "reference_end_line": 11
         }
-      ],
-      "can_expand": false
+      ]
     },
     {
       "name": "praw.objector.Objector:parse_error",
@@ -63,8 +59,7 @@
           "reference_start_line": 13,
           "reference_end_line": 44
         }
-      ],
-      "can_expand": false
+      ]
     }
   ],
   "components_relations": [

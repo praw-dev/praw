@@ -11,8 +11,7 @@
           "reference_start_line": 17,
           "reference_end_line": 103
         }
-      ],
-      "can_expand": false
+      ]
     },
     {
       "name": "ListingBatchFetcher",
@@ -24,8 +23,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1000
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "ListingDataExtractor",
@@ -37,8 +35,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1000
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "ListingParameterMixin",
@@ -50,8 +47,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1000
         }
-      ],
-      "can_expand": false
+      ]
     },
     {
       "name": "StreamProcessor",
@@ -63,8 +59,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1000
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "StreamUniquenessManager",
@@ -76,8 +71,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1000
         }
-      ],
-      "can_expand": false
+      ]
     },
     {
       "name": "StreamBackoffHandler",
@@ -89,8 +83,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1000
         }
-      ],
-      "can_expand": false
+      ]
     }
   ],
   "components_relations": [

@@ -11,8 +11,7 @@
           "reference_start_line": 57,
           "reference_end_line": 901
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Client Initializer",
@@ -36,8 +35,7 @@
           "reference_start_line": 479,
           "reference_end_line": 525
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Request Executor",
@@ -49,8 +47,7 @@
           "reference_start_line": 0,
           "reference_end_line": 0
         }
-      ],
-      "can_expand": false
+      ]
     },
     {
       "name": "Response Objectifier",
@@ -62,8 +59,7 @@
           "reference_start_line": 0,
           "reference_end_line": 0
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Rate Limit Manager",
@@ -75,8 +71,7 @@
           "reference_start_line": 0,
           "reference_end_line": 0
         }
-      ],
-      "can_expand": false
+      ]
     },
     {
       "name": "API Operation Methods",
@@ -112,8 +107,7 @@
           "reference_start_line": 0,
           "reference_end_line": 0
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Async Checker",
@@ -125,8 +119,7 @@
           "reference_start_line": 388,
           "reference_end_line": 411
         }
-      ],
-      "can_expand": false
+      ]
     }
   ],
   "components_relations": [

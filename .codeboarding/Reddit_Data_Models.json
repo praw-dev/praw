@@ -11,8 +11,7 @@
           "reference_start_line": 2446,
           "reference_end_line": 2446
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Submission",
@@ -24,8 +23,7 @@
           "reference_start_line": 716,
           "reference_end_line": 716
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Comment",
@@ -37,8 +35,7 @@
           "reference_start_line": 582,
           "reference_end_line": 596
         }
-      ],
-      "can_expand": false
+      ]
     },
     {
       "name": "Redditor",
@@ -50,8 +47,7 @@
           "reference_start_line": 810,
           "reference_end_line": 819
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "VotableMixin",
@@ -63,8 +59,7 @@
           "reference_start_line": 8,
           "reference_end_line": 92
         }
-      ],
-      "can_expand": false
+      ]
     },
     {
       "name": "Modmail",
@@ -76,8 +71,7 @@
           "reference_start_line": 2627,
           "reference_end_line": 2639
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "LiveThread",
@@ -89,8 +83,7 @@
           "reference_start_line": 261,
           "reference_end_line": 471
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "WikiPage",
@@ -102,8 +95,7 @@
           "reference_start_line": 146,
           "reference_end_line": 314
         }
-      ],
-      "can_expand": false
+      ]
     }
   ],
   "components_relations": [
