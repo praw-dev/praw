@@ -1,5 +1,5 @@
-High-level diagram representation of: praw
-==========================================
+Api Client Core
+===============
 
 .. mermaid::
 
@@ -21,12 +21,12 @@ High-level diagram representation of: praw
       Request_Executor -- "returns raw response to" --> Response_Objectifier
       Response_Objectifier -- "transforms for" --> API_Operation_Methods
       API_Operation_Methods -- "consults" --> Rate_Limit_Manager
-      click API_Client_Core href "https://github.com/CodeBoarding/praw/blob/main/.codeboarding/API_Client_Core.html" "Details"
+      click API_Client_Core href "https://github.com/praw-dev/praw/blob/main/.codeboarding/API_Client_Core.html" "Details"
 
 | |codeboarding-badge| |demo-badge| |contact-badge|
 
 .. |codeboarding-badge| image:: https://img.shields.io/badge/Generated%20by-CodeBoarding-9cf?style=flat-square
-   :target: https://github.com/CodeBoarding/GeneratedOnBoardings
+   :target: https://github.com/CodeBoarding/CodeBoarding
 .. |demo-badge| image:: https://img.shields.io/badge/Try%20our-Demo-blue?style=flat-square
    :target: https://www.codeboarding.org/demo
 .. |contact-badge| image:: https://img.shields.io/badge/Contact%20us%20-%20contact@codeboarding.org-lightgrey?style=flat-square
@@ -46,7 +46,7 @@ Serves as the main entry point for users to interact with the Reddit API. It orc
 
 **Related Classes/Methods**:
 
-* `QName:`praw.reddit.Reddit` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py`, Lines:(57:901) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/reddit.py#L57-L901>`_
+* `praw.reddit.Reddit:57-901 <https://github.com/praw-dev/praw/blob/main/praw/reddit.py#L57-L901>`_
 
 Client Initializer
 ^^^^^^^^^^^^^^^^^^
@@ -55,9 +55,9 @@ Sets up the API Client Core instance, including configuring the underlying HTTP 
 
 **Related Classes/Methods**:
 
-* `QName:`praw.reddit.Reddit.__init__` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py` <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/reddit.py#L0-L0>`_
-* `QName:`praw.reddit._prepare_prawcore` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py`, Lines:(527:546) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/reddit.py#L527-L546>`_
-* `QName:`praw.reddit._prepare_objector` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py`, Lines:(479:525) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/reddit.py#L479-L525>`_
+* `praw.reddit.Reddit.__init__ <https://github.com/praw-dev/praw/blob/main/praw/reddit.py>`_
+* `praw.reddit._prepare_prawcore:527-546 <https://github.com/praw-dev/praw/blob/main/praw/reddit.py#L527-L546>`_
+* `praw.reddit._prepare_objector:479-525 <https://github.com/praw-dev/praw/blob/main/praw/reddit.py#L479-L525>`_
 
 Request Executor
 ^^^^^^^^^^^^^^^^
@@ -66,7 +66,7 @@ Executes the raw HTTP requests to the Reddit API, handling the low-level communi
 
 **Related Classes/Methods**:
 
-* `QName:`praw.reddit.Reddit.request` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py` <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/reddit.py#L0-L0>`_
+* `praw.reddit.Reddit.request <https://github.com/praw-dev/praw/blob/main/praw/reddit.py>`_
 
 Response Objectifier
 ^^^^^^^^^^^^^^^^^^^^
@@ -75,7 +75,7 @@ Transforms the raw JSON responses from the API into structured PRAW Python objec
 
 **Related Classes/Methods**:
 
-* `QName:`praw.reddit.Reddit._objectify_request` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py` <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/reddit.py#L0-L0>`_
+* `praw.reddit.Reddit._objectify_request <https://github.com/praw-dev/praw/blob/main/praw/reddit.py>`_
 
 Rate Limit Manager
 ^^^^^^^^^^^^^^^^^^
@@ -84,7 +84,7 @@ Monitors and enforces Reddit's API rate limits, pausing requests when necessary 
 
 **Related Classes/Methods**:
 
-* `QName:`praw.reddit.Reddit._handle_rate_limit` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py` <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/reddit.py#L0-L0>`_
+* `praw.reddit.Reddit._handle_rate_limit <https://github.com/praw-dev/praw/blob/main/praw/reddit.py>`_
 
 API Operation Methods
 ^^^^^^^^^^^^^^^^^^^^^
@@ -93,11 +93,11 @@ Provide specific, high-level methods for common API operations (e.g., fetching d
 
 **Related Classes/Methods**:
 
-* `QName:`praw.reddit.Reddit.get` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py` <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/reddit.py#L0-L0>`_
-* `QName:`praw.reddit.Reddit.post` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py` <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/reddit.py#L0-L0>`_
-* `QName:`praw.reddit.Reddit.delete` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py` <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/reddit.py#L0-L0>`_
-* `QName:`praw.reddit.Reddit.patch` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py` <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/reddit.py#L0-L0>`_
-* `QName:`praw.reddit.Reddit.put` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py` <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/reddit.py#L0-L0>`_
+* `praw.reddit.Reddit.get <https://github.com/praw-dev/praw/blob/main/praw/reddit.py>`_
+* `praw.reddit.Reddit.post <https://github.com/praw-dev/praw/blob/main/praw/reddit.py>`_
+* `praw.reddit.Reddit.delete <https://github.com/praw-dev/praw/blob/main/praw/reddit.py>`_
+* `praw.reddit.Reddit.patch <https://github.com/praw-dev/praw/blob/main/praw/reddit.py>`_
+* `praw.reddit.Reddit.put <https://github.com/praw-dev/praw/blob/main/praw/reddit.py>`_
 
 Async Checker
 ^^^^^^^^^^^^^
@@ -106,7 +106,7 @@ Manages and verifies the asynchronous context for operations, ensuring proper ex
 
 **Related Classes/Methods**:
 
-* `QName:`praw.reddit._check_for_async` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py`, Lines:(388:411) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/reddit.py#L388-L411>`_
+* `praw.reddit._check_for_async:388-411 <https://github.com/praw-dev/praw/blob/main/praw/reddit.py#L388-L411>`_
 
 
 FAQ

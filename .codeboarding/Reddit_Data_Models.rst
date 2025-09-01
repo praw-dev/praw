@@ -1,5 +1,5 @@
-High-level diagram representation of: praw
-==========================================
+Reddit Data Models
+==================
 
 .. mermaid::
 
@@ -23,7 +23,7 @@ High-level diagram representation of: praw
 | |codeboarding-badge| |demo-badge| |contact-badge|
 
 .. |codeboarding-badge| image:: https://img.shields.io/badge/Generated%20by-CodeBoarding-9cf?style=flat-square
-   :target: https://github.com/CodeBoarding/GeneratedOnBoardings
+   :target: https://github.com/CodeBoarding/CodeBoarding
 .. |demo-badge| image:: https://img.shields.io/badge/Try%20our-Demo-blue?style=flat-square
    :target: https://www.codeboarding.org/demo
 .. |contact-badge| image:: https://img.shields.io/badge/Contact%20us%20-%20contact@codeboarding.org-lightgrey?style=flat-square
@@ -41,7 +41,7 @@ Manages subreddit data, submissions, moderation, flair, and style. It acts as a 
 
 **Related Classes/Methods**:
 
-* `QName:`praw.models.reddit.subreddit.Subreddit` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/subreddit.py` <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/models/reddit/subreddit.py#L2446-L2446>`_
+* `praw.models.reddit.subreddit.Subreddit <https://github.com/praw-dev/praw/blob/main/praw/models/reddit/subreddit.py>`_
 
 Submission
 ^^^^^^^^^^
@@ -50,7 +50,7 @@ Encapsulates Reddit post data, including content, flair, and moderation status. 
 
 **Related Classes/Methods**:
 
-* `QName:`praw.models.reddit.submission.Submission` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/submission.py` <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/models/reddit/submission.py#L716-L716>`_
+* `praw.models.reddit.submission.Submission <https://github.com/praw-dev/praw/blob/main/praw/models/reddit/submission.py>`_
 
 Comment
 ^^^^^^^
@@ -59,7 +59,7 @@ Manages individual comment data, including its content, author, and hierarchical
 
 **Related Classes/Methods**:
 
-* `QName:`Comment` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py`, Lines:(582:596) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/reddit.py#L582-L596>`_
+* `Comment:582-596 <https://github.com/praw-dev/praw/blob/main/praw/reddit.py#L582-L596>`_
 
 Redditor
 ^^^^^^^^
@@ -68,7 +68,7 @@ Provides access to user-specific information, including profile details, submitt
 
 **Related Classes/Methods**:
 
-* `QName:`Redditor` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py`, Lines:(810:819) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/reddit.py#L810-L819>`_
+* `Redditor:810-819 <https://github.com/praw-dev/praw/blob/main/praw/reddit.py#L810-L819>`_
 
 VotableMixin
 ^^^^^^^^^^^^
@@ -77,7 +77,7 @@ A mixin class that provides common voting functionality (upvote, downvote, clear
 
 **Related Classes/Methods**:
 
-* `QName:`VotableMixin` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/mixins/votable.py`, Lines:(8:92) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/models/reddit/mixins/votable.py#L8-L92>`_
+* `VotableMixin:8-92 <https://github.com/praw-dev/praw/blob/main/praw/models/reddit/mixins/votable.py#L8-L92>`_
 
 Modmail
 ^^^^^^^
@@ -86,7 +86,7 @@ Represents a modmail conversation, facilitating communication between moderators
 
 **Related Classes/Methods**:
 
-* `QName:`Modmail` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/subreddit.py`, Lines:(2627:2639) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/models/reddit/subreddit.py#L2627-L2639>`_
+* `Modmail:2627-2639 <https://github.com/praw-dev/praw/blob/main/praw/models/reddit/subreddit.py#L2627-L2639>`_
 
 LiveThread
 ^^^^^^^^^^
@@ -95,7 +95,7 @@ Manages data and interactions for Reddit Live Threads, which are real-time, even
 
 **Related Classes/Methods**:
 
-* `QName:`LiveThread` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/live.py`, Lines:(261:471) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/models/reddit/live.py#L261-L471>`_
+* `LiveThread:261-471 <https://github.com/praw-dev/praw/blob/main/praw/models/reddit/live.py#L261-L471>`_
 
 WikiPage
 ^^^^^^^^
@@ -104,7 +104,7 @@ Abstracts the content and moderation aspects of a Reddit Wiki Page. It allows fo
 
 **Related Classes/Methods**:
 
-* `QName:`WikiPage` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/wikipage.py`, Lines:(146:314) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/models/reddit/wikipage.py#L146-L314>`_
+* `WikiPage:146-314 <https://github.com/praw-dev/praw/blob/main/praw/models/reddit/wikipage.py#L146-L314>`_
 
 
 FAQ

@@ -1,5 +1,5 @@
-High-level diagram representation of: praw
-==========================================
+Object Transformation Layer
+===========================
 
 .. mermaid::
 
@@ -17,7 +17,7 @@ High-level diagram representation of: praw
 | |codeboarding-badge| |demo-badge| |contact-badge|
 
 .. |codeboarding-badge| image:: https://img.shields.io/badge/Generated%20by-CodeBoarding-9cf?style=flat-square
-   :target: https://github.com/CodeBoarding/GeneratedOnBoardings
+   :target: https://github.com/CodeBoarding/CodeBoarding
 .. |demo-badge| image:: https://img.shields.io/badge/Try%20our-Demo-blue?style=flat-square
    :target: https://www.codeboarding.org/demo
 .. |contact-badge| image:: https://img.shields.io/badge/Contact%20us%20-%20contact@codeboarding.org-lightgrey?style=flat-square
@@ -35,7 +35,7 @@ The central orchestrator of the transformation process, converting raw JSON resp
 
 **Related Classes/Methods**:
 
-* `QName:`praw.objector.Objector` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py`, Lines:(17:263) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/objector.py#L17-L263>`_
+* `praw.objector.Objector:17-263 <https://github.com/praw-dev/praw/blob/main/praw/objector.py#L17-L263>`_
 
 praw.objector.Objector:objectify
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -44,7 +44,7 @@ Implements the core recursive logic for data transformation, traversing raw JSON
 
 **Related Classes/Methods**:
 
-* `QName:`praw.objector.Objector:objectify` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py`, Lines:(199:279) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/objector.py#L199-L279>`_
+* `praw.objector.Objector:objectify:199-279 <https://github.com/praw-dev/praw/blob/main/praw/objector.py#L199-L279>`_
 
 praw.objector.Objector:_objectify_dict
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -53,7 +53,7 @@ A specialized helper method for `objectify`, focusing on converting individual d
 
 **Related Classes/Methods**:
 
-* `QName:`praw.objector.Objector:_objectify_dict` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py`, Lines:(46:197) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/objector.py#L46-L197>`_
+* `praw.objector.Objector:_objectify_dict:46-197 <https://github.com/praw-dev/praw/blob/main/praw/objector.py#L46-L197>`_
 
 praw.objector.Objector:check_error
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -62,7 +62,7 @@ Responsible for scanning API responses for error indicators and delegating to `p
 
 **Related Classes/Methods**:
 
-* `QName:`praw.objector.Objector:check_error` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py`, Lines:(6:11) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/objector.py#L6-L11>`_
+* `praw.objector.Objector:check_error:6-11 <https://github.com/praw-dev/praw/blob/main/praw/objector.py#L6-L11>`_
 
 praw.objector.Objector:parse_error
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -71,7 +71,7 @@ Interprets raw error data from the API response, converting it into a structured
 
 **Related Classes/Methods**:
 
-* `QName:`praw.objector.Objector:parse_error` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py`, Lines:(13:44) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/objector.py#L13-L44>`_
+* `praw.objector.Objector:parse_error:13-44 <https://github.com/praw-dev/praw/blob/main/praw/objector.py#L13-L44>`_
 
 
 FAQ

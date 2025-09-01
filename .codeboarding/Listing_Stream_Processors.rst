@@ -1,5 +1,5 @@
-High-level diagram representation of: praw
-==========================================
+Listing Stream Processors
+=========================
 
 .. mermaid::
 
@@ -24,7 +24,7 @@ High-level diagram representation of: praw
 | |codeboarding-badge| |demo-badge| |contact-badge|
 
 .. |codeboarding-badge| image:: https://img.shields.io/badge/Generated%20by-CodeBoarding-9cf?style=flat-square
-   :target: https://github.com/CodeBoarding/GeneratedOnBoardings
+   :target: https://github.com/CodeBoarding/CodeBoarding
 .. |demo-badge| image:: https://img.shields.io/badge/Try%20our-Demo-blue?style=flat-square
    :target: https://www.codeboarding.org/demo
 .. |contact-badge| image:: https://img.shields.io/badge/Contact%20us%20-%20contact@codeboarding.org-lightgrey?style=flat-square
@@ -42,7 +42,7 @@ Provides an iterable interface for consuming paginated API responses. It manages
 
 **Related Classes/Methods**:
 
-* `QName:`ListingGenerator` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/models/listing/generator.py`, Lines:(17:103) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/models/listing/generator.py#L17-L103>`_
+* `ListingGenerator:17-103 <https://github.com/praw-dev/praw/blob/main/praw/models/listing/generator.py#L17-L103>`_
 
 ListingBatchFetcher
 ^^^^^^^^^^^^^^^^^^^
@@ -51,7 +51,7 @@ Responsible for fetching a single batch of items from the Reddit API using the u
 
 **Related Classes/Methods**:
 
-* `QName:`ListingBatchFetcher` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/models/listing/generator.py`, Lines:(1:1000) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/models/listing/generator.py#L1-L1000>`_
+* `ListingBatchFetcher:1-1000 <https://github.com/praw-dev/praw/blob/main/praw/models/listing/generator.py#L1-L1000>`_
 
 ListingDataExtractor
 ^^^^^^^^^^^^^^^^^^^^
@@ -60,7 +60,7 @@ Parses the raw JSON response received from the API, isolating and returning the 
 
 **Related Classes/Methods**:
 
-* `QName:`ListingDataExtractor` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/models/listing/generator.py`, Lines:(1:1000) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/models/listing/generator.py#L1-L1000>`_
+* `ListingDataExtractor:1-1000 <https://github.com/praw-dev/praw/blob/main/praw/models/listing/generator.py#L1-L1000>`_
 
 ListingParameterMixin
 ^^^^^^^^^^^^^^^^^^^^^
@@ -69,7 +69,7 @@ Provides common methods for constructing API paths and parameters required for v
 
 **Related Classes/Methods**:
 
-* `QName:`ListingParameterMixin` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/models/listing/mixins/base.py`, Lines:(1:1000) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/models/listing/mixins/base.py#L1-L1000>`_
+* `ListingParameterMixin:1-1000 <https://github.com/praw-dev/praw/blob/main/praw/models/listing/mixins/base.py#L1-L1000>`_
 
 StreamProcessor
 ^^^^^^^^^^^^^^^
@@ -78,7 +78,7 @@ Implements the foundational logic for consuming continuous data streams from the
 
 **Related Classes/Methods**:
 
-* `QName:`StreamProcessor` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/models/util.py`, Lines:(1:1000) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/models/util.py#L1-L1000>`_
+* `StreamProcessor:1-1000 <https://github.com/praw-dev/praw/blob/main/praw/models/util.py#L1-L1000>`_
 
 StreamUniquenessManager
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -87,7 +87,7 @@ Maintains a limited set of recently seen items to ensure uniqueness within a dat
 
 **Related Classes/Methods**:
 
-* `QName:`StreamUniquenessManager` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/models/util.py`, Lines:(1:1000) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/models/util.py#L1-L1000>`_
+* `StreamUniquenessManager:1-1000 <https://github.com/praw-dev/praw/blob/main/praw/models/util.py#L1-L1000>`_
 
 StreamBackoffHandler
 ^^^^^^^^^^^^^^^^^^^^
@@ -96,7 +96,7 @@ Implements an exponential backoff strategy to manage delays between stream reque
 
 **Related Classes/Methods**:
 
-* `QName:`StreamBackoffHandler` FileRef: `/home/ubuntu/CodeBoarding/repo/praw/praw/models/util.py`, Lines:(1:1000) <https://github.com/CodeBoarding/praw/blob/main/.codeboarding/praw/models/util.py#L1-L1000>`_
+* `StreamBackoffHandler:1-1000 <https://github.com/praw-dev/praw/blob/main/praw/models/util.py#L1-L1000>`_
 
 
 FAQ
