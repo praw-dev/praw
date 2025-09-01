@@ -49,10 +49,11 @@ application. See :ref:`oauth` for information on using **installed** application
     :caption: Architecture Overview
 
     architecture_overview/overview
-    architecture_overview/API_Client_Core
-    architecture_overview/Object_Transformation_Layer
+    architecture_overview/Listing_Streaming
+    architecture_overview/Low_Level_API_Connector
+    architecture_overview/Object_Transformer
     architecture_overview/Reddit_Data_Models
-    architecture_overview/Listing_Stream_Processors
+    architecture_overview/Reddit_Client
 
 .. _tutorial:
 
