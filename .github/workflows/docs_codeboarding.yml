@@ -87,32 +87,32 @@ jobs:
           echo "JSON directory: ${{ steps.codeboarding.outputs.json_directory }}"
           echo "Has changes: ${{ steps.codeboarding.outputs.has_changes }}"
 
-      # Move .rst files from docs/architecture_overview/ to .codeboarding folder
-      - name: Move architecture overview .rst files
+      # Move .rst files from .codeboarding/ to docs/architecture_overview/ folder
+      - name: Move .rst files to architecture overview
         run: |
-          # Create .codeboarding directory if it doesn't exist
-          mkdir -p .codeboarding
+          # Create docs/architecture_overview directory if it doesn't exist
+          mkdir -p docs/architecture_overview
           
-          # Check if docs/architecture_overview/ exists and contains .rst files
-          if [ -d "docs/architecture_overview" ] && [ -n "$(find docs/architecture_overview -name '*.rst' -type f)" ]; then
-            echo "Moving .rst files from docs/architecture_overview/ to .codeboarding/"
+          # Check if .codeboarding/ exists and contains .rst files
+          if [ -d ".codeboarding" ] && [ -n "$(find .codeboarding -name '*.rst' -type f)" ]; then
+            echo "Moving .rst files from .codeboarding/ to docs/architecture_overview/"
             
-            # Copy .rst files to .codeboarding folder
-            cp docs/architecture_overview/*.rst .codeboarding/ 2>/dev/null || echo "No .rst files found to copy"
+            # Copy .rst files to docs/architecture_overview folder
+            cp .codeboarding/*.rst docs/architecture_overview/ 2>/dev/null || echo "No .rst files found to copy"
             
             # Also copy any subdirectories with .rst files
-            find docs/architecture_overview -type d -exec sh -c '
+            find .codeboarding -type d -exec sh -c '
               for dir do
                 if [ -n "$(find "$dir" -maxdepth 1 -name "*.rst" -type f)" ]; then
                   echo "Copying .rst files from $dir"
-                  cp "$dir"/*.rst .codeboarding/ 2>/dev/null || echo "No .rst files found in $dir"
+                  cp "$dir"/*.rst docs/architecture_overview/ 2>/dev/null || echo "No .rst files found in $dir"
                 fi
               done
             ' sh {} +
             
-            echo "Architecture overview .rst files moved successfully"
+            echo ".rst files moved to architecture overview successfully"
           else
-            echo "No docs/architecture_overview/ directory or .rst files found"
+            echo "No .codeboarding/ directory or .rst files found"
           fi
 
       # Check if we have any changes to commit
