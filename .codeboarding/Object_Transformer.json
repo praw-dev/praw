@@ -1,0 +1,107 @@
+{
+  "description": "The `Object Transformer` subsystem is primarily defined by the `praw.objector` module, specifically the `Objector` class and its associated methods. Its core responsibility is to convert raw JSON data received from the Reddit API into structured, type-safe PRAW Python objects, while also handling API-specific error detection and parsing.",
+  "components": [
+    {
+      "name": "Objector Class",
+      "description": "Acts as the central facade and orchestrator for the entire objectification process. It manages the conversion of various raw data types (dictionaries, lists, booleans, etc.) into their corresponding PRAW objects and integrates error checking.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.objector.Objector",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py",
+          "reference_start_line": 17,
+          "reference_end_line": 263
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Objector.objectify Method",
+      "description": "Serves as the main public entry point for initiating the transformation of raw data. It intelligently handles different input types (e.g., `None`, `list`, `bool`, `dict`) and directs the flow to appropriate internal methods, including an initial check for embedded API errors.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.objector.Objector:objectify",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "Objector._objectify_dict Method",
+      "description": "Specializes in converting dictionary-structured data, which is typical for Reddit API responses, into specific PRAW objects. It contains conditional logic to identify the precise type of Reddit object (e.g., `ModmailConversation`, `Subreddit`, `Redditor`) based on key fields and applies the relevant parsing logic.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.objector.Objector:_objectify_dict",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Objector.check_error Method",
+      "description": "Examines the raw input data to determine if it represents an API error response. If an error is detected, it triggers the raising of a `RedditAPIException`, ensuring that API-level issues are properly surfaced.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.objector.Objector:check_error",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "Objector.parse_error Method",
+      "description": "Extracts and formats detailed error messages from the raw API response, converting them into a structured `RedditAPIException` instance. This provides clear and actionable error information to the user.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.objector.Objector:parse_error",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": false
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "orchestrates",
+      "src_name": "Objector Class",
+      "dst_name": "Objector.objectify Method"
+    },
+    {
+      "relation": "orchestrates",
+      "src_name": "Objector Class",
+      "dst_name": "Objector._objectify_dict Method"
+    },
+    {
+      "relation": "orchestrates",
+      "src_name": "Objector Class",
+      "dst_name": "Objector.check_error Method"
+    },
+    {
+      "relation": "orchestrates",
+      "src_name": "Objector Class",
+      "dst_name": "Objector.parse_error Method"
+    },
+    {
+      "relation": "delegates to",
+      "src_name": "Objector.objectify Method",
+      "dst_name": "Objector._objectify_dict Method"
+    },
+    {
+      "relation": "invokes",
+      "src_name": "Objector.objectify Method",
+      "dst_name": "Objector.check_error Method"
+    },
+    {
+      "relation": "calls",
+      "src_name": "Objector.check_error Method",
+      "dst_name": "Objector.parse_error Method"
+    }
+  ]
+}

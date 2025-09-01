@@ -1,0 +1,230 @@
+{
+  "description": "The PRAW library's core architecture is centered around the `Reddit API Client`, which serves as the primary interface and orchestrator. This client initializes and manages key components such as the `Authentication Manager`, `HTTP Request Dispatcher`, `Response Object Mapper`, and `Rate Limiting Handler`. User interactions primarily occur through `Resource Accessors`, which expose Pythonic methods for Reddit resources. These accessors delegate API requests to the `HTTP Request Dispatcher`, which handles the actual communication with the Reddit API, incorporating authentication via the `Authentication Manager` and adhering to rate limits managed by the `Rate Limiting Handler`. Raw API responses are then processed by the `Response Object Mapper`, transforming them into structured Python objects before being returned to the `Resource Accessors` for application logic. This design ensures a clear separation of concerns, from API interaction to data transformation and resource management.",
+  "components": [
+    {
+      "name": "Reddit API Client",
+      "description": "The primary entry point and orchestrator for the entire PRAW library. It initializes and manages the lifecycle of other core components, providing a unified, high-level interface for accessing various Reddit resources.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.reddit.Reddit",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 57,
+          "reference_end_line": 901
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Authentication Manager",
+      "description": "Handles the setup and management of authentication with the Reddit API, supporting different OAuth flows and credential management. It configures the underlying HTTP client for authenticated requests.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.reddit.Reddit:_prepare_prawcore",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit:_prepare_untrusted_prawcore",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit:_prepare_trusted_prawcore",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit:_prepare_common_authorizer",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "HTTP Request Dispatcher",
+      "description": "Manages the end-to-end process of sending API requests. This includes preparing the request, dispatching it to the Reddit API, and handling the raw HTTP response. It integrates with the Rate Limiting Handler and may manage asynchronous operations.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.reddit.Reddit:_objectify_request",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit:request",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit:_check_for_async",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Response Object Mapper",
+      "description": "Transforms raw JSON responses received from the Reddit API into structured and usable Python objects (e.g., `Submission`, `Comment`, `Redditor`). This component abstracts away the complexities of JSON parsing and provides a consistent object-oriented view of Reddit data.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.reddit.Reddit:_prepare_objector",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Resource Accessors",
+      "description": "Provides a set of high-level, Pythonic methods for interacting with specific Reddit resources and performing common operations (e.g., fetching submissions, comments, or user profiles; performing GET/POST/PUT/DELETE requests). It also includes functionality for resolving Reddit URLs and generating lists of resources.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.reddit.Reddit:delete",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit:get",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit:patch",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit:post",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit:put",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit:username_available",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit:comment",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit:submission",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit:info",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit:generator",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        },
+        {
+          "qualified_name": "praw.reddit.Reddit:_resolve_share_url",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Rate Limiting Handler",
+      "description": "Monitors and enforces Reddit API rate limits. It pauses requests when necessary to prevent exceeding the allowed request frequency, ensuring compliance with API terms and preventing service interruptions.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.reddit.Reddit:_handle_rate_limit",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        }
+      ],
+      "can_expand": true
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "initializes and manages",
+      "src_name": "Reddit API Client",
+      "dst_name": "Authentication Manager"
+    },
+    {
+      "relation": "initializes and manages",
+      "src_name": "Reddit API Client",
+      "dst_name": "HTTP Request Dispatcher"
+    },
+    {
+      "relation": "initializes and manages",
+      "src_name": "Reddit API Client",
+      "dst_name": "Response Object Mapper"
+    },
+    {
+      "relation": "initializes and manages",
+      "src_name": "Reddit API Client",
+      "dst_name": "Rate Limiting Handler"
+    },
+    {
+      "relation": "exposes",
+      "src_name": "Reddit API Client",
+      "dst_name": "Resource Accessors"
+    },
+    {
+      "relation": "delegates API calls to",
+      "src_name": "Resource Accessors",
+      "dst_name": "HTTP Request Dispatcher"
+    },
+    {
+      "relation": "consults",
+      "src_name": "HTTP Request Dispatcher",
+      "dst_name": "Rate Limiting Handler"
+    },
+    {
+      "relation": "utilizes",
+      "src_name": "HTTP Request Dispatcher",
+      "dst_name": "Authentication Manager"
+    },
+    {
+      "relation": "passes raw responses to",
+      "src_name": "HTTP Request Dispatcher",
+      "dst_name": "Response Object Mapper"
+    },
+    {
+      "relation": "transforms responses and returns to",
+      "src_name": "Response Object Mapper",
+      "dst_name": "Resource Accessors"
+    },
+    {
+      "relation": "configures",
+      "src_name": "Authentication Manager",
+      "dst_name": "HTTP Request Dispatcher"
+    }
+  ]
+}

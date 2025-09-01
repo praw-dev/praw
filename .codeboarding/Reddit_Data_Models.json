@@ -1,0 +1,121 @@
+{
+  "description": "The `Reddit Data Models` subsystem, rooted in `praw.models.reddit`, provides a structured, Pythonic interface to various Reddit entities, abstracting the underlying API interactions. It aligns with the project's goal of offering a clean API Wrapper/Client Library by defining distinct objects for different Reddit resources.",
+  "components": [
+    {
+      "name": "praw.models.reddit.subreddit",
+      "description": "Manages subreddit properties, moderation, content submission, flair, styles, and user relationships. It serves as a central hub for all subreddit-specific operations.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.reddit.subreddit",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/subreddit.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "praw.models.reddit.submission",
+      "description": "Manages post details, flair, moderation, and comment retrieval. It encapsulates all functionalities related to a single Reddit post.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.reddit.submission",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/submission.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "praw.models.reddit.comment",
+      "description": "Handles comment moderation and navigation to its parent or submission. It provides an interface for interacting with individual comments.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.reddit.comment",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/comment.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "praw.models.reddit.redditor",
+      "description": "Manages user streams and friendship status. It provides an interface for interacting with Reddit user profiles.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.reddit.redditor",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/redditor.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "praw.models.reddit.modmail",
+      "description": "Parses and manages modmail conversations, providing functionality for interacting with Reddit's internal moderation messaging system.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.reddit.modmail",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/modmail.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "praw.models.reddit.live",
+      "description": "Manages Live Threads, handling invites, updates, and contributions for real-time event streams.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.reddit.live",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/live.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "praw.models.reddit.widgets",
+      "description": "Provides an interface for interacting with subreddit widgets, including moderation and creation of different widget types.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.reddit.widgets",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/widgets.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "praw.models.reddit.collections",
+      "description": "Manages post collections within a subreddit, providing an interface for creating, modifying, and retrieving curated groups of posts.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.reddit.collections",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/collections.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": false
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "retrieves associated",
+      "src_name": "praw.models.reddit.submission",
+      "dst_name": "praw.models.reddit.comment"
+    },
+    {
+      "relation": "accesses the parent",
+      "src_name": "praw.models.reddit.comment",
+      "dst_name": "praw.models.reddit.submission"
+    }
+  ]
+}
