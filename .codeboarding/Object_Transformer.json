@@ -11,8 +11,7 @@
           "reference_start_line": 17,
           "reference_end_line": 263
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Objector.objectify Method",
@@ -24,8 +23,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1
         }
-      ],
-      "can_expand": false
+      ]
     },
     {
       "name": "Objector._objectify_dict Method",
@@ -37,8 +35,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Objector.check_error Method",
@@ -50,8 +47,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1
         }
-      ],
-      "can_expand": false
+      ]
     },
     {
       "name": "Objector.parse_error Method",
@@ -63,8 +59,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1
         }
-      ],
-      "can_expand": false
+      ]
     }
   ],
   "components_relations": [

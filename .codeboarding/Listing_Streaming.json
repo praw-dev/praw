@@ -11,8 +11,7 @@
           "reference_start_line": 17,
           "reference_end_line": 103
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "BaseListingMixin",
@@ -24,8 +23,7 @@
           "reference_start_line": 15,
           "reference_end_line": 149
         }
-      ],
-      "can_expand": false
+      ]
     },
     {
       "name": "SubredditListingMixin",
@@ -37,8 +35,7 @@
           "reference_start_line": 49,
           "reference_end_line": 73
         }
-      ],
-      "can_expand": false
+      ]
     },
     {
       "name": "RedditorListingMixin",
@@ -50,8 +47,7 @@
           "reference_start_line": 35,
           "reference_end_line": 185
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "StreamGenerator",
@@ -63,8 +59,7 @@
           "reference_start_line": 36,
           "reference_end_line": 163
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "RedditorsStream",
@@ -76,8 +71,7 @@
           "reference_start_line": 93,
           "reference_end_line": 104
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "InboxStream",
@@ -89,8 +83,7 @@
           "reference_start_line": 229,
           "reference_end_line": 247
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "SubredditContentStream",
@@ -102,8 +95,7 @@
           "reference_start_line": 124,
           "reference_end_line": 133
         }
-      ],
-      "can_expand": false
+      ]
     }
   ],
   "components_relations": [

@@ -106,3 +106,9 @@ Represents the `stream` method within the `Subreddits` class, providing access t
 **Related Classes/Methods**:
 
 * `Subreddits.stream:124-133 <https://github.com/CodeBoarding/praw/blob/main/praw/models/subreddits.py#L124-L133>`_
+
+
+FAQ
+---
+
+`See the FAQ <https://github.com/CodeBoarding/GeneratedOnBoardings/tree/main?tab=readme-ov-file#faq>`_

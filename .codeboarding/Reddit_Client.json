@@ -11,8 +11,7 @@
           "reference_start_line": 57,
           "reference_end_line": 901
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Authentication Manager",
@@ -42,8 +41,7 @@
           "reference_start_line": 0,
           "reference_end_line": 0
         }
-      ],
-      "can_expand": false
+      ]
     },
     {
       "name": "HTTP Request Dispatcher",
@@ -67,8 +65,7 @@
           "reference_start_line": 0,
           "reference_end_line": 0
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Response Object Mapper",
@@ -80,8 +77,7 @@
           "reference_start_line": 0,
           "reference_end_line": 0
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Resource Accessors",
@@ -153,8 +149,7 @@
           "reference_start_line": 0,
           "reference_end_line": 0
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Rate Limiting Handler",
@@ -166,8 +161,7 @@
           "reference_start_line": 0,
           "reference_end_line": 0
         }
-      ],
-      "can_expand": true
+      ]
     }
   ],
   "components_relations": [

@@ -75,3 +75,9 @@ Extracts and formats detailed error messages from the raw API response, converti
 **Related Classes/Methods**:
 
 * `praw.objector.Objector:parse_error <https://github.com/CodeBoarding/praw/blob/main/praw/objector.py>`_
+
+
+FAQ
+---
+
+`See the FAQ <https://github.com/CodeBoarding/GeneratedOnBoardings/tree/main?tab=readme-ov-file#faq>`_

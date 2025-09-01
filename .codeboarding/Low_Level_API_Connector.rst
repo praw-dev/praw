@@ -84,3 +84,9 @@ Handles the loading, parsing, and management of configuration settings (e.g., cl
 **Related Classes/Methods**:
 
 * `praw.config <https://github.com/CodeBoarding/praw/blob/main/praw/config.py>`_
+
+
+FAQ
+---
+
+`See the FAQ <https://github.com/CodeBoarding/GeneratedOnBoardings/tree/main?tab=readme-ov-file#faq>`_

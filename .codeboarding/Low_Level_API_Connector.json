@@ -11,8 +11,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Low-Level API Connector",
@@ -24,8 +23,7 @@
           "reference_start_line": 527,
           "reference_end_line": 546
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Authentication Module",
@@ -37,8 +35,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Data Models/Objects",
@@ -56,8 +53,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Configuration Management",
@@ -69,8 +65,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1
         }
-      ],
-      "can_expand": true
+      ]
     }
   ],
   "components_relations": [

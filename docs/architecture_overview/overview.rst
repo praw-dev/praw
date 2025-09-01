@@ -101,3 +101,9 @@ Provides mechanisms for efficiently retrieving and iterating over collections of
 **Related Classes/Methods**:
 
 * `praw.models.listing <https://github.com/CodeBoarding/praw/blob/main/praw/models/listing>`_
+
+
+FAQ
+---
+
+`See the FAQ <https://github.com/CodeBoarding/GeneratedOnBoardings/tree/main?tab=readme-ov-file#faq>`_
