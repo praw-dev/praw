@@ -10,6 +10,7 @@ Overview
       Object_Transformer["Object Transformer"]
       Reddit_Data_Models["Reddit Data Models"]
       Listing_Streaming["Listing & Streaming"]
+      Unclassified["Unclassified"]
       Reddit_Client -- "loads settings from" --> Configuration_Manager
       Reddit_Client -- "delegates requests to" --> Low_Level_API_Connector
       Low_Level_API_Connector -- "returns raw response to" --> Reddit_Client
@@ -19,6 +20,7 @@ Overview
       Listing_Streaming -- "fetches data via" --> Reddit_Client
       Listing_Streaming -- "generates" --> Reddit_Data_Models
       click Reddit_Client href "https://github.com/CodeBoarding/praw/blob/main/.codeboarding/Reddit_Client.html" "Details"
+      click Configuration_Manager href "https://github.com/CodeBoarding/praw/blob/main/.codeboarding/Configuration_Manager.html" "Details"
       click Low_Level_API_Connector href "https://github.com/CodeBoarding/praw/blob/main/.codeboarding/Low_Level_API_Connector.html" "Details"
       click Object_Transformer href "https://github.com/CodeBoarding/praw/blob/main/.codeboarding/Object_Transformer.html" "Details"
       click Reddit_Data_Models href "https://github.com/CodeBoarding/praw/blob/main/.codeboarding/Reddit_Data_Models.html" "Details"
@@ -51,6 +53,8 @@ The primary interface for interacting with the Reddit API, managing authenticati
 
 Configuration Manager
 ^^^^^^^^^^^^^^^^^^^^^
+
+:ref:`Expand <Configuration_Manager>`
 
 Manages loading and accessing PRAW's configuration settings.
 
@@ -102,8 +106,9 @@ Provides mechanisms for efficiently retrieving and iterating over collections of
 
 * `praw.models.listing <https://github.com/CodeBoarding/praw/blob/main/praw/models/listing>`_
 
+Unclassified
+^^^^^^^^^^^^
 
-FAQ
----
+Component for all unclassified files and utility functions (Utility functions/External Libraries/Dependencies)
 
-`See the FAQ <https://github.com/CodeBoarding/GeneratedOnBoardings/tree/main?tab=readme-ov-file#faq>`_
+**Related Classes/Methods**: *None*

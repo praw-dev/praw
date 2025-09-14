@@ -12,6 +12,11 @@
           "reference_end_line": 1
         }
       ],
+      "assigned_files": [
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/reddit.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/endpoints.py"
+      ],
       "can_expand": true
     },
     {
@@ -25,7 +30,10 @@
           "reference_end_line": 1
         }
       ],
-      "can_expand": false
+      "assigned_files": [
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/config.py"
+      ],
+      "can_expand": true
     },
     {
       "name": "Low-Level API Connector",
@@ -38,6 +46,7 @@
           "reference_end_line": 546
         }
       ],
+      "assigned_files": [],
       "can_expand": true
     },
     {
@@ -50,6 +59,9 @@
           "reference_start_line": 1,
           "reference_end_line": 1
         }
+      ],
+      "assigned_files": [
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/objector.py"
       ],
       "can_expand": true
     },
@@ -64,6 +76,57 @@
           "reference_end_line": 1
         }
       ],
+      "assigned_files": [
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/mod_note.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/base.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/util.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/front.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/preferences.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/redditors.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/mod_action.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/user.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/comment_forest.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/mod_notes.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/trophy.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/helpers.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/inbox.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/subreddits.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/stylesheet.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/auth.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/submission.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/widgets.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/base.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/subreddit.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/removal_reasons.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/draft.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/user_subreddit.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/rules.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/poll.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/redditor.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/modmail.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/comment.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/collections.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/emoji.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/more.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/multi.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/live.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/message.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/inline_media.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/wikipage.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/mixins/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/mixins/inboxtoggleable.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/mixins/inboxable.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/mixins/savable.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/mixins/reportable.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/mixins/fullname.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/mixins/messageable.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/mixins/modnote.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/mixins/replyable.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/mixins/editable.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/reddit/mixins/votable.py"
+      ],
       "can_expand": true
     },
     {
@@ -77,7 +140,49 @@
           "reference_end_line": 1
         }
       ],
+      "assigned_files": [
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/list/moderated.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/list/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/list/base.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/list/draft.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/list/redditor.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/list/trophy.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/listing/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/listing/domain.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/listing/listing.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/listing/generator.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/listing/mixins/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/listing/mixins/submission.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/listing/mixins/base.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/listing/mixins/subreddit.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/listing/mixins/redditor.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/models/listing/mixins/rising.py"
+      ],
       "can_expand": true
+    },
+    {
+      "name": "Unclassified",
+      "description": "Component for all unclassified files and utility functions (Utility functions/External Libraries/Dependencies)",
+      "referenced_source_code": [],
+      "assigned_files": [
+        "/home/ubuntu/CodeBoarding/repo/praw/pre_push.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/tools/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/tools/set_version.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/tools/set_active_docs.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/tools/static_word_checks.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/tools/bump_version.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/tools/check_documentation.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/tools/extract_log_entry.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/docs/conf.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/docs/examples/obtain_refresh_token.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/docs/examples/lmgtfy_bot.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/const.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/exceptions.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/util/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/util/cache.py",
+        "/home/ubuntu/CodeBoarding/repo/praw/praw/util/snake.py"
+      ],
+      "can_expand": false
     }
   ],
   "components_relations": [

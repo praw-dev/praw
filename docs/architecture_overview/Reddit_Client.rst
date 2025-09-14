@@ -104,9 +104,3 @@ Monitors and enforces Reddit API rate limits. It pauses requests when necessary 
 **Related Classes/Methods**:
 
 * `praw.reddit.Reddit:_handle_rate_limit <https://github.com/CodeBoarding/praw/blob/main/praw/reddit.py>`_
-
-
-FAQ
----
-
-`See the FAQ <https://github.com/CodeBoarding/GeneratedOnBoardings/tree/main?tab=readme-ov-file#faq>`_

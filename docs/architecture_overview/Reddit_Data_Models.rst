@@ -100,9 +100,3 @@ Manages post collections within a subreddit, providing an interface for creating
 **Related Classes/Methods**:
 
 * `praw.models.reddit.collections <https://github.com/CodeBoarding/praw/blob/main/praw/models/reddit/collections.py>`_
-
-
-FAQ
----
-
-`See the FAQ <https://github.com/CodeBoarding/GeneratedOnBoardings/tree/main?tab=readme-ov-file#faq>`_
