@@ -95,6 +95,37 @@ class TestSubreddit(UnitTest):
         with pytest.raises(ServerError):
             reddit.subreddit("test").submit_image("Test", "/dev/null")
 
+    @mock.patch("praw.models.reddit.subreddit.Path.open", new_callable=mock.mock_open)
+    def test_upload_style_asset_500(self, _mock_open, reddit):
+        from prawcore.exceptions import ServerError
+        from requests.exceptions import HTTPError
+
+        http_response = mock.Mock()
+        http_response.status_code = 500
+
+        response = mock.Mock()
+        response.ok = True
+        response.raise_for_status = mock.Mock(
+            side_effect=HTTPError(response=http_response)
+        )
+
+        subreddit = reddit.subreddit("test")
+        stylesheet = subreddit.stylesheet
+
+        lease_response = {
+            "s3UploadLease": {
+                "action": "",
+                "fields": [
+                    {"name": "key", "value": "value"},
+                ],
+            }
+        }
+
+        with mock.patch.object(subreddit._reddit, "post", return_value=lease_response):
+            subreddit._reddit._core._requestor._http.post = mock.Mock(return_value=response)
+            with pytest.raises(ServerError):
+                stylesheet._upload_style_asset(image_path="/dev/null", image_type="banner")
+
     def test_notes_delete__invalid_args(self, reddit):
         with pytest.raises(TypeError) as excinfo:
             reddit.subreddit("SubTestBot1").mod.notes.delete(note_id="111")

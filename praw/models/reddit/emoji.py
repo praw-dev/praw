@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING, Any
 from praw.const import API_PATH
 from praw.exceptions import ClientException
 from praw.models.reddit.base import RedditBase
+from prawcore.exceptions import ServerError
+from requests.exceptions import HTTPError
 
 if TYPE_CHECKING:
     import praw
@@ -220,7 +222,10 @@ class SubredditEmoji:
 
         with file.open("rb") as image:
             response = self._reddit._core._requestor._http.post(upload_url, data=upload_data, files={"file": image})
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except HTTPError as err:
+            raise ServerError(response=err.response) from None
 
         data = {
             "mod_flair_only": mod_flair_only,

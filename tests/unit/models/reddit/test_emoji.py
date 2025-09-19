@@ -1,4 +1,5 @@
 import pickle
+from unittest import mock
 
 import pytest
 
@@ -67,6 +68,38 @@ class TestEmoji(UnitTest):
         with pytest.raises(TypeError) as excinfo:
             emoji.update()
         assert str(excinfo.value) == "At least one attribute must be provided"
+
+    @mock.patch("praw.models.reddit.emoji.Path.open", new_callable=mock.mock_open)
+    def test_add_emoji_500(self, _mock_open, reddit):
+        from prawcore.exceptions import ServerError
+        from requests.exceptions import HTTPError
+
+        http_response = mock.Mock()
+        http_response.status_code = 500
+
+        response = mock.Mock()
+        response.ok = True
+        response.raise_for_status = mock.Mock(
+            side_effect=HTTPError(response=http_response)
+        )
+
+        subreddit = reddit.subreddit("test")
+
+        lease_response = {
+            "s3UploadLease": {
+                "action": "",
+                "fields": [
+                    {"name": "key", "value": "value"},
+                ],
+            }
+        }
+
+        post_mock = mock.Mock(side_effect=[lease_response, None])
+
+        with mock.patch.object(subreddit._reddit, "post", post_mock):
+            subreddit._reddit._core._requestor._http.post = mock.Mock(return_value=response)
+            with pytest.raises(ServerError):
+                subreddit.emoji.add(name="emoji", image_path="/dev/null")
 
 
 class TestSubredditEmoji(UnitTest):
