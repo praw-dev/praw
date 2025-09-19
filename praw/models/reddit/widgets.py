@@ -10,6 +10,8 @@ from praw.const import API_PATH
 from praw.models.base import PRAWBase
 from praw.models.list.base import BaseList
 from praw.util.cache import cachedproperty
+from prawcore.exceptions import ServerError
+from requests.exceptions import HTTPError
 
 if TYPE_CHECKING:
     import praw.models
@@ -1833,6 +1835,9 @@ class SubredditWidgetsModeration:
 
         with file.open("rb") as image:
             response = self._reddit._core._requestor._http.post(upload_url, data=upload_data, files={"file": image})
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except HTTPError as err:
+            raise ServerError(response=err.response) from None
 
         return f"{upload_url}/{upload_data['key']}"
