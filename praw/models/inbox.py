@@ -191,7 +191,7 @@ class Inbox(PRAWBase):
         listing = self._reddit.get(API_PATH["message"].format(id=message_id))
         messages = {message.fullname: message for message in [listing[0], *listing[0].replies]}
         for _fullname, message in messages.items():
-            message.parent = messages.get(message.parent_id, None)
+            message.parent = messages.get(message.parent_id)
         return messages[f"t4_{message_id.lower()}"]
 
     def messages(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.Message]:
