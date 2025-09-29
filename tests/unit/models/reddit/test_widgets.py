@@ -54,7 +54,7 @@ class TestWidget(UnitTest):
         assert hash(widget1) == hash(widget3)
 
 
-class TestWidgets(UnitTest):
+class TestSubredditWidgets(UnitTest):
     def test_bad_attribute(self, reddit):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets

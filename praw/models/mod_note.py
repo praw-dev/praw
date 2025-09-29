@@ -45,7 +45,7 @@ class ModNote(PRAWBase):
 
     """
 
-    def __eq__(self, other: ModNote) -> bool:
+    def __eq__(self, other: ModNote | str | object) -> bool:
         """Return whether the other instance equals the current."""
         if isinstance(other, self.__class__):
             return self.id == other.id

@@ -166,8 +166,6 @@ class WikiPage(RedditBase):
 
     """
 
-    __hash__ = RedditBase.__hash__
-
     @staticmethod
     def _revision_generator(
         *,

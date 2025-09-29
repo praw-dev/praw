@@ -40,6 +40,13 @@ except ImportError:  # pragma: no cover
     UPDATE_CHECKER_MISSING = True
 
 if TYPE_CHECKING:
+    import sys
+
+    if sys.version_info >= (3, 11):
+        from typing import Self
+    else:
+        from typing_extensions import Self
+
     from collections.abc import Generator, Iterable
 
     import prawcore
@@ -484,6 +491,7 @@ class Reddit:
             self.config.kinds["submission"]: models.Submission,
             self.config.kinds["subreddit"]: models.Subreddit,
             self.config.kinds["trophy"]: models.Trophy,
+            # "Announcement": models.Announcement,
             "Button": models.Button,
             "Collection": models.Collection,
             "Draft": models.Draft,

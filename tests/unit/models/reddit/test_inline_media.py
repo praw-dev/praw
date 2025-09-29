@@ -34,7 +34,6 @@ class TestInlineMedia(UnitTest):
         assert hash(media2) != hash(media3)
         assert hash(media1) != hash(media3)
 
-
     def test_pickle(self):
         media = InlineMedia(path="path1", caption="caption1")
         for level in range(pickle.HIGHEST_PROTOCOL + 1):
