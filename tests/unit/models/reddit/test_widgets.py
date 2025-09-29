@@ -1,4 +1,5 @@
 from json import dumps
+from unittest import mock
 
 import pytest
 from pytest import raises
@@ -81,3 +82,36 @@ class TestWidgets(UnitTest):
         widget = Widget(reddit, {})
         assert isinstance(widget.mod, WidgetModeration)
         assert widget.mod.widget == widget
+
+
+class TestSubredditWidgetsModeration(UnitTest):
+    @mock.patch("praw.models.reddit.widgets.Path.open", new_callable=mock.mock_open)
+    def test_upload_image_500(self, _mock_open, reddit):
+        from prawcore.exceptions import ServerError
+        from requests.exceptions import HTTPError
+
+        http_response = mock.Mock()
+        http_response.status_code = 500
+
+        response = mock.Mock()
+        response.ok = True
+        response.raise_for_status = mock.Mock(
+            side_effect=HTTPError(response=http_response)
+        )
+
+        subreddit = reddit.subreddit("test")
+        widgets_mod = subreddit.widgets.mod
+
+        lease_response = {
+            "s3UploadLease": {
+                "action": "",
+                "fields": [
+                    {"name": "key", "value": "value"},
+                ],
+            }
+        }
+
+        with mock.patch.object(widgets_mod._reddit, "post", return_value=lease_response):
+            widgets_mod._reddit._core._requestor._http.post = mock.Mock(return_value=response)
+            with pytest.raises(ServerError):
+                widgets_mod.upload_image("/dev/null")
