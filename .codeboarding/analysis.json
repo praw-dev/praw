@@ -13,7 +13,9 @@
         }
       ],
       "assigned_files": [
-        "praw/reddit.py"
+        "praw/reddit.py",
+        "praw/endpoints.py",
+        "praw/models/auth.py"
       ],
       "can_expand": true
     },
@@ -31,7 +33,7 @@
       "assigned_files": [
         "praw/config.py"
       ],
-      "can_expand": true
+      "can_expand": false
     },
     {
       "name": "Low-Level API Connector",
@@ -78,7 +80,6 @@
         "praw/models/__init__.py",
         "praw/models/mod_note.py",
         "praw/models/base.py",
-        "praw/models/util.py",
         "praw/models/front.py",
         "praw/models/preferences.py",
         "praw/models/redditors.py",
@@ -87,11 +88,9 @@
         "praw/models/comment_forest.py",
         "praw/models/mod_notes.py",
         "praw/models/trophy.py",
-        "praw/models/helpers.py",
         "praw/models/inbox.py",
         "praw/models/subreddits.py",
         "praw/models/stylesheet.py",
-        "praw/models/auth.py",
         "praw/models/list/moderated.py",
         "praw/models/list/__init__.py",
         "praw/models/list/base.py",
@@ -176,12 +175,20 @@
         "docs/examples/lmgtfy_bot.py",
         "praw/__init__.py",
         "praw/const.py",
-        "praw/endpoints.py",
         "praw/exceptions.py",
         "praw/util/__init__.py",
         "praw/util/cache.py",
-        "praw/util/snake.py"
+        "praw/util/snake.py",
+        "praw/models/util.py",
+        "praw/models/helpers.py"
       ],
+      "can_expand": false
+    },
+    {
+      "name": "Unclassified",
+      "description": "Component for all unclassified files and utility functions (Utility functions/External Libraries/Dependencies)",
+      "referenced_source_code": [],
+      "assigned_files": [],
       "can_expand": false
     },
     {
