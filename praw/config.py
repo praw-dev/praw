@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import configparser
-import importlib
 import importlib.resources
 import os
 from pathlib import Path
