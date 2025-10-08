@@ -128,7 +128,7 @@ please tag submissions with *[PRAW]*. Please perform a search on the subreddit f
 see if anyone has similar questions.
 
 Real-time chat can be conducted via the `PRAW Slack Organization
-<https://join.slack.com/t/praw/shared_invite/enQtOTUwMDcxOTQ0NzY5LWVkMGQ3ZDk5YmQ5MDEwYTZmMmJkMTJkNjBkNTY3OTU0Y2E2NGRlY2ZhZTAzMWZmMWRiMTMwYjdjODkxOGYyZjY>`_
+<https://join.slack.com/t/praw/shared_invite/zt-3d5lbcs51-VB1xRhRok0OZ1vyYquWb2A>`_
 (please create an issue if that invite link has expired).
 
 Please do not directly message any of the contributors via Reddit, email, or Slack
