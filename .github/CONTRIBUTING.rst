@@ -128,6 +128,6 @@ Please also read `Contributing to PRAW`_.
 
 .. _see here: https://praw.readthedocs.io/en/latest/package_info/contributing.html#install-development-dependencies
 
-.. _slack: https://join.slack.com/t/praw/shared_invite/enQtOTUwMDcxOTQ0NzY5LWVkMGQ3ZDk5YmQ5MDEwYTZmMmJkMTJkNjBkNTY3OTU0Y2E2NGRlY2ZhZTAzMWZmMWRiMTMwYjdjODkxOGYyZjY
+.. _slack: https://join.slack.com/t/praw/shared_invite/zt-3d5lbcs51-VB1xRhRok0OZ1vyYquWb2A
 
 .. _unreleased: https://github.com/praw-dev/praw/blob/main/CHANGES.rst#unreleased
