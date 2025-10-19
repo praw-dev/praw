@@ -13,8 +13,7 @@
         }
       ],
       "assigned_files": [
-        "praw/reddit.py",
-        "praw/endpoints.py"
+        "praw/reddit.py"
       ],
       "can_expand": true
     },
@@ -177,11 +176,19 @@
         "docs/examples/lmgtfy_bot.py",
         "praw/__init__.py",
         "praw/const.py",
+        "praw/endpoints.py",
         "praw/exceptions.py",
         "praw/util/__init__.py",
         "praw/util/cache.py",
         "praw/util/snake.py"
       ],
+      "can_expand": false
+    },
+    {
+      "name": "Unclassified",
+      "description": "Component for all unclassified files and utility functions (Utility functions/External Libraries/Dependencies)",
+      "referenced_source_code": [],
+      "assigned_files": [],
       "can_expand": false
     },
     {

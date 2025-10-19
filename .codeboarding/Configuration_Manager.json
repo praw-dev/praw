@@ -11,11 +11,7 @@
           "reference_start_line": 52,
           "reference_end_line": 52
         }
-      ],
-      "assigned_files": [
-        "praw/config.py"
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Reddit API Client",
@@ -27,16 +23,12 @@
           "reference_start_line": 57,
           "reference_end_line": 901
         }
-      ],
-      "assigned_files": [],
-      "can_expand": true
+      ]
     },
     {
       "name": "Unclassified",
       "description": "Component for all unclassified files and utility functions (Utility functions/External Libraries/Dependencies)",
-      "referenced_source_code": [],
-      "assigned_files": [],
-      "can_expand": false
+      "referenced_source_code": []
     }
   ],
   "components_relations": [
