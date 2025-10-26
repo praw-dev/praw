@@ -16,6 +16,7 @@ Overview
       Unclassified["Unclassified"]
       Unclassified["Unclassified"]
       Unclassified["Unclassified"]
+      Unclassified["Unclassified"]
       Reddit_Client -- "loads settings from" --> Configuration_Manager
       Reddit_Client -- "delegates requests to" --> Low_Level_API_Connector
       Low_Level_API_Connector -- "returns raw response to" --> Reddit_Client
@@ -110,6 +111,13 @@ Provides mechanisms for efficiently retrieving and iterating over collections of
 **Related Classes/Methods**:
 
 * `praw.models.listing <https://github.com/CodeBoarding/praw/blob/main/praw/models/listing>`_
+
+Unclassified
+^^^^^^^^^^^^
+
+Component for all unclassified files and utility functions (Utility functions/External Libraries/Dependencies)
+
+**Related Classes/Methods**: *None*
 
 Unclassified
 ^^^^^^^^^^^^
