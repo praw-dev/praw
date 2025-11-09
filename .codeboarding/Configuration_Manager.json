@@ -1,0 +1,104 @@
+{
+  "description": "The PRAW configuration subsystem, centered around the `Config` component, is responsible for loading and managing application settings from various sources like `praw.ini` files and environment variables. This `Config` component provides essential parameters, such as API endpoints and client credentials, to the `Reddit` client for general API interactions and to the `Authenticator` for handling user authentication flows. This clear separation ensures that configuration concerns are centralized, allowing other core components to focus on their primary responsibilities while maintaining access to necessary operational settings.",
+  "components": [
+    {
+      "name": "Config",
+      "description": "The central component of the Configuration Manager. It is responsible for orchestrating the loading of configuration settings from various sources (e.g., `praw.ini` files, environment variables), managing default values, and providing a unified interface for other parts of PRAW to access these settings. It ensures that critical parameters like client ID, client secret, user agent, and Reddit API URLs are readily available.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.config.Config",
+          "reference_file": "praw/config.py",
+          "reference_start_line": 52,
+          "reference_end_line": 52
+        },
+        {
+          "qualified_name": "praw.config.Config.__init__",
+          "reference_file": "praw/config.py",
+          "reference_start_line": 85,
+          "reference_end_line": 95
+        },
+        {
+          "qualified_name": "praw.config.Config._load_config",
+          "reference_file": "praw/config.py",
+          "reference_start_line": 44,
+          "reference_end_line": 71
+        },
+        {
+          "qualified_name": "praw.config.Config._fetch",
+          "reference_file": "praw/config.py",
+          "reference_start_line": 105,
+          "reference_end_line": 108
+        },
+        {
+          "qualified_name": "praw.config.Config._fetch_default",
+          "reference_file": "praw/config.py",
+          "reference_start_line": 110,
+          "reference_end_line": 113
+        },
+        {
+          "qualified_name": "praw.config.Config._fetch_or_not_set",
+          "reference_file": "praw/config.py",
+          "reference_start_line": 115,
+          "reference_end_line": 123
+        },
+        {
+          "qualified_name": "praw.config.Config._initialize_attributes",
+          "reference_file": "praw/config.py",
+          "reference_start_line": 125,
+          "reference_end_line": 173
+        }
+      ],
+      "assigned_files": [
+        "praw/config.py"
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Reddit",
+      "description": "The core client for interacting with the Reddit API. It utilizes the `Config` component to retrieve necessary configuration settings such as API URLs, client credentials, and user agent. It acts as the primary entry point for making requests to Reddit and managing user sessions.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.Reddit",
+          "reference_file": "praw/reddit.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        }
+      ],
+      "assigned_files": [],
+      "can_expand": true
+    },
+    {
+      "name": "Authenticator",
+      "description": "Handles the authentication process with Reddit, including OAuth flows and managing refresh tokens. It relies on the `Config` component to obtain authentication-related parameters like client ID, client secret, and redirect URI.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "praw.models.auth.Auth",
+          "reference_file": "praw/models/auth.py",
+          "reference_start_line": 11,
+          "reference_end_line": 125
+        }
+      ],
+      "assigned_files": [],
+      "can_expand": true
+    },
+    {
+      "name": "Unclassified",
+      "description": "Component for all unclassified files and utility functions (Utility functions/External Libraries/Dependencies)",
+      "referenced_source_code": [],
+      "assigned_files": [],
+      "can_expand": false
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "provides configuration to",
+      "src_name": "Config",
+      "dst_name": "Reddit"
+    },
+    {
+      "relation": "provides authentication configuration to",
+      "src_name": "Config",
+      "dst_name": "Authenticator"
+    }
+  ]
+}
