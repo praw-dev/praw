@@ -1,5 +1,6 @@
-Submission Stream Reply Bot
-===========================
+#############################
+ Submission Stream Reply Bot
+#############################
 
 Most redditors have seen bots in action on the site. Reddit bots can perform a number of
 tasks including providing useful information, e.g., an Imperial to Metric units bot;
@@ -21,8 +22,9 @@ There are three key components we will address to perform this task:
 2. Analyze the title of each submission to see if it contains a simple question.
 3. Reply with an appropriate lmgtfy_ link.
 
-LMGTFY Bot
-----------
+************
+ LMGTFY Bot
+************
 
 The goal of the LMGTFY Bot is to point users in the right direction when they ask a
 simple question that is unlikely to be upvoted or answered by other users.
@@ -39,7 +41,7 @@ appropriate lmgtfy_ link. For the example questions those links are:
 2. https://lmgtfy.com/?q=How+many+feet+are+in+a+yard%3F
 
 Step 1: Getting Started
-~~~~~~~~~~~~~~~~~~~~~~~
+=======================
 
 Access to Reddit's API requires a set of OAuth2 credentials. Those credentials are
 obtained by registering an application with Reddit. To register an application and
@@ -71,7 +73,7 @@ that registered the application are required.
     <https://github.com/reddit/reddit/wiki/oauth2-app-types>`_.
 
 Step 2: Monitoring New Submissions to r/AskReddit
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=================================================
 
 PRAW provides a convenient way to obtain new submissions to a given subreddit. To
 indefinitely iterate over new submissions to a subreddit add:
@@ -91,7 +93,7 @@ from the special ``"all"`` subreddit by joining them with minuses (``-``), for e
 ``"all-excluded_subreddit1-excluded_subreddit2"``.
 
 Step 3: Analyzing the Submission Titles
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=======================================
 
 Now that we have a stream of new submissions to r/AskReddit, it is time to see if their
 titles contain a simple question. We naïvely define a simple question as:
@@ -132,7 +134,7 @@ submission. For instance, what would happen without the ``break`` if a submissio
 title was "Who is or what are buffalo?"?
 
 Step 4: Automatically Replying to the Submission
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================
 
 The LMGTFY Bot is nearly complete. We iterate through submissions and find ones that
 appear to be simple questions. All that is remaining is to reply to those submissions
@@ -173,7 +175,7 @@ you will likely run into rate limit issues. These rate limits will persist until
 account acquires sufficient karma.
 
 Step 5: Cleaning Up The Code
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+============================
 
 While we have a working bot, we have added little segments here and there. If we were to
 continue to do so in this fashion our code would be quite unreadable. Let's clean it up
@@ -220,7 +222,7 @@ executed:
     :lines: 40-
 
 The Complete LMGTFY Bot
-~~~~~~~~~~~~~~~~~~~~~~~
+=======================
 
 The following is the complete LMGTFY Bot:
 

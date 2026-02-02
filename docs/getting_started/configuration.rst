@@ -1,7 +1,8 @@
 .. _configuration:
 
-Configuring PRAW
-================
+##################
+ Configuring PRAW
+##################
 
 .. toctree::
     :maxdepth: 2
@@ -20,8 +21,9 @@ Configuration options can be provided to PRAW in one of three ways:
 Environment variables have the highest priority, followed by keyword arguments to
 :class:`.Reddit`, and finally settings in ``praw.ini`` files.
 
-Using an HTTP or HTTPS proxy with PRAW
---------------------------------------
+****************************************
+ Using an HTTP or HTTPS proxy with PRAW
+****************************************
 
 PRAW internally relies upon the requests_ package to handle HTTP requests. Requests
 supports use of ``HTTP_PROXY`` and ``HTTPS_PROXY`` environment variables in order to
@@ -38,8 +40,9 @@ variable can be provided on the command line like so:
 
     HTTPS_PROXY=http://localhost:3128 ./prawbot.py
 
-Configuring a custom requests Session
--------------------------------------
+***************************************
+ Configuring a custom requests Session
+***************************************
 
 PRAW uses requests_ to handle networking. If your use-case requires custom
 configuration, it is possible to configure a custom Session_ instance and then use it
@@ -54,7 +57,6 @@ certificate without an exception from requests_, first export the certificate as
 
     import praw
     from requests import Session
-
 
     session = Session()
     session.verify = "/path/to/certfile.pem"

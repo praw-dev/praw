@@ -1,5 +1,6 @@
-Logging in PRAW
-===============
+#################
+ Logging in PRAW
+#################
 
 It is occasionally useful to observe the HTTP requests that PRAW is issuing. To do so
 you have to configure and enable logging.

@@ -1,5 +1,6 @@
-PRAW: The Python Reddit API Wrapper
-===================================
+#####################################
+ PRAW: The Python Reddit API Wrapper
+#####################################
 
 .. image:: https://img.shields.io/pypi/v/praw.svg
     :alt: Latest PRAW Version
@@ -41,8 +42,9 @@ agent and you're set.
 
 .. _installation:
 
-Installation
-------------
+**************
+ Installation
+**************
 
 PRAW is supported on Python 3.9+. The recommended way to install PRAW is via `pip
 <https://pypi.python.org/pypi/pip>`_.
@@ -60,8 +62,9 @@ To install the latest development version of PRAW run the following instead:
 For instructions on installing Python and pip see "The Hitchhiker's Guide to Python"
 `Installation Guides <https://docs.python-guide.org/en/latest/starting/installation/>`_.
 
-Quickstart
-----------
+************
+ Quickstart
+************
 
 Assuming you already have a credentials for a script-type OAuth application you can
 instantiate an instance of PRAW like so:
@@ -104,16 +107,18 @@ With the ``reddit`` instance you can then interact with Reddit:
 Please see PRAW's `documentation <https://praw.readthedocs.io/>`_ for more examples of
 what you can do with PRAW.
 
-Discord Bots and Asynchronous Environments
-------------------------------------------
+********************************************
+ Discord Bots and Asynchronous Environments
+********************************************
 
 If you plan on using PRAW in an asynchronous environment, (e.g., discord.py, asyncio) it
 is strongly recommended to use `Async PRAW <https://asyncpraw.readthedocs.io/>`_. It is
 the official asynchronous version of PRAW and its usage is similar and has the same
 features as PRAW.
 
-PRAW Discussion and Support
----------------------------
+*****************************
+ PRAW Discussion and Support
+*****************************
 
 For those new to Python, or would otherwise consider themselves a Python beginner,
 please consider asking questions on the `r/learnpython
@@ -146,13 +151,15 @@ reaction. Comments to issues containing additional information are certainly wel
     <https://github.com/praw-dev/.github/blob/main/CODE_OF_CONDUCT.md>`_. By
     participating in this project you agree to abide by its terms.
 
-Documentation
--------------
+***************
+ Documentation
+***************
 
 PRAW's documentation is located at https://praw.readthedocs.io/.
 
-History
--------
+*********
+ History
+*********
 
 `August 2010
 <https://github.com/praw-dev/praw/commit/efef08a4a713fcfd7dfddf992097cf89426586ae>`_:
@@ -175,8 +182,9 @@ praw-dev organization on GitHub.
 <https://github.com/praw-dev/praw/commit/252083ef1dbfe6ea53c2dc99ac235b4ba330b658>`_:
 Bryce began work on PRAW4, a complete rewrite of PRAW.
 
-License
--------
+*********
+ License
+*********
 
 PRAW's source (v4.0.0+) is provided under the `Simplified BSD License
 <https://github.com/praw-dev/praw/blob/0860c11a9309c80621c267af7caeb6a993933744/LICENSE.txt>`_.

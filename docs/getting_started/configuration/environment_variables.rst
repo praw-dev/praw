@@ -1,7 +1,8 @@
 .. _environment_variables:
 
-PRAW Environment Variables
-==========================
+############################
+ PRAW Environment Variables
+############################
 
 The second-highest priority configuration options can be passed to a program via
 environment variables prefixed with ``praw_``.

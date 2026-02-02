@@ -1,7 +1,8 @@
 .. _oauth:
 
-Authenticating via OAuth
-========================
+##########################
+ Authenticating via OAuth
+##########################
 
 PRAW supports all three types of applications that can be registered on Reddit. Those
 are:
@@ -34,8 +35,9 @@ defines which application types can use which flows:
 
 .. _password_flow:
 
-Password Flow
--------------
+***************
+ Password Flow
+***************
 
 **Password Flow** is the simplest type of authentication flow to work with because no
 callback process is involved in obtaining an ``access_token``.
@@ -89,7 +91,7 @@ The output should contain the same name as you entered for ``username``.
 .. _2fa:
 
 Two-Factor Authentication
-~~~~~~~~~~~~~~~~~~~~~~~~~
+=========================
 
 A 2FA token can be used by joining it to the password with a colon:
 
@@ -113,8 +115,9 @@ be raised by API calls after one hour.
 
 .. _code_flow:
 
-Code Flow
----------
+***********
+ Code Flow
+***********
 
 A **code flow** application is useful for two primary purposes:
 
@@ -139,7 +142,7 @@ involved in obtaining access or refresh tokens.
 .. _auth_url:
 
 Obtain the Authorization URL
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+============================
 
 The first step to completing the **code flow** is to obtain the authorization URL. You
 can do that as follows:
@@ -182,8 +185,9 @@ one change: set the value of ``client_secret`` to ``None`` when initializing
 
 .. _implicit_flow:
 
-Implicit Flow
--------------
+***************
+ Implicit Flow
+***************
 
 The **implicit flow** requires a similar instantiation of the :class:`.Reddit` class as
 done in :ref:`code_flow`, however, the token is returned directly as part of the
@@ -198,8 +202,9 @@ instance.
 
 .. _read_only_application:
 
-Read-Only Mode
---------------
+****************
+ Read-Only Mode
+****************
 
 All application types support a read-only mode. Read-only mode provides access to Reddit
 like a logged out user would see including the default subreddits in the
@@ -221,14 +226,14 @@ Read-only mode can be toggled via:
     reddit.read_only = False
 
 Application-Only Flows
-~~~~~~~~~~~~~~~~~~~~~~
+======================
 
 The following flows are the **read-only mode** flows for Reddit applications
 
 .. _application_only_client_credentials_flow:
 
 Application-Only (Client Credentials)
-+++++++++++++++++++++++++++++++++++++
+-------------------------------------
 
 This is the default flow for **read-only mode** in script and web applications. The idea
 behind this is that Reddit *can* trust these applications as coming from a given
@@ -241,7 +246,7 @@ applications are not considered confidential clients.
 .. _application_only_installed_client_flow:
 
 Application-Only (Installed Client)
-+++++++++++++++++++++++++++++++++++
+-----------------------------------
 
 This is the default flow for **read-only mode** in installed applications. The idea
 behind this is that Reddit *might not be able* to trust these applications as coming
@@ -260,8 +265,9 @@ such as in installed applications where the end user could retrieve the ``client
 
 .. _using_refresh_tokens:
 
-Using a Saved Refresh Token
----------------------------
+*****************************
+ Using a Saved Refresh Token
+*****************************
 
 A saved refresh token can be used to immediately obtain an authorized instance of
 :class:`.Reddit` like so:

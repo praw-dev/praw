@@ -1,5 +1,6 @@
-Util
-====
+######
+ Util
+######
 
 .. autoclass:: praw.models.util.BoundedSet
     :inherited-members:

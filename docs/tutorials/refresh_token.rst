@@ -1,10 +1,12 @@
 .. _refresh_token:
 
-Working with Refresh Tokens
-===========================
+#############################
+ Working with Refresh Tokens
+#############################
 
-Reddit OAuth2 Scopes
---------------------
+**********************
+ Reddit OAuth2 Scopes
+**********************
 
 Before working with refresh tokens you should decide which scopes your application
 requires. If you want to use all scopes, you can use the special scope ``*``.
@@ -68,8 +70,9 @@ wikiedit         Edit wiki pages on my behalf
 wikiread         Read wiki pages through my account
 ================ ======================================================================
 
-Obtaining Refresh Tokens
-------------------------
+**************************
+ Obtaining Refresh Tokens
+**************************
 
 The following program can be used to obtain a refresh token with the desired scopes:
 

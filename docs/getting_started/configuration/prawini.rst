@@ -1,7 +1,8 @@
 .. _praw.ini:
 
-praw.ini Files
-==============
+################
+ praw.ini Files
+################
 
 PRAW comes with a ``praw.ini`` file in the package directory, and looks for user defined
 ``praw.ini`` files in a few other locations:
@@ -51,8 +52,9 @@ PRAW comes with a ``praw.ini`` file in the package directory, and looks for user
 
               print(os.environ.get("<variable>", ""))
 
-Format of praw.ini
-------------------
+********************
+ Format of praw.ini
+********************
 
 ``praw.ini`` uses the `INI file format <https://en.wikipedia.org/wiki/INI_file>`_, which
 can contain multiple groups of settings separated into sections. PRAW refers to each
@@ -69,8 +71,9 @@ The contents of the package's ``praw.ini`` file are:
     values in your own ``praw.ini`` file. You can even override settings of the
     ``DEFAULT`` site in user defined ``praw.ini`` files.
 
-Defining Additional Sites
--------------------------
+***************************
+ Defining Additional Sites
+***************************
 
 In addition to the ``DEFAULT`` site, additional sites can be configured in user defined
 ``praw.ini`` files. All sites inherit settings from the ``DEFAULT`` site and can
@@ -102,8 +105,9 @@ you have three separate bots, you might create a site for each:
     password=invalidlfo00esyy
     username=fakebot3
 
-Choosing a Site
----------------
+*****************
+ Choosing a Site
+*****************
 
 Site selection is done via the ``site_name`` parameter to :class:`.Reddit`. For example,
 to use the settings defined for ``bot2`` as shown above, initialize :class:`.Reddit`
@@ -121,8 +125,9 @@ like so:
 A site can also be selected via a ``praw_site`` environment variable. This approach has
 precedence over the ``site_name`` parameter described above.
 
-Using Interpolation
--------------------
+*********************
+ Using Interpolation
+*********************
 
 By default PRAW doesn't apply any interpolation on the config file but this can be
 changed with the ``config_interpolation`` parameter which can be set to "basic" or

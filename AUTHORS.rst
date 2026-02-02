@@ -1,12 +1,14 @@
-Maintainers
-===========
+#############
+ Maintainers
+#############
 
 - Bryce Boe <bbzbryce@gmail.com> `@bboe <https://github.com/bboe>`_
 - Joe RH <jarhill0@gmail.com> `@jarhill0 <https://github.com/jarhill0>`_
 - Joel Payne <lilspazjoekp@gmail.com> `@LilSpazJoekp <https://github.com/LilSpazJoekp>`_
 
-Documentation Contributors
-==========================
+############################
+ Documentation Contributors
+############################
 
 - Dale Cudmore <dalecudmore@gmail.com> `@DCuddies <https://github.com/DCuddies>`_
 - Zhifu Ge <zhifu@me.com> `@zhifuge <https://github.com/zhifuge>`_
@@ -34,13 +36,15 @@ Documentation Contributors
 - u/gkanor `@gkanor <https://github.com/gkanor>`_
 - Add "Name <email (optional)> and github profile link" above this line.
 
-Logo Creator
-============
+##############
+ Logo Creator
+##############
 
 - kungming2 `@kungming2 <https://github.com/kungming2>`_
 
-Source Contributors
-===================
+#####################
+ Source Contributors
+#####################
 
 - Ethan Dalool <edalool@yahoo.com> `@voussoir <https://github.com/voussoir>`_
 - William McKinnerney <me@williammck.net> `@williammck <https://github.com/williammck>`_

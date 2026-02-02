@@ -1,5 +1,6 @@
-PRAW: The Python Reddit API Wrapper
-===================================
+#####################################
+ PRAW: The Python Reddit API Wrapper
+#####################################
 
 PRAW's documentation is organized into the following sections:
 
@@ -8,8 +9,9 @@ PRAW's documentation is organized into the following sections:
 - :ref:`tutorial`
 - :ref:`package_info`
 
-Documentation Conventions
--------------------------
+***************************
+ Documentation Conventions
+***************************
 
 Unless otherwise mentioned, all examples in this document assume the use of a **script**
 application. See :ref:`oauth` for information on using **installed** applications and

@@ -1,5 +1,6 @@
-The Reddit Instance
-===================
+#####################
+ The Reddit Instance
+#####################
 
 .. autoclass:: praw.Reddit
     :inherited-members:

@@ -1,5 +1,6 @@
-Glossary
-========
+##########
+ Glossary
+##########
 
 .. _access_token:
 
@@ -14,27 +15,21 @@ Glossary
 
   Here is a list of the six different types of objects returned from Reddit:
 
-  .. _fullname_t1:
 
   - ``t1`` These objects represent :class:`.Comment`\ s.
 
-  .. _fullname_t2:
 
   - ``t2`` These objects represent :class:`.Redditor`\ s.
 
-  .. _fullname_t3:
 
   - ``t3`` These objects represent :class:`.Submission`\ s.
 
-  .. _fullname_t4:
 
   - ``t4`` These objects represent :class:`.Message`\ s.
 
-  .. _fullname_t5:
 
   - ``t5`` These objects represent :class:`.Subreddit`\ s.
 
-  .. _fullname_t6:
 
   - ``t6`` These objects represent :class:`.Trophy`\ s.
 

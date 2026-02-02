@@ -1,5 +1,6 @@
-Working with PRAW's Models
-==========================
+############################
+ Working with PRAW's Models
+############################
 
 .. toctree::
     :maxdepth: 2
