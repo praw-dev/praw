@@ -77,6 +77,7 @@ test = [
 
 [tool.docstrfmt]
 extend_exclude = ['./docs/examples/']
+section-adornments = "|=-~+.'\"`^_*:#"
 
 [tool.hatch.version]
 path = "praw/const.py"
@@ -100,7 +101,8 @@ ignore = [
   "PLR0913", # Too many arguments in function definition
   "PLR0915", # Too many statements
   "S101", # use of assert
-  "SLF001" # Private member accessed
+  "SLF001", # Private member accessed
+  "RUF067" # `__init__` module should only contain docstrings and re-exports
 ]
 select = [
   "A", # flake8-builtins
