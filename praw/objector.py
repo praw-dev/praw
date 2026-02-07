@@ -137,10 +137,12 @@ class Objector:
             parser = self.parsers["Image"]
         elif {"isSubscribed", "name", "subscribers"}.issubset(data):
             # discards icon and subscribed information
-            return self._reddit.subreddit(data["name"])
+            data["display_name"] = data["name"]
+            del data["name"]
+            parser = self.parsers[self._reddit.config.kinds["subreddit"]]
         elif {"authorFlairType", "name"}.issubset(data):
             # discards flair information
-            return self._reddit.redditor(data["name"])
+            parser = self.parsers[self._reddit.config.kinds["redditor"]]
         elif {"parent_id"}.issubset(data):
             parser = self.parsers[self._reddit.config.kinds["comment"]]
         elif "collection_id" in data:
@@ -177,9 +179,11 @@ class Objector:
                 draft["modified"] = datetime.fromtimestamp(draft["modified"] / 1000).astimezone()
             parser = self.parsers["DraftList"]
         elif {"mod_action_data", "user_note_data"}.issubset(data):
-            data["moderator"] = self._reddit.redditor(data["operator"])
-            data["subreddit"] = self._reddit.subreddit(data["subreddit"])
-            data["user"] = self._reddit.redditor(data["user"])
+            redditor_parser = self.parsers[self._reddit.config.kinds["redditor"]]
+            subreddit_parser = self.parsers[self._reddit.config.kinds["subreddit"]]
+            data["moderator"] = redditor_parser(self._reddit, data["operator"])
+            data["subreddit"] = subreddit_parser(self._reddit, data["subreddit"])
+            data["user"] = redditor_parser(self._reddit, data["user"])
             # move these sub dict values into the main dict for simplicity
             data.update(data["mod_action_data"])
             del data["mod_action_data"]

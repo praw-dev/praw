@@ -16,44 +16,6 @@ from praw.reddit import Subreddit
 from ... import UnitTest
 
 
-class TestWidgetEncoder(UnitTest):
-    def test_bad_encode(self, reddit):
-        data = [
-            1,
-            "two",
-            SubredditWidgetsModeration(reddit.subreddit("subreddit"), reddit),
-        ]
-        with raises(TypeError):
-            dumps(data, cls=WidgetEncoder)  # should throw TypeError
-
-    def test_good_encode(self, reddit):
-        data = [
-            1,
-            "two",
-            PRAWBase(reddit, _data={"_secret": "no", "3": 3}),
-            reddit.subreddit("four"),
-        ]
-        assert dumps(data, cls=WidgetEncoder) == '[1, "two", {"3": 3}, "four"]'
-
-
-class TestWidget(UnitTest):
-    def test_equality(self):
-        widget1 = Widget(None, {"id": "a"})
-        widget2 = Widget(None, {"id": "b"})
-        widget3 = Widget(None, {"id": "A"})
-        assert widget1 == widget1
-        assert widget1 != widget2
-        assert widget1 == widget3
-
-    def test_hash(self):
-        widget1 = Widget(None, {"id": "a"})
-        widget2 = Widget(None, {"id": "b"})
-        widget3 = Widget(None, {"id": "A"})
-        assert hash(widget1) == hash(widget1)
-        assert hash(widget1) != hash(widget2)
-        assert hash(widget1) == hash(widget3)
-
-
 class TestSubredditWidgets(UnitTest):
     def test_bad_attribute(self, reddit):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -81,3 +43,41 @@ class TestSubredditWidgets(UnitTest):
         widget = Widget(reddit, {})
         assert isinstance(widget.mod, WidgetModeration)
         assert widget.mod.widget == widget
+
+
+class TestWidget(UnitTest):
+    def test_equality(self):
+        widget1 = Widget(None, {"id": "a"})
+        widget2 = Widget(None, {"id": "b"})
+        widget3 = Widget(None, {"id": "A"})
+        assert widget1 == widget1
+        assert widget1 != widget2
+        assert widget1 == widget3
+
+    def test_hash(self):
+        widget1 = Widget(None, {"id": "a"})
+        widget2 = Widget(None, {"id": "b"})
+        widget3 = Widget(None, {"id": "A"})
+        assert hash(widget1) == hash(widget1)
+        assert hash(widget1) != hash(widget2)
+        assert hash(widget1) == hash(widget3)
+
+
+class TestWidgetEncoder(UnitTest):
+    def test_bad_encode(self, reddit):
+        data = [
+            1,
+            "two",
+            SubredditWidgetsModeration(reddit.subreddit("subreddit"), reddit),
+        ]
+        with raises(TypeError):
+            dumps(data, cls=WidgetEncoder)  # should throw TypeError
+
+    def test_good_encode(self, reddit):
+        data = [
+            1,
+            "two",
+            PRAWBase(reddit, _data={"_secret": "no", "3": 3}),
+            reddit.subreddit("four"),
+        ]
+        assert dumps(data, cls=WidgetEncoder) == '[1, "two", {"3": 3}, "four"]'

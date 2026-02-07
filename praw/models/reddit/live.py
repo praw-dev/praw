@@ -16,7 +16,8 @@ from praw.util.cache import cachedproperty
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
 
-    import praw.models
+    import praw
+    from praw import models
 
 
 class LiveContributorRelationship:
@@ -27,7 +28,7 @@ class LiveContributorRelationship:
         permissions = {"all"} if permissions is None else set(permissions)
         return ",".join(f"+{x}" for x in permissions)
 
-    def __call__(self) -> list[praw.models.Redditor]:
+    def __call__(self) -> list[models.Redditor]:
         """Return a :class:`.RedditorList` for live threads' contributors.
 
         Usage:
@@ -43,7 +44,7 @@ class LiveContributorRelationship:
         temp = self.thread._reddit.get(url)
         return temp if isinstance(temp, RedditorList) else temp[0]
 
-    def __init__(self, thread: praw.models.LiveThread) -> None:
+    def __init__(self, thread: models.LiveThread) -> None:
         """Initialize a :class:`.LiveContributorRelationship` instance.
 
         :param thread: An instance of :class:`.LiveThread`.
@@ -72,7 +73,7 @@ class LiveContributorRelationship:
 
     def invite(
         self,
-        redditor: str | praw.models.Redditor,
+        redditor: str | models.Redditor,
         *,
         permissions: list[str] | None = None,
     ) -> None:
@@ -124,7 +125,7 @@ class LiveContributorRelationship:
         url = API_PATH["live_leave"].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
-    def remove(self, redditor: str | praw.models.Redditor) -> None:
+    def remove(self, redditor: str | models.Redditor) -> None:
         """Remove the redditor from the live thread contributors.
 
         :param redditor: A redditor fullname (e.g., ``"t2_1w72"``) or :class:`.Redditor`
@@ -145,7 +146,7 @@ class LiveContributorRelationship:
         url = API_PATH["live_remove_contrib"].format(id=self.thread.id)
         self.thread._reddit.post(url, data=data)
 
-    def remove_invite(self, redditor: str | praw.models.Redditor) -> None:
+    def remove_invite(self, redditor: str | models.Redditor) -> None:
         """Remove the invite for redditor.
 
         :param redditor: A redditor fullname (e.g., ``"t2_1w72"``) or :class:`.Redditor`
@@ -173,7 +174,7 @@ class LiveContributorRelationship:
 
     def update(
         self,
-        redditor: str | praw.models.Redditor,
+        redditor: str | models.Redditor,
         *,
         permissions: list[str] | None = None,
     ) -> None:
@@ -216,7 +217,7 @@ class LiveContributorRelationship:
 
     def update_invite(
         self,
-        redditor: str | praw.models.Redditor,
+        redditor: str | models.Redditor,
         *,
         permissions: list[str] | None = None,
     ) -> None:
@@ -281,7 +282,7 @@ class LiveThread(RedditBase):
     STR_FIELD = "id"
 
     @cachedproperty
-    def contrib(self) -> praw.models.reddit.live.LiveThreadContribution:
+    def contrib(self) -> models.reddit.live.LiveThreadContribution:
         """Provide an instance of :class:`.LiveThreadContribution`.
 
         Usage:
@@ -295,7 +296,7 @@ class LiveThread(RedditBase):
         return LiveThreadContribution(self)
 
     @cachedproperty
-    def contributor(self) -> praw.models.reddit.live.LiveContributorRelationship:
+    def contributor(self) -> models.reddit.live.LiveContributorRelationship:
         """Provide an instance of :class:`.LiveContributorRelationship`.
 
         You can call the instance to get a list of contributors which is represented as
@@ -313,7 +314,7 @@ class LiveThread(RedditBase):
         return LiveContributorRelationship(self)
 
     @cachedproperty
-    def stream(self) -> praw.models.reddit.live.LiveThreadStream:
+    def stream(self) -> models.reddit.live.LiveThreadStream:
         """Provide an instance of :class:`.LiveThreadStream`.
 
         Streams are used to indefinitely retrieve new updates made to a live thread,
@@ -337,7 +338,7 @@ class LiveThread(RedditBase):
         """
         return LiveThreadStream(self)
 
-    def __eq__(self, other: str | praw.models.LiveThread) -> bool:
+    def __eq__(self, other: str | models.LiveThread) -> bool:
         """Return whether the other instance equals the current.
 
         .. note::
@@ -349,7 +350,7 @@ class LiveThread(RedditBase):
             return other == str(self)
         return isinstance(other, self.__class__) and str(self) == str(other)
 
-    def __getitem__(self, update_id: str) -> praw.models.LiveUpdate:
+    def __getitem__(self, update_id: str) -> models.LiveUpdate:
         """Return a lazy :class:`.LiveUpdate` instance.
 
         :param update_id: A live update ID, e.g.,
@@ -401,7 +402,7 @@ class LiveThread(RedditBase):
     def _fetch_info(self) -> tuple[str, dict[str, str], None]:
         return "liveabout", {"id": self.id}, None
 
-    def discussions(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.Submission]:
+    def discussions(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Submission]:
         """Get submissions linking to the thread.
 
         :param generator_kwargs: keyword arguments passed to :class:`.ListingGenerator`
@@ -443,7 +444,7 @@ class LiveThread(RedditBase):
         url = API_PATH["live_report"].format(id=self.id)
         self._reddit.post(url, data={"type": type})
 
-    def updates(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.LiveUpdate]:
+    def updates(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.LiveUpdate]:
         """Return a :class:`.ListingGenerator` yields :class:`.LiveUpdate` s.
 
         :param generator_kwargs: keyword arguments passed to :class:`.ListingGenerator`
@@ -474,7 +475,7 @@ class LiveThread(RedditBase):
 class LiveThreadContribution:
     """Provides a set of contribution functions to a :class:`.LiveThread`."""
 
-    def __init__(self, thread: praw.models.LiveThread) -> None:
+    def __init__(self, thread: models.LiveThread) -> None:
         """Initialize a :class:`.LiveThreadContribution` instance.
 
         :param thread: An instance of :class:`.LiveThread`.
@@ -577,7 +578,6 @@ class LiveThreadContribution:
         data = {key: getattr(thread, key) if value is None else value for key, value in settings.items()}
 
         url = API_PATH["live_update_thread"].format(id=self.thread.id)
-        # prawcore (0.7.0) Session.request() modifies `data` kwarg
         self.thread._reddit.post(url, data=data.copy())
         self.thread._reset_attributes(*data.keys())
 
@@ -594,7 +594,7 @@ class LiveThreadStream:
 
     """
 
-    def __init__(self, live_thread: praw.models.LiveThread) -> None:
+    def __init__(self, live_thread: models.LiveThread) -> None:
         """Initialize a :class:`.LiveThreadStream` instance.
 
         :param live_thread: The live thread associated with the stream.
@@ -602,7 +602,7 @@ class LiveThreadStream:
         """
         self.live_thread = live_thread
 
-    def updates(self, **stream_options: dict[str, Any]) -> Iterator[praw.models.LiveUpdate]:
+    def updates(self, **stream_options: dict[str, Any]) -> Iterator[models.LiveUpdate]:
         """Yield new updates to the live thread as they become available.
 
         :param skip_existing: Set to ``True`` to only fetch items created after the
@@ -640,7 +640,7 @@ class LiveThreadStream:
 class LiveUpdateContribution:
     """Provides a set of contribution functions to :class:`.LiveUpdate`."""
 
-    def __init__(self, update: praw.models.LiveUpdate) -> None:
+    def __init__(self, update: models.LiveUpdate) -> None:
         """Initialize a :class:`.LiveUpdateContribution` instance.
 
         :param update: An instance of :class:`.LiveUpdate`.
@@ -721,7 +721,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
     _kind = "LiveUpdate"
 
     @cachedproperty
-    def contrib(self) -> praw.models.reddit.live.LiveUpdateContribution:
+    def contrib(self) -> models.reddit.live.LiveUpdateContribution:
         """Provide an instance of :class:`.LiveUpdateContribution`.
 
         Usage:

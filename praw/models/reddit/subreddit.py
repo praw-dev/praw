@@ -40,11 +40,12 @@ from praw.models.util import permissions_string, stream_generator
 from praw.util import cachedproperty
 
 if TYPE_CHECKING:
-    from collections.abc import Generator, Iterator
+    from collections.abc import Iterator
 
     from requests import Response
 
-    import praw.models
+    import praw
+    from praw import models
 
 
 class Modmail:
@@ -102,11 +103,11 @@ class Modmail:
         """
         return ModmailConversation(self.subreddit._reddit, id=id, mark_read=mark_read)
 
-    def __init__(self, subreddit: praw.models.Subreddit) -> None:
+    def __init__(self, subreddit: models.Subreddit) -> None:
         """Initialize a :class:`.Modmail` instance."""
         self.subreddit = subreddit
 
-    def _build_subreddit_list(self, other_subreddits: list[praw.models.Subreddit] | None) -> str:
+    def _build_subreddit_list(self, other_subreddits: list[models.Subreddit] | None) -> str:
         """Return a comma-separated list of subreddit display names."""
         subreddits = [self.subreddit] + (other_subreddits or [])
         return ",".join(str(subreddit) for subreddit in subreddits)
@@ -114,7 +115,7 @@ class Modmail:
     def bulk_read(
         self,
         *,
-        other_subreddits: list[praw.models.Subreddit | str] | None = None,
+        other_subreddits: list[models.Subreddit | str] | None = None,
         state: str | None = None,
     ) -> list[ModmailConversation]:
         """Mark conversations for subreddit(s) as read.
@@ -152,7 +153,7 @@ class Modmail:
     def conversations(
         self,
         *,
-        other_subreddits: list[praw.models.Subreddit] | None = None,
+        other_subreddits: list[models.Subreddit] | None = None,
         sort: str | None = None,
         state: str | None = None,
         **generator_kwargs: Any,
@@ -193,7 +194,7 @@ class Modmail:
         *,
         author_hidden: bool = False,
         body: str,
-        recipient: str | praw.models.Redditor,
+        recipient: str | models.Redditor,
         subject: str,
     ) -> ModmailConversation:
         """Create a new :class:`.ModmailConversation`.
@@ -224,7 +225,7 @@ class Modmail:
         }
         return self.subreddit._reddit.post(API_PATH["modmail_conversations"], data=data)
 
-    def subreddits(self) -> Iterator[praw.models.Subreddit]:
+    def subreddits(self) -> Iterator[models.Subreddit]:
         """Yield subreddits using the new modmail that the user moderates.
 
         For example:
@@ -273,7 +274,7 @@ class SubredditFilters:
 
     """
 
-    def __init__(self, subreddit: praw.models.Subreddit) -> None:
+    def __init__(self, subreddit: models.Subreddit) -> None:
         """Initialize a :class:`.SubredditFilters` instance.
 
         :param subreddit: The special subreddit whose filters to work with.
@@ -284,7 +285,7 @@ class SubredditFilters:
         """
         self.subreddit = subreddit
 
-    def __iter__(self) -> Iterator[praw.models.Subreddit]:
+    def __iter__(self) -> Iterator[models.Subreddit]:
         """Iterate through the special :class:`.Subreddit`'s filters.
 
         This method should be invoked as:
@@ -300,7 +301,7 @@ class SubredditFilters:
         response_data = self.subreddit._reddit.get(url, params=params)
         yield from response_data.subreddits
 
-    def add(self, subreddit: praw.models.Subreddit | str) -> None:
+    def add(self, subreddit: models.Subreddit | str) -> None:
         """Add ``subreddit`` to the list of filtered subreddits.
 
         :param subreddit: The subreddit to add to the filter list.
@@ -325,7 +326,7 @@ class SubredditFilters:
         )
         self.subreddit._reddit.put(url, data={"model": dumps({"name": str(subreddit)})})
 
-    def remove(self, subreddit: praw.models.Subreddit | str) -> None:
+    def remove(self, subreddit: models.Subreddit | str) -> None:
         """Remove ``subreddit`` from the list of filtered subreddits.
 
         :param subreddit: The subreddit to remove from the filter list.
@@ -347,7 +348,7 @@ class SubredditFlair:
     @cachedproperty
     def link_templates(
         self,
-    ) -> praw.models.reddit.subreddit.SubredditLinkFlairTemplates:
+    ) -> models.reddit.subreddit.SubredditLinkFlairTemplates:
         """Provide an instance of :class:`.SubredditLinkFlairTemplates`.
 
         Use this attribute for interacting with a :class:`.Subreddit`'s link flair
@@ -365,7 +366,7 @@ class SubredditFlair:
     @cachedproperty
     def templates(
         self,
-    ) -> praw.models.reddit.subreddit.SubredditRedditorFlairTemplates:
+    ) -> models.reddit.subreddit.SubredditRedditorFlairTemplates:
         """Provide an instance of :class:`.SubredditRedditorFlairTemplates`.
 
         Use this attribute for interacting with a :class:`.Subreddit`'s flair templates.
@@ -382,9 +383,9 @@ class SubredditFlair:
 
     def __call__(
         self,
-        redditor: praw.models.Redditor | str | None = None,
+        redditor: models.Redditor | str | None = None,
         **generator_kwargs: Any,
-    ) -> Iterator[praw.models.Redditor]:
+    ) -> Iterator[models.Redditor]:
         """Return a :class:`.ListingGenerator` for Redditors and their flairs.
 
         :param redditor: When provided, yield at most a single :class:`.Redditor`
@@ -406,7 +407,7 @@ class SubredditFlair:
         url = API_PATH["flairlist"].format(subreddit=self.subreddit)
         return ListingGenerator(self.subreddit._reddit, url, **generator_kwargs)
 
-    def __init__(self, subreddit: praw.models.Subreddit) -> None:
+    def __init__(self, subreddit: models.Subreddit) -> None:
         """Initialize a :class:`.SubredditFlair` instance.
 
         :param subreddit: The subreddit whose flair to work with.
@@ -453,7 +454,7 @@ class SubredditFlair:
         url = API_PATH["flairconfig"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
 
-    def delete(self, redditor: praw.models.Redditor | str) -> None:
+    def delete(self, redditor: models.Redditor | str) -> None:
         """Delete flair for a :class:`.Redditor`.
 
         :param redditor: A redditor name or :class:`.Redditor` instance.
@@ -477,7 +478,7 @@ class SubredditFlair:
 
     def set(
         self,
-        redditor: praw.models.Redditor | str,
+        redditor: models.Redditor | str,
         *,
         css_class: str = "",
         flair_template_id: str | None = None,
@@ -521,7 +522,7 @@ class SubredditFlair:
 
     def update(
         self,
-        flair_list: Iterator[str | praw.models.Redditor | dict[str, str | praw.models.Redditor]],
+        flair_list: Iterator[str | models.Redditor | dict[str, str | models.Redditor]],
         *,
         text: str = "",
         css_class: str = "",
@@ -583,7 +584,7 @@ class SubredditFlairTemplates:
         """Return ``"LINK_FLAIR"`` or ``"USER_FLAIR"`` depending on ``is_link`` value."""
         return "LINK_FLAIR" if is_link else "USER_FLAIR"
 
-    def __init__(self, subreddit: praw.models.Subreddit) -> None:
+    def __init__(self, subreddit: models.Subreddit) -> None:
         """Initialize a :class:`.SubredditFlairTemplates` instance.
 
         :param subreddit: The subreddit whose flair templates to work with.
@@ -752,7 +753,7 @@ class SubredditModeration:
             RedditBase._safely_add_arguments(arguments=generator_kwargs, key="params", only=only)
 
     @cachedproperty
-    def notes(self) -> praw.models.SubredditModNotes:
+    def notes(self) -> models.SubredditModNotes:
         """Provide an instance of :class:`.SubredditModNotes`.
 
         This provides an interface for managing moderator notes for this subreddit.
@@ -792,14 +793,14 @@ class SubredditModeration:
 
         .. note::
 
-            Attempting to access attributes of an nonexistent removal reason will result
+            Attempting to access attributes of a nonexistent removal reason will result
             in a :class:`.ClientException`.
 
         """
         return SubredditRemovalReasons(self.subreddit)
 
     @cachedproperty
-    def stream(self) -> praw.models.reddit.subreddit.SubredditModerationStream:
+    def stream(self) -> models.reddit.subreddit.SubredditModerationStream:
         """Provide an instance of :class:`.SubredditModerationStream`.
 
         Streams can be used to indefinitely retrieve Moderator only items from
@@ -813,7 +814,7 @@ class SubredditModeration:
         """
         return SubredditModerationStream(self.subreddit)
 
-    def __init__(self, subreddit: praw.models.Subreddit) -> None:
+    def __init__(self, subreddit: models.Subreddit) -> None:
         """Initialize a :class:`.SubredditModeration` instance.
 
         :param subreddit: The subreddit to moderate.
@@ -829,7 +830,7 @@ class SubredditModeration:
 
     def edited(
         self, *, only: str | None = None, **generator_kwargs: Any
-    ) -> Iterator[praw.models.Comment | praw.models.Submission]:
+    ) -> Iterator[models.Comment | models.Submission]:
         """Return a :class:`.ListingGenerator` for edited comments and submissions.
 
         :param only: If specified, one of ``"comments"`` or ``"submissions"`` to yield
@@ -857,9 +858,9 @@ class SubredditModeration:
         self,
         *,
         action: str | None = None,
-        mod: praw.models.Redditor | str | None = None,
+        mod: models.Redditor | str | None = None,
         **generator_kwargs: Any,
-    ) -> Iterator[praw.models.ModAction]:
+    ) -> Iterator[models.ModAction]:
         """Return a :class:`.ListingGenerator` for moderator log entries.
 
         :param action: If given, only return log entries for the specified action.
@@ -887,7 +888,7 @@ class SubredditModeration:
 
     def modqueue(
         self, *, only: str | None = None, **generator_kwargs: Any
-    ) -> Iterator[praw.models.Submission | praw.models.Comment]:
+    ) -> Iterator[models.Submission | models.Comment]:
         """Return a :class:`.ListingGenerator` for modqueue items.
 
         :param only: If specified, one of ``"comments"`` or ``"submissions"`` to yield
@@ -913,7 +914,7 @@ class SubredditModeration:
 
     def reports(
         self, *, only: str | None = None, **generator_kwargs: Any
-    ) -> Iterator[praw.models.Submission | praw.models.Comment]:
+    ) -> Iterator[models.Submission | models.Comment]:
         """Return a :class:`.ListingGenerator` for reported comments and submissions.
 
         :param only: If specified, one of ``"comments"`` or ``"submissions"`` to yield
@@ -943,9 +944,7 @@ class SubredditModeration:
         url = API_PATH["subreddit_settings"].format(subreddit=self.subreddit)
         return self.subreddit._reddit.get(url)["data"]
 
-    def spam(
-        self, *, only: str | None = None, **generator_kwargs: Any
-    ) -> Iterator[praw.models.Submission | praw.models.Comment]:
+    def spam(self, *, only: str | None = None, **generator_kwargs: Any) -> Iterator[models.Submission | models.Comment]:
         """Return a :class:`.ListingGenerator` for spam comments and submissions.
 
         :param only: If specified, one of ``"comments"`` or ``"submissions"`` to yield
@@ -969,7 +968,7 @@ class SubredditModeration:
             **generator_kwargs,
         )
 
-    def unmoderated(self, **generator_kwargs: Any) -> Iterator[praw.models.Submission]:
+    def unmoderated(self, **generator_kwargs: Any) -> Iterator[models.Submission]:
         """Return a :class:`.ListingGenerator` for unmoderated submissions.
 
         Additional keyword arguments are passed in the initialization of
@@ -1102,7 +1101,7 @@ class SubredditModeration:
 class SubredditModerationStream:
     """Provides moderator streams."""
 
-    def __init__(self, subreddit: praw.models.Subreddit) -> None:
+    def __init__(self, subreddit: models.Subreddit) -> None:
         """Initialize a :class:`.SubredditModerationStream` instance.
 
         :param subreddit: The moderated subreddit associated with the streams.
@@ -1110,9 +1109,7 @@ class SubredditModerationStream:
         """
         self.subreddit = subreddit
 
-    def edited(
-        self, *, only: str | None = None, **stream_options: Any
-    ) -> Iterator[praw.models.Comment | praw.models.Submission]:
+    def edited(self, *, only: str | None = None, **stream_options: Any) -> Iterator[models.Comment | models.Submission]:
         """Yield edited comments and submissions as they become available.
 
         :param only: If specified, one of ``"comments"`` or ``"submissions"`` to yield
@@ -1135,9 +1132,9 @@ class SubredditModerationStream:
         self,
         *,
         action: str | None = None,
-        mod: str | praw.models.Redditor | None = None,
+        mod: str | models.Redditor | None = None,
         **stream_options: Any,
-    ) -> Iterator[praw.models.ModAction]:
+    ) -> Iterator[models.ModAction]:
         """Yield moderator log entries as they become available.
 
         :param action: If given, only return log entries for the specified action.
@@ -1164,7 +1161,7 @@ class SubredditModerationStream:
     def modmail_conversations(
         self,
         *,
-        other_subreddits: list[praw.models.Subreddit] | None = None,
+        other_subreddits: list[models.Subreddit] | None = None,
         sort: str | None = None,
         state: str | None = None,
         **stream_options: Any,
@@ -1206,7 +1203,7 @@ class SubredditModerationStream:
 
     def modqueue(
         self, *, only: str | None = None, **stream_options: Any
-    ) -> Iterator[praw.models.Comment | praw.models.Submission]:
+    ) -> Iterator[models.Comment | models.Submission]:
         r"""Yield :class:`.Comment`\ s and :class:`.Submission`\ s in the modqueue as they become available.
 
         :param only: If specified, one of ``"comments"`` or ``"submissions"`` to yield
@@ -1226,7 +1223,7 @@ class SubredditModerationStream:
 
     def reports(
         self, *, only: str | None = None, **stream_options: Any
-    ) -> Iterator[praw.models.Comment | praw.models.Submission]:
+    ) -> Iterator[models.Comment | models.Submission]:
         r"""Yield reported :class:`.Comment`\ s and :class:`.Submission`\ s as they become available.
 
         :param only: If specified, one of ``"comments"`` or ``"submissions"`` to yield
@@ -1244,9 +1241,7 @@ class SubredditModerationStream:
         """
         return stream_generator(self.subreddit.mod.reports, only=only, **stream_options)
 
-    def spam(
-        self, *, only: str | None = None, **stream_options: Any
-    ) -> Iterator[praw.models.Comment | praw.models.Submission]:
+    def spam(self, *, only: str | None = None, **stream_options: Any) -> Iterator[models.Comment | models.Submission]:
         r"""Yield spam :class:`.Comment`\ s and :class:`.Submission`\ s as they become available.
 
         :param only: If specified, one of ``"comments"`` or ``"submissions"`` to yield
@@ -1264,7 +1259,7 @@ class SubredditModerationStream:
         """
         return stream_generator(self.subreddit.mod.spam, only=only, **stream_options)
 
-    def unmoderated(self, **stream_options: Any) -> Iterator[praw.models.Submission]:
+    def unmoderated(self, **stream_options: Any) -> Iterator[models.Submission]:
         r"""Yield unmoderated :class:`.Submission`\ s as they become available.
 
         Keyword arguments are passed to :func:`.stream_generator`.
@@ -1291,7 +1286,7 @@ class SubredditQuarantine:
 
     """
 
-    def __init__(self, subreddit: praw.models.Subreddit) -> None:
+    def __init__(self, subreddit: models.Subreddit) -> None:
         """Initialize a :class:`.SubredditQuarantine` instance.
 
         :param subreddit: The :class:`.Subreddit` associated with the quarantine.
@@ -1353,9 +1348,9 @@ class SubredditRelationship:
 
     def __call__(
         self,
-        redditor: str | praw.models.Redditor | None = None,
+        redditor: str | models.Redditor | None = None,
         **generator_kwargs: Any,
-    ) -> Iterator[praw.models.Redditor]:
+    ) -> Iterator[models.Redditor]:
         r"""Return a :class:`.ListingGenerator` for :class:`.Redditor`\ s in the relationship.
 
         :param redditor: When provided, yield at most a single :class:`.Redditor`
@@ -1370,7 +1365,7 @@ class SubredditRelationship:
         url = API_PATH[f"list_{self.relationship}"].format(subreddit=self.subreddit)
         return ListingGenerator(self.subreddit._reddit, url, **generator_kwargs)
 
-    def __init__(self, subreddit: praw.models.Subreddit, relationship: str) -> None:
+    def __init__(self, subreddit: models.Subreddit, relationship: str) -> None:
         """Initialize a :class:`.SubredditRelationship` instance.
 
         :param subreddit: The :class:`.Subreddit` for the relationship.
@@ -1380,7 +1375,7 @@ class SubredditRelationship:
         self.relationship = relationship
         self.subreddit = subreddit
 
-    def add(self, redditor: str | praw.models.Redditor, **other_settings: Any) -> None:
+    def add(self, redditor: str | models.Redditor, **other_settings: Any) -> None:
         """Add ``redditor`` to this relationship.
 
         :param redditor: A redditor name or :class:`.Redditor` instance.
@@ -1391,7 +1386,7 @@ class SubredditRelationship:
         url = API_PATH["friend"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
 
-    def remove(self, redditor: str | praw.models.Redditor) -> None:
+    def remove(self, redditor: str | models.Redditor) -> None:
         """Remove ``redditor`` from this relationship.
 
         :param redditor: A redditor name or :class:`.Redditor` instance.
@@ -1405,7 +1400,7 @@ class SubredditRelationship:
 class SubredditStream:
     """Provides submission and comment streams."""
 
-    def __init__(self, subreddit: praw.models.Subreddit) -> None:
+    def __init__(self, subreddit: models.Subreddit) -> None:
         """Initialize a :class:`.SubredditStream` instance.
 
         :param subreddit: The subreddit associated with the streams.
@@ -1413,7 +1408,7 @@ class SubredditStream:
         """
         self.subreddit = subreddit
 
-    def comments(self, **stream_options: Any) -> Iterator[praw.models.Comment]:
+    def comments(self, **stream_options: Any) -> Iterator[models.Comment]:
         """Yield new comments as they become available.
 
         Comments are yielded oldest first. Up to 100 historical comments will initially
@@ -1445,7 +1440,7 @@ class SubredditStream:
         """
         return stream_generator(self.subreddit.comments, **stream_options)
 
-    def submissions(self, **stream_options: Any) -> Iterator[praw.models.Submission]:
+    def submissions(self, **stream_options: Any) -> Iterator[models.Submission]:
         r"""Yield new :class:`.Submission`\ s as they become available.
 
         Submissions are yielded oldest first. Up to 100 historical submissions will
@@ -1483,7 +1478,7 @@ class SubredditStylesheet:
 
     """
 
-    def __call__(self) -> praw.models.Stylesheet:
+    def __call__(self) -> models.Stylesheet:
         """Return the :class:`.Subreddit`'s stylesheet.
 
         To be used as:
@@ -1496,7 +1491,7 @@ class SubredditStylesheet:
         url = API_PATH["about_stylesheet"].format(subreddit=self.subreddit)
         return self.subreddit._reddit.get(url)
 
-    def __init__(self, subreddit: praw.models.Subreddit) -> None:
+    def __init__(self, subreddit: models.Subreddit) -> None:
         """Initialize a :class:`.SubredditStylesheet` instance.
 
         :param subreddit: The :class:`.Subreddit` associated with the stylesheet.
@@ -1915,7 +1910,7 @@ class SubredditWiki:
         """
         return WikiPage(self.subreddit._reddit, self.subreddit, page_name.lower())
 
-    def __init__(self, subreddit: praw.models.Subreddit) -> None:
+    def __init__(self, subreddit: models.Subreddit) -> None:
         """Initialize a :class:`.SubredditWiki` instance.
 
         :param subreddit: The subreddit whose wiki to work with.
@@ -1975,11 +1970,7 @@ class SubredditWiki:
 
     def revisions(
         self, **generator_kwargs: Any
-    ) -> Generator[
-        dict[str, praw.models.Redditor | WikiPage | str | int | bool | None],
-        None,
-        None,
-    ]:
+    ) -> Iterator[dict[str, models.Redditor | WikiPage | str | int | bool | None], None]:
         """Return a :class:`.ListingGenerator` for recent wiki revisions.
 
         Additional keyword arguments are passed in the initialization of
@@ -2051,7 +2042,7 @@ class ModeratorRelationship(SubredditRelationship):
         )
         return other_settings
 
-    def __call__(self, redditor: str | praw.models.Redditor | None = None) -> list[praw.models.Redditor]:
+    def __call__(self, redditor: str | models.Redditor | None = None) -> list[models.Redditor]:
         r"""Return a list of :class:`.Redditor`\ s who are moderators.
 
         :param redditor: When provided, return a list containing at most one
@@ -2093,7 +2084,7 @@ class ModeratorRelationship(SubredditRelationship):
 
     def add(
         self,
-        redditor: str | praw.models.Redditor,
+        redditor: str | models.Redditor,
         *,
         permissions: list[str] | None = None,
         **other_settings: Any,
@@ -2121,7 +2112,7 @@ class ModeratorRelationship(SubredditRelationship):
 
     def invite(
         self,
-        redditor: str | praw.models.Redditor,
+        redditor: str | models.Redditor,
         *,
         permissions: list[str] | None = None,
         **other_settings: Any,
@@ -2150,9 +2141,9 @@ class ModeratorRelationship(SubredditRelationship):
     def invited(
         self,
         *,
-        redditor: str | praw.models.Redditor | None = None,
+        redditor: str | models.Redditor | None = None,
         **generator_kwargs: Any,
-    ) -> Iterator[praw.models.Redditor]:
+    ) -> Iterator[models.Redditor]:
         r"""Return a :class:`.ListingGenerator` for :class:`.Redditor`\ s invited to be moderators.
 
         :param redditor: When provided, return a list containing at most one
@@ -2193,7 +2184,7 @@ class ModeratorRelationship(SubredditRelationship):
         """
         self.remove(self.subreddit._reddit.config.username or self.subreddit._reddit.user.me())
 
-    def remove_invite(self, redditor: str | praw.models.Redditor) -> None:
+    def remove_invite(self, redditor: str | models.Redditor) -> None:
         """Remove the moderator invite for ``redditor``.
 
         :param redditor: A redditor name or :class:`.Redditor` instance.
@@ -2211,7 +2202,7 @@ class ModeratorRelationship(SubredditRelationship):
 
     def update(
         self,
-        redditor: str | praw.models.Redditor,
+        redditor: str | models.Redditor,
         *,
         permissions: list[str] | None = None,
     ) -> None:
@@ -2245,7 +2236,7 @@ class ModeratorRelationship(SubredditRelationship):
 
     def update_invite(
         self,
-        redditor: str | praw.models.Redditor,
+        redditor: str | models.Redditor,
         *,
         permissions: list[str] | None = None,
     ) -> None:
@@ -2442,8 +2433,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     @staticmethod
     def _subreddit_list(
         *,
-        other_subreddits: list[str | praw.models.Subreddit],
-        subreddit: praw.models.Subreddit,
+        other_subreddits: list[str | models.Subreddit],
+        subreddit: models.Subreddit,
     ) -> str:
         if other_subreddits:
             return ",".join([str(subreddit)] + [str(x) for x in other_subreddits])
@@ -2465,13 +2456,13 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
                 raise TypeError(msg)
 
     @staticmethod
-    def _validate_inline_media(inline_media: praw.models.InlineMedia) -> None:
+    def _validate_inline_media(inline_media: models.InlineMedia) -> None:
         if not Path(inline_media.path).is_file():
             msg = f"{inline_media.path!r} is not a valid file path."
             raise ValueError(msg)
 
     @cachedproperty
-    def banned(self) -> praw.models.reddit.subreddit.SubredditRelationship:
+    def banned(self) -> models.reddit.subreddit.SubredditRelationship:
         """Provide an instance of :class:`.SubredditRelationship`.
 
         For example, to ban a user try:
@@ -2491,7 +2482,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return SubredditRelationship(self, "banned")
 
     @cachedproperty
-    def collections(self) -> praw.models.reddit.collections.SubredditCollections:
+    def collections(self) -> models.reddit.collections.SubredditCollections:
         r"""Provide an instance of :class:`.SubredditCollections`.
 
         To see the permalinks of all :class:`.Collection`\ s that belong to a subreddit,
@@ -2516,7 +2507,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return self._subreddit_collections_class(self._reddit, self)
 
     @cachedproperty
-    def contributor(self) -> praw.models.reddit.subreddit.ContributorRelationship:
+    def contributor(self) -> models.reddit.subreddit.ContributorRelationship:
         """Provide an instance of :class:`.ContributorRelationship`.
 
         Contributors are also known as approved submitters.
@@ -2556,7 +2547,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return SubredditEmoji(self)
 
     @cachedproperty
-    def filters(self) -> praw.models.reddit.subreddit.SubredditFilters:
+    def filters(self) -> models.reddit.subreddit.SubredditFilters:
         """Provide an instance of :class:`.SubredditFilters`.
 
         For example, to add a filter, run:
@@ -2569,7 +2560,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return SubredditFilters(self)
 
     @cachedproperty
-    def flair(self) -> praw.models.reddit.subreddit.SubredditFlair:
+    def flair(self) -> models.reddit.subreddit.SubredditFlair:
         """Provide an instance of :class:`.SubredditFlair`.
 
         Use this attribute for interacting with a :class:`.Subreddit`'s flair. For
@@ -2605,7 +2596,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return SubredditModeration(self)
 
     @cachedproperty
-    def moderator(self) -> praw.models.reddit.subreddit.ModeratorRelationship:
+    def moderator(self) -> models.reddit.subreddit.ModeratorRelationship:
         """Provide an instance of :class:`.ModeratorRelationship`.
 
         For example, to add a moderator try:
@@ -2625,7 +2616,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return ModeratorRelationship(self, "moderator")
 
     @cachedproperty
-    def modmail(self) -> praw.models.reddit.subreddit.Modmail:
+    def modmail(self) -> models.reddit.subreddit.Modmail:
         """Provide an instance of :class:`.Modmail`.
 
         For example, to send a new modmail from r/test to u/spez with the subject
@@ -2639,7 +2630,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return Modmail(self)
 
     @cachedproperty
-    def muted(self) -> praw.models.reddit.subreddit.SubredditRelationship:
+    def muted(self) -> models.reddit.subreddit.SubredditRelationship:
         """Provide an instance of :class:`.SubredditRelationship`.
 
         For example, muted users can be iterated through like so:
@@ -2653,7 +2644,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return SubredditRelationship(self, "muted")
 
     @cachedproperty
-    def quaran(self) -> praw.models.reddit.subreddit.SubredditQuarantine:
+    def quaran(self) -> models.reddit.subreddit.SubredditQuarantine:
         """Provide an instance of :class:`.SubredditQuarantine`.
 
         This property is named ``quaran`` because ``quarantine`` is a subreddit
@@ -2695,7 +2686,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return SubredditRules(self)
 
     @cachedproperty
-    def stream(self) -> praw.models.reddit.subreddit.SubredditStream:
+    def stream(self) -> models.reddit.subreddit.SubredditStream:
         """Provide an instance of :class:`.SubredditStream`.
 
         Streams can be used to indefinitely retrieve new comments made to a subreddit,
@@ -2718,7 +2709,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return SubredditStream(self)
 
     @cachedproperty
-    def stylesheet(self) -> praw.models.reddit.subreddit.SubredditStylesheet:
+    def stylesheet(self) -> models.reddit.subreddit.SubredditStylesheet:
         """Provide an instance of :class:`.SubredditStylesheet`.
 
         For example, to add the css data ``.test{color:blue}`` to the existing
@@ -2735,7 +2726,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return SubredditStylesheet(self)
 
     @cachedproperty
-    def widgets(self) -> praw.models.SubredditWidgets:
+    def widgets(self) -> models.SubredditWidgets:
         """Provide an instance of :class:`.SubredditWidgets`.
 
         **Example usage**
@@ -2757,7 +2748,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return SubredditWidgets(self)
 
     @cachedproperty
-    def wiki(self) -> praw.models.reddit.subreddit.SubredditWiki:
+    def wiki(self) -> models.reddit.subreddit.SubredditWiki:
         """Provide an instance of :class:`.SubredditWiki`.
 
         This attribute can be used to discover all wikipages for a subreddit:
@@ -2838,7 +2829,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
     def _submit_media(
         self, *, data: dict[Any, Any], timeout: int, without_websockets: bool
-    ) -> praw.models.Submission | None:
+    ) -> models.Submission | None:
         """Submit and return an ``image``, ``video``, or ``videogif``.
 
         This is a helper method for submitting posts that are not link posts or self
@@ -2875,7 +2866,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         url = ws_update["payload"]["redirect"]
         return self._reddit.submission(url=url)
 
-    def _upload_inline_media(self, inline_media: praw.models.InlineMedia) -> praw.models.InlineMedia:
+    def _upload_inline_media(self, inline_media: models.InlineMedia) -> models.InlineMedia:
         """Upload media for use in self posts and return ``inline_media``.
 
         :param inline_media: An :class:`.InlineMedia` object to validate and upload.
@@ -2990,7 +2981,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         syntax: str = "lucene",
         time_filter: str = "all",
         **generator_kwargs: Any,
-    ) -> Iterator[praw.models.Submission]:
+    ) -> Iterator[models.Submission]:
         """Return a :class:`.ListingGenerator` for items that match ``query``.
 
         :param query: The query string to search for.
@@ -3026,7 +3017,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         url = API_PATH["search"].format(subreddit=self)
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
-    def sticky(self, *, number: int = 1) -> praw.models.Submission:
+    def sticky(self, *, number: int = 1) -> models.Submission:
         """Return a :class:`.Submission` object for a sticky of the subreddit.
 
         :param number: Specify which sticky to return. 1 appears at the top (default:
@@ -3057,14 +3048,14 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         draft_id: str | None = None,
         flair_id: str | None = None,
         flair_text: str | None = None,
-        inline_media: dict[str, praw.models.InlineMedia] | None = None,
+        inline_media: dict[str, models.InlineMedia] | None = None,
         nsfw: bool = False,
         resubmit: bool = True,
         selftext: str | None = None,
         send_replies: bool = True,
         spoiler: bool = False,
         url: str | None = None,
-    ) -> praw.models.Submission:
+    ) -> models.Submission:
         r"""Add a submission to the :class:`.Subreddit`.
 
         :param title: The title of the submission.
@@ -3165,7 +3156,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         # link posts can now include selftext (no longer exclusive)
         # test for empty string in selftext for title-only submissions
         if not url and not (bool(selftext) or selftext == ""):  # noqa: PLC1901
-            msg = "Submission requires either 'selftext' or 'url' to be provided."
+            msg = "Either 'selftext' and/or 'url' must be provided."
             raise TypeError(msg)
 
         data = {
@@ -3220,7 +3211,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         selftext: str | None = None,
         send_replies: bool = True,
         spoiler: bool = False,
-    ) -> praw.models.Submission:
+    ) -> models.Submission:
         """Add an image gallery submission to the subreddit.
 
         :param title: The title of the submission.
@@ -3330,7 +3321,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         spoiler: bool = False,
         timeout: int = 10,
         without_websockets: bool = False,
-    ) -> praw.models.Submission | None:
+    ) -> models.Submission | None:
         """Add an image submission to the subreddit.
 
         :param collection_id: The UUID of a :class:`.Collection` to add the
@@ -3432,7 +3423,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         selftext: str,
         send_replies: bool = True,
         spoiler: bool = False,
-    ) -> praw.models.Submission:
+    ) -> models.Submission:
         """Add a poll submission to the subreddit.
 
         :param title: The title of the submission.
@@ -3518,7 +3509,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         timeout: int = 10,
         videogif: bool = False,
         without_websockets: bool = False,
-    ) -> praw.models.Submission | None:
+    ) -> models.Submission | None:
         """Add a video or videogif submission to the subreddit.
 
         :param title: The title of the submission.
@@ -3615,7 +3606,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         )
         return self._submit_media(data=data, timeout=timeout, without_websockets=without_websockets)
 
-    def subscribe(self, *, other_subreddits: list[praw.models.Subreddit] | None = None) -> None:
+    def subscribe(self, *, other_subreddits: list[models.Subreddit] | None = None) -> None:
         """Subscribe to the subreddit.
 
         :param other_subreddits: When provided, also subscribe to the provided list of
@@ -3663,7 +3654,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         """
         return self._reddit.get(API_PATH["about_traffic"].format(subreddit=self))
 
-    def unsubscribe(self, *, other_subreddits: list[praw.models.Subreddit] | None = None) -> None:
+    def unsubscribe(self, *, other_subreddits: list[models.Subreddit] | None = None) -> None:
         """Unsubscribe from the subreddit.
 
         :param other_subreddits: When provided, also unsubscribe from the provided list

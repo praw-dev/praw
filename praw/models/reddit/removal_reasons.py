@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, SupportsIndex
 
 from praw.const import API_PATH
 from praw.exceptions import ClientException
@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
     import praw
+    from praw import models
 
 
 class RemovalReason(RedditBase):
@@ -45,7 +46,7 @@ class RemovalReason(RedditBase):
     def __init__(
         self,
         reddit: praw.Reddit,
-        subreddit: praw.models.Subreddit,
+        subreddit: models.Subreddit,
         id: str | None = None,
         _data: dict[str, Any] | None = None,
     ) -> None:
@@ -130,7 +131,7 @@ class SubredditRemovalReasons:
             for reason_id in response["order"]
         ]
 
-    def __getitem__(self, reason_id: str | int | slice) -> RemovalReason:
+    def __getitem__(self, reason_id: SupportsIndex) -> RemovalReason:
         """Return the Removal Reason with the ID/number/slice ``reason_id``.
 
         :param reason_id: The ID or index of the removal reason
@@ -178,7 +179,7 @@ class SubredditRemovalReasons:
             return self._removal_reason_list[reason_id]
         return RemovalReason(self._reddit, self.subreddit, reason_id)
 
-    def __init__(self, subreddit: praw.models.Subreddit) -> None:
+    def __init__(self, subreddit: models.Subreddit) -> None:
         """Initialize a :class:`.SubredditRemovalReasons` instance.
 
         :param subreddit: The subreddit whose removal reasons to work with.

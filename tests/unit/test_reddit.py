@@ -36,8 +36,7 @@ class TestReddit(UnitTest):
     def test_check_for_async(self, caplog):
         reddit = Reddit(**self.REQUIRED_DUMMY_SETTINGS)
         reddit._core.request = self.patch_request
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.check_async(reddit))
+        asyncio.run(self.check_async(reddit))
         log_record = caplog.records[0]
         assert log_record.levelname == "WARNING"
         assert (
@@ -53,8 +52,7 @@ class TestReddit(UnitTest):
     def test_check_for_async__disabled(self, caplog):
         reddit = Reddit(check_for_async=False, **self.REQUIRED_DUMMY_SETTINGS)
         reddit._core.request = self.patch_request
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.check_async(reddit))
+        asyncio.run(self.check_async(reddit))
         assert caplog.records == []
 
     @mock.patch("praw.reddit.UPDATE_CHECKER_MISSING", False)

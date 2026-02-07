@@ -12,15 +12,13 @@ from praw.models.util import stream_generator
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    import praw.models
+    from praw import models
 
 
 class Inbox(PRAWBase):
     """Inbox is a Listing class that represents the inbox."""
 
-    def all(
-        self, **generator_kwargs: str | int | dict[str, str]
-    ) -> Iterator[praw.models.Message | praw.models.Comment]:
+    def all(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Message | models.Comment]:
         """Return a :class:`.ListingGenerator` for all inbox comments and messages.
 
         Additional keyword arguments are passed in the initialization of
@@ -36,7 +34,7 @@ class Inbox(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH["inbox"], **generator_kwargs)
 
-    def collapse(self, items: list[praw.models.Message]) -> None:
+    def collapse(self, items: list[models.Message]) -> None:
         """Mark an inbox message as collapsed.
 
         :param items: A list containing instances of :class:`.Message`.
@@ -65,7 +63,7 @@ class Inbox(PRAWBase):
             self._reddit.post(API_PATH["collapse"], data=data)
             items = items[25:]
 
-    def comment_replies(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.Comment]:
+    def comment_replies(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Comment]:
         """Return a :class:`.ListingGenerator` for comment replies.
 
         Additional keyword arguments are passed in the initialization of
@@ -98,7 +96,7 @@ class Inbox(PRAWBase):
         """
         self._reddit.post(API_PATH["read_all_messages"])
 
-    def mark_read(self, items: list[praw.models.Comment | praw.models.Message]) -> None:
+    def mark_read(self, items: list[models.Comment | models.Message]) -> None:
         """Mark Comments or Messages as read.
 
         :param items: A list containing instances of :class:`.Comment` and/or
@@ -130,7 +128,7 @@ class Inbox(PRAWBase):
             self._reddit.post(API_PATH["read_message"], data=data)
             items = items[25:]
 
-    def mark_unread(self, items: list[praw.models.Comment | praw.models.Message]) -> None:
+    def mark_unread(self, items: list[models.Comment | models.Message]) -> None:
         """Unmark Comments or Messages as read.
 
         :param items: A list containing instances of :class:`.Comment` and/or
@@ -157,7 +155,7 @@ class Inbox(PRAWBase):
             self._reddit.post(API_PATH["unread_message"], data=data)
             items = items[25:]
 
-    def mentions(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.Comment]:
+    def mentions(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Comment]:
         r"""Return a :class:`.ListingGenerator` for mentions.
 
         A mention is :class:`.Comment` in which the authorized redditor is named in its
@@ -176,7 +174,7 @@ class Inbox(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH["mentions"], **generator_kwargs)
 
-    def message(self, message_id: str) -> praw.models.Message:
+    def message(self, message_id: str) -> models.Message:
         """Return a :class:`.Message` corresponding to ``message_id``.
 
         :param message_id: The base36 ID of a message.
@@ -194,7 +192,7 @@ class Inbox(PRAWBase):
             message.parent = messages.get(message.parent_id)
         return messages[f"t4_{message_id.lower()}"]
 
-    def messages(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.Message]:
+    def messages(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Message]:
         """Return a :class:`.ListingGenerator` for inbox messages.
 
         Additional keyword arguments are passed in the initialization of
@@ -210,7 +208,7 @@ class Inbox(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH["messages"], **generator_kwargs)
 
-    def sent(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.Message]:
+    def sent(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Message]:
         """Return a :class:`.ListingGenerator` for sent messages.
 
         Additional keyword arguments are passed in the initialization of
@@ -226,9 +224,7 @@ class Inbox(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH["sent"], **generator_kwargs)
 
-    def stream(
-        self, **stream_options: str | int | dict[str, str]
-    ) -> Iterator[praw.models.Comment | praw.models.Message]:
+    def stream(self, **stream_options: str | int | dict[str, str]) -> Iterator[models.Comment | models.Message]:
         """Yield new inbox items as they become available.
 
         Items are yielded oldest first. Up to 100 historical items will initially be
@@ -246,7 +242,7 @@ class Inbox(PRAWBase):
         """
         return stream_generator(self.unread, **stream_options)
 
-    def submission_replies(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.Comment]:
+    def submission_replies(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Comment]:
         """Return a :class:`.ListingGenerator` for submission replies.
 
         Additional keyword arguments are passed in the initialization of
@@ -262,7 +258,7 @@ class Inbox(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH["submission_replies"], **generator_kwargs)
 
-    def uncollapse(self, items: list[praw.models.Message]) -> None:
+    def uncollapse(self, items: list[models.Message]) -> None:
         """Mark an inbox message as uncollapsed.
 
         :param items: A list containing instances of :class:`.Message`.
@@ -296,7 +292,7 @@ class Inbox(PRAWBase):
         *,
         mark_read: bool = False,
         **generator_kwargs: str | int | dict[str, str] | None,
-    ) -> Iterator[praw.models.Comment | praw.models.Message]:
+    ) -> Iterator[models.Comment | models.Message]:
         """Return a :class:`.ListingGenerator` for unread comments and messages.
 
         :param mark_read: Marks the inbox as read (default: ``False``).

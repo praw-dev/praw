@@ -183,32 +183,6 @@ class ModmailConversation(RedditBase):
         """
         self._reddit.post(API_PATH["modmail_highlight"].format(id=self.id))
 
-    def mute(self, *, num_days: int = DEFAULT_NUMBER_OF_MUTE_DAYS) -> None:
-        """Mute the non-mod user associated with the conversation.
-
-        :param num_days: Duration of mute in days. Valid options are ``3``, ``7``, or
-            ``28`` (default: ``3``).
-
-        For example:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").modmail("2gmz").mute()
-
-        To mute for 7 days:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").modmail("2gmz").mute(num_days=7)
-
-        """
-        params = {"num_hours": num_days * 24} if num_days != self.DEFAULT_NUMBER_OF_MUTE_DAYS else {}
-        self._reddit.request(
-            method="POST",
-            params=params,
-            path=API_PATH["modmail_mute"].format(id=self.id),
-        )
-
     def read(self, *, other_conversations: list[ModmailConversation] | None = None) -> None:
         """Mark the conversation(s) as read.
 
@@ -323,6 +297,32 @@ class ModmailConversation(RedditBase):
         """
         data = {"conversationIds": self._build_conversation_list(other_conversations)}
         self._reddit.post(API_PATH["modmail_unread"], data=data)
+
+    def mute(self, *, num_days: int = DEFAULT_NUMBER_OF_MUTE_DAYS) -> None:
+        """Mute the non-mod user associated with the conversation.
+
+        :param num_days: Duration of mute in days. Valid options are ``3``, ``7``, or
+            ``28`` (default: ``3``).
+
+        For example:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").modmail("2gmz").mute()
+
+        To mute for 7 days:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").modmail("2gmz").mute(num_days=7)
+
+        """
+        params = {"num_hours": num_days * 24} if num_days != self.DEFAULT_NUMBER_OF_MUTE_DAYS else {}
+        self._reddit.request(
+            method="POST",
+            params=params,
+            path=API_PATH["modmail_mute"].format(id=self.id),
+        )
 
 
 class ModmailAction(ModmailObject):

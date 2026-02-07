@@ -7,13 +7,13 @@ from typing import TYPE_CHECKING
 from praw.const import API_PATH
 
 if TYPE_CHECKING:
-    import praw.models
+    from praw import models
 
 
 class ReplyableMixin:
     """Interface for :class:`.RedditBase` classes that can be replied to."""
 
-    def reply(self, body: str) -> praw.models.Comment | praw.models.Message | None:
+    def reply(self, body: str) -> models.Comment | models.Message | None:
         """Reply to the object.
 
         :param body: The Markdown formatted content for a comment.

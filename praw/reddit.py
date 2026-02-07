@@ -28,7 +28,11 @@ from prawcore.exceptions import BadRequest
 from praw import models
 from praw.config import Config
 from praw.const import API_PATH, USER_AGENT_FORMAT, __version__
-from praw.exceptions import ClientException, MissingRequiredAttributeException, RedditAPIException
+from praw.exceptions import (
+    ClientException,
+    MissingRequiredAttributeException,
+    RedditAPIException,
+)
 from praw.objector import Objector
 
 try:
@@ -51,7 +55,6 @@ if TYPE_CHECKING:
 
     import prawcore
 
-    import praw.models
 
 Comment = models.Comment
 Redditor = models.Redditor
@@ -111,7 +114,7 @@ class Reddit:
         else:
             self._core = self._authorized_core
 
-    def __enter__(self):  # noqa: ANN204
+    def __enter__(self) -> Self:
         """Handle the context manager open."""
         return self
 
@@ -345,7 +348,7 @@ class Reddit:
         """An instance of :class:`.SubredditHelper`.
 
         Provides the interface to working with :class:`.Subreddit` instances. For
-        example to create a :class:`.Subreddit` run:
+        example, to create a :class:`.Subreddit` run:
 
         .. code-block:: python
 
@@ -384,7 +387,7 @@ class Reddit:
         """An instance of :class:`.User`.
 
         Provides the interface to the currently authorized :class:`.Redditor`. For
-        example to get the name of the current user run:
+        example, to get the name of the current user run:
 
         .. code-block:: python
 
@@ -491,7 +494,6 @@ class Reddit:
             self.config.kinds["submission"]: models.Submission,
             self.config.kinds["subreddit"]: models.Subreddit,
             self.config.kinds["trophy"]: models.Trophy,
-            # "Announcement": models.Announcement,
             "Button": models.Button,
             "Collection": models.Collection,
             "Draft": models.Draft,
@@ -650,10 +652,10 @@ class Reddit:
         self,
         *,
         fullnames: Iterable[str] | None = None,
-        subreddits: Iterable[praw.models.Subreddit | str] | None = None,
+        subreddits: Iterable[models.Subreddit | str] | None = None,
         url: str | None = None,
     ) -> Generator[
-        praw.models.Subreddit | praw.models.Comment | praw.models.Submission,
+        models.Subreddit | models.Comment | models.Submission,
         None,
         None,
     ]:
@@ -699,9 +701,9 @@ class Reddit:
             api_parameter_name = "id" if is_using_fullnames else "sr_name"
 
             def generator(
-                names: Iterable[str | praw.models.Subreddit],
+                names: Iterable[str | models.Subreddit],
             ) -> Generator[
-                praw.models.Subreddit | praw.models.Comment | praw.models.Submission,
+                models.Subreddit | models.Comment | models.Submission,
                 None,
                 None,
             ]:
@@ -718,7 +720,7 @@ class Reddit:
         def generator(
             _url: str,
         ) -> Generator[
-            praw.models.Subreddit | praw.models.Comment | praw.models.Submission,
+            models.Subreddit | models.Comment | models.Submission,
             None,
             None,
         ]:
@@ -815,7 +817,7 @@ class Reddit:
         """
         return self._objectify_request(data=data, json=json, method="PUT", path=path)
 
-    def redditor(self, name: str | None = None, *, fullname: str | None = None) -> praw.models.Redditor:
+    def redditor(self, name: str | None = None, *, fullname: str | None = None) -> models.Redditor:
         """Return a lazy instance of :class:`.Redditor`.
 
         :param name: The name of the redditor.
@@ -883,7 +885,7 @@ class Reddit:
                 field = None
             raise RedditAPIException([data["reason"], explanation, field]) from exception
 
-    def submission(self, id: str | None = None, *, url: str | None = None) -> praw.models.Submission:
+    def submission(self, id: str | None = None, *, url: str | None = None) -> models.Submission:
         """Return a lazy instance of :class:`.Submission`.
 
         :param id: A Reddit base36 submission ID, e.g., ``"2gmzqe"``.

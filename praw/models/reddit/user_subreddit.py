@@ -8,7 +8,8 @@ from praw.models.reddit.subreddit import Subreddit, SubredditModeration
 from praw.util.cache import cachedproperty
 
 if TYPE_CHECKING:
-    import praw.models
+    import praw
+    from praw import models
 
 
 class UserSubreddit(Subreddit):
@@ -51,7 +52,7 @@ class UserSubreddit(Subreddit):
     """
 
     @cachedproperty
-    def mod(self) -> praw.models.reddit.user_subreddit.UserSubredditModeration:
+    def mod(self) -> models.reddit.user_subreddit.UserSubredditModeration:
         """Provide an instance of :class:`.UserSubredditModeration`.
 
         For example, to update the authenticated user's display name:

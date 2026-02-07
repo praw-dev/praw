@@ -11,13 +11,13 @@ from praw.models.listing.generator import ListingGenerator
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    import praw.models
+    from praw import models
 
 
 class RisingListingMixin(PRAWBase):
     """Mixes in the rising methods."""
 
-    def rising(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[praw.models.Submission]:
+    def rising(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Submission]:
         """Return a :class:`.ListingGenerator` for rising submissions.
 
         Additional keyword arguments are passed in the initialization of
