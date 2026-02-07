@@ -72,7 +72,9 @@ class ListingGenerator(PRAWBase, Iterator):
         self.yielded += 1
         return self._listing[self._list_index - 1]
 
-    def _extract_sublist(self, listing: dict[str, Any] | list[Listing]) -> Listing:
+    def _extract_sublist(
+        self, listing: dict[str, Any] | list[Listing]
+    ) -> Listing | FlairListing | ModNoteListing | dict[str, Any] | list[Listing]:
         if isinstance(listing, list):
             return listing[1]  # for submission duplicates
         if isinstance(listing, dict):

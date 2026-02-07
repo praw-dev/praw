@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from praw.const import API_PATH
 
 if TYPE_CHECKING:
-    import praw
+    from praw import models
 
 
 class MessageableMixin:
@@ -16,7 +16,7 @@ class MessageableMixin:
     def message(
         self,
         *,
-        from_subreddit: praw.models.Subreddit | str | None = None,
+        from_subreddit: models.Subreddit | str | None = None,
         message: str,
         subject: str,
     ) -> None:

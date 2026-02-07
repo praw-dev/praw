@@ -8,7 +8,9 @@ from praw.const import API_PATH
 from praw.models.base import PRAWBase
 
 if TYPE_CHECKING:
-    import praw.models
+    import praw
+    from praw import models
+    from praw.models.comment_forest import CommentForest
 
 
 class MoreComments(PRAWBase):
@@ -48,7 +50,7 @@ class MoreComments(PRAWBase):
             children[-1] = "..."
         return f"<{self.__class__.__name__} count={self.count}, children={children!r}>"
 
-    def _continue_comments(self, *, update: bool) -> list[praw.models.Comment]:
+    def _continue_comments(self, *, update: bool) -> list[CommentForest]:
         assert not self.children, "Please file a bug report with PRAW."
         parent = self._load_comment(self.parent_id.split("_", 1)[1])
         self._comments = parent.replies
@@ -57,7 +59,7 @@ class MoreComments(PRAWBase):
                 comment.submission = self.submission
         return self._comments
 
-    def _load_comment(self, comment_id: str) -> praw.models.Comment:
+    def _load_comment(self, comment_id: str) -> models.Comment:
         path = f"{API_PATH['submission'].format(id=self.submission.id)}_/{comment_id}"
         _, comments = self._reddit.get(
             path,
@@ -69,7 +71,7 @@ class MoreComments(PRAWBase):
         assert len(comments.children) == 1, "Please file a bug report with PRAW."
         return comments.children[0]
 
-    def comments(self, *, update: bool = True) -> list[praw.models.Comment]:
+    def comments(self, *, update: bool = True) -> list[CommentForest]:
         """Fetch and return the comments for a single :class:`.MoreComments` object."""
         if self._comments is None:
             if self.count == 0:  # Handle "continue this thread"

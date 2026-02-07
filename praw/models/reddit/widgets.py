@@ -12,7 +12,8 @@ from praw.models.list.base import BaseList
 from praw.util.cache import cachedproperty
 
 if TYPE_CHECKING:
-    import praw.models
+    import praw
+    from praw import models
 
 WidgetType: TypeVar = TypeVar("WidgetType", bound="Widget")
 
@@ -256,12 +257,12 @@ class SubredditWidgets(PRAWBase):
     """
 
     @cachedproperty
-    def id_card(self) -> praw.models.IDCard:
+    def id_card(self) -> models.IDCard:
         """Get this :class:`.Subreddit`'s :class:`.IDCard` widget."""
         return self.items[self.layout["idCardWidget"]]
 
     @cachedproperty
-    def items(self) -> dict[str, praw.models.Widget]:
+    def items(self) -> dict[str, models.Widget]:
         """Get this :class:`.Subreddit`'s widgets as a dict from ID to widget."""
         items = {}
         for item_name, data in self._raw_items.items():
@@ -270,7 +271,7 @@ class SubredditWidgets(PRAWBase):
         return items
 
     @cachedproperty
-    def mod(self) -> praw.models.SubredditWidgetsModeration:
+    def mod(self) -> models.SubredditWidgetsModeration:
         """Get an instance of :class:`.SubredditWidgetsModeration`.
 
         .. note::
@@ -283,17 +284,17 @@ class SubredditWidgets(PRAWBase):
         return SubredditWidgetsModeration(self.subreddit, self._reddit)
 
     @cachedproperty
-    def moderators_widget(self) -> praw.models.ModeratorsWidget:
+    def moderators_widget(self) -> models.ModeratorsWidget:
         """Get this :class:`.Subreddit`'s :class:`.ModeratorsWidget`."""
         return self.items[self.layout["moderatorWidget"]]
 
     @cachedproperty
-    def sidebar(self) -> list[praw.models.Widget]:
+    def sidebar(self) -> list[models.Widget]:
         r"""Get a list of :class:`.Widget`\ s that make up the sidebar."""
         return [self.items[widget_name] for widget_name in self.layout["sidebar"]["order"]]
 
     @cachedproperty
-    def topbar(self) -> list[praw.models.Menu]:
+    def topbar(self) -> list[models.Menu]:
         r"""Get a list of :class:`.Widget`\ s that make up the top bar."""
         return [self.items[widget_name] for widget_name in self.layout["topbar"]["order"]]
 
@@ -305,7 +306,7 @@ class SubredditWidgets(PRAWBase):
         msg = f"{self.__class__.__name__!r} object has no attribute {attr!r}"
         raise AttributeError(msg)
 
-    def __init__(self, subreddit: praw.models.Subreddit) -> None:
+    def __init__(self, subreddit: models.Subreddit) -> None:
         """Initialize a :class:`.SubredditWidgets` instance.
 
         :param subreddit: The :class:`.Subreddit` the widgets belong to.
@@ -365,7 +366,7 @@ class Widget(PRAWBase):
     """Base class to represent a :class:`.Widget`."""
 
     @cachedproperty
-    def mod(self) -> praw.models.WidgetModeration:
+    def mod(self) -> models.WidgetModeration:
         """Get an instance of :class:`.WidgetModeration` for this widget.
 
         .. note::
@@ -1122,7 +1123,7 @@ class WidgetModeration:
     def __init__(
         self,
         widget: Widget,
-        subreddit: praw.models.Subreddit | str,
+        subreddit: models.Subreddit | str,
         reddit: praw.Reddit,
     ) -> None:
         """Initialize a :class:`.WidgetModeration` instance."""
@@ -1195,7 +1196,7 @@ class SubredditWidgetsModeration:
 
     """
 
-    def __init__(self, subreddit: praw.models.Subreddit, reddit: praw.Reddit) -> None:
+    def __init__(self, subreddit: models.Subreddit, reddit: praw.Reddit) -> None:
         """Initialize a :class:`.SubredditWidgetsModeration` instance."""
         self._subreddit = subreddit
         self._reddit = reddit
@@ -1214,7 +1215,7 @@ class SubredditWidgetsModeration:
         short_name: str,
         styles: dict[str, str],
         **other_settings: Any,
-    ) -> praw.models.ButtonWidget:
+    ) -> models.ButtonWidget:
         """Add and return a :class:`.ButtonWidget`.
 
         :param buttons: A list of dictionaries describing buttons, as specified in
@@ -1354,7 +1355,7 @@ class SubredditWidgetsModeration:
         short_name: str,
         styles: dict[str, str],
         **other_settings: Any,
-    ) -> praw.models.Calendar:
+    ) -> models.Calendar:
         """Add and return a :class:`.Calendar` widget.
 
         :param configuration: A dictionary as specified in `Reddit docs`_. For example:
@@ -1420,12 +1421,12 @@ class SubredditWidgetsModeration:
     def add_community_list(
         self,
         *,
-        data: list[str | praw.models.Subreddit],
+        data: list[str | models.Subreddit],
         description: str = "",
         short_name: str,
         styles: dict[str, str],
         **other_settings: Any,
-    ) -> praw.models.CommunityList:
+    ) -> models.CommunityList:
         """Add and return a :class:`.CommunityList` widget.
 
         :param data: A list of subreddits. Subreddits can be represented as ``str`` or
@@ -1470,7 +1471,7 @@ class SubredditWidgetsModeration:
         styles: dict[str, str],
         text: str,
         **other_settings: Any,
-    ) -> praw.models.CustomWidget:
+    ) -> models.CustomWidget:
         """Add and return a :class:`.CustomWidget`.
 
         :param css: The CSS for the widget, no longer than 100000 characters.
@@ -1557,7 +1558,7 @@ class SubredditWidgetsModeration:
         short_name: str,
         styles: dict[str, str],
         **other_settings: Any,
-    ) -> praw.models.ImageWidget:
+    ) -> models.ImageWidget:
         """Add and return an :class:`.ImageWidget`.
 
         :param data: A list of dictionaries as specified in `Reddit docs`_. Each
@@ -1627,7 +1628,7 @@ class SubredditWidgetsModeration:
         *,
         data: list[dict[str, list[dict[str, str]] | str]],
         **other_settings: Any,
-    ) -> praw.models.Menu | Widget:
+    ) -> models.Menu | Widget:
         """Add and return a :class:`.Menu` widget.
 
         :param data: A list of dictionaries describing menu contents, as specified in
@@ -1692,7 +1693,7 @@ class SubredditWidgetsModeration:
         short_name: str,
         styles: dict[str, str],
         **other_settings: Any,
-    ) -> praw.models.PostFlairWidget | Widget:
+    ) -> models.PostFlairWidget | Widget:
         """Add and return a :class:`.PostFlairWidget`.
 
         :param display: Display style. Either ``"cloud"`` or ``"list"``.
@@ -1740,7 +1741,7 @@ class SubredditWidgetsModeration:
         styles: dict[str, str],
         text: str,
         **other_settings: Any,
-    ) -> praw.models.TextArea:
+    ) -> models.TextArea:
         """Add and return a :class:`.TextArea` widget.
 
         :param short_name: A name for the widget, no longer than 30 characters.

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from praw.const import API_PATH
 
 if TYPE_CHECKING:
-    import praw.models
+    from praw import models
 
 
 class EditableMixin:
@@ -29,7 +29,7 @@ class EditableMixin:
         """
         self._reddit.post(API_PATH["del"], data={"id": self.fullname})
 
-    def edit(self, body: str) -> praw.models.Comment | praw.models.Submission:
+    def edit(self, body: str) -> models.Comment | models.Submission:
         """Replace the body of the object with ``body``.
 
         :param body: The Markdown formatted content for the updated object.

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import configparser
-import importlib.resources
 import os
+from importlib.resources import files
 from pathlib import Path
 from threading import Lock
 from types import MappingProxyType
@@ -49,7 +49,7 @@ class Config:
             interpolator_class = None
 
         config = configparser.ConfigParser(interpolation=interpolator_class)
-        with importlib.resources.files(__package__).joinpath("praw.ini").open("r") as hdl:
+        with files(__package__).joinpath("praw.ini").open("r") as hdl:
             config.read_file(hdl)
 
         if "APPDATA" in os.environ:  # Windows

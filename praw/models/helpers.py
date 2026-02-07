@@ -14,7 +14,7 @@ from praw.models.reddit.multi import Multireddit, Subreddit
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    import praw.models
+    from praw import models
 
 
 class DraftHelper(PRAWBase):
@@ -27,7 +27,7 @@ class DraftHelper(PRAWBase):
 
     """
 
-    def __call__(self, draft_id: str | None = None) -> list[praw.models.Draft] | praw.models.Draft:
+    def __call__(self, draft_id: str | None = None) -> list[models.Draft] | models.Draft:
         """Return a list of :class:`.Draft` instances.
 
         :param draft_id: When provided, this returns a :class:`.Draft` instance
@@ -54,7 +54,7 @@ class DraftHelper(PRAWBase):
             return Draft(self._reddit, id=draft_id)
         return self._draft_list()
 
-    def _draft_list(self) -> list[praw.models.Draft]:
+    def _draft_list(self) -> list[models.Draft]:
         """Get a list of :class:`.Draft` instances.
 
         :returns: A list of :class:`.Draft` instances.
@@ -73,11 +73,11 @@ class DraftHelper(PRAWBase):
         selftext: str | None = None,
         send_replies: bool = True,
         spoiler: bool = False,
-        subreddit: (str | praw.models.Subreddit | praw.models.UserSubreddit | None) = None,
+        subreddit: (str | models.Subreddit | models.UserSubreddit | None) = None,
         title: str | None = None,
         url: str | None = None,
         **draft_kwargs: Any,
-    ) -> praw.models.Draft:
+    ) -> models.Draft:
         """Create a new :class:`.Draft`.
 
         :param flair_id: The flair template to select (default: ``None``).
@@ -136,7 +136,7 @@ class DraftHelper(PRAWBase):
 class LiveHelper(PRAWBase):
     r"""Provide a set of functions to interact with :class:`.LiveThread`\ s."""
 
-    def __call__(self, id: str) -> praw.models.LiveThread:
+    def __call__(self, id: str) -> models.LiveThread:
         """Return a new lazy instance of :class:`.LiveThread`.
 
         This method is intended to be used as:
@@ -157,7 +157,7 @@ class LiveHelper(PRAWBase):
         description: str | None = None,
         nsfw: bool = False,
         resources: str | None = None,
-    ) -> praw.models.LiveThread:
+    ) -> models.LiveThread:
         """Create a new :class:`.LiveThread`.
 
         :param title: The title of the new :class:`.LiveThread`.
@@ -180,7 +180,7 @@ class LiveHelper(PRAWBase):
             },
         )
 
-    def info(self, ids: list[str]) -> Iterator[praw.models.LiveThread]:
+    def info(self, ids: list[str]) -> Iterator[models.LiveThread]:
         """Fetch information about each live thread in ``ids``.
 
         :param ids: A list of IDs for a live thread.
@@ -213,7 +213,7 @@ class LiveHelper(PRAWBase):
             msg = "ids must be a list"
             raise TypeError(msg)
 
-        def generator() -> Iterator[praw.models.LiveThread]:
+        def generator() -> Iterator[models.LiveThread]:
             for position in range(0, len(ids), 100):
                 ids_chunk = ids[position : position + 100]
                 url = API_PATH["live_info"].format(ids=",".join(ids_chunk))
@@ -222,7 +222,7 @@ class LiveHelper(PRAWBase):
 
         return generator()
 
-    def now(self) -> praw.models.LiveThread | None:
+    def now(self) -> models.LiveThread | None:
         """Get the currently featured live thread.
 
         :returns: The :class:`.LiveThread` object, or ``None`` if there is no currently
@@ -241,7 +241,7 @@ class LiveHelper(PRAWBase):
 class MultiredditHelper(PRAWBase):
     """Provide a set of functions to interact with multireddits."""
 
-    def __call__(self, *, name: str, redditor: str | praw.models.Redditor) -> praw.models.Multireddit:
+    def __call__(self, *, name: str, redditor: str | models.Redditor) -> models.Multireddit:
         """Return a lazy instance of :class:`.Multireddit`.
 
         :param name: The name of the multireddit.
@@ -259,10 +259,10 @@ class MultiredditHelper(PRAWBase):
         display_name: str,
         icon_name: str | None = None,
         key_color: str | None = None,
-        subreddits: str | praw.models.Subreddit,
+        subreddits: str | models.Subreddit,
         visibility: str = "private",
         weighting_scheme: str = "classic",
-    ) -> praw.models.Multireddit:
+    ) -> models.Multireddit:
         """Create a new :class:`.Multireddit`.
 
         :param display_name: The display name for the new multireddit.
@@ -301,7 +301,7 @@ class MultiredditHelper(PRAWBase):
 class SubredditHelper(PRAWBase):
     """Provide a set of functions to interact with Subreddits."""
 
-    def __call__(self, display_name: str) -> praw.models.Subreddit:
+    def __call__(self, display_name: str) -> models.Subreddit:
         """Return a lazy instance of :class:`.Subreddit`.
 
         :param display_name: The name of the subreddit.
@@ -318,7 +318,7 @@ class SubredditHelper(PRAWBase):
         title: str | None = None,
         wikimode: str = "disabled",
         **other_settings: str | None,
-    ) -> praw.models.Subreddit:
+    ) -> models.Subreddit:
         """Create a new :class:`.Subreddit`.
 
         :param name: The name for the new subreddit.

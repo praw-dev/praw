@@ -11,7 +11,8 @@ from praw.models.reddit.subreddit import Subreddit
 from praw.models.reddit.user_subreddit import UserSubreddit
 
 if TYPE_CHECKING:
-    import praw.models
+    import praw
+    from praw import models
 
 
 class Draft(RedditBase):
@@ -56,7 +57,7 @@ class Draft(RedditBase):
         selftext: str | None = None,
         send_replies: bool | None = None,
         spoiler: bool | None = None,
-        subreddit: praw.models.Subreddit | praw.models.UserSubreddit | None = None,
+        subreddit: models.Subreddit | models.UserSubreddit | None = None,
         title: str | None = None,
         url: str | None = None,
         **draft_kwargs: Any,
@@ -90,7 +91,7 @@ class Draft(RedditBase):
         if id:
             self.id = id
         elif len(_data) > 1:
-            if _data["kind"] == "markdown":
+            if _data["kind"] in {"markdown", "richtext"}:
                 _data["selftext"] = _data.pop("body")
             elif _data["kind"] == "link":
                 _data["url"] = _data.pop("body")
@@ -135,11 +136,11 @@ class Draft(RedditBase):
         nsfw: bool | None = None,
         selftext: str | None = None,
         spoiler: bool | None = None,
-        subreddit: (str | praw.models.Subreddit | praw.models.UserSubreddit | None) = None,
+        subreddit: (str | models.Subreddit | models.UserSubreddit | None) = None,
         title: str | None = None,
         url: str | None = None,
         **submit_kwargs: Any,
-    ) -> praw.models.Submission:
+    ) -> models.Submission:
         """Submit a draft.
 
         :param flair_id: The flair template to select (default: ``None``).
@@ -226,7 +227,7 @@ class Draft(RedditBase):
         selftext: str | None = None,
         send_replies: bool | None = None,
         spoiler: bool | None = None,
-        subreddit: (str | praw.models.Subreddit | praw.models.UserSubreddit | None) = None,
+        subreddit: (str | models.Subreddit | models.UserSubreddit | None) = None,
         title: str | None = None,
         url: str | None = None,
         **draft_kwargs: Any,

@@ -9,7 +9,7 @@ from praw.exceptions import DuplicateReplaceException
 from praw.models.reddit.more import MoreComments
 
 if TYPE_CHECKING:
-    import praw.models
+    from praw import models
 
 
 class CommentForest:
@@ -19,7 +19,7 @@ class CommentForest:
 
     """
 
-    def __getitem__(self, index: int) -> praw.models.Comment:
+    def __getitem__(self, index: int) -> models.Comment:
         """Return the comment at position ``index`` in the list.
 
         This method is to be used like an array access, such as:
@@ -43,7 +43,7 @@ class CommentForest:
         """Return the number of top-level comments in the forest."""
         return len(self._comments)
 
-    def _insert_comment(self, comment: praw.models.Comment) -> None:
+    def _insert_comment(self, comment: models.Comment) -> None:
         if comment.name in self._submission._comments_by_id:
             raise DuplicateReplaceException
         comment.submission = self._submission
@@ -58,7 +58,7 @@ class CommentForest:
 
     def list(
         self,
-    ) -> list[praw.models.Comment | praw.models.MoreComments]:
+    ) -> list[models.Comment | models.MoreComments]:
         """Return a flattened list of all comments.
 
         This list may contain :class:`.MoreComments` instances if :meth:`.replace_more`
@@ -76,9 +76,9 @@ class CommentForest:
 
     @staticmethod
     def _gather_more_comments(
-        tree: list[praw.models.MoreComments],
+        tree: list[models.MoreComments],
         *,
-        parent_tree: list[praw.models.MoreComments] | None = None,
+        parent_tree: list[models.MoreComments] | None = None,
     ) -> list[MoreComments]:
         """Return a list of :class:`.MoreComments` objects obtained from tree."""
         more_comments = []
@@ -98,8 +98,8 @@ class CommentForest:
 
     def __init__(
         self,
-        submission: praw.models.Submission,
-        comments: list[praw.models.Comment] | None = None,
+        submission: models.Submission,
+        comments: list[models.Comment] | None = None,
     ) -> None:
         """Initialize a :class:`.CommentForest` instance.
 
@@ -112,12 +112,12 @@ class CommentForest:
         self._comments = comments
         self._submission = submission
 
-    def _update(self, comments: list[praw.models.Comment]) -> None:
+    def _update(self, comments: list[models.Comment]) -> None:
         self._comments = comments
         for comment in comments:
             comment.submission = self._submission
 
-    def replace_more(self, *, limit: int | None = 32, threshold: int = 0) -> list[praw.models.MoreComments]:
+    def replace_more(self, *, limit: int | None = 32, threshold: int = 0) -> list[models.MoreComments]:
         """Update the comment forest by resolving instances of :class:`.MoreComments`.
 
         :param limit: The maximum number of :class:`.MoreComments` instances to replace.

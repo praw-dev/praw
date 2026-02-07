@@ -14,7 +14,8 @@ from praw.models.reddit.subreddit import Subreddit, SubredditStream
 from praw.util import cachedproperty
 
 if TYPE_CHECKING:
-    import praw.models
+    import praw
+    from praw import models
 
 
 class Multireddit(SubredditListingMixin, RedditBase):
@@ -117,7 +118,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
             None,
         )
 
-    def add(self, subreddit: praw.models.Subreddit) -> None:
+    def add(self, subreddit: models.Subreddit) -> None:
         """Add a subreddit to this multireddit.
 
         :param subreddit: The subreddit to add to this multi.
@@ -134,7 +135,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         self._reddit.put(url, data={"model": dumps({"name": str(subreddit)})})
         self._reset_attributes("subreddits")
 
-    def copy(self, *, display_name: str | None = None) -> praw.models.Multireddit:
+    def copy(self, *, display_name: str | None = None) -> models.Multireddit:
         """Copy this multireddit and return the new multireddit.
 
         :param display_name: The display name for the copied multireddit. Reddit will
@@ -173,7 +174,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         path = API_PATH["multireddit_api"].format(multi=self.name, user=self._author.name)
         self._reddit.delete(path)
 
-    def remove(self, subreddit: praw.models.Subreddit) -> None:
+    def remove(self, subreddit: models.Subreddit) -> None:
         """Remove a subreddit from this multireddit.
 
         :param subreddit: The subreddit to remove from this multi.
@@ -192,7 +193,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
     def update(
         self,
-        **updated_settings: str | list[str | praw.models.Subreddit | dict[str, str]],
+        **updated_settings: str | list[str | models.Subreddit | dict[str, str]],
     ) -> None:
         """Update this multireddit.
 

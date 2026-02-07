@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, SupportsIndex
 from urllib.parse import quote
 
 from praw.const import API_PATH
@@ -13,7 +13,8 @@ from praw.util import cachedproperty
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    import praw.models
+    import praw
+    from praw import models
 
 
 class Rule(RedditBase):
@@ -43,7 +44,7 @@ class Rule(RedditBase):
     STR_FIELD = "short_name"
 
     @cachedproperty
-    def mod(self) -> praw.models.reddit.rules.RuleModeration:
+    def mod(self) -> models.reddit.rules.RuleModeration:
         """Contain methods used to moderate rules.
 
         To delete ``"No spam"`` from r/test try:
@@ -74,7 +75,7 @@ class Rule(RedditBase):
     def __init__(
         self,
         reddit: praw.Reddit,
-        subreddit: praw.models.Subreddit | None = None,
+        subreddit: models.Subreddit | None = None,
         short_name: str | None = None,
         _data: dict[str, str] | None = None,
     ) -> None:
@@ -119,7 +120,7 @@ class RuleModeration:
 
     """
 
-    def __init__(self, rule: praw.models.Rule) -> None:
+    def __init__(self, rule: models.Rule) -> None:
         """Initialize a :class:`.RuleModeration` instance."""
         self.rule = rule
 
@@ -146,7 +147,7 @@ class RuleModeration:
         kind: str | None = None,
         short_name: str | None = None,
         violation_reason: str | None = None,
-    ) -> praw.models.Rule:
+    ) -> models.Rule:
         """Update the rule from this subreddit.
 
         .. note::
@@ -245,7 +246,7 @@ class SubredditRules:
         """
         return SubredditRulesModeration(self)
 
-    def __getitem__(self, short_name: str | int | slice) -> praw.models.Rule:
+    def __getitem__(self, short_name: SupportsIndex) -> models.Rule:
         """Return the :class:`.Rule` for the subreddit with short_name ``short_name``.
 
         :param short_name: The short_name of the rule, or the rule number.
@@ -282,12 +283,20 @@ class SubredditRules:
 
             rule = reddit.subreddit("test").rules[1]
 
+        To get the last three rules in a subreddit:
+
+        .. code-block:: python
+
+            reasons = reddit.subreddit("test").rules[-3:]
+            for rule in rules:
+                print(rule)
+
         """
         if not isinstance(short_name, str):
             return self._rule_list[short_name]
         return Rule(self._reddit, subreddit=self.subreddit, short_name=short_name)
 
-    def __init__(self, subreddit: praw.models.Subreddit) -> None:
+    def __init__(self, subreddit: models.Subreddit) -> None:
         """Initialize a :class:`.SubredditRules` instance.
 
         :param subreddit: The subreddit whose rules to work with.
@@ -296,7 +305,7 @@ class SubredditRules:
         self.subreddit = subreddit
         self._reddit = subreddit._reddit
 
-    def __iter__(self) -> Iterator[praw.models.Rule]:
+    def __iter__(self) -> Iterator[models.Rule]:
         """Iterate through the rules of the subreddit.
 
         :returns: An iterator containing all the rules of a subreddit.
@@ -349,7 +358,7 @@ class SubredditRulesModeration:
         kind: str,
         short_name: str,
         violation_reason: str | None = None,
-    ) -> praw.models.Rule:
+    ) -> models.Rule:
         """Add a removal reason to this subreddit.
 
         :param description: The description for the rule.
@@ -382,7 +391,7 @@ class SubredditRulesModeration:
         new_rule.subreddit = self.subreddit_rules.subreddit
         return new_rule
 
-    def reorder(self, rule_list: list[praw.models.Rule]) -> list[praw.models.Rule]:
+    def reorder(self, rule_list: list[models.Rule]) -> list[models.Rule]:
         """Reorder the rules of a subreddit.
 
         :param rule_list: The list of rules, in the wanted order. Each index of the list

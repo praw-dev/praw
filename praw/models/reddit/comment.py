@@ -8,12 +8,18 @@ from praw.const import API_PATH
 from praw.exceptions import ClientException, InvalidURL
 from praw.models.comment_forest import CommentForest
 from praw.models.reddit.base import RedditBase
-from praw.models.reddit.mixins import FullnameMixin, InboxableMixin, ThingModerationMixin, UserContentMixin
+from praw.models.reddit.mixins import (
+    FullnameMixin,
+    InboxableMixin,
+    ThingModerationMixin,
+    UserContentMixin,
+)
 from praw.models.reddit.redditor import Redditor
 from praw.util.cache import cachedproperty
 
 if TYPE_CHECKING:
-    import praw.models
+    import praw
+    from praw import models
 
 
 class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
@@ -74,7 +80,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return parts[-1]
 
     @cachedproperty
-    def mod(self) -> praw.models.reddit.comment.CommentModeration:
+    def mod(self) -> models.reddit.comment.CommentModeration:
         """Provide an instance of :class:`.CommentModeration`.
 
         Example usage:
@@ -126,14 +132,14 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return self._replies
 
     @property
-    def submission(self) -> praw.models.Submission:
+    def submission(self) -> models.Submission:
         """Return the :class:`.Submission` object this comment belongs to."""
         if not self._submission:  # Comment not from submission
             self._submission = self._reddit.submission(self._extract_submission_id())
         return self._submission
 
     @submission.setter
-    def submission(self, submission: praw.models.Submission) -> None:
+    def submission(self, submission: models.Submission) -> None:
         """Update the :class:`.Submission` associated with the :class:`.Comment`."""
         submission._comments_by_id[self.fullname] = self
         self._submission = submission
@@ -165,7 +171,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     def __setattr__(
         self,
         attribute: str,
-        value: str | Redditor | CommentForest | praw.models.Subreddit,
+        value: str | Redditor | CommentForest | models.Subreddit,
     ) -> None:
         """Objectify author, replies, and subreddit."""
         if attribute == "author":
@@ -200,7 +206,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
     def parent(
         self,
-    ) -> Comment | praw.models.Submission:
+    ) -> Comment | models.Submission:
         """Return the parent of the comment.
 
         The returned parent will be an instance of either :class:`.Comment`, or
@@ -236,8 +242,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-            comment = reddit.comment("dkk4qjd")
-            ancestor = comment
+            ancestor = reddit.comment("dkk4qjd")
             refresh_counter = 0
             while not ancestor.is_root:
                 ancestor = ancestor.parent()
@@ -325,7 +330,7 @@ class CommentModeration(ThingModerationMixin):
 
     REMOVAL_MESSAGE_API = "removal_comment_message"
 
-    def __init__(self, comment: praw.models.Comment) -> None:
+    def __init__(self, comment: models.Comment) -> None:
         """Initialize a :class:`.CommentModeration` instance.
 
         :param comment: The comment to moderate.

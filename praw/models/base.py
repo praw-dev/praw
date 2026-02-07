@@ -26,7 +26,7 @@ class PRAWBase:
         arguments[key] = value
 
     @classmethod
-    def parse(cls, data: dict[str, Any], reddit: praw.Reddit) -> Any:
+    def parse(cls, data: dict[str, Any], reddit: praw.Reddit) -> PRAWBase:
         """Return an instance of ``cls`` from ``data``.
 
         :param data: The structured data.

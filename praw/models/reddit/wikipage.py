@@ -13,7 +13,8 @@ from praw.util.cache import cachedproperty
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    import praw.models
+    import praw
+    from praw import models
 
 
 class WikiPageModeration:
@@ -35,7 +36,7 @@ class WikiPageModeration:
         """
         self.wikipage = wikipage
 
-    def add(self, redditor: praw.models.Redditor) -> None:
+    def add(self, redditor: models.Redditor) -> None:
         """Add an editor to this :class:`.WikiPage`.
 
         :param redditor: A redditor name or :class:`.Redditor` instance.
@@ -51,7 +52,7 @@ class WikiPageModeration:
         url = API_PATH["wiki_page_editor"].format(subreddit=self.wikipage.subreddit, method="add")
         self.wikipage._reddit.post(url, data=data)
 
-    def remove(self, redditor: praw.models.Redditor) -> None:
+    def remove(self, redditor: models.Redditor) -> None:
         """Remove an editor from this :class:`.WikiPage`.
 
         :param redditor: A redditor name or :class:`.Redditor` instance.
@@ -166,13 +167,11 @@ class WikiPage(RedditBase):
 
     """
 
-    __hash__ = RedditBase.__hash__
-
     @staticmethod
     def _revision_generator(
         *,
         generator_kwargs: dict[str, Any],
-        subreddit: praw.models.Subreddit,
+        subreddit: models.Subreddit,
         url: str,
     ) -> Iterator[dict[str, Redditor | WikiPage | str | int | bool | None]]:
         for revision in ListingGenerator(subreddit._reddit, url, **generator_kwargs):
@@ -197,7 +196,7 @@ class WikiPage(RedditBase):
     def __init__(
         self,
         reddit: praw.Reddit,
-        subreddit: praw.models.Subreddit,
+        subreddit: models.Subreddit,
         name: str,
         revision: str | None = None,
         _data: dict[str, Any] | None = None,
@@ -236,7 +235,7 @@ class WikiPage(RedditBase):
             {"v": self._revision} if self._revision else None,
         )
 
-    def discussions(self, **generator_kwargs: Any) -> Iterator[praw.models.Submission]:
+    def discussions(self, **generator_kwargs: Any) -> Iterator[models.Submission]:
         """Return a :class:`.ListingGenerator` for discussions of a wiki page.
 
         Discussions are site-wide links to a wiki page.

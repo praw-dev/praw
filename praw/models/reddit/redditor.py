@@ -15,7 +15,8 @@ from praw.util.cache import cachedproperty
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    import praw.models
+    import praw
+    from praw import models
 
 
 class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase):
@@ -74,7 +75,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         return cls(reddit, data)
 
     @cachedproperty
-    def notes(self) -> praw.models.RedditorModNotes:
+    def notes(self) -> models.RedditorModNotes:
         """Provide an instance of :class:`.RedditorModNotes`.
 
         This provides an interface for managing moderator notes for a redditor.
@@ -98,7 +99,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         return RedditorModNotes(self._reddit, self)
 
     @cachedproperty
-    def stream(self) -> praw.models.reddit.redditor.RedditorStream:
+    def stream(self) -> models.reddit.redditor.RedditorStream:
         """Provide an instance of :class:`.RedditorStream`.
 
         Streams can be used to indefinitely retrieve new comments made by a redditor,
@@ -168,6 +169,8 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         super().__setattr__(name, value)
 
     def _fetch(self) -> None:
+        if hasattr(self, "_fullname"):
+            self.name = self._fetch_username(self._fullname)
         data = self._fetch_data()
         data = data["data"]
         other = type(self)(self._reddit, _data=data)
@@ -175,8 +178,6 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         super()._fetch()
 
     def _fetch_info(self) -> tuple[str, dict[str, str], None]:
-        if hasattr(self, "_fullname"):
-            self.name = self._fetch_username(self._fullname)
         return "user_about", {"user": self.name}, None
 
     def _fetch_username(self, fullname: str) -> str:
@@ -245,7 +246,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         self._friend(data={"note": note} if note else {}, method="PUT")
 
-    def friend_info(self) -> praw.models.Redditor:
+    def friend_info(self) -> models.Redditor:
         """Return a :class:`.Redditor` instance with specific friend-related attributes.
 
         :returns: A :class:`.Redditor` instance with fields ``date``, ``id``, and
@@ -261,7 +262,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         return self._reddit.get(API_PATH["friend_v1"].format(user=self))
 
-    def moderated(self) -> list[praw.models.Subreddit]:
+    def moderated(self) -> list[models.Subreddit]:
         """Return a list of the redditor's moderated subreddits.
 
         :returns: A list of :class:`.Subreddit` objects. Return ``[]`` if the redditor
@@ -308,7 +309,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         return self._reddit.get(API_PATH["moderated"].format(user=self)) or []
 
-    def multireddits(self) -> list[praw.models.Multireddit]:
+    def multireddits(self) -> list[models.Multireddit]:
         """Return a list of the redditor's public multireddits.
 
         For example, to to get :class:`.Redditor` u/spez's multireddits:
@@ -320,7 +321,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         """
         return self._reddit.get(API_PATH["multireddit_user"].format(user=self))
 
-    def trophies(self) -> list[praw.models.Trophy]:
+    def trophies(self) -> list[models.Trophy]:
         """Return a list of the redditor's trophies.
 
         :returns: A list of :class:`.Trophy` objects. Return ``[]`` if the redditor has
@@ -348,7 +349,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
 
         .. code-block:: python
 
-            reddit.redditor("AaronSw").trust()
+            reddit.redditor("spez").trust()
 
         Use the ``accept_pms`` parameter of :meth:`.Preferences.update` to toggle your
         ``accept_pms`` setting between ``"everyone"`` and ``"whitelisted"``. For
@@ -412,7 +413,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
 class RedditorStream:
     """Provides submission and comment streams."""
 
-    def __init__(self, redditor: praw.models.Redditor) -> None:
+    def __init__(self, redditor: models.Redditor) -> None:
         """Initialize a :class:`.RedditorStream` instance.
 
         :param redditor: The redditor associated with the streams.
@@ -420,7 +421,7 @@ class RedditorStream:
         """
         self.redditor = redditor
 
-    def comments(self, **stream_options: str | int | dict[str, str]) -> Iterator[praw.models.Comment]:
+    def comments(self, **stream_options: str | int | dict[str, str]) -> Iterator[models.Comment]:
         """Yield new comments as they become available.
 
         Comments are yielded oldest first. Up to 100 historical comments will initially
@@ -438,7 +439,7 @@ class RedditorStream:
         """
         return stream_generator(self.redditor.comments.new, **stream_options)
 
-    def submissions(self, **stream_options: str | int | dict[str, str]) -> Iterator[praw.models.Submission]:
+    def submissions(self, **stream_options: str | int | dict[str, str]) -> Iterator[models.Submission]:
         """Yield new submissions as they become available.
 
         Submissions are yielded oldest first. Up to 100 historical submissions will

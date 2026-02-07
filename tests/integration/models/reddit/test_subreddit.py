@@ -1859,8 +1859,6 @@ class TestSubreddit(IntegrationTest):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         for i, file_name in enumerate(("test.mov", "test.mp4")):
             title = f"Test Title {i}"
-            # note: pytest will replace any instance of `test` (subreddit name) with
-            # the literal value ``placeholder_test_subreddit`` in CI, making CI tests fail.
             selftext = f"Testing **PRAW** video submission *with markdown selftext*."
             video = image_path(file_name)
             submission = subreddit.submit_video(title, video, selftext=selftext)

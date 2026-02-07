@@ -25,7 +25,8 @@ from praw.util import cachedproperty
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    import praw.models
+    import praw
+    from praw import models
 
 INLINE_MEDIA_PATTERN = re.compile(
     r"\n\n!?(\[.*?])?\(?((https://((preview|i)\.redd\.it|reddit.com/link).*?)|(?!https)([a-zA-Z0-9]+( \".*?\")?))\)?"
@@ -40,7 +41,7 @@ MEDIA_TYPE_MAPPING = {
 class SubmissionFlair:
     """Provide a set of functions pertaining to :class:`.Submission` flair."""
 
-    def __init__(self, submission: praw.models.Submission) -> None:
+    def __init__(self, submission: models.Submission) -> None:
         """Initialize a :class:`.SubmissionFlair` instance.
 
         :param submission: The :class:`.Submission` associated with the flair functions.
@@ -104,7 +105,7 @@ class SubmissionModeration(ThingModerationMixin, ModNoteMixin):
 
     REMOVAL_MESSAGE_API = "removal_link_message"
 
-    def __init__(self, submission: praw.models.Submission) -> None:
+    def __init__(self, submission: models.Submission) -> None:
         """Initialize a :class:`.SubmissionModeration` instance.
 
         :param submission: The submission to moderate.
@@ -261,7 +262,7 @@ class SubmissionModeration(ThingModerationMixin, ModNoteMixin):
         """
         self.thing._reddit.post(API_PATH["spoiler"], data={"id": self.thing.fullname})
 
-    def sticky(self, *, bottom: bool = True, state: bool = True) -> praw.models.Submission:
+    def sticky(self, *, bottom: bool = True, state: bool = True) -> models.Submission:
         """Set the submission's sticky state in its subreddit.
 
         :param bottom: When ``True``, set the submission as the bottom sticky. If no top
@@ -623,7 +624,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         self,
         *,
         chunk_size: int,
-        other_submissions: list[praw.models.Submission] | None,
+        other_submissions: list[models.Submission] | None,
     ) -> Iterator[str]:
         all_submissions = [self.fullname]
         if other_submissions:
@@ -637,8 +638,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         body: str,
         *,
         preserve_inline_media: bool = False,
-        inline_media: dict[str, praw.models.InlineMedia] | None = None,
-    ) -> praw.models.Submission:
+        inline_media: dict[str, models.InlineMedia] | None = None,
+    ) -> models.Submission:
         """Replace the body of the object with ``body``.
 
         :param body: The Markdown formatted content for the updated object.
@@ -794,7 +795,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
     def crosspost(
         self,
-        subreddit: praw.models.Subreddit,
+        subreddit: models.Subreddit,
         *,
         flair_id: str | None = None,
         flair_text: str | None = None,
@@ -802,7 +803,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         send_replies: bool = True,
         spoiler: bool = False,
         title: str | None = None,
-    ) -> praw.models.Submission:
+    ) -> models.Submission:
         """Crosspost the submission to a subreddit.
 
         .. note::
@@ -855,7 +856,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         return self._reddit.post(API_PATH["submit"], data=data)
 
-    def hide(self, *, other_submissions: list[praw.models.Submission] | None = None) -> None:
+    def hide(self, *, other_submissions: list[models.Submission] | None = None) -> None:
         """Hide :class:`.Submission`.
 
         :param other_submissions: When provided, additionally hide this list of
@@ -893,7 +894,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         data = {"links": self.fullname}
         self._reddit.post(API_PATH["store_visits"], data=data)
 
-    def unhide(self, *, other_submissions: list[praw.models.Submission] | None = None) -> None:
+    def unhide(self, *, other_submissions: list[models.Submission] | None = None) -> None:
         """Unhide :class:`.Submission`.
 
         :param other_submissions: When provided, additionally unhide this list of

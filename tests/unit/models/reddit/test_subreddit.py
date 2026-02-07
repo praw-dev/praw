@@ -125,8 +125,7 @@ class TestSubreddit(UnitTest):
         assert str(subreddit) == "name"
 
     def test_submit__failure(self, reddit):
-        # `selftext` and `url` are no longer mutually exclusive
-        message = "Submission requires either 'selftext' or 'url' to be provided."
+        message = "Either 'selftext' and/or 'url' must be provided."
         subreddit = Subreddit(reddit, display_name="name")
 
         with pytest.raises(TypeError) as excinfo:

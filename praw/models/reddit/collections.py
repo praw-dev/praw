@@ -15,7 +15,8 @@ from praw.util.cache import cachedproperty
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    import praw.models
+    import praw
+    from praw import models
 
 
 class CollectionModeration(PRAWBase):
@@ -38,7 +39,7 @@ class CollectionModeration(PRAWBase):
         super().__init__(reddit, _data=None)
         self.collection_id = collection_id
 
-    def _post_fullname(self, post: str | praw.models.Submission) -> str:
+    def _post_fullname(self, post: str | models.Submission) -> str:
         """Get a post's fullname.
 
         :param post: A fullname, a :class:`.Submission`, a permalink, or an ID.
@@ -58,7 +59,7 @@ class CollectionModeration(PRAWBase):
         except ClientException:
             return self._reddit.submission(post).fullname
 
-    def add_post(self, submission: praw.models.Submission) -> None:
+    def add_post(self, submission: models.Submission) -> None:
         """Add a post to the collection.
 
         :param submission: The post to add, a :class:`.Submission`, its permalink as a
@@ -99,7 +100,7 @@ class CollectionModeration(PRAWBase):
         """
         self._reddit.post(API_PATH["collection_delete"], data={"collection_id": self.collection_id})
 
-    def remove_post(self, submission: praw.models.Submission) -> None:
+    def remove_post(self, submission: models.Submission) -> None:
         """Remove a post from the collection.
 
         :param submission: The post to remove, a :class:`.Submission`, its permalink as
@@ -124,7 +125,7 @@ class CollectionModeration(PRAWBase):
             data={"collection_id": self.collection_id, "link_fullname": link_fullname},
         )
 
-    def reorder(self, links: list[str | praw.models.Submission]) -> None:
+    def reorder(self, links: list[str | models.Submission]) -> None:
         r"""Reorder posts in the collection.
 
         :param links: A list of :class:`.Submission`\ s or a ``str`` that is either a
@@ -352,7 +353,7 @@ class SubredditCollections(PRAWBase):
     def __init__(
         self,
         reddit: praw.Reddit,
-        subreddit: praw.models.Subreddit,
+        subreddit: models.Subreddit,
         _data: dict[str, Any] | None = None,
     ) -> None:
         """Initialize a :class:`.SubredditCollections` instance."""
@@ -391,7 +392,7 @@ class Collection(RedditBase):
     .. code-block:: python
 
         collection = reddit.subreddit("test").collections(
-            permalink="https://reddit.com/r/SUBREDDIT/collection/some_uuid"
+            permalink="https://reddit.com/r/test/collection/some_uuid"
         )
 
     .. include:: ../../typical_attributes.rst
@@ -438,7 +439,7 @@ class Collection(RedditBase):
         return CollectionModeration(self._reddit, self.collection_id)
 
     @cachedproperty
-    def subreddit(self) -> praw.models.Subreddit:
+    def subreddit(self) -> models.Subreddit:
         """Get the subreddit that this collection belongs to.
 
         For example:
@@ -483,7 +484,7 @@ class Collection(RedditBase):
             "include_links": True,
         }
 
-    def __iter__(self) -> Iterator[praw.models.Submission]:
+    def __iter__(self) -> Iterator[models.Submission]:
         """Provide a way to iterate over the posts in this :class:`.Collection`.
 
         Example usage:

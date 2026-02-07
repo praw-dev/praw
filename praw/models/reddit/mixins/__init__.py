@@ -18,7 +18,7 @@ from praw.models.reddit.mixins.savable import SavableMixin
 from praw.models.reddit.mixins.votable import VotableMixin
 
 if TYPE_CHECKING:
-    import praw.models
+    from praw import models
 
 
 class ThingModerationMixin(ModNoteMixin):
@@ -187,7 +187,7 @@ class ThingModerationMixin(ModNoteMixin):
         message: str,
         title: str = "ignored",
         type: str = "public",  # noqa: A002
-    ) -> praw.models.Comment | None:
+    ) -> models.Comment | None:
         """Send a removal message for a :class:`.Comment` or :class:`.Submission`.
 
         .. warning::

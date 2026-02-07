@@ -55,7 +55,6 @@ certificate without an exception from requests_, first export the certificate as
     import praw
     from requests import Session
 
-
     session = Session()
     session.verify = "/path/to/certfile.pem"
     reddit = praw.Reddit(

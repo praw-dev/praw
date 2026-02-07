@@ -10,7 +10,10 @@ from praw.exceptions import ClientException
 from praw.models.reddit.base import RedditBase
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
+
     import praw
+    from praw import models
 
 
 class Emoji(RedditBase):
@@ -47,7 +50,7 @@ class Emoji(RedditBase):
     def __init__(
         self,
         reddit: praw.Reddit,
-        subreddit: praw.models.Subreddit,
+        subreddit: models.Subreddit,
         name: str,
         _data: dict[str, Any] | None = None,
     ) -> None:
@@ -149,7 +152,7 @@ class SubredditEmoji:
         """
         return Emoji(self._reddit, self.subreddit, name)
 
-    def __init__(self, subreddit: praw.models.Subreddit) -> None:
+    def __init__(self, subreddit: models.Subreddit) -> None:
         """Initialize a :class:`.SubredditEmoji` instance.
 
         :param subreddit: The subreddit whose emoji are affected.
@@ -158,7 +161,7 @@ class SubredditEmoji:
         self.subreddit = subreddit
         self._reddit = subreddit._reddit
 
-    def __iter__(self) -> list[Emoji]:
+    def __iter__(self) -> Iterator[Emoji]:
         """Return a list of :class:`.Emoji` for the subreddit.
 
         This method is to be used to discover all emoji for a subreddit:

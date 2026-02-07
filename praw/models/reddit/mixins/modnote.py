@@ -7,13 +7,13 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    import praw.models
+    from praw import models
 
 
 class ModNoteMixin:
     """Interface for classes that can have a moderator note set on them."""
 
-    def author_notes(self, **generator_kwargs: Any) -> Iterator[praw.models.ModNote]:
+    def author_notes(self, **generator_kwargs: Any) -> Iterator[models.ModNote]:
         """Get the moderator notes for the author of this object in the subreddit it's posted in.
 
         :param generator_kwargs: Additional keyword arguments are passed in the
@@ -31,7 +31,7 @@ class ModNoteMixin:
         """
         return self.thing.subreddit.mod.notes.redditors(self.thing.author, **generator_kwargs)
 
-    def create_note(self, *, label: str | None = None, note: str, **other_settings: Any) -> praw.models.ModNote:
+    def create_note(self, *, label: str | None = None, note: str, **other_settings: Any) -> models.ModNote:
         """Create a moderator note on the author of this object in the subreddit it's posted in.
 
         :param label: The label for the note. As of this writing, this can be one of the

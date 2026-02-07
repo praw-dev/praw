@@ -10,7 +10,7 @@ Unreleased
 
 - Add support for Python 3.13.
 - Add support for optional Markdown-formatted ``selftext`` when submitting link, image,
-  gallery and video posts.
+  gallery, and video posts.
 
 **Changed**
 
@@ -33,6 +33,7 @@ Unreleased
 - :meth:`.Subreddit.submit_video`, :meth:`.Subreddit.submit_gallery`, and
   :meth:`.Subreddit.submit_image` now accept an optional Markdown-formatted ``selftext``
   parameter.
+- The ``reason_id`` argument to :class:`.RemovalReason` has been renamed to ``id``.
 
 **Removed**
 
