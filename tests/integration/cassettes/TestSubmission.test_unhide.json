@@ -64,7 +64,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.0.0b8 prawcore/0.0.10"
         },
         "method": "POST",
-        "uri": "https://oauth.reddit.com/api/unhide/?raw_json=1"
+        "uri": "https://oauth.reddit.com/api/unhide?raw_json=1"
       },
       "response": {
         "body": {
@@ -94,7 +94,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/api/unhide/?raw_json=1"
+        "url": "https://oauth.reddit.com/api/unhide?raw_json=1"
       }
     }
   ],

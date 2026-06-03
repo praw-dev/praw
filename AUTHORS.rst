@@ -87,4 +87,5 @@ Source Contributors
 - c0d3rman `@c0d3rman <https://github.com/c0d3rman>`_
 - Joe Kerhin `@jkerhin <https://github.com/jkerhin>`_
 - Aaron Becker `@aaronjbecker <https://github.com/aaronjbecker>`_
+- Volker `@volker-fr <https://github.com/volker-fr>`_
 - Add "Name <email (optional)> and github profile link" above this line.

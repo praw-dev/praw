@@ -35,6 +35,10 @@ Unreleased
   parameter.
 - The ``reason_id`` argument to :class:`.RemovalReason` has been renamed to ``id``.
 
+**Fixed**
+
+- Fix API endpoint for :meth:`.Submission.hide` and :meth:`.Submission.unhide`.
+
 **Removed**
 
 - Remove ``Reddit.random_subreddit``, ``Subreddit.random``, and
