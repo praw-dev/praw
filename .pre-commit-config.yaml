@@ -27,6 +27,11 @@ repos:
   - repo: https://github.com/LilSpazJoekp/docstrfmt
     hooks:
       - id: docstrfmt
+        # docstrfmt 2.0.2's CLI is incompatible with click >= 8.2, which raises
+        # "TypeError: main() missing 1 required positional argument:
+        # 'section_adornments'" before any file is processed. Pin click until
+        # docstrfmt ships a compatible release.
+        additional_dependencies: ["click<8.2"]
     rev: v2.0.2
 
   - repo: https://github.com/MarcoGorelli/auto-walrus
