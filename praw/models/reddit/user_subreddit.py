@@ -40,7 +40,7 @@ class UserSubreddit(Subreddit):
                               "You must be invited to visit this community" page (if
                               applicable).
     ``spoilers_enabled``      Whether the spoiler tag feature is enabled.
-    ``subscribers``           Count of subscribers. This will be ``0`` unless unless the
+    ``subscribers``           Count of subscribers. This will be ``0`` unless the
                               authenticated user is a moderator.
     ``user_is_banned``        Whether the authenticated user is banned.
     ``user_is_moderator``     Whether the authenticated user is a moderator.

@@ -312,7 +312,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
     def multireddits(self) -> list[models.Multireddit]:
         """Return a list of the redditor's public multireddits.
 
-        For example, to to get :class:`.Redditor` u/spez's multireddits:
+        For example, to get :class:`.Redditor` u/spez's multireddits:
 
         .. code-block:: python
 
