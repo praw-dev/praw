@@ -27,8 +27,7 @@ repos:
   - repo: https://github.com/LilSpazJoekp/docstrfmt
     hooks:
       - id: docstrfmt
-        additional_dependencies: [click<8.4]
-    rev: 7653faa707cb660bc80cef0e8433932363b43504  # frozen: v2.0.2
+    rev: 06455715c8a81e176748e036c1c945f3e80d5b8d  # frozen: v2.1.0
 
   - repo: https://github.com/MarcoGorelli/auto-walrus
     hooks:
