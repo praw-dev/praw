@@ -4,7 +4,7 @@ jobs:
     secrets:
       APP_ID: ${{ secrets.APP_ID }}
       APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
-    uses: praw-dev/.github/.github/workflows/pre-commit_autoupdate.yml@d00355f9d670fa915fd5cd4f0ac422061951f55a # v1.3.1
+    uses: praw-dev/.github/.github/workflows/pre-commit_autoupdate.yml@1d4a4eb39290407d05b4c8fb0a7ec36fb9ff935d # v1.3.2
 name: Update pre-commit hooks
 on:
   schedule:
