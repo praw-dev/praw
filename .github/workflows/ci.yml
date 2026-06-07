@@ -2,7 +2,7 @@ jobs:
   ci:
     name: CI
     secrets: inherit
-    uses: praw-dev/.github/.github/workflows/ci.yml@main
+    uses: praw-dev/.github/.github/workflows/ci.yml@f33b50e54733ad51138f0568b95552963d47b4a3 # v1.0.0
     with:
       package: praw
 name: CI

@@ -2,7 +2,7 @@ jobs:
   prepare_release:
     name: Prepare Release
     secrets: inherit
-    uses: praw-dev/.github/.github/workflows/prepare_release.yml@main
+    uses: praw-dev/.github/.github/workflows/prepare_release.yml@f33b50e54733ad51138f0568b95552963d47b4a3 # v1.0.0
     with:
       version: ${{ inputs.version }}
 name: Prepare Release
