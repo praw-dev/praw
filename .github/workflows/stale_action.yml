@@ -1,7 +1,7 @@
 jobs:
   stale_action:
     name: Close stale issues and PRs
-    uses: praw-dev/.github/.github/workflows/stale_action.yml@d00355f9d670fa915fd5cd4f0ac422061951f55a # v1.3.1
+    uses: praw-dev/.github/.github/workflows/stale_action.yml@1d4a4eb39290407d05b4c8fb0a7ec36fb9ff935d # v1.3.2
 name: Close stale issues and PRs
 on:
   schedule:
