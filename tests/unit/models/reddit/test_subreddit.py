@@ -5,7 +5,7 @@ from unittest import mock
 import pytest
 
 from praw.exceptions import ClientException, MediaPostFailed
-from praw.models import InlineGif, InlineImage, InlineVideo, Subreddit, WikiPage
+from praw.models import InlineGif, InlineImage, InlineVideo, PostMedia, StylesheetAsset, Subreddit, WikiPage
 from praw.models.reddit.subreddit import SubredditFlairTemplates
 
 from ... import UnitTest
@@ -55,22 +55,22 @@ class TestSubreddit(UnitTest):
 
     @mock.patch("websocket.create_connection")
     @mock.patch(
-        "praw.models.Subreddit._upload_media",
-        return_value=("fake_media_url", "fake_websocket_url"),
+        "praw.models.PostMedia._upload",
+        return_value="fake_media_url",
     )
     @mock.patch(
         "praw.Reddit.post", return_value={"json": {"data": {"websocket_url": ""}}}
     )
     def test_invalid_media(
-        self, _mock_post, _mock_upload_media, connection_mock, reddit
+        self, _mock_post, _mock_upload, connection_mock, reddit
     ):
         connection_mock().recv.return_value = json.dumps(
             {"payload": {}, "type": "failed"}
         )
         with pytest.raises(MediaPostFailed):
-            reddit.subreddit("test").submit_image("Test", "dummy path")
+            reddit.subreddit("test").submit_image(image_media=PostMedia(b"", name="dummy.png"), title="Test")
 
-    @mock.patch("praw.models.Subreddit._read_and_post_media")
+    @mock.patch("praw.models.PostMedia._post_to_s3")
     @mock.patch("websocket.create_connection")
     @mock.patch(
         "praw.Reddit.post",
@@ -81,19 +81,14 @@ class TestSubreddit(UnitTest):
     )
     def test_media_upload_500(self, _mock_post, connection_mock, mock_method, reddit):
         from prawcore.exceptions import ServerError
-        from requests.exceptions import HTTPError
-
-        http_response = mock.Mock()
-        http_response.status_code = 500
 
         response = mock.Mock()
-        response.ok = True
-        response.raise_for_status = mock.Mock(
-            side_effect=HTTPError(response=http_response)
-        )
+        response.ok = False
+        response.status_code = 500
+        response.text = "<Error/>"
         mock_method.return_value = response
         with pytest.raises(ServerError):
-            reddit.subreddit("test").submit_image("Test", "/dev/null")
+            reddit.subreddit("test").submit_image(image_media=PostMedia(b"", name="test.png"), title="Test")
 
     def test_notes_delete__invalid_args(self, reddit):
         with pytest.raises(TypeError) as excinfo:
@@ -137,9 +132,9 @@ class TestSubreddit(UnitTest):
         # but `inline_media` is not supported for link post selftext
         message = "As of 2025-05-07, `inline_media` is not supported for link post selftext. Only Markdown text can be added to non-self posts."
         subreddit = Subreddit(reddit, display_name="name")
-        gif = InlineGif(caption="optional caption", path="test.gif")
-        image = InlineImage(caption="optional caption", path="test.png")
-        video = InlineVideo(caption="optional caption", path="test.mp4")
+        gif = InlineGif(caption="optional caption", media=PostMedia(b"", name="test.gif"))
+        image = InlineImage(caption="optional caption", media=PostMedia(b"", name="test.png"))
+        video = InlineVideo(caption="optional caption", media=PostMedia(b"", name="test.mp4"))
         selftext = "Text with {gif1}, {image1}, and {video1} inline"
         media = {"gif1": gif, "image1": image, "video1": video}
         with pytest.raises(TypeError) as excinfo:
@@ -149,24 +144,20 @@ class TestSubreddit(UnitTest):
                              selftext=selftext)
         assert str(excinfo.value) == message
 
-    def test_submit_gallery__invalid_path(self, reddit):
-        message = "'invalid_image_path' is not a valid image path."
+    def test_submit_gallery__invalid_image_media(self, reddit):
+        message = "'image_media' is required and must be a PostMedia instance."
         subreddit = Subreddit(reddit, display_name="name")
 
         with pytest.raises(TypeError) as excinfo:
-            subreddit.submit_gallery(
-                "Cool title", [{"image_path": "invalid_image_path"}]
-            )
+            subreddit.submit_gallery(images=[{"image_media": "a string is not PostMedia"}], title="Cool title")
         assert str(excinfo.value) == message
 
-    def test_submit_gallery__missing_path(self, reddit):
-        message = "'image_path' is required."
+    def test_submit_gallery__missing_image_media(self, reddit):
+        message = "'image_media' is required and must be a PostMedia instance."
         subreddit = Subreddit(reddit, display_name="name")
 
         with pytest.raises(TypeError) as excinfo:
-            subreddit.submit_gallery(
-                "Cool title", [{"caption": "caption"}, {"caption": "caption2"}]
-            )
+            subreddit.submit_gallery(images=[{"caption": "caption"}, {"caption": "caption2"}], title="Cool title")
         assert str(excinfo.value) == message
 
     def test_submit_gallery__too_long_caption(self, reddit):
@@ -179,41 +170,42 @@ class TestSubreddit(UnitTest):
         )
         with pytest.raises(TypeError) as excinfo:
             subreddit.submit_gallery(
-                "Cool title", [{"image_path": __file__, "caption": caption}]
+                images=[{"image_media": PostMedia(b"", name="test.png"), "caption": caption}],
+                title="Cool title",
             )
         assert str(excinfo.value) == message
 
     def test_submit_image__bad_filetype(self, image_path, reddit):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         for file_name in ("test.mov", "test.mp4"):
-            image = image_path(file_name)
+            image = PostMedia(image_path(file_name))
             with pytest.raises(ClientException):
-                subreddit.submit_image("Test Title", image)
+                subreddit.submit_image(image_media=image, title="Test Title")
 
-    def test_submit_inline_media__invalid_path(self, reddit):
-        message = "'invalid_image_path' is not a valid file path."
+    def test_submit_inline_media__invalid_media(self, reddit):
+        message = "'media' must be a PostMedia instance."
         subreddit = Subreddit(reddit, display_name="name")
-        gif = InlineGif(caption="optional caption", path="invalid_image_path")
-        image = InlineImage(caption="optional caption", path="invalid_image_path")
-        video = InlineVideo(caption="optional caption", path="invalid_image_path")
+        gif = InlineGif(caption="optional caption", media="not_post_media")
+        image = InlineImage(caption="optional caption", media="not_post_media")
+        video = InlineVideo(caption="optional caption", media="not_post_media")
         selftext = "Text with {gif1}, {image1}, and {video1} inline"
         media = {"gif1": gif, "image1": image, "video1": video}
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(TypeError) as excinfo:
             subreddit.submit("title", inline_media=media, selftext=selftext)
         assert str(excinfo.value) == message
 
     def test_submit_video__bad_filetype(self, image_path, reddit):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         for file_name in ("test.jpg", "test.png", "test.gif"):
-            video = image_path(file_name)
+            video = PostMedia(image_path(file_name))
             with pytest.raises(ClientException):
-                subreddit.submit_video("Test Title", video)
+                subreddit.submit_video(title="Test Title", video_media=video)
 
     def test_upload_banner_additional_image(self, reddit):
         subreddit = Subreddit(reddit, display_name="name")
         with pytest.raises(ValueError):
             subreddit.stylesheet.upload_banner_additional_image(
-                "dummy_path", align="asdf"
+                StylesheetAsset(b"", name="dummy.png"), align="asdf"
             )
 
 

@@ -2,6 +2,11 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from praw import models
+
 
 class InlineMedia:
     """Provides a way to embed media in self posts."""
@@ -10,22 +15,22 @@ class InlineMedia:
 
     def __eq__(self, other: InlineMedia) -> bool:
         """Return whether the other instance equals the current."""
-        return all(getattr(self, attr) == getattr(other, attr) for attr in ["TYPE", "path", "caption", "media_id"])
+        return all(getattr(self, attr) == getattr(other, attr) for attr in ["TYPE", "media", "caption", "media_id"])
 
     def __hash__(self) -> int:
         """Return the hash of the current instance."""
         return hash(self.__class__.__name__) ^ hash(
-            tuple(getattr(self, attr) for attr in ["TYPE", "path", "caption", "media_id"])
+            tuple(getattr(self, attr) for attr in ["TYPE", "media", "caption", "media_id"])
         )
 
-    def __init__(self, *, caption: str | None = None, path: str) -> None:
+    def __init__(self, *, caption: str | None = None, media: models.PostMedia) -> None:
         """Initialize an :class:`.InlineMedia` instance.
 
         :param caption: An optional caption to add to the image (default: ``None``).
-        :param path: The path to a media file.
+        :param media: The :class:`.PostMedia` to embed.
 
         """
-        self.path = path
+        self.media = media
         self.caption = caption
         self.media_id = None
 

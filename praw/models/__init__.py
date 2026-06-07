@@ -11,6 +11,7 @@ from praw.models.list.trophy import TrophyList
 from praw.models.listing.domain import DomainListing
 from praw.models.listing.generator import ListingGenerator
 from praw.models.listing.listing import Listing, ModeratorListing, ModmailConversationsListing
+from praw.models.media import EmojiMedia, Media, PostMedia, StylesheetAsset, StylesheetImage, WidgetMedia
 from praw.models.mod_action import ModAction
 from praw.models.mod_note import ModNote
 from praw.models.mod_notes import RedditModNotes, RedditorModNotes, SubredditModNotes

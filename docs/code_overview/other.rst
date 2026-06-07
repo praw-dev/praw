@@ -36,6 +36,17 @@ them bound to an attribute of one of the PRAW models.
 
 .. toctree::
     :maxdepth: 2
+    :caption: Media
+
+    other/emojimedia
+    other/media
+    other/postmedia
+    other/stylesheetasset
+    other/stylesheetimage
+    other/widgetmedia
+
+.. toctree::
+    :maxdepth: 2
     :caption: ModNotes
 
     other/base_mod_notes

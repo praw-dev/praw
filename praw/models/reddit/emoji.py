@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from praw.const import API_PATH
@@ -181,7 +180,7 @@ class SubredditEmoji:
     def add(
         self,
         *,
-        image_path: str,
+        emoji_media: models.EmojiMedia,
         mod_flair_only: bool | None = None,
         name: str,
         post_flair_allowed: bool | None = None,
@@ -189,7 +188,7 @@ class SubredditEmoji:
     ) -> Emoji:
         """Add an emoji to this subreddit.
 
-        :param image_path: A path to a jpeg or png image.
+        :param emoji_media: The :class:`.EmojiMedia` to be uploaded as an emoji.
         :param mod_flair_only: When provided, indicate whether the emoji is restricted
             to mod use only (default: ``None``).
         :param name: The name of the emoji.
@@ -204,32 +203,19 @@ class SubredditEmoji:
 
         .. code-block:: python
 
-            reddit.subreddit("test").emoji.add(name="emoji", image_path="emoji.png")
+            from praw.models import EmojiMedia
+
+            emoji_media = EmojiMedia("emoji.png")
+            reddit.subreddit("test").emoji.add(emoji_media=emoji_media, name="emoji")
 
         """
-        file = Path(image_path)
-        data = {
-            "filepath": file.name,
-            "mimetype": "image/jpeg",
-        }
-        if image_path.lower().endswith(".png"):
-            data["mimetype"] = "image/png"
-        url = API_PATH["emoji_lease"].format(subreddit=self.subreddit)
-
-        # until we learn otherwise, assume this request always succeeds
-        upload_lease = self._reddit.post(url, data=data)["s3UploadLease"]
-        upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
-        upload_url = f"https:{upload_lease['action']}"
-
-        with file.open("rb") as image:
-            response = self._reddit._core._requestor._http.post(upload_url, data=upload_data, files={"file": image})
-        response.raise_for_status()
+        s3_key = emoji_media._upload(self.subreddit)
 
         data = {
             "mod_flair_only": mod_flair_only,
             "name": name,
             "post_flair_allowed": post_flair_allowed,
-            "s3_key": upload_data["key"],
+            "s3_key": s3_key,
             "user_flair_allowed": user_flair_allowed,
         }
         url = API_PATH["emoji_upload"].format(subreddit=self.subreddit)
