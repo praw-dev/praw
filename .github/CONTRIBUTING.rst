@@ -31,17 +31,17 @@ Creating Pull Requests
    commenting on the issue. This act will hopefully minimize any duplicate work.
 2. You will need to clone the repository and open the project in the IDE of your choice.
    Note: the following commands need to executed within the project directory.
-3. Install the development dependencies with ``pip install -e ".[dev]"``. This will
-   install PRAW in an editable state which will make development, testing, and debugging
-   easier. This will also install all the needed dependencies for linting and testing.
-   `See here`_ for more information on installing the development dependencies.
+3. Install the development dependencies with `uv <https://docs.astral.sh/uv/>`_ by
+   running ``uv sync``. This will create a virtual environment with PRAW installed in an
+   editable state, which will make development, testing, and debugging easier. This will
+   also install all the needed dependencies for linting and testing. `See here`_ for
+   more information on installing the development dependencies.
 4. Before committing, make sure to install pre-commit_ and the pre-commit hooks, which
    ensures any new code conforms to our quality and style guidelines. To do so, install
-   the development dependencies mentioned previously or just the linting dependencies
-   with ``pip install ".[lint]"``, then install the hooks with ``pre-commit install``.
-   They will now run automatically every time you commit. If one of the hooks changes
-   one or more files, the commit will automatically abort, so you can double-check the
-   changes. If everything looks good try committing again.
+   the development dependencies mentioned previously, then install the hooks with ``uv
+   run pre-commit install``. They will now run automatically every time you commit. If
+   one of the hooks changes one or more files, the commit will automatically abort, so
+   you can double-check the changes. If everything looks good try committing again.
 5. Prior to creating a pull request, run the ``pre_push.py`` script. This runs the
    pre-commit suite on all files, as well as builds the docs. You'll need to have
    installed the linting dependencies first (see previous step).
@@ -53,8 +53,8 @@ Creating Pull Requests
 8. Ensure that your code change has complete test coverage. Tests on methods that do not
    require fetching data from Reddit, e.g., method argument validation, should be saved
    as a unit test. Tests that hit Reddit's servers will be an integration test and all
-   network activity will be recorded via Betamax. The required packages can be installed
-   with ``pip install ".[test]"``.
+   network activity will be recorded via Betamax. The required packages are included in
+   the development dependencies.
 9. Feel free to check on the status of your pull request periodically by adding a
    comment.
 

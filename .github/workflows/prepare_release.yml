@@ -1,10 +1,14 @@
 jobs:
   prepare_release:
     name: Prepare Release
-    secrets: inherit
-    uses: praw-dev/.github/.github/workflows/prepare_release.yml@f33b50e54733ad51138f0568b95552963d47b4a3 # v1.0.0
+    secrets:
+      APP_ID: ${{ secrets.APP_ID }}
+      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+    uses: praw-dev/.github/.github/workflows/prepare_release.yml@e86d5e7389cc00472a01675465bfa72b1dffd884 # v1.2.0
     with:
+      package: praw
       version: ${{ inputs.version }}
+      version_file: const.py
 name: Prepare Release
 on:
   workflow_dispatch:
@@ -14,4 +18,3 @@ on:
         required: true
 permissions:
   contents: read
-  pull-requests: write

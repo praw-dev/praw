@@ -1,7 +1,14 @@
 Installing PRAW
 ===============
 
-PRAW supports Python 3.9+. The recommended way to install PRAW is via ``pip``.
+PRAW supports Python 3.10+. The recommended way to install PRAW is with `uv
+<https://docs.astral.sh/uv/>`_.
+
+.. code-block:: bash
+
+    uv add praw
+
+Alternatively, PRAW can be installed via ``pip``:
 
 .. code-block:: bash
 
@@ -26,6 +33,12 @@ PRAW can be updated by running:
 
 .. code-block:: bash
 
+    uv sync --upgrade-package praw
+
+or with pip:
+
+.. code-block:: bash
+
     pip install --upgrade praw
 
 Installing Older Versions
@@ -33,6 +46,12 @@ Installing Older Versions
 
 Older versions of PRAW can be installed by specifying the version number as part of the
 installation command:
+
+.. code-block:: bash
+
+    uv add praw==3.6.0
+
+or with pip:
 
 .. code-block:: bash
 

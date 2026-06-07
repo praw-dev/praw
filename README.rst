@@ -44,8 +44,14 @@ agent and you're set.
 Installation
 ------------
 
-PRAW is supported on Python 3.9+. The recommended way to install PRAW is via `pip
-<https://pypi.python.org/pypi/pip>`_.
+PRAW is supported on Python 3.10+. The recommended way to install PRAW is with `uv
+<https://docs.astral.sh/uv/>`_.
+
+.. code-block:: bash
+
+    uv add praw
+
+Alternatively, PRAW can be installed via `pip <https://pypi.python.org/pypi/pip>`_:
 
 .. code-block:: bash
 
