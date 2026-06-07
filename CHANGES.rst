@@ -9,6 +9,7 @@ Unreleased
 **Added**
 
 - Add support for Python 3.13.
+- Add support for Python 3.14.
 - Add support for optional Markdown-formatted ``selftext`` when submitting link, image,
   gallery, and video posts.
 
@@ -16,6 +17,7 @@ Unreleased
 
 - Bumped prawcore to 3.0.2.
 - Drop support for Python 3.8, which was end-of-life on 2024-10-07.
+- Drop support for Python 3.9, which was end-of-life on 2025-10-31.
 - Change ``Reddit.user.me`` to raise :class:`.ReadOnlyException` when called in
   :attr:`.read_only` mode.
 - The ``subreddit`` attribute of :class:`.Redditor` is a :class:`.UserSubreddit`

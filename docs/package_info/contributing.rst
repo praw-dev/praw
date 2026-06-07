@@ -11,60 +11,27 @@ Setting Up Your Development Environment
 This section will cover the recommended steps to get you started with contributing to
 PRAW.
 
-Create a Virtual Environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-It is strongly recommended to use a virtual environment to isolate your development
-environment. This is a good idea because it will make managing the needed dependencies
-and their versions much easier. For more information, see the `venv documentation`_.
-Assuming you have the minimum Python version required for PRAW, you can create a virtual
-environment with the following commands from the root of the cloned project directory:
-
-.. code-block:: bash
-
-    python3 -m venv .venv
-
-Next you need to activate the virtual environment. This is done by running the
-following:
-
-**MacOS/Linux**:
-
-.. code-block:: bash
-
-    source .venv/bin/activate
-
-**Windows Command Prompt**
-
-.. code-block:: bat
-
-    .venv\Scripts\activate.bat
-
 .. _install_dev_deps:
 
 Install Development Dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Next, you will need to install the dependencies development dependencies. This is done
-by running the following:
+PRAW is managed with uv_, which handles creating a virtual environment and installing
+the locked dependencies in one step. After `installing uv
+<https://docs.astral.sh/uv/getting-started/installation/>`_, run the following from the
+root of the cloned project directory:
 
 .. code-block:: bash
 
-    pip install -e .[dev]
-
-.. important::
-
-    If you are using ``zsh`` for your shell, you will need to double-quote ``.[dev]``
-    like so:
-
-    .. code-block:: zsh
-
-        pip install -e ".[dev]"
+    uv sync
 
 .. note::
 
-    The ``-e`` tells pip to install PRAW in an editable state. This will allow for
-    easier testing and debugging. The ``[dev]`` extra will install all development
-    dependencies. This includes the dependencies for both linting and testing.
+    This creates a ``.venv`` virtual environment with PRAW installed in an editable
+    state, which allows for easier testing and debugging, and installs the ``dev``
+    dependency group, which includes the ``lint`` and ``test`` groups. Prefix commands
+    with ``uv run`` (e.g., ``uv run pytest``) to run them inside that environment
+    without activating it.
 
 Code Style
 ----------
@@ -81,25 +48,20 @@ request.
 .. note::
 
     In order to use the pre-commit hooks and the ``pre_push.py`` dependencies, you must
-    either install the development dependencies as outlined in the
-    :ref:`install_dev_deps` section above or you must install the ``[lint]`` extra
-    manually:
-
-    .. code-block:: bash
-
-        pip install -e .[lint]
+    install the development dependencies as outlined in the :ref:`install_dev_deps`
+    section above.
 
 To install the pre-commit hooks to automatically run when you commit, run the following:
 
 .. code-block:: bash
 
-    pre-commit install
+    uv run pre-commit install
 
 To run all the needed checks and to ensure the docs build correctly, run the following:
 
 .. code-block:: bash
 
-    ./pre_push.py
+    uv run ./pre_push.py
 
 .. _praw_specific_guidelines:
 
@@ -312,4 +274,4 @@ Please also read the `Contributing Guidelines`_
 
 .. _r/python: https://www.reddit.com/r/python
 
-.. _venv documentation: https://docs.python.org/3/library/venv.html
+.. _uv: https://docs.astral.sh/uv/

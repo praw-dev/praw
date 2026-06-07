@@ -2,14 +2,12 @@ build:
   os: ubuntu-lts-latest
   tools:
     python: "3.13"
+  jobs:
+    install:
+      - pip install uv
+      - UV_PROJECT_ENVIRONMENT="${READTHEDOCS_VIRTUALENV_PATH}" uv sync --frozen --no-dev --group docs --link-mode=copy
 formats:
   - htmlzip
-python:
-  install:
-    - method: pip
-      extra_requirements:
-        - readthedocs
-      path: .
 sphinx:
   configuration: docs/conf.py
 version: 2

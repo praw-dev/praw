@@ -1,10 +1,21 @@
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   ci:
     name: CI
-    secrets: inherit
-    uses: praw-dev/.github/.github/workflows/ci.yml@f33b50e54733ad51138f0568b95552963d47b4a3 # v1.0.0
+    secrets:
+      NETWORK_TEST_CLIENT_ID: ${{ secrets.NETWORK_TEST_CLIENT_ID }}
+      NETWORK_TEST_CLIENT_SECRET: ${{ secrets.NETWORK_TEST_CLIENT_SECRET }}
+    uses: praw-dev/.github/.github/workflows/ci.yml@e86d5e7389cc00472a01675465bfa72b1dffd884 # v1.2.0
     with:
-      package: praw
+      min_python: "3.10"
+      network_test: true
+      python_versions: '["3.10", "3.11", "3.12", "3.13", "3.14"]'
 name: CI
-on: [ pull_request, push ]
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+  pull_request:
 permissions: read-all
