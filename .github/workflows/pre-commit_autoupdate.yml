@@ -2,7 +2,7 @@ jobs:
   pre-commit_autoupdate:
     name: Update pre-commit hooks
     secrets: inherit
-    uses: praw-dev/.github/.github/workflows/pre-commit_autoupdate.yml@main
+    uses: praw-dev/.github/.github/workflows/pre-commit_autoupdate.yml@f33b50e54733ad51138f0568b95552963d47b4a3 # v1.0.0
 name: Update pre-commit hooks
 on:
   schedule:
