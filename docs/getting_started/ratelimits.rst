@@ -1,7 +1,8 @@
 .. _ratelimits:
 
-Ratelimits
-==========
+############
+ Ratelimits
+############
 
 Even though PRAW respects the |ratelimit_header|_ and waits the appropriate time between
 requests, there are other unknown ratelimits that Reddit has that might require

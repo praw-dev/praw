@@ -1,7 +1,8 @@
 .. _configuration_options:
 
-Configuration Options
-=====================
+#######################
+ Configuration Options
+#######################
 
 PRAW's configuration options are broken down into the following categories:
 
@@ -16,8 +17,9 @@ All of these options can be provided in any of the ways mentioned in
 
 .. _basic_options:
 
-Basic Configuration Options
----------------------------
+*****************************
+ Basic Configuration Options
+*****************************
 
 :check_for_updates: When ``true``, check for new versions of PRAW. When a newer version
     of PRAW is available a message is reported via standard error (default: ``true``).
@@ -28,8 +30,9 @@ Basic Configuration Options
 
 .. _oauth_options:
 
-OAuth Configuration Options
----------------------------
+*****************************
+ OAuth Configuration Options
+*****************************
 
 :client_id: (Required) The OAuth client ID associated with your registered Reddit
     application. See :ref:`oauth` for instructions on registering a Reddit application.
@@ -48,8 +51,9 @@ OAuth Configuration Options
 
 .. _site_options:
 
-Reddit Site Configuration Options
----------------------------------
+***********************************
+ Reddit Site Configuration Options
+***********************************
 
 PRAW can be configured to work with instances of Reddit which are not hosted at
 `reddit.com <https://www.reddit.com>`_. The following options may need to be updated in
@@ -75,8 +79,9 @@ order to successfully access a third-party Reddit site:
 
 .. _misc_options:
 
-Miscellaneous Configuration Options
------------------------------------
+*************************************
+ Miscellaneous Configuration Options
+*************************************
 
 These are options that do not belong in another category, but still play a part in PRAW.
 
@@ -101,8 +106,9 @@ These are options that do not belong in another category, but still play a part 
 
 .. _custom_options:
 
-Custom Configuration Options
-----------------------------
+******************************
+ Custom Configuration Options
+******************************
 
 Your application can utilize PRAW's configuration system in order to provide its own
 custom settings.

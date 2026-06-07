@@ -1,12 +1,14 @@
-Contributing to PRAW
-====================
+######################
+ Contributing to PRAW
+######################
 
 PRAW gladly welcomes new contributions. As with most larger projects, we have an
 established consistent way of doing things. A consistent style increases readability,
 decreases bug-potential and makes it faster to understand how everything works together.
 
-Setting Up Your Development Environment
----------------------------------------
+*****************************************
+ Setting Up Your Development Environment
+*****************************************
 
 This section will cover the recommended steps to get you started with contributing to
 PRAW.
@@ -14,7 +16,7 @@ PRAW.
 .. _install_dev_deps:
 
 Install Development Dependencies
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================
 
 PRAW is managed with uv_, which handles creating a virtual environment and installing
 the locked dependencies in one step. After `installing uv
@@ -33,11 +35,12 @@ root of the cloned project directory:
     with ``uv run`` (e.g., ``uv run pytest``) to run them inside that environment
     without activating it.
 
-Code Style
-----------
+************
+ Code Style
+************
 
 Linting
-~~~~~~~
+=======
 
 PRAW follows :PEP:`8` and :PEP:`257` and some :ref:`praw_specific_guidelines`.
 pre-commit_ is used to manage a suite of pre-commit hooks that enforce conformance with
@@ -66,7 +69,7 @@ To run all the needed checks and to ensure the docs build correctly, run the fol
 .. _praw_specific_guidelines:
 
 PRAW Specific Style Guidelines
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==============================
 
 The following are PRAW-specific guidelines in addition to the PEPs specified in
 Linting_:
@@ -133,15 +136,16 @@ Linting_:
                 url=None,
             ): ...
 
-Testing
--------
+*********
+ Testing
+*********
 
 Contributions to PRAW requires 100% test coverage. If you know how to add a feature, but
 aren't sure how to write the necessary tests, please open a pull request anyway so we
 can work with you to write the necessary tests.
 
 Running the Test Suite
-~~~~~~~~~~~~~~~~~~~~~~
+======================
 
 `GitHub Actions`_ automatically runs all updates to known branches and pull requests.
 However, it's useful to be able to run the tests locally. The simplest way is via:
@@ -154,7 +158,7 @@ Without any configuration or modification, all the tests should pass. If they do
 please file a bug report.
 
 Adding and Updating Integration Tests
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=====================================
 
 PRAW's integration tests utilize Betamax_ to record an interaction with Reddit. The
 recorded interaction is then replayed for subsequent test runs.
@@ -219,8 +223,9 @@ Examples:
         @pytest.mark.add_placeholder(generated_data_b=generate_data_b())
         def test_example__with_generated_placeholders(self): ...
 
-Documentation
--------------
+***************
+ Documentation
+***************
 
 - All publicly available functions, classes, and modules should have a docstring.
 - All documentation files and docstrings should be linted and formatted by
@@ -230,7 +235,7 @@ Documentation
   name.
 
 Static Checker
-~~~~~~~~~~~~~~
+==============
 
 PRAW's test suite comes with a checker tool that can warn you of using incorrect
 documentation styles (using ``.. code::`` instead of ``.. code-block::``, using ``/r/``
@@ -240,25 +245,27 @@ instead of ``r/``, etc.). This is run automatically by the pre-commit hooks and 
 .. autoclass:: tools.static_word_checks.StaticChecker
     :inherited-members:
 
-Files to Update
----------------
+*****************
+ Files to Update
+*****************
 
 AUTHORS.rst
-~~~~~~~~~~~
+===========
 
 For your first contribution, please add yourself to the end of the respective list in
 the ``AUTHORS.rst`` file.
 
 CHANGES.rst
-~~~~~~~~~~~
+===========
 
 For feature additions, bug fixes, or code removal please add an appropriate entry to
 ``CHANGES.rst``. If the ``Unreleased`` section does not exist at the top of
 ``CHANGES.rst`` please add it. See `commit 280525c16ba28cdd69cdbb272a0e2764b1c7e6a0`_
 for an example.
 
-See Also
---------
+**********
+ See Also
+**********
 
 Please also read the `Contributing Guidelines`_
 

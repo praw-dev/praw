@@ -1,5 +1,6 @@
-Comment Extraction and Parsing
-==============================
+################################
+ Comment Extraction and Parsing
+################################
 
 A common use for Reddit's API is to extract comments from submissions and use them to
 perform keyword or phrase analysis.
@@ -29,8 +30,9 @@ to one or more specific subreddits, please see :meth:`.SubredditStream.comments`
 
 .. _extracting_comments:
 
-Extracting comments with PRAW
------------------------------
+*******************************
+ Extracting comments with PRAW
+*******************************
 
 Assume we want to process the comments for this submission:
 https://www.reddit.com/r/funny/comments/3g1jfi/buttons/
@@ -75,8 +77,9 @@ could ignore :class:`.MoreComments` in our code, like so:
             continue
         print(top_level_comment.body)
 
-The ``replace_more`` method
----------------------------
+*****************************
+ The ``replace_more`` method
+*****************************
 
 In the previous snippet, we used :py:func:`isinstance` to check whether the item in the
 comment list was a :class:`.MoreComments` so that we could ignore it. But there is a

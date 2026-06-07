@@ -1,14 +1,17 @@
-Guidelines for Contributing
-===========================
+#############################
+ Guidelines for Contributing
+#############################
 
-Code of Conduct
----------------
+*****************
+ Code of Conduct
+*****************
 
 This project is released with a `Contributor Code of Conduct`_. By participating in this
 project you agree to abide by its terms.
 
-Creating an Issue
------------------
+*******************
+ Creating an Issue
+*******************
 
 1. Please do not create issues for questions you have. The appropriate location for such
    questions is `r/redditdev`_ or via Slack_.
@@ -17,15 +20,17 @@ Creating an Issue
 3. Please use GitHub's issue search feature to look for already reported issues before
    reporting your own.
 
-Responding to Issues
---------------------
+**********************
+ Responding to Issues
+**********************
 
 One of the simplest ways to help with PRAW is by answering others questions. When
 responding, always be positive. While something may be obvious to you, it likely is not
 to the person asking the question.
 
-Creating Pull Requests
-----------------------
+************************
+ Creating Pull Requests
+************************
 
 1. If you are fixing an already filed issue, please indicate your intentions by
    commenting on the issue. This act will hopefully minimize any duplicate work.
@@ -58,15 +63,17 @@ Creating Pull Requests
 9. Feel free to check on the status of your pull request periodically by adding a
    comment.
 
-Becoming a Team Member
-----------------------
+************************
+ Becoming a Team Member
+************************
 
 The PRAW team is always interested in expanding PRAW's active team member base with
 proven contributors. If you are interested, please let us know. In general, we would
 like to see you push a number of contributions before we add you on.
 
-Style Recommendations
----------------------
+***********************
+ Style Recommendations
+***********************
 
 To keep PRAW's source consistent, all contribution code must pass the ``pre_push.py``
 script. GitHub Actions will enforce the passing of the automated tests, as well as style
@@ -75,7 +82,7 @@ with much of PEP8 and PEP257 there are a few things that it does not enforce. Pl
 look over the following list:
 
 Method Order within a Class
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+===========================
 
 - Group method names by type and order the groups like so:
 
@@ -113,8 +120,9 @@ Method Order within a Class
           def instance_method(self):
               pass
 
-See Also
---------
+**********
+ See Also
+**********
 
 Please also read `Contributing to PRAW`_.
 

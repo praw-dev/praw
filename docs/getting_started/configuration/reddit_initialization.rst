@@ -1,7 +1,8 @@
 .. _reddit_initialization:
 
-Keyword Arguments to :class:`.Reddit`
-=====================================
+#######################################
+ Keyword Arguments to :class:`.Reddit`
+#######################################
 
 Most of PRAW's documentation will demonstrate configuring PRAW through the use of
 keyword arguments when initializing instances of :class:`.Reddit`. All of the
