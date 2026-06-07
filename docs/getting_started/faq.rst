@@ -1,5 +1,6 @@
-Frequently Asked Questions
-==========================
+############################
+ Frequently Asked Questions
+############################
 
 .. _faq1:
 

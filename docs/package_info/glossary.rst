@@ -1,5 +1,6 @@
-Glossary
-========
+##########
+ Glossary
+##########
 
 .. _access_token:
 

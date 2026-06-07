@@ -1,5 +1,6 @@
-References
-==========
+############
+ References
+############
 
 - `PRAW Source Code <https://github.com/praw-dev/praw>`_.
 - `Reddit Source Code <https://github.com/reddit/reddit>`_. This repository has been

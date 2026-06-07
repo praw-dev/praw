@@ -1,5 +1,6 @@
-Running Multiple Instances of PRAW
-==================================
+####################################
+ Running Multiple Instances of PRAW
+####################################
 
 PRAW, as of version 4, performs rate limiting dynamically based on the HTTP response
 headers from Reddit. As a result you can safely run a handful of PRAW instances without
@@ -14,8 +15,9 @@ any additional configuration.
 If you are authorized on other users' behalf, each authorization should have its own
 rate limit, even when running from a single IP address.
 
-Discord Bots and Asynchronous Environments
-------------------------------------------
+********************************************
+ Discord Bots and Asynchronous Environments
+********************************************
 
 If you plan on using PRAW in an asynchronous environment, (e.g., discord.py, asyncio) it
 is strongly recommended to use `Async PRAW <https://asyncpraw.readthedocs.io/>`_. It is
@@ -34,8 +36,9 @@ features as PRAW.
 
         reddit = praw.Reddit(..., check_for_async=False)
 
-Multiple Programs
------------------
+*******************
+ Multiple Programs
+*******************
 
 The recommended way to run multiple instances of PRAW is to simply write separate
 independent Python programs. With this approach one program can monitor a comment stream
@@ -44,8 +47,9 @@ and reply as needed, and another program can monitor a submission stream, for ex
 If these programs need to share data consider using a third-party system such as a
 database or queuing system.
 
-Multiple Threads
-----------------
+******************
+ Multiple Threads
+******************
 
 .. warning::
 
