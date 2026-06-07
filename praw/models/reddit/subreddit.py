@@ -12,22 +12,18 @@ from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
 
 import websocket
-from defusedxml import ElementTree
 from prawcore import Redirect
-from prawcore.exceptions import ServerError
-from requests.exceptions import HTTPError
 
-from praw.const import API_PATH, JPEG_HEADER
+from praw.const import API_PATH
 from praw.exceptions import (
-    ClientException,
     InvalidFlairTemplateID,
     MediaPostFailed,
     RedditAPIException,
-    TooLargeMediaException,
     WebSocketException,
 )
 from praw.models.listing.generator import ListingGenerator
 from praw.models.listing.mixins import SubredditListingMixin
+from praw.models.media import PostMedia
 from praw.models.reddit.base import RedditBase
 from praw.models.reddit.emoji import SubredditEmoji
 from praw.models.reddit.mixins import FullnameMixin, MessageableMixin
@@ -41,8 +37,6 @@ from praw.util import cachedproperty
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-
-    from requests import Response
 
     import praw
     from praw import models
@@ -1509,43 +1503,6 @@ class SubredditStylesheet:
         url = API_PATH["structured_styles"].format(subreddit=self.subreddit)
         self.subreddit._reddit.patch(url, data=style_data)
 
-    def _upload_image(self, *, data: dict[str, str | Any], image_path: str) -> dict[str, Any]:
-        with Path(image_path).open("rb") as image:
-            header = image.read(len(JPEG_HEADER))
-            image.seek(0)
-            data["img_type"] = "jpg" if header == JPEG_HEADER else "png"
-            url = API_PATH["upload_image"].format(subreddit=self.subreddit)
-            response = self.subreddit._reddit.post(url, data=data, files={"file": image})
-            if response["errors"]:
-                error_type = response["errors"][0]
-                error_value = response.get("errors_values", [""])[0]
-                assert error_type in {
-                    "BAD_CSS_NAME",
-                    "IMAGE_ERROR",
-                }, "Please file a bug with PRAW."
-                raise RedditAPIException([[error_type, error_value, None]])
-            return response
-
-    def _upload_style_asset(self, *, image_path: str, image_type: str) -> str:
-        file = Path(image_path)
-        data = {"imagetype": image_type, "filepath": file.name}
-        data["mimetype"] = "image/jpeg"
-        if image_path.lower().endswith(".png"):
-            data["mimetype"] = "image/png"
-        url = API_PATH["style_asset_lease"].format(subreddit=self.subreddit)
-
-        upload_lease = self.subreddit._reddit.post(url, data=data)["s3UploadLease"]
-        upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
-        upload_url = f"https:{upload_lease['action']}"
-
-        with file.open("rb") as image:
-            response = self.subreddit._reddit._core._requestor._http.post(
-                upload_url, data=upload_data, files={"file": image}
-            )
-        response.raise_for_status()
-
-        return f"{upload_url}/{upload_data['key']}"
-
     def delete_banner(self) -> None:
         """Remove the current :class:`.Subreddit` (redesign) banner image.
 
@@ -1687,10 +1644,10 @@ class SubredditStylesheet:
         url = API_PATH["subreddit_stylesheet"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
 
-    def upload(self, *, image_path: str, name: str) -> dict[str, str]:
+    def upload(self, *, image_media: models.StylesheetImage, name: str) -> dict[str, str]:
         """Upload an image to the :class:`.Subreddit`.
 
-        :param image_path: A path to a jpeg or png image.
+        :param image_media: The :class:`.StylesheetImage` to upload.
         :param name: The name to use for the image. If an image already exists with the
             same name, it will be replaced.
 
@@ -1707,15 +1664,19 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-            reddit.subreddit("test").stylesheet.upload(name="smile", image_path="img.png")
+            from praw.models import StylesheetImage
+
+            reddit.subreddit("test").stylesheet.upload(
+                image_media=StylesheetImage("img.png"), name="smile"
+            )
 
         """
-        return self._upload_image(data={"name": name, "upload_type": "img"}, image_path=image_path)
+        return image_media._upload(self.subreddit, name=name, upload_type="img")
 
-    def upload_banner(self, image_path: str) -> None:
+    def upload_banner(self, image_media: models.StylesheetAsset, /) -> None:
         """Upload an image for the :class:`.Subreddit`'s (redesign) banner image.
 
-        :param image_path: A path to a jpeg or png image.
+        :param image_media: The :class:`.StylesheetAsset` to upload.
 
         :raises: ``prawcore.TooLarge`` if the overall request body is too large.
         :raises: :class:`.RedditAPIException` if there are other issues with the
@@ -1727,22 +1688,25 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-            reddit.subreddit("test").stylesheet.upload_banner("banner.png")
+            from praw.models import StylesheetAsset
+
+            reddit.subreddit("test").stylesheet.upload_banner(StylesheetAsset("banner.png"))
 
         """
         image_type = "bannerBackgroundImage"
-        image_url = self._upload_style_asset(image_path=image_path, image_type=image_type)
+        image_url = image_media._upload(self.subreddit, image_type=image_type)
         self._update_structured_styles({image_type: image_url})
 
     def upload_banner_additional_image(
         self,
-        image_path: str,
+        image_media: models.StylesheetAsset,
+        /,
         *,
         align: str | None = None,
     ) -> None:
         """Upload an image for the :class:`.Subreddit`'s (redesign) additional image.
 
-        :param image_path: A path to a jpeg or png image.
+        :param image_media: The :class:`.StylesheetAsset` to upload.
         :param align: Either ``"left"``, ``"centered"``, or ``"right"``. (default:
             ``"left"``).
 
@@ -1756,8 +1720,10 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
+            from praw.models import StylesheetAsset
+
             subreddit = reddit.subreddit("test")
-            subreddit.stylesheet.upload_banner_additional_image("banner.png")
+            subreddit.stylesheet.upload_banner_additional_image(StylesheetAsset("banner.png"))
 
         """
         alignment = {}
@@ -1768,16 +1734,16 @@ class SubredditStylesheet:
             alignment["bannerPositionedImagePosition"] = align
 
         image_type = "bannerPositionedImage"
-        image_url = self._upload_style_asset(image_path=image_path, image_type=image_type)
+        image_url = image_media._upload(self.subreddit, image_type=image_type)
         style_data = {image_type: image_url}
         if alignment:
             style_data.update(alignment)
         self._update_structured_styles(style_data)
 
-    def upload_banner_hover_image(self, image_path: str) -> None:
+    def upload_banner_hover_image(self, image_media: models.StylesheetAsset, /) -> None:
         """Upload an image for the :class:`.Subreddit`'s (redesign) additional image.
 
-        :param image_path: A path to a jpeg or png image.
+        :param image_media: The :class:`.StylesheetAsset` to upload.
 
         Fails if the :class:`.Subreddit` does not have an additional image defined.
 
@@ -1791,18 +1757,20 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
+            from praw.models import StylesheetAsset
+
             subreddit = reddit.subreddit("test")
-            subreddit.stylesheet.upload_banner_hover_image("banner.png")
+            subreddit.stylesheet.upload_banner_hover_image(StylesheetAsset("banner.png"))
 
         """
         image_type = "secondaryBannerPositionedImage"
-        image_url = self._upload_style_asset(image_path=image_path, image_type=image_type)
+        image_url = image_media._upload(self.subreddit, image_type=image_type)
         self._update_structured_styles({image_type: image_url})
 
-    def upload_header(self, image_path: str) -> dict[str, str]:
+    def upload_header(self, image_media: models.StylesheetImage, /) -> dict[str, str]:
         """Upload an image to be used as the :class:`.Subreddit`'s header image.
 
-        :param image_path: A path to a jpeg or png image.
+        :param image_media: The :class:`.StylesheetImage` to upload.
 
         :returns: A dictionary containing a link to the uploaded image under the key
             ``img_src``.
@@ -1817,22 +1785,26 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-            reddit.subreddit("test").stylesheet.upload_header("header.png")
+            from praw.models import StylesheetImage
+
+            reddit.subreddit("test").stylesheet.upload_header(StylesheetImage("header.png"))
 
         """
-        return self._upload_image(data={"upload_type": "header"}, image_path=image_path)
+        return image_media._upload(self.subreddit, upload_type="header")
 
-    def upload_mobile_banner(self, image_path: str) -> None:
+    def upload_mobile_banner(self, image_media: models.StylesheetAsset, /) -> None:
         """Upload an image for the :class:`.Subreddit`'s (redesign) mobile banner.
 
-        :param image_path: A path to a JPEG or PNG image.
+        :param image_media: The :class:`.StylesheetAsset` to upload.
 
         For example:
 
         .. code-block:: python
 
+            from praw.models import StylesheetAsset
+
             subreddit = reddit.subreddit("test")
-            subreddit.stylesheet.upload_mobile_banner("banner.png")
+            subreddit.stylesheet.upload_mobile_banner(StylesheetAsset("banner.png"))
 
         Fails if the :class:`.Subreddit` does not have an additional image defined.
 
@@ -1844,13 +1816,13 @@ class SubredditStylesheet:
 
         """
         image_type = "mobileBannerImage"
-        image_url = self._upload_style_asset(image_path=image_path, image_type=image_type)
+        image_url = image_media._upload(self.subreddit, image_type=image_type)
         self._update_structured_styles({image_type: image_url})
 
-    def upload_mobile_header(self, image_path: str) -> dict[str, str]:
+    def upload_mobile_header(self, image_media: models.StylesheetImage, /) -> dict[str, str]:
         """Upload an image to be used as the :class:`.Subreddit`'s mobile header.
 
-        :param image_path: A path to a jpeg or png image.
+        :param image_media: The :class:`.StylesheetImage` to upload.
 
         :returns: A dictionary containing a link to the uploaded image under the key
             ``img_src``.
@@ -1865,15 +1837,17 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-            reddit.subreddit("test").stylesheet.upload_mobile_header("header.png")
+            from praw.models import StylesheetImage
+
+            reddit.subreddit("test").stylesheet.upload_mobile_header(StylesheetImage("header.png"))
 
         """
-        return self._upload_image(data={"upload_type": "banner"}, image_path=image_path)
+        return image_media._upload(self.subreddit, upload_type="banner")
 
-    def upload_mobile_icon(self, image_path: str) -> dict[str, str]:
+    def upload_mobile_icon(self, image_media: models.StylesheetImage, /) -> dict[str, str]:
         """Upload an image to be used as the :class:`.Subreddit`'s mobile icon.
 
-        :param image_path: A path to a jpeg or png image.
+        :param image_media: The :class:`.StylesheetImage` to upload.
 
         :returns: A dictionary containing a link to the uploaded image under the key
             ``img_src``.
@@ -1888,10 +1862,12 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-            reddit.subreddit("test").stylesheet.upload_mobile_icon("icon.png")
+            from praw.models import StylesheetImage
+
+            reddit.subreddit("test").stylesheet.upload_mobile_icon(StylesheetImage("icon.png"))
 
         """
-        return self._upload_image(data={"upload_type": "icon"}, image_path=image_path)
+        return image_media._upload(self.subreddit, upload_type="icon")
 
 
 class SubredditWiki:
@@ -2420,17 +2396,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         _reddit.post(API_PATH["site_admin"], data=model)
 
     @staticmethod
-    def _parse_xml_response(response: Response) -> None:
-        """Parse the XML from a response and raise any errors found."""
-        xml = response.text
-        root = ElementTree.fromstring(xml)
-        tags = [element.tag for element in root]
-        if tags[:4] == ["Code", "Message", "ProposedSize", "MaxSizeAllowed"]:
-            # Returned if image is too big
-            _code, _message, actual, maximum_size = (element.text for element in root[:4])
-            raise TooLargeMediaException(actual=int(actual), maximum_size=int(maximum_size))
-
-    @staticmethod
     def _subreddit_list(
         *,
         other_subreddits: list[str | models.Subreddit],
@@ -2441,15 +2406,11 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         return str(subreddit)
 
     @staticmethod
-    def _validate_gallery(images: list[dict[str, str]]) -> None:
+    def _validate_gallery(images: list[dict[str, str | PostMedia]]) -> None:
         for image in images:
-            image_path = image.get("image_path", "")
-            if image_path:
-                if not Path(image_path).is_file():
-                    msg = f"{image_path!r} is not a valid image path."
-                    raise TypeError(msg)
-            else:
-                msg = "'image_path' is required."
+            image_media = image.get("image_media")
+            if not isinstance(image_media, PostMedia):
+                msg = "'image_media' is required and must be a PostMedia instance."
                 raise TypeError(msg)
             if not len(image.get("caption", "")) <= Subreddit.MAX_CAPTION_LENGTH:
                 msg = "Caption must be 180 characters or less."
@@ -2457,9 +2418,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
     @staticmethod
     def _validate_inline_media(inline_media: models.InlineMedia) -> None:
-        if not Path(inline_media.path).is_file():
-            msg = f"{inline_media.path!r} is not a valid file path."
-            raise ValueError(msg)
+        if not isinstance(inline_media.media, PostMedia):
+            msg = "'media' must be a PostMedia instance."
+            raise TypeError(msg)
 
     @cachedproperty
     def banned(self) -> models.reddit.subreddit.SubredditRelationship:
@@ -2823,10 +2784,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def _fetch_info(self) -> tuple[str, dict[str, RedditBase], None]:
         return "subreddit_about", {"subreddit": self}, None
 
-    def _read_and_post_media(self, file: Path, upload_url: str, upload_data: dict[str, Any]) -> Response:
-        with file.open("rb") as media:
-            return self._reddit._core._requestor._http.post(upload_url, data=upload_data, files={"file": media})
-
     def _submit_media(
         self, *, data: dict[Any, Any], timeout: int, without_websockets: bool
     ) -> models.Submission | None:
@@ -2873,70 +2830,8 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         """
         self._validate_inline_media(inline_media)
-        inline_media.media_id = self._upload_media(media_path=inline_media.path, upload_type="selfpost")
+        inline_media.media_id = inline_media.media._upload(self._reddit, upload_type="selfpost")
         return inline_media
-
-    def _upload_media(
-        self,
-        *,
-        expected_mime_prefix: str | None = None,
-        media_path: str | None,
-        upload_type: str = "link",
-    ) -> str:
-        """Upload media and return its URL and a websocket (Undocumented endpoint).
-
-        :param expected_mime_prefix: If provided, enforce that the media has a mime type
-            that starts with the provided prefix.
-        :param media_path: The path to the media file to upload. Default is the PRAW
-            logo.
-        :param upload_type: One of ``"link"``, ``"gallery"'', or ``"selfpost"``
-            (default: ``"link"``).
-
-        :returns: The link to the uploaded media.
-
-        """
-        if media_path is None:
-            # if we're uploading without a media path, assume we're uploading a PRAW logo
-            # this default is commonly used when ``video_poster_url`` is not provided in ``submit_video``
-            module_path = Path(__file__).absolute()
-            logo_path = module_path.parent.parent.parent / "images" / "PRAW logo.png"
-            file = Path(logo_path)
-        else:
-            file = Path(media_path)
-
-        file_name = file.name.lower()
-        file_extension = file_name.rpartition(".")[2]
-        mime_type = {
-            "png": "image/png",
-            "mov": "video/quicktime",
-            "mp4": "video/mp4",
-            "jpg": "image/jpeg",
-            "jpeg": "image/jpeg",
-            "gif": "image/gif",
-        }.get(file_extension, "image/jpeg")  # default to JPEG
-        if expected_mime_prefix is not None and mime_type.partition("/")[0] != expected_mime_prefix:
-            msg = f"Expected a mimetype starting with {expected_mime_prefix!r} but got mimetype {mime_type!r} (from file extension {file_extension!r})."
-            raise ClientException(msg)
-        img_data = {"filepath": file_name, "mimetype": mime_type}
-
-        url = API_PATH["media_asset"]
-        # until we learn otherwise, assume this request always succeeds
-        upload_response = self._reddit.post(url, data=img_data)
-        upload_lease = upload_response["args"]
-        upload_url = f"https:{upload_lease['action']}"
-        upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
-
-        response = self._read_and_post_media(file, upload_url, upload_data)
-        if not response.ok:
-            self._parse_xml_response(response)
-        try:
-            response.raise_for_status()
-        except HTTPError as err:
-            raise ServerError(response=err.response) from None
-
-        if upload_type == "link":
-            return f"{upload_url}/{upload_data['key']}"
-        return upload_response["asset"]["asset_id"]
 
     def post_requirements(self) -> dict[str, str | int | bool]:
         """Get the post requirements for a subreddit.
@@ -3102,11 +2997,11 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
-            from praw.models import InlineGif, InlineImage, InlineVideo
+            from praw.models import InlineGif, InlineImage, InlineVideo, PostMedia
 
-            gif = InlineGif(path="path/to/image.gif", caption="optional caption")
-            image = InlineImage(path="path/to/image.jpg", caption="optional caption")
-            video = InlineVideo(path="path/to/video.mp4", caption="optional caption")
+            gif = InlineGif(caption="optional caption", media=PostMedia("path/to/image.gif"))
+            image = InlineImage(caption="optional caption", media=PostMedia("path/to/image.jpg"))
+            video = InlineVideo(caption="optional caption", media=PostMedia("path/to/video.mp4"))
             selftext = "Text with a gif {gif1} an image {image1} and a video {video1} inline"
             media = {"gif1": gif, "image1": image, "video1": video}
             reddit.subreddit("test").submit("title", inline_media=media, selftext=selftext)
@@ -3200,24 +3095,24 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
     def submit_gallery(
         self,
-        title: str,
-        images: list[dict[str, str]],
         *,
         collection_id: str | None = None,
         discussion_type: str | None = None,
         flair_id: str | None = None,
         flair_text: str | None = None,
+        images: list[dict[str, str | PostMedia]],
         nsfw: bool = False,
         selftext: str | None = None,
         send_replies: bool = True,
         spoiler: bool = False,
+        title: str,
     ) -> models.Submission:
         """Add an image gallery submission to the subreddit.
 
         :param title: The title of the submission.
         :param images: The images to post in dict with the following structure:
-            ``{"image_path": "path", "caption": "caption", "outbound_url": "url"}``,
-            only ``image_path`` is required.
+            ``{"image_media": PostMedia("path"), "caption": "caption", "outbound_url":
+            "url"}``, only ``image_media`` is required.
         :param collection_id: The UUID of a :class:`.Collection` to add the
             newly-submitted post to.
         :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
@@ -3236,30 +3131,32 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         :returns: A :class:`.Submission` object for the newly created submission.
 
-        :raises: :class:`.ClientException` if ``image_path`` in ``images`` refers to a
+        :raises: :class:`.ClientException` if ``image_media`` in ``images`` refers to a
             file that is not an image.
 
         For example, to submit an image gallery to r/test do:
 
         .. code-block:: python
 
+            from praw.models import PostMedia
+
             title = "My favorite pictures"
-            image = "/path/to/image.png"
-            image2 = "/path/to/image2.png"
-            image3 = "/path/to/image3.png"
+            image = PostMedia("/path/to/image.png")
+            image2 = PostMedia("/path/to/image2.png")
+            image3 = PostMedia("/path/to/image3.png")
             images = [
-                {"image_path": image},
+                {"image_media": image},
                 {
-                    "image_path": image2,
+                    "image_media": image2,
                     "caption": "Image caption 2",
                 },
                 {
-                    "image_path": image3,
+                    "image_media": image3,
                     "caption": "Image caption 3",
                     "outbound_url": "https://example.com/link3",
                 },
             ]
-            reddit.subreddit("test").submit_gallery(title, images)
+            reddit.subreddit("test").submit_gallery(images=images, title=title)
 
         .. seealso::
 
@@ -3294,9 +3191,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             data["items"].append({
                 "caption": image.get("caption", ""),
                 "outbound_url": image.get("outbound_url", ""),
-                "media_id": self._upload_media(
+                "media_id": image["image_media"]._upload(
+                    self._reddit,
                     expected_mime_prefix="image",
-                    media_path=image["image_path"],
                     upload_type="gallery",
                 ),
             })
@@ -3307,19 +3204,19 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
     def submit_image(
         self,
-        title: str,
-        image_path: str,
         *,
         collection_id: str | None = None,
         discussion_type: str | None = None,
         flair_id: str | None = None,
         flair_text: str | None = None,
+        image_media: models.PostMedia,
         nsfw: bool = False,
         resubmit: bool = True,
         selftext: str | None = None,
         send_replies: bool = True,
         spoiler: bool = False,
         timeout: int = 10,
+        title: str,
         without_websockets: bool = False,
     ) -> models.Submission | None:
         """Add an image submission to the subreddit.
@@ -3332,7 +3229,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :param flair_text: If the template's ``flair_text_editable`` value is ``True``,
             this value will set a custom text (default: ``None``). ``flair_id`` is
             required when ``flair_text`` is provided.
-        :param image_path: The path to an image, to upload and post.
+        :param image_media: The :class:`.PostMedia` image to upload and post.
         :param nsfw: Whether the submission should be marked NSFW (default: ``False``).
         :param resubmit: When ``False``, an error will occur if the URL has already been
             submitted (default: ``True``).
@@ -3352,7 +3249,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :returns: A :class:`.Submission` object for the newly created submission, unless
             ``without_websockets`` is ``True``.
 
-        :raises: :class:`.ClientException` if ``image_path`` refers to a file that is
+        :raises: :class:`.ClientException` if ``image_media`` refers to a file that is
             not an image.
 
         .. note::
@@ -3372,9 +3269,11 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
+            from praw.models import PostMedia
+
             title = "My favorite picture"
-            image = "/path/to/image.png"
-            reddit.subreddit("test").submit_image(title, image)
+            image = PostMedia("/path/to/image.png")
+            reddit.subreddit("test").submit_image(image_media=image, title=title)
 
         .. seealso::
 
@@ -3404,7 +3303,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             if value is not None:
                 data[key] = value
 
-        image_url = self._upload_media(expected_mime_prefix="image", media_path=image_path)
+        image_url = image_media._upload(self._reddit, expected_mime_prefix="image")
         data.update(kind="image", url=image_url)
         return self._submit_media(data=data, timeout=timeout, without_websockets=without_websockets)
 
@@ -3493,8 +3392,6 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
     def submit_video(
         self,
-        title: str,
-        video_path: str,
         *,
         collection_id: str | None = None,
         discussion_type: str | None = None,
@@ -3505,15 +3402,17 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         selftext: str | None = None,
         send_replies: bool = True,
         spoiler: bool = False,
-        thumbnail_path: str | None = None,
+        thumbnail_media: models.PostMedia | None = None,
         timeout: int = 10,
+        title: str,
+        video_media: models.PostMedia,
         videogif: bool = False,
         without_websockets: bool = False,
     ) -> models.Submission | None:
         """Add a video or videogif submission to the subreddit.
 
         :param title: The title of the submission.
-        :param video_path: The path to a video, to upload and post.
+        :param video_media: The :class:`.PostMedia` video to upload and post.
         :param collection_id: The UUID of a :class:`.Collection` to add the
             newly-submitted post to.
         :param discussion_type: Set to ``"CHAT"`` to enable live discussion instead of
@@ -3531,9 +3430,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             author when comments are made to the submission (default: ``True``).
         :param spoiler: Whether the submission should be marked as a spoiler (default:
             ``False``).
-        :param thumbnail_path: The path to an image, to be uploaded and used as the
-            thumbnail for this video. If not provided, the PRAW logo will be used as the
-            thumbnail.
+        :param thumbnail_media: The :class:`.PostMedia` image to be uploaded and used as
+            the thumbnail for this video. If not provided, the PRAW logo will be used as
+            the thumbnail.
         :param timeout: Specifies a particular timeout, in seconds. Use to avoid
             "Websocket error" exceptions (default: ``10``).
         :param videogif: If ``True``, the video is uploaded as a videogif, which is
@@ -3545,7 +3444,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         :returns: A :class:`.Submission` object for the newly created submission, unless
             ``without_websockets`` is ``True``.
 
-        :raises: :class:`.ClientException` if ``video_path`` refers to a file that is
+        :raises: :class:`.ClientException` if ``video_media`` refers to a file that is
             not a video.
 
         .. note::
@@ -3565,9 +3464,11 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
 
         .. code-block:: python
 
+            from praw.models import PostMedia
+
             title = "My favorite movie"
-            video = "/path/to/video.mp4"
-            reddit.subreddit("test").submit_video(title, video)
+            video = PostMedia("/path/to/video.mp4")
+            reddit.subreddit("test").submit_video(title=title, video_media=video)
 
         .. seealso::
 
@@ -3597,12 +3498,15 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
             if value is not None:
                 data[key] = value
 
-        video_url = self._upload_media(expected_mime_prefix="video", media_path=video_path)
+        if thumbnail_media is None:
+            # if we're uploading without a thumbnail, use the PRAW logo
+            logo_path = Path(__file__).absolute().parent.parent.parent / "images" / "PRAW logo.png"
+            thumbnail_media = PostMedia(str(logo_path))
+        video_url = video_media._upload(self._reddit, expected_mime_prefix="video")
         data.update(
             kind="videogif" if videogif else "video",
             url=video_url,
-            # if thumbnail_path is None, it uploads the PRAW logo
-            video_poster_url=self._upload_media(media_path=thumbnail_path),
+            video_poster_url=thumbnail_media._upload(self._reddit),
         )
         return self._submit_media(data=data, timeout=timeout, without_websockets=without_websockets)
 

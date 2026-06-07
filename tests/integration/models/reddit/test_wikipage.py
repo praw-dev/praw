@@ -4,7 +4,7 @@ import pytest
 from prawcore import Forbidden, NotFound
 
 from praw.exceptions import RedditAPIException
-from praw.models import Redditor, WikiPage
+from praw.models import Redditor, StylesheetImage, WikiPage
 
 from ... import IntegrationTest
 
@@ -43,8 +43,8 @@ class TestWikiPageModeration(IntegrationTest):
 
         reddit.read_only = False
         subreddit.stylesheet.upload(
+            image_media=StylesheetImage("tests/integration/files/icon.jpg"),
             name="css-revert-fail",
-            image_path="tests/integration/files/icon.jpg",
         )
         page.edit(content="div {background: url(%%css-revert-fail%%)}")
         revision_id = next(page.revisions(limit=1))["id"]

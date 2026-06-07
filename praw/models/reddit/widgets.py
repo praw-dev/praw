@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from json import JSONEncoder, dumps
-from pathlib import Path
 from typing import TYPE_CHECKING, Any, TypeVar
 
 from praw.const import API_PATH
@@ -1794,10 +1793,10 @@ class SubredditWidgetsModeration:
         path = API_PATH["widget_order"].format(subreddit=self._subreddit, section=section)
         self._reddit.patch(path, data={"json": dumps(order), "section": section})
 
-    def upload_image(self, file_path: str) -> str:
+    def upload_image(self, image_media: models.WidgetMedia, /) -> str:
         """Upload an image to Reddit and get the URL.
 
-        :param file_path: The path to the local file.
+        :param image_media: The :class:`.WidgetMedia` to upload.
 
         :returns: The URL of the uploaded image as a ``str``.
 
@@ -1809,8 +1808,10 @@ class SubredditWidgetsModeration:
 
         .. code-block:: python
 
+            from praw.models import WidgetMedia
+
             my_sub = reddit.subreddit("test")
-            image_url = my_sub.widgets.mod.upload_image("/path/to/image.jpg")
+            image_url = my_sub.widgets.mod.upload_image(WidgetMedia("/path/to/image.jpg"))
             image_data = [{"width": 300, "height": 300, "url": image_url, "linkUrl": ""}]
             styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
             my_sub.widgets.mod.add_image_widget(
@@ -1818,22 +1819,4 @@ class SubredditWidgetsModeration:
             )
 
         """
-        file = Path(file_path)
-        img_data = {
-            "filepath": file.name,
-            "mimetype": "image/jpeg",
-        }
-        if file_path.lower().endswith(".png"):
-            img_data["mimetype"] = "image/png"
-
-        url = API_PATH["widget_lease"].format(subreddit=self._subreddit)
-        # until we learn otherwise, assume this request always succeeds
-        upload_lease = self._reddit.post(url, data=img_data)["s3UploadLease"]
-        upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
-        upload_url = f"https:{upload_lease['action']}"
-
-        with file.open("rb") as image:
-            response = self._reddit._core._requestor._http.post(upload_url, data=upload_data, files={"file": image})
-        response.raise_for_status()
-
-        return f"{upload_url}/{upload_data['key']}"
+        return image_media._upload(self._subreddit)

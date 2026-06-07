@@ -14,6 +14,11 @@ praw follows `semantic versioning <https://semver.org/>`_.
 - Add support for Python 3.14.
 - Add support for optional Markdown-formatted ``selftext`` when submitting link, image,
   gallery, and video posts.
+- Add :class:`.Media` and its subclasses :class:`.EmojiMedia`, :class:`.PostMedia`,
+  :class:`.StylesheetAsset`, :class:`.StylesheetImage`, and :class:`.WidgetMedia` to
+  consolidate media uploads. Media can be constructed from a file path, or from
+  ``bytes`` content along with a ``name``, so media no longer has to be written to disk
+  before uploading.
 
 **Changed**
 
@@ -38,6 +43,44 @@ praw follows `semantic versioning <https://semver.org/>`_.
   :meth:`.Subreddit.submit_image` now accept an optional Markdown-formatted ``selftext``
   parameter.
 - The ``reason_id`` argument to :class:`.RemovalReason` has been renamed to ``id``.
+- Media upload methods now accept :class:`.Media` instances instead of file paths:
+
+  - The ``image_path`` argument to :meth:`.SubredditEmoji.add` has been replaced by
+    ``emoji_media``, which takes an :class:`.EmojiMedia` instance.
+  - The ``image_path`` arguments to :meth:`.SubredditStylesheet.upload`,
+    :meth:`.upload_header`, :meth:`.upload_mobile_header`, and
+    :meth:`.upload_mobile_icon` have been replaced by ``image_media``, which takes a
+    :class:`.StylesheetImage` instance.
+  - The ``image_path`` arguments to :meth:`.SubredditStylesheet.upload_banner`,
+    :meth:`.upload_banner_additional_image`, :meth:`.upload_banner_hover_image`, and
+    :meth:`.upload_mobile_banner` have been replaced by ``image_media``, which takes a
+    :class:`.StylesheetAsset` instance.
+  - The ``image_media`` arguments to the :class:`.SubredditStylesheet` ``upload_*``
+    methods, other than :meth:`.SubredditStylesheet.upload`, must be passed
+    positionally.
+  - The ``file_path`` argument to :meth:`.SubredditWidgetsModeration.upload_image` has
+    been replaced by ``image_media``, which takes a :class:`.WidgetMedia` instance and
+    must be passed positionally.
+  - The ``image_path`` argument to :meth:`.Subreddit.submit_image` has been replaced by
+    ``image_media``, which takes a :class:`.PostMedia` instance. All arguments,
+    including ``title``, must now be passed by keyword.
+  - The ``video_path`` and ``thumbnail_path`` arguments to
+    :meth:`.Subreddit.submit_video` have been replaced by ``video_media`` and
+    ``thumbnail_media``, which take :class:`.PostMedia` instances. All arguments,
+    including ``title``, must now be passed by keyword.
+  - The ``image_path`` key in the ``images`` dictionaries passed to
+    :meth:`.Subreddit.submit_gallery` has been replaced by ``image_media``, which takes
+    a :class:`.PostMedia` instance. All arguments, including ``title`` and ``images``,
+    must now be passed by keyword.
+  - The ``path`` argument to :class:`.InlineMedia` (:class:`.InlineGif`,
+    :class:`.InlineImage`, and :class:`.InlineVideo`) has been replaced by ``media``,
+    which takes a :class:`.PostMedia` instance.
+
+- An unknown media type now raises :class:`.ClientException` when uploading media,
+  instead of falling back to JPEG.
+- Media uploads to Reddit's S3 buckets now respect the configured ``timeout`` and raise
+  ``prawcore.RequestException`` on transport errors, consistent with all other requests,
+  instead of having no timeout and raising raw ``requests`` exceptions.
 
 **Fixed**
 
