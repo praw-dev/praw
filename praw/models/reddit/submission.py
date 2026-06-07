@@ -715,8 +715,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
 
         submission_data = submission_listing["data"]["children"][0]["data"]
         submission = type(self)(self._reddit, _data=submission_data)
-        delattr(submission, "comment_limit")
-        delattr(submission, "comment_sort")
+        del submission.comment_limit
+        del submission.comment_sort
         submission._comments = CommentForest(self)
 
         self.__dict__.update(submission.__dict__)
