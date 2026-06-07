@@ -22,27 +22,27 @@ repos:
       - id: ruff
         args: [ --exit-non-zero-on-fix, --fix ]
         files: ^(praw/.*.py)$
-    rev: v0.15.1
+    rev: 22f0422809455ec89ffdcf5a00170ba816e42ddb  # frozen: v0.15.16
 
   - repo: https://github.com/LilSpazJoekp/docstrfmt
     hooks:
       - id: docstrfmt
         additional_dependencies: [click<8.4]
-    rev: v2.0.2
+    rev: 7653faa707cb660bc80cef0e8433932363b43504  # frozen: v2.0.2
 
   - repo: https://github.com/MarcoGorelli/auto-walrus
     hooks:
       - id: auto-walrus
-    rev: 0.4.1
+    rev: 1743edbed52f3d61886b59d98a27164a8af29c0d  # frozen: 0.4.1
 
   - repo: https://github.com/pappasam/toml-sort
     hooks:
       - id: toml-sort-fix
         files: ^(.*\.toml)$
-    rev: v0.24.3
+    rev: 2970ae9bb7124fe5117a27e10c10d2da051ce05a  # frozen: v0.24.4
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
     hooks:
       - id: check-added-large-files
       - id: check-executables-have-shebangs

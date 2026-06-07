@@ -371,11 +371,10 @@ class SubredditCollections(PRAWBase):
                 print(collection.permalink)
 
         """
-        request = self._reddit.get(
+        yield from self._reddit.get(
             API_PATH["collection_subreddit"],
             params={"sr_fullname": self.subreddit.fullname},
         )
-        yield from request
 
 
 class Collection(RedditBase):
