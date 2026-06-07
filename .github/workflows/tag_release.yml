@@ -1,7 +1,7 @@
 jobs:
   tag_release:
     name: Tag Release
-    uses: praw-dev/.github/.github/workflows/tag_release.yml@f33b50e54733ad51138f0568b95552963d47b4a3 # v1.0.0
+    uses: praw-dev/.github/.github/workflows/tag_release.yml@16645281204644e9e0e79c3b249b2472dff307a7 # v1.1.0
 name: Tag Release
 on:
   push:

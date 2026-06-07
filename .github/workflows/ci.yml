@@ -1,8 +1,10 @@
 jobs:
   ci:
     name: CI
-    secrets: inherit
-    uses: praw-dev/.github/.github/workflows/ci.yml@f33b50e54733ad51138f0568b95552963d47b4a3 # v1.0.0
+    secrets:
+      NETWORK_TEST_CLIENT_ID: ${{ secrets.NETWORK_TEST_CLIENT_ID }}
+      NETWORK_TEST_CLIENT_SECRET: ${{ secrets.NETWORK_TEST_CLIENT_SECRET }}
+    uses: praw-dev/.github/.github/workflows/ci.yml@16645281204644e9e0e79c3b249b2472dff307a7 # v1.1.0
     with:
       package: praw
 name: CI
