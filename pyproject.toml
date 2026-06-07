@@ -73,7 +73,6 @@ requires-python = ">=3.10"
 
 [tool.docstrfmt]
 extend_exclude = ['./docs/examples/']
-section-adornments = "|=-~+.'\"`^_*:#"
 
 [tool.hatch.version]
 path = "praw/const.py"

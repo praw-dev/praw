@@ -1,5 +1,6 @@
-Installing PRAW
-===============
+#################
+ Installing PRAW
+#################
 
 PRAW supports Python 3.10+. The recommended way to install PRAW is with `uv
 <https://docs.astral.sh/uv/>`_.
@@ -26,8 +27,9 @@ Alternatively, PRAW can be installed via ``pip``:
 For instructions on installing Python and pip see "The Hitchhiker's Guide to Python"
 `Installation Guides <https://docs.python-guide.org/en/latest/starting/installation/>`_.
 
-Updating PRAW
--------------
+***************
+ Updating PRAW
+***************
 
 PRAW can be updated by running:
 
@@ -41,8 +43,9 @@ or with pip:
 
     pip install --upgrade praw
 
-Installing Older Versions
--------------------------
+***************************
+ Installing Older Versions
+***************************
 
 Older versions of PRAW can be installed by specifying the version number as part of the
 installation command:
@@ -57,8 +60,9 @@ or with pip:
 
     pip install praw==3.6.0
 
-Installing the Latest Development Version
------------------------------------------
+*******************************************
+ Installing the Latest Development Version
+*******************************************
 
 Is there a feature that was recently merged into PRAW that you cannot wait to take
 advantage of? If so, you can install PRAW directly from GitHub like so:
