@@ -3,7 +3,7 @@ jobs:
     name: Set Active Docs
     secrets:
       READTHEDOCS_TOKEN: ${{ secrets.READTHEDOCS_TOKEN }}
-    uses: praw-dev/.github/.github/workflows/set_active_docs.yml@e86d5e7389cc00472a01675465bfa72b1dffd884 # v1.2.0
+    uses: praw-dev/.github/.github/workflows/set_active_docs.yml@d00355f9d670fa915fd5cd4f0ac422061951f55a # v1.3.1
 name: Set Active Docs
 on:
   release:
