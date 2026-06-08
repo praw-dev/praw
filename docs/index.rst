@@ -62,6 +62,7 @@ application. See :ref:`oauth` for information on using **installed** application
     package_info/change_log
     package_info/contributing
     package_info/glossary
+    package_info/praw8_migration
     package_info/references
 
 .. toctree::

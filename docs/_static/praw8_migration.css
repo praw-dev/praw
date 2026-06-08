@@ -1,0 +1,14 @@
+/* Tint the "old" code blocks in the PRAW 8 migration guide. */
+.code-old .highlight {
+    background-color: #fdecec;
+}
+
+body[data-theme="dark"] .code-old .highlight {
+    background-color: #3b2224;
+}
+
+@media (prefers-color-scheme: dark) {
+    body[data-theme="auto"] .code-old .highlight {
+        background-color: #3b2224;
+    }
+}
