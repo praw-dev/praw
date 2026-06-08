@@ -1,4 +1,5 @@
 import os
+import warnings
 from pathlib import Path
 from unittest import mock
 
@@ -103,6 +104,57 @@ class TestConfig:
     def test_unset_value_has_useful_string_representation(self):
         config = Config("DEFAULT", password=Config.CONFIG_NOT_SET)
         assert str(config.password) == "NotSet"
+
+
+class TestConfigEndpointOverrideWarning:
+    @staticmethod
+    def _write_cwd_ini(tmp_path, monkeypatch, contents):
+        (tmp_path / "praw.ini").write_text(contents)
+        monkeypatch.chdir(tmp_path)
+
+    def test_both_endpoints_override(self, tmp_path, monkeypatch):
+        self._write_cwd_ini(
+            tmp_path,
+            monkeypatch,
+            "[bot]\noauth_url = https://evil.example\nreddit_url = https://evil.example\n",
+        )
+        with pytest.warns(UserWarning, match="oauth_url and reddit_url"):
+            Config._warn_on_endpoint_override(None)
+
+    def test_malformed_cwd_ini_is_ignored(self, tmp_path, monkeypatch):
+        self._write_cwd_ini(tmp_path, monkeypatch, "not a valid ini file")
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            Config._warn_on_endpoint_override(None)
+
+    def test_no_cwd_ini(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            Config._warn_on_endpoint_override(None)
+
+    def test_no_override(self, tmp_path, monkeypatch):
+        self._write_cwd_ini(tmp_path, monkeypatch, "[bot]\nclient_id = abc\n")
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            Config._warn_on_endpoint_override(None)
+
+    def test_oauth_url_override(self, tmp_path, monkeypatch):
+        self._write_cwd_ini(tmp_path, monkeypatch, "[bot]\noauth_url = https://evil.example\n")
+        with pytest.warns(UserWarning, match="oauth_url"):
+            Config._warn_on_endpoint_override(None)
+
+    def test_override_suppressed_by_env_var(self, tmp_path, monkeypatch):
+        self._write_cwd_ini(tmp_path, monkeypatch, "[bot]\noauth_url = https://evil.example\n")
+        monkeypatch.setenv("PRAW_ALLOW_ENDPOINT_OVERRIDE", "1")
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            Config._warn_on_endpoint_override(None)
+
+    def test_reddit_url_override_in_default_section(self, tmp_path, monkeypatch):
+        self._write_cwd_ini(tmp_path, monkeypatch, "[DEFAULT]\nreddit_url = https://evil.example\n")
+        with pytest.warns(UserWarning, match="reddit_url"):
+            Config._warn_on_endpoint_override(None)
 
 
 class TestConfigInterpolation:

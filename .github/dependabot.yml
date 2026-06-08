@@ -3,4 +3,8 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
+      interval: quarterly
+  - package-ecosystem: uv
+    directory: /
+    schedule:
+      interval: quarterly

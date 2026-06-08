@@ -8,6 +8,18 @@ praw follows `semantic versioning <https://semver.org/>`_.
  Unreleased
 ************
 
+**Added**
+
+- Warn when a ``praw.ini`` in the current working directory sets the ``oauth_url`` or
+  ``reddit_url`` endpoint, as such a file can redirect credentials to an untrusted host.
+  The warning can be silenced by setting the ``PRAW_ALLOW_ENDPOINT_OVERRIDE``
+  environment variable.
+
+**Changed**
+
+- Constrain the ``websocket-client`` dependency to ``<2`` to avoid silently adopting a
+  future, potentially breaking, major release.
+
 ***********************
  8.0.0rc2 (2026/06/08)
 ***********************
