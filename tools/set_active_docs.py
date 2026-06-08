@@ -38,26 +38,31 @@ def main():
         current_version = packaging.version.parse(
             f"{current_version.major}.{current_version.minor}.{current_version.micro - 1}"
         )
-    versions = fetch_versions()
-    if versions is None:
-        return 1
     max_retry_count = 5
     retry_count = 0
-    while current_version not in versions:
-        versions = fetch_versions()
-        if versions is None:
-            return 1
-        if current_version in versions:
-            break
-        else:
-            if retry_count >= max_retry_count:
-                sys.stderr.write(
-                    f"Current version {current_version!s} failed to build\n"
-                )
+    while True:
+        # Versions are not active by default; activate the version once Read
+        # the Docs has synced the tag.
+        response = requests.patch(
+            f"https://readthedocs.org/api/v3/projects/{PROJECT}/versions/v{current_version}/",
+            json={"active": True, "hidden": False},
+            headers=HEADERS,
+        )
+        if response.status_code == 204:
+            sys.stdout.write(f"Version {current_version!s} is active\n")
+            versions = fetch_versions()
+            if versions is None:
                 return 1
-            sys.stdout.write("Waiting 30 seconds for build to finish\n")
-            retry_count += 1
-            time.sleep(30)
+            if current_version in versions:
+                break
+        if retry_count >= max_retry_count:
+            sys.stderr.write(
+                f"Current version {current_version!s} failed to activate\n"
+            )
+            return 1
+        sys.stdout.write("Waiting 30 seconds for version to activate\n")
+        retry_count += 1
+        time.sleep(30)
     aggregated_versions = {}
     for version in versions:
         aggregated_versions.setdefault(version.major, [])

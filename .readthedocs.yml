@@ -1,3 +1,7 @@
+build:
+  os: ubuntu-lts-latest
+  tools:
+    python: "3.12"
 formats:
   - htmlzip
 python:
@@ -6,5 +10,6 @@ python:
       extra_requirements:
         - readthedocs
       path: .
-  version: 3.8
+sphinx:
+  configuration: docs/conf.py
 version: 2

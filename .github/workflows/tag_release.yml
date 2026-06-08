@@ -1,11 +1,10 @@
 jobs:
   tag_release:
     name: Tag Release
-    secrets: inherit
-    uses: praw-dev/.github/.github/workflows/tag_release.yml@main
+    uses: praw-dev/.github/.github/workflows/tag_release.yml@20f00d1404e64813b40e0cff3a70dc9cd8b8b34e # v1.3.3
 name: Tag Release
 on:
   push:
-    branches: [ master, release_test ]
+    branches: [ maint-7.8 ]
 permissions:
   contents: write
