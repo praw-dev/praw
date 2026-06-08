@@ -14,6 +14,8 @@ praw follows `semantic versioning <https://semver.org/>`_.
 - Add support for Python 3.14.
 - Add support for optional Markdown-formatted ``selftext`` when submitting link, image,
   gallery, and video posts.
+- Add a :ref:`migration guide <praw8_migration>` covering all breaking changes in PRAW
+  8.
 - Add :class:`.Media` and its subclasses :class:`.EmojiMedia`, :class:`.PostMedia`,
   :class:`.StylesheetAsset`, :class:`.StylesheetImage`, and :class:`.WidgetMedia` to
   consolidate media uploads. Media can be constructed from a file path, or from

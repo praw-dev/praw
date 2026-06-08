@@ -15,6 +15,8 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx_autodoc_typehints",
 ]
+html_css_files = ["praw8_migration.css"]
+html_static_path = ["_static"]
 html_theme = "furo"
 htmlhelp_basename = "PRAW"
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
