@@ -184,12 +184,7 @@ class Draft(RedditBase):
 
         .. seealso::
 
-            - :meth:`~.Subreddit.submit` to submit url posts and selftexts
-            - :meth:`~.Subreddit.submit_gallery`. to submit more than one image in the
-              same post
-            - :meth:`~.Subreddit.submit_image` to submit images
-            - :meth:`~.Subreddit.submit_poll` to submit polls
-            - :meth:`~.Subreddit.submit_video` to submit videos and videogifs
+            :meth:`~.Subreddit.submit` to make a submission directly.
 
         """
         submit_kwargs["draft_id"] = self.id

@@ -180,7 +180,7 @@ class SubredditEmoji:
     def add(
         self,
         *,
-        emoji_media: models.EmojiMedia,
+        media: models.EmojiMedia,
         mod_flair_only: bool | None = None,
         name: str,
         post_flair_allowed: bool | None = None,
@@ -188,7 +188,7 @@ class SubredditEmoji:
     ) -> Emoji:
         """Add an emoji to this subreddit.
 
-        :param emoji_media: The :class:`.EmojiMedia` to be uploaded as an emoji.
+        :param media: The :class:`.EmojiMedia` to be uploaded as an emoji.
         :param mod_flair_only: When provided, indicate whether the emoji is restricted
             to mod use only (default: ``None``).
         :param name: The name of the emoji.
@@ -205,11 +205,11 @@ class SubredditEmoji:
 
             from praw.models import EmojiMedia
 
-            emoji_media = EmojiMedia("emoji.png")
-            reddit.subreddit("test").emoji.add(emoji_media=emoji_media, name="emoji")
+            media = EmojiMedia("emoji.png")
+            reddit.subreddit("test").emoji.add(media=media, name="emoji")
 
         """
-        s3_key = emoji_media._upload(self.subreddit)
+        s3_key = media._upload(self.subreddit)
 
         data = {
             "mod_flair_only": mod_flair_only,

@@ -147,8 +147,7 @@ class EmojiMedia(Media):
 class PostMedia(Media):
     """Media to be uploaded as part of a submission.
 
-    See :meth:`.Subreddit.submit_image`, :meth:`.Subreddit.submit_gallery`,
-    :meth:`.Subreddit.submit_video`, and :class:`.InlineMedia`.
+    See :meth:`.Subreddit.submit` and :class:`.InlineMedia`.
 
     """
 

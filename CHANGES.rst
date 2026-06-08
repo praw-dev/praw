@@ -8,6 +8,20 @@ praw follows `semantic versioning <https://semver.org/>`_.
  Unreleased
 ************
 
+**Changed**
+
+- ``Subreddit.submit_gallery``, ``Subreddit.submit_image``, ``Subreddit.submit_poll``,
+  and ``Subreddit.submit_video`` have been merged into :meth:`.Subreddit.submit`. The
+  kind of submission is selected with the ``gallery``, ``image``, ``poll``, ``url``, or
+  ``video`` keyword argument. At least one of those, or ``selftext``, must be provided,
+  and they are mutually exclusive, while ``selftext`` may accompany any of them as
+  optional Markdown-formatted body text. ``image`` takes a :class:`.PostMedia` instance;
+  ``gallery`` takes a list of :class:`.PostMedia` instances or ``dict``\ s with a
+  ``media`` key; ``video`` takes a :class:`.PostMedia` instance or a ``dict`` with a
+  ``media`` key and optional ``gif`` and ``thumbnail`` keys; and ``poll`` takes a
+  ``dict`` with ``duration`` and ``options`` keys. ``selftext`` is no longer required
+  for poll submissions.
+
 ***********************
  8.0.0rc1 (2026/06/08)
 ***********************
@@ -45,39 +59,24 @@ praw follows `semantic versioning <https://semver.org/>`_.
   body text to accompany the link submission. An exception is raised when trying to use
   ``inline_media`` with ``selftext`` for a ``url`` submission because Reddit does not
   support inline media in body text for link submissions.
-- :meth:`.Subreddit.submit_video`, :meth:`.Subreddit.submit_gallery`, and
-  :meth:`.Subreddit.submit_image` now accept an optional Markdown-formatted ``selftext``
+- ``Subreddit.submit_video``, ``Subreddit.submit_gallery``, and
+  ``Subreddit.submit_image`` now accept an optional Markdown-formatted ``selftext``
   parameter.
 - The ``reason_id`` argument to :class:`.RemovalReason` has been renamed to ``id``.
 - Media upload methods now accept :class:`.Media` instances instead of file paths:
 
   - The ``image_path`` argument to :meth:`.SubredditEmoji.add` has been replaced by
-    ``emoji_media``, which takes an :class:`.EmojiMedia` instance.
-  - The ``image_path`` arguments to :meth:`.SubredditStylesheet.upload`,
-    :meth:`.upload_header`, :meth:`.upload_mobile_header`, and
-    :meth:`.upload_mobile_icon` have been replaced by ``image_media``, which takes a
-    :class:`.StylesheetImage` instance.
-  - The ``image_path`` arguments to :meth:`.SubredditStylesheet.upload_banner`,
+    ``media``, which takes an :class:`.EmojiMedia` instance.
+  - The ``image_path`` arguments to the :class:`.SubredditStylesheet` ``upload_*``
+    methods have been replaced by ``media``, which must be passed positionally.
+    :meth:`.SubredditStylesheet.upload`, :meth:`.upload_header`,
+    :meth:`.upload_mobile_header`, and :meth:`.upload_mobile_icon` take a
+    :class:`.StylesheetImage` instance, while :meth:`.upload_banner`,
     :meth:`.upload_banner_additional_image`, :meth:`.upload_banner_hover_image`, and
-    :meth:`.upload_mobile_banner` have been replaced by ``image_media``, which takes a
-    :class:`.StylesheetAsset` instance.
-  - The ``image_media`` arguments to the :class:`.SubredditStylesheet` ``upload_*``
-    methods, other than :meth:`.SubredditStylesheet.upload`, must be passed
-    positionally.
+    :meth:`.upload_mobile_banner` take a :class:`.StylesheetAsset` instance.
   - The ``file_path`` argument to :meth:`.SubredditWidgetsModeration.upload_image` has
-    been replaced by ``image_media``, which takes a :class:`.WidgetMedia` instance and
-    must be passed positionally.
-  - The ``image_path`` argument to :meth:`.Subreddit.submit_image` has been replaced by
-    ``image_media``, which takes a :class:`.PostMedia` instance. All arguments,
-    including ``title``, must now be passed by keyword.
-  - The ``video_path`` and ``thumbnail_path`` arguments to
-    :meth:`.Subreddit.submit_video` have been replaced by ``video_media`` and
-    ``thumbnail_media``, which take :class:`.PostMedia` instances. All arguments,
-    including ``title``, must now be passed by keyword.
-  - The ``image_path`` key in the ``images`` dictionaries passed to
-    :meth:`.Subreddit.submit_gallery` has been replaced by ``image_media``, which takes
-    a :class:`.PostMedia` instance. All arguments, including ``title`` and ``images``,
-    must now be passed by keyword.
+    been replaced by ``media``, which takes a :class:`.WidgetMedia` instance and must be
+    passed positionally.
   - The ``path`` argument to :class:`.InlineMedia` (:class:`.InlineGif`,
     :class:`.InlineImage`, and :class:`.InlineVideo`) has been replaced by ``media``,
     which takes a :class:`.PostMedia` instance.
@@ -398,7 +397,7 @@ praw follows `semantic versioning <https://semver.org/>`_.
 **Added**
 
 - Add method :meth:`.Subreddits.premium` to reflect the naming change in Reddit's API.
-- Ability to submit image galleries with :meth:`~.Subreddit.submit_gallery`.
+- Ability to submit image galleries with ``Subreddit.submit_gallery``.
 - Ability to pass a gallery url to :meth:`.Reddit.submission`.
 - Ability to specify modmail mute duration.
 - Add method :meth:`.invited` to get invited moderators of a subreddit.
@@ -416,9 +415,9 @@ praw follows `semantic versioning <https://semver.org/>`_.
 - Drop support for Python 3.5, which is end-of-life on 2020-09-13.
 - :class:`.BoundedSet` will now utilize a Last-Recently-Used (LRU) storing mechanism,
   which will change the order in which elements are removed from the set.
-- Improved :meth:`~.Subreddit.submit_image` and :meth:`~.Subreddit.submit_video`
-  performance in slow network environments by removing a race condition when
-  establishing a websocket connection.
+- Improved ``Subreddit.submit_image`` and ``Subreddit.submit_video`` performance in slow
+  network environments by removing a race condition when establishing a websocket
+  connection.
 
 **Deprecated**
 
@@ -441,7 +440,7 @@ praw follows `semantic versioning <https://semver.org/>`_.
 
 - :class:`.Rule` to represent one rule of a subreddit.
 - :class:`.SubredditRules` to get and add rules.
-- Ability to submit polls with :meth:`~.Subreddit.submit_poll`.
+- Ability to submit polls with ``Subreddit.submit_poll``.
 - :class:`.PollData` and :class:`.PollOption`.
 - Ability to view poll data and poll options via the ``.poll_data`` attribute on poll
   submissions.
@@ -473,7 +472,7 @@ praw follows `semantic versioning <https://semver.org/>`_.
   subreddit settings and send unmodified ones in the update request.
 - Instances of ``BadRequest``\ s captured by PRAW that do not contain any detailed JSON
   data are re-raised as the original ``BadRequest``.
-- :meth:`~.Subreddit.submit_image` and :meth:`~.Subreddit.submit_video` will throw
+- ``Subreddit.submit_image`` and ``Subreddit.submit_video`` will throw
   :class:`.MediaPostFailed` when Reddit fails to post an image or video post.
 
 ********************
@@ -512,16 +511,16 @@ praw follows `semantic versioning <https://semver.org/>`_.
   generated by trying to sticky the same post multiple times.
 - A new method :meth:`.CommentModeration.show` will uncollapse a comment that was
   collapsed because of Crowd Control
-- Methods :meth:`~.Subreddit.submit_image` and :meth:`~.Subreddit.submit_video` will
-  throw :class:`.TooLargeMediaException` if the submitted media is rejected by Reddit
-  due to the size of the media.
+- Methods ``Subreddit.submit_image`` and ``Subreddit.submit_video`` will throw
+  :class:`.TooLargeMediaException` if the submitted media is rejected by Reddit due to
+  the size of the media.
 - Class :class:`.Reddit` has an attribute, ``validate_on_submit``, that can be set after
   class initialization that causes methods :meth:`~.Subreddit.submit`,
-  :meth:`~.Subreddit.submit_image`, :meth:`~.Subreddit.submit_video`, and
-  :meth:`.Submission.edit` to check that the submission matches a subreddit's post
-  validation rules. This attribute will be functionally useless once Reddit implements
-  their change. This attribute will be deprecated on the next release after Reddit's
-  change, and will be removed on the next major release after Reddit's change.
+  ``Subreddit.submit_image``, ``Subreddit.submit_video``, and :meth:`.Submission.edit`
+  to check that the submission matches a subreddit's post validation rules. This
+  attribute will be functionally useless once Reddit implements their change. This
+  attribute will be deprecated on the next release after Reddit's change, and will be
+  removed on the next major release after Reddit's change.
 
 .. warning::
 
@@ -535,8 +534,8 @@ praw follows `semantic versioning <https://semver.org/>`_.
   ``RedditAPIException.items``, which returns a list.
 - ``APIException`` is an alias to :class:`.RedditAPIException`.
 - Parameter ``discussion_type`` to methods :meth:`~.Subreddit.submit`,
-  :meth:`~.Subreddit.submit_image`, and :meth:`~.Subreddit.submit_video` to support
-  submitting as a live discussion (set to ``"CHAT"``).
+  ``Subreddit.submit_image``, and ``Subreddit.submit_video`` to support submitting as a
+  live discussion (set to ``"CHAT"``).
 - Instances of :class:`.Trophy` can be compared for equality with each other.
 - :class:`.Reddit` has a new configurable parameter, ``timeout``. This defaults to 16
   seconds. It controls how long PRAW will wait for a response before throwing an
@@ -592,8 +591,8 @@ praw follows `semantic versioning <https://semver.org/>`_.
 - :meth:`.set_original_content` supports marking a submission as original content.
 - :meth:`.unset_original_content` supports unmarking a submission as original content.
 - :meth:`.moderated` to get a list of a redditor's moderated subreddits.
-- Parameter ``without_websockets`` to :meth:`~.Subreddit.submit_image` and
-  :meth:`~.Subreddit.submit_video` to submit without using WebSockets.
+- Parameter ``without_websockets`` to ``Subreddit.submit_image`` and
+  ``Subreddit.submit_video`` to submit without using WebSockets.
 - :meth:`.Reddit.redditor` supports ``fullname`` param to fetch a :class:`.Redditor` by
   the fullname instead of name. :class:`.Redditor` constructor now also has ``fullname``
   param.
@@ -693,9 +692,8 @@ praw follows `semantic versioning <https://semver.org/>`_.
 **Added**
 
 - Collections (:class:`.Collection` and helper classes).
-- :meth:`~.Subreddit.submit`, :meth:`~.Subreddit.submit_image`, and
-  :meth:`~.Subreddit.submit_video` can be used to submit a post directly to a
-  collection.
+- :meth:`~.Subreddit.submit`, ``Subreddit.submit_image``, and ``Subreddit.submit_video``
+  can be used to submit a post directly to a collection.
 - ``praw.util.camel_to_snake`` and ``praw.util.snake_case_keys``.
 - Comments can now be locked and unlocked via ``comment.mod.lock()`` and
   ``comment.mod.unlock()``. See: (:meth:`~.ThingModerationMixin.lock` and
@@ -721,14 +719,13 @@ praw follows `semantic versioning <https://semver.org/>`_.
 - :meth:`.delete_banner`
 - :meth:`.delete_banner_additional_image`
 - :meth:`.delete_banner_hover_image`
-- :meth:`~.Subreddit.submit`, :meth:`~.Subreddit.submit_image`, and
-  :meth:`~.Subreddit.submit_video` support parameter ``nsfw`` to mark the submission
-  NSFW immediately upon posting.
-- :meth:`~.Subreddit.submit`, :meth:`~.Subreddit.submit_image`, and
-  :meth:`~.Subreddit.submit_video` support parameter ``spoiler`` to mark the submission
-  as a spoiler immediately upon posting.
-- :meth:`~.Subreddit.submit_image` and :meth:`~.Subreddit.submit_video` support
-  parameter ``timeout``. Default timeout has been raised from 2 seconds to 10 seconds.
+- :meth:`~.Subreddit.submit`, ``Subreddit.submit_image``, and ``Subreddit.submit_video``
+  support parameter ``nsfw`` to mark the submission NSFW immediately upon posting.
+- :meth:`~.Subreddit.submit`, ``Subreddit.submit_image``, and ``Subreddit.submit_video``
+  support parameter ``spoiler`` to mark the submission as a spoiler immediately upon
+  posting.
+- ``Subreddit.submit_image`` and ``Subreddit.submit_video`` support parameter
+  ``timeout``. Default timeout has been raised from 2 seconds to 10 seconds.
 - Added parameter ``function_kwargs`` to :func:`.stream_generator` to pass additional
   kwargs to ``function``.
 
@@ -774,9 +771,8 @@ praw follows `semantic versioning <https://semver.org/>`_.
 - Add method :meth:`~.SubredditWidgetsModeration.reorder` to reorder a subreddit's
   widgets.
 - Add :class:`.Redditors` (``reddit.redditors``) to provide :class:`.Redditor` listings.
-- Add :meth:`~.Subreddit.submit_image` for submitting native images to Reddit.
-- Add :meth:`~.Subreddit.submit_video` for submitting native videos and videogifs to
-  Reddit.
+- Add ``Subreddit.submit_image`` for submitting native images to Reddit.
+- Add ``Subreddit.submit_video`` for submitting native videos and videogifs to Reddit.
 
 **Changed**
 

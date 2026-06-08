@@ -1793,10 +1793,10 @@ class SubredditWidgetsModeration:
         path = API_PATH["widget_order"].format(subreddit=self._subreddit, section=section)
         self._reddit.patch(path, data={"json": dumps(order), "section": section})
 
-    def upload_image(self, image_media: models.WidgetMedia, /) -> str:
+    def upload_image(self, media: models.WidgetMedia, /) -> str:
         """Upload an image to Reddit and get the URL.
 
-        :param image_media: The :class:`.WidgetMedia` to upload.
+        :param media: The :class:`.WidgetMedia` to upload.
 
         :returns: The URL of the uploaded image as a ``str``.
 
@@ -1819,4 +1819,4 @@ class SubredditWidgetsModeration:
             )
 
         """
-        return image_media._upload(self._subreddit)
+        return media._upload(self._subreddit)

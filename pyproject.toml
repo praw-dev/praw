@@ -71,6 +71,14 @@ requires-python = ">=3.10"
 "Issue Tracker" = "https://github.com/praw-dev/praw/issues"
 "Source Code" = "https://github.com/praw-dev/praw"
 
+[tool.coverage.report]
+exclude_lines = [
+  "@overload",
+  "if TYPE_CHECKING:",
+  "pragma: no cover"
+]
+fail_under = 100
+
 [tool.docstrfmt]
 extend_exclude = ['./docs/examples/']
 
@@ -186,7 +194,7 @@ runner = "uv-venv-lock-runner"
 [tool.tox.env_run_base]
 commands = [
   ["coverage", "run", "--source", "praw", "--module", "pytest", "{posargs}"],
-  ["coverage", "report", "-m", "--fail-under=100"]
+  ["coverage", "report", "-m"]
 ]
 dependency_groups = ["test"]
 description = "Run test under {base_python}"
