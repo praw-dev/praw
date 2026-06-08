@@ -51,6 +51,23 @@ class RedditorListingMixin(BaseListingMixin):
         return SubListing(self._reddit, self._path, "comments")
 
     @cachedproperty
+    def overview(self) -> SubListing:
+        r"""Provide an instance of :class:`.SubListing` for overview access.
+
+        The overview combines a Redditor's comments and submissions, mirroring the user
+        overview page on Reddit.
+
+        For example, to output the first line of all top items by u/spez try:
+
+        .. code-block:: python
+
+            for item in reddit.redditor("spez").overview.top(time_filter="all"):
+                print(str(item)[:79])
+
+        """
+        return SubListing(self._reddit, self._path, "overview")
+
+    @cachedproperty
     def submissions(self) -> SubListing:
         """Provide an instance of :class:`.SubListing` for submission access.
 

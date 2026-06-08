@@ -86,6 +86,10 @@ class TestRedditor(UnitTest):
 
 
 class TestRedditorListings(UnitTest):
+    def test_overview(self, reddit):
+        redditor = Redditor(reddit, name="spez")
+        assert redditor.overview._path == "user/spez/overview"
+
     def test__params_not_modified_in_mixed_listing(self, reddit):
         params = {"dummy": "value"}
         redditor = Redditor(reddit, name="spez")
