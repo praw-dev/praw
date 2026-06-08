@@ -7,11 +7,25 @@ from typing import TYPE_CHECKING
 from praw.const import API_PATH
 
 if TYPE_CHECKING:
+    from datetime import datetime
+
     from praw import models
 
 
 class EditableMixin:
     """Interface for classes that can be edited and deleted."""
+
+    @property
+    def edited_datetime(self) -> datetime | None:
+        """Return the last edit time as a timezone-aware :class:`datetime.datetime`.
+
+        Returns ``None`` if the object has never been edited. The returned object is
+        localized to the system's timezone.
+
+        """
+        if self.edited is False:
+            return None
+        return self._to_local_datetime(self.edited)
 
     def delete(self) -> None:
         """Delete the object.

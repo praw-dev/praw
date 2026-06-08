@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from praw.endpoints import API_PATH
 from praw.models.base import PRAWBase
+from praw.models.reddit.mixins import CreatedMixin
 
 
-class ModNote(PRAWBase):
+class ModNote(CreatedMixin, PRAWBase):
     """Represent a moderator note.
 
     .. include:: ../../typical_attributes.rst
@@ -44,6 +45,8 @@ class ModNote(PRAWBase):
     .. _unix time: https://en.wikipedia.org/wiki/Unix_time
 
     """
+
+    _created_at_attribute = "created_at"
 
     def __eq__(self, other: ModNote | str | object) -> bool:
         """Return whether the other instance equals the current."""

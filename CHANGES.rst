@@ -10,6 +10,15 @@ praw follows `semantic versioning <https://semver.org/>`_.
 
 **Added**
 
+- :attr:`~.Comment.created_datetime` to objects with a creation time (for example
+  :class:`.Comment`, :class:`.Submission`, :class:`.Redditor`, :class:`.Subreddit`,
+  :class:`.Collection`, and :class:`.ModNote`), returning a timezone-aware
+  :class:`datetime.datetime`.
+- :attr:`~.Collection.updated_datetime` to :class:`.Collection`,
+  :attr:`~.PollData.voting_end_datetime` to :class:`.PollData`, and
+  :attr:`~.Comment.edited_datetime` to :class:`.Comment` and :class:`.Submission`
+  (``None`` when the object has not been edited), all returning timezone-aware
+  :class:`datetime.datetime` objects.
 - Warn when a ``praw.ini`` in the current working directory sets the ``oauth_url`` or
   ``reddit_url`` endpoint, as such a file can redirect credentials to an untrusted host.
   The warning can be silenced by setting the ``PRAW_ALLOW_ENDPOINT_OVERRIDE``

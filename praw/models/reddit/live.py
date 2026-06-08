@@ -8,7 +8,7 @@ from praw.const import API_PATH
 from praw.models.list.redditor import RedditorList
 from praw.models.listing.generator import ListingGenerator
 from praw.models.reddit.base import RedditBase
-from praw.models.reddit.mixins import FullnameMixin
+from praw.models.reddit.mixins import CreatedMixin, FullnameMixin
 from praw.models.reddit.redditor import Redditor
 from praw.models.util import stream_generator
 from praw.util.cache import cachedproperty
@@ -259,7 +259,7 @@ class LiveContributorRelationship:
         self.thread._reddit.post(url, data=data)
 
 
-class LiveThread(RedditBase):
+class LiveThread(CreatedMixin, RedditBase):
     """An individual :class:`.LiveThread` object.
 
     .. include:: ../../typical_attributes.rst
@@ -697,7 +697,7 @@ class LiveUpdateContribution:
         self.update.thread._reddit.post(url, data=data)
 
 
-class LiveUpdate(FullnameMixin, RedditBase):
+class LiveUpdate(FullnameMixin, CreatedMixin, RedditBase):
     """An individual :class:`.LiveUpdate` object.
 
     .. include:: ../../typical_attributes.rst

@@ -8,12 +8,14 @@ from praw.const import API_PATH
 from praw.exceptions import ClientException
 from praw.models.base import PRAWBase
 from praw.models.reddit.base import RedditBase
+from praw.models.reddit.mixins import CreatedMixin
 from praw.models.reddit.submission import Submission
 from praw.models.reddit.subreddit import Subreddit
 from praw.util.cache import cachedproperty
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
+    from datetime import datetime
 
     import praw
     from praw import models
@@ -377,7 +379,7 @@ class SubredditCollections(PRAWBase):
         )
 
 
-class Collection(RedditBase):
+class Collection(CreatedMixin, RedditBase):
     """Class to represent a :class:`.Collection`.
 
     Obtain an instance via:
@@ -417,6 +419,7 @@ class Collection(RedditBase):
     """
 
     STR_FIELD = "collection_id"
+    _created_at_attribute = "created_at_utc"
 
     @cachedproperty
     def mod(self) -> CollectionModeration:
@@ -450,6 +453,15 @@ class Collection(RedditBase):
 
         """
         return next(self._reddit.info(fullnames=[self.subreddit_id]))
+
+    @property
+    def updated_datetime(self) -> datetime:
+        """Return the last update time as a timezone-aware :class:`datetime.datetime`.
+
+        The returned object is localized to the system's timezone.
+
+        """
+        return self._to_local_datetime(self.last_update_utc)
 
     def __init__(
         self,
