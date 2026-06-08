@@ -51,7 +51,7 @@ dependencies = [
   "prawcore >=3.0.2, <4",
   "typing-extensions; python_version <= '3.10'",
   "update_checker >=0.18",
-  "websocket-client >=0.54.0"
+  "websocket-client >=0.54.0, <2"
 ]
 dynamic = ["version", "description"]
 keywords = ["reddit", "api", "wrapper"]

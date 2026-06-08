@@ -9,6 +9,7 @@ from pathlib import Path
 from threading import Lock
 from types import MappingProxyType
 from typing import Any
+from warnings import warn
 
 from praw.exceptions import ClientException
 
@@ -66,8 +67,45 @@ class Config:
         if os_config_path is not None:
             locations.insert(0, str(os_config_path / "praw.ini"))
 
+        cls._warn_on_endpoint_override(interpolator_class)
         config.read(locations)
         cls.CONFIG = config
+
+    @staticmethod
+    def _warn_on_endpoint_override(interpolator_class: configparser.Interpolation | None) -> None:
+        """Warn if a ``praw.ini`` in the current directory overrides OAuth endpoints.
+
+        ``praw.ini`` is loaded from the current working directory, so a file planted
+        there can redirect ``oauth_url`` or ``reddit_url`` to an attacker-controlled
+        host and capture credentials. Legitimate configs almost never set these keys, so
+        surface a warning when they do.
+
+        The warning can be silenced by setting the ``PRAW_ALLOW_ENDPOINT_OVERRIDE``
+        environment variable. It is intentionally not a ``praw.ini`` option, as that
+        would let the planted file silence its own warning.
+
+        """
+        if os.getenv("PRAW_ALLOW_ENDPOINT_OVERRIDE"):
+            return
+        cwd_config_path = Path("praw.ini")
+        if not cwd_config_path.is_file():
+            return
+        cwd_config = configparser.ConfigParser(interpolation=interpolator_class)
+        try:
+            cwd_config.read(str(cwd_config_path))
+        except configparser.Error:
+            return  # A malformed file will be reported by the subsequent read.
+        keys_present = set(cwd_config.defaults())
+        for section in cwd_config.sections():
+            keys_present.update(cwd_config.options(section))
+        if (overridden := sorted({"oauth_url", "reddit_url"} & keys_present)):
+            warn(
+                f"The praw.ini in the current working directory ({cwd_config_path.resolve()})"
+                f" overrides the {' and '.join(overridden)} endpoint(s). Credentials will be"
+                " sent to the configured host. Remove this file or these keys if it is not"
+                " trusted.",
+                stacklevel=4,
+            )
 
     @property
     def short_url(self) -> str:

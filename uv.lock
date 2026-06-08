@@ -643,7 +643,7 @@ requires-dist = [
     { name = "prawcore", specifier = ">=3.0.2,<4" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
     { name = "update-checker", specifier = ">=0.18" },
-    { name = "websocket-client", specifier = ">=0.54.0" },
+    { name = "websocket-client", specifier = ">=0.54.0,<2" },
 ]
 
 [package.metadata.requires-dev]
