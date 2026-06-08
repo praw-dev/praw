@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2020-04-27T03:37:46",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2020-04-27T03:37:46",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&description=&kind=comment&r=<TEST_SUBREDDIT>&short_name=PRAW+Test+2&violation_reason=PRAW+Test+2"
-        },
+        "body": "api_type=json&description=&kind=comment&r=<TEST_SUBREDDIT>&short_name=PRAW+Test+2&violation_reason=PRAW+Test+2",
         "headers": {
           "Accept": [
             "*/*"
@@ -139,7 +132,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"json\": {\"errors\": [], \"data\": {\"rules\": \"[{\\\"kind\\\": \\\"comment\\\", \\\"description\\\": \\\"\\\", \\\"short_name\\\": \\\"PRAW Test 2\\\", \\\"violation_reason\\\": \\\"PRAW Test 2\\\", \\\"created_utc\\\": 1587987466.0, \\\"priority\\\": 5, \\\"description_html\\\": null}]\"}}}"
         },
         "headers": {
@@ -221,5 +213,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2020-04-27T03:37:46",
+  "version": 1
 }

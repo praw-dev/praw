@@ -160,7 +160,7 @@ please file a bug report.
 Adding and Updating Integration Tests
 =====================================
 
-PRAW's integration tests utilize Betamax_ to record an interaction with Reddit. The
+PRAW's integration tests utilize vcrpy_ to record an interaction with Reddit. The
 recorded interaction is then replayed for subsequent test runs.
 
 To safely record a cassette without leaking your account credentials, PRAW utilizes a
@@ -202,9 +202,9 @@ used.
   useful when you want to use a cassette that was recorded by another test.
 - ``@pytest.mark.recorder_kwargs``: Allows you to pass additional arguments to the
   recorder. This can be useful if you need to specify parameters for the
-  ``Betamax.use_cassette`` method. Like the ``add_placeholder`` marker, this marker can
-  be applied to a test class or individual test methods and can be applied multiple
-  times.
+  ``VCR.use_cassette`` method, such as ``match_on``. Like the ``add_placeholder``
+  marker, this marker can be applied to a test class or individual test methods and can
+  be applied multiple times.
 
 Examples:
 
@@ -212,11 +212,11 @@ Examples:
 
     @pytest.mark.recorder_kwargs(allow_playback_repeats=True)
     class TestClass:
-        @pytest.mark.recorder_kwargs(match_requests_on=["uri", "method", "body"])
+        @pytest.mark.recorder_kwargs(match_on=["uri", "method", "body"])
         def test_example(self): ...
 
         @pytest.mark.cassette_name("TestClass.test_example")
-        @pytest.mark.recorder_kwargs(match_requests_on=["uri", "method", "body"])
+        @pytest.mark.recorder_kwargs(match_on=["uri", "method", "body"])
         def test_example__different_assertion(self): ...
 
         @pytest.mark.add_placeholder(generated_data_a=generate_data_a())
@@ -269,8 +269,6 @@ for an example.
 
 Please also read the `Contributing Guidelines`_
 
-.. _betamax: https://betamax.readthedocs.io/en/latest
-
 .. _commit 280525c16ba28cdd69cdbb272a0e2764b1c7e6a0: https://github.com/praw-dev/praw/commit/280525c16ba28cdd69cdbb272a0e2764b1c7e6a0
 
 .. _contributing guidelines: https://github.com/praw-dev/praw/blob/main/.github/CONTRIBUTING.rst
@@ -282,3 +280,5 @@ Please also read the `Contributing Guidelines`_
 .. _r/python: https://www.reddit.com/r/python
 
 .. _uv: https://docs.astral.sh/uv/
+
+.. _vcrpy: https://vcrpy.readthedocs.io/en/latest

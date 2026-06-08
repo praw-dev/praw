@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2019-05-11T02:29:06",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2019-05-11T02:29:06",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&collection_id=847e4548-a3b5-4ad7-afb4-edbfc2ed0a6b&kind=self&nsfw=False&resubmit=True&sendreplies=True&spoiler=False&sr=<TEST_SUBREDDIT>&text=&title=The+title"
-        },
+        "body": "api_type=json&collection_id=847e4548-a3b5-4ad7-afb4-edbfc2ed0a6b&kind=self&nsfw=False&resubmit=True&sendreplies=True&spoiler=False&sr=<TEST_SUBREDDIT>&text=&title=The+title",
         "headers": {
           "Accept": [
             "*/*"
@@ -139,7 +132,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"json\": {\"errors\": [], \"data\": {\"url\": \"https://www.reddit.com/r/<TEST_SUBREDDIT>/comments/bn71kq/the_title/\", \"drafts_count\": 0, \"id\": \"bn71kq\", \"name\": \"t3_bn71kq\"}}}"
         },
         "headers": {
@@ -225,10 +217,7 @@
     {
       "recorded_at": "2019-05-11T02:29:06",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&collection_id=847e4548-a3b5-4ad7-afb4-edbfc2ed0a6b&link_fullname=t3_bn71kq"
-        },
+        "body": "api_type=json&collection_id=847e4548-a3b5-4ad7-afb4-edbfc2ed0a6b&link_fullname=t3_bn71kq",
         "headers": {
           "Accept": [
             "*/*"
@@ -260,7 +249,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"json\": {\"errors\": []}}"
         },
         "headers": {
@@ -342,5 +330,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2019-05-11T02:29:06",
+  "version": 1
 }

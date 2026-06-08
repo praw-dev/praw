@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2020-04-30T19:00:44",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2020-04-30T19:00:52",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -133,7 +126,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"data\": {\"14w04ir36i07n\": {\"message\": \"dfgfdsggergthh54hrt6eghtdehteg\", \"id\": \"14w04ir36i07n\", \"title\": \"bruh\"}, \"14w04i85r8i3x\": {\"message\": \"dgsdfgsdgdfgfdgsdg\", \"id\": \"14w04i85r8i3x\", \"title\": \"test\"}}, \"order\": [\"14w04i85r8i3x\", \"14w04ir36i07n\"]}"
         },
         "headers": {
@@ -215,10 +207,7 @@
     {
       "recorded_at": "2020-04-30T19:00:52",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&message=dfgfdsggergthh54hrt6eghtdehteg&title=bruh"
-        },
+        "body": "api_type=json&message=dfgfdsggergthh54hrt6eghtdehteg&title=bruh",
         "headers": {
           "Accept": [
             "*/*"
@@ -250,7 +239,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": ""
         },
         "headers": {
@@ -329,5 +317,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2020-04-30T19:00:44",
+  "version": 1
 }

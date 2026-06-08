@@ -169,7 +169,6 @@ class Reddit:
 
             import json
 
-            import betamax
             import requests
             from prawcore import Requestor
 
@@ -183,7 +182,7 @@ class Reddit:
                     return response
 
 
-            my_session = betamax.Betamax(requests.Session())
+            my_session = requests.Session()
             reddit = Reddit(
                 ..., requestor_class=JSONDebugRequestor, requestor_kwargs={"session": my_session}
             )

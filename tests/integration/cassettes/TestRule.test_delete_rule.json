@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2020-04-28T03:15:06",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2020-04-28T03:15:07",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -133,7 +126,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"rules\": [{\"kind\": \"comment\", \"description\": \"testing post rf\", \"short_name\": \"Test post 12\", \"violation_reason\": \"34\", \"created_utc\": 1587949210.0, \"priority\": 0, \"description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Etesting post rf\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\"}, {\"kind\": \"link\", \"description\": \"Updated rule\", \"short_name\": \"tesy all\", \"violation_reason\": \"PUpdate\", \"created_utc\": 1587969502.0, \"priority\": 1, \"description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EUpdated rule\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\"}, {\"kind\": \"all\", \"description\": \"\", \"short_name\": \"sdf\", \"violation_reason\": \"sdf\", \"created_utc\": 1587984896.0, \"priority\": 2}, {\"kind\": \"all\", \"description\": \"sdafdsafsdf\", \"short_name\": \"asdfasfsdaf\", \"violation_reason\": \"sdafdsaf\", \"created_utc\": 1588072423.0, \"priority\": 3, \"description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Esdafdsafsdf\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\"}, {\"kind\": \"all\", \"description\": \"fsdfsaf\", \"short_name\": \"asdfdasfsa\", \"violation_reason\": \"asdfdasfsa\", \"created_utc\": 1588072426.0, \"priority\": 4, \"description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Efsdfsaf\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\"}, {\"kind\": \"all\", \"description\": \"fsafsafd\", \"short_name\": \"asfasfsd\", \"violation_reason\": \"asfasfsd\", \"created_utc\": 1588072430.0, \"priority\": 5, \"description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Efsafsafd\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\"}], \"site_rules\": [\"Spam\", \"Personal and confidential information\", \"Threatening, harassing, or inciting violence\"], \"site_rules_flow\": [{\"reasonTextToShow\": \"This is spam\", \"reasonText\": \"This is spam\"}, {\"nextStepHeader\": \"In what way?\", \"reasonTextToShow\": \"This is abusive or harassing\", \"nextStepReasons\": [{\"nextStepHeader\": \"Who is the harassment targeted at?\", \"reasonTextToShow\": \"It's targeted harassment\", \"nextStepReasons\": [{\"reasonTextToShow\": \"At me\", \"reasonText\": \"It's targeted harassment at me\"}, {\"reasonTextToShow\": \"At someone else\", \"reasonText\": \"It's targeted harassment at someone else\"}], \"reasonText\": \"\"}, {\"nextStepHeader\": \"Who is the threat directed at?\", \"reasonTextToShow\": \"It threatens violence or physical harm\", \"nextStepReasons\": [{\"reasonTextToShow\": \"At me\", \"reasonText\": \"It threatens violence or physical harm at me\"}, {\"reasonTextToShow\": \"At someone else\", \"reasonText\": \"It threatens violence or physical harm at someone else\"}], \"reasonText\": \"\"}, {\"reasonTextToShow\": \"It's rude, vulgar or offensive\", \"reasonText\": \"It's rude, vulgar or offensive\"}, {\"reasonTextToShow\": \"It's abusing the report button\", \"canWriteNotes\": true, \"isAbuseOfReportButton\": true, \"notesInputTitle\": \"Additional information (optional)\", \"reasonText\": \"It's abusing the report button\"}], \"reasonText\": \"\"}, {\"nextStepHeader\": \"What issue?\", \"reasonTextToShow\": \"Other issues\", \"nextStepReasons\": [{\"complaintButtonText\": \"File a complaint\", \"complaintUrl\": \"https://www.reddit.com/api/report_redirect?thing=%25%28thing%29s\\u0026reason_code=COPYRIGHT\", \"complaintPageTitle\": \"File a complaint?\", \"reasonText\": \"It infringes my copyright\", \"reasonTextToShow\": \"It infringes my copyright\", \"fileComplaint\": true, \"complaintPrompt\": \"If you think content on Reddit violates your intellectual property, please file a complaint at the link below:\"}, {\"complaintButtonText\": \"File a complaint\", \"complaintUrl\": \"https://www.reddit.com/api/report_redirect?thing=%25%28thing%29s\\u0026reason_code=TRADEMARK\", \"complaintPageTitle\": \"File a complaint?\", \"reasonText\": \"It infringes my trademark rights\", \"reasonTextToShow\": \"It infringes my trademark rights\", \"fileComplaint\": true, \"complaintPrompt\": \"If you think content on Reddit violates your intellectual property, please file a complaint at the link below:\"}, {\"reasonTextToShow\": \"It's personal and confidential information\", \"reasonText\": \"It's personal and confidential information\"}, {\"reasonTextToShow\": \"It's sexual or suggestive content involving minors\", \"reasonText\": \"It's sexual or suggestive content involving minors\"}, {\"nextStepHeader\": \"Do you appear in the image?\", \"reasonTextToShow\": \"It's involuntary pornography\", \"nextStepReasons\": [{\"reasonTextToShow\": \"I appear in the image\", \"reasonText\": \"It's involuntary pornography and i appear in it\"}, {\"reasonTextToShow\": \"I do not appear in the image\", \"reasonText\": \"It's involuntary pornography and i do not appear in it\"}], \"reasonText\": \"\"}, {\"reasonTextToShow\": \"It's a transaction for prohibited goods or services\", \"reasonText\": \"It's a transaction for prohibited goods or services\"}, {\"complaintButtonText\": \"File a complaint\", \"complaintUrl\": \"https://www.reddit.com/api/report_redirect?thing=%25%28thing%29s\\u0026reason_code=NETZDG\", \"complaintPageTitle\": \"File a complaint?\", \"reasonText\": \"Report this content under NetzDG\", \"reasonTextToShow\": \"Report this content under NetzDG\", \"fileComplaint\": true, \"complaintPrompt\": \"This reporting procedure is only available for people in Germany. If you are in Germany and would like to report this content under the German Netzwerkdurchsetzungsgesetz (NetzDG) law you may file a complaint by clicking the link below.\"}, {\"usernamesInputTitle\": \"Username\", \"reasonTextToShow\": \"Someone is considering suicide or serious self-harm.\", \"canSpecifyUsernames\": true, \"reasonText\": \"Someone is considering suicide or serious self-harm.\", \"requestCrisisSupport\": true, \"oneUsername\": true}], \"reasonText\": \"\"}]}"
         },
         "headers": {
@@ -221,10 +213,7 @@
     {
       "recorded_at": "2020-04-28T03:15:07",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&r=<TEST_SUBREDDIT>&short_name=asfasfsd"
-        },
+        "body": "api_type=json&r=<TEST_SUBREDDIT>&short_name=asfasfsd",
         "headers": {
           "Accept": [
             "*/*"
@@ -256,7 +245,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"json\": {\"errors\": [], \"data\": {\"rules\": \"[{\\\"kind\\\": \\\"comment\\\", \\\"description\\\": \\\"testing post rf\\\", \\\"short_name\\\": \\\"Test post 12\\\", \\\"violation_reason\\\": \\\"34\\\", \\\"created_utc\\\": 1587949210.0, \\\"priority\\\": 0, \\\"description_html\\\": \\\"\\u003C!-- SC_OFF --\\u003E\\u003Cp\\u003Etesting post rf\\u003C/p\\u003E\\\\n\\u003C!-- SC_ON --\\u003E\\\"}, {\\\"kind\\\": \\\"link\\\", \\\"description\\\": \\\"Updated rule\\\", \\\"short_name\\\": \\\"tesy all\\\", \\\"violation_reason\\\": \\\"PUpdate\\\", \\\"created_utc\\\": 1587969502.0, \\\"priority\\\": 1, \\\"description_html\\\": \\\"\\u003C!-- SC_OFF --\\u003E\\u003Cp\\u003EUpdated rule\\u003C/p\\u003E\\\\n\\u003C!-- SC_ON --\\u003E\\\"}, {\\\"kind\\\": \\\"all\\\", \\\"description\\\": \\\"\\\", \\\"short_name\\\": \\\"sdf\\\", \\\"violation_reason\\\": \\\"sdf\\\", \\\"created_utc\\\": 1587984896.0, \\\"priority\\\": 2, \\\"description_html\\\": null}, {\\\"kind\\\": \\\"all\\\", \\\"description\\\": \\\"sdafdsafsdf\\\", \\\"short_name\\\": \\\"asdfasfsdaf\\\", \\\"violation_reason\\\": \\\"sdafdsaf\\\", \\\"created_utc\\\": 1588072423.0, \\\"priority\\\": 3, \\\"description_html\\\": \\\"\\u003C!-- SC_OFF --\\u003E\\u003Cp\\u003Esdafdsafsdf\\u003C/p\\u003E\\\\n\\u003C!-- SC_ON --\\u003E\\\"}, {\\\"kind\\\": \\\"all\\\", \\\"description\\\": \\\"fsdfsaf\\\", \\\"short_name\\\": \\\"asdfdasfsa\\\", \\\"created_utc\\\": 1588072426.0, \\\"priority\\\": 4, \\\"description_html\\\": \\\"\\u003C!-- SC_OFF --\\u003E\\u003Cp\\u003Efsdfsaf\\u003C/p\\u003E\\\\n\\u003C!-- SC_ON --\\u003E\\\"}]\"}}}"
         },
         "headers": {
@@ -343,10 +331,7 @@
     {
       "recorded_at": "2020-04-28T03:15:07",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -372,7 +357,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"rules\": [{\"kind\": \"comment\", \"description\": \"testing post rf\", \"short_name\": \"Test post 12\", \"violation_reason\": \"34\", \"created_utc\": 1587949210.0, \"priority\": 0, \"description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Etesting post rf\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\"}, {\"kind\": \"link\", \"description\": \"Updated rule\", \"short_name\": \"tesy all\", \"violation_reason\": \"PUpdate\", \"created_utc\": 1587969502.0, \"priority\": 1, \"description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EUpdated rule\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\"}, {\"kind\": \"all\", \"description\": \"\", \"short_name\": \"sdf\", \"violation_reason\": \"sdf\", \"created_utc\": 1587984896.0, \"priority\": 2}, {\"kind\": \"all\", \"description\": \"sdafdsafsdf\", \"short_name\": \"asdfasfsdaf\", \"violation_reason\": \"sdafdsaf\", \"created_utc\": 1588072423.0, \"priority\": 3, \"description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Esdafdsafsdf\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\"}, {\"kind\": \"all\", \"description\": \"fsdfsaf\", \"short_name\": \"asdfdasfsa\", \"violation_reason\": \"asdfdasfsa\", \"created_utc\": 1588072426.0, \"priority\": 4, \"description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Efsdfsaf\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\"}], \"site_rules\": [\"Spam\", \"Personal and confidential information\", \"Threatening, harassing, or inciting violence\"], \"site_rules_flow\": [{\"reasonTextToShow\": \"This is spam\", \"reasonText\": \"This is spam\"}, {\"nextStepHeader\": \"In what way?\", \"reasonTextToShow\": \"This is abusive or harassing\", \"nextStepReasons\": [{\"nextStepHeader\": \"Who is the harassment targeted at?\", \"reasonTextToShow\": \"It's targeted harassment\", \"nextStepReasons\": [{\"reasonTextToShow\": \"At me\", \"reasonText\": \"It's targeted harassment at me\"}, {\"reasonTextToShow\": \"At someone else\", \"reasonText\": \"It's targeted harassment at someone else\"}], \"reasonText\": \"\"}, {\"nextStepHeader\": \"Who is the threat directed at?\", \"reasonTextToShow\": \"It threatens violence or physical harm\", \"nextStepReasons\": [{\"reasonTextToShow\": \"At me\", \"reasonText\": \"It threatens violence or physical harm at me\"}, {\"reasonTextToShow\": \"At someone else\", \"reasonText\": \"It threatens violence or physical harm at someone else\"}], \"reasonText\": \"\"}, {\"reasonTextToShow\": \"It's rude, vulgar or offensive\", \"reasonText\": \"It's rude, vulgar or offensive\"}, {\"reasonTextToShow\": \"It's abusing the report button\", \"canWriteNotes\": true, \"isAbuseOfReportButton\": true, \"notesInputTitle\": \"Additional information (optional)\", \"reasonText\": \"It's abusing the report button\"}], \"reasonText\": \"\"}, {\"nextStepHeader\": \"What issue?\", \"reasonTextToShow\": \"Other issues\", \"nextStepReasons\": [{\"complaintButtonText\": \"File a complaint\", \"complaintUrl\": \"https://www.reddit.com/api/report_redirect?thing=%25%28thing%29s\\u0026reason_code=COPYRIGHT\", \"complaintPageTitle\": \"File a complaint?\", \"reasonText\": \"It infringes my copyright\", \"reasonTextToShow\": \"It infringes my copyright\", \"fileComplaint\": true, \"complaintPrompt\": \"If you think content on Reddit violates your intellectual property, please file a complaint at the link below:\"}, {\"complaintButtonText\": \"File a complaint\", \"complaintUrl\": \"https://www.reddit.com/api/report_redirect?thing=%25%28thing%29s\\u0026reason_code=TRADEMARK\", \"complaintPageTitle\": \"File a complaint?\", \"reasonText\": \"It infringes my trademark rights\", \"reasonTextToShow\": \"It infringes my trademark rights\", \"fileComplaint\": true, \"complaintPrompt\": \"If you think content on Reddit violates your intellectual property, please file a complaint at the link below:\"}, {\"reasonTextToShow\": \"It's personal and confidential information\", \"reasonText\": \"It's personal and confidential information\"}, {\"reasonTextToShow\": \"It's sexual or suggestive content involving minors\", \"reasonText\": \"It's sexual or suggestive content involving minors\"}, {\"nextStepHeader\": \"Do you appear in the image?\", \"reasonTextToShow\": \"It's involuntary pornography\", \"nextStepReasons\": [{\"reasonTextToShow\": \"I appear in the image\", \"reasonText\": \"It's involuntary pornography and i appear in it\"}, {\"reasonTextToShow\": \"I do not appear in the image\", \"reasonText\": \"It's involuntary pornography and i do not appear in it\"}], \"reasonText\": \"\"}, {\"reasonTextToShow\": \"It's a transaction for prohibited goods or services\", \"reasonText\": \"It's a transaction for prohibited goods or services\"}, {\"complaintButtonText\": \"File a complaint\", \"complaintUrl\": \"https://www.reddit.com/api/report_redirect?thing=%25%28thing%29s\\u0026reason_code=NETZDG\", \"complaintPageTitle\": \"File a complaint?\", \"reasonText\": \"Report this content under NetzDG\", \"reasonTextToShow\": \"Report this content under NetzDG\", \"fileComplaint\": true, \"complaintPrompt\": \"This reporting procedure is only available for people in Germany. If you are in Germany and would like to report this content under the German Netzwerkdurchsetzungsgesetz (NetzDG) law you may file a complaint by clicking the link below.\"}, {\"usernamesInputTitle\": \"Username\", \"reasonTextToShow\": \"Someone is considering suicide or serious self-harm.\", \"canSpecifyUsernames\": true, \"reasonText\": \"Someone is considering suicide or serious self-harm.\", \"requestCrisisSupport\": true, \"oneUsername\": true}], \"reasonText\": \"\"}]}"
         },
         "headers": {
@@ -457,5 +441,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2020-04-28T03:15:06",
+  "version": 1
 }

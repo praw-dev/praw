@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2021-06-15T09:17:06",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2021-06-15T09:17:08",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&id=t3_4s2idz&level=2"
-        },
+        "body": "api_type=json&id=t3_4s2idz&level=2",
         "headers": {
           "Accept": [
             "*/*"
@@ -139,7 +132,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{}"
         },
         "headers": {
@@ -215,10 +207,7 @@
     {
       "recorded_at": "2021-06-15T09:17:08",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -244,7 +233,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"kind\": \"Listing\", \"data\": {\"modhash\": null, \"dist\": null, \"children\": [{\"kind\": \"modaction\", \"data\": {\"description\": null, \"target_body\": \"Test\", \"mod_id36\": \"00000\", \"created_utc\": 1623748628.0, \"subreddit\": \"<TEST_SUBREDDIT>\", \"target_title\": \"Test Post\", \"target_permalink\": \"/r/<TEST_SUBREDDIT>/comments/4s2idz/test_post/\", \"subreddit_name_prefixed\": \"r/<TEST_SUBREDDIT>\", \"details\": \"medium\", \"action\": \"adjust_post_crowd_control_level\", \"target_author\": \"<USERNAME>\", \"target_fullname\": \"t3_4s2idz\", \"sr_id36\": \"000000\", \"id\": \"ModAction_d86f4c48-cdbc-11eb-86d7-3c7c3fec57d2\", \"mod\": \"<USERNAME>\"}}], \"after\": \"ModAction_d86f4c48-cdbc-11eb-86d7-3c7c3fec57d2\", \"before\": null}}"
         },
         "headers": {
@@ -318,5 +306,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2021-06-15T09:17:06",
+  "version": 1
 }

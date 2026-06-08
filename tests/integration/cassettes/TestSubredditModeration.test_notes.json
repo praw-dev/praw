@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2022-03-30T05:43:14",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -32,7 +29,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"mod_notes\": [{\"subreddit_id\": \"t5_3fib0\", \"operator_id\": \"t2_d0z23\", \"mod_action_data\": {\"action\": null, \"reddit_id\": null, \"details\": null, \"description\": null}, \"subreddit\": \"<TEST_SUBREDDIT>\", \"user\": \"Watchful1\", \"operator\": \"Watchful1\", \"id\": \"ModNote_853f9951-2f4f-4a7f-80ff-aa6aeb2c7a1e\", \"user_note_data\": {\"note\": \"praw_note 2\", \"reddit_id\": null, \"label\": null}, \"user_id\": \"t2_d0z23\", \"created_at\": 1648167599, \"type\": \"NOTE\"}, {\"subreddit_id\": \"t5_3fib0\", \"operator_id\": \"t2_d0z23\", \"mod_action_data\": {\"action\": null, \"reddit_id\": \"t3_tpbemz\", \"details\": null, \"description\": null}, \"subreddit\": \"<TEST_SUBREDDIT>\", \"user\": \"Watchful12\", \"operator\": \"Watchful1\", \"id\": \"ModNote_2af06395-cf36-4cdc-82fc-a19694e01234\", \"user_note_data\": {\"note\": \"test note\", \"reddit_id\": \"t3_tpbemz\", \"label\": null}, \"user_id\": \"t2_j3r75\", \"created_at\": 1648618694, \"type\": \"NOTE\"}, null]}"
         },
         "headers": {
@@ -106,10 +102,7 @@
     {
       "recorded_at": "2022-04-03T04:40:46",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>"
-        },
+        "body": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>",
         "headers": {
           "Accept": [
             "*/*"
@@ -138,7 +131,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"refresh_token\": \"<REFRESH_TOKEN>\", \"scope\": \"*\"}"
         },
         "headers": {
@@ -204,10 +196,7 @@
     {
       "recorded_at": "2022-04-03T04:40:46",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -233,7 +222,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"mod_notes\": [{\"subreddit_id\": \"t5_3fib0\", \"operator_id\": \"t2_d0z23\", \"mod_action_data\": {\"action\": null, \"reddit_id\": null, \"details\": null, \"description\": null}, \"subreddit\": \"<TEST_SUBREDDIT>\", \"user\": \"Watchful1\", \"operator\": \"Watchful1\", \"id\": \"ModNote_853f9951-2f4f-4a7f-80ff-aa6aeb2c7a1e\", \"user_note_data\": {\"note\": \"praw_note 2\", \"reddit_id\": null, \"label\": null}, \"user_id\": \"t2_d0z23\", \"created_at\": 1648167599, \"type\": \"NOTE\"}, {\"subreddit_id\": \"t5_3fib0\", \"operator_id\": \"t2_d0z23\", \"mod_action_data\": {\"action\": null, \"reddit_id\": \"t3_tpbemz\", \"details\": null, \"description\": null}, \"subreddit\": \"<TEST_SUBREDDIT>\", \"user\": \"Watchful12\", \"operator\": \"Watchful1\", \"id\": \"ModNote_f88e2a6c-3776-42c4-976b-7062ab1fba03\", \"user_note_data\": {\"note\": \"test note\", \"reddit_id\": \"t3_tpbemz\", \"label\": null}, \"user_id\": \"t2_j3r75\", \"created_at\": 1648620243, \"type\": \"NOTE\"}]}"
         },
         "headers": {
@@ -307,10 +295,7 @@
     {
       "recorded_at": "2022-04-03T04:40:46",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -336,7 +321,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"mod_notes\": [null]}"
         },
         "headers": {
@@ -403,5 +387,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2022-03-30T05:43:14",
+  "version": 1
 }

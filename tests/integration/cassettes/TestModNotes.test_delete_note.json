@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2022-03-30T05:21:45",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>"
-        },
+        "body": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"refresh_token\": \"<REFRESH_TOKEN>\", \"scope\": \"*\"}"
         },
         "headers": {
@@ -101,10 +97,7 @@
     {
       "recorded_at": "2022-03-30T05:21:45",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&note=test+note&subreddit=<TEST_SUBREDDIT>&user=pyapitestuser3"
-        },
+        "body": "api_type=json&note=test+note&subreddit=<TEST_SUBREDDIT>&user=pyapitestuser3",
         "headers": {
           "Accept": [
             "*/*"
@@ -136,7 +129,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"created\": {\"subreddit_id\": \"t5_3fib0\", \"operator_id\": \"t2_d0z23\", \"mod_action_data\": {\"action\": null, \"reddit_id\": null, \"details\": null, \"description\": null}, \"subreddit\": \"<TEST_SUBREDDIT>\", \"user\": \"PyAPITestUser3\", \"operator\": \"Watchful1\", \"id\": \"ModNote_3adc985d-cdbc-4fac-9ef0-7f8a79f31b53\", \"user_note_data\": {\"note\": \"test note\", \"reddit_id\": null, \"label\": null}, \"user_id\": \"t2_6c1xj\", \"created_at\": 1648617705, \"type\": \"NOTE\"}}"
         },
         "headers": {
@@ -206,10 +198,7 @@
     {
       "recorded_at": "2022-03-30T05:21:45",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -238,7 +227,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"deleted\": true}"
         },
         "headers": {
@@ -307,10 +295,7 @@
     {
       "recorded_at": "2022-03-30T05:21:46",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -336,7 +321,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"mod_notes\": [{\"subreddit_id\": \"t5_3fib0\", \"operator_id\": \"t2_d0z23\", \"mod_action_data\": {\"action\": null, \"reddit_id\": null, \"details\": null, \"description\": null}, \"subreddit\": \"<TEST_SUBREDDIT>\", \"user\": \"PyAPITestUser3\", \"operator\": \"Watchful1\", \"id\": \"ModNote_61c08792-a55a-4d34-87f0-075bbca01f3e\", \"user_note_data\": {\"note\": \"test note\", \"reddit_id\": null, \"label\": null}, \"user_id\": \"t2_6c1xj\", \"created_at\": 1648617670, \"cursor\": \"MTY0ODYxNzY3MDYyNA==\", \"type\": \"NOTE\"}, {\"subreddit_id\": \"t5_3fib0\", \"operator_id\": \"t2_d0z23\", \"mod_action_data\": {\"action\": null, \"reddit_id\": null, \"details\": null, \"description\": null}, \"subreddit\": \"<TEST_SUBREDDIT>\", \"user\": \"PyAPITestUser3\", \"operator\": \"Watchful1\", \"id\": \"ModNote_527a60dc-f7f6-4acb-b4c0-653c426230cb\", \"user_note_data\": {\"note\": \"test note\", \"reddit_id\": null, \"label\": null}, \"user_id\": \"t2_6c1xj\", \"created_at\": 1648617638, \"cursor\": \"MTY0ODYxNzYzODczOQ==\", \"type\": \"NOTE\"}, {\"subreddit_id\": \"t5_3fib0\", \"operator_id\": \"t2_d0z23\", \"mod_action_data\": {\"action\": null, \"reddit_id\": \"t3_tpbemz\", \"details\": null, \"description\": null}, \"subreddit\": \"<TEST_SUBREDDIT>\", \"user\": \"PyAPITestUser3\", \"operator\": \"Watchful1\", \"id\": \"ModNote_486a277b-c35e-48a7-b473-f37e38621257\", \"user_note_data\": {\"note\": \"test note\", \"reddit_id\": \"t3_tpbemz\", \"label\": \"HELPFUL_USER\"}, \"user_id\": \"t2_6c1xj\", \"created_at\": 1648441115, \"cursor\": \"MTY0ODQ0MTExNTM5Nw==\", \"type\": \"NOTE\"}, {\"subreddit_id\": \"t5_3fib0\", \"operator_id\": \"t2_d0z23\", \"mod_action_data\": {\"action\": null, \"reddit_id\": null, \"details\": null, \"description\": null}, \"subreddit\": \"<TEST_SUBREDDIT>\", \"user\": \"PyAPITestUser3\", \"operator\": \"Watchful1\", \"id\": \"ModNote_c085c0aa-1145-4e6b-9d74-07322bd77947\", \"user_note_data\": {\"note\": \"test note\", \"reddit_id\": null, \"label\": null}, \"user_id\": \"t2_6c1xj\", \"created_at\": 1648441055, \"cursor\": \"MTY0ODQ0MTA1NTg0MA==\", \"type\": \"NOTE\"}, {\"subreddit_id\": \"t5_3fib0\", \"operator_id\": \"t2_d0z23\", \"mod_action_data\": {\"action\": null, \"reddit_id\": null, \"details\": null, \"description\": null}, \"subreddit\": \"<TEST_SUBREDDIT>\", \"user\": \"PyAPITestUser3\", \"operator\": \"Watchful1\", \"id\": \"ModNote_fd62e7af-a06b-4701-8259-e554859b3c1c\", \"user_note_data\": {\"note\": \"test note\", \"reddit_id\": null, \"label\": null}, \"user_id\": \"t2_6c1xj\", \"created_at\": 1648441021, \"cursor\": \"MTY0ODQ0MTAyMTU3Mw==\", \"type\": \"NOTE\"}, {\"subreddit_id\": \"t5_3fib0\", \"operator_id\": \"t2_d0z23\", \"mod_action_data\": {\"action\": null, \"reddit_id\": null, \"details\": null, \"description\": null}, \"subreddit\": \"<TEST_SUBREDDIT>\", \"user\": \"PyAPITestUser3\", \"operator\": \"Watchful1\", \"id\": \"ModNote_19a53dcf-4281-4887-84d2-eb0890cccec0\", \"user_note_data\": {\"note\": \"test note 3\", \"reddit_id\": null, \"label\": null}, \"user_id\": \"t2_6c1xj\", \"created_at\": 1648440101, \"cursor\": \"MTY0ODQ0MDEwMTMyMg==\", \"type\": \"NOTE\"}, {\"subreddit_id\": \"t5_3fib0\", \"operator_id\": \"t2_d0z23\", \"mod_action_data\": {\"action\": null, \"reddit_id\": null, \"details\": null, \"description\": null}, \"subreddit\": \"<TEST_SUBREDDIT>\", \"user\": \"PyAPITestUser3\", \"operator\": \"Watchful1\", \"id\": \"ModNote_346e1bf5-8c73-4b4b-b952-e56b1d583ada\", \"user_note_data\": {\"note\": \"test note 2\", \"reddit_id\": null, \"label\": null}, \"user_id\": \"t2_6c1xj\", \"created_at\": 1648440085, \"cursor\": \"MTY0ODQ0MDA4NTAwNQ==\", \"type\": \"NOTE\"}, {\"subreddit_id\": \"t5_3fib0\", \"operator_id\": \"t2_d0z23\", \"mod_action_data\": {\"action\": null, \"reddit_id\": null, \"details\": null, \"description\": null}, \"subreddit\": \"<TEST_SUBREDDIT>\", \"user\": \"PyAPITestUser3\", \"operator\": \"Watchful1\", \"id\": \"ModNote_5e6920c8-faae-4751-82b0-59a536f6130d\", \"user_note_data\": {\"note\": \"test note 2\", \"reddit_id\": null, \"label\": null}, \"user_id\": \"t2_6c1xj\", \"created_at\": 1648439497, \"cursor\": \"MTY0ODQzOTQ5NzEwMg==\", \"type\": \"NOTE\"}, {\"subreddit_id\": \"t5_3fib0\", \"operator_id\": \"t2_d0z23\", \"mod_action_data\": {\"action\": null, \"reddit_id\": null, \"details\": null, \"description\": null}, \"subreddit\": \"<TEST_SUBREDDIT>\", \"user\": \"PyAPITestUser3\", \"operator\": \"Watchful1\", \"id\": \"ModNote_1fe5cdfa-45cf-4c34-b613-35b6044071f6\", \"user_note_data\": {\"note\": \"test note\", \"reddit_id\": null, \"label\": null}, \"user_id\": \"t2_6c1xj\", \"created_at\": 1648439326, \"cursor\": \"MTY0ODQzOTMyNjcxMw==\", \"type\": \"NOTE\"}, {\"subreddit_id\": \"t5_3fib0\", \"operator_id\": \"t2_d0z23\", \"mod_action_data\": {\"action\": null, \"reddit_id\": null, \"details\": null, \"description\": null}, \"subreddit\": \"<TEST_SUBREDDIT>\", \"user\": \"PyAPITestUser3\", \"operator\": \"Watchful1\", \"id\": \"ModNote_dc37a60d-4fc1-4a46-8d95-debbc014be46\", \"user_note_data\": {\"note\": \"test note\", \"reddit_id\": null, \"label\": null}, \"user_id\": \"t2_6c1xj\", \"created_at\": 1648439157, \"cursor\": \"MTY0ODQzOTE1NzkyMw==\", \"type\": \"NOTE\"}], \"start_cursor\": \"MTY0ODYxNzY3MDYyNA==\", \"end_cursor\": \"MTY0ODQzOTE1NzkyMw==\", \"has_next_page\": false}"
         },
         "headers": {
@@ -408,5 +392,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2022-03-30T05:21:45",
+  "version": 1
 }

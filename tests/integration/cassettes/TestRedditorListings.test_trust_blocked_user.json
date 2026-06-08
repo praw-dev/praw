@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2021-06-05T22:55:39",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2021-06-05T22:55:39",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json"
-        },
+        "body": "api_type=json",
         "headers": {
           "Accept": [
             "*/*"
@@ -139,7 +132,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"date\": 1622933739.0, \"icon_img\": \"https://styles.redditmedia.com/t5_3jgyq/styles/profileIcon_snoo55cb4e85-6b74-4219-9663-715859823828-headshot.png?width=256&height=256&crop=256:256,smart&s=41cc600375da6e0558114b762082c882d6e84138\", \"id\": \"t2_1wh0\", \"name\": \"kn0thing\"}"
         },
         "headers": {
@@ -215,10 +207,7 @@
     {
       "recorded_at": "2021-06-05T22:55:39",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&name=kn0thing"
-        },
+        "body": "api_type=json&name=kn0thing",
         "headers": {
           "Accept": [
             "*/*"
@@ -250,7 +239,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"json\": {\"errors\": [[\"CANT_WHITELIST_AN_ENEMY\", \"You can't add a blocked user as a trusted user.\", \"name\"]]}}"
         },
         "headers": {
@@ -323,5 +311,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2021-06-05T22:55:39",
+  "version": 1
 }

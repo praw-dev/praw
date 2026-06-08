@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2019-01-08T02:27:07",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2019-01-08T02:27:07",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -133,7 +126,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"items\": {\"widget_1293z8sbd0xrx\": {\"styles\": {\"headerColor\": \"#3333ee\", \"backgroundColor\": \"#ffff66\"}, \"kind\": \"textarea\", \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003E1\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"text\": \"1\", \"shortName\": \"1\", \"id\": \"widget_1293z8sbd0xrx\"}, \"widget_1293z8yvx3ts0\": {\"styles\": {\"headerColor\": \"#3333ee\", \"backgroundColor\": \"#ffff66\"}, \"kind\": \"textarea\", \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003E3\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"text\": \"3\", \"shortName\": \"3\", \"id\": \"widget_1293z8yvx3ts0\"}, \"widget_id-card-3nwlq\": {\"styles\": {\"headerColor\": \"\", \"backgroundColor\": \"\"}, \"kind\": \"id-card\", \"description\": \"for my own tests.\", \"subscribersText\": \"\", \"currentlyViewingCount\": 7, \"subscribersCount\": 1, \"currentlyViewingText\": \"\", \"shortName\": \"Where am I?\", \"id\": \"widget_id-card-3nwlq\"}, \"widget_moderators-3nwlq\": {\"styles\": {\"headerColor\": null, \"backgroundColor\": null}, \"kind\": \"moderators\", \"mods\": [{\"name\": \"throwaway_the_fourth\", \"authorFlairType\": \"text\", \"authorFlairTextColor\": \"dark\", \"authorFlairBackgroundColor\": \"\", \"authorFlairRichText\": [], \"authorFlairText\": null}, {\"name\": \"<USERNAME>\", \"authorFlairType\": \"richtext\", \"authorFlairTextColor\": \"dark\", \"authorFlairBackgroundColor\": \"#dadada\", \"authorFlairRichText\": [{\"a\": \":cake:\", \"u\": \"https://emoji.redditmedia.com/46kel8lf1guz_t5_3nqvj/cake\", \"e\": \"emoji\"}], \"authorFlairText\": \":cake:\"}], \"totalMods\": 2, \"id\": \"widget_moderators-3nwlq\"}, \"widget_rules-3nwlq\": {\"styles\": {\"headerColor\": null, \"backgroundColor\": null}, \"kind\": \"subreddit-rules\", \"display\": \"compact\", \"shortName\": \"rulezz\", \"data\": [{\"violationReason\": \"being bad one\", \"description\": \"This is a full description of rule 1\", \"createdUtc\": 1526467021.0, \"priority\": 0, \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThis is a full description of rule 1\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Rule 1\"}, {\"violationReason\": \"being bad two\", \"description\": \"This is a full description of rule 2\", \"createdUtc\": 1526467034.0, \"priority\": 1, \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThis is a full description of rule 2\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Rule 2\"}], \"id\": \"widget_rules-3nwlq\"}, \"widget_1293z8w5d3ewg\": {\"styles\": {\"headerColor\": \"#3333ee\", \"backgroundColor\": \"#ffff66\"}, \"kind\": \"textarea\", \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003E2\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"text\": \"2\", \"shortName\": \"2\", \"id\": \"widget_1293z8w5d3ewg\"}}, \"layout\": {\"idCardWidget\": \"widget_id-card-3nwlq\", \"topbar\": {\"order\": []}, \"sidebar\": {\"order\": [\"widget_rules-3nwlq\", \"widget_1293z8yvx3ts0\", \"widget_1293z8w5d3ewg\", \"widget_1293z8sbd0xrx\"]}, \"moderatorWidget\": \"widget_moderators-3nwlq\"}}"
         },
         "headers": {
@@ -214,10 +206,7 @@
     {
       "recorded_at": "2019-01-08T02:27:07",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&json=%5B%22widget_1293z8sbd0xrx%22%2C+%22widget_1293z8w5d3ewg%22%2C+%22widget_1293z8yvx3ts0%22%2C+%22widget_rules-3nwlq%22%5D&section=sidebar"
-        },
+        "body": "api_type=json&json=%5B%22widget_1293z8sbd0xrx%22%2C+%22widget_1293z8w5d3ewg%22%2C+%22widget_1293z8yvx3ts0%22%2C+%22widget_rules-3nwlq%22%5D&section=sidebar",
         "headers": {
           "Accept": [
             "*/*"
@@ -249,7 +238,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": ""
         },
         "headers": {
@@ -327,10 +315,7 @@
     {
       "recorded_at": "2019-01-08T02:27:07",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -356,7 +341,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"items\": {\"widget_1293z8sbd0xrx\": {\"styles\": {\"headerColor\": \"#3333ee\", \"backgroundColor\": \"#ffff66\"}, \"kind\": \"textarea\", \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003E1\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"text\": \"1\", \"shortName\": \"1\", \"id\": \"widget_1293z8sbd0xrx\"}, \"widget_1293z8yvx3ts0\": {\"styles\": {\"headerColor\": \"#3333ee\", \"backgroundColor\": \"#ffff66\"}, \"kind\": \"textarea\", \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003E3\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"text\": \"3\", \"shortName\": \"3\", \"id\": \"widget_1293z8yvx3ts0\"}, \"widget_id-card-3nwlq\": {\"styles\": {\"headerColor\": \"\", \"backgroundColor\": \"\"}, \"kind\": \"id-card\", \"description\": \"for my own tests.\", \"subscribersText\": \"\", \"currentlyViewingCount\": 7, \"subscribersCount\": 1, \"currentlyViewingText\": \"\", \"shortName\": \"Where am I?\", \"id\": \"widget_id-card-3nwlq\"}, \"widget_moderators-3nwlq\": {\"styles\": {\"headerColor\": null, \"backgroundColor\": null}, \"kind\": \"moderators\", \"mods\": [{\"name\": \"throwaway_the_fourth\", \"authorFlairType\": \"text\", \"authorFlairTextColor\": \"dark\", \"authorFlairBackgroundColor\": \"\", \"authorFlairRichText\": [], \"authorFlairText\": null}, {\"name\": \"<USERNAME>\", \"authorFlairType\": \"richtext\", \"authorFlairTextColor\": \"dark\", \"authorFlairBackgroundColor\": \"#dadada\", \"authorFlairRichText\": [{\"a\": \":cake:\", \"u\": \"https://emoji.redditmedia.com/46kel8lf1guz_t5_3nqvj/cake\", \"e\": \"emoji\"}], \"authorFlairText\": \":cake:\"}], \"totalMods\": 2, \"id\": \"widget_moderators-3nwlq\"}, \"widget_rules-3nwlq\": {\"styles\": {\"headerColor\": null, \"backgroundColor\": null}, \"kind\": \"subreddit-rules\", \"display\": \"compact\", \"shortName\": \"rulezz\", \"data\": [{\"violationReason\": \"being bad one\", \"description\": \"This is a full description of rule 1\", \"createdUtc\": 1526467021.0, \"priority\": 0, \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThis is a full description of rule 1\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Rule 1\"}, {\"violationReason\": \"being bad two\", \"description\": \"This is a full description of rule 2\", \"createdUtc\": 1526467034.0, \"priority\": 1, \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThis is a full description of rule 2\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Rule 2\"}], \"id\": \"widget_rules-3nwlq\"}, \"widget_1293z8w5d3ewg\": {\"styles\": {\"headerColor\": \"#3333ee\", \"backgroundColor\": \"#ffff66\"}, \"kind\": \"textarea\", \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003E2\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"text\": \"2\", \"shortName\": \"2\", \"id\": \"widget_1293z8w5d3ewg\"}}, \"layout\": {\"idCardWidget\": \"widget_id-card-3nwlq\", \"topbar\": {\"order\": []}, \"sidebar\": {\"order\": [\"widget_1293z8sbd0xrx\", \"widget_1293z8w5d3ewg\", \"widget_1293z8yvx3ts0\", \"widget_rules-3nwlq\"]}, \"moderatorWidget\": \"widget_moderators-3nwlq\"}}"
         },
         "headers": {
@@ -437,10 +421,7 @@
     {
       "recorded_at": "2019-01-08T02:27:08",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&json=%5B%22widget_rules-3nwlq%22%2C+%22widget_1293z8yvx3ts0%22%2C+%22widget_1293z8w5d3ewg%22%2C+%22widget_1293z8sbd0xrx%22%5D&section=sidebar"
-        },
+        "body": "api_type=json&json=%5B%22widget_rules-3nwlq%22%2C+%22widget_1293z8yvx3ts0%22%2C+%22widget_1293z8w5d3ewg%22%2C+%22widget_1293z8sbd0xrx%22%5D&section=sidebar",
         "headers": {
           "Accept": [
             "*/*"
@@ -472,7 +453,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": ""
         },
         "headers": {
@@ -550,10 +530,7 @@
     {
       "recorded_at": "2019-01-08T02:27:08",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -579,7 +556,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"items\": {\"widget_1293z8sbd0xrx\": {\"styles\": {\"headerColor\": \"#3333ee\", \"backgroundColor\": \"#ffff66\"}, \"kind\": \"textarea\", \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003E1\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"text\": \"1\", \"shortName\": \"1\", \"id\": \"widget_1293z8sbd0xrx\"}, \"widget_1293z8yvx3ts0\": {\"styles\": {\"headerColor\": \"#3333ee\", \"backgroundColor\": \"#ffff66\"}, \"kind\": \"textarea\", \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003E3\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"text\": \"3\", \"shortName\": \"3\", \"id\": \"widget_1293z8yvx3ts0\"}, \"widget_id-card-3nwlq\": {\"styles\": {\"headerColor\": \"\", \"backgroundColor\": \"\"}, \"kind\": \"id-card\", \"description\": \"for my own tests.\", \"subscribersText\": \"\", \"currentlyViewingCount\": 7, \"subscribersCount\": 1, \"currentlyViewingText\": \"\", \"shortName\": \"Where am I?\", \"id\": \"widget_id-card-3nwlq\"}, \"widget_moderators-3nwlq\": {\"styles\": {\"headerColor\": null, \"backgroundColor\": null}, \"kind\": \"moderators\", \"mods\": [{\"name\": \"throwaway_the_fourth\", \"authorFlairType\": \"text\", \"authorFlairTextColor\": \"dark\", \"authorFlairBackgroundColor\": \"\", \"authorFlairRichText\": [], \"authorFlairText\": null}, {\"name\": \"<USERNAME>\", \"authorFlairType\": \"richtext\", \"authorFlairTextColor\": \"dark\", \"authorFlairBackgroundColor\": \"#dadada\", \"authorFlairRichText\": [{\"a\": \":cake:\", \"u\": \"https://emoji.redditmedia.com/46kel8lf1guz_t5_3nqvj/cake\", \"e\": \"emoji\"}], \"authorFlairText\": \":cake:\"}], \"totalMods\": 2, \"id\": \"widget_moderators-3nwlq\"}, \"widget_rules-3nwlq\": {\"styles\": {\"headerColor\": null, \"backgroundColor\": null}, \"kind\": \"subreddit-rules\", \"display\": \"compact\", \"shortName\": \"rulezz\", \"data\": [{\"violationReason\": \"being bad one\", \"description\": \"This is a full description of rule 1\", \"createdUtc\": 1526467021.0, \"priority\": 0, \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThis is a full description of rule 1\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Rule 1\"}, {\"violationReason\": \"being bad two\", \"description\": \"This is a full description of rule 2\", \"createdUtc\": 1526467034.0, \"priority\": 1, \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThis is a full description of rule 2\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Rule 2\"}], \"id\": \"widget_rules-3nwlq\"}, \"widget_1293z8w5d3ewg\": {\"styles\": {\"headerColor\": \"#3333ee\", \"backgroundColor\": \"#ffff66\"}, \"kind\": \"textarea\", \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003E2\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"text\": \"2\", \"shortName\": \"2\", \"id\": \"widget_1293z8w5d3ewg\"}}, \"layout\": {\"idCardWidget\": \"widget_id-card-3nwlq\", \"topbar\": {\"order\": []}, \"sidebar\": {\"order\": [\"widget_rules-3nwlq\", \"widget_1293z8yvx3ts0\", \"widget_1293z8w5d3ewg\", \"widget_1293z8sbd0xrx\"]}, \"moderatorWidget\": \"widget_moderators-3nwlq\"}}"
         },
         "headers": {
@@ -660,10 +636,7 @@
     {
       "recorded_at": "2019-01-08T02:27:08",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&json=%5B%22widget_1293z8sbd0xrx%22%2C+%22widget_1293z8w5d3ewg%22%2C+%22widget_1293z8yvx3ts0%22%2C+%22widget_rules-3nwlq%22%5D&section=sidebar"
-        },
+        "body": "api_type=json&json=%5B%22widget_1293z8sbd0xrx%22%2C+%22widget_1293z8w5d3ewg%22%2C+%22widget_1293z8yvx3ts0%22%2C+%22widget_rules-3nwlq%22%5D&section=sidebar",
         "headers": {
           "Accept": [
             "*/*"
@@ -695,7 +668,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": ""
         },
         "headers": {
@@ -773,10 +745,7 @@
     {
       "recorded_at": "2019-01-08T02:27:08",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -802,7 +771,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"items\": {\"widget_1293z8sbd0xrx\": {\"styles\": {\"headerColor\": \"#3333ee\", \"backgroundColor\": \"#ffff66\"}, \"kind\": \"textarea\", \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003E1\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"text\": \"1\", \"shortName\": \"1\", \"id\": \"widget_1293z8sbd0xrx\"}, \"widget_1293z8yvx3ts0\": {\"styles\": {\"headerColor\": \"#3333ee\", \"backgroundColor\": \"#ffff66\"}, \"kind\": \"textarea\", \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003E3\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"text\": \"3\", \"shortName\": \"3\", \"id\": \"widget_1293z8yvx3ts0\"}, \"widget_id-card-3nwlq\": {\"styles\": {\"headerColor\": \"\", \"backgroundColor\": \"\"}, \"kind\": \"id-card\", \"description\": \"for my own tests.\", \"subscribersText\": \"\", \"currentlyViewingCount\": 7, \"subscribersCount\": 1, \"currentlyViewingText\": \"\", \"shortName\": \"Where am I?\", \"id\": \"widget_id-card-3nwlq\"}, \"widget_moderators-3nwlq\": {\"styles\": {\"headerColor\": null, \"backgroundColor\": null}, \"kind\": \"moderators\", \"mods\": [{\"name\": \"throwaway_the_fourth\", \"authorFlairType\": \"text\", \"authorFlairTextColor\": \"dark\", \"authorFlairBackgroundColor\": \"\", \"authorFlairRichText\": [], \"authorFlairText\": null}, {\"name\": \"<USERNAME>\", \"authorFlairType\": \"richtext\", \"authorFlairTextColor\": \"dark\", \"authorFlairBackgroundColor\": \"#dadada\", \"authorFlairRichText\": [{\"a\": \":cake:\", \"u\": \"https://emoji.redditmedia.com/46kel8lf1guz_t5_3nqvj/cake\", \"e\": \"emoji\"}], \"authorFlairText\": \":cake:\"}], \"totalMods\": 2, \"id\": \"widget_moderators-3nwlq\"}, \"widget_rules-3nwlq\": {\"styles\": {\"headerColor\": null, \"backgroundColor\": null}, \"kind\": \"subreddit-rules\", \"display\": \"compact\", \"shortName\": \"rulezz\", \"data\": [{\"violationReason\": \"being bad one\", \"description\": \"This is a full description of rule 1\", \"createdUtc\": 1526467021.0, \"priority\": 0, \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThis is a full description of rule 1\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Rule 1\"}, {\"violationReason\": \"being bad two\", \"description\": \"This is a full description of rule 2\", \"createdUtc\": 1526467034.0, \"priority\": 1, \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThis is a full description of rule 2\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Rule 2\"}], \"id\": \"widget_rules-3nwlq\"}, \"widget_1293z8w5d3ewg\": {\"styles\": {\"headerColor\": \"#3333ee\", \"backgroundColor\": \"#ffff66\"}, \"kind\": \"textarea\", \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003E2\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"text\": \"2\", \"shortName\": \"2\", \"id\": \"widget_1293z8w5d3ewg\"}}, \"layout\": {\"idCardWidget\": \"widget_id-card-3nwlq\", \"topbar\": {\"order\": []}, \"sidebar\": {\"order\": [\"widget_1293z8sbd0xrx\", \"widget_1293z8w5d3ewg\", \"widget_1293z8yvx3ts0\", \"widget_rules-3nwlq\"]}, \"moderatorWidget\": \"widget_moderators-3nwlq\"}}"
         },
         "headers": {
@@ -881,5 +849,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2019-01-08T02:27:07",
+  "version": 1
 }

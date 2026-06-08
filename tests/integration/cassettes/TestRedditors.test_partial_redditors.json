@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2020-01-22T07:03:23",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=client_credentials"
-        },
+        "body": "grant_type=client_credentials",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -107,10 +103,7 @@
     {
       "recorded_at": "2020-01-22T07:03:23",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -136,7 +129,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"t2_1w72\": {\"name\": \"spez\", \"created_utc\": 1118030400.0, \"link_karma\": 115239, \"comment_karma\": 692419, \"profile_img\": \"https://b.thumbs.redditmedia.com/d7Sw-O_AOlxEtKEeMTrH0xcy9LbLOy0j_KrWGbOFB9w.png\", \"profile_color\": \"\", \"profile_over_18\": false}, \"t2_4x25quk\": {\"name\": \"<USERNAME>\", \"created_utc\": 1498231550.0, \"link_karma\": 55, \"comment_karma\": 729, \"profile_img\": \"https://www.redditstatic.com/avatars/avatar_default_01_A5A4A4.png\", \"profile_color\": \"\", \"profile_over_18\": false}}"
         },
         "headers": {
@@ -213,5 +205,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2020-01-22T07:03:23",
+  "version": 1
 }

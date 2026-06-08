@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2020-01-19T22:48:47",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2020-01-19T22:48:48",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -133,7 +126,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "[{\"allowable_content\": \"all\", \"text\": \"PRAW updated\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#00ffff\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"css_class\": \"myCSS\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"PRAW updated\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"Test\", \"text_color\": \"light\", \"mod_only\": false, \"background_color\": \"#cc8b00\", \"id\": \"0be1ace4-2a75-11ea-8018-0ecef10bc461\", \"css_class\": \"sdgdsgdfg\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"Test\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"c35e4e9e-2c01-11ea-8f5b-0e0a652f3127\", \"css_class\": \"safd\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"test\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"sd\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"c6770634-2c0b-11ea-b2c4-0eb2086522d7\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"sd\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"test_2343432423434234\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9f4aed66-2c31-11ea-83ce-0e82e83845bb\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"test_2343432423434234\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"19c3c7e8-2c32-11ea-8f52-0e9efc12a42d\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"0c697326-2c33-11ea-a8a2-0e2c4841c615\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"411e3a8e-2c33-11ea-8867-0ecb0295a08f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-6272344502281197854\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"1caba762-2c34-11ea-9ce7-0ee91a3979a3\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"test_-6272344502281197854\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"test_-5907897697623735472\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"4f5c14ee-2c34-11ea-9619-0e0e030ac6b1\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"test_-5907897697623735472\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"test_4334785974679089788\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9522e976-2c34-11ea-8cbe-0ed81bd53a3f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"test_4334785974679089788\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"0c5566e0-2c35-11ea-b4fa-0e34689a2fff\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"test_7400363879098893801\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"38141cd6-2c3a-11ea-bcfd-0ead7f7cca81\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"test_7400363879098893801\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"test124\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"f93339d8-2ce4-11ea-9877-0ece4d97dd21\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"test124\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}]"
         },
         "headers": {
@@ -221,10 +213,7 @@
     {
       "recorded_at": "2020-01-19T22:48:48",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -250,7 +239,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "[{\"allowable_content\": \"all\", \"text\": \"PRAW updated\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#00ffff\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"css_class\": \"myCSS\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"PRAW updated\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"Test\", \"text_color\": \"light\", \"mod_only\": false, \"background_color\": \"#cc8b00\", \"id\": \"0be1ace4-2a75-11ea-8018-0ecef10bc461\", \"css_class\": \"sdgdsgdfg\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"Test\"}], \"text_editable\": true, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"c35e4e9e-2c01-11ea-8f5b-0e0a652f3127\", \"css_class\": \"safd\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"test\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"sd\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"c6770634-2c0b-11ea-b2c4-0eb2086522d7\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"sd\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"test_2343432423434234\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9f4aed66-2c31-11ea-83ce-0e82e83845bb\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"test_2343432423434234\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"19c3c7e8-2c32-11ea-8f52-0e9efc12a42d\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"0c697326-2c33-11ea-a8a2-0e2c4841c615\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"411e3a8e-2c33-11ea-8867-0ecb0295a08f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-6272344502281197854\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"1caba762-2c34-11ea-9ce7-0ee91a3979a3\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"test_-6272344502281197854\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"test_-5907897697623735472\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"4f5c14ee-2c34-11ea-9619-0e0e030ac6b1\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"test_-5907897697623735472\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"test_4334785974679089788\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9522e976-2c34-11ea-8cbe-0ed81bd53a3f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"test_4334785974679089788\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"0c5566e0-2c35-11ea-b4fa-0e34689a2fff\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"test_7400363879098893801\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"38141cd6-2c3a-11ea-bcfd-0ead7f7cca81\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"test_7400363879098893801\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}, {\"allowable_content\": \"all\", \"text\": \"test124\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"f93339d8-2ce4-11ea-9877-0ece4d97dd21\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [{\"e\": \"text\", \"t\": \"test124\"}], \"text_editable\": false, \"override_css\": false, \"type\": \"richtext\"}]"
         },
         "headers": {
@@ -337,10 +325,7 @@
     {
       "recorded_at": "2020-01-19T22:48:48",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "allowable_content=all&api_type=json&background_color=%2300FFFF&css_class=myCSS&flair_template_id=488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf&max_emojis=10&mod_only=False&text=PRAW+updated&text_color=dark&text_editable=False"
-        },
+        "body": "allowable_content=all&api_type=json&background_color=%2300FFFF&css_class=myCSS&flair_template_id=488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf&max_emojis=10&mod_only=False&text=PRAW+updated&text_color=dark&text_editable=False",
         "headers": {
           "Accept": [
             "*/*"
@@ -372,7 +357,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"text\": \"PRAW updated\", \"allowableContent\": \"all\", \"modOnly\": false, \"cssClass\": \"myCSS\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"textEditable\": false, \"overrideCss\": false, \"richtext\": [{\"e\": \"text\", \"t\": \"PRAW updated\"}], \"maxEmojis\": 10, \"flairType\": \"USER_FLAIR\", \"backgroundColor\": \"#00ffff\", \"textColor\": \"dark\", \"type\": \"richtext\"}"
         },
         "headers": {
@@ -454,5 +438,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2020-01-19T22:48:47",
+  "version": 1
 }

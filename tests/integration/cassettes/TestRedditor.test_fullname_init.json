@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2019-11-20T05:35:08",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2019-11-20T05:35:09",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -133,7 +126,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"t2_6c1xj\": {\"name\": \"PyAPITestUser3\", \"created_utc\": 1322552953.0, \"link_karma\": 0, \"comment_karma\": 0, \"profile_img\": \"https://www.redditstatic.com/avatars/avatar_default_12_FFB000.png\", \"profile_color\": \"\", \"profile_over_18\": false}}"
         },
         "headers": {
@@ -219,10 +211,7 @@
     {
       "recorded_at": "2019-11-20T05:35:09",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -248,7 +237,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"kind\": \"t2\", \"data\": {\"is_employee\": false, \"icon_img\": \"https://www.redditstatic.com/avatars/avatar_default_12_FFB000.png\", \"pref_show_snoovatar\": false, \"name\": \"PyAPITestUser3\", \"is_friend\": false, \"created\": 1322581753.0, \"has_subscribed\": true, \"hide_from_robots\": false, \"created_utc\": 1322552953.0, \"link_karma\": 1, \"comment_karma\": 0, \"is_gold\": false, \"is_mod\": false, \"verified\": true, \"subreddit\": {\"default_set\": true, \"user_is_contributor\": false, \"banner_img\": \"\", \"restrict_posting\": true, \"user_is_banned\": false, \"free_form_reports\": true, \"community_icon\": \"\", \"show_media\": true, \"icon_color\": \"#FFB000\", \"user_is_muted\": false, \"display_name\": \"u_PyAPITestUser3\", \"header_img\": null, \"title\": \"\", \"over_18\": false, \"icon_size\": [256, 256], \"primary_color\": \"\", \"icon_img\": \"https://www.redditstatic.com/avatars/avatar_default_12_FFB000.png\", \"description\": \"\", \"submit_link_label\": \"\", \"header_size\": null, \"restrict_commenting\": false, \"subscribers\": 0, \"submit_text_label\": \"\", \"is_default_icon\": true, \"link_flair_position\": \"\", \"display_name_prefixed\": \"u/PyAPITestUser3\", \"key_color\": \"\", \"name\": \"t5_b43nd\", \"is_default_banner\": true, \"url\": \"/user/PyAPITestUser3/\", \"banner_size\": null, \"user_is_moderator\": false, \"public_description\": \"\", \"link_flair_enabled\": false, \"disable_contributor_requests\": false, \"subreddit_type\": \"user\", \"user_is_subscriber\": false}, \"has_verified_email\": true, \"id\": \"6c1xj\"}}"
         },
         "headers": {
@@ -333,5 +321,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2019-11-20T05:35:08",
+  "version": 1
 }

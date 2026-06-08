@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2019-01-09T08:03:42",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2019-01-09T08:03:42",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -133,7 +126,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"items\": {\"widget_rules-3nwlq\": {\"styles\": {\"headerColor\": \"#ccac2b\", \"backgroundColor\": \"#007373\"}, \"kind\": \"subreddit-rules\", \"display\": \"full\", \"shortName\": \"Subreddit Rules\", \"data\": [{\"violationReason\": \"being bad one\", \"description\": \"This is a full description of rule 1\", \"createdUtc\": 1526467021.0, \"priority\": 0, \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThis is a full description of rule 1\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Rule 1\"}, {\"violationReason\": \"being bad two\", \"description\": \"This is a full description of rule 2\", \"createdUtc\": 1526467034.0, \"priority\": 1, \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThis is a full description of rule 2\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Rule 2\"}], \"id\": \"widget_rules-3nwlq\"}, \"widget_id-card-3nwlq\": {\"styles\": {\"headerColor\": \"\", \"backgroundColor\": \"\"}, \"kind\": \"id-card\", \"description\": \"for my own tests.\", \"subscribersText\": \"Loyal readers\", \"currentlyViewingCount\": 8, \"subscribersCount\": 1, \"currentlyViewingText\": \"Users here NOW!\", \"shortName\": \"Where am I?\", \"id\": \"widget_id-card-3nwlq\"}, \"widget_moderators-3nwlq\": {\"styles\": {\"headerColor\": \"#407bee\", \"backgroundColor\": \"#bababa\"}, \"kind\": \"moderators\", \"mods\": [{\"name\": \"throwaway_the_fourth\", \"authorFlairType\": \"text\", \"authorFlairTextColor\": \"dark\", \"authorFlairBackgroundColor\": \"\", \"authorFlairRichText\": [], \"authorFlairText\": null}, {\"name\": \"<USERNAME>\", \"authorFlairType\": \"richtext\", \"authorFlairTextColor\": \"dark\", \"authorFlairBackgroundColor\": \"#dadada\", \"authorFlairRichText\": [{\"a\": \":cake:\", \"u\": \"https://emoji.redditmedia.com/46kel8lf1guz_t5_3nqvj/cake\", \"e\": \"emoji\"}], \"authorFlairText\": \":cake:\"}], \"totalMods\": 2, \"id\": \"widget_moderators-3nwlq\"}}, \"layout\": {\"idCardWidget\": \"widget_id-card-3nwlq\", \"topbar\": {\"order\": []}, \"sidebar\": {\"order\": [\"widget_rules-3nwlq\", \"widget_moderators-3nwlq\"]}, \"moderatorWidget\": \"widget_moderators-3nwlq\"}}"
         },
         "headers": {
@@ -214,10 +206,7 @@
     {
       "recorded_at": "2019-01-09T08:03:43",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&json=%7B%22id%22%3A+%22widget_rules-3nwlq%22%2C+%22styles%22%3A+%7B%22backgroundColor%22%3A+%22%23fedcba%22%2C+%22headerColor%22%3A+%22%23012345%22%7D%2C+%22kind%22%3A+%22subreddit-rules%22%2C+%22display%22%3A+%22compact%22%2C+%22shortName%22%3A+%22Our+regulations%22%2C+%22data%22%3A+%5B%7B%22violationReason%22%3A+%22being+bad+one%22%2C+%22description%22%3A+%22This+is+a+full+description+of+rule+1%22%2C+%22createdUtc%22%3A+1526467021.0%2C+%22priority%22%3A+0%2C+%22descriptionHtml%22%3A+%22%3C%21--+SC_OFF+--%3E%3Cdiv+class%3D%5C%22md%5C%22%3E%3Cp%3EThis+is+a+full+description+of+rule+1%3C%2Fp%3E%5Cn%3C%2Fdiv%3E%3C%21--+SC_ON+--%3E%22%2C+%22shortName%22%3A+%22Rule+1%22%7D%2C+%7B%22violationReason%22%3A+%22being+bad+two%22%2C+%22description%22%3A+%22This+is+a+full+description+of+rule+2%22%2C+%22createdUtc%22%3A+1526467034.0%2C+%22priority%22%3A+1%2C+%22descriptionHtml%22%3A+%22%3C%21--+SC_OFF+--%3E%3Cdiv+class%3D%5C%22md%5C%22%3E%3Cp%3EThis+is+a+full+description+of+rule+2%3C%2Fp%3E%5Cn%3C%2Fdiv%3E%3C%21--+SC_ON+--%3E%22%2C+%22shortName%22%3A+%22Rule+2%22%7D%5D%7D"
-        },
+        "body": "api_type=json&json=%7B%22id%22%3A+%22widget_rules-3nwlq%22%2C+%22styles%22%3A+%7B%22backgroundColor%22%3A+%22%23fedcba%22%2C+%22headerColor%22%3A+%22%23012345%22%7D%2C+%22kind%22%3A+%22subreddit-rules%22%2C+%22display%22%3A+%22compact%22%2C+%22shortName%22%3A+%22Our+regulations%22%2C+%22data%22%3A+%5B%7B%22violationReason%22%3A+%22being+bad+one%22%2C+%22description%22%3A+%22This+is+a+full+description+of+rule+1%22%2C+%22createdUtc%22%3A+1526467021.0%2C+%22priority%22%3A+0%2C+%22descriptionHtml%22%3A+%22%3C%21--+SC_OFF+--%3E%3Cdiv+class%3D%5C%22md%5C%22%3E%3Cp%3EThis+is+a+full+description+of+rule+1%3C%2Fp%3E%5Cn%3C%2Fdiv%3E%3C%21--+SC_ON+--%3E%22%2C+%22shortName%22%3A+%22Rule+1%22%7D%2C+%7B%22violationReason%22%3A+%22being+bad+two%22%2C+%22description%22%3A+%22This+is+a+full+description+of+rule+2%22%2C+%22createdUtc%22%3A+1526467034.0%2C+%22priority%22%3A+1%2C+%22descriptionHtml%22%3A+%22%3C%21--+SC_OFF+--%3E%3Cdiv+class%3D%5C%22md%5C%22%3E%3Cp%3EThis+is+a+full+description+of+rule+2%3C%2Fp%3E%5Cn%3C%2Fdiv%3E%3C%21--+SC_ON+--%3E%22%2C+%22shortName%22%3A+%22Rule+2%22%7D%5D%7D",
         "headers": {
           "Accept": [
             "*/*"
@@ -249,7 +238,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"styles\": {\"headerColor\": \"#012345\", \"backgroundColor\": \"#fedcba\"}, \"kind\": \"subreddit-rules\", \"id\": \"widget_rules-3nwlq\", \"shortName\": \"Our regulations\", \"display\": \"compact\"}"
         },
         "headers": {
@@ -325,5 +313,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2019-01-09T08:03:42",
+  "version": 1
 }
