@@ -28,6 +28,9 @@ praw follows `semantic versioning <https://semver.org/>`_.
 
 - Constrain the ``websocket-client`` dependency to ``<2`` to avoid silently adopting a
   future, potentially breaking, major release.
+- Require ``update_checker >=1.0, <2.0`` and call ``update_check`` with keyword
+  arguments. The 1.0 release is dependency-free, dropping ``requests`` from PRAW's
+  transitive dependencies.
 
 ***********************
  8.0.0rc2 (2026/06/08)

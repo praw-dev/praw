@@ -424,7 +424,7 @@ class Reddit:
         if UPDATE_CHECKER_MISSING:
             return
         if not Reddit.update_checked and self.config.check_for_updates:
-            update_check(__package__, __version__)
+            update_check(package_name=__package__, package_version=__version__)
             Reddit.update_checked = True
 
     def _handle_rate_limit(self, exception: RedditAPIException) -> int | float | None:
