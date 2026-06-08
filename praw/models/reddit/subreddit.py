@@ -8,7 +8,7 @@ from csv import writer
 from io import StringIO
 from json import dumps, loads
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, overload
 from urllib.parse import urljoin
 
 import websocket
@@ -2931,6 +2931,119 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         except Redirect as redirect:
             path = redirect.path
         return self._submission_class(self._reddit, url=urljoin(self._reddit.config.reddit_url, path))
+
+    @overload
+    def submit(
+        self,
+        title: str,
+        *,
+        collection_id: str | None = ...,
+        discussion_type: str | None = ...,
+        draft_id: str | None = ...,
+        flair_id: str | None = ...,
+        flair_text: str | None = ...,
+        inline_media: dict[str, models.InlineMedia] | None = ...,
+        nsfw: bool = ...,
+        resubmit: bool = ...,
+        selftext: str,
+        send_replies: bool = ...,
+        spoiler: bool = ...,
+    ) -> models.Submission:
+        ...
+
+    @overload
+    def submit(
+        self,
+        title: str,
+        *,
+        collection_id: str | None = ...,
+        discussion_type: str | None = ...,
+        draft_id: str | None = ...,
+        flair_id: str | None = ...,
+        flair_text: str | None = ...,
+        nsfw: bool = ...,
+        resubmit: bool = ...,
+        selftext: str | None = ...,
+        send_replies: bool = ...,
+        spoiler: bool = ...,
+        url: str,
+    ) -> models.Submission:
+        ...
+
+    @overload
+    def submit(
+        self,
+        title: str,
+        *,
+        collection_id: str | None = ...,
+        discussion_type: str | None = ...,
+        flair_id: str | None = ...,
+        flair_text: str | None = ...,
+        image: models.PostMedia,
+        nsfw: bool = ...,
+        resubmit: bool = ...,
+        selftext: str | None = ...,
+        send_replies: bool = ...,
+        spoiler: bool = ...,
+        timeout: int = ...,
+        without_websockets: bool = ...,
+    ) -> models.Submission | None:
+        ...
+
+    @overload
+    def submit(
+        self,
+        title: str,
+        *,
+        collection_id: str | None = ...,
+        discussion_type: str | None = ...,
+        flair_id: str | None = ...,
+        flair_text: str | None = ...,
+        gallery: list[models.PostMedia | dict[str, str | models.PostMedia]],
+        nsfw: bool = ...,
+        selftext: str | None = ...,
+        send_replies: bool = ...,
+        spoiler: bool = ...,
+    ) -> models.Submission:
+        ...
+
+    @overload
+    def submit(
+        self,
+        title: str,
+        *,
+        collection_id: str | None = ...,
+        discussion_type: str | None = ...,
+        flair_id: str | None = ...,
+        flair_text: str | None = ...,
+        nsfw: bool = ...,
+        poll: dict[str, int | list[str]],
+        resubmit: bool = ...,
+        selftext: str | None = ...,
+        send_replies: bool = ...,
+        spoiler: bool = ...,
+    ) -> models.Submission:
+        ...
+
+    @overload
+    def submit(
+        self,
+        title: str,
+        *,
+        collection_id: str | None = ...,
+        discussion_type: str | None = ...,
+        flair_id: str | None = ...,
+        flair_text: str | None = ...,
+        nsfw: bool = ...,
+        resubmit: bool = ...,
+        selftext: str | None = ...,
+        send_replies: bool = ...,
+        spoiler: bool = ...,
+        timeout: int = ...,
+        video: models.PostMedia | dict[str, bool | models.PostMedia],
+        without_websockets: bool = ...,
+    ) -> models.Submission | None:
+        ...
 
     def submit(
         self,
