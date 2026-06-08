@@ -61,7 +61,7 @@ class TestSubredditEmoji(IntegrationTest):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         for extension in ["jpg", "png"]:
             emoji = subreddit.emoji.add(
-                emoji_media=EmojiMedia(f"tests/integration/files/test.{extension}"),
+                media=EmojiMedia(f"tests/integration/files/test.{extension}"),
                 name=f"test_{extension}",
             )
             assert isinstance(emoji, Emoji)
@@ -74,7 +74,7 @@ class TestSubredditEmoji(IntegrationTest):
             with open(f"tests/integration/files/test.{extension}", "rb") as file:
                 media_bytes = file.read()
             emoji = subreddit.emoji.add(
-                emoji_media=EmojiMedia(media_bytes, name=f"test.{extension}"),
+                media=EmojiMedia(media_bytes, name=f"test.{extension}"),
                 name=f"test_{extension}",
             )
             assert isinstance(emoji, Emoji)
@@ -84,7 +84,7 @@ class TestSubredditEmoji(IntegrationTest):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         for extension in ["jpg", "png"]:
             emoji = subreddit.emoji.add(
-                emoji_media=EmojiMedia(f"tests/integration/files/test.{extension}"),
+                media=EmojiMedia(f"tests/integration/files/test.{extension}"),
                 mod_flair_only=True,
                 name=f"test_{extension}",
                 post_flair_allowed=True,

@@ -43,7 +43,7 @@ class TestWikiPageModeration(IntegrationTest):
 
         reddit.read_only = False
         subreddit.stylesheet.upload(
-            image_media=StylesheetImage("tests/integration/files/icon.jpg"),
+            StylesheetImage("tests/integration/files/icon.jpg"),
             name="css-revert-fail",
         )
         page.edit(content="div {background: url(%%css-revert-fail%%)}")

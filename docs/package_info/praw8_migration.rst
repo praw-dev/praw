@@ -35,86 +35,6 @@ uploading:
     media_from_path = PostMedia("/path/to/image.png")
     media_from_bytes = PostMedia(image_bytes, "image.png")
 
-Submitting an image
-===================
-
-All arguments to :meth:`.Subreddit.submit_image`, including ``title``, must now be
-passed by keyword.
-
-Old:
-
-.. code-block:: python
-    :class: code-old
-
-    reddit.subreddit("test").submit_image("My Title", "/path/to/image.png")
-
-New:
-
-.. code-block:: python
-
-    from praw.models import PostMedia
-
-    reddit.subreddit("test").submit_image(
-        image_media=PostMedia("/path/to/image.png"), title="My Title"
-    )
-
-Submitting a video
-==================
-
-All arguments to :meth:`.Subreddit.submit_video`, including ``title``, must now be
-passed by keyword.
-
-Old:
-
-.. code-block:: python
-    :class: code-old
-
-    reddit.subreddit("test").submit_video(
-        "My Title", "/path/to/video.mp4", thumbnail_path="/path/to/thumbnail.png"
-    )
-
-New:
-
-.. code-block:: python
-
-    from praw.models import PostMedia
-
-    reddit.subreddit("test").submit_video(
-        thumbnail_media=PostMedia("/path/to/thumbnail.png"),
-        title="My Title",
-        video_media=PostMedia("/path/to/video.mp4"),
-    )
-
-Submitting a gallery
-====================
-
-The ``image_path`` key in the ``images`` dictionaries passed to
-:meth:`.Subreddit.submit_gallery` has been replaced by ``image_media``. All arguments,
-including ``title`` and ``images``, must now be passed by keyword.
-
-Old:
-
-.. code-block:: python
-    :class: code-old
-
-    images = [
-        {"image_path": "/path/to/image.png"},
-        {"image_path": "/path/to/image2.png", "caption": "a caption"},
-    ]
-    reddit.subreddit("test").submit_gallery("My Title", images)
-
-New:
-
-.. code-block:: python
-
-    from praw.models import PostMedia
-
-    images = [
-        {"image_media": PostMedia("/path/to/image.png")},
-        {"image_media": PostMedia("/path/to/image2.png"), "caption": "a caption"},
-    ]
-    reddit.subreddit("test").submit_gallery(images=images, title="My Title")
-
 Inline media
 ============
 
@@ -143,7 +63,7 @@ Emoji
 =====
 
 The ``image_path`` argument to :meth:`.SubredditEmoji.add` has been replaced by
-``emoji_media``, which takes an :class:`.EmojiMedia` instance.
+``media``, which takes an :class:`.EmojiMedia` instance.
 
 Old:
 
@@ -158,19 +78,18 @@ New:
 
     from praw.models import EmojiMedia
 
-    reddit.subreddit("test").emoji.add(emoji_media=EmojiMedia("emoji.png"), name="emoji")
+    reddit.subreddit("test").emoji.add(media=EmojiMedia("emoji.png"), name="emoji")
 
 Stylesheet images
 =================
 
 The ``image_path`` arguments to the :class:`.SubredditStylesheet` ``upload_*`` methods
-have been replaced by ``image_media``. :meth:`.SubredditStylesheet.upload`,
-:meth:`.upload_header`, :meth:`.upload_mobile_header`, and :meth:`.upload_mobile_icon`
-take a :class:`.StylesheetImage` instance, while :meth:`.upload_banner`,
+have been replaced by ``media``, which must be passed positionally.
+:meth:`.SubredditStylesheet.upload`, :meth:`.upload_header`,
+:meth:`.upload_mobile_header`, and :meth:`.upload_mobile_icon` take a
+:class:`.StylesheetImage` instance, while :meth:`.upload_banner`,
 :meth:`.upload_banner_additional_image`, :meth:`.upload_banner_hover_image`, and
-:meth:`.upload_mobile_banner` take a :class:`.StylesheetAsset` instance. Other than
-:meth:`.SubredditStylesheet.upload`, the ``image_media`` argument must be passed
-positionally.
+:meth:`.upload_mobile_banner` take a :class:`.StylesheetAsset` instance.
 
 Old:
 
@@ -188,15 +107,15 @@ New:
     from praw.models import StylesheetAsset, StylesheetImage
 
     stylesheet = reddit.subreddit("test").stylesheet
-    stylesheet.upload(image_media=StylesheetImage("img.png"), name="smile")
+    stylesheet.upload(StylesheetImage("img.png"), name="smile")
     stylesheet.upload_banner(StylesheetAsset("banner.png"))
 
 Widget images
 =============
 
 The ``file_path`` argument to :meth:`.SubredditWidgetsModeration.upload_image` has been
-replaced by ``image_media``, which takes a :class:`.WidgetMedia` instance and must be
-passed positionally.
+replaced by ``media``, which takes a :class:`.WidgetMedia` instance and must be passed
+positionally.
 
 Old:
 
@@ -224,6 +143,135 @@ Other media upload changes
   ``prawcore.RequestException`` on transport errors, consistent with all other requests.
   Code that caught raw ``requests`` exceptions around media uploads should catch
   ``prawcore.RequestException`` instead.
+
+***************************
+ Unified ``submit`` method
+***************************
+
+``Subreddit.submit_gallery``, ``Subreddit.submit_image``, ``Subreddit.submit_poll``, and
+``Subreddit.submit_video`` have been merged into :meth:`.Subreddit.submit`. The kind of
+submission is selected with the ``gallery``, ``image``, ``poll``, ``url``, or ``video``
+keyword argument. At least one of those, or ``selftext``, must be provided, and they are
+mutually exclusive, while ``selftext`` may accompany any of them as optional
+Markdown-formatted body text.
+
+Submitting an image
+===================
+
+Old:
+
+.. code-block:: python
+    :class: code-old
+
+    reddit.subreddit("test").submit_image("My Title", "/path/to/image.png")
+
+New:
+
+.. code-block:: python
+
+    from praw.models import PostMedia
+
+    reddit.subreddit("test").submit("My Title", image=PostMedia("/path/to/image.png"))
+
+Submitting a video
+==================
+
+Video-specific options, such as a custom thumbnail or submitting the video as a
+videogif, are provided by passing a ``dict`` instead of a bare :class:`.PostMedia`.
+
+Old:
+
+.. code-block:: python
+    :class: code-old
+
+    reddit.subreddit("test").submit_video(
+        "My Title", "/path/to/video.mp4", thumbnail_path="/path/to/thumbnail.png"
+    )
+
+New:
+
+.. code-block:: python
+
+    from praw.models import PostMedia
+
+    reddit.subreddit("test").submit(
+        "My Title",
+        video={
+            "media": PostMedia("/path/to/video.mp4"),
+            "thumbnail": PostMedia("/path/to/thumbnail.png"),
+        },
+    )
+
+The ``videogif`` argument is now the ``"gif"`` key of the ``video`` dict:
+
+Old:
+
+.. code-block:: python
+    :class: code-old
+
+    reddit.subreddit("test").submit_video("My Title", "/path/to/video.mp4", videogif=True)
+
+New:
+
+.. code-block:: python
+
+    from praw.models import PostMedia
+
+    reddit.subreddit("test").submit(
+        "My Title", video={"gif": True, "media": PostMedia("/path/to/video.mp4")}
+    )
+
+Submitting a gallery
+====================
+
+Gallery items are either a bare :class:`.PostMedia`, or a ``dict`` with a ``media`` key
+(replacing ``image_path``) when a ``caption`` or ``outbound_url`` is desired.
+
+Old:
+
+.. code-block:: python
+    :class: code-old
+
+    images = [
+        {"image_path": "/path/to/image.png"},
+        {"image_path": "/path/to/image2.png", "caption": "a caption"},
+    ]
+    reddit.subreddit("test").submit_gallery("My Title", images)
+
+New:
+
+.. code-block:: python
+
+    from praw.models import PostMedia
+
+    gallery = [
+        PostMedia("/path/to/image.png"),
+        {"caption": "a caption", "media": PostMedia("/path/to/image2.png")},
+    ]
+    reddit.subreddit("test").submit("My Title", gallery=gallery)
+
+Submitting a poll
+=================
+
+The ``options`` and ``duration`` arguments are now keys of the ``poll`` dict.
+``selftext`` is no longer required for polls.
+
+Old:
+
+.. code-block:: python
+    :class: code-old
+
+    reddit.subreddit("test").submit_poll(
+        "Do you like PRAW?", duration=3, options=["Yes", "No"], selftext=""
+    )
+
+New:
+
+.. code-block:: python
+
+    reddit.subreddit("test").submit(
+        "Do you like PRAW?", poll={"duration": 3, "options": ["Yes", "No"]}
+    )
 
 *********************************
  ``user.me()`` in read-only mode
@@ -277,9 +325,8 @@ New:
 
 The ``selftext`` and ``url`` arguments to :meth:`.Subreddit.submit` are no longer
 mutually exclusive. When ``url`` is provided, ``selftext`` is used as optional
-Markdown-formatted body text to accompany the link submission.
-:meth:`.Subreddit.submit_image`, :meth:`.Subreddit.submit_video`, and
-:meth:`.Subreddit.submit_gallery` also accept an optional ``selftext`` parameter.
+Markdown-formatted body text to accompany the link submission. The same applies to
+``gallery``, ``image``, ``poll``, and ``video`` submissions.
 
 One exception: combining ``inline_media`` with ``selftext`` for a ``url`` submission
 raises an exception, because Reddit does not support inline media in body text for link
