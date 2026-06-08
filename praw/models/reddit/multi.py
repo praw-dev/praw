@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any
 from praw.const import API_PATH
 from praw.models.listing.mixins import SubredditListingMixin
 from praw.models.reddit.base import RedditBase
+from praw.models.reddit.mixins import CreatedMixin
 from praw.models.reddit.redditor import Redditor
 from praw.models.reddit.subreddit import Subreddit, SubredditStream
 from praw.util import cachedproperty
@@ -18,7 +19,7 @@ if TYPE_CHECKING:
     from praw import models
 
 
-class Multireddit(SubredditListingMixin, RedditBase):
+class Multireddit(SubredditListingMixin, CreatedMixin, RedditBase):
     r"""A class for users' multireddits.
 
     This is referred to as a "Custom Feed" on the Reddit UI.

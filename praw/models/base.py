@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
@@ -24,6 +25,19 @@ class PRAWBase:
         value = deepcopy(arguments[key]) if key in arguments else {}
         value.update(new_arguments)
         arguments[key] = value
+
+    @staticmethod
+    def _to_local_datetime(timestamp: float) -> datetime:
+        """Return ``timestamp`` as a timezone-aware :class:`datetime.datetime`.
+
+        :param timestamp: A `Unix Time`_ value, in seconds.
+
+        The returned object is localized to the system's timezone.
+
+        .. _unix time: https://en.wikipedia.org/wiki/Unix_time
+
+        """
+        return datetime.fromtimestamp(timestamp, tz=timezone.utc).astimezone()
 
     @classmethod
     def parse(cls, data: dict[str, Any], reddit: praw.Reddit) -> PRAWBase:

@@ -8,6 +8,7 @@ from urllib.parse import quote
 from praw.const import API_PATH
 from praw.exceptions import ClientException
 from praw.models.reddit.base import RedditBase
+from praw.models.reddit.mixins import CreatedMixin
 from praw.util import cachedproperty
 
 if TYPE_CHECKING:
@@ -17,7 +18,7 @@ if TYPE_CHECKING:
     from praw import models
 
 
-class Rule(RedditBase):
+class Rule(CreatedMixin, RedditBase):
     """An individual :class:`.Rule` object.
 
     .. include:: ../../typical_attributes.rst

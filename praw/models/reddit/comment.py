@@ -9,6 +9,7 @@ from praw.exceptions import ClientException, InvalidURL
 from praw.models.comment_forest import CommentForest
 from praw.models.reddit.base import RedditBase
 from praw.models.reddit.mixins import (
+    CreatedMixin,
     FullnameMixin,
     InboxableMixin,
     ThingModerationMixin,
@@ -22,7 +23,7 @@ if TYPE_CHECKING:
     from praw import models
 
 
-class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
+class Comment(InboxableMixin, UserContentMixin, FullnameMixin, CreatedMixin, RedditBase):
     """A class that represents a Reddit comment.
 
     .. include:: ../../typical_attributes.rst

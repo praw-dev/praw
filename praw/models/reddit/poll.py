@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from praw.models.base import PRAWBase
 from praw.util import cachedproperty
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 
 class PollOption(PRAWBase):
@@ -85,6 +88,15 @@ class PollData(PRAWBase):
         if self._user_selection is None:
             return None
         return self.option(self._user_selection)
+
+    @property
+    def voting_end_datetime(self) -> datetime:
+        """Return the poll's closing time as a timezone-aware :class:`datetime.datetime`.
+
+        The returned object is localized to the system's timezone.
+
+        """
+        return self._to_local_datetime(self.voting_end_timestamp / 1000)
 
     def __setattr__(self, attribute: str, value: Any) -> None:
         """Objectify the options attribute, and save user_selection."""

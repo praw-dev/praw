@@ -26,7 +26,7 @@ from praw.models.listing.mixins import SubredditListingMixin
 from praw.models.media import PostMedia
 from praw.models.reddit.base import RedditBase
 from praw.models.reddit.emoji import SubredditEmoji
-from praw.models.reddit.mixins import FullnameMixin, MessageableMixin
+from praw.models.reddit.mixins import CreatedMixin, FullnameMixin, MessageableMixin
 from praw.models.reddit.modmail import ModmailConversation
 from praw.models.reddit.removal_reasons import SubredditRemovalReasons
 from praw.models.reddit.rules import SubredditRules
@@ -2238,7 +2238,7 @@ class ModeratorRelationship(SubredditRelationship):
         self.subreddit._reddit.post(url, data=data)
 
 
-class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBase):
+class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, CreatedMixin, RedditBase):
     """A class for Subreddits.
 
     To obtain an instance of this class for r/test execute:

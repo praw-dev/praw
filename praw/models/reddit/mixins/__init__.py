@@ -6,6 +6,7 @@ from json import dumps
 from typing import TYPE_CHECKING, Optional
 
 from praw.const import API_PATH
+from praw.models.reddit.mixins.created import CreatedMixin
 from praw.models.reddit.mixins.editable import EditableMixin
 from praw.models.reddit.mixins.fullname import FullnameMixin
 from praw.models.reddit.mixins.inboxable import InboxableMixin

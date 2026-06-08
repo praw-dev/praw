@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any
 from praw.const import API_PATH
 from praw.models.listing.mixins import RedditorListingMixin
 from praw.models.reddit.base import RedditBase
-from praw.models.reddit.mixins import FullnameMixin, MessageableMixin
+from praw.models.reddit.mixins import CreatedMixin, FullnameMixin, MessageableMixin
 from praw.models.util import stream_generator
 from praw.util.cache import cachedproperty
 
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from praw import models
 
 
-class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase):
+class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, CreatedMixin, RedditBase):
     """A class representing the users of Reddit.
 
     .. include:: ../../typical_attributes.rst
