@@ -2,6 +2,8 @@
 
 from collections import namedtuple
 
+import pytest
+
 from praw.models.util import (
     BoundedSet,
     ExponentialCounter,
@@ -156,3 +158,42 @@ class TestStream(UnitTest):
             thing = next(stream)
             assert thing not in seen
             seen.add(thing)
+
+    def test_stream__exception_handler(self, monkeypatch):
+        monkeypatch.setattr("praw.models.util.time.sleep", lambda *_: None)
+        Thing = namedtuple("Thing", ["fullname"])
+        handled = []
+        responses = [RuntimeError("boom"), [Thing(1)], [Thing(2)]]
+
+        def generate(limit, **kwargs):
+            response = responses.pop(0)
+            if isinstance(response, Exception):
+                raise response
+            return response
+
+        stream = stream_generator(generate, exception_handler=handled.append)
+        # The first fetch raises and is handled; the stream then resumes and keeps
+        # yielding new items on subsequent iterations.
+        assert next(stream).fullname == 1
+        assert next(stream).fullname == 2
+        assert len(handled) == 1
+        assert str(handled[0]) == "boom"
+
+    def test_stream__exception_handler__reraise(self):
+        def generate(limit, **kwargs):
+            raise RuntimeError("boom")
+
+        def handler(exception):
+            raise exception
+
+        stream = stream_generator(generate, exception_handler=handler)
+        with pytest.raises(RuntimeError):
+            next(stream)
+
+    def test_stream__exception_propagates_without_handler(self):
+        def generate(limit, **kwargs):
+            raise RuntimeError("boom")
+
+        stream = stream_generator(generate)
+        with pytest.raises(RuntimeError):
+            next(stream)

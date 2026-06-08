@@ -39,6 +39,7 @@ def stream_generator(
     attribute_name: str = "fullname",
     continue_after_id: str | None = None,
     exclude_before: bool = False,
+    exception_handler: Callable[[Exception], None] | None = None,
     pause_after: int | None = None,
     skip_existing: bool = False,
     **function_kwargs: Any,
@@ -50,6 +51,12 @@ def stream_generator(
     :param attribute_name: The field to use as an ID (default: ``"fullname"``).
     :param exclude_before: When ``True`` does not pass ``params`` to ``function``
         (default: ``False``).
+    :param exception_handler: A callable that is invoked with the exception raised while
+        fetching items, instead of letting it propagate and terminate the stream. After
+        the handler returns, the stream waits (using the same exponential backoff
+        applied to empty responses) and then resumes. To stop the stream, re-raise the
+        exception (or raise a new one) from within the handler. When ``None``,
+        exceptions propagate and terminate the stream as before (default: ``None``).
     :param pause_after: An integer representing the number of requests that result in no
         new items before this function yields ``None``, effectively introducing a pause
         into the stream. A negative value yields ``None`` after items from a single
@@ -121,6 +128,31 @@ def stream_generator(
                 continue
             print(comment)
 
+    To keep a stream alive across transient errors (e.g., network issues or server
+    errors) rather than having it terminate, pass an ``exception_handler``:
+
+    .. code-block:: python
+
+        def log_exception(exception):
+            print(f"Stream error, retrying: {exception}")
+
+
+        subreddit = reddit.subreddit("test")
+        for comment in subreddit.stream.comments(exception_handler=log_exception):
+            print(comment)
+
+    The handler can stop the stream for errors it considers fatal by re-raising:
+
+    .. code-block:: python
+
+        from prawcore.exceptions import Forbidden
+
+
+        def handle_exception(exception):
+            if isinstance(exception, Forbidden):
+                raise exception
+            print(f"Stream error, retrying: {exception}")
+
     """
     before_attribute = continue_after_id
     exponential_counter = ExponentialCounter(max_counter=16)
@@ -137,7 +169,15 @@ def stream_generator(
             without_before_counter = (without_before_counter + 1) % 30
         if not exclude_before:
             function_kwargs["params"] = {"before": before_attribute}
-        for item in reversed(list(function(limit=limit, **function_kwargs))):
+        try:
+            items = list(function(limit=limit, **function_kwargs))
+        except Exception as exception:
+            if exception_handler is None:
+                raise
+            exception_handler(exception)
+            time.sleep(exponential_counter.counter())
+            continue
+        for item in reversed(items):
             attribute = getattr(item, attribute_name)
             if attribute in seen_attributes:
                 continue
