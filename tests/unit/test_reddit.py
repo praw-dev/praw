@@ -61,7 +61,7 @@ class TestReddit(UnitTest):
     def test_check_for_updates(self, mock_update_check):
         Reddit(check_for_updates="1", **self.REQUIRED_DUMMY_SETTINGS)
         assert Reddit.update_checked
-        mock_update_check.assert_called_with("praw", __version__)
+        mock_update_check.assert_called_with(package_name="praw", package_version=__version__)
 
     @mock.patch("praw.reddit.UPDATE_CHECKER_MISSING", True)
     @mock.patch("praw.reddit.Reddit.update_checked", False)

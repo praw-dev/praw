@@ -642,7 +642,7 @@ requires-dist = [
     { name = "defusedxml", specifier = "==0.7.1" },
     { name = "prawcore", specifier = ">=3.0.2,<4" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
-    { name = "update-checker", specifier = ">=0.18" },
+    { name = "update-checker", specifier = ">=1.0,<2.0" },
     { name = "websocket-client", specifier = ">=0.54.0,<2" },
 ]
 
@@ -1236,14 +1236,11 @@ wheels = [
 
 [[package]]
 name = "update-checker"
-version = "0.18.0"
+version = "1.0.0"
 source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "requests" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/5c/0b/1bec4a6cc60d33ce93d11a7bcf1aeffc7ad0aa114986073411be31395c6f/update_checker-0.18.0.tar.gz", hash = "sha256:6a2d45bb4ac585884a6b03f9eade9161cedd9e8111545141e9aa9058932acb13", size = 6699, upload-time = "2020-08-04T07:08:50.429Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/92/0d/cdf2a0bc53f2b0b85a9cc7a81d0c5fa666dc140d26a1797ddf8ce4a24d0d/update_checker-1.0.0.tar.gz", hash = "sha256:bfcac66414572a82a98ea8c8633bf1ce5d102750e3b93469b89b30aa845cd1d7", size = 9600, upload-time = "2026-06-08T07:08:20.799Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0c/ba/8dd7fa5f0b1c6a8ac62f8f57f7e794160c1f86f31c6d0fb00f582372a3e4/update_checker-0.18.0-py3-none-any.whl", hash = "sha256:cbba64760a36fe2640d80d85306e8fe82b6816659190993b7bdabadee4d4bbfd", size = 7008, upload-time = "2020-08-04T07:08:49.51Z" },
+    { url = "https://files.pythonhosted.org/packages/51/f5/a264987b052d61c172d23eec92935480535fd32e45357bd6557fa2c687d5/update_checker-1.0.0-py3-none-any.whl", hash = "sha256:5837640948ff21820ba3ea881fb4bed5abefb39037895c6447f5e712236d60c6", size = 10618, upload-time = "2026-06-08T07:08:19.782Z" },
 ]
 
 [[package]]
