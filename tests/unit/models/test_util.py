@@ -162,20 +162,18 @@ class TestStream(UnitTest):
     def test_stream__exception_handler(self, monkeypatch):
         monkeypatch.setattr("praw.models.util.time.sleep", lambda *_: None)
         Thing = namedtuple("Thing", ["fullname"])
-        things = [Thing(n) for n in reversed(range(100))]
-        counter = 99
         handled = []
+        fail_next = [True]
 
         def generate(limit, **kwargs):
-            nonlocal counter
-            counter += 1
-            if counter == 100:
+            if fail_next[0]:
+                fail_next[0] = False
                 raise RuntimeError("boom")
-            return [Thing(counter)] + things[:-1]
+            return [Thing(1)]
 
         stream = stream_generator(generate, exception_handler=handled.append)
         thing = next(stream)
-        assert thing is not None
+        assert thing.fullname == 1
         assert len(handled) == 1
         assert str(handled[0]) == "boom"
 
