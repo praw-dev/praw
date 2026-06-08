@@ -20,12 +20,10 @@ lint = [
   {include-group = "docs"}
 ]
 test = [
-  "betamax >=0.9, <0.10",
-  "betamax-matchers >=0.3.0, <0.5",
   "coverage>=7.6.10",
   "pytest >=2.7.3",
   "requests >=2.20.1, <3",
-  "urllib3 ==1.26.*, <2"
+  "vcrpy >=7.0.0"
 ]
 
 [project]

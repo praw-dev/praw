@@ -58,7 +58,7 @@ to the person asking the question.
 8. Ensure that your code change has complete test coverage. Tests on methods that do not
    require fetching data from Reddit, e.g., method argument validation, should be saved
    as a unit test. Tests that hit Reddit's servers will be an integration test and all
-   network activity will be recorded via Betamax. The required packages are included in
+   network activity will be recorded via vcrpy. The required packages are included in
    the development dependencies.
 9. Feel free to check on the status of your pull request periodically by adding a
    comment.

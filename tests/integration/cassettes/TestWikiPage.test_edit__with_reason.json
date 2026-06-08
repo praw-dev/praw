@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2021-05-01T23:45:00",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -92,10 +88,7 @@
     {
       "recorded_at": "2021-05-01T23:45:01",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&content=PRAW+updated+with+reason&page=test&reason=PRAW+testing"
-        },
+        "body": "api_type=json&content=PRAW+updated+with+reason&page=test&reason=PRAW+testing",
         "headers": {
           "Accept": [
             "*/*"
@@ -127,7 +120,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{}"
         },
         "headers": {
@@ -198,5 +190,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2021-05-01T23:45:00",
+  "version": 1
 }

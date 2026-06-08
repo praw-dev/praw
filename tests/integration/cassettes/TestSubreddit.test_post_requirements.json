@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2020-02-10T00:53:04",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2020-02-10T00:53:05",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -133,7 +126,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"domain_blacklist\": [\"fakewebsite.com\"], \"body_restriction_policy\": \"none\", \"domain_whitelist\": [], \"title_regexes\": [], \"body_blacklisted_strings\": [\"rewtwert\", \"tretetew\", \"tewt\", \"ew\", \"erwtrewtrr\", \"tre\", \"wtre\", \"retretwer\", \"tewtewtrewtre\", \"wtwetewtrewtre\", \"rewtrwetrwet\", \"rewt\", \"wtrewt\", \"trew\", \"tew\"], \"body_required_strings\": [], \"title_text_min_length\": null, \"is_flair_required\": false, \"title_text_max_length\": null, \"body_regexes\": [], \"link_repost_age\": null, \"body_text_min_length\": null, \"link_restriction_policy\": \"blacklist\", \"body_text_max_length\": null, \"title_required_strings\": [], \"title_blacklisted_strings\": [\"gdfgfdgdgdgfgfdgdfgfdgfdg\", \"h rwh trh rtwh rtw hwrh \", \"wrh teh twe hre \", \"er erh rewh h\", \"gfdgdfgfdgdfgdfgfdg\", \" ewh rweh wreh \", \"vr hrwh trrwh thtrw hrw\", \"fdgdhfsgrhtrhrhrw\", \"fdgfdgfdg\", \"gfdgdfgfd\", \"dfgfdgfdgdf\"], \"guidelines_text\": \"Testing 1 2 3\", \"guidelines_display_policy\": \"all\"}"
         },
         "headers": {
@@ -217,5 +209,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2020-02-10T00:53:04",
+  "version": 1
 }

@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2021-06-01T07:51:19",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<TEST_SUBREDDIT>erence"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<TEST_SUBREDDIT>erence",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2021-06-01T07:51:20",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "--ce9339edac16ccf598be29eaa361ccdd\r\nContent-Disposition: form-data; name=\"api_type\"\r\n\r\njson\r\n--ce9339edac16ccf598be29eaa361ccdd\r\nContent-Disposition: form-data; name=\"img_type\"\r\n\r\njpg\r\n--ce9339edac16ccf598be29eaa361ccdd\r\nContent-Disposition: form-data; name=\"name\"\r\n\r\ncss-revert-fail\r\n--ce9339edac16ccf598be29eaa361ccdd\r\nContent-Disposition: form-data; name=\"upload_type\"\r\n\r\nimg\r\n--ce9339edac16ccf598be29eaa361ccdd\r\nContent-Disposition: form-data; name=\"file\"; filename=\"icon.jpg\"\r\n\r\n\ufffd\ufffd\ufffd\ufffd\u0000\u0010JFIF\u0000\u0001\u0001\u0001\u0000H\u0000H\u0000\u0000\ufffd\ufffd\u0000C\u0000\u0006\u0004\u0005\u0006\u0005\u0004\u0006\u0006\u0005\u0006\u0007\u0007\u0006\b\n\u0010\n\n\t\t\n\u0014\u000e\u000f\f\u0010\u0017\u0014\u0018\u0018\u0017\u0014\u0016\u0016\u001a\u001d%\u001f\u001a\u001b#\u001c\u0016\u0016 , #&')*)\u0019\u001f-0-(0%()(\ufffd\ufffd\u0000\u000b\b\u0001\u0000\u0001\u0000\u0001\u0001\u0011\u0000\ufffd\ufffd\u0000\u0015\u0000\u0001\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\ufffd\ufffd\u0000\u0014\u0010\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\u0000\b\u0001\u0001\u0000\u0000?\u0000\ufffd@\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u007f\ufffd\ufffd\r\n--ce9339edac16ccf598be29eaa361ccdd--\r\n"
-        },
+        "body": "--ce9339edac16ccf598be29eaa361ccdd\r\nContent-Disposition: form-data; name=\"api_type\"\r\n\r\njson\r\n--ce9339edac16ccf598be29eaa361ccdd\r\nContent-Disposition: form-data; name=\"img_type\"\r\n\r\njpg\r\n--ce9339edac16ccf598be29eaa361ccdd\r\nContent-Disposition: form-data; name=\"name\"\r\n\r\ncss-revert-fail\r\n--ce9339edac16ccf598be29eaa361ccdd\r\nContent-Disposition: form-data; name=\"upload_type\"\r\n\r\nimg\r\n--ce9339edac16ccf598be29eaa361ccdd\r\nContent-Disposition: form-data; name=\"file\"; filename=\"icon.jpg\"\r\n\r\n\ufffd\ufffd\ufffd\ufffd\u0000\u0010JFIF\u0000\u0001\u0001\u0001\u0000H\u0000H\u0000\u0000\ufffd\ufffd\u0000C\u0000\u0006\u0004\u0005\u0006\u0005\u0004\u0006\u0006\u0005\u0006\u0007\u0007\u0006\b\n\u0010\n\n\t\t\n\u0014\u000e\u000f\f\u0010\u0017\u0014\u0018\u0018\u0017\u0014\u0016\u0016\u001a\u001d%\u001f\u001a\u001b#\u001c\u0016\u0016 , #&')*)\u0019\u001f-0-(0%()(\ufffd\ufffd\u0000\u000b\b\u0001\u0000\u0001\u0000\u0001\u0001\u0011\u0000\ufffd\ufffd\u0000\u0015\u0000\u0001\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\ufffd\ufffd\u0000\u0014\u0010\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\u0000\b\u0001\u0001\u0000\u0000?\u0000\ufffd@\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u007f\ufffd\ufffd\r\n--ce9339edac16ccf598be29eaa361ccdd--\r\n",
         "headers": {
           "Accept": [
             "*/*"
@@ -139,7 +132,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"errors\": [], \"img_src\": \"https://b.thumbs.redditmedia.com/9YfWue0XL2CLyD4j34JgSSdm3g-zUFcUcysD9zXV41s.jpg\", \"errors_values\": []}"
         },
         "headers": {
@@ -215,10 +207,7 @@
     {
       "recorded_at": "2021-06-01T07:51:20",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&content=div+%7Bbackground%3A+url%28%25%25css-revert-fail%25%25%29%7D&page=config%2Fstylesheet"
-        },
+        "body": "api_type=json&content=div+%7Bbackground%3A+url%28%25%25css-revert-fail%25%25%29%7D&page=config%2Fstylesheet",
         "headers": {
           "Accept": [
             "*/*"
@@ -250,7 +239,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{}"
         },
         "headers": {
@@ -325,10 +313,7 @@
     {
       "recorded_at": "2021-06-01T07:51:20",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -354,7 +339,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"kind\": \"Listing\", \"data\": {\"modhash\": null, \"dist\": null, \"children\": [{\"author\": {\"kind\": \"t2\", \"data\": {\"is_employee\": false, \"has_visited_new_profile\": false, \"is_friend\": false, \"pref_no_profanity\": false, \"has_external_account\": false, \"pref_geopopular\": \"GLOBAL\", \"pref_show_trending\": true, \"subreddit\": {\"default_set\": true, \"user_is_contributor\": false, \"banner_img\": \"\", \"restrict_posting\": true, \"user_is_banned\": false, \"free_form_reports\": true, \"community_icon\": null, \"show_media\": true, \"icon_color\": \"#FF8717\", \"user_is_muted\": false, \"display_name\": \"u_<USERNAME>\", \"header_img\": null, \"title\": \"\", \"coins\": 0, \"previous_names\": [], \"over_18\": false, \"icon_size\": [256, 256], \"primary_color\": \"\", \"icon_img\": \"https://www.redditstatic.com/avatars/avatar_default_20_FF8717.png\", \"description\": \"\", \"submit_link_label\": \"\", \"header_size\": null, \"restrict_commenting\": false, \"subscribers\": 0, \"submit_text_label\": \"\", \"is_default_icon\": true, \"link_flair_position\": \"\", \"display_name_prefixed\": \"u/<USERNAME>\", \"key_color\": \"\", \"name\": \"t5_000000\", \"is_default_banner\": true, \"url\": \"/user/<USERNAME>/\", \"quarantine\": false, \"banner_size\": null, \"user_is_moderator\": true, \"public_description\": \"\", \"link_flair_enabled\": false, \"disable_contributor_requests\": false, \"subreddit_type\": \"user\", \"user_is_subscriber\": false}, \"pref_show_presence\": true, \"snoovatar_img\": \"\", \"snoovatar_size\": null, \"gold_expiration\": null, \"has_gold_subscription\": false, \"is_sponsor\": false, \"num_friends\": 0, \"features\": {\"mod_service_mute_writes\": true, \"promoted_trend_blanks\": true, \"show_amp_link\": true, \"chat\": true, \"is_email_permission_required\": false, \"mod_awards\": true, \"expensive_coins_package\": true, \"mweb_xpromo_revamp_v2\": {\"owner\": \"growth\", \"variant\": \"treatment_2\", \"experiment_id\": 458}, \"awards_on_streams\": true, \"webhook_config\": true, \"mweb_xpromo_modal_listing_click_daily_dismissible_ios\": true, \"live_orangereds\": true, \"modlog_copyright_removal\": true, \"do_not_track\": true, \"chat_user_settings\": true, \"mod_service_mute_reads\": true, \"mweb_xpromo_interstitial_comments_ios\": true, \"chat_subreddit\": true, \"noreferrer_to_noopener\": true, \"premium_subscriptions_table\": true, \"mweb_xpromo_interstitial_comments_android\": true, \"chat_group_rollout\": true, \"resized_styles_images\": true, \"spez_modal\": true, \"mweb_xpromo_modal_listing_click_daily_dismissible_android\": true}, \"can_edit_name\": false, \"verified\": true, \"new_modmail_exists\": true, \"pref_autoplay\": false, \"coins\": 0, \"has_paypal_subscription\": false, \"has_subscribed_to_premium\": false, \"id\": \"00000\", \"has_stripe_subscription\": false, \"can_create_subreddit\": true, \"over_18\": true, \"is_gold\": false, \"is_mod\": true, \"suspension_expiration_utc\": null, \"has_verified_email\": true, \"is_suspended\": false, \"pref_video_autoplay\": false, \"in_chat\": true, \"has_android_subscription\": false, \"in_redesign_beta\": false, \"icon_img\": \"https://www.redditstatic.com/avatars/avatar_default_20_FF8717.png\", \"has_mod_mail\": false, \"pref_nightmode\": false, \"hide_from_robots\": true, \"password_set\": true, \"modhash\": null, \"link_karma\": 1337, \"force_password_reset\": false, \"inbox_count\": 1, \"pref_top_karma_subreddits\": true, \"has_mail\": true, \"pref_show_snoovatar\": false, \"name\": \"<USERNAME>\", \"pref_clickgadget\": 5, \"created\": 1400000000.0, \"gold_creddits\": 0, \"created_utc\": 1400000000.0, \"has_ios_subscription\": false, \"pref_show_twitter\": false, \"in_beta\": true, \"comment_karma\": 1337, \"has_subscribed\": true}}, \"timestamp\": 1620351427, \"page\": \"config/stylesheet\", \"revision_hidden\": false, \"reason\": null, \"id\": \"00000000-0000-0000-0000-000000000000\"}], \"after\": \"WikiRevision_00000000-0000-0000-0000-000000000000\", \"before\": null}}"
         },
         "headers": {
@@ -436,10 +420,7 @@
     {
       "recorded_at": "2021-06-01T07:51:20",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&img_name=css-revert-fail"
-        },
+        "body": "api_type=json&img_name=css-revert-fail",
         "headers": {
           "Accept": [
             "*/*"
@@ -471,7 +452,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"json\": {\"errors\": []}}"
         },
         "headers": {
@@ -546,10 +526,7 @@
     {
       "recorded_at": "2021-06-01T07:51:20",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&page=config%2Fstylesheet&revision=00000000-0000-0000-0000-000000000000"
-        },
+        "body": "api_type=json&page=config%2Fstylesheet&revision=00000000-0000-0000-0000-000000000000",
         "headers": {
           "Accept": [
             "*/*"
@@ -581,7 +558,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"reason\": \"INVALID_CSS\", \"message\": \"Forbidden\", \"explanation\": \"%(css_error)s\"}"
         },
         "headers": {
@@ -656,5 +632,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2021-06-01T07:51:19",
+  "version": 1
 }

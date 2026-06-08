@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2018-09-15T15:15:33",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=client_credentials"
-        },
+        "body": "grant_type=client_credentials",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -107,10 +103,7 @@
     {
       "recorded_at": "2018-09-15T15:15:34",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -136,7 +129,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"fields\": [\"id\"], \"explanation\": \"that user doesn't exist\", \"message\": \"Bad Request\", \"reason\": \"USER_DOESNT_EXIST\"}"
         },
         "headers": {
@@ -206,5 +198,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2018-09-15T15:15:33",
+  "version": 1
 }

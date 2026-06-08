@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2019-07-07T07:55:38",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2019-07-07T07:55:38",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&json=%7B%22data%22%3A+%5B%22learnpython%22%2C+%22redditdev%22%5D%2C+%22kind%22%3A+%22community-list%22%2C+%22shortName%22%3A+%22My+fav+subs%22%2C+%22styles%22%3A+%7B%22headerColor%22%3A+%22%23123456%22%2C+%22backgroundColor%22%3A+%22%23bb0e00%22%7D%2C+%22description%22%3A+%22My+description%22%7D"
-        },
+        "body": "api_type=json&json=%7B%22data%22%3A+%5B%22learnpython%22%2C+%22redditdev%22%5D%2C+%22kind%22%3A+%22community-list%22%2C+%22shortName%22%3A+%22My+fav+subs%22%2C+%22styles%22%3A+%7B%22headerColor%22%3A+%22%23123456%22%2C+%22backgroundColor%22%3A+%22%23bb0e00%22%7D%2C+%22description%22%3A+%22My+description%22%7D",
         "headers": {
           "Accept": [
             "*/*"
@@ -139,7 +132,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"styles\": {\"headerColor\": \"#123456\", \"backgroundColor\": \"#bb0e00\"}, \"kind\": \"community-list\", \"description\": \"My description\", \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EMy description\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"My fav subs\", \"data\": [{\"iconUrl\": \"\", \"name\": \"learnpython\", \"subscribers\": 213599, \"primaryColor\": \"#0079d3\", \"isSubscribed\": false, \"type\": \"subreddit\", \"communityIcon\": \"\", \"isNSFW\": false}, {\"iconUrl\": \"https://b.thumbs.redditmedia.com/7GVLmrH9CdZeqXceSEWkmL8_DSUKRGUfwMxnUNh8D8A.png\", \"name\": \"redditdev\", \"subscribers\": 23412, \"primaryColor\": \"#666666\", \"isSubscribed\": false, \"type\": \"subreddit\", \"communityIcon\": \"\", \"isNSFW\": false}], \"id\": \"widget_138u7zf4gbrdi\"}"
         },
         "headers": {
@@ -221,10 +213,7 @@
     {
       "recorded_at": "2019-07-07T07:55:38",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&json=%7B%22id%22%3A+%22widget_138u7zf4gbrdi%22%2C+%22styles%22%3A+%7B%22headerColor%22%3A+%22%23123456%22%2C+%22backgroundColor%22%3A+%22%23bb0e00%22%7D%2C+%22kind%22%3A+%22community-list%22%2C+%22description%22%3A+%22My+new+description%22%2C+%22descriptionHtml%22%3A+%22%3C%21--+SC_OFF+--%3E%3Cdiv+class%3D%5C%22md%5C%22%3E%3Cp%3EMy+description%3C%2Fp%3E%5Cn%3C%2Fdiv%3E%3C%21--+SC_ON+--%3E%22%2C+%22shortName%22%3A+%22My+least+fav+subs+%3A%28%22%2C+%22data%22%3A+%5B%22redesign%22%5D%7D"
-        },
+        "body": "api_type=json&json=%7B%22id%22%3A+%22widget_138u7zf4gbrdi%22%2C+%22styles%22%3A+%7B%22headerColor%22%3A+%22%23123456%22%2C+%22backgroundColor%22%3A+%22%23bb0e00%22%7D%2C+%22kind%22%3A+%22community-list%22%2C+%22description%22%3A+%22My+new+description%22%2C+%22descriptionHtml%22%3A+%22%3C%21--+SC_OFF+--%3E%3Cdiv+class%3D%5C%22md%5C%22%3E%3Cp%3EMy+description%3C%2Fp%3E%5Cn%3C%2Fdiv%3E%3C%21--+SC_ON+--%3E%22%2C+%22shortName%22%3A+%22My+least+fav+subs+%3A%28%22%2C+%22data%22%3A+%5B%22redesign%22%5D%7D",
         "headers": {
           "Accept": [
             "*/*"
@@ -256,7 +245,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"styles\": {\"headerColor\": \"#123456\", \"backgroundColor\": \"#bb0e00\"}, \"kind\": \"community-list\", \"description\": \"My new description\", \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EMy new description\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"My least fav subs :(\", \"data\": [\"redesign\"], \"id\": \"widget_138u7zf4gbrdi\"}"
         },
         "headers": {
@@ -337,10 +325,7 @@
     {
       "recorded_at": "2019-07-07T07:55:38",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -369,7 +354,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": ""
         },
         "headers": {
@@ -448,5 +432,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2019-07-07T07:55:38",
+  "version": 1
 }

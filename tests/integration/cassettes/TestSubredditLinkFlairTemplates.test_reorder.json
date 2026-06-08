@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2023-08-26T20:34:45",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>"
-        },
+        "body": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 86400, \"refresh_token\": \"<REFRESH_TOKEN>\", \"scope\": \"creddits modnote modcontributors modmail modconfig subscribe structuredstyles vote wikiedit mysubreddits submit modlog modposts modflair save modothers read privatemessages report identity livemanage account modtraffic wikiread edit modwiki modself history flair\"}"
         },
         "headers": {
@@ -101,10 +97,7 @@
     {
       "recorded_at": "2023-08-26T20:34:45",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -130,7 +123,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "[{\"type\": \"text\", \"text_editable\": true, \"allowable_content\": \"all\", \"text\": \"test\", \"max_emojis\": 10, \"text_color\": \"dark\", \"mod_only\": false, \"css_class\": \"\", \"richtext\": [], \"background_color\": \"#dadada\", \"id\": \"6fc213da-cae7-11ea-9274-0e2407099e45\"}, {\"type\": \"text\", \"text_editable\": true, \"allowable_content\": \"all\", \"text\": \"another\", \"max_emojis\": 10, \"text_color\": \"dark\", \"mod_only\": false, \"css_class\": \"\", \"richtext\": [], \"background_color\": \"\", \"id\": \"aa80b3be-f56b-11eb-8c89-1a66d9a33ef0\"}]"
         },
         "headers": {
@@ -210,10 +202,7 @@
     {
       "recorded_at": "2023-08-26T20:34:46",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -239,7 +228,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "[{\"type\": \"text\", \"text_editable\": true, \"allowable_content\": \"all\", \"text\": \"test\", \"max_emojis\": 10, \"text_color\": \"dark\", \"mod_only\": false, \"css_class\": \"\", \"richtext\": [], \"background_color\": \"#dadada\", \"id\": \"6fc213da-cae7-11ea-9274-0e2407099e45\"}, {\"type\": \"text\", \"text_editable\": true, \"allowable_content\": \"all\", \"text\": \"another\", \"max_emojis\": 10, \"text_color\": \"dark\", \"mod_only\": false, \"css_class\": \"\", \"richtext\": [], \"background_color\": \"\", \"id\": \"aa80b3be-f56b-11eb-8c89-1a66d9a33ef0\"}]"
         },
         "headers": {
@@ -317,10 +305,7 @@
     {
       "recorded_at": "2023-08-26T20:34:46",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "[\"aa80b3be-f56b-11eb-8c89-1a66d9a33ef0\", \"6fc213da-cae7-11ea-9274-0e2407099e45\"]"
-        },
+        "body": "[\"aa80b3be-f56b-11eb-8c89-1a66d9a33ef0\", \"6fc213da-cae7-11ea-9274-0e2407099e45\"]",
         "headers": {
           "Accept": [
             "*/*"
@@ -352,7 +337,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": ""
         },
         "headers": {
@@ -430,10 +414,7 @@
     {
       "recorded_at": "2023-08-26T20:34:46",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -459,7 +440,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "[{\"type\": \"text\", \"text_editable\": true, \"allowable_content\": \"all\", \"text\": \"another\", \"max_emojis\": 10, \"text_color\": \"dark\", \"mod_only\": false, \"css_class\": \"\", \"richtext\": [], \"background_color\": \"\", \"id\": \"aa80b3be-f56b-11eb-8c89-1a66d9a33ef0\"}, {\"type\": \"text\", \"text_editable\": true, \"allowable_content\": \"all\", \"text\": \"test\", \"max_emojis\": 10, \"text_color\": \"dark\", \"mod_only\": false, \"css_class\": \"\", \"richtext\": [], \"background_color\": \"#dadada\", \"id\": \"6fc213da-cae7-11ea-9274-0e2407099e45\"}]"
         },
         "headers": {
@@ -535,5 +515,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2023-08-26T20:34:45",
+  "version": 1
 }

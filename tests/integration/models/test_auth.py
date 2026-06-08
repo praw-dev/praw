@@ -10,11 +10,10 @@ from .. import IntegrationTest
 
 class TestAuthImplicit(IntegrationTest):
     @pytest.fixture
-    def reddit(self, recorder):
+    def reddit(self):
         return Reddit(
             client_id=pytest.placeholders.client_id,
             client_secret=None,
-            requestor_kwargs={"session": recorder.session},
             user_agent=pytest.placeholders.user_agent,
         )
 
@@ -36,12 +35,11 @@ class TestAuthScript(IntegrationTest):
 
 class TestAuthWeb(IntegrationTest):
     @pytest.fixture
-    def reddit(self, recorder):
+    def reddit(self):
         return Reddit(
             client_id=pytest.placeholders.client_id,
             client_secret=pytest.placeholders.client_secret,
             redirect_uri=pytest.placeholders.redirect_uri,
-            requestor_kwargs={"session": recorder.session},
             user_agent=pytest.placeholders.user_agent,
             username=None,
         )

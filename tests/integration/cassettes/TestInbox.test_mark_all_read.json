@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2025-06-19T19:42:45",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>"
-        },
+        "body": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 86400, \"refresh_token\": \"<REFRESH_TOKEN>\", \"scope\": \"creddits modcontributors modmail modconfig subscribe structuredstyles vote wikiedit mysubreddits submit modlog modposts modflair save modothers read privatemessages report identity livemanage account modtraffic wikiread edit modwiki modself history flair\"}"
         },
         "headers": {
@@ -101,10 +97,7 @@
     {
       "recorded_at": "2025-06-19T19:42:45",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -130,7 +123,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"kind\": \"Listing\", \"data\": {\"after\": \"t4_30ryob3\", \"dist\": 2, \"modhash\": null, \"geo_filter\": \"\", \"children\": [{\"kind\": \"t4\", \"data\": {\"first_message\": 6577314447, \"first_message_name\": \"t4_30ryob3\", \"subreddit\": \"<USERNAME>\", \"likes\": null, \"replies\": \"\", \"author_fullname\": \"t2_o77bz\", \"id\": \"30s40u5\", \"subject\": \"re: Modmail message\", \"associated_awarding_id\": null, \"score\": 0, \"author\": \"Lil_SpazJoekp\", \"num_comments\": null, \"parent_id\": \"t4_30ryob3\", \"subreddit_name_prefixed\": \"r/<USERNAME>\", \"new\": true, \"type\": \"unknown\", \"body\": \"this is unhidden\", \"dest\": \"<USERNAME>\", \"was_comment\": false, \"body_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Ethis is unhidden\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"name\": \"t4_30s40u5\", \"created\": 1750354112.0, \"created_utc\": 1750354112.0, \"context\": \"\", \"distinguished\": \"moderator\"}}, {\"kind\": \"t4\", \"data\": {\"first_message\": null, \"first_message_name\": null, \"subreddit\": \"<USERNAME>\", \"likes\": null, \"replies\": \"\", \"author_fullname\": null, \"id\": \"30ryob3\", \"subject\": \"Modmail message\", \"associated_awarding_id\": null, \"score\": 0, \"author\": null, \"num_comments\": null, \"parent_id\": null, \"subreddit_name_prefixed\": \"r/<USERNAME>\", \"new\": true, \"type\": \"unknown\", \"body\": \"This is a modmail message\", \"dest\": \"<USERNAME>\", \"was_comment\": false, \"body_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThis is a modmail message\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"name\": \"t4_30ryob3\", \"created\": 1750353265.0, \"created_utc\": 1750353265.0, \"context\": \"\", \"distinguished\": \"moderator\"}}], \"before\": null}}"
         },
         "headers": {
@@ -211,10 +203,7 @@
     {
       "recorded_at": "2025-06-19T19:42:45",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&id=t4_30s40u5%2Ct4_30ryob3"
-        },
+        "body": "api_type=json&id=t4_30s40u5%2Ct4_30ryob3",
         "headers": {
           "Accept": [
             "*/*"
@@ -246,7 +235,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{}"
         },
         "headers": {
@@ -321,10 +309,7 @@
     {
       "recorded_at": "2025-06-19T19:42:46",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json"
-        },
+        "body": "api_type=json",
         "headers": {
           "Accept": [
             "*/*"
@@ -356,7 +341,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{}"
         },
         "headers": {
@@ -431,10 +415,7 @@
     {
       "recorded_at": "2025-06-19T19:42:46",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -460,7 +441,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"kind\": \"Listing\", \"data\": {\"after\": null, \"dist\": 0, \"modhash\": null, \"geo_filter\": \"\", \"children\": [], \"before\": null}}"
         },
         "headers": {
@@ -536,5 +516,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.9.0"
+  "recorded_at": "2025-06-19T19:42:45",
+  "version": 1
 }

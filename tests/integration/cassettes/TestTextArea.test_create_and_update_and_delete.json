@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2019-01-04T02:21:23",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2019-01-04T02:21:23",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&json=%7B%22shortName%22%3A+%22My+new+widget%21%22%2C+%22text%22%3A+%22Hello+world%21%22%2C+%22styles%22%3A+%7B%22headerColor%22%3A+%22%23123456%22%2C+%22backgroundColor%22%3A+%22%23bb0e00%22%7D%2C+%22kind%22%3A+%22textarea%22%7D"
-        },
+        "body": "api_type=json&json=%7B%22shortName%22%3A+%22My+new+widget%21%22%2C+%22text%22%3A+%22Hello+world%21%22%2C+%22styles%22%3A+%7B%22headerColor%22%3A+%22%23123456%22%2C+%22backgroundColor%22%3A+%22%23bb0e00%22%7D%2C+%22kind%22%3A+%22textarea%22%7D",
         "headers": {
           "Accept": [
             "*/*"
@@ -139,7 +132,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"styles\": {\"headerColor\": \"#123456\", \"backgroundColor\": \"#bb0e00\"}, \"kind\": \"textarea\", \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EHello world!\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"text\": \"Hello world!\", \"shortName\": \"My new widget!\", \"id\": \"widget_128bgmfs9jr74\"}"
         },
         "headers": {
@@ -217,10 +209,7 @@
     {
       "recorded_at": "2019-01-04T02:21:23",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&json=%7B%22id%22%3A+%22widget_128bgmfs9jr74%22%2C+%22styles%22%3A+%7B%22headerColor%22%3A+%22%23123456%22%2C+%22backgroundColor%22%3A+%22%23bb0e00%22%7D%2C+%22kind%22%3A+%22textarea%22%2C+%22textHtml%22%3A+%22%3C%21--+SC_OFF+--%3E%3Cdiv+class%3D%5C%22md%5C%22%3E%3Cp%3EHello+world%21%3C%2Fp%3E%5Cn%3C%2Fdiv%3E%3C%21--+SC_ON+--%3E%22%2C+%22text%22%3A+%22Feed+me%22%2C+%22shortName%22%3A+%22My+old+widget+%3A%28%22%7D"
-        },
+        "body": "api_type=json&json=%7B%22id%22%3A+%22widget_128bgmfs9jr74%22%2C+%22styles%22%3A+%7B%22headerColor%22%3A+%22%23123456%22%2C+%22backgroundColor%22%3A+%22%23bb0e00%22%7D%2C+%22kind%22%3A+%22textarea%22%2C+%22textHtml%22%3A+%22%3C%21--+SC_OFF+--%3E%3Cdiv+class%3D%5C%22md%5C%22%3E%3Cp%3EHello+world%21%3C%2Fp%3E%5Cn%3C%2Fdiv%3E%3C%21--+SC_ON+--%3E%22%2C+%22text%22%3A+%22Feed+me%22%2C+%22shortName%22%3A+%22My+old+widget+%3A%28%22%7D",
         "headers": {
           "Accept": [
             "*/*"
@@ -252,7 +241,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"styles\": {\"headerColor\": \"#123456\", \"backgroundColor\": \"#bb0e00\"}, \"kind\": \"textarea\", \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EFeed me\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"text\": \"Feed me\", \"shortName\": \"My old widget :(\", \"id\": \"widget_128bgmfs9jr74\"}"
         },
         "headers": {
@@ -330,10 +318,7 @@
     {
       "recorded_at": "2019-01-04T02:21:24",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -362,7 +347,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": ""
         },
         "headers": {
@@ -438,5 +422,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2019-01-04T02:21:23",
+  "version": 1
 }

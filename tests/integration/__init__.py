@@ -1,25 +1,29 @@
 """PRAW Integration test suite."""
 
 import os
-from urllib.parse import quote_plus
+from pathlib import Path
 
-import betamax
 import pytest
-import requests
-from betamax.cassette import Cassette
+from vcr import VCR
 
 from praw import Reddit
 
 from ..utils import (
-    PrettyJSONSerializer,
+    CustomPersister,
+    CustomSerializer,
     ensure_environment_variables,
     ensure_integration_test,
     filter_access_token,
 )
 
-CASSETTES_PATH = "tests/integration/cassettes"
+CASSETTES_PATH = Path("tests/integration/cassettes")
 existing_cassettes = set()
 used_cassettes = set()
+
+# VCR's ``uri`` matcher compares the full URI as a string, which is sensitive to query
+# parameter order. Betamax compared query parameters order-independently, so expand
+# ``uri`` into components that use VCR's order-independent ``query`` matcher.
+URI_MATCHERS = ["scheme", "host", "port", "path", "query"]
 
 
 class IntegrationTest:
@@ -28,37 +32,32 @@ class IntegrationTest:
     @pytest.fixture(autouse=True, scope="session")
     def cassette_tracker(self):
         """Track cassettes to ensure unused cassettes are not uploaded."""
-        global existing_cassettes
-        for cassette in os.listdir(CASSETTES_PATH):
-            existing_cassettes.add(cassette[: cassette.rindex(".")])
+        for cassette in CASSETTES_PATH.iterdir():
+            existing_cassettes.add(cassette.name[: cassette.name.rindex(".")])
         yield
         unused_cassettes = existing_cassettes - used_cassettes
         if unused_cassettes and os.getenv("ENSURE_NO_UNUSED_CASSETTES", "0") == "1":
-            raise AssertionError(
-                f"The following cassettes are unused: {', '.join(unused_cassettes)}."
-            )
+            msg = f"The following cassettes are unused: {', '.join(unused_cassettes)}."
+            raise AssertionError(msg)
 
     @pytest.fixture(autouse=True)
     def cassette(self, request, recorder, cassette_name):
-        """Wrap a test in a Betamax cassette."""
-        global used_cassettes
+        """Wrap a test in a VCR cassette."""
         kwargs = {}
         for marker in request.node.iter_markers("add_placeholder"):
-            for key, value in marker.kwargs.items():
-                recorder.config.default_cassette_options["placeholders"].append(
-                    {"placeholder": f"<{key.upper()}>", "replace": value}
-                )
+            CustomPersister.add_additional_placeholders(marker.kwargs)
         for marker in request.node.iter_markers("recorder_kwargs"):
             for key, value in marker.kwargs.items():
                 #  Don't overwrite existing values since function markers are provided
                 #  before class markers.
                 kwargs.setdefault(key, value)
-        with recorder.use_cassette(cassette_name, **kwargs) as recorder:
-            cassette = recorder.current_cassette
-            if cassette.is_recording():
+        if "match_on" in kwargs:
+            kwargs["match_on"] = _expand_uri_matcher(kwargs["match_on"])
+        with recorder.use_cassette(cassette_name, **kwargs) as _cassette:
+            if not _cassette.write_protected:  # pragma: no cover
                 ensure_environment_variables()
-            yield recorder
-            ensure_integration_test(cassette)
+            yield _cassette
+            ensure_integration_test(_cassette)
             used_cassettes.add(cassette_name)
 
     @pytest.fixture(autouse=True)
@@ -69,43 +68,33 @@ class IntegrationTest:
 
     @pytest.fixture(autouse=True)
     def recorder(self):
-        """Configure Betamax."""
-        session = requests.Session()
-        recorder = betamax.Betamax(session)
-        recorder.register_serializer(PrettyJSONSerializer)
-        with betamax.Betamax.configure() as config:
-            config.cassette_library_dir = CASSETTES_PATH
-            config.default_cassette_options["serialize_with"] = "prettyjson"
-            config.before_record(callback=filter_access_token)
-            for key, value in pytest.placeholders.__dict__.items():
-                if key == "password":
-                    value = quote_plus(value)
-                config.define_cassette_placeholder(f"<{key.upper()}>", value)
-            yield recorder
-            # since placeholders persist between tests
-            Cassette.default_cassette_options["placeholders"] = []
+        """Configure VCR."""
+        vcr = VCR()
+        vcr.before_record_response = filter_access_token
+        vcr.cassette_library_dir = str(CASSETTES_PATH)
+        vcr.decode_compressed_response = True
+        vcr.match_on = ["method", *URI_MATCHERS]
+        vcr.path_transformer = VCR.ensure_suffix(".json")
+        vcr.register_persister(CustomPersister)
+        vcr.register_serializer("custom_serializer", CustomSerializer)
+        vcr.serializer = "custom_serializer"
+        yield vcr
+        CustomPersister.clear_additional_placeholders()
 
     @pytest.fixture
     def cassette_name(self, request):
         """Return the name of the cassette to use."""
         marker = request.node.get_closest_marker("cassette_name")
         if marker is None:
-            return (
-                f"{request.cls.__name__}.{request.node.name}"
-                if request.cls
-                else request.node.name
-            )
+            return f"{request.cls.__name__}.{request.node.name}" if request.cls else request.node.name
         return marker.args[0]
 
     @pytest.fixture
-    def reddit(self, recorder):
+    def reddit(self):
         """Configure Reddit."""
-        session = recorder.session
-        session.headers["Accept-Encoding"] = "identity"
         reddit_kwargs = {
             "client_id": pytest.placeholders.client_id,
             "client_secret": pytest.placeholders.client_secret,
-            "requestor_kwargs": {"session": session},
             "user_agent": pytest.placeholders.user_agent,
         }
 
@@ -117,3 +106,11 @@ class IntegrationTest:
 
         with Reddit(**reddit_kwargs) as reddit:
             yield reddit
+
+
+def _expand_uri_matcher(matchers):
+    """Replace the ``uri`` matcher with order-independent component matchers."""
+    expanded = []
+    for matcher in matchers:
+        expanded.extend(URI_MATCHERS if matcher == "uri" else [matcher])
+    return expanded

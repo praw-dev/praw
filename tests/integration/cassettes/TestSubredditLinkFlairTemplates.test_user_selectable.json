@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2021-08-04T04:17:24",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>"
-        },
+        "body": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"expires_in\": 3600, \"token_type\": \"bearer\", \"scope\": \"creddits edit flair history identity modconfig modcontributors modflair modlog modothers modposts modself modwiki mysubreddits privatemessages read report save submit subscribe vote wikiedit wikiread\", \"refresh_token\": \"<REFRESH_TOKEN>\", \"device_id\": \"None\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2021-08-04T04:17:25",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&is_newlink=True"
-        },
+        "body": "api_type=json&is_newlink=True",
         "headers": {
           "Accept": [
             "*/*"
@@ -139,7 +132,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"current\": {\"flair_css_class\": \"\", \"flair_template_id\": null, \"flair_text\": null, \"flair_position\": \"right\"}, \"choices\": [{\"flair_css_class\": \"test 1\", \"flair_template_id\": \"ca999154-c1b0-11e7-b30b-0eb8423d5ed8\", \"flair_text_editable\": true, \"flair_position\": \"right\", \"flair_text\": \"test 1\"}, {\"flair_css_class\": \"test 2\", \"flair_template_id\": \"865ba524-692d-11e9-9811-0e2f1d7746a8\", \"flair_text_editable\": false, \"flair_position\": \"right\", \"flair_text\": \"test 2\"}]}"
         },
         "headers": {
@@ -213,5 +205,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2021-08-04T04:17:24",
+  "version": 1
 }

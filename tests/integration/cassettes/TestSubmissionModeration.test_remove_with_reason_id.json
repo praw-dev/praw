@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2019-12-01T19:51:25",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2019-12-01T19:51:26",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&id=t3_e3op46&spam=False"
-        },
+        "body": "api_type=json&id=t3_e3op46&spam=False",
         "headers": {
           "Accept": [
             "*/*"
@@ -139,7 +132,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{}"
         },
         "headers": {
@@ -224,10 +216,7 @@
     {
       "recorded_at": "2019-12-01T19:51:26",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&json=%7B%22item_ids%22%3A+%5B%22t3_e3op46%22%5D%2C+%22mod_note%22%3A+%22%22%2C+%22reason_id%22%3A+%22110nhral8vygf%22%7D"
-        },
+        "body": "api_type=json&json=%7B%22item_ids%22%3A+%5B%22t3_e3op46%22%5D%2C+%22mod_note%22%3A+%22%22%2C+%22reason_id%22%3A+%22110nhral8vygf%22%7D",
         "headers": {
           "Accept": [
             "*/*"
@@ -259,7 +248,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": ""
         },
         "headers": {
@@ -338,5 +326,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2019-12-01T19:51:25",
+  "version": 1
 }

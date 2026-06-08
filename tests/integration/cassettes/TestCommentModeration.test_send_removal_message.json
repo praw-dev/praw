@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2019-01-11T21:12:28",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2019-01-11T21:12:29",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&id=t1_edu698v&spam=False"
-        },
+        "body": "api_type=json&id=t1_edu698v&spam=False",
         "headers": {
           "Accept": [
             "*/*"
@@ -139,7 +132,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{}"
         },
         "headers": {
@@ -220,10 +212,7 @@
     {
       "recorded_at": "2019-01-11T21:12:29",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "{\"item_id\": [\"t1_edu698v\"], \"message\": \"message\", \"title\": \"title\", \"type\": \"public\"}"
-        },
+        "body": "{\"item_id\": [\"t1_edu698v\"], \"message\": \"message\", \"title\": \"title\", \"type\": \"public\"}",
         "headers": {
           "Accept": [
             "*/*"
@@ -255,7 +244,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"subreddit_id\": \"t5_u0gxp\", \"approved_at_utc\": null, \"mod_reason_by\": null, \"banned_by\": null, \"author_flair_type\": \"text\", \"removal_reason\": null, \"link_id\": \"t3_aezo6s\", \"author_flair_template_id\": null, \"likes\": true, \"replies\": \"\", \"user_reports\": [], \"body_html\": \"<div class=\\\"md\\\"><p>message</p>\\n</div>\", \"saved\": false, \"id\": \"edu92zn\", \"banned_at_utc\": null, \"mod_reason_title\": null, \"gilded\": 0, \"archived\": false, \"no_follow\": false, \"author\": \"<USERNAME>\", \"can_mod_post\": true, \"created_utc\": 1547241149.0, \"send_replies\": true, \"parent_id\": \"t1_edu698v\", \"score\": 1, \"author_fullname\": \"t2_2cvck8ii\", \"report_reasons\": [], \"approved_by\": null, \"controversiality\": 0, \"ignore_reports\": false, \"body\": \"message\", \"edited\": false, \"author_flair_css_class\": null, \"is_submitter\": false, \"downs\": 0, \"author_flair_richtext\": [], \"author_patreon_flair\": false, \"collapsed_reason\": null, \"gildings\": {\"gid_1\": 0, \"gid_2\": 0, \"gid_3\": 0}, \"spam\": false, \"stickied\": false, \"subreddit_type\": \"public\", \"can_gild\": false, \"removed\": false, \"approved\": false, \"author_flair_text_color\": null, \"score_hidden\": false, \"permalink\": \"/r/<TEST_SUBREDDIT>/comments/aezo6s/test_post_1/edu92zn/\", \"num_reports\": 0, \"name\": \"t1_edu92zn\", \"created\": 1547269949.0, \"subreddit\": \"<TEST_SUBREDDIT>\", \"author_flair_text\": null, \"rte_mode\": \"markdown\", \"collapsed\": false, \"subreddit_name_prefixed\": \"r/<TEST_SUBREDDIT>\", \"ups\": 1, \"author_flair_background_color\": null, \"mod_reports\": [], \"mod_note\": null, \"distinguished\": \"moderator\"}"
         },
         "headers": {
@@ -336,10 +324,7 @@
     {
       "recorded_at": "2019-01-11T21:12:40",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "{\"item_id\": [\"t1_edu698v\"], \"message\": \"message\", \"title\": \"title\", \"type\": \"private\"}"
-        },
+        "body": "{\"item_id\": [\"t1_edu698v\"], \"message\": \"message\", \"title\": \"title\", \"type\": \"private\"}",
         "headers": {
           "Accept": [
             "*/*"
@@ -371,7 +356,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{}"
         },
         "headers": {
@@ -449,10 +433,7 @@
     {
       "recorded_at": "2019-01-11T21:12:49",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "{\"item_id\": [\"t1_edu698v\"], \"message\": \"message\", \"title\": \"title\", \"type\": \"private_exposed\"}"
-        },
+        "body": "{\"item_id\": [\"t1_edu698v\"], \"message\": \"message\", \"title\": \"title\", \"type\": \"private_exposed\"}",
         "headers": {
           "Accept": [
             "*/*"
@@ -484,7 +465,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{}"
         },
         "headers": {
@@ -560,5 +540,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2019-01-11T21:12:28",
+  "version": 1
 }

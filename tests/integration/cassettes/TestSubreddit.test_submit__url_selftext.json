@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2025-05-07T17:27:12",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 86400, \"scope\": \"*\"}"
         },
         "headers": {
@@ -101,10 +97,7 @@
     {
       "recorded_at": "2025-05-07T17:27:12",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&kind=link&nsfw=False&resubmit=True&sendreplies=True&spoiler=False&sr=<TEST_SUBREDDIT>&text=Testing+%2A%2APRAW%2A%2A+link+submission+%2Awith+markdown+selftext%2A.&title=Test+Title&url=https%3A%2F%2Fpraw.readthedocs.org%2Fen%2Fstable%2F&validate_on_submit=True"
-        },
+        "body": "api_type=json&kind=link&nsfw=False&resubmit=True&sendreplies=True&spoiler=False&sr=<TEST_SUBREDDIT>&text=Testing+%2A%2APRAW%2A%2A+link+submission+%2Awith+markdown+selftext%2A.&title=Test+Title&url=https%3A%2F%2Fpraw.readthedocs.org%2Fen%2Fstable%2F&validate_on_submit=True",
         "headers": {
           "Accept": [
             "*/*"
@@ -136,7 +129,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"json\": {\"errors\": [], \"data\": {\"url\": \"https://www.reddit.com/r/<TEST_SUBREDDIT>/comments/1kh35wk/<TEST_SUBREDDIT>_title/\", \"drafts_count\": 0, \"id\": \"1kh35wk\", \"name\": \"t3_1kh35wk\"}}}"
         },
         "headers": {
@@ -215,10 +207,7 @@
     {
       "recorded_at": "2025-05-07T17:27:12",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -244,7 +233,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "[{\"kind\": \"Listing\", \"data\": {\"after\": null, \"dist\": 1, \"modhash\": null, \"geo_filter\": \"\", \"children\": [{\"kind\": \"t3\", \"data\": {\"approved_at_utc\": null, \"subreddit\": \"<TEST_SUBREDDIT>\", \"selftext\": \"Testing **PRAW** link submission *with markdown selftext*.\", \"user_reports\": [], \"saved\": false, \"mod_reason_title\": null, \"gilded\": 0, \"clicked\": false, \"title\": \"Test Title\", \"link_flair_richtext\": [], \"subreddit_name_prefixed\": \"r/<TEST_SUBREDDIT>\", \"hidden\": false, \"pwls\": 6, \"link_flair_css_class\": null, \"downs\": 0, \"thumbnail_height\": null, \"top_awarded_type\": null, \"hide_score\": false, \"name\": \"t3_1kh35wk\", \"quarantine\": false, \"link_flair_text_color\": \"dark\", \"upvote_ratio\": 1.0, \"author_flair_background_color\": null, \"subreddit_type\": \"public\", \"ups\": 1, \"total_awards_received\": 0, \"media_embed\": {}, \"thumbnail_width\": null, \"author_flair_template_id\": null, \"is_original_content\": false, \"author_fullname\": \"t2_6hk60\", \"secure_media\": null, \"is_reddit_media_domain\": false, \"is_meta\": false, \"category\": null, \"secure_media_embed\": {}, \"link_flair_text\": null, \"can_mod_post\": false, \"score\": 1, \"approved_by\": null, \"is_created_from_ads_ui\": false, \"author_premium\": false, \"thumbnail\": \"default\", \"edited\": false, \"author_flair_css_class\": null, \"author_flair_richtext\": [], \"gildings\": {}, \"content_categories\": null, \"is_self\": false, \"mod_note\": null, \"created\": 1746638832.0, \"link_flair_type\": \"text\", \"wls\": 6, \"removed_by_category\": \"reddit\", \"banned_by\": null, \"author_flair_type\": \"text\", \"domain\": \"praw.readthedocs.org\", \"allow_live_comments\": false, \"selftext_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003ETesting \\u003Cstrong\\u003EPRAW\\u003C/strong\\u003E link submission \\u003Cem\\u003Ewith markdown selftext\\u003C/em\\u003E.\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"likes\": true, \"suggested_sort\": null, \"banned_at_utc\": null, \"url_overridden_by_dest\": \"https://praw.readthedocs.org/en/stable/\", \"view_count\": null, \"archived\": false, \"no_follow\": false, \"is_crosspostable\": false, \"pinned\": false, \"over_18\": false, \"all_awardings\": [], \"awarders\": [], \"media_only\": false, \"can_gild\": false, \"spoiler\": false, \"locked\": false, \"author_flair_text\": null, \"treatment_tags\": [], \"rte_mode\": \"markdown\", \"visited\": false, \"removed_by\": null, \"num_reports\": null, \"distinguished\": null, \"subreddit_id\": \"t5_2qh23\", \"author_is_blocked\": false, \"mod_reason_by\": null, \"removal_reason\": null, \"link_flair_background_color\": \"\", \"id\": \"1kh35wk\", \"is_robot_indexable\": false, \"num_duplicates\": 4, \"report_reasons\": null, \"author\": \"<USERNAME>\", \"discussion_type\": null, \"num_comments\": 0, \"send_replies\": true, \"media\": null, \"con<TEST_SUBREDDIT>_mode\": false, \"author_patreon_flair\": false, \"author_flair_text_color\": null, \"permalink\": \"/r/<TEST_SUBREDDIT>/comments/1kh35wk/<TEST_SUBREDDIT>_title/\", \"stickied\": false, \"url\": \"https://praw.readthedocs.org/en/stable/\", \"subreddit_subscribers\": 28298, \"created_utc\": 1746638832.0, \"num_crossposts\": 0, \"mod_reports\": [], \"is_video\": false}}], \"before\": null}}, {\"kind\": \"Listing\", \"data\": {\"after\": null, \"dist\": null, \"modhash\": null, \"geo_filter\": \"\", \"children\": [], \"before\": null}}]"
         },
         "headers": {
@@ -322,5 +310,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.9.0"
+  "recorded_at": "2025-05-07T17:27:12",
+  "version": 1
 }

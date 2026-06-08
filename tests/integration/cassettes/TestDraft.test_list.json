@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2021-07-30T00:40:59",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>"
-        },
+        "body": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"refresh_token\": \"<REFRESH_TOKEN>\", \"scope\": \"account creddits edit flair history identity livemanage modconfig modcontributors modflair modlog modmail modothers modposts modself modtraffic modwiki mysubreddits privatemessages read report save structuredstyles submit subscribe vote wikiedit wikiread\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2021-07-30T00:40:59",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -133,7 +126,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"subreddits\": [], \"drafts\": [{\"body\": \"test\", \"subreddit\": null, \"content_category\": null, \"nsfw\": false, \"id\": \"b7f7a2ec-f0ce-11eb-912e-5694ec6ef8f6\", \"spoiler\": false, \"kind\": \"markdown\", \"title\": \"test\", \"original_content\": false, \"modified\": 1627605620532, \"send_replies\": true, \"created\": 1627605620532, \"is_public_link\": false, \"flair\": null}, {\"body\": \"test\", \"subreddit\": null, \"content_category\": null, \"nsfw\": false, \"id\": \"aef38cb0-f0ce-11eb-8a61-4afdc3078d51\", \"spoiler\": false, \"kind\": \"markdown\", \"title\": \"test\", \"original_content\": false, \"modified\": 1627605605405, \"send_replies\": true, \"created\": 1627605605405, \"is_public_link\": false, \"flair\": null}]}"
         },
         "headers": {
@@ -208,5 +200,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2021-07-30T00:40:59",
+  "version": 1
 }

@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2022-11-22T21:52:07",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>"
-        },
+        "body": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 86400, \"refresh_token\": \"<REFRESH_TOKEN>\", \"scope\": \"structuredstyles\"}"
         },
         "headers": {
@@ -107,10 +103,7 @@
     {
       "recorded_at": "2022-11-22T21:52:08",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&mobileBannerImage="
-        },
+        "body": "api_type=json&mobileBannerImage=",
         "headers": {
           "Accept": [
             "*/*"
@@ -142,7 +135,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{}"
         },
         "headers": {
@@ -218,5 +210,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2022-11-22T21:52:07",
+  "version": 1
 }

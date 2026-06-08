@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2023-08-26T20:37:00",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>"
-        },
+        "body": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 86400, \"refresh_token\": \"<REFRESH_TOKEN>\", \"scope\": \"creddits modnote modcontributors modmail modconfig subscribe structuredstyles vote wikiedit mysubreddits submit modlog modposts modflair save modothers read privatemessages report identity livemanage account modtraffic wikiread edit modwiki modself history flair\"}"
         },
         "headers": {
@@ -101,10 +97,7 @@
     {
       "recorded_at": "2023-08-26T20:37:00",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -130,7 +123,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "[{\"allowable_content\": \"all\", \"text\": \"PRAW3\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#abcdef\", \"id\": \"3cd3a25a-4450-11ee-a8ca-b28ede539ab9\", \"css_class\": \"myCSS\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"PRAW2\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#abcdef\", \"id\": \"3c90fd74-4450-11ee-8287-eee2453f66ac\", \"css_class\": \"myCSS\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"PRAW\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#abcdef\", \"id\": \"3c602924-4450-11ee-a33f-2667db42e4a6\", \"css_class\": \"myCSS\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
         },
         "headers": {
@@ -213,10 +205,7 @@
     {
       "recorded_at": "2023-08-26T20:37:00",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -242,7 +231,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "[{\"allowable_content\": \"all\", \"text\": \"PRAW3\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#abcdef\", \"id\": \"3cd3a25a-4450-11ee-a8ca-b28ede539ab9\", \"css_class\": \"myCSS\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"PRAW2\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#abcdef\", \"id\": \"3c90fd74-4450-11ee-8287-eee2453f66ac\", \"css_class\": \"myCSS\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"PRAW\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#abcdef\", \"id\": \"3c602924-4450-11ee-a33f-2667db42e4a6\", \"css_class\": \"myCSS\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
         },
         "headers": {
@@ -323,10 +311,7 @@
     {
       "recorded_at": "2023-08-26T20:37:00",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "[\"3c602924-4450-11ee-a33f-2667db42e4a6\", \"3c90fd74-4450-11ee-8287-eee2453f66ac\", \"3cd3a25a-4450-11ee-a8ca-b28ede539ab9\"]"
-        },
+        "body": "[\"3c602924-4450-11ee-a33f-2667db42e4a6\", \"3c90fd74-4450-11ee-8287-eee2453f66ac\", \"3cd3a25a-4450-11ee-a8ca-b28ede539ab9\"]",
         "headers": {
           "Accept": [
             "*/*"
@@ -358,7 +343,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": ""
         },
         "headers": {
@@ -436,10 +420,7 @@
     {
       "recorded_at": "2023-08-26T20:37:01",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -465,7 +446,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "[{\"allowable_content\": \"all\", \"text\": \"PRAW\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#abcdef\", \"id\": \"3c602924-4450-11ee-a33f-2667db42e4a6\", \"css_class\": \"myCSS\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"PRAW2\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#abcdef\", \"id\": \"3c90fd74-4450-11ee-8287-eee2453f66ac\", \"css_class\": \"myCSS\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"PRAW3\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"#abcdef\", \"id\": \"3cd3a25a-4450-11ee-a8ca-b28ede539ab9\", \"css_class\": \"myCSS\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
         },
         "headers": {
@@ -544,5 +524,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2023-08-26T20:37:00",
+  "version": 1
 }

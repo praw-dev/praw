@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2019-07-22T16:11:27",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2019-07-22T16:11:27",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&background_color=%23ABCDEF&css_class=myCSS&flair_type=USER_FLAIR&mod_only=False&text=PRAW&text_editable=False"
-        },
+        "body": "api_type=json&background_color=%23ABCDEF&css_class=myCSS&flair_type=USER_FLAIR&mod_only=False&text=PRAW&text_editable=False",
         "headers": {
           "Accept": [
             "*/*"
@@ -139,7 +132,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"text\": \"PRAW\", \"allowableContent\": \"all\", \"modOnly\": false, \"cssClass\": \"myCSS\", \"id\": \"5c16e768-ac9b-11e9-a601-0e236d92f5c8\", \"textEditable\": false, \"overrideCss\": false, \"richtext\": [], \"maxEmojis\": 10, \"flairType\": \"USER_FLAIR\", \"backgroundColor\": \"#abcdef\", \"textColor\": \"dark\", \"type\": \"text\"}"
         },
         "headers": {
@@ -223,5 +215,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2019-07-22T16:11:27",
+  "version": 1
 }

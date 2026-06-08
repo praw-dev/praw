@@ -1,12 +1,9 @@
 {
-  "http_interactions": [
+  "interactions": [
     {
       "recorded_at": "2019-01-07T23:27:28",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
-        },
+        "body": "grant_type=password&password=<PASSWORD>&username=<USERNAME>",
         "headers": {
           "Accept": [
             "*/*"
@@ -35,7 +32,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
@@ -104,10 +100,7 @@
     {
       "recorded_at": "2019-01-07T23:27:28",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&json=%7B%22data%22%3A+%5B%7B%22text%22%3A+%22My+homepage%22%2C+%22url%22%3A+%22https%3A%2F%2Fexample.com%22%7D%2C+%7B%22text%22%3A+%22Python+packages%22%2C+%22children%22%3A+%5B%7B%22text%22%3A+%22PRAW%22%2C+%22url%22%3A+%22https%3A%2F%2Fpraw.readthedocs.io%2F%22%7D%2C+%7B%22text%22%3A+%22requests%22%2C+%22url%22%3A+%22http%3A%2F%2Fpython-requests.org%22%7D%5D%7D%2C+%7B%22text%22%3A+%22Reddit+homepage%22%2C+%22url%22%3A+%22https%3A%2F%2Freddit.com%22%7D%5D%2C+%22kind%22%3A+%22menu%22%7D"
-        },
+        "body": "api_type=json&json=%7B%22data%22%3A+%5B%7B%22text%22%3A+%22My+homepage%22%2C+%22url%22%3A+%22https%3A%2F%2Fexample.com%22%7D%2C+%7B%22text%22%3A+%22Python+packages%22%2C+%22children%22%3A+%5B%7B%22text%22%3A+%22PRAW%22%2C+%22url%22%3A+%22https%3A%2F%2Fpraw.readthedocs.io%2F%22%7D%2C+%7B%22text%22%3A+%22requests%22%2C+%22url%22%3A+%22http%3A%2F%2Fpython-requests.org%22%7D%5D%7D%2C+%7B%22text%22%3A+%22Reddit+homepage%22%2C+%22url%22%3A+%22https%3A%2F%2Freddit.com%22%7D%5D%2C+%22kind%22%3A+%22menu%22%7D",
         "headers": {
           "Accept": [
             "*/*"
@@ -139,7 +132,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"kind\": \"menu\", \"data\": [{\"url\": \"https://example.com\", \"text\": \"My homepage\"}, {\"text\": \"Python packages\", \"children\": [{\"url\": \"https://praw.readthedocs.io/\", \"text\": \"PRAW\"}, {\"url\": \"http://python-requests.org\", \"text\": \"requests\"}]}, {\"url\": \"https://reddit.com\", \"text\": \"Reddit homepage\"}], \"id\": \"widget_129358pnqqku5\"}"
         },
         "headers": {
@@ -217,10 +209,7 @@
     {
       "recorded_at": "2019-01-07T23:27:29",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&json=%7B%22id%22%3A+%22widget_129358pnqqku5%22%2C+%22kind%22%3A+%22menu%22%2C+%22data%22%3A+%5B%7B%22text%22%3A+%22Reddit+homepage%22%2C+%22url%22%3A+%22https%3A%2F%2Freddit.com%22%7D%2C+%7B%22text%22%3A+%22Python+packages%22%2C+%22children%22%3A+%5B%7B%22text%22%3A+%22PRAW%22%2C+%22url%22%3A+%22https%3A%2F%2Fpraw.readthedocs.io%2F%22%7D%2C+%7B%22text%22%3A+%22requests%22%2C+%22url%22%3A+%22http%3A%2F%2Fpython-requests.org%22%7D%5D%7D%2C+%7B%22text%22%3A+%22My+homepage%22%2C+%22url%22%3A+%22https%3A%2F%2Fexample.com%22%7D%5D%7D"
-        },
+        "body": "api_type=json&json=%7B%22id%22%3A+%22widget_129358pnqqku5%22%2C+%22kind%22%3A+%22menu%22%2C+%22data%22%3A+%5B%7B%22text%22%3A+%22Reddit+homepage%22%2C+%22url%22%3A+%22https%3A%2F%2Freddit.com%22%7D%2C+%7B%22text%22%3A+%22Python+packages%22%2C+%22children%22%3A+%5B%7B%22text%22%3A+%22PRAW%22%2C+%22url%22%3A+%22https%3A%2F%2Fpraw.readthedocs.io%2F%22%7D%2C+%7B%22text%22%3A+%22requests%22%2C+%22url%22%3A+%22http%3A%2F%2Fpython-requests.org%22%7D%5D%7D%2C+%7B%22text%22%3A+%22My+homepage%22%2C+%22url%22%3A+%22https%3A%2F%2Fexample.com%22%7D%5D%7D",
         "headers": {
           "Accept": [
             "*/*"
@@ -252,7 +241,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": "{\"kind\": \"menu\", \"data\": [{\"url\": \"https://reddit.com\", \"text\": \"Reddit homepage\"}, {\"text\": \"Python packages\", \"children\": [{\"url\": \"https://praw.readthedocs.io/\", \"text\": \"PRAW\"}, {\"url\": \"http://python-requests.org\", \"text\": \"requests\"}]}, {\"url\": \"https://example.com\", \"text\": \"My homepage\"}], \"id\": \"widget_129358pnqqku5\"}"
         },
         "headers": {
@@ -330,10 +318,7 @@
     {
       "recorded_at": "2019-01-07T23:27:29",
       "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
+        "body": null,
         "headers": {
           "Accept": [
             "*/*"
@@ -362,7 +347,6 @@
       },
       "response": {
         "body": {
-          "encoding": "UTF-8",
           "string": ""
         },
         "headers": {
@@ -438,5 +422,6 @@
       }
     }
   ],
-  "recorded_with": "betamax/0.8.1"
+  "recorded_at": "2019-01-07T23:27:28",
+  "version": 1
 }

@@ -6,7 +6,7 @@ from ... import IntegrationTest
 
 
 class TestMore(IntegrationTest):
-    @pytest.mark.recorder_kwargs(match_requests_on=["uri", "method", "body"])
+    @pytest.mark.recorder_kwargs(match_on=["uri", "method", "body"])
     def test_comments(self, reddit):
         data = {
             "count": 9,
@@ -29,7 +29,7 @@ class TestMore(IntegrationTest):
         more.submission = reddit.submission("3hahrw")
         assert len(more.comments()) == 7
 
-    @pytest.mark.recorder_kwargs(match_requests_on=["uri", "method", "body"])
+    @pytest.mark.recorder_kwargs(match_on=["uri", "method", "body"])
     def test_comments__continue_thread_type(self, reddit):
         data = {
             "count": 0,
