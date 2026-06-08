@@ -10,6 +10,10 @@ praw follows `semantic versioning <https://semver.org/>`_.
 
 **Added**
 
+- An ``exception_handler`` keyword argument to :func:`.stream_generator` (and thus all
+  ``stream`` methods) that is invoked with any exception raised while fetching items,
+  allowing the stream to resume rather than terminate. Re-raise from the handler to stop
+  the stream.
 - :attr:`~.Comment.created_datetime` to objects with a creation time (for example
   :class:`.Comment`, :class:`.Submission`, :class:`.Redditor`, :class:`.Subreddit`,
   :class:`.Collection`, and :class:`.ModNote`), returning a timezone-aware
