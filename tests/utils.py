@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
-from vcr.persisters.filesystem import FilesystemPersister
+from vcr.persisters.filesystem import CassetteNotFoundError, FilesystemPersister
 from vcr.serialize import deserialize, serialize
 
 from tests.conftest import cassette_placeholders as _placeholders
@@ -49,15 +49,16 @@ def ensure_integration_test(cassette):
 
 def filter_access_token(response):  # pragma: no cover
     """Add VCR callback to filter access token."""
-    request_uri = response["url"]
-    if "api/v1/access_token" not in request_uri or response["status"]["code"] != 200:
+    if response["status"]["code"] != 200:
         return response
-    body = response["body"]["string"].decode()
+    # ``before_record_response`` only receives the response, so the access token is
+    # located by inspecting the body rather than the request URI.
+    body = response["body"]["string"]
     try:
-        token = json.loads(body)["access_token"]
-    except (KeyError, TypeError, ValueError):
+        token = json.loads(body.decode())["access_token"]
+    except (AttributeError, KeyError, TypeError, ValueError):
         return response
-    response["body"]["string"] = response["body"]["string"].replace(token.encode("utf-8"), b"<ACCESS_TOKEN>")
+    response["body"]["string"] = body.replace(token.encode("utf-8"), b"<ACCESS_TOKEN>")
     _placeholders["access_token"] = token
     return response
 
@@ -85,7 +86,7 @@ class CustomPersister(FilesystemPersister):
                 cassette_content = f.read()
         except OSError as error:  # pragma: no cover
             msg = "Cassette not found."
-            raise ValueError(msg) from error
+            raise CassetteNotFoundError(msg) from error
         for replacement, value in [
             (v, f"<{k.upper()}>") for k, v in {**cls.additional_placeholders, **_placeholders}.items()
         ]:

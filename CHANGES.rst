@@ -10,6 +10,8 @@ praw follows `semantic versioning <https://semver.org/>`_.
 
 **Added**
 
+- :meth:`.Redditor.overview` to iterate over a Redditor's combined comments and
+  submissions, mirroring the user overview page on Reddit.
 - An ``exception_handler`` keyword argument to :func:`.stream_generator` (and thus all
   ``stream`` methods) that is invoked with any exception raised while fetching items,
   allowing the stream to resume rather than terminate. Re-raise from the handler to stop

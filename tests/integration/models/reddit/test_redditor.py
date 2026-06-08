@@ -184,6 +184,26 @@ class TestRedditorListings(IntegrationTest):
         items = list(redditor.new())
         assert len(items) == 100
 
+    def test_overview__controversial(self, reddit):
+        redditor = reddit.redditor("spez")
+        items = list(redditor.overview.controversial())
+        assert len(items) == 100
+
+    def test_overview__hot(self, reddit):
+        redditor = reddit.redditor("spez")
+        items = list(redditor.overview.hot())
+        assert len(items) == 100
+
+    def test_overview__new(self, reddit):
+        redditor = reddit.redditor("spez")
+        items = list(redditor.overview.new())
+        assert len(items) == 100
+
+    def test_overview__top(self, reddit):
+        redditor = reddit.redditor("spez")
+        items = list(redditor.overview.top())
+        assert len(items) == 100
+
     def test_saved(self, reddit):
         reddit.read_only = False
         redditor = reddit.redditor(reddit.config.username)
