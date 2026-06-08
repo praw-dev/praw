@@ -640,7 +640,7 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "defusedxml", specifier = "==0.7.1" },
-    { name = "prawcore", specifier = ">=3.0.2,<4" },
+    { name = "prawcore", specifier = ">=3.1.0,<4" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
     { name = "update-checker", specifier = ">=0.18" },
     { name = "websocket-client", specifier = ">=0.54.0,<2" },
@@ -685,14 +685,14 @@ test = [
 
 [[package]]
 name = "prawcore"
-version = "3.0.2"
+version = "3.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/2a/31/9ece8cce3689fe72a7f25565c2b60e1d88dee518b8936efdf00e3bd1eb94/prawcore-3.0.2.tar.gz", hash = "sha256:15b2a2bc0ee0269d472f56b98c77e1d41c68b80f6fe72d3cb7bf784ed6cf259c", size = 15949, upload-time = "2025-02-10T22:43:53.713Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e3/77/f2f881763f8d4d37ccb650f44e82e785008a02901550cd639461f72ab678/prawcore-3.1.0.tar.gz", hash = "sha256:8a1bb969c7d69d0f11f68bdfd3e61e62bf6a3691904e97857137b1c31081a685", size = 16092, upload-time = "2026-06-07T23:23:44.507Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/88/ee/cbf4dab1547cf4b7eed331529230b393f18ae3d84d6f71c9c73f24f14418/prawcore-3.0.2-py3-none-any.whl", hash = "sha256:f8a656de23dbc457b258739cafd626f8d0e60014b4ee17b10c5323d00ee1ebfc", size = 17077, upload-time = "2025-02-10T22:43:52.015Z" },
+    { url = "https://files.pythonhosted.org/packages/84/6d/59ef648b4d7310e7a90ad7ca6e3f26d53e7812b933f07651c5d3920c70b2/prawcore-3.1.0-py3-none-any.whl", hash = "sha256:14a519a1cc1e5d0c568dfa22d8bc08c76d303bf19809b48cd6698dfa50009e3c", size = 17198, upload-time = "2026-06-07T23:23:43.262Z" },
 ]
 
 [[package]]
