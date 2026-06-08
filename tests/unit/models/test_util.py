@@ -163,17 +163,19 @@ class TestStream(UnitTest):
         monkeypatch.setattr("praw.models.util.time.sleep", lambda *_: None)
         Thing = namedtuple("Thing", ["fullname"])
         handled = []
-        fail_next = [True]
+        responses = [RuntimeError("boom"), [Thing(1)], [Thing(2)]]
 
         def generate(limit, **kwargs):
-            if fail_next[0]:
-                fail_next[0] = False
-                raise RuntimeError("boom")
-            return [Thing(1)]
+            response = responses.pop(0)
+            if isinstance(response, Exception):
+                raise response
+            return response
 
         stream = stream_generator(generate, exception_handler=handled.append)
-        thing = next(stream)
-        assert thing.fullname == 1
+        # The first fetch raises and is handled; the stream then resumes and keeps
+        # yielding new items on subsequent iterations.
+        assert next(stream).fullname == 1
+        assert next(stream).fullname == 2
         assert len(handled) == 1
         assert str(handled[0]) == "boom"
 
