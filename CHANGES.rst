@@ -42,6 +42,21 @@ praw follows `semantic versioning <https://semver.org/>`_.
 - Require ``update_checker >=1.0, <2.0`` and call ``update_check`` with keyword
   arguments. The 1.0 release is dependency-free, dropping ``requests`` from PRAW's
   transitive dependencies.
+- :meth:`.Submission.add_fetch_param` now raises :class:`.ClientException` when called
+  on a submission that has already been fetched, rather than logging a warning, since
+  the added parameters would have no effect.
+- Setting the ``comment_sort`` or ``comment_limit`` attribute of a :class:`.Submission`
+  after its comments have been fetched now raises :class:`.ClientException`, rather than
+  logging a warning, since the change would have no effect.
+
+**Removed**
+
+- The ``warn_additional_fetch_params`` configuration option, which is obsolete now that
+  adding fetch parameters to an already-fetched submission raises
+  :class:`.ClientException`.
+- The ``warn_comment_sort`` configuration option, which is obsolete now that setting
+  ``comment_sort`` or ``comment_limit`` after the comments have been fetched raises
+  :class:`.ClientException`.
 
 ***********************
  8.0.0rc2 (2026/06/08)

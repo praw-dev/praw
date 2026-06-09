@@ -177,10 +177,6 @@ class Config:
         self._short_url = self._fetch_default("short_url") or self.CONFIG_NOT_SET
         self.check_for_async = self._config_boolean(item=self._fetch_default("check_for_async", default=True))
         self.check_for_updates = self._config_boolean(item=self._fetch_or_not_set("check_for_updates"))
-        self.warn_comment_sort = self._config_boolean(item=self._fetch_default("warn_comment_sort", default=True))
-        self.warn_additional_fetch_params = self._config_boolean(
-            item=self._fetch_default("warn_additional_fetch_params", default=True)
-        )
         self.window_size = self._fetch_default("window_size", default=600)
         self.kinds = {
             x: self._fetch(f"{x}_kind")

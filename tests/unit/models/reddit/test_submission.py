@@ -9,43 +9,45 @@ from ... import UnitTest
 
 
 class TestSubmission(UnitTest):
-    @pytest.mark.filterwarnings("error", category=UserWarning)
-    def test_additional_fetch_params_warning(self, reddit):
-        with pytest.raises(UserWarning) as excinfo:
-            submission = reddit.submission("1234")
-            submission._fetched = True
+    def test_additional_fetch_params__before_fetch(self, reddit):
+        submission = reddit.submission("1234")
+        submission.add_fetch_param("foo", "bar")
+        assert submission._additional_fetch_params == {"foo": "bar"}
+
+    def test_additional_fetch_params__raises_when_fetched(self, reddit):
+        submission = reddit.submission("1234")
+        submission._fetched = True
+        with pytest.raises(ClientException) as excinfo:
             submission.add_fetch_param("foo", "bar")
-        assert (
-            excinfo.value.args[0] == "This submission has already been fetched, so"
-            " adding additional fetch parameters will not have any effect."
+        assert str(excinfo.value) == (
+            "Cannot add fetch parameters to this submission because it has already been"
+            " fetched."
         )
 
-    @pytest.mark.filterwarnings("error", category=UserWarning)
-    def test_additional_fetch_params_warning__disabled(self, caplog, reddit):
-        reddit.config.warn_additional_fetch_params = False
+    def test_comment_limit__raises_when_fetched(self, reddit):
         submission = reddit.submission("1234")
         submission._fetched = True
-        submission.additional_fetch_params = True
-        assert caplog.records == []
-
-    @pytest.mark.filterwarnings("error", category=UserWarning)
-    def test_comment_sort_warning(self, reddit):
-        with pytest.raises(UserWarning) as excinfo:
-            submission = reddit.submission("1234")
-            submission._fetched = True
-            submission.comment_sort = "new"
-        assert (
-            excinfo.value.args[0] == "The comments for this submission have already"
-            " been fetched, so the updated comment_sort will not have any effect."
+        with pytest.raises(ClientException) as excinfo:
+            submission.comment_limit = 10
+        assert str(excinfo.value) == (
+            "Cannot update 'comment_limit' because the comments for this submission have"
+            " already been fetched."
         )
 
-    @pytest.mark.filterwarnings("error", category=UserWarning)
-    def test_comment_sort_warning__disabled(self, caplog, reddit):
-        reddit.config.warn_comment_sort = False
+    def test_comment_sort__before_fetch(self, reddit):
         submission = reddit.submission("1234")
-        submission._fetched = True
         submission.comment_sort = "new"
-        assert caplog.records == []
+        assert submission.comment_sort == "new"
+
+    def test_comment_sort__raises_when_fetched(self, reddit):
+        submission = reddit.submission("1234")
+        submission._fetched = True
+        with pytest.raises(ClientException) as excinfo:
+            submission.comment_sort = "new"
+        assert str(excinfo.value) == (
+            "Cannot update 'comment_sort' because the comments for this submission have"
+            " already been fetched."
+        )
 
     def test_construct_failure(self, reddit):
         message = "Exactly one of 'id', 'url', or '_data' must be provided."
