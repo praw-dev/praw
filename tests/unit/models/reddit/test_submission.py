@@ -9,24 +9,20 @@ from ... import UnitTest
 
 
 class TestSubmission(UnitTest):
-    @pytest.mark.filterwarnings("error", category=UserWarning)
-    def test_additional_fetch_params_warning(self, reddit):
-        with pytest.raises(UserWarning) as excinfo:
-            submission = reddit.submission("1234")
-            submission._fetched = True
-            submission.add_fetch_param("foo", "bar")
-        assert (
-            excinfo.value.args[0] == "This submission has already been fetched, so"
-            " adding additional fetch parameters will not have any effect."
-        )
+    def test_additional_fetch_params__before_fetch(self, reddit):
+        submission = reddit.submission("1234")
+        submission.add_fetch_param("foo", "bar")
+        assert submission._additional_fetch_params == {"foo": "bar"}
 
-    @pytest.mark.filterwarnings("error", category=UserWarning)
-    def test_additional_fetch_params_warning__disabled(self, caplog, reddit):
-        reddit.config.warn_additional_fetch_params = False
+    def test_additional_fetch_params__raises_when_fetched(self, reddit):
         submission = reddit.submission("1234")
         submission._fetched = True
-        submission.additional_fetch_params = True
-        assert caplog.records == []
+        with pytest.raises(ClientException) as excinfo:
+            submission.add_fetch_param("foo", "bar")
+        assert str(excinfo.value) == (
+            "Cannot add fetch parameters to this submission because it has already been"
+            " fetched."
+        )
 
     @pytest.mark.filterwarnings("error", category=UserWarning)
     def test_comment_sort_warning(self, reddit):

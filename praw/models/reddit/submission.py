@@ -11,7 +11,7 @@ from warnings import warn
 from prawcore import Conflict
 
 from praw.const import API_PATH
-from praw.exceptions import InvalidURL
+from praw.exceptions import ClientException, InvalidURL
 from praw.models.comment_forest import CommentForest
 from praw.models.listing.listing import Listing
 from praw.models.listing.mixins import SubmissionListingMixin
@@ -780,7 +780,12 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Create
         :param key: The key of the fetch parameter.
         :param value: The value of the fetch parameter.
 
-        For example, to fetch a submission with the ``rtjson`` attribute populated:
+        :raises ClientException: If the submission has already been fetched, since fetch
+            parameters only affect the initial fetch and would otherwise have no effect.
+
+        Fetch parameters must be added before the submission is fetched, i.e., before any
+        of its attributes are accessed. For example, to fetch a submission with the
+        ``rtjson`` attribute populated:
 
         .. code-block:: python
 
@@ -789,17 +794,12 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Create
             print(submission.rtjson)
 
         """
-        if (
-            hasattr(self, "_fetched")
-            and self._fetched
-            and hasattr(self, "_reddit")
-            and self._reddit.config.warn_additional_fetch_params
-        ):
-            warn(
-                f"This {self.__class__.__name__.lower()} has already been fetched, so"
-                " adding additional fetch parameters will not have any effect.",
-                stacklevel=2,
+        if getattr(self, "_fetched", False):
+            msg = (
+                f"Cannot add fetch parameters to this {self.__class__.__name__.lower()}"
+                " because it has already been fetched."
             )
+            raise ClientException(msg)
         self._additional_fetch_params[key] = value
 
     def crosspost(
