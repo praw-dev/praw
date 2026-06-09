@@ -34,20 +34,19 @@ praw follows `semantic versioning <https://semver.org/>`_.
 
 **Changed**
 
-- Require ``prawcore >=3.2, <4`` for its public :class:`.Session` and authorizer
+- Require ``prawcore >=3.2, <4`` for its public :class:`!Session` and authorizer
   accessors and the widened :meth:`!Session.request` annotations, which let PRAW drop a
   number of internal ``cast``\ s and type-checker suppressions.
 - Constrain the ``websocket-client`` dependency to ``<2`` to avoid silently adopting a
   future, potentially breaking, major release.
 - Require ``update_checker >=1.0, <2.0`` and call ``update_check`` with keyword
-  arguments. The 1.0 release is dependency-free, dropping ``requests`` from PRAW's
-  transitive dependencies.
+  arguments. The 1.0 release is dependency-free.
 - :meth:`.Submission.add_fetch_param` now raises :class:`.ClientException` when called
   on a submission that has already been fetched, rather than logging a warning, since
   the added parameters would have no effect.
-- Setting the ``comment_sort`` or ``comment_limit`` attribute of a :class:`.Submission`
-  after its comments have been fetched now raises :class:`.ClientException`, rather than
-  logging a warning, since the change would have no effect.
+- The ``comment_sort`` and ``comment_limit`` attributes of a :class:`.Submission` must
+  now be set before the submission is fetched; setting either after the submission has
+  been fetched raises :class:`.ClientException` instead of logging a warning.
 
 **Removed**
 

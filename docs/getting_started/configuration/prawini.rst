@@ -32,13 +32,13 @@ PRAW comes with a ``praw.ini`` file in the package directory, and looks for user
 
               echo "$<variable>"
 
-          **Windows Command Prompt**
+          **Windows Command Prompt**:
 
           .. code-block:: bat
 
               echo "%<variable>%"
 
-          **Powershell**
+          **PowerShell**:
 
           .. code-block:: powershell
 
@@ -146,7 +146,7 @@ variables, for example:
     bot_author=MyUser
     user_agent=script:%(bot_name)s:v%(bot_version)s (by u/%(bot_author)s)
 
-This uses basic interpolation thus :class:`.Reddit` need to be initialized as follows:
+This uses basic interpolation thus :class:`.Reddit` needs to be initialized as follows:
 
 .. code-block:: python
 

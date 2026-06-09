@@ -10,7 +10,7 @@ bots using PRAW, the Python Reddit API Wrapper. It's fun and easy. Let's get sta
 ***************
 
 :Python Knowledge: You need to know at least a little Python to use PRAW. PRAW supports
-    `Python 3.9+`_. If you are stuck on a problem, `r/learnpython`_ is a great place to
+    `Python 3.10+`_. If you are stuck on a problem, `r/learnpython`_ is a great place to
     ask for help.
 :Reddit Knowledge: A basic understanding of how Reddit works is a must. In the event you
     are not already familiar with Reddit start at `Reddit Help`_.
@@ -28,7 +28,7 @@ bots using PRAW, the Python Reddit API Wrapper. It's fun and easy. Let's get sta
 
 .. _first steps guide: https://github.com/reddit/reddit/wiki/OAuth2-Quick-Start-Example#first-steps
 
-.. _python 3.9+: https://docs.python.org/3/tutorial/index.html
+.. _python 3.10+: https://docs.python.org/3/tutorial/index.html
 
 .. _r/learnpython: https://www.reddit.com/r/learnpython/
 
@@ -51,10 +51,10 @@ Obtain a :class:`.Reddit` Instance
 .. warning::
 
     For the sake of brevity, the following examples pass authentication information via
-    arguments to :meth:`praw.Reddit`. If you do this, you need to be careful not to
-    reveal this information to the outside world if you share your code. It is
-    recommended to use a :ref:`praw.ini file <praw.ini>` in order to keep your
-    authentication information separate from your code.
+    arguments to :class:`.Reddit`. If you do this, you need to be careful not to reveal
+    this information to the outside world if you share your code. It is recommended to
+    use a :ref:`praw.ini file <praw.ini>` in order to keep your authentication
+    information separate from your code.
 
 You need an instance of the :class:`.Reddit` class to do *anything* with PRAW. There are
 two distinct states a :class:`.Reddit` instance can be in: :ref:`read-only <read-only>`,

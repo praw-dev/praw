@@ -30,9 +30,9 @@
     :alt: pre-commit
     :target: https://github.com/pre-commit/pre-commit
 
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-    :alt: Black code style
-    :target: https://github.com/psf/black
+.. image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
+    :alt: Ruff
+    :target: https://github.com/astral-sh/ruff
 
 PRAW, an acronym for "Python Reddit API Wrapper", is a Python package that allows for
 simple access to Reddit's API. PRAW aims to be easy to use and internally follows all of

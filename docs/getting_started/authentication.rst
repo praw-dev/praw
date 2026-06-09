@@ -81,7 +81,7 @@ The output should contain the same name as you entered for ``username``.
 .. note::
 
     If the following exception is raised, double-check your credentials, and ensure that
-    that the username and password you are using are for the same user with which the
+    the username and password you are using are for the same user with which the
     application is associated:
 
     .. code-block::

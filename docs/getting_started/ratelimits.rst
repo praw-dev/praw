@@ -9,8 +9,8 @@ requests, there are other unknown ratelimits that Reddit has that might require
 additional wait time (anywhere from milliseconds to minutes) for things such as
 commenting, editing comments/posts, banning users, adding moderators, etc. PRAW will
 sleep and try the request again if the requested wait time (as much as 600 seconds) is
-less than or equal to PRAW's |ratelimit_seconds|_, PRAW will wait for the requested time
-plus 1 second. If the requested wait time exceeds the set value of
+less than or equal to PRAW's |ratelimit_seconds|_. In that case, PRAW will wait for the
+requested time plus 1 second. If the requested wait time exceeds the set value of
 ``ratelimit_seconds``, PRAW will raise :class:`.RedditAPIException`.
 
 For example, given the following :class:`.Reddit` instance:

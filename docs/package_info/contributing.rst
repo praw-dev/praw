@@ -100,7 +100,7 @@ Linting_:
               optional_arg1=None,
           ): ...
 
-  There is some exceptions to this:
+  There are some exceptions to this:
 
   - If it’s clear without reading documentation what the mandatory positional arguments
     would be and their order, then they can be positional arguments. For example:
@@ -140,7 +140,7 @@ Linting_:
  Testing
 *********
 
-Contributions to PRAW requires 100% test coverage. If you know how to add a feature, but
+Contributions to PRAW require 100% test coverage. If you know how to add a feature, but
 aren't sure how to write the necessary tests, please open a pull request anyway so we
 can work with you to write the necessary tests.
 
@@ -152,7 +152,7 @@ However, it's useful to be able to run the tests locally. The simplest way is vi
 
 .. code-block:: bash
 
-    pytest
+    uv run pytest
 
 Without any configuration or modification, all the tests should pass. If they do not,
 please file a bug report.

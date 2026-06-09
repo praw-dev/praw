@@ -13,14 +13,14 @@ PRAW.
 
 This tutorial will show you how to build a bot that monitors a particular subreddit,
 `r/AskReddit <https://www.reddit.com/r/AskReddit/>`_, for new submissions containing
-simple questions and replies with an appropriate link to lmgtfy_ (Let Me Google That For
-You).
+simple questions and replies with an appropriate link to letmegooglethat_ (Let Me Google
+That For You).
 
 There are three key components we will address to perform this task:
 
 1. Monitor new submissions.
 2. Analyze the title of each submission to see if it contains a simple question.
-3. Reply with an appropriate lmgtfy_ link.
+3. Reply with an appropriate letmegooglethat_ link.
 
 ************
  LMGTFY Bot
@@ -35,10 +35,10 @@ Two examples of such questions are:
 2. "How many feet are in a yard?"
 
 Once we identify these questions, the LMGTFY Bot will reply to the submission with an
-appropriate lmgtfy_ link. For the example questions those links are:
+appropriate letmegooglethat_ link. For the example questions those links are:
 
-1. https://lmgtfy.com/?q=What+is+the+capital+of+Canada%3F
-2. https://lmgtfy.com/?q=How+many+feet+are+in+a+yard%3F
+1. https://letmegooglethat.com/?q=What+is+the+capital+of+Canada%3F
+2. https://letmegooglethat.com/?q=How+many+feet+are+in+a+yard%3F
 
 Step 1: Getting Started
 =======================
@@ -138,15 +138,15 @@ Step 4: Automatically Replying to the Submission
 
 The LMGTFY Bot is nearly complete. We iterate through submissions and find ones that
 appear to be simple questions. All that is remaining is to reply to those submissions
-with an appropriate lmgtfy_ link.
+with an appropriate letmegooglethat_ link.
 
-First we will need to construct a working lmgtfy_ link. In essence, we want to pass the
-entire submission title to lmgtfy_. However, there are certain characters that are not
-permitted in URLs or have other meanings. For instance, the space character, `` ``, is
-not permitted, and the question mark, ``?``, has a special meaning. Thus we will
-transform those into their URL-safe representation so that a question like "What is the
-capital of Canada?" is transformed into the link
-``https://lmgtfy.com/?q=What+is+the+capital+of+Canada%3F``.
+First we will need to construct a working letmegooglethat_ link. In essence, we want to
+pass the entire submission title to letmegooglethat_. However, there are certain
+characters that are not permitted in URLs or have other meanings. For instance, the
+space character, `` ``, is not permitted, and the question mark, ``?``, has a special
+meaning. Thus we will transform those into their URL-safe representation so that a
+question like "What is the capital of Canada?" is transformed into the link
+``https://letmegooglethat.com/?q=What+is+the+capital+of+Canada%3F``.
 
 There are a number of ways we could accomplish this task. For starters, we could write a
 function to replace spaces with pluses (``+``) and question marks with ``%3F``. However,
@@ -159,7 +159,7 @@ located:
 
     from urllib.parse import quote_plus
 
-    reply_template = "[Let me google that for you](https://lmgtfy.com/?q={})"
+    reply_template = "[Let me google that for you](https://letmegooglethat.com/?q={})"
 
     url_title = quote_plus(submission.title)
     reply_text = reply_template.format(url_title)
@@ -229,6 +229,6 @@ The following is the complete LMGTFY Bot:
 .. literalinclude:: ../examples/lmgtfy_bot.py
     :language: python
 
-.. _lmgtfy: https://lmgtfy.com/
+.. _letmegooglethat: https://letmegooglethat.com/
 
 .. _oauth2 quick start example: https://github.com/reddit/reddit/wiki/OAuth2-Quick-Start-Example#first-steps
