@@ -4,14 +4,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from praw.models.base import PRAWBase
+from praw.models.base import DynamicAttributes, PRAWBase
 from praw.util import cachedproperty
 
 if TYPE_CHECKING:
     from datetime import datetime
 
 
-class PollOption(PRAWBase):
+class PollOption(DynamicAttributes, PRAWBase):
     """Class to represent one option of a poll.
 
     If ``submission`` is a poll :class:`.Submission`, access the poll's options like so:
@@ -38,6 +38,9 @@ class PollOption(PRAWBase):
 
     """
 
+    id: str
+    text: str
+
     def __repr__(self) -> str:
         """Return an object initialization representation of the instance."""
         return f"PollOption(id={self.id!r})"
@@ -47,7 +50,7 @@ class PollOption(PRAWBase):
         return self.text
 
 
-class PollData(PRAWBase):
+class PollData(DynamicAttributes, PRAWBase):
     """Class to represent poll data on a poll submission.
 
     If ``submission`` is a poll :class:`.Submission`, access the poll data like so:
@@ -76,6 +79,10 @@ class PollData(PRAWBase):
     .. _unix time: https://en.wikipedia.org/wiki/Unix_time
 
     """
+
+    _user_selection: str | None
+    options: list[PollOption]
+    voting_end_timestamp: float
 
     @cachedproperty
     def user_selection(self) -> PollOption | None:

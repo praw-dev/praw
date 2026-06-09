@@ -10,6 +10,8 @@ All other exceptions are subclassed from :class:`.ClientException`.
 
 from __future__ import annotations
 
+from typing import cast
+
 
 class PRAWException(Exception):  # noqa: N818
     """The base PRAW Exception that all other exception classes extend."""
@@ -28,7 +30,7 @@ class RedditErrorItem:
             error_str += f" on field {self.field!r}"
         return error_str
 
-    def __eq__(self, other: RedditErrorItem | list[str]) -> bool:
+    def __eq__(self, other: object) -> bool:
         """Check for equality."""
         if isinstance(other, RedditErrorItem):
             return (self.error_type, self.message, self.field) == (
@@ -196,6 +198,8 @@ class RedditAPIException(PRAWException):
 
         """
         if isinstance(items, list) and isinstance(items[0], str):
-            items = [items]
-        self.items = self.parse_exception_list(items)
+            parsed_items: list[RedditErrorItem | list[str]] = [cast("list[str]", items)]
+        else:
+            parsed_items = cast("list[RedditErrorItem | list[str]]", items)
+        self.items = self.parse_exception_list(parsed_items)
         super().__init__(*self.items)

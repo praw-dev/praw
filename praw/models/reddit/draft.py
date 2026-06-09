@@ -90,7 +90,7 @@ class Draft(RedditBase):
         fetched = False
         if id:
             self.id = id
-        elif len(_data) > 1:
+        elif _data is not None and len(_data) > 1:
             if _data["kind"] in {"markdown", "richtext"}:
                 _data["selftext"] = _data.pop("body")
             elif _data["kind"] == "link":

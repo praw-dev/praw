@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from praw.const import API_PATH
 from praw.exceptions import ClientException
@@ -452,7 +452,7 @@ class Collection(CreatedMixin, RedditBase):
             subreddit = collection.subreddit
 
         """
-        return next(self._reddit.info(fullnames=[self.subreddit_id]))
+        return cast("models.Subreddit", next(self._reddit.info(fullnames=[self.subreddit_id])))
 
     @property
     def updated_datetime(self) -> datetime:

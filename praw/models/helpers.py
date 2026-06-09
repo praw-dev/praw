@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from json import dumps
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, overload
 
 from praw.const import API_PATH
 from praw.models.base import PRAWBase
@@ -26,6 +26,12 @@ class DraftHelper(PRAWBase):
         user's :class:`.Draft`\ s.
 
     """
+
+    @overload
+    def __call__(self, draft_id: None = None) -> list[models.Draft]: ...
+
+    @overload
+    def __call__(self, draft_id: str) -> models.Draft: ...
 
     def __call__(self, draft_id: str | None = None) -> list[models.Draft] | models.Draft:
         """Return a list of :class:`.Draft` instances.
@@ -217,7 +223,7 @@ class LiveHelper(PRAWBase):
             for position in range(0, len(ids), 100):
                 ids_chunk = ids[position : position + 100]
                 url = API_PATH["live_info"].format(ids=",".join(ids_chunk))
-                params = {"limit": 100}  # 25 is used if not specified
+                params: dict[str, str | int] = {"limit": 100}  # 25 is used if not specified
                 yield from self._reddit.get(url, params=params)
 
         return generator()
@@ -259,7 +265,7 @@ class MultiredditHelper(PRAWBase):
         display_name: str,
         icon_name: str | None = None,
         key_color: str | None = None,
-        subreddits: str | models.Subreddit,
+        subreddits: list[str | models.Subreddit],
         visibility: str = "private",
         weighting_scheme: str = "classic",
     ) -> models.Multireddit:
@@ -317,7 +323,7 @@ class SubredditHelper(PRAWBase):
         subreddit_type: str = "public",
         title: str | None = None,
         wikimode: str = "disabled",
-        **other_settings: str | None,
+        **other_settings: Any,
     ) -> models.Subreddit:
         """Create a new :class:`.Subreddit`.
 

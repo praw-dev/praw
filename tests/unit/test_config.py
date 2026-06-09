@@ -50,6 +50,9 @@ class TestConfig:
             config = Config("DEFAULT", check_for_updates=value)
             assert config.check_for_updates is True
 
+    def test_config_boolean__not_set(self):
+        assert Config._config_boolean(item=Config.CONFIG_NOT_SET) is False
+
     def test_custom__extra_values_set(self):
         config = Config("DEFAULT", user1="foo", user2="bar")
         assert config.custom == {"user1": "foo", "user2": "bar"}

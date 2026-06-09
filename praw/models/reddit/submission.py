@@ -111,6 +111,9 @@ class SubmissionModeration(ThingModerationMixin, ModNoteMixin):
 
     REMOVAL_MESSAGE_API = "removal_link_message"
 
+    if TYPE_CHECKING:
+        thing: models.Comment | models.Submission
+
     def __init__(self, submission: models.Submission) -> None:
         """Initialize a :class:`.SubmissionModeration` instance.
 
@@ -268,7 +271,7 @@ class SubmissionModeration(ThingModerationMixin, ModNoteMixin):
         """
         self.thing._reddit.post(API_PATH["spoiler"], data={"id": self.thing.fullname})
 
-    def sticky(self, *, bottom: bool = True, state: bool = True) -> models.Submission:
+    def sticky(self, *, bottom: bool = True, state: bool = True) -> models.Submission | None:
         """Set the submission's sticky state in its subreddit.
 
         :param bottom: When ``True``, set the submission as the bottom sticky. If no top

@@ -13,6 +13,10 @@ if TYPE_CHECKING:
 class ModNoteMixin:
     """Interface for classes that can have a moderator note set on them."""
 
+    if TYPE_CHECKING:
+        # Provided by the host class (e.g. :class:`.ThingModerationMixin`).
+        thing: models.Comment | models.Submission
+
     def author_notes(self, **generator_kwargs: Any) -> Iterator[models.ModNote]:
         """Get the moderator notes for the author of this object in the subreddit it's posted in.
 

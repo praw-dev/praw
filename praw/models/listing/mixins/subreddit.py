@@ -14,8 +14,11 @@ from praw.util.cache import cachedproperty
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+    from typing_extensions import Unpack
+
     import praw
     from praw import models
+    from praw.models.listing.generator import ListingGeneratorKwargs
 
 
 class CommentHelper(PRAWBase):
@@ -25,7 +28,7 @@ class CommentHelper(PRAWBase):
     def _path(self) -> str:
         return urljoin(self.subreddit._path, "comments/")
 
-    def __call__(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Comment]:
+    def __call__(self, **generator_kwargs: Unpack[ListingGeneratorKwargs]) -> Iterator[models.Comment]:
         """Return a :class:`.ListingGenerator` for the :class:`.Subreddit`'s comments.
 
         Additional keyword arguments are passed in the initialization of

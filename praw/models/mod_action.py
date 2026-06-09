@@ -16,7 +16,9 @@ class ModAction(PRAWBase):
     @property
     def mod(self) -> models.Redditor:
         """Return the :class:`.Redditor` who the action was issued by."""
-        return self._reddit.redditor(self._mod)
+        if isinstance(self._mod, str):
+            return self._reddit.redditor(self._mod)
+        return self._mod
 
     @mod.setter
     def mod(self, value: str | models.Redditor) -> None:

@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import asyncio
+import builtins
 import configparser
 import os
 import re
 import time
 from itertools import islice
 from logging import getLogger
-from typing import IO, TYPE_CHECKING, Any
+from typing import IO, TYPE_CHECKING, Any, cast
 from urllib.parse import urlparse
 
 from prawcore import (
@@ -51,9 +52,11 @@ if TYPE_CHECKING:
     else:
         from typing_extensions import Self
 
-    from collections.abc import Generator, Iterable
+    from collections.abc import Generator, Iterable, Iterator
 
     import prawcore
+
+    from praw.exceptions import RedditErrorItem
 
 
 Comment = models.Comment
@@ -396,13 +399,10 @@ class Reddit:
 
     def _check_for_async(self) -> None:
         if self.config.check_for_async:  # pragma: no cover
-            try:
-                # noinspection PyUnresolvedReferences
-                shell = get_ipython().__class__.__name__
-                if shell == "ZMQInteractiveShell":
-                    return
-            except NameError:
-                pass
+            # IPython injects get_ipython into builtins; it is absent outside IPython.
+            get_ipython = getattr(builtins, "get_ipython", None)
+            if get_ipython is not None and get_ipython().__class__.__name__ == "ZMQInteractiveShell":
+                return
             in_async = False
             try:
                 asyncio.get_running_loop()
@@ -420,15 +420,15 @@ class Reddit:
                 )
 
     def _check_for_update(self) -> None:
-        if UPDATE_CHECKER_MISSING:
+        if UPDATE_CHECKER_MISSING or update_check is None:
             return
         if not Reddit.update_checked and self.config.check_for_updates:
-            update_check(package_name=__package__, package_version=__version__)
+            update_check(package_name=__package__ or "praw", package_version=__version__)
             Reddit.update_checked = True
 
     def _handle_rate_limit(self, exception: RedditAPIException) -> int | float | None:
         for item in exception.items:
-            if item.error_type == "RATELIMIT":
+            if item.error_type == "RATELIMIT" and item.message is not None:
                 amount_search = self._ratelimit_regex.search(item.message)
                 if not amount_search:
                     break
@@ -444,11 +444,11 @@ class Reddit:
     def _objectify_request(
         self,
         *,
-        data: dict[str, str | Any] | bytes | IO | str | None = None,
+        data: dict[str, Any] | bytes | IO | str | None = None,
         files: dict[str, IO] | None = None,
         json: dict[Any, Any] | list[Any] | None = None,
         method: str = "",
-        params: str | dict[str, str] | None = None,
+        params: dict[str, str | int] | None = None,
         path: str = "",
     ) -> Any:
         """Run a request through the ``Objector``.
@@ -537,7 +537,7 @@ class Reddit:
         self,
         *,
         requestor_class: type[prawcore.requestor.Requestor] | None = None,
-        requestor_kwargs: Any | None = None,
+        requestor_kwargs: dict[str, Any] | None = None,
     ) -> None:
         requestor_class = requestor_class or Requestor
         requestor_kwargs = requestor_kwargs or {}
@@ -555,6 +555,8 @@ class Reddit:
             self._prepare_untrusted_prawcore(requestor)
 
     def _prepare_trusted_prawcore(self, requestor: prawcore.requestor.Requestor) -> None:
+        # Only reached when client_secret is set (see _prepare_prawcore).
+        assert self.config.client_secret is not None
         authenticator = TrustedAuthenticator(
             requestor,
             self.config.client_id,
@@ -585,7 +587,10 @@ class Reddit:
             try:
                 self.get(url)
             except Redirect as e:
-                return e.response.next.url
+                next_request = e.response.next
+                assert next_request is not None
+                assert next_request.url is not None
+                return next_request.url
         return url
 
     def comment(self, id: str | None = None, *, url: str | None = None) -> models.Comment:
@@ -608,9 +613,9 @@ class Reddit:
         self,
         path: str,
         *,
-        data: dict[str, str | Any] | bytes | IO | str | None = None,
+        data: dict[str, Any] | bytes | IO | str | None = None,
         json: dict[Any, Any] | list[Any] | None = None,
-        params: str | dict[str, str] | None = None,
+        params: dict[str, str | int] | None = None,
     ) -> Any:
         """Return parsed objects returned from a DELETE request to ``path``.
 
@@ -637,7 +642,7 @@ class Reddit:
         self,
         path: str,
         *,
-        params: str | dict[str, str | int] | None = None,
+        params: dict[str, str | int] | None = None,
     ) -> Any:
         """Return parsed objects returned from a GET request to ``path``.
 
@@ -699,42 +704,47 @@ class Reddit:
 
             api_parameter_name = "id" if is_using_fullnames else "sr_name"
 
-            def generator(
+            def name_generator(
                 names: Iterable[str | models.Subreddit],
             ) -> Generator[
                 models.Subreddit | models.Comment | models.Submission,
                 None,
                 None,
             ]:
-                iterable = iter(names) if is_using_fullnames else iter([str(item) for item in names])
+                iterable: Iterator[str] = (
+                    iter(str(item) for item in names)
+                    if is_using_fullnames
+                    else iter([str(item) for item in names])
+                )
                 while True:
                     chunk = list(islice(iterable, 100))
                     if not chunk:
                         break
-                    params = {api_parameter_name: ",".join(chunk)}
+                    params: dict[str, str | int] = {api_parameter_name: ",".join(chunk)}
                     yield from self.get(API_PATH["info"], params=params)
 
-            return generator(ids_or_names)
+            return name_generator(ids_or_names)
 
-        def generator(
+        def url_generator(
             _url: str,
         ) -> Generator[
             models.Subreddit | models.Comment | models.Submission,
             None,
             None,
         ]:
-            params = {"url": _url}
+            params: dict[str, str | int] = {"url": _url}
             yield from self.get(API_PATH["info"], params=params)
 
-        return generator(url)
+        assert url is not None
+        return url_generator(url)
 
     def patch(
         self,
         path: str,
         *,
-        data: dict[str, str | Any] | bytes | IO | str | None = None,
+        data: dict[str, Any] | bytes | IO | str | None = None,
         json: dict[Any, Any] | list[Any] | None = None,
-        params: str | dict[str, str] | None = None,
+        params: dict[str, str | int] | None = None,
     ) -> Any:
         """Return parsed objects returned from a PATCH request to ``path``.
 
@@ -753,10 +763,10 @@ class Reddit:
         self,
         path: str,
         *,
-        data: dict[str, str | Any] | bytes | IO | str | None = None,
+        data: dict[str, Any] | bytes | IO | str | None = None,
         files: dict[str, IO] | None = None,
         json: dict[Any, Any] | list[Any] | None = None,
-        params: str | dict[str, str] | None = None,
+        params: dict[str, str | int] | None = None,
     ) -> Any:
         """Return parsed objects returned from a POST request to ``path``.
 
@@ -775,7 +785,7 @@ class Reddit:
             data = data or {}
 
         attempts = 3
-        last_exception = None
+        last_exception: RedditAPIException | None = None
         while attempts > 0:
             attempts -= 1
             try:
@@ -795,13 +805,14 @@ class Reddit:
                 second_string = "second" if seconds == 1 else "seconds"
                 logger.debug("Rate limit hit, sleeping for %d %s", seconds, second_string)
                 time.sleep(seconds)
+        assert last_exception is not None
         raise last_exception
 
     def put(
         self,
         path: str,
         *,
-        data: dict[str, str | Any] | bytes | IO | str | None = None,
+        data: dict[str, Any] | bytes | IO | str | None = None,
         json: dict[Any, Any] | list[Any] | None = None,
     ) -> Any:
         """Return parsed objects returned from a PUT request to ``path``.
@@ -830,11 +841,11 @@ class Reddit:
     def request(
         self,
         *,
-        data: dict[str, str | Any] | bytes | IO | str | None = None,
+        data: dict[str, Any] | bytes | IO | str | None = None,
         files: dict[str, IO] | None = None,
         json: dict[Any, Any] | list[Any] | None = None,
         method: str,
-        params: str | dict[str, str | int] | None = None,
+        params: dict[str, str | int] | None = None,
         path: str,
     ) -> Any:
         """Return the parsed JSON data returned from a request to URL.
@@ -857,6 +868,7 @@ class Reddit:
         if data and json:
             msg = "At most one of 'data' or 'json' is supported."
             raise ClientException(msg)
+        assert self._core is not None
         try:
             return self._core.request(
                 data=data,
@@ -867,22 +879,28 @@ class Reddit:
                 path=path,
             )
         except BadRequest as exception:
+            error_data: dict[str, Any]
             try:
-                data = exception.response.json()
+                error_data = exception.response.json()
             except ValueError:
                 if exception.response.text:
-                    data = {"reason": exception.response.text}
+                    error_data = {"reason": exception.response.text}
                 else:
                     raise exception from None
-            if set(data) == {"error", "message"}:
+            if set(error_data) == {"error", "message"}:
                 raise
-            explanation = data.get("explanation")
-            if "fields" in data:
-                assert len(data["fields"]) == 1
-                field = data["fields"][0]
+            explanation = error_data.get("explanation")
+            if "fields" in error_data:
+                assert len(error_data["fields"]) == 1
+                field = error_data["fields"][0]
             else:
                 field = None
-            raise RedditAPIException([data["reason"], explanation, field]) from exception
+            raise RedditAPIException(
+                cast(
+                    "list[RedditErrorItem | list[str] | str]",
+                    [error_data["reason"], explanation, field],
+                )
+            ) from exception
 
     def submission(self, id: str | None = None, *, url: str | None = None) -> models.Submission:
         """Return a lazy instance of :class:`.Submission`.

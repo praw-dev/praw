@@ -27,7 +27,7 @@ class _NotSet:
 class Config:
     """A class containing the configuration for a Reddit site."""
 
-    CONFIG = None
+    CONFIG: configparser.ConfigParser | None = None
     CONFIG_NOT_SET = _NotSet()  # Represents a config value that is not set.
     LOCK = Lock()
     INTERPOLATION_LEVEL = MappingProxyType({
@@ -35,10 +35,26 @@ class Config:
         "extended": configparser.ExtendedInterpolation,
     })
 
+    # Attributes populated by _initialize_attributes. client_id and user_agent are
+    # validated as present by Reddit.__init__, so they are typed as required.
+    client_id: str
+    client_secret: str | None
+    oauth_url: str
+    password: str | None
+    ratelimit_seconds: int
+    reddit_url: str
+    redirect_uri: str | None
+    refresh_token: str | None
+    timeout: int
+    user_agent: str
+    username: str | None
+
     @staticmethod
-    def _config_boolean(*, item: bool | str) -> bool:
+    def _config_boolean(*, item: bool | str | _NotSet) -> bool:
         if isinstance(item, bool):
             return item
+        if isinstance(item, _NotSet):
+            return False
         return item.lower() in {"1", "yes", "true", "on"}
 
     @classmethod
@@ -50,6 +66,7 @@ class Config:
             interpolator_class = None
 
         config = configparser.ConfigParser(interpolation=interpolator_class)
+        assert __package__ is not None
         with files(__package__).joinpath("praw.ini").open("r") as hdl:
             config.read_file(hdl)
 
@@ -114,7 +131,7 @@ class Config:
         :raises: :class:`.ClientException` if it is not set.
 
         """
-        if self._short_url is self.CONFIG_NOT_SET:
+        if isinstance(self._short_url, _NotSet):
             msg = "No short domain specified."
             raise ClientException(msg)
         return self._short_url
@@ -123,7 +140,7 @@ class Config:
         self,
         site_name: str,
         config_interpolation: str | None = None,
-        **settings: str,
+        **settings: str | bool | int | None,
     ) -> None:
         """Initialize a :class:`.Config` instance."""
         with Config.LOCK:
@@ -131,11 +148,8 @@ class Config:
                 self._load_config(config_interpolation=config_interpolation)
 
         self._settings = settings
+        assert Config.CONFIG is not None
         self.custom = dict(Config.CONFIG.items(site_name), **settings)
-
-        self.client_id = self.client_secret = self.oauth_url = None
-        self.reddit_url = self.refresh_token = self.redirect_uri = None
-        self.password = self.user_agent = self.username = None
 
         self._initialize_attributes()
 

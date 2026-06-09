@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from datetime import datetime
 
 
@@ -14,6 +15,10 @@ class CreatedMixin:
     #: The attribute holding the creation `Unix Time`_, in seconds. Subclasses whose
     #: creation timestamp is stored under a different name override this.
     _created_at_attribute = "created_utc"
+
+    if TYPE_CHECKING:
+        # Provided by the host class (:class:`.PRAWBase`).
+        _to_local_datetime: Callable[[float], datetime]
 
     @property
     def created_datetime(self) -> datetime:

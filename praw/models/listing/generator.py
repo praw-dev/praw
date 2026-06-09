@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Iterator
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, TypedDict
 
 from praw.models.base import PRAWBase
 from praw.models.listing.listing import FlairListing, Listing, ModNoteListing
@@ -12,6 +12,17 @@ from praw.models.listing.listing import FlairListing, Listing, ModNoteListing
 if TYPE_CHECKING:
     import praw
     from praw.models.reddit.base import RedditBase
+
+
+class ListingGeneratorKwargs(TypedDict, total=False):
+    """The keyword arguments accepted by methods that return a :class:`.ListingGenerator`.
+
+    See :meth:`.ListingGenerator.__init__` for the meaning of each value.
+
+    """
+
+    limit: int | None
+    params: dict[str, str | int] | None
 
 
 class ListingGenerator(PRAWBase, Iterator):
@@ -30,7 +41,7 @@ class ListingGenerator(PRAWBase, Iterator):
         self,
         reddit: praw.Reddit,
         url: str,
-        limit: int = 100,
+        limit: int | None = 100,
         params: dict[str, str | int] | None = None,
     ) -> None:
         """Initialize a :class:`.ListingGenerator` instance.
@@ -47,7 +58,7 @@ class ListingGenerator(PRAWBase, Iterator):
         """
         super().__init__(reddit, _data=None)
         self._exhausted = False
-        self._listing = None
+        self._listing: Listing | None = None
         self._list_index: int
         self.limit = limit
         self.params = deepcopy(params) if params else {}
@@ -72,9 +83,7 @@ class ListingGenerator(PRAWBase, Iterator):
         self.yielded += 1
         return self._listing[self._list_index - 1]
 
-    def _extract_sublist(
-        self, listing: dict[str, Any] | list[Listing]
-    ) -> Listing | FlairListing | ModNoteListing | dict[str, Any] | list[Listing]:
+    def _extract_sublist(self, listing: Listing | dict[str, Any] | list[Listing]) -> Listing:
         if isinstance(listing, list):
             return listing[1]  # for submission duplicates
         if isinstance(listing, dict):
@@ -92,8 +101,8 @@ class ListingGenerator(PRAWBase, Iterator):
         if self._exhausted:
             raise StopIteration
 
-        self._listing = self._reddit.get(self.url, params=self.params)
-        self._listing = self._extract_sublist(self._listing)
+        listing = self._reddit.get(self.url, params=self.params)
+        self._listing = self._extract_sublist(listing)
         self._list_index = 0
 
         if not self._listing:

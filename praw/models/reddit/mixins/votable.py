@@ -2,11 +2,23 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from praw.const import API_PATH
+
+if TYPE_CHECKING:
+    import praw
 
 
 class VotableMixin:
     """Interface for :class:`.RedditBase` classes that can be voted on."""
+
+    if TYPE_CHECKING:
+        # Provided by the host class (:class:`.RedditBase`).
+        _reddit: praw.Reddit
+
+        @property
+        def fullname(self) -> str: ...  # noqa: D102
 
     def _vote(self, direction: int) -> None:
         self._reddit.post(API_PATH["vote"], data={"dir": str(direction), "id": self.fullname})

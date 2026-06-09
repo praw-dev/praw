@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from itertools import islice
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from praw.const import API_PATH
 from praw.models.base import PRAWBase
@@ -39,14 +39,17 @@ class BaseModNotes:
         redditor: Redditor | str,
         subreddit: Subreddit | str,
         **generator_kwargs: Any,
-    ) -> ListingGenerator:
+    ) -> Iterator[models.ModNote]:
         PRAWBase._safely_add_arguments(
             arguments=generator_kwargs,
             key="params",
             subreddit=subreddit,
             user=redditor,
         )
-        return ListingGenerator(self._reddit, API_PATH["mod_notes"], **generator_kwargs)
+        return cast(
+            "Iterator[models.ModNote]",
+            ListingGenerator(self._reddit, API_PATH["mod_notes"], **generator_kwargs),
+        )
 
     def _bulk_generator(
         self, redditors: list[Redditor | str], subreddits: list[Subreddit | str]
@@ -58,13 +61,15 @@ class BaseModNotes:
             users_chunk = list(islice(redditors_iter, 500))
             if not any([subreddits_chunk, users_chunk]):
                 break
-            params = {
+            params: dict[str, str | int] = {
                 "subreddits": ",".join(map(str, subreddits_chunk)),
                 "users": ",".join(map(str, users_chunk)),
             }
             response = self._reddit.get(API_PATH["mod_notes_bulk"], params=params)
             for note_dict in response["mod_notes"]:
-                yield self._reddit._objector.objectify(data=note_dict)
+                yield cast(
+                    "models.ModNote", self._reddit._objector.objectify(data=note_dict)
+                )
 
     def _ensure_attribute(self, error_message: str, **attributes: Any) -> Any:
         attribute, value_ = attributes.popitem()
@@ -148,16 +153,21 @@ class BaseModNotes:
         """
         reddit_id = None
         if thing:
+            resolved: Comment | Submission | Subreddit | str = thing
             if isinstance(thing, str):
                 reddit_id = thing
                 # this is to minimize the number of requests
                 if not (getattr(self, "redditor", redditor) and getattr(self, "subreddit", subreddit)):
                     # only fetch if we are missing either redditor or subreddit
-                    thing = next(self._reddit.info(fullnames=[thing]))
+                    resolved = next(self._reddit.info(fullnames=[thing]))
             else:
                 reddit_id = thing.fullname
-            redditor = getattr(self, "redditor", redditor) or thing.author
-            subreddit = getattr(self, "subreddit", subreddit) or thing.subreddit
+            # ``thing`` is only ever a comment/submission (or their fullname), so
+            # ``resolved`` is a Comment/Submission here -- ``info`` resolves a fullname to
+            # the same -- and both expose ``author`` and ``subreddit``.
+            assert isinstance(resolved, (Comment, Submission))
+            redditor = getattr(self, "redditor", redditor) or resolved.author
+            subreddit = getattr(self, "subreddit", subreddit) or resolved.subreddit
         redditor = self._ensure_attribute(
             "Either the 'redditor' or 'thing' parameters must be provided or this"
             " method must be called from a Redditor instance (e.g., 'redditor.notes').",
@@ -247,12 +257,12 @@ class BaseModNotes:
             reddit.notes.delete(delete_all=True, subreddit="test", redditor="spez")
 
         """
-        redditor = self._ensure_attribute(
+        redditor_: Redditor | str = self._ensure_attribute(
             "Either the 'redditor' parameter must be provided or this method must be"
             " called from a Redditor instance (e.g., 'redditor.notes').",
             redditor=redditor,
         )
-        subreddit = self._ensure_attribute(
+        subreddit_: Subreddit | str = self._ensure_attribute(
             "Either the 'subreddit' parameter must be provided or this method must be"
             " called from a Subreddit instance (e.g., 'subreddit.mod.notes').",
             subreddit=subreddit,
@@ -261,12 +271,12 @@ class BaseModNotes:
             msg = "Either 'note_id' or 'delete_all' must be provided."
             raise TypeError(msg)
         if delete_all:
-            for note in self._notes(all_notes=True, redditors=[redditor], subreddits=[subreddit]):
+            for note in self._notes(all_notes=True, redditors=[redditor_], subreddits=[subreddit_]):
                 note.delete()
         else:
             params = {
-                "user": str(redditor),
-                "subreddit": str(subreddit),
+                "user": str(redditor_),
+                "subreddit": str(subreddit_),
                 "note_id": note_id,
             }
             self._reddit.delete(API_PATH["mod_notes"], params=params)

@@ -7,13 +7,25 @@ from typing import TYPE_CHECKING
 from praw.const import API_PATH
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from datetime import datetime
 
-    from praw import models
+    from typing_extensions import Self
+
+    import praw
 
 
 class EditableMixin:
     """Interface for classes that can be edited and deleted."""
+
+    if TYPE_CHECKING:
+        # Provided by the host class (:class:`.RedditBase`).
+        _reddit: praw.Reddit
+        _to_local_datetime: Callable[[float], datetime]
+        edited: bool | float
+
+        @property
+        def fullname(self) -> str: ...  # noqa: D102
 
     @property
     def edited_datetime(self) -> datetime | None:
@@ -43,7 +55,7 @@ class EditableMixin:
         """
         self._reddit.post(API_PATH["del"], data={"id": self.fullname})
 
-    def edit(self, body: str) -> models.Comment | models.Submission:
+    def edit(self, body: str) -> Self:
         """Replace the body of the object with ``body``.
 
         :param body: The Markdown formatted content for the updated object.

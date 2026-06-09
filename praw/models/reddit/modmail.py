@@ -145,7 +145,7 @@ class ModmailConversation(RedditBase):
 
         self._info_params = {"markRead": True} if mark_read else None
 
-    def _build_conversation_list(self, other_conversations: list[ModmailConversation]) -> str:
+    def _build_conversation_list(self, other_conversations: list[ModmailConversation] | None) -> str:
         """Return a comma-separated list of conversation IDs."""
         conversations = [self] + (other_conversations or [])
         return ",".join(conversation.id for conversation in conversations)
@@ -237,11 +237,10 @@ class ModmailConversation(RedditBase):
             # Reddit recently changed the response format, so we need to handle both in case they change it back
             message_id = response["conversation"]["objIds"][-1]["id"]
             message_data = response["messages"][message_id]
-            return self._reddit._objector.objectify(data=message_data)
-        for message in response.messages:
-            if message.id == response.obj_ids[-1]["id"]:
-                break
-        return message
+            message = self._reddit._objector.objectify(data=message_data)
+            assert isinstance(message, ModmailMessage)
+            return message
+        return next(message for message in response.messages if message.id == response.obj_ids[-1]["id"])
 
     def unarchive(self) -> None:
         """Unarchive the conversation.
@@ -317,7 +316,9 @@ class ModmailConversation(RedditBase):
             reddit.subreddit("test").modmail("2gmz").mute(num_days=7)
 
         """
-        params = {"num_hours": num_days * 24} if num_days != self.DEFAULT_NUMBER_OF_MUTE_DAYS else {}
+        params: dict[str, str | int] = (
+            {"num_hours": num_days * 24} if num_days != self.DEFAULT_NUMBER_OF_MUTE_DAYS else {}
+        )
         self._reddit.request(
             method="POST",
             params=params,

@@ -27,6 +27,8 @@ class ThingModerationMixin(ModNoteMixin):
 
     REMOVAL_MESSAGE_API = None
 
+    thing: models.Comment | models.Submission
+
     def _add_removal_reason(self, *, mod_note: str = "", reason_id: str | None = None) -> None:
         """Add a removal reason for a :class:`.Comment` or :class:`.Submission`.
 
@@ -98,7 +100,7 @@ class ThingModerationMixin(ModNoteMixin):
             :meth:`.undistinguish`
 
         """
-        data = {"how": how, "id": self.thing.fullname}
+        data: dict[str, str | bool] = {"how": how, "id": self.thing.fullname}
         if sticky and getattr(self.thing, "is_root", False):
             data["sticky"] = True
         self.thing._reddit.post(API_PATH["distinguish"], data=data)

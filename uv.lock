@@ -610,11 +610,18 @@ test = [
     { name = "requests" },
     { name = "vcrpy" },
 ]
+type = [
+    { name = "coverage" },
+    { name = "pyright" },
+    { name = "pytest" },
+    { name = "requests" },
+    { name = "vcrpy" },
+]
 
 [package.metadata]
 requires-dist = [
     { name = "defusedxml", specifier = "==0.7.1" },
-    { name = "prawcore", specifier = ">=3.1.0,<4" },
+    { name = "prawcore", specifier = ">=3.2.0,<4" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
     { name = "update-checker", specifier = ">=1.0,<2.0" },
     { name = "websocket-client", specifier = ">=0.54.0,<2" },
@@ -652,17 +659,24 @@ test = [
     { name = "requests", specifier = ">=2.20.1,<3" },
     { name = "vcrpy", specifier = ">=7.0.0" },
 ]
+type = [
+    { name = "coverage", specifier = ">=7.6.10" },
+    { name = "pyright" },
+    { name = "pytest", specifier = ">=2.7.3" },
+    { name = "requests", specifier = ">=2.20.1,<3" },
+    { name = "vcrpy", specifier = ">=7.0.0" },
+]
 
 [[package]]
 name = "prawcore"
-version = "3.1.0"
+version = "3.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e3/77/f2f881763f8d4d37ccb650f44e82e785008a02901550cd639461f72ab678/prawcore-3.1.0.tar.gz", hash = "sha256:8a1bb969c7d69d0f11f68bdfd3e61e62bf6a3691904e97857137b1c31081a685", size = 16092, upload-time = "2026-06-07T23:23:44.507Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/13/52/b3e4e912e76579a8e6666f119f74ba7ff88158ccf9073ddeac21f7a7e2f1/prawcore-3.2.0.tar.gz", hash = "sha256:451b13eba493ebafab3ed9ca3882c1461405158e0c158b3ba01115f5f320243f", size = 16746, upload-time = "2026-06-09T04:22:32.345Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/84/6d/59ef648b4d7310e7a90ad7ca6e3f26d53e7812b933f07651c5d3920c70b2/prawcore-3.1.0-py3-none-any.whl", hash = "sha256:14a519a1cc1e5d0c568dfa22d8bc08c76d303bf19809b48cd6698dfa50009e3c", size = 17198, upload-time = "2026-06-07T23:23:43.262Z" },
+    { url = "https://files.pythonhosted.org/packages/d2/d6/0813d0f5d0d7d8c3086feb73a6c957d6cc6aca617fcd6f8b6f20b20c299a/prawcore-3.2.0-py3-none-any.whl", hash = "sha256:1d6cf686ecd5a0ceea378254c323b0deb1cfd67242c858bd714960faa64708e9", size = 17905, upload-time = "2026-06-09T04:22:31.006Z" },
 ]
 
 [[package]]
@@ -701,6 +715,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/62/62/0fe346fe380b1aafaf819c8cb195d3241bb4f355f908e6339814131a830b/pyproject_api-1.10.1.tar.gz", hash = "sha256:c2b2726bd7aa9217b6c50b621fef5b2ae5def4d55b779c9e0694c15e0a8517ba", size = 23477, upload-time = "2026-05-28T14:22:14.049Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/79/d7/29e1e5e882f79133631f7bcace42d23db493f616463c157a1ab614bf69dd/pyproject_api-1.10.1-py3-none-any.whl", hash = "sha256:fa9e6f66c35b5017e909825d8f2b5d5482ea699d7be809d21c03bd1f7317f36a", size = 12992, upload-time = "2026-05-28T14:22:12.711Z" },
+]
+
+[[package]]
+name = "pyright"
+version = "1.1.410"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "nodeenv" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/10/53/e4d8ea1391bd4355231be6f91bf239479aa0014260ed3fb5526eeb12a1f2/pyright-1.1.410.tar.gz", hash = "sha256:07a073b8ba6749826773c1269773efa11b93440d9a6aa60419d9a3172d6dc488", size = 4062013, upload-time = "2026-06-01T17:35:48.894Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d7/33/288b5868fa00846dacf249633719d747893e54aebd196b9968ac1878a5d3/pyright-1.1.410-py3-none-any.whl", hash = "sha256:5e961bed37cacf96b3f7cd7b1da39b350a9239aa2e69138d0e88f728cfaf296c", size = 6082448, upload-time = "2026-06-01T17:35:46.387Z" },
 ]
 
 [[package]]

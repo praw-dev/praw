@@ -18,13 +18,13 @@ class Objector:
     """The objector builds :class:`.RedditBase` objects."""
 
     @classmethod
-    def check_error(cls, data: list[Any] | dict[str, dict[str, str]]) -> None:
+    def check_error(cls, data: list[Any] | dict[str, Any]) -> None:
         """Raise an error if the argument resolves to an error object."""
         if error := cls.parse_error(data):
             raise error
 
     @classmethod
-    def parse_error(cls, data: list[Any] | dict[str, dict[str, str]]) -> RedditAPIException | None:
+    def parse_error(cls, data: list[Any] | dict[str, Any]) -> RedditAPIException | None:
         """Convert JSON response into an error object.
 
         :param data: The dict to be converted.
@@ -56,12 +56,12 @@ class Objector:
         self.parsers = {} if parsers is None else parsers
         self._reddit = reddit
 
-    def _objectify_dict(self, *, data: dict[str, Any]) -> RedditBase:
+    def _objectify_dict(self, *, data: dict[str, Any]) -> RedditBase | dict[str, Any]:
         """Create :class:`.RedditBase` objects from dicts.
 
         :param data: The structured data, assumed to be a dict.
 
-        :returns: An instance of :class:`.RedditBase`.
+        :returns: An instance of :class:`.RedditBase`, or the ``data`` dict.
 
         """
         if {"messages", "modActions"}.issubset(data) and {

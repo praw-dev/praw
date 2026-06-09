@@ -13,7 +13,7 @@ class InlineMedia:
 
     TYPE = None
 
-    def __eq__(self, other: InlineMedia) -> bool:
+    def __eq__(self, other: object) -> bool:
         """Return whether the other instance equals the current."""
         return all(getattr(self, attr) == getattr(other, attr) for attr in ["TYPE", "media", "caption", "media_id"])
 
@@ -32,7 +32,7 @@ class InlineMedia:
         """
         self.media = media
         self.caption = caption
-        self.media_id = None
+        self.media_id: str | None = None
 
     def __repr__(self) -> str:
         """Return an object initialization representation of the instance."""

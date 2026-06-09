@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from prawcore import Conflict
 
@@ -67,7 +67,7 @@ class User(PRAWBase):
         r"""Return a :class:`.RedditorList` of blocked :class:`.Redditor`\ s."""
         return self._reddit.get(API_PATH["blocked"])
 
-    def contributor_subreddits(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Subreddit]:
+    def contributor_subreddits(self, **generator_kwargs: Any) -> Iterator[models.Subreddit]:
         r"""Return a :class:`.ListingGenerator` of contributor :class:`.Subreddit`\ s.
 
         These are subreddits in which the user is an approved user.
@@ -144,7 +144,7 @@ class User(PRAWBase):
             self._me = Redditor(self._reddit, _data=user_data)
         return self._me
 
-    def moderator_subreddits(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Subreddit]:
+    def moderator_subreddits(self, **generator_kwargs: Any) -> Iterator[models.Subreddit]:
         """Return a :class:`.ListingGenerator` subreddits that the user moderates.
 
         Additional keyword arguments are passed in the initialization of
@@ -168,7 +168,7 @@ class User(PRAWBase):
         r"""Return a list of :class:`.Multireddit`\ s belonging to the user."""
         return self._reddit.get(API_PATH["my_multireddits"])
 
-    def pin(self, submission: models.Submission, *, num: int | None = None, state: bool = True) -> models.Submission:
+    def pin(self, submission: models.Submission, *, num: int | None = None, state: bool = True) -> models.Submission | None:
         """Set the pin state of a submission on the authenticated user's profile.
 
         :param submission: An instance of :class:`.Submission` that will be
@@ -224,7 +224,7 @@ class User(PRAWBase):
         except Conflict:
             pass
 
-    def subreddits(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Subreddit]:
+    def subreddits(self, **generator_kwargs: Any) -> Iterator[models.Subreddit]:
         r"""Return a :class:`.ListingGenerator` of :class:`.Subreddit`\ s the user is subscribed to.
 
         Additional keyword arguments are passed in the initialization of

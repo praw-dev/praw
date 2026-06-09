@@ -8,6 +8,11 @@ from .. import UnitTest
 
 
 class TestTrophy(UnitTest):
+    def test_dynamic_attribute__missing_raises(self):
+        trophy = Trophy(None, {"name": "a"})
+        with pytest.raises(AttributeError, match="object has no attribute 'does_not_exist'"):
+            _ = trophy.does_not_exist
+
     def test_equality(self):
         trophy1 = Trophy(None, {"name": "a"})
         trophy2 = Trophy(None, {"name": "A"})

@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from json import JSONEncoder, dumps
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any
 
 from praw.const import API_PATH
-from praw.models.base import PRAWBase
+from praw.models.base import DynamicAttributes, PRAWBase
 from praw.models.list.base import BaseList
 from praw.util.cache import cachedproperty
 
@@ -14,10 +14,8 @@ if TYPE_CHECKING:
     import praw
     from praw import models
 
-WidgetType: TypeVar = TypeVar("WidgetType", bound="Widget")
 
-
-class Button(PRAWBase):
+class Button(DynamicAttributes, PRAWBase):
     """Class to represent a single button inside a :class:`.ButtonWidget`.
 
     .. include:: ../../typical_attributes.rst
@@ -44,7 +42,7 @@ class Button(PRAWBase):
     """
 
 
-class CalendarConfiguration(PRAWBase):
+class CalendarConfiguration(DynamicAttributes, PRAWBase):
     """Class to represent the configuration of a :class:`.Calendar`.
 
     .. include:: ../../typical_attributes.rst
@@ -63,7 +61,7 @@ class CalendarConfiguration(PRAWBase):
     """
 
 
-class Hover(PRAWBase):
+class Hover(DynamicAttributes, PRAWBase):
     """Class to represent the hover data for a :class:`.ButtonWidget`.
 
     These values will take effect when the button is hovered over (the user moves their
@@ -89,7 +87,7 @@ class Hover(PRAWBase):
     """
 
 
-class Image(PRAWBase):
+class Image(DynamicAttributes, PRAWBase):
     """Class to represent an image that's part of a :class:`.ImageWidget`.
 
     .. include:: ../../typical_attributes.rst
@@ -106,7 +104,7 @@ class Image(PRAWBase):
     """
 
 
-class ImageData(PRAWBase):
+class ImageData(DynamicAttributes, PRAWBase):
     """Class for image data that's part of a :class:`.CustomWidget`.
 
     .. include:: ../../typical_attributes.rst
@@ -123,7 +121,7 @@ class ImageData(PRAWBase):
     """
 
 
-class MenuLink(PRAWBase):
+class MenuLink(DynamicAttributes, PRAWBase):
     """Class to represent a single link inside a :class:`.Menu` or :class:`.Submenu`.
 
     .. include:: ../../typical_attributes.rst
@@ -138,7 +136,7 @@ class MenuLink(PRAWBase):
     """
 
 
-class Styles(PRAWBase):
+class Styles(DynamicAttributes, PRAWBase):
     """Class to represent the style information of a widget.
 
     .. include:: ../../typical_attributes.rst
@@ -155,7 +153,7 @@ class Styles(PRAWBase):
     """
 
 
-class Submenu(BaseList):
+class Submenu(DynamicAttributes, BaseList):
     r"""Class to represent a submenu of links inside a :class:`.Menu`.
 
     .. include:: ../../typical_attributes.rst
@@ -264,7 +262,9 @@ class SubredditWidgets(PRAWBase):
     def items(self) -> dict[str, models.Widget]:
         """Get this :class:`.Subreddit`'s widgets as a dict from ID to widget."""
         items = {}
-        for item_name, data in self._raw_items.items():
+        # ``_raw_items`` is None until _fetch runs; iterating None raises AttributeError,
+        # which RedditBase.__getattr__ traps to trigger the lazy fetch and retry.
+        for item_name, data in self._raw_items.items():  # pyright: ignore[reportOptionalMemberAccess]
             data["subreddit"] = self.subreddit
             items[item_name] = self._reddit._objector.objectify(data=data)
         return items
@@ -311,7 +311,7 @@ class SubredditWidgets(PRAWBase):
         :param subreddit: The :class:`.Subreddit` the widgets belong to.
 
         """
-        self._raw_items = None
+        self._raw_items: dict[str, Any] | None = None
         self._fetched = False
         self.subreddit = subreddit
         self.progressive_images = False
@@ -361,7 +361,7 @@ class SubredditWidgets(PRAWBase):
         self._fetch()
 
 
-class Widget(PRAWBase):
+class Widget(DynamicAttributes, PRAWBase):
     """Base class to represent a :class:`.Widget`."""
 
     @cachedproperty
@@ -397,6 +397,8 @@ class Widget(PRAWBase):
 
 class WidgetEncoder(JSONEncoder):
     """Class to encode widget-related objects."""
+
+    _subreddit_class: type[models.Subreddit]
 
     def default(self, o: Any) -> Any:
         """Serialize ``PRAWBase`` objects."""
@@ -927,9 +929,11 @@ class ModeratorsWidget(Widget, BaseList):
 
     def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]) -> None:
         """Initialize a :class:`.ModeratorsWidget` instance."""
-        if self.CHILD_ATTRIBUTE not in _data:
+        child_attribute = self.CHILD_ATTRIBUTE
+        assert child_attribute is not None
+        if child_attribute not in _data:
             # .mod.update() sometimes returns payload without "mods" field
-            _data[self.CHILD_ATTRIBUTE] = []
+            _data[child_attribute] = []
         super().__init__(reddit, _data=_data)
 
 
@@ -1043,9 +1047,11 @@ class RulesWidget(Widget, BaseList):
 
     def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]) -> None:
         """Initialize a :class:`.RulesWidget` instance."""
-        if self.CHILD_ATTRIBUTE not in _data:
+        child_attribute = self.CHILD_ATTRIBUTE
+        assert child_attribute is not None
+        if child_attribute not in _data:
             # .mod.update() sometimes returns payload without "data" field
-            _data[self.CHILD_ATTRIBUTE] = []
+            _data[child_attribute] = []
         super().__init__(reddit, _data=_data)
 
 
@@ -1200,7 +1206,9 @@ class SubredditWidgetsModeration:
         self._subreddit = subreddit
         self._reddit = reddit
 
-    def _create_widget(self, payload: dict[str, Any]) -> WidgetType:
+    # Returns Any: the concrete widget type is determined at runtime by objectifying the
+    # response. Each public ``add_*`` wrapper carries the precise return annotation.
+    def _create_widget(self, payload: dict[str, Any]) -> Any:
         path = API_PATH["widget_create"].format(subreddit=self._subreddit)
         widget = self._reddit.post(path, data={"json": dumps(payload, cls=WidgetEncoder)})
         widget.subreddit = self._subreddit

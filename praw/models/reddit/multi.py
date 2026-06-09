@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 from json import dumps
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from praw.const import API_PATH
 from praw.models.listing.mixins import SubredditListingMixin
@@ -93,12 +93,13 @@ class Multireddit(SubredditListingMixin, CreatedMixin, RedditBase):
                 print(submission)
 
         """
-        return SubredditStream(self)
+        return SubredditStream(cast("models.Subreddit", self))
 
     def __init__(self, reddit: praw.Reddit, _data: dict[str, Any]) -> None:
         """Initialize a :class:`.Multireddit` instance."""
-        self.path = None
+        self.path: str | None = None
         super().__init__(reddit, _data=_data)
+        assert self.path is not None
         self._author = Redditor(reddit, self.path.split("/", 3)[2])
         self._path = API_PATH["multireddit"].format(multi=self.name, user=self._author)
         self.path = f"/{self._path[:-1]}"  # Prevent requests for path

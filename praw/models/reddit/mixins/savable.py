@@ -2,11 +2,23 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from praw.const import API_PATH
+
+if TYPE_CHECKING:
+    import praw
 
 
 class SavableMixin:
     """Interface for :class:`.RedditBase` classes that can be saved."""
+
+    if TYPE_CHECKING:
+        # Provided by the host class (:class:`.RedditBase`).
+        _reddit: praw.Reddit
+
+        @property
+        def fullname(self) -> str: ...  # noqa: D102
 
     def save(self, *, category: str | None = None) -> None:
         """Save the object.
