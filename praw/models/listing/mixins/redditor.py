@@ -12,8 +12,11 @@ from praw.util.cache import cachedproperty
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+    from typing_extensions import Unpack
+
     import praw
     from praw import models
+    from praw.models.listing.generator import ListingGeneratorKwargs
 
 
 class SubListing(BaseListingMixin):
@@ -82,7 +85,9 @@ class RedditorListingMixin(BaseListingMixin):
         """
         return SubListing(self._reddit, self._path, "submitted")
 
-    def downvoted(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Comment | models.Submission]:
+    def downvoted(
+        self, **generator_kwargs: Unpack[ListingGeneratorKwargs]
+    ) -> Iterator[models.Comment | models.Submission]:
         """Return a :class:`.ListingGenerator` for items the user has downvoted.
 
         :returns: A :class:`.ListingGenerator` object which yields :class:`.Comment` or
@@ -110,7 +115,9 @@ class RedditorListingMixin(BaseListingMixin):
         """
         return ListingGenerator(self._reddit, urljoin(self._path, "downvoted"), **generator_kwargs)
 
-    def hidden(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Comment | models.Submission]:
+    def hidden(
+        self, **generator_kwargs: Unpack[ListingGeneratorKwargs]
+    ) -> Iterator[models.Comment | models.Submission]:
         """Return a :class:`.ListingGenerator` for items the user has hidden.
 
         :returns: A :class:`.ListingGenerator` object which yields :class:`.Comment` or
@@ -138,7 +145,7 @@ class RedditorListingMixin(BaseListingMixin):
         """
         return ListingGenerator(self._reddit, urljoin(self._path, "hidden"), **generator_kwargs)
 
-    def saved(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Comment | models.Submission]:
+    def saved(self, **generator_kwargs: Unpack[ListingGeneratorKwargs]) -> Iterator[models.Comment | models.Submission]:
         """Return a :class:`.ListingGenerator` for items the user has saved.
 
         :returns: A :class:`.ListingGenerator` object which yields :class:`.Comment` or
@@ -166,7 +173,9 @@ class RedditorListingMixin(BaseListingMixin):
         """
         return ListingGenerator(self._reddit, urljoin(self._path, "saved"), **generator_kwargs)
 
-    def upvoted(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Comment | models.Submission]:
+    def upvoted(
+        self, **generator_kwargs: Unpack[ListingGeneratorKwargs]
+    ) -> Iterator[models.Comment | models.Submission]:
         """Return a :class:`.ListingGenerator` for items the user has upvoted.
 
         :returns: A :class:`.ListingGenerator` object which yields :class:`.Comment` or

@@ -5,13 +5,18 @@ from __future__ import annotations
 import sys
 from functools import cached_property
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, ClassVar
+from typing import IO, TYPE_CHECKING, Any, ClassVar, cast
 
 from defusedxml import ElementTree
 from prawcore.exceptions import ServerError
 
 from praw.const import API_PATH, JPEG_HEADER
-from praw.exceptions import ClientException, RedditAPIException, TooLargeMediaException
+from praw.exceptions import (
+    ClientException,
+    RedditAPIException,
+    RedditErrorItem,
+    TooLargeMediaException,
+)
 
 if sys.version_info >= (3, 13):  # pragma: no cover
     from mimetypes import guess_file_type
@@ -97,7 +102,8 @@ class Media:
         return lease_response, upload_data, upload_url
 
     def _post_to_s3(self, reddit: praw.Reddit, upload_data: dict[str, str], upload_url: str, /) -> Response:
-        return reddit._core._requestor.request(
+        assert reddit._core is not None
+        return reddit._core.requestor.request(
             "POST", upload_url, data=upload_data, files={"file": (self.name, self._data)}
         )
 
@@ -162,14 +168,18 @@ class PostMedia(Media):
         if tags[:4] == ["Code", "Message", "ProposedSize", "MaxSizeAllowed"]:
             # Returned if media is too big
             *_, actual, maximum_size = (element.text for element in root[:4])
-            raise TooLargeMediaException(actual=int(actual), maximum_size=int(maximum_size))
+            raise TooLargeMediaException(
+                actual=int(actual or 0), maximum_size=int(maximum_size or 0)
+            )
 
     @staticmethod
     def _raise_upload_error(response: Response, /) -> None:
         PostMedia._parse_xml_response(response)
         Media._raise_upload_error(response)
 
-    def _upload(self, reddit: praw.Reddit, /, *, expected_mime_prefix: str | None = None, upload_type: str = "link") -> str:
+    def _upload(  # pyright: ignore[reportIncompatibleMethodOverride]  # post media is uploaded with a Reddit instance rather than a Subreddit
+        self, reddit: praw.Reddit, /, *, expected_mime_prefix: str | None = None, upload_type: str = "link"
+    ) -> str:
         """Upload the media to Reddit (undocumented endpoint).
 
         Unlike the other :class:`.Media` subclasses, post media is not associated with a
@@ -203,7 +213,9 @@ class StylesheetAsset(Media):
 
     LEASE_API_PATH = API_PATH["style_asset_lease"]
 
-    def _upload(self, subreddit: models.Subreddit, /, *, image_type: str) -> str:
+    def _upload(  # pyright: ignore[reportIncompatibleMethodOverride]  # style assets require an image_type rather than arbitrary lease data
+        self, subreddit: models.Subreddit, /, *, image_type: str
+    ) -> str:
         """Upload the media to Reddit.
 
         :param subreddit: The subreddit the style asset is associated with.
@@ -228,7 +240,9 @@ class StylesheetImage(Media):
     def _image_type(self) -> str:
         return "jpg" if self._data.startswith(JPEG_HEADER) else "png"
 
-    def _upload(self, subreddit: models.Subreddit, /, **additional_data: str) -> dict[str, Any]:
+    def _upload(  # pyright: ignore[reportIncompatibleMethodOverride]  # stylesheet image upload returns the raw response dict
+        self, subreddit: models.Subreddit, /, **additional_data: str
+    ) -> dict[str, Any]:
         """Upload the media to Reddit.
 
         :param subreddit: The subreddit the stylesheet image is associated with.
@@ -240,7 +254,10 @@ class StylesheetImage(Media):
         """
         data = {"img_type": self._image_type, **additional_data}
         url = self.UPLOAD_API_PATH.format(subreddit=subreddit)
-        response = subreddit._reddit.post(url, data=data, files={"file": (self.name, self._data)})
+        # ``requests`` accepts ``(filename, content)`` tuples for file uploads, but
+        # ``Reddit.post`` types ``files`` as ``dict[str, IO]``.
+        files = cast("dict[str, IO[Any]]", {"file": (self.name, self._data)})
+        response = subreddit._reddit.post(url, data=data, files=files)
         if response["errors"]:
             error_type = response["errors"][0]
             error_value = response.get("errors_values", [""])[0]
@@ -248,7 +265,9 @@ class StylesheetImage(Media):
                 "BAD_CSS_NAME",
                 "IMAGE_ERROR",
             }, "Please file a bug with PRAW."
-            raise RedditAPIException([[error_type, error_value, None]])
+            raise RedditAPIException(
+                [RedditErrorItem(error_type=error_type, message=error_value or "", field="")]
+            )
         return response
 
 

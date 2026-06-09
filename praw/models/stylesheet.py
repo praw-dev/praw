@@ -1,9 +1,9 @@
 """Provide the Stylesheet class."""
 
-from praw.models.base import PRAWBase
+from praw.models.base import DynamicAttributes, PRAWBase
 
 
-class Stylesheet(PRAWBase):
+class Stylesheet(DynamicAttributes, PRAWBase):
     """Represent a stylesheet.
 
     .. include:: ../../typical_attributes.rst

@@ -1641,7 +1641,7 @@ class TestSubreddit(IntegrationTest):
             "<HostId>iYEVOuRfbLiKwMgHt2ewqQRIm0NWL79uiC2rPLj9P0PwW55MhjY2/O8d9JdKTf1iwzLjwWMnGQ=</HostId>"
             "</Error>"
         )
-        _request = reddit._core._requestor._http.request
+        _request = reddit._core.requestor._http.request
 
         def patch_request(method, url, *args, **kwargs):
             """Patch requests to return mock data on specific url."""
@@ -1653,14 +1653,14 @@ class TestSubreddit(IntegrationTest):
                 return response
             return _request(method, url, *args, **kwargs)
 
-        reddit._core._requestor._http.request = patch_request
+        reddit._core.requestor._http.request = patch_request
         fake_png = PNG_HEADER + b"\x1a" * 10  # Normally 1024 ** 2 * 20 (20 MB)
         with open(tmp_path.joinpath("fake_img.png"), "wb") as tempfile:
             tempfile.write(fake_png)
         subreddit = reddit.subreddit("test")
         with pytest.raises(TooLargeMediaException):
             subreddit.submit("test", image=PostMedia(tempfile.name))
-        reddit._core._requestor._http.request = _request
+        reddit._core.requestor._http.request = _request
 
     @mock.patch(
         "websocket.create_connection",

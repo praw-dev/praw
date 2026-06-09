@@ -1,10 +1,25 @@
 """Provide the InboxableMixin class."""
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, cast
+
 from praw.const import API_PATH
+
+if TYPE_CHECKING:
+    import praw
+    from praw import models
 
 
 class InboxableMixin:
     """Interface for :class:`.RedditBase` subclasses that originate from the inbox."""
+
+    if TYPE_CHECKING:
+        # Provided by the host class (:class:`.RedditBase`).
+        _reddit: praw.Reddit
+
+        @property
+        def fullname(self) -> str: ...  # noqa: D102
 
     def block(self) -> None:
         """Block the user who sent the item.
@@ -48,7 +63,7 @@ class InboxableMixin:
             :meth:`.uncollapse`
 
         """
-        self._reddit.inbox.collapse([self])
+        self._reddit.inbox.collapse([cast("models.Message", self)])
 
     def mark_read(self) -> None:
         """Mark a single inbox item as read.
@@ -75,7 +90,7 @@ class InboxableMixin:
         :meth:`.Inbox.mark_all_read`
 
         """
-        self._reddit.inbox.mark_read([self])
+        self._reddit.inbox.mark_read([cast("models.Comment | models.Message", self)])
 
     def mark_unread(self) -> None:
         """Mark the item as unread.
@@ -99,7 +114,7 @@ class InboxableMixin:
             :meth:`.mark_read`
 
         """
-        self._reddit.inbox.mark_unread([self])
+        self._reddit.inbox.mark_unread([cast("models.Comment | models.Message", self)])
 
     def uncollapse(self) -> None:
         """Mark the item as uncollapsed.
@@ -123,4 +138,4 @@ class InboxableMixin:
             :meth:`.collapse`
 
         """
-        self._reddit.inbox.uncollapse([self])
+        self._reddit.inbox.uncollapse([cast("models.Message", self)])

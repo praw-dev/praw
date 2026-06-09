@@ -29,9 +29,14 @@ praw follows `semantic versioning <https://semver.org/>`_.
   ``reddit_url`` endpoint, as such a file can redirect credentials to an untrusted host.
   The warning can be silenced by setting the ``PRAW_ALLOW_ENDPOINT_OVERRIDE``
   environment variable.
+- A ``py.typed`` marker (:PEP:`561`) so that downstream projects can type check against
+  PRAW's inline annotations.
 
 **Changed**
 
+- Require ``prawcore >=3.2, <4`` for its public :class:`.Session` and authorizer
+  accessors and the widened :meth:`!Session.request` annotations, which let PRAW drop a
+  number of internal ``cast``\ s and type-checker suppressions.
 - Constrain the ``websocket-client`` dependency to ``<2`` to avoid silently adopting a
   future, potentially breaking, major release.
 - Require ``update_checker >=1.0, <2.0`` and call ``update_check`` with keyword

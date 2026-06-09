@@ -10,6 +10,28 @@ if TYPE_CHECKING:
     import praw
 
 
+class DynamicAttributes:
+    """Mixin for objects whose attributes are populated from Reddit response data.
+
+    Reddit adds and removes fields without notice, so PRAW sets these attributes
+    dynamically rather than declaring them. Defining ``__getattr__`` (typed to return
+    ``Any``) tells type checkers that attribute access on such objects is permitted,
+    which is required for downstream projects to type check against PRAW's ``py.typed``
+    marker. :class:`.RedditBase` provides equivalent behavior (with lazy fetching) for
+    the objects it backs; this mixin covers the :class:`.PRAWBase` data classes that do
+    not inherit it.
+
+    It does not change runtime behavior: accessing a genuinely missing attribute still
+    raises :py:class:`AttributeError`.
+
+    """
+
+    def __getattr__(self, attribute: str) -> Any:
+        """Raise :py:class:`AttributeError` for a missing dynamic attribute."""
+        msg = f"{self.__class__.__name__!r} object has no attribute {attribute!r}"
+        raise AttributeError(msg)
+
+
 class PRAWBase:
     """Superclass for all models in PRAW."""
 

@@ -7,11 +7,16 @@ from typing import TYPE_CHECKING
 from praw.const import API_PATH
 
 if TYPE_CHECKING:
+    import praw
     from praw import models
 
 
 class MessageableMixin:
     """Interface for classes that can be messaged."""
+
+    if TYPE_CHECKING:
+        # Provided by the host class (:class:`.RedditBase`).
+        _reddit: praw.Reddit
 
     def message(
         self,

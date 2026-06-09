@@ -14,7 +14,7 @@ class TestUser(UnitTest):
             client_secret="dummy",
             user_agent="dummy",
         )
-        reddit._core._requestor._http = None
+        reddit._core.requestor._http = None
 
         assert reddit.read_only
         user = User(reddit)

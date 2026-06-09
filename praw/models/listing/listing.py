@@ -15,6 +15,7 @@ class Listing(PRAWBase):
 
     if TYPE_CHECKING:
         after: Any
+        children: list[Any]
 
     AFTER_PARAM = "after"
     CHILD_ATTRIBUTE = "children"

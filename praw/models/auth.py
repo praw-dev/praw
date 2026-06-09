@@ -2,7 +2,13 @@
 
 from __future__ import annotations
 
-from prawcore import Authorizer, ImplicitAuthorizer, UntrustedAuthenticator, session
+from prawcore import (
+    Authorizer,
+    DeviceIDAuthorizer,
+    ImplicitAuthorizer,
+    UntrustedAuthenticator,
+    session,
+)
 
 from praw.exceptions import InvalidImplicitAuth, MissingRequiredAttributeException
 from praw.models.base import PRAWBase
@@ -25,7 +31,8 @@ class Auth(PRAWBase):
         requests.
 
         """
-        data = self._reddit._core._rate_limiter
+        assert self._reddit._core is not None
+        data = self._reddit._core.rate_limiter
         return {
             "remaining": data.remaining,
             "used": data.used,
@@ -41,7 +48,8 @@ class Auth(PRAWBase):
         The session's active authorization will be updated upon success.
 
         """
-        authenticator = self._reddit._read_only_core._authorizer._authenticator
+        assert self._reddit._read_only_core is not None
+        authenticator = self._reddit._read_only_core.authorizer.authenticator
         authorizer = Authorizer(authenticator)
         authorizer.authorize(code)
         authorized_session = session(authorizer=authorizer, window_size=self._reddit.config.window_size)
@@ -64,7 +72,8 @@ class Auth(PRAWBase):
             non-installed application type.
 
         """
-        authenticator = self._reddit._read_only_core._authorizer._authenticator
+        assert self._reddit._read_only_core is not None
+        authenticator = self._reddit._read_only_core.authorizer.authenticator
         if not isinstance(authenticator, UntrustedAuthenticator):
             raise InvalidImplicitAuth
         implicit_session = session(
@@ -79,9 +88,14 @@ class Auth(PRAWBase):
         For read-only authorizations this should return ``{"*"}``.
 
         """
-        authorizer = self._reddit._core._authorizer
+        assert self._reddit._core is not None
+        authorizer = self._reddit._core.authorizer
         if not authorizer.is_valid():
+            # The active core authorizer is always refreshable here; ImplicitAuthorizer
+            # is the only BaseAuthorizer without refresh() and never reaches this path.
+            assert isinstance(authorizer, (Authorizer, DeviceIDAuthorizer))
             authorizer.refresh()
+        assert authorizer.scopes is not None
         return authorizer.scopes
 
     def url(
@@ -109,6 +123,8 @@ class Auth(PRAWBase):
             whom the URL was generated for.
 
         """
+        assert self._reddit._read_only_core is not None
+        assert self._reddit._read_only_core._authorizer is not None
         authenticator = self._reddit._read_only_core._authorizer._authenticator
         if authenticator.redirect_uri is self._reddit.config.CONFIG_NOT_SET:
             msg = "redirect_uri must be provided"

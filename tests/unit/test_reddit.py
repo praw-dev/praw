@@ -472,8 +472,8 @@ class TestRedditCustomRequestor(UnitTest):
             user_agent="dummy",
             username="dummy",
         )
-        assert isinstance(_reddit._core._requestor, CustomRequestor)
-        assert not isinstance(reddit._core._requestor, CustomRequestor)
+        assert isinstance(_reddit._core.requestor, CustomRequestor)
+        assert not isinstance(reddit._core.requestor, CustomRequestor)
 
         _reddit = Reddit(
             requestor_class=CustomRequestor,
@@ -481,8 +481,8 @@ class TestRedditCustomRequestor(UnitTest):
             client_secret="dummy",
             user_agent="dummy",
         )
-        assert isinstance(_reddit._core._requestor, CustomRequestor)
-        assert not isinstance(reddit._core._requestor, CustomRequestor)
+        assert isinstance(_reddit._core.requestor, CustomRequestor)
+        assert not isinstance(reddit._core.requestor, CustomRequestor)
 
     def test_requestor_kwargs(self):
         session = mock.Mock(headers={})
@@ -493,4 +493,4 @@ class TestRedditCustomRequestor(UnitTest):
             user_agent="dummy",
         )
 
-        assert reddit._core._requestor._http is session
+        assert reddit._core.requestor._http is session

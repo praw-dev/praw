@@ -25,6 +25,10 @@ test = [
   "requests >=2.20.1, <3",
   "vcrpy >=7.0.0"
 ]
+type = [
+  "pyright",
+  {include-group = "test"}
+]
 
 [project]
 authors = [{name = "Bryce Boe", email = "bbzbryce@gmail.com"}]
@@ -42,11 +46,12 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
-  "Topic :: Utilities"
+  "Topic :: Utilities",
+  "Typing :: Typed"
 ]
 dependencies = [
   "defusedxml ==0.7.1",
-  "prawcore>=3.1.0,<4",
+  "prawcore>=3.2.0,<4",
   "typing-extensions; python_version <= '3.10'",
   "update_checker >=1.0, <2.0",
   "websocket-client >=0.54.0, <2"
@@ -82,6 +87,12 @@ extend_exclude = ['./docs/examples/']
 
 [tool.hatch.version]
 path = "praw/const.py"
+
+[tool.pyright]
+include = ["praw", "tests/typing"]
+pythonVersion = "3.10"
+reportUnnecessaryTypeIgnoreComment = "error"
+typeCheckingMode = "standard"
 
 [tool.ruff]
 include = [
@@ -169,7 +180,7 @@ ban-relative-imports = "all"
 "tests/*.py" = ["SLF001"]
 
 [tool.tox]
-envlist = ["py310", "py311", "py312", "py313", "py314", "docs", "pre-commit"]
+envlist = ["py310", "py311", "py312", "py313", "py314", "docs", "pre-commit", "type"]
 minversion = "4.22"
 
 [tool.tox.env.docs]
@@ -187,6 +198,12 @@ commands = [
 dependency_groups = ["lint"]
 description = "run pre-commit on code base"
 pass_env = ["SKIP"]
+runner = "uv-venv-lock-runner"
+
+[tool.tox.env.type]
+commands = [["pyright"]]
+dependency_groups = ["type"]
+description = "run type check on code base"
 runner = "uv-venv-lock-runner"
 
 [tool.tox.env_run_base]

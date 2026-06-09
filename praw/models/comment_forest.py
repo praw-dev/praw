@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from heapq import heappop, heappush
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from praw.exceptions import DuplicateReplaceException
 from praw.models.reddit.more import MoreComments
@@ -19,7 +19,7 @@ class CommentForest:
 
     """
 
-    def __getitem__(self, index: int) -> models.Comment:
+    def __getitem__(self, index: int) -> models.Comment | models.MoreComments:
         """Return the comment at position ``index`` in the list.
 
         This method is to be used like an array access, such as:
@@ -43,7 +43,7 @@ class CommentForest:
         """Return the number of top-level comments in the forest."""
         return len(self._comments)
 
-    def _insert_comment(self, comment: models.Comment) -> None:
+    def _insert_comment(self, comment: models.Comment | models.MoreComments) -> None:
         if comment.name in self._submission._comments_by_id:
             raise DuplicateReplaceException
         comment.submission = self._submission
@@ -65,24 +65,26 @@ class CommentForest:
         was not called first.
 
         """
-        comments = []
-        queue = list(self)
+        comments: list[models.Comment | models.MoreComments] = []
+        queue = list(self._comments)
         while queue:
             comment = queue.pop(0)
             comments.append(comment)
             if not isinstance(comment, MoreComments):
-                queue.extend(comment.replies)
+                queue.extend(comment.replies._comments)
         return comments
 
     @staticmethod
     def _gather_more_comments(
-        tree: list[models.MoreComments],
+        tree: list[models.Comment | models.MoreComments],
         *,
-        parent_tree: list[models.MoreComments] | None = None,
+        parent_tree: list[models.Comment | models.MoreComments] | None = None,
     ) -> list[MoreComments]:
         """Return a list of :class:`.MoreComments` objects obtained from tree."""
-        more_comments = []
-        queue = [(None, x) for x in tree]
+        more_comments: list[MoreComments] = []
+        queue: list[tuple[models.Comment | None, models.Comment | models.MoreComments]] = [
+            (None, x) for x in tree
+        ]
         while queue:
             parent, comment = queue.pop(0)
             if isinstance(comment, MoreComments):
@@ -99,7 +101,7 @@ class CommentForest:
     def __init__(
         self,
         submission: models.Submission,
-        comments: list[models.Comment] | None = None,
+        comments: list[models.Comment | models.MoreComments] | None = None,
     ) -> None:
         """Initialize a :class:`.CommentForest` instance.
 
@@ -109,10 +111,12 @@ class CommentForest:
             ``None``).
 
         """
-        self._comments = comments
+        self._comments: list[models.Comment | models.MoreComments] = (
+            comments if comments is not None else []
+        )
         self._submission = submission
 
-    def _update(self, comments: list[models.Comment]) -> None:
+    def _update(self, comments: list[models.Comment | models.MoreComments]) -> None:
         self._comments = comments
         for comment in comments:
             comment.submission = self._submission
@@ -184,7 +188,10 @@ class CommentForest:
                 item._remove_from.remove(item)
                 continue
 
-            new_comments = item.comments(update=False)
+            new_comments = cast(
+                "list[models.Comment | models.MoreComments]",
+                item.comments(update=False),
+            )
             if remaining is not None:
                 remaining -= 1
 

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from praw.const import API_PATH
 from praw.models import Subreddit
@@ -23,7 +23,7 @@ class Subreddits(PRAWBase):
     def _to_list(subreddit_list: list[str | models.Subreddit]) -> str:
         return ",".join([str(x) for x in subreddit_list])
 
-    def default(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Subreddit]:
+    def default(self, **generator_kwargs: Any) -> Iterator[models.Subreddit]:
         """Return a :class:`.ListingGenerator` for default subreddits.
 
         Additional keyword arguments are passed in the initialization of
@@ -32,7 +32,7 @@ class Subreddits(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH["subreddits_default"], **generator_kwargs)
 
-    def new(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Subreddit]:
+    def new(self, **generator_kwargs: Any) -> Iterator[models.Subreddit]:
         """Return a :class:`.ListingGenerator` for new subreddits.
 
         Additional keyword arguments are passed in the initialization of
@@ -41,7 +41,7 @@ class Subreddits(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH["subreddits_new"], **generator_kwargs)
 
-    def popular(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Subreddit]:
+    def popular(self, **generator_kwargs: Any) -> Iterator[models.Subreddit]:
         """Return a :class:`.ListingGenerator` for popular subreddits.
 
         Additional keyword arguments are passed in the initialization of
@@ -50,7 +50,7 @@ class Subreddits(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH["subreddits_popular"], **generator_kwargs)
 
-    def premium(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Subreddit]:
+    def premium(self, **generator_kwargs: Any) -> Iterator[models.Subreddit]:
         """Return a :class:`.ListingGenerator` for premium subreddits.
 
         Additional keyword arguments are passed in the initialization of
@@ -79,11 +79,11 @@ class Subreddits(PRAWBase):
             msg = "omit_subreddits must be a list or None"
             raise TypeError(msg)
 
-        params = {"omit": self._to_list(omit_subreddits or [])}
+        params: dict[str, str | int] = {"omit": self._to_list(omit_subreddits or [])}
         url = API_PATH["sub_recommended"].format(subreddits=self._to_list(subreddits))
         return [Subreddit(self._reddit, sub["sr_name"]) for sub in self._reddit.get(url, params=params)]
 
-    def search(self, query: str, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Subreddit]:
+    def search(self, query: str, **generator_kwargs: Any) -> Iterator[models.Subreddit]:
         """Return a :class:`.ListingGenerator` of subreddits matching ``query``.
 
         Subreddits are searched by both their title and description.
@@ -121,7 +121,7 @@ class Subreddits(PRAWBase):
         )
         return [self._reddit.subreddit(x) for x in result["names"]]
 
-    def stream(self, **stream_options: str | int | dict[str, str]) -> Iterator[models.Subreddit]:
+    def stream(self, **stream_options: Any) -> Iterator[models.Subreddit]:
         """Yield new subreddits as they are created.
 
         Subreddits are yielded oldest first. Up to 100 historical subreddits will

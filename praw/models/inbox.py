@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from praw.const import API_PATH
 from praw.models.base import PRAWBase
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class Inbox(PRAWBase):
     """Inbox is a Listing class that represents the inbox."""
 
-    def all(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Message | models.Comment]:
+    def all(self, **generator_kwargs: Any) -> Iterator[models.Message | models.Comment]:
         """Return a :class:`.ListingGenerator` for all inbox comments and messages.
 
         Additional keyword arguments are passed in the initialization of
@@ -63,7 +63,7 @@ class Inbox(PRAWBase):
             self._reddit.post(API_PATH["collapse"], data=data)
             items = items[25:]
 
-    def comment_replies(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Comment]:
+    def comment_replies(self, **generator_kwargs: Any) -> Iterator[models.Comment]:
         """Return a :class:`.ListingGenerator` for comment replies.
 
         Additional keyword arguments are passed in the initialization of
@@ -155,7 +155,7 @@ class Inbox(PRAWBase):
             self._reddit.post(API_PATH["unread_message"], data=data)
             items = items[25:]
 
-    def mentions(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Comment]:
+    def mentions(self, **generator_kwargs: Any) -> Iterator[models.Comment]:
         r"""Return a :class:`.ListingGenerator` for mentions.
 
         A mention is :class:`.Comment` in which the authorized redditor is named in its
@@ -192,7 +192,7 @@ class Inbox(PRAWBase):
             message.parent = messages.get(message.parent_id)
         return messages[f"t4_{message_id.lower()}"]
 
-    def messages(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Message]:
+    def messages(self, **generator_kwargs: Any) -> Iterator[models.Message]:
         """Return a :class:`.ListingGenerator` for inbox messages.
 
         Additional keyword arguments are passed in the initialization of
@@ -208,7 +208,7 @@ class Inbox(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH["messages"], **generator_kwargs)
 
-    def sent(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Message]:
+    def sent(self, **generator_kwargs: Any) -> Iterator[models.Message]:
         """Return a :class:`.ListingGenerator` for sent messages.
 
         Additional keyword arguments are passed in the initialization of
@@ -224,7 +224,7 @@ class Inbox(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH["sent"], **generator_kwargs)
 
-    def stream(self, **stream_options: str | int | dict[str, str]) -> Iterator[models.Comment | models.Message]:
+    def stream(self, **stream_options: Any) -> Iterator[models.Comment | models.Message]:
         """Yield new inbox items as they become available.
 
         Items are yielded oldest first. Up to 100 historical items will initially be
@@ -242,7 +242,7 @@ class Inbox(PRAWBase):
         """
         return stream_generator(self.unread, **stream_options)
 
-    def submission_replies(self, **generator_kwargs: str | int | dict[str, str]) -> Iterator[models.Comment]:
+    def submission_replies(self, **generator_kwargs: Any) -> Iterator[models.Comment]:
         """Return a :class:`.ListingGenerator` for submission replies.
 
         Additional keyword arguments are passed in the initialization of
@@ -291,7 +291,7 @@ class Inbox(PRAWBase):
         self,
         *,
         mark_read: bool = False,
-        **generator_kwargs: str | int | dict[str, str] | None,
+        **generator_kwargs: Any | None,
     ) -> Iterator[models.Comment | models.Message]:
         """Return a :class:`.ListingGenerator` for unread comments and messages.
 
