@@ -14,6 +14,32 @@ every removed or changed item, with examples showing how to update your code.
 PRAW 8 requires Python 3.10 or newer. Support for Python 3.8 and 3.9, both of which are
 end-of-life, has been dropped, and support for Python 3.13 and 3.14 has been added.
 
+*********************************
+ Dependency and Behavior Changes
+*********************************
+
+PRAW 8 raises several dependency floors: it now requires ``prawcore >=3.2, <4`` (for its
+public :class:`!Session` and authorizer accessors) and ``update_checker >=1.0, <2``, and
+it constrains ``websocket-client`` to ``<2``. These requirements are resolved
+automatically when you install or upgrade PRAW; no code changes are required.
+
+PRAW now ships a :PEP:`561` ``py.typed`` marker, so downstream projects can type check
+against PRAW's inline annotations. This is additive and does not change runtime
+behavior.
+
+PRAW now warns at initialization if a ``praw.ini`` file in the current working directory
+sets the ``oauth_url`` or ``reddit_url`` endpoint, since such a file can redirect
+credentials to an untrusted host. If you intentionally override these endpoints (for
+example, to test against a mock server), silence the warning by setting the
+``PRAW_ALLOW_ENDPOINT_OVERRIDE`` environment variable.
+
+Changing how a :class:`.Submission` is fetched after the fact now raises
+:class:`.ClientException` instead of logging a warning. Set the ``comment_sort`` and
+``comment_limit`` attributes, and call :meth:`.Submission.add_fetch_param`, before the
+submission is fetched -- that is, before accessing any of its attributes. The
+``warn_comment_sort`` and ``warn_additional_fetch_params`` configuration options, which
+previously toggled these warnings, have been removed.
+
 ***************
  Media Uploads
 ***************

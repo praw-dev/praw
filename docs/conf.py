@@ -23,8 +23,11 @@ intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
 master_doc = "index"
 nitpick_ignore = [
     ("py:class", "IO"),
+    ("py:class", "ListingGeneratorKwargs"),
+    ("py:class", "datetime"),
     ("py:class", "prawcore.requestor.Requestor"),
     ("py:class", "prawcore.auth.BaseAuthorizer"),
+    ("py:class", "praw.models.listing.generator.ListingGeneratorKwargs"),
     ("py:class", "praw.models.redditors.PartialRedditor"),
 ]
 nitpicky = True

@@ -24,6 +24,7 @@ scripts when you need to look back at what the bot did hours ago.
 .. code-block:: python
 
     import logging
+    import logging.handlers
 
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.DEBUG)
