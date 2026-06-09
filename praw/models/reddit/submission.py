@@ -6,7 +6,6 @@ import re
 from json import dumps
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
-from warnings import warn
 
 from prawcore import Conflict
 
@@ -544,7 +543,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Create
 
         Sort order and comment limit can be set with the ``comment_sort`` and
         ``comment_limit`` attributes before comments are fetched, including any call to
-        :meth:`.replace_more`:
+        :meth:`.replace_more`. Setting either attribute after the comments have been
+        fetched raises a :class:`.ClientException`:
 
         .. code-block:: python
 
@@ -615,18 +615,12 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Create
             value = Subreddit(self._reddit, value)
         elif attribute == "poll_data":
             value = PollData(self._reddit, value)
-        elif (
-            attribute == "comment_sort"
-            and hasattr(self, "_fetched")
-            and self._fetched
-            and hasattr(self, "_reddit")
-            and self._reddit.config.warn_comment_sort
-        ):
-            warn(
-                "The comments for this submission have already been fetched, so the"
-                " updated comment_sort will not have any effect.",
-                stacklevel=2,
+        elif attribute in {"comment_limit", "comment_sort"} and getattr(self, "_fetched", False):
+            msg = (
+                f"Cannot update {attribute!r} because the comments for this submission"
+                " have already been fetched."
             )
+            raise ClientException(msg)
         super().__setattr__(attribute, value)
 
     def _chunk(
@@ -783,8 +777,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Create
         :raises ClientException: If the submission has already been fetched, since fetch
             parameters only affect the initial fetch and would otherwise have no effect.
 
-        Fetch parameters must be added before the submission is fetched, i.e., before any
-        of its attributes are accessed. For example, to fetch a submission with the
+        Fetch parameters must be added before the submission is fetched, i.e., before
+        any of its attributes are accessed. For example, to fetch a submission with the
         ``rtjson`` attribute populated:
 
         .. code-block:: python
