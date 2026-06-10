@@ -28,7 +28,7 @@ Environment variables have the highest priority, followed by keyword arguments t
 PRAW internally relies upon the requests_ package to handle HTTP requests. Requests
 supports use of ``HTTP_PROXY`` and ``HTTPS_PROXY`` environment variables in order to
 proxy HTTP and HTTPS requests respectively [`ref
-<https://requests.readthedocs.io/en/main/user/advanced/#proxies>`_].
+<https://requests.readthedocs.io/en/stable/user/advanced/#proxies>`_].
 
 Given that PRAW exclusively communicates with Reddit via HTTPS, only the ``HTTPS_PROXY``
 option should be required.
@@ -71,11 +71,11 @@ certificate without an exception from requests_, first export the certificate as
 
 The code above creates a custom Session_ instance and `configures it to use a custom
 certificate
-<https://requests.readthedocs.io/en/main/user/advanced/#ssl-cert-verification>`_, then
+<https://requests.readthedocs.io/en/stable/user/advanced/#ssl-cert-verification>`_, then
 passes it as a parameter when creating the :class:`.Reddit` instance. Note that the
 example above uses a :ref:`password_flow` authentication type, but this method will work
 for any authentication type.
 
-.. _requests: https://requests.readthedocs.io
+.. _requests: https://requests.readthedocs.io/en/stable/
 
 .. _session: https://requests.readthedocs.io/en/stable/api/#request-sessions

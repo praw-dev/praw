@@ -1290,7 +1290,7 @@ as described below:
 
 - ``implicit`` parameter to :meth:`.url` to support the implicit flow for **installed**
   applications (see:
-  https://github.com/reddit/reddit/wiki/OAuth2#authorization-implicit-grant-flow)
+  https://github.com/reddit-archive/reddit/wiki/OAuth2#authorization-implicit-grant-flow)
 - :meth:`.scopes` to discover which scopes are available to the current authentication
 - Lots of documentation: https://praw.readthedocs.io/
 

@@ -20,9 +20,9 @@ rate limit, even when running from a single IP address.
 ********************************************
 
 If you plan on using PRAW in an asynchronous environment, (e.g., discord.py, asyncio) it
-is strongly recommended to use `Async PRAW <https://asyncpraw.readthedocs.io/>`_. It is
-the official asynchronous version of PRAW and its usage is similar and has the same
-features as PRAW.
+is strongly recommended to use `Async PRAW
+<https://asyncpraw.readthedocs.io/en/stable/>`_. It is the official asynchronous version
+of PRAW and its usage is similar and has the same features as PRAW.
 
 .. note::
 

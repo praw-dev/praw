@@ -25,8 +25,8 @@ All of these options can be provided in any of the ways mentioned in
     of PRAW is available a message is reported via standard error (default: ``true``).
 :user_agent: (Required) A unique description of your application. The following format
     is recommended according to `Reddit's API Rules
-    <https://github.com/reddit/reddit/wiki/API#rules>`_: ``<platform>:<app ID>:<version
-    string> (by u/<reddit username>)``.
+    <https://github.com/reddit-archive/reddit/wiki/API#rules>`_: ``<platform>:<app
+    ID>:<version string> (by u/<reddit username>)``.
 
 .. _oauth_options:
 
@@ -87,7 +87,8 @@ These are options that do not belong in another category, but still play a part 
 
 :check_for_async: When ``true``, check if PRAW is being run in an asynchronous
     environment whenever a request is made. If so, a warning will be logged recommending
-    the usage of `Async PRAW <https://asyncpraw.readthedocs.io/>`_ (default: ``true``).
+    the usage of `Async PRAW <https://asyncpraw.readthedocs.io/en/stable/>`_ (default:
+    ``true``).
 :ratelimit_seconds: Controls the maximum number of seconds PRAW will capture ratelimits
     returned in JSON data. Because this can be as high as 14 minutes, only ratelimits of
     up to 5 seconds are captured and waited on by default.
