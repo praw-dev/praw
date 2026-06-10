@@ -143,6 +143,8 @@ praw follows `semantic versioning <https://semver.org/>`_.
 **Fixed**
 
 - Fix API endpoint for :meth:`.Submission.hide` and :meth:`.Submission.unhide`.
+- Fix ``TypeError`` when objectifying a response whose ``json.errors`` field is ``null``
+  rather than an empty list (e.g. ``api/hide``).
 
 **Removed**
 
