@@ -25,7 +25,7 @@ Alternatively, PRAW can be installed via ``pip``:
     Avoid using ``sudo`` to install packages. Do you `really` trust this package?
 
 For instructions on installing Python and pip see "The Hitchhiker's Guide to Python"
-`Installation Guides <https://docs.python-guide.org/en/latest/starting/installation/>`_.
+`Installation Guides <https://docs.python-guide.org/starting/installation/>`_.
 
 ***************
  Updating PRAW

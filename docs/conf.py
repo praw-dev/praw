@@ -22,6 +22,13 @@ intersphinx_mapping = {
     "prawcore": ("https://prawcore.readthedocs.io/en/stable/", None),
     "python": ("https://docs.python.org/3", None),
 }
+# GitHub renders wiki/file anchors client-side, so linkcheck cannot verify them.
+linkcheck_anchors_ignore_for_url = [r"https://github\.com/.*"]
+# The Reddit Help / Zendesk support site blocks automated requests with a 403.
+linkcheck_ignore = [
+    r"https://(\w+\.)?reddithelp\.com/.*",
+    r"https://reddit\.zendesk\.com/.*",
+]
 nitpicky = True
 project = "PRAW"
 release = __version__

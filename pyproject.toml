@@ -192,6 +192,15 @@ dependency_groups = ["docs"]
 description = "build docs with sphinx"
 runner = "uv-venv-lock-runner"
 
+[tool.tox.env.linkcheck]
+base_python = ["py314"]
+commands = [
+  ["sphinx-build", "--keep-going", "-b", "linkcheck", "docs/", "{env_tmp_dir}/linkcheck"]
+]
+dependency_groups = ["docs"]
+description = "check documentation for broken external links"
+runner = "uv-venv-lock-runner"
+
 [tool.tox.env.pre-commit]
 commands = [
   ["pre-commit", "run", "--all-files"]

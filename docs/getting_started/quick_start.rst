@@ -26,15 +26,15 @@ bots using PRAW, the Python Reddit API Wrapper. It's fun and easy. Let's get sta
     u/<Reddit username>)``. For example, ``android:com.example.myredditapp:v1.2.3 (by
     u/kemitche)``. Read more about user agents at `Reddit's API wiki page`_.
 
-.. _first steps guide: https://github.com/reddit/reddit/wiki/OAuth2-Quick-Start-Example#first-steps
+.. _first steps guide: https://github.com/reddit-archive/reddit/wiki/OAuth2-Quick-Start-Example#first-steps
 
 .. _python 3.10+: https://docs.python.org/3/tutorial/index.html
 
 .. _r/learnpython: https://www.reddit.com/r/learnpython/
 
-.. _reddit help: https://www.reddithelp.com/en
+.. _reddit help: https://support.reddithelp.com/hc/en-us
 
-.. _reddit's api wiki page: https://github.com/reddit/reddit/wiki/API
+.. _reddit's api wiki page: https://github.com/reddit-archive/reddit/wiki/API
 
 .. _reddit.com: https://www.reddit.com
 

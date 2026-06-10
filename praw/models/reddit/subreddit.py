@@ -2033,7 +2033,7 @@ class ModeratorRelationship(SubredditRelationship):
             :class:`.Reddit` instance to be authenticated i.e., :attr:`.read_only` must
             return ``False``. This call, however, only makes use of the ``read`` scope.
             For more information on why the moderator list is hidden can be found here:
-            https://reddit.zendesk.com/hc/en-us/articles/360049499032-Why-is-the-moderator-list-hidden-
+            https://support.reddithelp.com/hc/en-us/articles/360049499032-Why-can-t-I-see-the-list-of-moderators-in-a-community-
 
         .. note::
 
@@ -2898,7 +2898,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, CreatedM
             ``"month"``, ``"week"``, or ``"year"`` (default: ``"all"``).
 
         For more information on building a search query see:
-        https://www.reddit.com/wiki/search
+        https://www.reddit.com/r/reddit.com/wiki/search/
 
         For example, to search all subreddits for ``"praw"`` try:
 

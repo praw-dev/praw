@@ -377,7 +377,7 @@ The following arguments must now be passed by keyword:
 - The ``reason_id`` argument to :class:`.RemovalReason` has been renamed to ``id``.
 - ``APIException`` has been removed; use :class:`.RedditAPIException`. See the `PRAW 7
   migration documentation
-  <https://praw.readthedocs.io/en/v7.8.1/package_info/praw7_migration.html>`_ for
+  <https://praw.readthedocs.io/en/v7.8.2/package_info/praw7_migration.html>`_ for
   details on the exception container interface.
 - ``Subreddits.gold`` has been removed; use :meth:`.Subreddits.premium`.
 
