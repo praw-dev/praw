@@ -142,11 +142,15 @@ them bound to an attribute of one of the PRAW models.
     other/emoji
     other/fullnamemixin
     other/inboxablemixin
+    other/listing
     other/listinggenerator
     other/listinggeneratorkwargs
     other/mod_action
     other/moderatedlist
+    other/moderatorlisting
     other/modmail
+    other/modmailaction
+    other/modmailconversationslisting
     other/modmailmessage
     other/polldata
     other/polloption
@@ -163,5 +167,6 @@ them bound to an attribute of one of the PRAW models.
     other/subredditlistingmixin
     other/subredditmessage
     other/trophy
+    other/trophylist
     other/usersubreddit
     other/util
