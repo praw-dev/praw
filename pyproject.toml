@@ -184,8 +184,9 @@ envlist = ["py310", "py311", "py312", "py313", "py314", "docs", "pre-commit", "t
 minversion = "4.22"
 
 [tool.tox.env.docs]
+base_python = ["py314"]
 commands = [
-  ["sphinx-build", "--keep-going", "docs/", "{env_tmp_dir}/html"]
+  ["sphinx-build", "-W", "--keep-going", "-n", "docs/", "{env_tmp_dir}/html"]
 ]
 dependency_groups = ["docs"]
 description = "build docs with sphinx"
