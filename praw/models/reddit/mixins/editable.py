@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING
 from praw.const import API_PATH
 
 if TYPE_CHECKING:
+    import datetime
     from collections.abc import Callable
-    from datetime import datetime
 
     from typing_extensions import Self
 
@@ -21,14 +21,14 @@ class EditableMixin:
     if TYPE_CHECKING:
         # Provided by the host class (:class:`.RedditBase`).
         _reddit: praw.Reddit
-        _to_local_datetime: Callable[[float], datetime]
+        _to_local_datetime: Callable[[float], datetime.datetime]
         edited: bool | float
 
         @property
         def fullname(self) -> str: ...  # noqa: D102
 
     @property
-    def edited_datetime(self) -> datetime | None:
+    def edited_datetime(self) -> datetime.datetime | None:
         """Return the last edit time as a timezone-aware :class:`datetime.datetime`.
 
         Returns ``None`` if the object has never been edited. The returned object is

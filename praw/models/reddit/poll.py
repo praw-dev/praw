@@ -8,7 +8,7 @@ from praw.models.base import DynamicAttributes, PRAWBase
 from praw.util import cachedproperty
 
 if TYPE_CHECKING:
-    from datetime import datetime
+    import datetime
 
 
 class PollOption(DynamicAttributes, PRAWBase):
@@ -97,7 +97,7 @@ class PollData(DynamicAttributes, PRAWBase):
         return self.option(self._user_selection)
 
     @property
-    def voting_end_datetime(self) -> datetime:
+    def voting_end_datetime(self) -> datetime.datetime:
         """Return the poll's closing time as a timezone-aware :class:`datetime.datetime`.
 
         The returned object is localized to the system's timezone.
