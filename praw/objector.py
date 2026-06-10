@@ -223,7 +223,9 @@ class Objector:
             return data
         if "json" in data and "errors" in data["json"]:
             errors = data["json"]["errors"]
-            if len(errors) > 0:
+            # ``errors`` is normally an empty list on success, but some endpoints
+            # (e.g. ``api/hide``) now return ``null``; treat both as no error.
+            if errors:
                 raise RedditAPIException(errors)
         if "kind" in data and ("shortName" in data or data["kind"] in {"menu", "moderators"}):
             # This is a widget
