@@ -14,8 +14,8 @@ from praw.models.reddit.subreddit import Subreddit
 from praw.util.cache import cachedproperty
 
 if TYPE_CHECKING:
+    import datetime
     from collections.abc import Iterator
-    from datetime import datetime
 
     import praw
     from praw import models
@@ -455,7 +455,7 @@ class Collection(CreatedMixin, RedditBase):
         return cast("models.Subreddit", next(self._reddit.info(fullnames=[self.subreddit_id])))
 
     @property
-    def updated_datetime(self) -> datetime:
+    def updated_datetime(self) -> datetime.datetime:
         """Return the last update time as a timezone-aware :class:`datetime.datetime`.
 
         The returned object is localized to the system's timezone.

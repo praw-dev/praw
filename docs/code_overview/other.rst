@@ -143,6 +143,7 @@ them bound to an attribute of one of the PRAW models.
     other/fullnamemixin
     other/inboxablemixin
     other/listinggenerator
+    other/listinggeneratorkwargs
     other/mod_action
     other/moderatedlist
     other/modmail
