@@ -20,8 +20,7 @@ class TestSubmission(UnitTest):
         with pytest.raises(ClientException) as excinfo:
             submission.add_fetch_param("foo", "bar")
         assert str(excinfo.value) == (
-            "Cannot add fetch parameters to this submission because it has already been"
-            " fetched."
+            "Cannot add fetch parameters to this submission because it has already been fetched."
         )
 
     def test_comment_limit__raises_when_fetched(self, reddit):
@@ -30,8 +29,7 @@ class TestSubmission(UnitTest):
         with pytest.raises(ClientException) as excinfo:
             submission.comment_limit = 10
         assert str(excinfo.value) == (
-            "Cannot update 'comment_limit' because the comments for this submission have"
-            " already been fetched."
+            "Cannot update 'comment_limit' because the comments for this submission have already been fetched."
         )
 
     def test_comment_sort__before_fetch(self, reddit):
@@ -45,8 +43,7 @@ class TestSubmission(UnitTest):
         with pytest.raises(ClientException) as excinfo:
             submission.comment_sort = "new"
         assert str(excinfo.value) == (
-            "Cannot update 'comment_sort' because the comments for this submission have"
-            " already been fetched."
+            "Cannot update 'comment_sort' because the comments for this submission have already been fetched."
         )
 
     def test_construct_failure(self, reddit):

@@ -616,10 +616,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Create
         elif attribute == "poll_data":
             value = PollData(self._reddit, value)
         elif attribute in {"comment_limit", "comment_sort"} and getattr(self, "_fetched", False):
-            msg = (
-                f"Cannot update {attribute!r} because the comments for this submission"
-                " have already been fetched."
-            )
+            msg = f"Cannot update {attribute!r} because the comments for this submission have already been fetched."
             raise ClientException(msg)
         super().__setattr__(attribute, value)
 
@@ -853,9 +850,9 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Create
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
         }
-        for key, value in (("flair_id", flair_id), ("flair_text", flair_text)):
-            if value is not None:
-                data[key] = value
+        data.update({
+            key: value for key, value in (("flair_id", flair_id), ("flair_text", flair_text)) if value is not None
+        })
 
         return self._reddit.post(API_PATH["submit"], data=data)
 

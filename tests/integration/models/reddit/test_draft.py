@@ -11,9 +11,7 @@ class TestDraft(IntegrationTest):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
 
-        draft = reddit.drafts.create(
-            title="test", url="https://reddit.com", subreddit=subreddit
-        )
+        draft = reddit.drafts.create(title="test", url="https://reddit.com", subreddit=subreddit)
         assert draft.subreddit == subreddit
         assert draft.title == "test"
         assert not hasattr(draft, "selftext")
@@ -70,9 +68,7 @@ class TestDraft(IntegrationTest):
         total_drafts = len(reddit.drafts())
 
         draft = reddit.drafts(draft_id="3d396e12-f0da-11eb-88a1-26b30a152a08")
-        submission = draft.submit(
-            subreddit=reddit.subreddit(pytest.placeholders.test_subreddit)
-        )
+        submission = draft.submit(subreddit=reddit.subreddit(pytest.placeholders.test_subreddit))
         assert submission.title == draft.title
         assert submission.subreddit != draft.subreddit
         assert submission.selftext == draft.selftext

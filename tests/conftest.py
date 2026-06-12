@@ -42,15 +42,23 @@ os.environ["praw_check_for_updates"] = "False"
 
 placeholders = {
     x: os.environ.get(f"prawtest_{x}", f"placeholder_{x}")
-    for x in (
-        "auth_code client_id client_secret password redirect_uri test_subreddit user_agent username refresh_token"
-    ).split()
+    for x in [
+        "auth_code",
+        "client_id",
+        "client_secret",
+        "password",
+        "redirect_uri",
+        "test_subreddit",
+        "user_agent",
+        "username",
+        "refresh_token",
+    ]
 }
 
 
-placeholders["basic_auth"] = b64encode(
-    f"{placeholders['client_id']}:{placeholders['client_secret']}".encode()
-).decode("utf-8")
+placeholders["basic_auth"] = b64encode(f"{placeholders['client_id']}:{placeholders['client_secret']}".encode()).decode(
+    "utf-8"
+)
 
 
 # Values the cassette persister substitutes to/from ``<PLACEHOLDER>`` tokens on disk. The

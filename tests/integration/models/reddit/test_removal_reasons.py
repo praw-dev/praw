@@ -19,9 +19,7 @@ class TestRemovalReason(IntegrationTest):
         reason = subreddit.mod.removal_reasons["invalid"]
         with pytest.raises(ClientException) as excinfo:
             reason.title
-        assert str(excinfo.value) == (
-            f"Subreddit {subreddit} does not have the removal reason invalid"
-        )
+        assert str(excinfo.value) == (f"Subreddit {subreddit} does not have the removal reason invalid")
 
     @pytest.mark.cassette_name("TestRemovalReason.test__fetch")
     def test__fetch_int(self, reddit):

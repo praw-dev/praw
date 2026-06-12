@@ -1,6 +1,6 @@
 import pytest
 
-from praw.models import Message, Redditor, Subreddit, SubredditMessage
+from praw.models import Message, Redditor, Subreddit
 
 from ... import IntegrationTest
 
@@ -18,9 +18,7 @@ class TestMessage(IntegrationTest):
                 assert message.author is None or isinstance(message.author, Redditor)
                 assert isinstance(message.dest, (Redditor, Subreddit))
                 assert isinstance(message.replies, list)
-                assert message.subreddit is None or isinstance(
-                    message.subreddit, Subreddit
-                )
+                assert message.subreddit is None or isinstance(message.subreddit, Subreddit)
             except Exception:
                 import pprint
 

@@ -168,7 +168,9 @@ class User(PRAWBase):
         r"""Return a list of :class:`.Multireddit`\ s belonging to the user."""
         return self._reddit.get(API_PATH["my_multireddits"])
 
-    def pin(self, submission: models.Submission, *, num: int | None = None, state: bool = True) -> models.Submission | None:
+    def pin(
+        self, submission: models.Submission, *, num: int | None = None, state: bool = True
+    ) -> models.Submission | None:
         """Set the pin state of a submission on the authenticated user's profile.
 
         :param submission: An instance of :class:`.Submission` that will be

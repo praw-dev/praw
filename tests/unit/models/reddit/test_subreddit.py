@@ -58,15 +58,9 @@ class TestSubreddit(UnitTest):
         "praw.models.PostMedia._upload",
         return_value="fake_media_url",
     )
-    @mock.patch(
-        "praw.Reddit.post", return_value={"json": {"data": {"websocket_url": ""}}}
-    )
-    def test_invalid_media(
-        self, _mock_post, _mock_upload, connection_mock, reddit
-    ):
-        connection_mock().recv.return_value = json.dumps(
-            {"payload": {}, "type": "failed"}
-        )
+    @mock.patch("praw.Reddit.post", return_value={"json": {"data": {"websocket_url": ""}}})
+    def test_invalid_media(self, _mock_post, _mock_upload, connection_mock, reddit):
+        connection_mock().recv.return_value = json.dumps({"payload": {}, "type": "failed"})
         with pytest.raises(MediaPostFailed):
             reddit.subreddit("test").submit("Test", image=PostMedia(b"", name="dummy.png"))
 
@@ -150,10 +144,9 @@ class TestSubreddit(UnitTest):
         selftext = "Text with {gif1}, {image1}, and {video1} inline"
         media = {"gif1": gif, "image1": image, "video1": video}
         with pytest.raises(TypeError) as excinfo:
-            subreddit.submit("Cool title",
-                             url="https://praw.readthedocs.org/en/stable/",
-                             inline_media=media,
-                             selftext=selftext)
+            subreddit.submit(
+                "Cool title", url="https://praw.readthedocs.org/en/stable/", inline_media=media, selftext=selftext
+            )
         assert str(excinfo.value) == message
 
     def test_submit_gallery__invalid_media(self, reddit):
@@ -251,26 +244,20 @@ class TestSubreddit(UnitTest):
     def test_upload_banner_additional_image(self, reddit):
         subreddit = Subreddit(reddit, display_name="name")
         with pytest.raises(ValueError):
-            subreddit.stylesheet.upload_banner_additional_image(
-                StylesheetAsset(b"", name="dummy.png"), align="asdf"
-            )
+            subreddit.stylesheet.upload_banner_additional_image(StylesheetAsset(b"", name="dummy.png"), align="asdf")
 
 
 class TestSubredditFlair(UnitTest):
     def test_set(self, reddit):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         with pytest.raises(TypeError):
-            subreddit.flair.set(
-                "a_redditor", css_class="myCSS", flair_template_id="gibberish"
-            )
+            subreddit.flair.set("a_redditor", css_class="myCSS", flair_template_id="gibberish")
 
 
 class TestSubredditFlairTemplates(UnitTest):
     def test_not_implemented(self, reddit):
         with pytest.raises(NotImplementedError):
-            SubredditFlairTemplates(
-                Subreddit(reddit, pytest.placeholders.test_subreddit)
-            ).__iter__()
+            SubredditFlairTemplates(Subreddit(reddit, pytest.placeholders.test_subreddit)).__iter__()
 
 
 class TestSubredditModmailConversationsStream(UnitTest):

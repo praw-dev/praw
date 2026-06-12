@@ -2963,8 +2963,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, CreatedM
         selftext: str,
         send_replies: bool = ...,
         spoiler: bool = ...,
-    ) -> models.Submission:
-        ...
+    ) -> models.Submission: ...
 
     @overload
     def submit(
@@ -2982,8 +2981,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, CreatedM
         send_replies: bool = ...,
         spoiler: bool = ...,
         url: str,
-    ) -> models.Submission:
-        ...
+    ) -> models.Submission: ...
 
     @overload
     def submit(
@@ -3002,8 +3000,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, CreatedM
         spoiler: bool = ...,
         timeout: int = ...,
         without_websockets: bool = ...,
-    ) -> models.Submission | None:
-        ...
+    ) -> models.Submission | None: ...
 
     @overload
     def submit(
@@ -3019,8 +3016,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, CreatedM
         selftext: str | None = ...,
         send_replies: bool = ...,
         spoiler: bool = ...,
-    ) -> models.Submission:
-        ...
+    ) -> models.Submission: ...
 
     @overload
     def submit(
@@ -3037,8 +3033,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, CreatedM
         selftext: str | None = ...,
         send_replies: bool = ...,
         spoiler: bool = ...,
-    ) -> models.Submission:
-        ...
+    ) -> models.Submission: ...
 
     @overload
     def submit(
@@ -3057,8 +3052,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, CreatedM
         timeout: int = ...,
         video: models.PostMedia | dict[str, bool | models.PostMedia],
         without_websockets: bool = ...,
-    ) -> models.Submission | None:
-        ...
+    ) -> models.Submission | None: ...
 
     def submit(
         self,
@@ -3307,14 +3301,16 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, CreatedM
             "title": title,
             "validate_on_submit": True,
         }
-        for key, value in (
-            ("collection_id", collection_id),
-            ("discussion_type", discussion_type),
-            ("flair_id", flair_id),
-            ("flair_text", flair_text),
-        ):
-            if value is not None:
-                data[key] = value
+        data.update({
+            key: value
+            for key, value in (
+                ("collection_id", collection_id),
+                ("discussion_type", discussion_type),
+                ("flair_id", flair_id),
+                ("flair_text", flair_text),
+            )
+            if value is not None
+        })
 
         if gallery is not None:
             images: list[dict[str, str | PostMedia]] = [

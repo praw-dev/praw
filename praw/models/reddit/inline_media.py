@@ -40,7 +40,7 @@ class InlineMedia:
 
     def __str__(self) -> str:
         """Return a string representation of the media in Markdown format."""
-        return f'\n\n![{self.TYPE}]({self.media_id} "{self.caption if self.caption else ""}")\n\n'
+        return f'\n\n![{self.TYPE}]({self.media_id} "{self.caption or ""}")\n\n'
 
 
 class InlineGif(InlineMedia):

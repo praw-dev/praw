@@ -2,9 +2,14 @@
 *.egg-info/
 *.eggs/
 *.pyc
+*~
+.DS_Store
 .cache/
+.claude/
 .coverage
+.idea/
 .pytest_cache/
+.python-version
 .tox/
 _build/
 build/

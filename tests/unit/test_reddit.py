@@ -17,9 +17,7 @@ from . import UnitTest
 
 
 class TestReddit(UnitTest):
-    REQUIRED_DUMMY_SETTINGS = {
-        x: "dummy" for x in ["client_id", "client_secret", "user_agent"]
-    }
+    REQUIRED_DUMMY_SETTINGS = dict.fromkeys(["client_id", "client_secret", "user_agent"], "dummy")
 
     @staticmethod
     async def check_async(reddit):
@@ -40,8 +38,7 @@ class TestReddit(UnitTest):
         log_record = caplog.records[0]
         assert log_record.levelname == "WARNING"
         assert (
-            log_record.message
-            == "It appears that you are using PRAW in an asynchronous environment.\nIt"
+            log_record.message == "It appears that you are using PRAW in an asynchronous environment.\nIt"
             " is strongly recommended to use Async PRAW:"
             " https://asyncpraw.readthedocs.io.\nSee"
             " https://praw.readthedocs.io/en/latest/getting_started"
@@ -100,15 +97,13 @@ class TestReddit(UnitTest):
         with pytest.raises(ValueError) as excinfo:
             Reddit(timeout="test", **self.REQUIRED_DUMMY_SETTINGS)
         assert (
-            excinfo.value.args[0]
-            == "An incorrect config type was given for option timeout. The expected "
+            excinfo.value.args[0] == "An incorrect config type was given for option timeout. The expected "
             "type is int, but the given value is test."
         )
         with pytest.raises(ValueError) as excinfo:
             Reddit(ratelimit_seconds="test", **self.REQUIRED_DUMMY_SETTINGS)
         assert (
-            excinfo.value.args[0]
-            == "An incorrect config type was given for option ratelimit_seconds. The "
+            excinfo.value.args[0] == "An incorrect config type was given for option ratelimit_seconds. The "
             "expected type is int, but the given value is test."
         )
 
@@ -170,10 +165,7 @@ class TestReddit(UnitTest):
     def test_post_ratelimit__over_threshold__minutes(self, reddit):
         with pytest.raises(RedditAPIException) as exception:
             reddit.post("test")
-        assert (
-            exception.value.items[0].message
-            == "You are doing that too much. Try again in 1 minute."
-        )
+        assert exception.value.items[0].message == "You are doing that too much. Try again in 1 minute."
 
     @mock.patch(
         "praw.Reddit.request",
@@ -197,10 +189,7 @@ class TestReddit(UnitTest):
     def test_post_ratelimit__over_threshold__seconds(self, mock_sleep, reddit):
         with pytest.raises(RedditAPIException) as exception:
             reddit.post("test")
-        assert (
-            exception.value.items[0].message
-            == "You are doing that too much. Try again in 6 seconds."
-        )
+        assert exception.value.items[0].message == "You are doing that too much. Try again in 6 seconds."
         mock_sleep.assert_not_called()
 
     @mock.patch(
@@ -212,8 +201,7 @@ class TestReddit(UnitTest):
                         "errors": [
                             [
                                 "RATELIMIT",
-                                "You are doing that too much. Try again in 2 "
-                                "milliseconds.",
+                                "You are doing that too much. Try again in 2 milliseconds.",
                                 "ratelimit",
                             ]
                         ]
@@ -224,8 +212,7 @@ class TestReddit(UnitTest):
                         "errors": [
                             [
                                 "RATELIMIT",
-                                "You are doing that too much. Try again in 1 "
-                                "millisecond.",
+                                "You are doing that too much. Try again in 1 millisecond.",
                                 "ratelimit",
                             ]
                         ]
@@ -333,10 +320,7 @@ class TestReddit(UnitTest):
     def test_post_ratelimit__under_threshold__seconds_failure(self, mock_sleep, reddit):
         with pytest.raises(RedditAPIException) as exception:
             reddit.post("test")
-        assert (
-            exception.value.items[0].message
-            == "You are doing that too much. Try again in 1 second."
-        )
+        assert exception.value.items[0].message == "You are doing that too much. Try again in 1 second."
         mock_sleep.assert_has_calls([mock.call(6), mock.call(4), mock.call(2)])
 
     def test_read_only__with_authenticated_core__legacy_refresh_token(self):
@@ -369,9 +353,7 @@ class TestReddit(UnitTest):
             assert not reddit.read_only
 
     def test_read_only__with_script_authenticated_core(self):
-        with Reddit(
-            password="dummy", username="dummy", **self.REQUIRED_DUMMY_SETTINGS
-        ) as reddit:
+        with Reddit(password="dummy", username="dummy", **self.REQUIRED_DUMMY_SETTINGS) as reddit:
             assert not reddit.read_only
             reddit.read_only = True
             assert reddit.read_only
@@ -379,9 +361,7 @@ class TestReddit(UnitTest):
             assert not reddit.read_only
 
     def test_read_only__without_trusted_authenticated_core(self):
-        with Reddit(
-            password=None, username=None, **self.REQUIRED_DUMMY_SETTINGS
-        ) as reddit:
+        with Reddit(password=None, username=None, **self.REQUIRED_DUMMY_SETTINGS) as reddit:
             assert reddit.read_only
             with pytest.raises(ClientException):
                 reddit.read_only = False
@@ -406,9 +386,7 @@ class TestReddit(UnitTest):
                 settings = self.REQUIRED_DUMMY_SETTINGS.copy()
                 settings[setting] = Config.CONFIG_NOT_SET
                 Reddit(**settings)
-            assert str(excinfo.value).startswith(
-                f"Required configuration setting '{setting}' missing."
-            )
+            assert str(excinfo.value).startswith(f"Required configuration setting '{setting}' missing.")
             if setting == "client_secret":
                 assert "set to None" in str(excinfo.value)
 
@@ -420,9 +398,7 @@ class TestReddit(UnitTest):
                 settings = self.REQUIRED_DUMMY_SETTINGS.copy()
                 settings[setting] = None
                 Reddit(**settings)
-            assert str(excinfo.value).startswith(
-                f"Required configuration setting '{setting}' missing."
-            )
+            assert str(excinfo.value).startswith(f"Required configuration setting '{setting}' missing.")
 
     def test_reddit__site_name_no_section(self):
         with pytest.raises(configparser.NoSectionError) as excinfo:
@@ -433,9 +409,7 @@ class TestReddit(UnitTest):
     def test_request__badrequest_with_no_json_body(self, mock_session):
         response = mock.Mock(status_code=400, text="")
         response.json.side_effect = ValueError
-        mock_session.return_value.request = mock.Mock(
-            side_effect=BadRequest(response=response)
-        )
+        mock_session.return_value.request = mock.Mock(side_effect=BadRequest(response=response))
 
         reddit = Reddit(client_id="dummy", client_secret="dummy", user_agent="dummy")
         with pytest.raises(Exception) as excinfo:
@@ -445,12 +419,8 @@ class TestReddit(UnitTest):
     def test_request__json_and_body(self):
         reddit = Reddit(client_id="dummy", client_secret="dummy", user_agent="dummy")
         with pytest.raises(ClientException) as excinfo:
-            reddit.request(
-                data={"key": "value"}, json={"key": "value"}, method="POST", path="/"
-            )
-        assert str(excinfo.value).startswith(
-            "At most one of 'data' or 'json' is supported."
-        )
+            reddit.request(data={"key": "value"}, json={"key": "value"}, method="POST", path="/")
+        assert str(excinfo.value).startswith("At most one of 'data' or 'json' is supported.")
 
     def test_submission(self, reddit):
         assert reddit.submission("2gmzqe").id == "2gmzqe"

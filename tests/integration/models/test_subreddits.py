@@ -1,7 +1,5 @@
 """Test praw.models.subreddits."""
 
-import pytest
-
 from praw.models import Subreddit
 
 from .. import IntegrationTest
@@ -29,9 +27,7 @@ class TestSubreddits(IntegrationTest):
         assert len(subreddits) == 0
 
     def test_recommended(self, reddit):
-        subreddits = reddit.subreddits.recommended(
-            ["earthporn"], omit_subreddits=["cityporn"]
-        )
+        subreddits = reddit.subreddits.recommended(["earthporn"], omit_subreddits=["cityporn"])
         assert len(subreddits) > 1
         for subreddit in subreddits:
             assert isinstance(subreddit, Subreddit)

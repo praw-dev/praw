@@ -25,9 +25,7 @@ class TestDraft(UnitTest):
     def test_create_failure(self, reddit):
         with pytest.raises(TypeError) as excinfo:
             reddit.drafts.create(url="url", selftext="selftext")
-        assert (
-            str(excinfo.value) == "Exactly one of 'selftext' or 'url' must be provided."
-        )
+        assert str(excinfo.value) == "Exactly one of 'selftext' or 'url' must be provided."
 
     def test_equality(self, reddit):
         draft1 = Draft(reddit, _data={"id": "dummy1"})
@@ -42,15 +40,9 @@ class TestDraft(UnitTest):
         assert draft1 == "dummy1"
         assert draft2 == "dummy1"
 
-        draft1 = Draft(
-            reddit, _data={"id": "dummy1", "body": "body1", "kind": "markdown"}
-        )
-        draft2 = Draft(
-            reddit, _data={"id": "dummy1", "body": "body1", "kind": "markdown"}
-        )
-        draft3 = Draft(
-            reddit, _data={"id": "dummy3", "body": "body2", "kind": "markdown"}
-        )
+        draft1 = Draft(reddit, _data={"id": "dummy1", "body": "body1", "kind": "markdown"})
+        draft2 = Draft(reddit, _data={"id": "dummy1", "body": "body1", "kind": "markdown"})
+        draft3 = Draft(reddit, _data={"id": "dummy3", "body": "body2", "kind": "markdown"})
         assert draft1 == draft1
         assert draft2 == draft2
         assert draft3 == draft3
@@ -69,15 +61,9 @@ class TestDraft(UnitTest):
         assert draft1 != draft3
 
     def test_hash(self, reddit):
-        draft1 = Draft(
-            reddit, _data={"id": "dummy1", "body": "body1", "kind": "markdown"}
-        )
-        draft2 = Draft(
-            reddit, _data={"id": "dummy1", "body": "body2", "kind": "markdown"}
-        )
-        draft3 = Draft(
-            reddit, _data={"id": "dummy3", "body": "body2", "kind": "markdown"}
-        )
+        draft1 = Draft(reddit, _data={"id": "dummy1", "body": "body1", "kind": "markdown"})
+        draft2 = Draft(reddit, _data={"id": "dummy1", "body": "body2", "kind": "markdown"})
+        draft3 = Draft(reddit, _data={"id": "dummy3", "body": "body2", "kind": "markdown"})
         assert hash(draft1) == hash(draft1)
         assert hash(draft2) == hash(draft2)
         assert hash(draft3) == hash(draft3)
@@ -122,7 +108,4 @@ class TestDraft(UnitTest):
         )
         with pytest.raises(ValueError) as excinfo:
             draft.submit()
-            assert (
-                str(excinfo.value)
-                == "'subreddit' must be set on the Draft or passed as a keyword argument."
-            )
+            assert str(excinfo.value) == "'subreddit' must be set on the Draft or passed as a keyword argument."

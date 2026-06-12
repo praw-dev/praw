@@ -82,9 +82,7 @@ class CommentForest:
     ) -> list[MoreComments]:
         """Return a list of :class:`.MoreComments` objects obtained from tree."""
         more_comments: list[MoreComments] = []
-        queue: list[tuple[models.Comment | None, models.Comment | models.MoreComments]] = [
-            (None, x) for x in tree
-        ]
+        queue: list[tuple[models.Comment | None, models.Comment | models.MoreComments]] = [(None, x) for x in tree]
         while queue:
             parent, comment = queue.pop(0)
             if isinstance(comment, MoreComments):
@@ -94,8 +92,7 @@ class CommentForest:
                 else:
                     comment._remove_from = parent_tree or tree
             else:
-                for item in comment.replies:
-                    queue.append((comment, item))
+                queue.extend((comment, item) for item in comment.replies)
         return more_comments
 
     def __init__(
@@ -111,9 +108,7 @@ class CommentForest:
             ``None``).
 
         """
-        self._comments: list[models.Comment | models.MoreComments] = (
-            comments if comments is not None else []
-        )
+        self._comments: list[models.Comment | models.MoreComments] = comments if comments is not None else []
         self._submission = submission
 
     def _update(self, comments: list[models.Comment | models.MoreComments]) -> None:

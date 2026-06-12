@@ -78,7 +78,9 @@ class Media:
     def _build_lease_data(self, **additional_data: str) -> dict[str, str]:
         return {"filepath": self.name, "mimetype": self._mime_type, **additional_data}
 
-    def _lease_and_post(self, lease_url: str, reddit: praw.Reddit, /, **additional_lease_data: str) -> tuple[dict[str, Any], dict[str, str], str]:
+    def _lease_and_post(
+        self, lease_url: str, reddit: praw.Reddit, /, **additional_lease_data: str
+    ) -> tuple[dict[str, Any], dict[str, str], str]:
         lease_data = self._build_lease_data(**additional_lease_data)
         lease_response, upload_data, upload_url = self._obtain_lease(lease_data, lease_url, reddit)
         response = self._post_to_s3(reddit, upload_data, upload_url)
@@ -94,7 +96,9 @@ class Media:
             raise ClientException(msg)
         return mime_type
 
-    def _obtain_lease(self, lease_data: dict[str, str], lease_url: str, reddit: praw.Reddit, /) -> tuple[dict[str, Any], dict[str, str], str]:
+    def _obtain_lease(
+        self, lease_data: dict[str, str], lease_url: str, reddit: praw.Reddit, /
+    ) -> tuple[dict[str, Any], dict[str, str], str]:
         lease_response = reddit.post(lease_url, data=lease_data)
         upload_lease = lease_response[self.LEASE_RESPONSE_KEY]
         upload_data = {item["name"]: item["value"] for item in upload_lease["fields"]}
@@ -168,9 +172,7 @@ class PostMedia(Media):
         if tags[:4] == ["Code", "Message", "ProposedSize", "MaxSizeAllowed"]:
             # Returned if media is too big
             *_, actual, maximum_size = (element.text for element in root[:4])
-            raise TooLargeMediaException(
-                actual=int(actual or 0), maximum_size=int(maximum_size or 0)
-            )
+            raise TooLargeMediaException(actual=int(actual or 0), maximum_size=int(maximum_size or 0))
 
     @staticmethod
     def _raise_upload_error(response: Response, /) -> None:
@@ -265,9 +267,7 @@ class StylesheetImage(Media):
                 "BAD_CSS_NAME",
                 "IMAGE_ERROR",
             }, "Please file a bug with PRAW."
-            raise RedditAPIException(
-                [RedditErrorItem(error_type=error_type, message=error_value or "", field="")]
-            )
+            raise RedditAPIException([RedditErrorItem(error_type=error_type, message=error_value or "", field="")])
         return response
 
 

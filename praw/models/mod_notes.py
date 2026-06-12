@@ -67,9 +67,7 @@ class BaseModNotes:
             }
             response = self._reddit.get(API_PATH["mod_notes_bulk"], params=params)
             for note_dict in response["mod_notes"]:
-                yield cast(
-                    "models.ModNote", self._reddit._objector.objectify(data=note_dict)
-                )
+                yield cast("models.ModNote", self._reddit._objector.objectify(data=note_dict))
 
     def _ensure_attribute(self, error_message: str, **attributes: Any) -> Any:
         attribute, value_ = attributes.popitem()

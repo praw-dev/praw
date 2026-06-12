@@ -25,9 +25,7 @@ class TestRedditors(IntegrationTest):
         gen = reddit.redditors.partial_redditors(["t2_invalid_abc", "t2_invalid_123"])
         assert list(gen) == []
 
-        gen = reddit.redditors.partial_redditors(
-            ["t2_invalid_abc" for _ in range(100)] + ["t2_4x25quk"]
-        )
+        gen = reddit.redditors.partial_redditors(["t2_invalid_abc" for _ in range(100)] + ["t2_4x25quk"])
         assert [user.fullname for user in gen] == ["t2_4x25quk"]
 
     def test_popular(self, reddit):

@@ -1,5 +1,6 @@
 """Test praw.reddit."""
 
+import pathlib
 from base64 import urlsafe_b64encode
 
 import pytest
@@ -15,13 +16,11 @@ from . import IntegrationTest
 
 
 def comment_ids():
-    with open("tests/integration/files/comment_ids.txt") as fp:
-        return fp.read()[:8000]
+    return pathlib.Path("tests/integration/files/comment_ids.txt").read_text()[:8000]
 
 
 def junk_data():
-    with open("tests/integration/files/too_large.jpg", "rb") as fp:
-        return urlsafe_b64encode(fp.read()).decode()
+    return urlsafe_b64encode(pathlib.Path("tests/integration/files/too_large.jpg").read_bytes()).decode()
 
 
 class TestDomainListing(IntegrationTest):
@@ -54,8 +53,7 @@ class TestReddit(IntegrationTest):
                 path=f"/api/morechildren?link_id=t3_n7r3uz&children={comment_ids()}",
             )
         assert (
-            str(excinfo.value)
-            == "<html><body><h1>400 Bad request</h1>\nYour browser sent an invalid "
+            str(excinfo.value) == "<html><body><h1>400 Bad request</h1>\nYour browser sent an invalid "
             "request.\n</body></html>\n"
         )
 
@@ -85,8 +83,7 @@ class TestReddit(IntegrationTest):
         bases = ["t1_d7ltv", "t3_5dec", "t5_2qk"]
         items = []
         for i in range(100):
-            for base in bases:
-                items.append(f"{base}{i:02d}")
+            items.extend(f"{base}{i:02d}" for base in bases)
 
         item_generator = reddit.info(fullnames=items)
         results = list(item_generator)
@@ -120,33 +117,113 @@ class TestReddit(IntegrationTest):
         assert live.title == "PRAW Create Test"
 
     def test_live_info(self, reddit):
-        ids = """
-        ta40aifzobnv ta40l9u2ermf ta40ucdiq366 ta416hjgvbhy ta41ln5vsyaz
-        ta42cyzy1nze ta42i49806k0 ta436ojd653m ta43945wgmaa ta43znjvza9t
-        ta4418kxie3z ta44mk0nllhm ta45j0yvww9t ta4613lzdh8q ta46l8k86jt9
-        ta47qua0xu3n ta489fm9515p ta48ml5k1uk9 ta48zy4jzjcb ta49irvwndau
-        ta49upckgoyw ta4a02h9ynsb ta4aa4lrgvst ta4alauoi8ws ta4aqyacr70u
-
-        ta4ekdk6m5g2 ta4ezvoc49gy ta4f3iv06c1n ta4ffvliq5l7 ta4fib9lx3zx
-        ta4gka0ll41h ta4h89f6isfg ta4ht7s8he49 ta4i1eb564ar ta4imxhap4fg
-        ta4iu3g9whtk ta4j3o05j0d3 ta4kloqi6csg ta4m6kj44dql ta4mlqtihiil
-        ta4ng30l3fz1 ta4nldsjimhu ta4pd78tuk29 ta4prwyy1w9i ta4pvu8y6f8o
-        ta4ray2odqub ta4rua4oe6a1 ta4tk9fwjgz1 ta4trgqw6mmx ta4tv3sen7u4
-
-        ta4uyh0fnc0a ta4v54gnggcl ta4v5cm004z1 ta4vortaefna ta4wqym9d0v3
-        ta4wsuouxjtm ta4x7jr9v0fn ta4yast5e96b ta4z337yzlgu ta4zo9zzo9ui
-        ta507u2euo3w ta50exn0mtx1 ta51x2crezff ta52ch48gn6l ta53ijowvc6z
-        ta53iy196uod ta541cz1hfb4 ta54n0ncx8pc ta55ytfmre2g ta581bybyjwi
-        ta59gcidn2ym ta59mkwnrd43 ta5ar22wzi2w ta5awwo42ibb ta5dhmvylw0l
-
-        ta5hipd6wahr ta5itb7clg3s ta5nlm09y8kb ta5nm0f831x1 ta5oavbflorf
-        ta5rnv18s85o ta5ru6ysh254 ta5sfz02nc8b ta5syawj086b ta5t41osygln
-        ta5uy3ynoo4a ta5w0seb1xfy ta5wddbh0ln0 ta5zmjzuijwo ta617ozbmxhb
-        ta64q6pjz2bs ta696fdie4ne ta6bmog7gvoq ta6f9y7sdzru ta6j838d2wjn
-        ta6l4q5c17fd ta6ofypk3yp2 ta6sjmjt1aeb ta6sqhgyv41q ta70eezhz50r
-
-        ta72azs1l4u9 ta74r3dp2pt5 ta7pfcqdx9cl ta8zxbt2sk6z ta94nde51q4i
-        """.split()
+        ids = [
+            "ta40aifzobnv",
+            "ta40l9u2ermf",
+            "ta40ucdiq366",
+            "ta416hjgvbhy",
+            "ta41ln5vsyaz",
+            "ta42cyzy1nze",
+            "ta42i49806k0",
+            "ta436ojd653m",
+            "ta43945wgmaa",
+            "ta43znjvza9t",
+            "ta4418kxie3z",
+            "ta44mk0nllhm",
+            "ta45j0yvww9t",
+            "ta4613lzdh8q",
+            "ta46l8k86jt9",
+            "ta47qua0xu3n",
+            "ta489fm9515p",
+            "ta48ml5k1uk9",
+            "ta48zy4jzjcb",
+            "ta49irvwndau",
+            "ta49upckgoyw",
+            "ta4a02h9ynsb",
+            "ta4aa4lrgvst",
+            "ta4alauoi8ws",
+            "ta4aqyacr70u",
+            "ta4ekdk6m5g2",
+            "ta4ezvoc49gy",
+            "ta4f3iv06c1n",
+            "ta4ffvliq5l7",
+            "ta4fib9lx3zx",
+            "ta4gka0ll41h",
+            "ta4h89f6isfg",
+            "ta4ht7s8he49",
+            "ta4i1eb564ar",
+            "ta4imxhap4fg",
+            "ta4iu3g9whtk",
+            "ta4j3o05j0d3",
+            "ta4kloqi6csg",
+            "ta4m6kj44dql",
+            "ta4mlqtihiil",
+            "ta4ng30l3fz1",
+            "ta4nldsjimhu",
+            "ta4pd78tuk29",
+            "ta4prwyy1w9i",
+            "ta4pvu8y6f8o",
+            "ta4ray2odqub",
+            "ta4rua4oe6a1",
+            "ta4tk9fwjgz1",
+            "ta4trgqw6mmx",
+            "ta4tv3sen7u4",
+            "ta4uyh0fnc0a",
+            "ta4v54gnggcl",
+            "ta4v5cm004z1",
+            "ta4vortaefna",
+            "ta4wqym9d0v3",
+            "ta4wsuouxjtm",
+            "ta4x7jr9v0fn",
+            "ta4yast5e96b",
+            "ta4z337yzlgu",
+            "ta4zo9zzo9ui",
+            "ta507u2euo3w",
+            "ta50exn0mtx1",
+            "ta51x2crezff",
+            "ta52ch48gn6l",
+            "ta53ijowvc6z",
+            "ta53iy196uod",
+            "ta541cz1hfb4",
+            "ta54n0ncx8pc",
+            "ta55ytfmre2g",
+            "ta581bybyjwi",
+            "ta59gcidn2ym",
+            "ta59mkwnrd43",
+            "ta5ar22wzi2w",
+            "ta5awwo42ibb",
+            "ta5dhmvylw0l",
+            "ta5hipd6wahr",
+            "ta5itb7clg3s",
+            "ta5nlm09y8kb",
+            "ta5nm0f831x1",
+            "ta5oavbflorf",
+            "ta5rnv18s85o",
+            "ta5ru6ysh254",
+            "ta5sfz02nc8b",
+            "ta5syawj086b",
+            "ta5t41osygln",
+            "ta5uy3ynoo4a",
+            "ta5w0seb1xfy",
+            "ta5wddbh0ln0",
+            "ta5zmjzuijwo",
+            "ta617ozbmxhb",
+            "ta64q6pjz2bs",
+            "ta696fdie4ne",
+            "ta6bmog7gvoq",
+            "ta6f9y7sdzru",
+            "ta6j838d2wjn",
+            "ta6l4q5c17fd",
+            "ta6ofypk3yp2",
+            "ta6sjmjt1aeb",
+            "ta6sqhgyv41q",
+            "ta70eezhz50r",
+            "ta72azs1l4u9",
+            "ta74r3dp2pt5",
+            "ta7pfcqdx9cl",
+            "ta8zxbt2sk6z",
+            "ta94nde51q4i",
+        ]
         gen = reddit.live.info(ids)
         threads = list(gen)
         assert len(threads) > 100

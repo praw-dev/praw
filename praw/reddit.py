@@ -712,9 +712,7 @@ class Reddit:
                 None,
             ]:
                 iterable: Iterator[str] = (
-                    iter(str(item) for item in names)
-                    if is_using_fullnames
-                    else iter([str(item) for item in names])
+                    iter(str(item) for item in names) if is_using_fullnames else iter([str(item) for item in names])
                 )
                 while True:
                     chunk = list(islice(iterable, 100))

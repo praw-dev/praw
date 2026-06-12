@@ -33,9 +33,9 @@ class TestModmailConversation(IntegrationTest):
         conversation.mute(num_days=7)
         conversation = reddit.subreddit("all").modmail("g46rw")
         assert conversation.user.mute_status["isMuted"]
-        diff = datetime.fromisoformat(
-            conversation.user.mute_status["endDate"]
-        ) - datetime.fromisoformat(conversation.mod_actions[-1].date)
+        diff = datetime.fromisoformat(conversation.user.mute_status["endDate"]) - datetime.fromisoformat(
+            conversation.mod_actions[-1].date
+        )
         assert diff.days == 6  # 6 here because it is not 7 whole days
 
     def test_read(self, reddit):

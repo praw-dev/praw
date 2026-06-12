@@ -10,9 +10,7 @@ class TestObjector(UnitTest):
         objector = reddit._objector
         objector.check_error({"asdf": 1})
 
-        error_response = {
-            "json": {"errors": [["USER_REQUIRED", "Please log in to do that.", None]]}
-        }
+        error_response = {"json": {"errors": [["USER_REQUIRED", "Please log in to do that.", None]]}}
         with pytest.raises(RedditAPIException):
             objector.check_error(error_response)
 
@@ -25,9 +23,7 @@ class TestObjector(UnitTest):
         assert objector.parse_error([]) is None
         assert objector.parse_error({"asdf": 1}) is None
 
-        error_response = {
-            "json": {"errors": [["USER_REQUIRED", "Please log in to do that.", None]]}
-        }
+        error_response = {"json": {"errors": [["USER_REQUIRED", "Please log in to do that.", None]]}}
         error = objector.parse_error(error_response)
         assert isinstance(error, RedditAPIException)
 

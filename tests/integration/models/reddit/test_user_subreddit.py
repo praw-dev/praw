@@ -6,11 +6,7 @@ class TestUserSubreddit(IntegrationTest):
         reddit.read_only = False
         before_settings = reddit.user.me().subreddit.mod.settings()
         new_title = f"{before_settings['title']}x"
-        new_title = (
-            "x"
-            if (len(new_title) >= 20 and "placeholder" not in new_title)
-            else new_title
-        )
+        new_title = "x" if (len(new_title) >= 20 and "placeholder" not in new_title) else new_title
         reddit.user.me().subreddit.mod.update(title=new_title)
         assert reddit.user.me(use_cache=False).subreddit.title == new_title
         after_settings = reddit.user.me().subreddit.mod.settings()

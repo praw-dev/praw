@@ -42,9 +42,7 @@ class TestWikiPage(UnitTest):
 
     def test_repr(self, reddit):
         page = WikiPage(reddit, subreddit=Subreddit(reddit, "a"), name="x")
-        assert repr(page) == (
-            "WikiPage(subreddit=Subreddit(display_name='a'), name='x')"
-        )
+        assert repr(page) == ("WikiPage(subreddit=Subreddit(display_name='a'), name='x')")
 
     def test_str(self, reddit):
         page = WikiPage(reddit, subreddit=Subreddit(reddit, "a"), name="x")

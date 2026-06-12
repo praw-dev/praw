@@ -5,8 +5,9 @@ from datetime import datetime
 sys.path.insert(0, ".")
 sys.path.insert(1, "..")
 
-from praw import __version__  # noqa: E402
+from praw import __version__
 
+always_use_bars_union = True
 autodoc_typehints = "description"
 copyright = datetime.today().strftime("%Y, Bryce Boe")
 exclude_patterns = ["_build"]
