@@ -50,7 +50,7 @@ class Auth(PRAWBase):
         """
         assert self._reddit._read_only_core is not None
         authenticator = self._reddit._read_only_core.authorizer.authenticator
-        authorizer = Authorizer(authenticator)
+        authorizer = Authorizer(authenticator=authenticator)
         authorizer.authorize(code)
         authorized_session = session(authorizer=authorizer, window_size=self._reddit.config.window_size)
         self._reddit._core = self._reddit._authorized_core = authorized_session
@@ -77,7 +77,9 @@ class Auth(PRAWBase):
         if not isinstance(authenticator, UntrustedAuthenticator):
             raise InvalidImplicitAuth
         implicit_session = session(
-            authorizer=ImplicitAuthorizer(authenticator, access_token, expires_in, scope),
+            authorizer=ImplicitAuthorizer(
+                authenticator=authenticator, access_token=access_token, expires_in=expires_in, scope=scope
+            ),
             window_size=self._reddit.config.window_size,
         )
         self._reddit._core = self._reddit._authorized_core = implicit_session
@@ -131,11 +133,11 @@ class Auth(PRAWBase):
             raise MissingRequiredAttributeException(msg)
         if isinstance(authenticator, UntrustedAuthenticator):
             return authenticator.authorize_url(
-                "temporary" if implicit else duration,
-                scopes,
-                state,
+                duration="temporary" if implicit else duration,
                 implicit=implicit,
+                scopes=scopes,
+                state=state,
             )
         if implicit:
             raise InvalidImplicitAuth
-        return authenticator.authorize_url(duration, scopes, state)
+        return authenticator.authorize_url(duration=duration, scopes=scopes, state=state)
