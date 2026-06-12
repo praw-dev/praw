@@ -21,9 +21,7 @@ class TestConfig:
                 del os.environ[env_name]
         os.environ[environment] = "/MOCK"
 
-        environ_path = (
-            Path("/MOCK") / (".config" if environment == "HOME" else "") / "praw.ini"
-        )
+        environ_path = Path("/MOCK") / (".config" if environment == "HOME" else "") / "praw.ini"
         locations = [
             str(environ_path),
             "praw.ini",

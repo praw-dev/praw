@@ -1,3 +1,0 @@
-include CHANGES.rst LICENSE.txt README.rst
-include praw/praw.ini
-include "praw/images/PRAW logo.png"

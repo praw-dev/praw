@@ -5,7 +5,7 @@ requires = ["hatchling"]
 [dependency-groups]
 dev = [
   "packaging",
-  "tox-uv>=1.22.1",
+  "tox-uv>=1.35.2",
   {include-group = "lint"},
   {include-group = "test"}
 ]
@@ -16,22 +16,22 @@ docs = [
 ]
 lint = [
   "pre-commit",
-  "ruff>=0.0.291",
+  "ruff>=0.15.17",
   {include-group = "docs"}
 ]
 test = [
-  "coverage>=7.6.10",
-  "pytest >=2.7.3",
-  "requests >=2.20.1, <3",
-  "vcrpy >=7.0.0"
+  "coverage>=7.14.1",
+  "pytest>=9.0.3",
+  "requests>=2.20.1,<3",
+  "vcrpy>=8.1.1"
 ]
 type = [
-  "pyright",
+  "pyright>=1.1.410",
   {include-group = "test"}
 ]
 
 [project]
-authors = [{name = "Bryce Boe", email = "bbzbryce@gmail.com"}]
+authors = [{email = "bbzbryce@gmail.com", name = "Bryce Boe"}]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Console",
@@ -50,19 +50,19 @@ classifiers = [
   "Typing :: Typed"
 ]
 dependencies = [
-  "defusedxml ==0.7.1",
+  "defusedxml==0.7.1",
   "prawcore>=3.2.0,<4",
   "typing-extensions; python_version <= '3.10'",
-  "update_checker >=1.0, <2.0",
-  "websocket-client >=0.54.0, <2"
+  "update_checker>=1.0,<2.0",
+  "websocket-client>=0.54.0,<2"
 ]
-dynamic = ["version", "description"]
+description = "Python Reddit API Wrapper."
+dynamic = ["version"]
 keywords = ["reddit", "api", "wrapper"]
 license = {file = "LICENSE.txt"}
 maintainers = [
-  {name = "Bryce Boe", email = "bbzbryce@gmail.com"},
-  {name = "Joe RH", email = "jarhill0@gmail.com"},
-  {name = "Joel Payne", email = "lilspazjoekp@gmail.com"}
+  {email = "bbzbryce@gmail.com", name = "Bryce Boe"},
+  {email = "lilspazjoekp@gmail.com", name = "Joel Payne"}
 ]
 name = "praw"
 readme = "README.rst"
@@ -76,6 +76,7 @@ requires-python = ">=3.10"
 
 [tool.coverage.report]
 exclude_lines = [
+  "@abstract",
   "@overload",
   "if TYPE_CHECKING:",
   "pragma: no cover"
@@ -94,74 +95,38 @@ pythonVersion = "3.10"
 reportUnnecessaryTypeIgnoreComment = "error"
 typeCheckingMode = "standard"
 
+[tool.pytest.ini_options]
+testpaths = "tests"
+
 [tool.ruff]
-include = [
-  "praw/**.py"
-]
+include = ["*.py"]
 line-length = 120
 preview = true
 
 [tool.ruff.lint]
 ignore = [
   "ANN401", # any-type
+  "C901", # too complex
+  "COM812", # trailing comma missing (conflicts with the formatter)
+  "CPY001", # missing copyright notice
   "D203", # incorrect-blank-line-before-class
   "D213", # multi-line-summary-second-line
+  "DOC201", # `return` not documented in docstring
+  "DOC402", # `yield` not documented in docstring
+  "DOC501", # `raise` not documented in docstring
   "E501", # Line too long
+  "ISC001", # single-line implicit string concatenation (conflicts with the formatter)
+  "PERF203", # `try`-`except` within a loop
   "PLR0904", # Too many public methods
   "PLR0911", # Too many return statements
   "PLR0912", # Too many branches
   "PLR0913", # Too many arguments in function definition
   "PLR0915", # Too many statements
+  "RUF067", # `__init__` module should only contain docstrings and re-exports
   "S101", # use of assert
-  "SLF001", # Private member accessed
-  "RUF067" # `__init__` module should only contain docstrings and re-exports
+  "SLF001" # Private member accessed
 ]
-select = [
-  "A", # flake8-builtins
-  "ANN", # flake8-annotations
-  "ARG", # flake8-unused-arguments
-  "B", # flake8-bugbear
-  "BLE", # flake8-blind-except
-  "C4", # flake8-comprehensions
-  "D", # pydocstyle
-  "DTZ", # flake8-datetimez
-  "E", # pycodestyle
-  "EM", # flake8-errmsg
-  "ERA", # eradicate
-  "EXE", # flake8-executable
-  "F", # pyflakes
-  "FA", # flake8-future-annotations
-  "FBT", # flake8-boolean-trap
-  "FIX", # flake8-fixme
-  "FLY", # flynt
-  "G", # flake8-logging-format
-  "I", # isort
-  "INP", # flake8-no-pep420
-  "ISC", # flake8-implicit-str-concat
-  "LOG", # flake8-logging
-  "N", # pep8-naming
-  "PIE", # flake8-pie
-  "PGH", # pygrep-hooks
-  "PL", # Pylint
-  "PT", # flake8-pytest-style
-  "PTH", # flake8-use-pathlib
-  "PYI", # flake8-pyi
-  "Q", # flake8-quotes
-  "RET", # flake8-return
-  "RSE", # flake8-raise
-  "RUF", # ruff-specific
-  "S", # bandit
-  "SIM", # flake8-simplify
-  "SLF", # flake8-self
-  "T10", # flake8-debugger
-  "T20", # flake8-print
-  "TCH", # flake8-type-checking
-  "TD", # flake8-todos
-  "TID", # flake8-tidy-imports
-  "TRY", # tryceratops
-  "UP", # pyupgrade
-  "W" # pycodestyle
-]
+select = ["ALL"]
 
 [tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
@@ -174,10 +139,50 @@ builtins-ignorelist = ["id"]
 ban-relative-imports = "all"
 
 [tool.ruff.lint.per-file-ignores]
+# Non-library code (tests, examples, maintenance scripts) is not held to the
+# same docstring/annotation/style strictness as the package source.
 "__init__.py" = ["F401"]
+"docs/conf.py" = ["A001", "ANN", "ARG", "D", "DTZ002", "INP001", "PLR0917"]
+"docs/examples/*.py" = ["ANN", "ARG", "D", "INP", "PLR", "S", "T20"]
 "praw/models/mod_notes.py" = ["FA100"]
 "praw/models/reddit/collections.py" = ["A005"]
-"tests/*.py" = ["SLF001"]
+"tests/**/*.py" = [
+  "A", # builtin shadowing
+  "ANN", # type annotations
+  "ARG", # unused arguments (pytest fixtures)
+  "B", # bugbear (asserts attribute access, loop vars)
+  "C4", # comprehensions
+  "D", # docstrings
+  "DTZ", # naive datetimes
+  "EM", # exception message strings
+  "ERA", # commented-out code
+  "FBT", # boolean traps
+  "FIX", # TODO/FIXME comments
+  "INP", # implicit namespace package
+  "ISC", # implicit string concatenation
+  "N", # naming
+  "PLC", # pylint convention
+  "PLR", # pylint refactor (no-self-use, magic values, self-comparison)
+  "PLW", # pylint warning
+  "PT", # pytest style
+  "PTH", # use pathlib
+  "PYI", # stub-only rules
+  "RET", # unnecessary assignment before return
+  "RSE", # raise
+  "RUF", # ruff-specific
+  "S", # bandit (assert, pickle, hardcoded secrets)
+  "SIM", # simplify
+  "SLF", # private member access
+  "T20", # print
+  "TID", # relative imports
+  "TRY", # tryceratops (long exception messages)
+  "UP" # pyupgrade (percent formatting)
+]
+"tools/*.py" = ["ANN", "D", "DTZ", "FBT", "INP", "PLR", "PLW", "PTH", "RUF", "S", "T20"]
+
+[tool.tomlsort]
+sort_inline_tables = true
+sort_table_keys = true
 
 [tool.tox]
 envlist = ["py310", "py311", "py312", "py313", "py314", "docs", "pre-commit", "type"]
@@ -219,7 +224,7 @@ runner = "uv-venv-lock-runner"
 [tool.tox.env_run_base]
 commands = [
   ["coverage", "run", "--source", "praw", "--module", "pytest", "{posargs}"],
-  ["coverage", "report", "-m"]
+  ["coverage", "report", "-m", "--fail-under=100"]
 ]
 dependency_groups = ["test"]
 description = "Run test under {base_python}"

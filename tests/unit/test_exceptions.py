@@ -1,5 +1,3 @@
-import pytest
-
 from praw.exceptions import (
     ClientException,
     DuplicateReplaceException,
@@ -51,27 +49,20 @@ class TestInvalidImplicitAuth:
         assert issubclass(InvalidImplicitAuth, ClientException)
 
     def test_message(self):
-        assert (
-            str(InvalidImplicitAuth())
-            == "Implicit authorization can only be used with installed apps."
-        )
+        assert str(InvalidImplicitAuth()) == "Implicit authorization can only be used with installed apps."
 
 
 class TestInvalidURL:
     def test_custom_message(self):
         assert (
-            str(InvalidURL("https://www.google.com", message="Test custom {}"))
-            == "Test custom https://www.google.com"
+            str(InvalidURL("https://www.google.com", message="Test custom {}")) == "Test custom https://www.google.com"
         )
 
     def test_inheritance(self):
         assert issubclass(InvalidURL, ClientException)
 
     def test_message(self):
-        assert (
-            str(InvalidURL("https://www.google.com"))
-            == "Invalid URL: https://www.google.com"
-        )
+        assert str(InvalidURL("https://www.google.com")) == "Invalid URL: https://www.google.com"
 
 
 class TestMediaPostFailed:
@@ -91,9 +82,7 @@ class TestMissingRequiredAttributeException:
 
     def test_str(self):
         assert str(MissingRequiredAttributeException()) == ""
-        assert (
-            str(MissingRequiredAttributeException("error message")) == "error message"
-        )
+        assert str(MissingRequiredAttributeException("error message")) == "error message"
 
 
 class TestPRAWException:
@@ -110,14 +99,10 @@ class TestRedditAPIException:
         assert issubclass(RedditAPIException, PRAWException)
 
     def test_items(self):
-        container = RedditAPIException(
-            [
-                ["BAD_SOMETHING", "invalid something", "some_field"],
-                RedditErrorItem(
-                    "BAD_SOMETHING", field="some_field", message="invalid something"
-                ),
-            ]
-        )
+        container = RedditAPIException([
+            ["BAD_SOMETHING", "invalid something", "some_field"],
+            RedditErrorItem("BAD_SOMETHING", field="some_field", message="invalid something"),
+        ])
         for exception in container.items:
             assert isinstance(exception, RedditErrorItem)
 
@@ -145,27 +130,18 @@ class TestRedditErrorItem:
         assert hash(error) == hash(error2)
 
     def test_property(self):
-        error = RedditErrorItem(
-            "BAD_SOMETHING", field="some_field", message="invalid something"
-        )
-        assert (
-            error.error_message
-            == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
-        )
+        error = RedditErrorItem("BAD_SOMETHING", field="some_field", message="invalid something")
+        assert error.error_message == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
 
     def test_repr(self):
-        error = RedditErrorItem(
-            "BAD_SOMETHING", field="some_field", message="invalid something"
-        )
+        error = RedditErrorItem("BAD_SOMETHING", field="some_field", message="invalid something")
         assert (
             repr(error)
             == "RedditErrorItem(error_type='BAD_SOMETHING', message='invalid something', field='some_field')"
         )
 
     def test_str(self):
-        error = RedditErrorItem(
-            "BAD_SOMETHING", field="some_field", message="invalid something"
-        )
+        error = RedditErrorItem("BAD_SOMETHING", field="some_field", message="invalid something")
         assert str(error) == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
 
 

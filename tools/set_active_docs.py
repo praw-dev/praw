@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import pathlib
 import re
 import sys
 import time
@@ -30,10 +31,8 @@ def fetch_versions():
 
 
 def main():
-    with open(f"{PROJECT}/const.py") as fp:
-        current_version = packaging.version.parse(
-            re.search('__version__ = "([^"]+)"', fp.read()).group(1)
-        )
+    content = pathlib.Path(f"{PROJECT}/const.py").read_text()
+    current_version = packaging.version.parse(re.search(r'__version__ = "([^"]+)"', content).group(1))
     if current_version.is_devrelease:
         current_version = packaging.version.parse(
             f"{current_version.major}.{current_version.minor}.{current_version.micro - 1}"
@@ -56,9 +55,7 @@ def main():
             if current_version in versions:
                 break
         if retry_count >= max_retry_count:
-            sys.stderr.write(
-                f"Current version {current_version!s} failed to activate\n"
-            )
+            sys.stderr.write(f"Current version {current_version!s} failed to activate\n")
             return 1
         sys.stdout.write("Waiting 30 seconds for version to activate\n")
         retry_count += 1
@@ -68,9 +65,7 @@ def main():
         aggregated_versions.setdefault(version.major, [])
         aggregated_versions[version.major].append(version)
 
-    latest_major_versions = [
-        max(aggregated_versions[major]) for major in aggregated_versions
-    ]
+    latest_major_versions = [max(aggregated_versions[major]) for major in aggregated_versions]
     major_versions = [version.major for version in versions]
     is_new_major = major_versions.count(current_version.major) == 1
 

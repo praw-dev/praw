@@ -25,18 +25,13 @@ class TestSubredditWidgets(UnitTest):
             _ = widgets.nonexistant_attribute
 
     def test_repr(self, reddit):
-        widgets = SubredditWidgets(
-            Subreddit(reddit, pytest.placeholders.test_subreddit)
-        )
-        assert (
-            f"SubredditWidgets(subreddit=Subreddit(display_name={pytest.placeholders.test_subreddit!r}))"
-            == repr(widgets)
+        widgets = SubredditWidgets(Subreddit(reddit, pytest.placeholders.test_subreddit))
+        assert f"SubredditWidgets(subreddit=Subreddit(display_name={pytest.placeholders.test_subreddit!r}))" == repr(
+            widgets
         )
 
     def test_subreddit_widgets_mod(self, reddit):
-        widgets = SubredditWidgets(
-            Subreddit(reddit, pytest.placeholders.test_subreddit)
-        )
+        widgets = SubredditWidgets(Subreddit(reddit, pytest.placeholders.test_subreddit))
         assert isinstance(widgets.mod, SubredditWidgetsModeration)
 
     def test_widget_mod(self, reddit):

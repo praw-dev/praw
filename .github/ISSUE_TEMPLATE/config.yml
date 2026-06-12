@@ -5,7 +5,7 @@ contact_links:
     url: https://praw.readthedocs.io
   - name: r/redditdev subreddit
     about: For general help using PRAW, please ask here.
-    url: https://redditdev.reddit.com
+    url: https://www.reddit.com/r/redditdev/
   - name: Official praw-dev Slack
     about: For more real-time help, feel free to join our Slack.
     url: https://join.slack.com/t/praw/shared_invite/zt-3d5lbcs51-VB1xRhRok0OZ1vyYquWb2A

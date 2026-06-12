@@ -81,33 +81,22 @@ class TestPermissionsString(UnitTest):
     PERMISSIONS = {"a", "b", "c"}
 
     def test_permissions_string__all_explicit(self):
-        assert permissions_string(
-            known_permissions=self.PERMISSIONS, permissions=["b", "a", "c"]
-        ) == "-all,+b,+a,+c"
+        assert permissions_string(known_permissions=self.PERMISSIONS, permissions=["b", "a", "c"]) == "-all,+b,+a,+c"
 
     def test_permissions_string__empty_list(self):
         assert permissions_string(known_permissions=set(), permissions=[]) == "-all"
-        assert permissions_string(
-            known_permissions=self.PERMISSIONS, permissions=[]
-        ) == "-all,-a,-b,-c"
+        assert permissions_string(known_permissions=self.PERMISSIONS, permissions=[]) == "-all,-a,-b,-c"
 
     def test_permissions_string__none(self):
         assert permissions_string(known_permissions=set(), permissions=None) == "+all"
-        assert permissions_string(
-            known_permissions=self.PERMISSIONS, permissions=None
-        ) == "+all"
+        assert permissions_string(known_permissions=self.PERMISSIONS, permissions=None) == "+all"
 
     def test_permissions_string__with_additional_permissions(self):
-        assert permissions_string(
-            known_permissions=set(), permissions=["d"]
-        ) == "-all,+d"
-        assert permissions_string(
-            known_permissions=self.PERMISSIONS, permissions=["d"]
-        ) == "-all,-a,-b,-c,+d"
+        assert permissions_string(known_permissions=set(), permissions=["d"]) == "-all,+d"
+        assert permissions_string(known_permissions=self.PERMISSIONS, permissions=["d"]) == "-all,-a,-b,-c,+d"
 
 
 class TestStream(UnitTest):
-
     def test_comments__with_continue_after_id(
         self,
     ):
@@ -121,11 +110,7 @@ class TestStream(UnitTest):
             sliced_things = initial_things
             if params:
                 sliced_things = initial_things[
-                    : next(
-                        i
-                        for i, thing in enumerate(initial_things)
-                        if thing.fullname == params["before"]
-                    )
+                    : next(i for i, thing in enumerate(initial_things) if thing.fullname == params["before"])
                 ]
             if counter % 2 == 0:
                 return sliced_things

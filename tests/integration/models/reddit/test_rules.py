@@ -50,10 +50,7 @@ class TestRule(IntegrationTest):
         rule = subreddit.rules["fake rule"]
         with pytest.raises(ClientException) as excinfo:
             rule.kind
-        assert (
-            excinfo.value.args[0]
-            == f"Subreddit {subreddit} does not have the rule fake rule"
-        )
+        assert excinfo.value.args[0] == f"Subreddit {subreddit} does not have the rule fake rule"
 
     @pytest.mark.cassette_name("TestRule.test_iter_rules")
     def test_iter_rule_negative_int(self, reddit):

@@ -47,9 +47,9 @@ to the person asking the question.
    run pre-commit install``. They will now run automatically every time you commit. If
    one of the hooks changes one or more files, the commit will automatically abort, so
    you can double-check the changes. If everything looks good try committing again.
-5. Prior to creating a pull request, run the ``pre_push.py`` script. This runs the
-   pre-commit suite on all files, as well as builds the docs. You'll need to have
-   installed the linting dependencies first (see previous step).
+5. Prior to creating a pull request, run ``uv run tox``. This runs the test suite,
+   pre-commit checks on all files, and builds the docs. You'll need to have installed
+   the development dependencies first (see previous step).
 6. Add yourself as a contributor to appropriate section in the ``AUTHORS.rst`` file.
 7. Once pushed, ensure that your GitHub Actions build succeeds. If this is your first
    time contributing to the repository, you may need to wait for a team member to allow
@@ -75,11 +75,11 @@ like to see you push a number of contributions before we add you on.
  Style Recommendations
 ***********************
 
-To keep PRAW's source consistent, all contribution code must pass the ``pre_push.py``
-script. GitHub Actions will enforce the passing of the automated tests, as well as style
-checking done via the ``pre_push.py`` script. While this script helps ensure consistency
-with much of PEP8 and PEP257 there are a few things that it does not enforce. Please
-look over the following list:
+To keep PRAW's source consistent, all contribution code must pass the ``tox`` checks.
+GitHub Actions will enforce the passing of the automated tests, as well as style
+checking done via pre-commit_. While these checks help ensure consistency with much of
+PEP8 and PEP257 there are a few things that they do not enforce. Please look over the
+following list:
 
 Method Order within a Class
 ===========================
@@ -132,7 +132,7 @@ Please also read `Contributing to PRAW`_.
 
 .. _pre-commit: https://pre-commit.com
 
-.. _r/redditdev: https://redditdev.reddit.com
+.. _r/redditdev: https://www.reddit.com/r/redditdev/
 
 .. _see here: https://praw.readthedocs.io/en/latest/package_info/contributing.html#install-development-dependencies
 

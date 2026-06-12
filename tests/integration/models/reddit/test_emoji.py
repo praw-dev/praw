@@ -1,3 +1,5 @@
+import pathlib
+
 import pytest
 
 from praw.exceptions import ClientException
@@ -24,9 +26,7 @@ class TestEmoji(IntegrationTest):
         assert str(excinfo.value) == (f"r/{subreddit} does not have the emoji invalid")
         with pytest.raises(ClientException) as excinfo2:
             emoji2.url
-        assert str(excinfo2.value) == (
-            f"r/{subreddit} does not have the emoji Test_png"
-        )
+        assert str(excinfo2.value) == (f"r/{subreddit} does not have the emoji Test_png")
 
     def test_delete(self, reddit):
         reddit.read_only = False
@@ -36,9 +36,7 @@ class TestEmoji(IntegrationTest):
     def test_update(self, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        subreddit.emoji["test_png"].update(
-            mod_flair_only=False, post_flair_allowed=True, user_flair_allowed=True
-        )
+        subreddit.emoji["test_png"].update(mod_flair_only=False, post_flair_allowed=True, user_flair_allowed=True)
 
     def test_update__with_preexisting_values(self, reddit):
         reddit.read_only = False
@@ -71,8 +69,7 @@ class TestSubredditEmoji(IntegrationTest):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         for extension in ["jpg", "png"]:
-            with open(f"tests/integration/files/test.{extension}", "rb") as file:
-                media_bytes = file.read()
+            media_bytes = pathlib.Path(f"tests/integration/files/test.{extension}").read_bytes()
             emoji = subreddit.emoji.add(
                 media=EmojiMedia(media_bytes, name=f"test.{extension}"),
                 name=f"test_{extension}",

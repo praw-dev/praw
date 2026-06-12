@@ -44,15 +44,13 @@ Linting
 
 PRAW follows :PEP:`8` and :PEP:`257` and some :ref:`praw_specific_guidelines`.
 pre-commit_ is used to manage a suite of pre-commit hooks that enforce conformance with
-these PEPs along with several other checks. Additionally, the ``pre_push.py`` script can
-be used to run the full pre-commit suite and the docs build prior to submitting a pull
-request.
+these PEPs along with several other checks. Additionally, ``tox`` can be used to run the
+full test suite, pre-commit checks, and docs build prior to submitting a pull request.
 
 .. note::
 
-    In order to use the pre-commit hooks and the ``pre_push.py`` dependencies, you must
-    install the development dependencies as outlined in the :ref:`install_dev_deps`
-    section above.
+    In order to use the pre-commit hooks and ``tox``, you must install the development
+    dependencies as outlined in the :ref:`install_dev_deps` section above.
 
 To install the pre-commit hooks to automatically run when you commit, run the following:
 
@@ -64,7 +62,7 @@ To run all the needed checks and to ensure the docs build correctly, run the fol
 
 .. code-block:: bash
 
-    uv run ./pre_push.py
+    uv run tox
 
 .. _praw_specific_guidelines:
 
@@ -239,8 +237,7 @@ Static Checker
 
 PRAW's test suite comes with a checker tool that can warn you of using incorrect
 documentation styles (using ``.. code::`` instead of ``.. code-block::``, using ``/r/``
-instead of ``r/``, etc.). This is run automatically by the pre-commit hooks and the
-``pre_push.py`` script.
+instead of ``r/``, etc.). This is run automatically by the pre-commit hooks.
 
 .. autoclass:: tools.static_word_checks.StaticChecker
     :inherited-members:

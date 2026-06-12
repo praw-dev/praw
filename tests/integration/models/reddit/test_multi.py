@@ -31,9 +31,7 @@ class TestMultireddit(IntegrationTest):
 
     def test_create(self, reddit):
         reddit.read_only = False
-        multireddit = reddit.multireddit.create(
-            display_name="PRAW create test", subreddits=["redditdev"]
-        )
+        multireddit = reddit.multireddit.create(display_name="PRAW create test", subreddits=["redditdev"])
         assert multireddit.display_name == "PRAW create test"
         assert multireddit.name == "praw_create_test"
 

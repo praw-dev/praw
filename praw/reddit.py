@@ -479,7 +479,7 @@ class Reddit:
 
     def _prepare_common_authorizer(self, authenticator: prawcore.auth.BaseAuthenticator) -> None:
         if self.config.refresh_token:
-            authorizer = Authorizer(authenticator, refresh_token=self.config.refresh_token)
+            authorizer = Authorizer(authenticator=authenticator, refresh_token=self.config.refresh_token)
         else:
             self._core = self._read_only_core
             return
@@ -543,9 +543,9 @@ class Reddit:
         requestor_kwargs = requestor_kwargs or {}
 
         requestor = requestor_class(
-            USER_AGENT_FORMAT.format(self.config.user_agent),
-            self.config.oauth_url,
-            self.config.reddit_url,
+            oauth_url=self.config.oauth_url,
+            reddit_url=self.config.reddit_url,
+            user_agent=USER_AGENT_FORMAT.format(self.config.user_agent),
             **requestor_kwargs,
         )
 
@@ -558,16 +558,18 @@ class Reddit:
         # Only reached when client_secret is set (see _prepare_prawcore).
         assert self.config.client_secret is not None
         authenticator = TrustedAuthenticator(
-            requestor,
-            self.config.client_id,
-            self.config.client_secret,
-            self.config.redirect_uri,
+            requestor=requestor,
+            client_id=self.config.client_id,
+            client_secret=self.config.client_secret,
+            redirect_uri=self.config.redirect_uri,
         )
-        read_only_authorizer = ReadOnlyAuthorizer(authenticator)
+        read_only_authorizer = ReadOnlyAuthorizer(authenticator=authenticator)
         self._read_only_core = session(authorizer=read_only_authorizer, window_size=self.config.window_size)
 
         if self.config.username and self.config.password:
-            script_authorizer = ScriptAuthorizer(authenticator, self.config.username, self.config.password)
+            script_authorizer = ScriptAuthorizer(
+                authenticator=authenticator, password=self.config.password, username=self.config.username
+            )
             self._core = self._authorized_core = session(
                 authorizer=script_authorizer, window_size=self.config.window_size
             )
@@ -575,8 +577,10 @@ class Reddit:
             self._prepare_common_authorizer(authenticator)
 
     def _prepare_untrusted_prawcore(self, requestor: prawcore.requestor.Requestor) -> None:
-        authenticator = UntrustedAuthenticator(requestor, self.config.client_id, self.config.redirect_uri)
-        read_only_authorizer = DeviceIDAuthorizer(authenticator)
+        authenticator = UntrustedAuthenticator(
+            requestor=requestor, client_id=self.config.client_id, redirect_uri=self.config.redirect_uri
+        )
+        read_only_authorizer = DeviceIDAuthorizer(authenticator=authenticator)
         self._read_only_core = session(authorizer=read_only_authorizer, window_size=self.config.window_size)
         self._prepare_common_authorizer(authenticator)
 
@@ -712,9 +716,7 @@ class Reddit:
                 None,
             ]:
                 iterable: Iterator[str] = (
-                    iter(str(item) for item in names)
-                    if is_using_fullnames
-                    else iter([str(item) for item in names])
+                    iter(str(item) for item in names) if is_using_fullnames else iter([str(item) for item in names])
                 )
                 while True:
                     chunk = list(islice(iterable, 100))

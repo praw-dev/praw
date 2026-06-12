@@ -1,60 +1,61 @@
 repos:
-  - repo: local
-    hooks:
-      - id: static_word_checks
-        args:
-          - '--replace'
-        entry: python -m tools.static_word_checks
-        language: system
-        name: Static Word Checks
-        pass_filenames: false
-        types: [ python ]
-
-      - id: check_documentation
-        entry: python -m tools.check_documentation
-        language: system
-        name: Check Documentation
-        pass_filenames: false
-        types: [ python ]
-
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    hooks:
-      - id: ruff
-        args: [ --exit-non-zero-on-fix, --fix ]
-        files: ^(praw/.*.py)$
-    rev: 22f0422809455ec89ffdcf5a00170ba816e42ddb  # frozen: v0.15.16
-
-  - repo: https://github.com/LilSpazJoekp/docstrfmt
-    hooks:
+  - hooks:
       - id: docstrfmt
+        require_serial: true
+    repo: https://github.com/LilSpazJoekp/docstrfmt
     rev: 06455715c8a81e176748e036c1c945f3e80d5b8d  # frozen: v2.1.0
 
-  - repo: https://github.com/MarcoGorelli/auto-walrus
-    hooks:
+  - hooks:
       - id: auto-walrus
+    repo: https://github.com/MarcoGorelli/auto-walrus
     rev: 1743edbed52f3d61886b59d98a27164a8af29c0d  # frozen: 0.4.1
 
-  - repo: https://github.com/pappasam/toml-sort
-    hooks:
-      - id: toml-sort-fix
-        files: ^(.*\.toml)$
+  - hooks:
+      - args: [ --exit-non-zero-on-fix, --fix ]
+        id: ruff
+      - id: ruff-format
+    repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: 3b3f7c3f57fe9925356faf5fe6230835138be230  # frozen: v0.15.17
+
+  - hooks:
+      - files: ^(.*\.toml)$
+        id: toml-sort-fix
+    repo: https://github.com/pappasam/toml-sort
     rev: 2970ae9bb7124fe5117a27e10c10d2da051ce05a  # frozen: v0.24.4
 
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
-    hooks:
+  - hooks:
       - id: check-added-large-files
       - id: check-executables-have-shebangs
       - id: check-shebang-scripts-are-executable
       - id: check-toml
       - id: check-yaml
       - id: end-of-file-fixer
-      - id: mixed-line-ending
-        args: [ --fix=no ]
-      - id: name-tests-test
-        args: [ --pytest-test-first ]
-        files: ^tests/integration/.*\.py|tests/unit/.*\.py$
+      - args: [ --fix=lf ]
+        id: mixed-line-ending
+      - args: [ --pytest-test-first ]
+        files: ^tests/(integration|unit)/.*\.py$
+        id: name-tests-test
       - id: no-commit-to-branch
-      - id: sort-simple-yaml
-        files: ^(\.github/workflows/.*\.ya?ml|\.readthedocs.ya?ml)$
+      - files: ^(\.github/workflows/.*\.ya?ml|\.readthedocs.ya?ml)$
+        id: sort-simple-yaml
       - id: trailing-whitespace
+    repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
+
+  - hooks:
+      - args:
+          - '--replace'
+        entry: python -m tools.static_word_checks
+        id: static_word_checks
+        language: system
+        name: Static Word Checks
+        pass_filenames: false
+        types: [ python ]
+
+      - entry: python -m tools.check_documentation
+        id: check_documentation
+        language: system
+        name: Check Documentation
+        pass_filenames: false
+        types: [ python ]
+    repo: local

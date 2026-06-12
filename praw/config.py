@@ -115,7 +115,7 @@ class Config:
         keys_present = set(cwd_config.defaults())
         for section in cwd_config.sections():
             keys_present.update(cwd_config.options(section))
-        if (overridden := sorted({"oauth_url", "reddit_url"} & keys_present)):
+        if overridden := sorted({"oauth_url", "reddit_url"} & keys_present):
             warn(
                 f"The praw.ini in the current working directory ({cwd_config_path.resolve()})"
                 f" overrides the {' and '.join(overridden)} endpoint(s). Credentials will be"

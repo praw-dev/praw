@@ -1,20 +1,17 @@
 #!/usr/bin/env python3
+import pathlib
 import re
 import sys
 from datetime import date
 
 import packaging.version
 
-CHANGELOG_HEADER = (
-    "Change Log\n==========\n\n"
-    "PRAW follows `semantic versioning <https://semver.org/>`_.\n\n"
-)
+CHANGELOG_HEADER = "Change Log\n==========\n\nPRAW follows `semantic versioning <https://semver.org/>`_.\n\n"
 UNRELEASED_HEADER = "Unreleased\n----------\n\n"
 
 
 def add_unreleased_to_changelog():
-    with open("CHANGES.rst") as fp:
-        content = fp.read()
+    content = pathlib.Path("CHANGES.rst").read_text()
 
     if not content.startswith(CHANGELOG_HEADER):
         sys.stderr.write("Unexpected CHANGES.rst header\n")
@@ -24,8 +21,7 @@ def add_unreleased_to_changelog():
         sys.stderr.write("CHANGES.rst already contains Unreleased header\n")
         return False
 
-    with open("CHANGES.rst", "w") as fp:
-        fp.write(f"{new_header}{content[len(CHANGELOG_HEADER):]}")
+    pathlib.Path("CHANGES.rst").write_text(f"{new_header}{content[len(CHANGELOG_HEADER) :]}")
     return True
 
 
@@ -41,8 +37,7 @@ def handle_version(version):
 
 
 def increment_development_version():
-    with open("praw/const.py") as fp:
-        version = re.search('__version__ = "([^"]+)"', fp.read()).group(1)
+    version = re.search(r'__version__ = "([^"]+)"', pathlib.Path("praw/const.py").read_text()).group(1)
 
     parsed_version = valid_version(version)
     if not parsed_version:
@@ -71,8 +66,7 @@ def main():
 
 
 def update_changelog(version):
-    with open("CHANGES.rst") as fp:
-        content = fp.read()
+    content = pathlib.Path("CHANGES.rst").read_text()
 
     expected_header = f"{CHANGELOG_HEADER}{UNRELEASED_HEADER}"
     if not content.startswith(expected_header):
@@ -83,22 +77,19 @@ def update_changelog(version):
     version_line = f"{version} ({date_string})\n"
     version_header = f"{version_line}{'-' * len(version_line[:-1])}\n\n"
 
-    with open("CHANGES.rst", "w") as fp:
-        fp.write(f"{CHANGELOG_HEADER}{version_header}{content[len(expected_header):]}")
+    pathlib.Path("CHANGES.rst").write_text(f"{CHANGELOG_HEADER}{version_header}{content[len(expected_header) :]}")
     return True
 
 
 def update_package(version):
-    with open("praw/const.py") as fp:
-        content = fp.read()
+    content = pathlib.Path("praw/const.py").read_text()
 
-    updated = re.sub('__version__ = "([^"]+)"', f'__version__ = "{version}"', content)
+    updated = re.sub(r'__version__ = "([^"]+)"', f'__version__ = "{version}"', content)
     if content == updated:
         sys.stderr.write("Package version string not changed\n")
         return False
 
-    with open("praw/const.py", "w") as fp:
-        fp.write(updated)
+    pathlib.Path("praw/const.py").write_text(updated)
 
     print(version)
     return True

@@ -48,13 +48,9 @@ def web_app():
 class TestAuth(UnitTest):
     def test_implicit__from_script_app(self):
         with pytest.raises(ClientException):
-            script_app().auth.implicit(
-                access_token="dummy token", expires_in=10, scope=""
-            )
+            script_app().auth.implicit(access_token="dummy token", expires_in=10, scope="")
         with pytest.raises(ClientException):
-            script_app_with_password().auth.implicit(
-                access_token="dummy token", expires_in=10, scope=""
-            )
+            script_app_with_password().auth.implicit(access_token="dummy token", expires_in=10, scope="")
 
     def test_implicit__from_web_app(self):
         with pytest.raises(ClientException):
@@ -80,9 +76,7 @@ class TestAuth(UnitTest):
         assert "state=dummy+state" in url
 
     def test_url__installed_app__implicit(self):
-        url = installed_app().auth.url(
-            implicit=True, scopes=["dummy scope"], state="dummy state"
-        )
+        url = installed_app().auth.url(implicit=True, scopes=["dummy scope"], state="dummy state")
         assert "client_id=dummy+client" in url
         assert "duration=temporary" in url
         assert "redirect_uri=https%3A%2F%2Fdummy.tld%2F" in url
@@ -101,13 +95,9 @@ class TestAuth(UnitTest):
 
     def test_url__web_app__implicit(self):
         with pytest.raises(ClientException):
-            web_app().auth.url(
-                implicit=True, scopes=["dummy scope"], state="dummy state"
-            )
+            web_app().auth.url(implicit=True, scopes=["dummy scope"], state="dummy state")
 
     def test_url__web_app_without_redirect_uri(self):
-        reddit = Reddit(
-            client_id="dummy client", client_secret="dummy secret", user_agent="dummy"
-        )
+        reddit = Reddit(client_id="dummy client", client_secret="dummy secret", user_agent="dummy")
         with pytest.raises(ClientException):
             reddit.auth.url(scopes=["dummy scope"], state="dummy state")

@@ -208,9 +208,7 @@ class TestLiveThreadStream(IntegrationTest):
 
 class TestLiveUpdate(IntegrationTest):
     def test_attributes(self, reddit):
-        update = LiveUpdate(
-            reddit, "ukaeu1ik4sw5", "7827987a-c998-11e4-a0b9-22000b6a88d2"
-        )
+        update = LiveUpdate(reddit, "ukaeu1ik4sw5", "7827987a-c998-11e4-a0b9-22000b6a88d2")
         assert isinstance(update.author, Redditor)
         assert update.author == "umbrae"
         assert update.name == "LiveUpdate_7827987a-c998-11e4-a0b9-22000b6a88d2"
@@ -220,14 +218,10 @@ class TestLiveUpdate(IntegrationTest):
 class TestLiveUpdateContribution(IntegrationTest):
     def test_remove(self, reddit):
         reddit.read_only = False
-        update = LiveUpdate(
-            reddit, "xyu8kmjvfrww", "5d556760-dbee-11e6-9f46-0e78de675452"
-        )
+        update = LiveUpdate(reddit, "xyu8kmjvfrww", "5d556760-dbee-11e6-9f46-0e78de675452")
         update.contrib.remove()
 
     def test_strike(self, reddit):
         reddit.read_only = False
-        update = LiveUpdate(
-            reddit, "xyu8kmjvfrww", "cb5fe532-dbee-11e6-9a91-0e6d74fabcc4"
-        )
+        update = LiveUpdate(reddit, "xyu8kmjvfrww", "cb5fe532-dbee-11e6-9a91-0e6d74fabcc4")
         update.contrib.strike()

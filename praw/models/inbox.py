@@ -188,7 +188,7 @@ class Inbox(PRAWBase):
         """
         listing = self._reddit.get(API_PATH["message"].format(id=message_id))
         messages = {message.fullname: message for message in [listing[0], *listing[0].replies]}
-        for _fullname, message in messages.items():
+        for message in messages.values():
             message.parent = messages.get(message.parent_id)
         return messages[f"t4_{message_id.lower()}"]
 
