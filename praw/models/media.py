@@ -113,7 +113,7 @@ class Media:
 
     @staticmethod
     def _raise_upload_error(response: Response, /) -> None:
-        raise ServerError(response=response)
+        raise ServerError(response)
 
     def _upload(self, subreddit: models.Subreddit, /, **additional_lease_data: str) -> str:
         """Upload the media to Reddit.

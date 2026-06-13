@@ -58,7 +58,7 @@ class Redditors(PRAWBase):
             params: dict[str, str | int] = {"ids": ",".join(chunk)}
             try:
                 results = self._reddit.get(API_PATH["user_by_fullname"], params=params)
-            except prawcore.exceptions.NotFound:
+            except prawcore.NotFound:
                 # None of the given IDs matched any Redditor.
                 continue
 
