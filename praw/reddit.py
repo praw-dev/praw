@@ -54,7 +54,8 @@ if TYPE_CHECKING:
 
     from collections.abc import Generator, Iterable, Iterator
 
-    import prawcore
+    import prawcore.auth
+    import prawcore.requestor
 
     from praw.exceptions import RedditErrorItem
 

@@ -47,6 +47,7 @@ praw follows `semantic versioning <https://semver.org/>`_.
 - The ``comment_sort`` and ``comment_limit`` attributes of a :class:`.Submission` must
   now be set before the submission is fetched; setting either after the submission has
   been fetched raises :class:`.ClientException` instead of logging a warning.
+- Require ``prawcore >=4, <5``.
 
 **Removed**
 

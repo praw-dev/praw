@@ -409,7 +409,7 @@ class TestReddit(UnitTest):
     def test_request__badrequest_with_no_json_body(self, mock_session):
         response = mock.Mock(status_code=400, text="")
         response.json.side_effect = ValueError
-        mock_session.return_value.request = mock.Mock(side_effect=BadRequest(response=response))
+        mock_session.return_value.request = mock.Mock(side_effect=BadRequest(response))
 
         reddit = Reddit(client_id="dummy", client_secret="dummy", user_agent="dummy")
         with pytest.raises(Exception) as excinfo:
