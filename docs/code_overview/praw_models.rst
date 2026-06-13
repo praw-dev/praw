@@ -6,6 +6,7 @@
     :maxdepth: 2
     :caption: Models
 
+    models/announcement
     models/comment
     models/draft
     models/livethread

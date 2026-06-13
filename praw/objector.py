@@ -162,6 +162,14 @@ class Objector:
         elif {"mod_permissions", "name", "sr", "subscribers"}.issubset(data):
             data["display_name"] = data["sr"]
             parser = self.parsers[self._reddit.config.kinds["subreddit"]]
+        elif (
+            {"after", "before", "data"}.issubset(data)
+            and isinstance(data["data"], list)
+            and all({"id", "subject", "sent_at"}.issubset(item) for item in data["data"])
+        ):  # Announcement listing
+            parser = self.parsers["AnnouncementListing"]
+        elif {"body_html", "permalink", "sent_at", "subject"}.issubset(data):  # Announcement
+            parser = self.parsers["Announcement"]
         elif {"drafts", "subreddits"}.issubset(data):  # Draft list
             subreddit_parser = self.parsers[self._reddit.config.kinds["subreddit"]]
             user_subreddit_parser = self.parsers["UserSubreddit"]

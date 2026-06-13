@@ -43,6 +43,7 @@ class ListingGenerator(PRAWBase, Iterator):
         url: str,
         limit: int | None = 100,
         params: dict[str, str | int] | None = None,
+        request_limit: int | None = None,
     ) -> None:
         """Initialize a :class:`.ListingGenerator` instance.
 
@@ -54,6 +55,9 @@ class ListingGenerator(PRAWBase, Iterator):
             automatically issue all necessary requests (default: ``100``).
         :param params: A dictionary containing additional query string parameters to
             send with the request.
+        :param request_limit: The limit provided to Reddit's API for each request. If
+            ``request_limit`` is ``None``, then the value of ``limit`` will be used for
+            each request.
 
         """
         super().__init__(reddit, _data=None)
@@ -62,7 +66,7 @@ class ListingGenerator(PRAWBase, Iterator):
         self._list_index: int
         self.limit = limit
         self.params = deepcopy(params) if params else {}
-        self.params["limit"] = limit or 1024
+        self.params["limit"] = request_limit or limit or 1024
         self.url = url
         self.yielded = 0
 

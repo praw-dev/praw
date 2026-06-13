@@ -1,0 +1,309 @@
+{
+  "interactions": [
+    {
+      "request": {
+        "body": "grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>",
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "Content-Length": [
+            "82"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/8.0.0rc3.dev0 prawcore/4.0.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 86400, \"refresh_token\": \"<REFRESH_TOKEN>\", \"scope\": \"creddits modcontributors modmail modconfig subscribe structuredstyles vote wikiedit mysubreddits submit modlog modposts modflair announcements save modothers read privatemessages report identity livemanage account modtraffic wikiread edit modwiki modself history flair\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "close"
+          ],
+          "Date": [
+            "Sat, 13 Jun 2026 06:43:44 GMT"
+          ],
+          "NEL": [
+            "{\"report_to\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": false, \"success_fraction\": 1.0, \"failure_fraction\": 1.0}"
+          ],
+          "Report-To": [
+            "{\"group\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": true,  \"endpoints\": [{ \"url\": \"https://w3-reporting-nel.reddit.com/reports\" }]}, {\"group\": \"w3-reporting\", \"max_age\": 14400, \"include_subdomains\": true, \"endpoints\": [{ \"url\": \"https://w3-reporting.reddit.com/reports\" }]}, {\"group\": \"w3-reporting-csp\", \"max_age\": 14400, \"include_subdomains\": true, \"endpoints\": [{ \"url\": \"https://w3-reporting-csp.reddit.com/reports\" }]}"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=7zbcx1oVnIqeQCHkcF; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000; includeSubdomains"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store"
+          ],
+          "content-length": [
+            "1553"
+          ],
+          "content-type": [
+            "application/json; charset=UTF-8"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "server-timing": [
+            "reddit-ct;desc=\"dn=FT,p=DEN,cs=MISS\""
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        }
+      }
+    },
+    {
+      "request": {
+        "body": null,
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=7zbcx1oVnIqeQCHkcF"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/8.0.0rc3.dev0 prawcore/4.0.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/announcements/v1?limit=100&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "string": "{\"after\":\"\",\"before\":\"\",\"data\":[{\"id\":\"ann_d53kma\",\"author_fullname\":\"t2_1t77net49h\",\"subject\":\"Mod Monthly: Your June 2026 newsletter is here\",\"body\":\"Hey mods! Your June newsletter is out now in [r/modnews](https://www.reddit.com/r/modnews/comments/1u0fczp/mod_monthly_your_june_2026_newsletter_is_here/).\\n&nbsp;  \\nIn this month\u2019s edition you\u2019ll find upcoming events, a bunch of platform updates, community stories, subreddits up for adoption, and, as required by law, one two three very cute pets. (We clearly can\u2019t control our urge to increase the pet quota.)\\n\\n&nbsp;  \\nThanks for all you do, and hope you enjoy the read!\\n\\n&nbsp;  \\n*Don\u2019t want to get these notifications anymore? Totally fair. You can opt out anytime by clicking the three dots in the top right corner of this message and selecting \u201cTurn off notifications from this admin.\u201d*\",\"body_html\":\"<p>Hey mods! Your June newsletter is out now in <a href=\\\"https://www.reddit.com/r/modnews/comments/1u0fczp/mod_monthly_your_june_2026_newsletter_is_here/\\\">r/modnews</a>.&nbsp;<br>In this month\u2019s edition you\u2019ll find upcoming events, a bunch of platform updates, community stories, subreddits up for adoption, and, as required by law, one two three very cute pets. (We clearly can\u2019t control our urge to increase the pet quota.)</p><p>&nbsp;<br>Thanks for all you do, and hope you enjoy the read!</p><p>&nbsp;<br><em>Don\u2019t want to get these notifications anymore? Totally fair. You can opt out anytime by clicking the three dots in the top right corner of this message and selecting \u201cTurn off notifications from this admin.\u201d</em></p>\",\"sent_at\":\"2026-06-08T18:12:26Z\",\"read_at\":\"2026-06-13T06:42:10Z\",\"permalink\":\"https://www.reddit.com/notifications/a/ann_d53kma\"},{\"id\":\"ann_b7arjw\",\"author_fullname\":\"t2_1t77net49h\",\"subject\":\"Mod Monthly: Your May 2026 newsletter is here\",\"body\":\"Hey mods! Your [May newsletter](https://www.reddit.com/r/modnews/comments/1t6jggp/mod_monthly_your_may_2026_newsletter_is_here/) is out now in r/modnews.\\n\\nIn this month\u2019s edition you\u2019ll find upcoming events, platform updates, community stories, subreddits up for adoption, and, as required by law, some very cute pets. \\n\\nThanks for all you do, and hope you enjoy [the read](https://www.reddit.com/r/modnews/comments/1t6jggp/mod_monthly_your_may_2026_newsletter_is_here/)!\\n\\n_Don\u2019t want to get these notifications anymore? Totally fair. You can opt out anytime by clicking the three dots in the top right corner of this message and selecting \u201cTurn off notifications from this admin.\u201d_\",\"body_html\":\"<p>Hey mods! Your <a href=\\\"https://www.reddit.com/r/modnews/comments/1t6jggp/mod_monthly_your_may_2026_newsletter_is_here/\\\">May newsletter</a> is out now in <a href=\\\"/r/modnews\\\">r/modnews</a>.</p><p>In this month\u2019s edition you\u2019ll find upcoming events, platform updates, community stories, subreddits up for adoption, and, as required by law, some very cute pets.</p><p>Thanks for all you do, and hope you enjoy <a href=\\\"https://www.reddit.com/r/modnews/comments/1t6jggp/mod_monthly_your_may_2026_newsletter_is_here/\\\">the read</a>!</p><p><em>Don\u2019t want to get these notifications anymore? Totally fair. You can opt out anytime by clicking the three dots in the top right corner of this message and selecting \u201cTurn off notifications from this admin.\u201d</em></p>\",\"sent_at\":\"2026-05-07T19:08:21Z\",\"read_at\":null,\"permalink\":\"https://www.reddit.com/notifications/a/ann_b7arjw\"},{\"id\":\"ann_ajauo4\",\"author_fullname\":\"t2_1t77net49h\",\"subject\":\"Mod Monthly: Your April 2026 newsletter is here\",\"body\":\"**Hey mods! Your [April newsletter](https://www.reddit.com/r/modnews/comments/1sgy8yy/mod_monthly_your_april_2026_newsletter_is_here/) is out now in r/modnews.**\\n\\nThis month\u2019s edition has it all: upcoming events, platform updates, community stories, memes, and, as required by law, one very cute pet. \\n\\nThanks for all you do, and hope you [enjoy the read](https://www.reddit.com/r/modnews/comments/1sgy8yy/mod_monthly_your_april_2026_newsletter_is_here/)!\\n\\n*P.S. - Don\u2019t want to get these notifications anymore? Totally fair. You can opt out anytime by clicking the three dots in the top right corner of this message and selecting \u201cTurn off notifications from this admin.\u201d*\",\"body_html\":\"<p><strong>Hey mods! Your <a href=\\\"https://www.reddit.com/r/modnews/comments/1sgy8yy/mod_monthly_your_april_2026_newsletter_is_here/\\\">April newsletter</a> is out now in <a href=\\\"/r/modnews\\\">r/modnews</a>.</strong></p><p>This month\u2019s edition has it all: upcoming events, platform updates, community stories, memes, and, as required by law, one very cute pet.</p><p>Thanks for all you do, and hope you <a href=\\\"https://www.reddit.com/r/modnews/comments/1sgy8yy/mod_monthly_your_april_2026_newsletter_is_here/\\\">enjoy the read</a>!</p><p><em>P.S. - Don\u2019t want to get these notifications anymore? Totally fair. You can opt out anytime by clicking the three dots in the top right corner of this message and selecting \u201cTurn off notifications from this admin.\u201d</em></p>\",\"sent_at\":\"2026-04-09T19:00:36Z\",\"read_at\":null,\"permalink\":\"https://www.reddit.com/notifications/a/ann_ajauo4\"},{\"id\":\"ann_ac7kus\",\"author_fullname\":\"t2_zvn8b3ept\",\"subject\":\"Action required: Important warning about your Devvit app\",\"body\":\"Hi! \\n\\nThis is an important message from the Devvit team about your Devvit app `modqueuenuke`\\n\\nIt seems that the app is still using our Blocks renderer. We have recently [announced](https://www.reddit.com/r/Devvit/comments/1r3xcm2/devvit_web_and_the_future_of_devvit/) that the Blocks renderer will be deprecated on June 30th. \\n\\nWe're sending you this warning because if in 90 days you don't update your app, it will stop working and users won't be able to interact with it.\\n\\nPlease refer to our migration guides for [Mod Tools](https://developers.reddit.com/docs/guides/migrate/devvit-singleton), and mixed [Blocks+Web apps](https://developers.reddit.com/docs/guides/migrate/devvit-web-experimental) for more instructions on how to migrate your app. \\n\\nIf you need any help, please don't hesitate to post on r/Devvit or on our [Discord](https://developers.reddit.com/discord). \\n\\nGood luck with your migration, and as always let us know how we can help.\\n\\nDevvit Team\",\"body_html\":\"<p>Hi!</p><p>This is an important message from the Devvit team about your Devvit app <code>modqueuenuke</code></p><p>It seems that the app is still using our Blocks renderer. We have recently <a href=\\\"https://www.reddit.com/r/Devvit/comments/1r3xcm2/devvit_web_and_the_future_of_devvit/\\\">announced</a> that the Blocks renderer will be deprecated on June 30th.</p><p>We're sending you this warning because if in 90 days you don't update your app, it will stop working and users won't be able to interact with it.</p><p>Please refer to our migration guides for <a href=\\\"https://developers.reddit.com/docs/guides/migrate/devvit-singleton\\\">Mod Tools</a>, and mixed <a href=\\\"https://developers.reddit.com/docs/guides/migrate/devvit-web-experimental\\\">Blocks+Web apps</a> for more instructions on how to migrate your app.</p><p>If you need any help, please don't hesitate to post on <a href=\\\"/r/Devvit\\\">r/Devvit</a> or on our <a href=\\\"https://developers.reddit.com/discord\\\">Discord</a>.</p><p>Good luck with your migration, and as always let us know how we can help.</p><p>Devvit Team</p>\",\"sent_at\":\"2026-04-01T20:36:52Z\",\"read_at\":\"2026-04-01T21:09:16Z\",\"permalink\":\"https://www.reddit.com/notifications/a/ann_ac7kus\"},{\"id\":\"ann_9t2lx3\",\"author_fullname\":\"t2_1t77net49h\",\"subject\":\"Mod Monthly: Your March 2026 newsletter is here\",\"body\":\"Hey mods! Your [March newsletter](https://www.reddit.com/r/modnews/comments/1rq5fe3/mod_monthly_your_march_2026_newsletter_is_here/) is out now in r/modnews.\\n\\nDive into the latest product updates, upcoming events, community spotlights, mod programs, and more.\\n\\nDon\u2019t want to get these notifications anymore? Totally fair. You can opt out anytime by clicking the three dots in the top right corner of this message and selecting \u201cTurn off notifications from this admin.\u201d\\n\\nThanks for all you do, and hope you [enjoy the read](https://www.reddit.com/r/modnews/comments/1rq5fe3/mod_monthly_your_march_2026_newsletter_is_here/)!\",\"body_html\":\"<p>Hey mods! Your <a href=\\\"https://www.reddit.com/r/modnews/comments/1rq5fe3/mod_monthly_your_march_2026_newsletter_is_here/\\\">March newsletter</a> is out now in <a href=\\\"/r/modnews\\\">r/modnews</a>.</p><p>Dive into the latest product updates, upcoming events, community spotlights, mod programs, and more.</p><p>Don\u2019t want to get these notifications anymore? Totally fair. You can opt out anytime by clicking the three dots in the top right corner of this message and selecting \u201cTurn off notifications from this admin.\u201d</p><p>Thanks for all you do, and hope you <a href=\\\"https://www.reddit.com/r/modnews/comments/1rq5fe3/mod_monthly_your_march_2026_newsletter_is_here/\\\">enjoy the read</a>!</p>\",\"sent_at\":\"2026-03-10T19:12:03Z\",\"read_at\":null,\"permalink\":\"https://www.reddit.com/notifications/a/ann_9t2lx3\"},{\"id\":\"ann_952am7\",\"author_fullname\":\"t2_1t77net49h\",\"subject\":\"Mod Monthly: Your February 2026 newsletter is here\",\"body\":\"Hey mods! Just a quick heads up that the monthly mod newsletter is back! You might remember it as Snoosletter \u2014 it\u2019s now Mod Monthly and has officially settled into its new home in r/modnews.\\n\\nThe [latest issue](https://www.reddit.com/r/modnews/comments/1r0f4vy/mod_monthly_your_february_2026_newsletter_is_here/) is live now with product updates, upcoming events, community spotlights, and a few fun surprises along the way.\\n\\nNot your thing? Totally fair. You can opt out anytime by clicking the three dots in the top right corner of this message and selecting \u201cTurn off notifications from this admin.\u201d\\n\\nThanks for all you do, and hope you [enjoy the read!](https://www.reddit.com/r/modnews/comments/1r0f4vy/mod_monthly_your_february_2026_newsletter_is_here/)\\n\",\"body_html\":\"<p>Hey mods! Just a quick heads up that the monthly mod newsletter is back! You might remember it as Snoosletter \u2014 it\u2019s now Mod Monthly and has officially settled into its new home in <a href=\\\"/r/modnews\\\">r/modnews</a>.</p><p>The <a href=\\\"https://www.reddit.com/r/modnews/comments/1r0f4vy/mod_monthly_your_february_2026_newsletter_is_here/\\\">latest issue</a> is live now with product updates, upcoming events, community spotlights, and a few fun surprises along the way.</p><p>Not your thing? Totally fair. You can opt out anytime by clicking the three dots in the top right corner of this message and selecting \u201cTurn off notifications from this admin.\u201d</p><p>Thanks for all you do, and hope you <a href=\\\"https://www.reddit.com/r/modnews/comments/1r0f4vy/mod_monthly_your_february_2026_newsletter_is_here/\\\">enjoy the read!</a></p>\",\"sent_at\":\"2026-02-09T20:33:25Z\",\"read_at\":null,\"permalink\":\"https://www.reddit.com/notifications/a/ann_952am7\"},{\"id\":\"ann_4ioij5\",\"author_fullname\":\"t2_37wm440n\",\"subject\":\"Take a survey about your experience as a moderator.\",\"body\":\"[Take this survey](https://reddit.qualtrics.com/jfe/form/SV_2642OgprccsDeQK?uuid=577b90d3-f6b6-43d9-995b-8c1b27216b0d&c=US&Q_lang=EN) and let us know about your experiences! Thanks for your time!\\n\\n\\n-Reddit Research Team\\n\",\"body_html\":\"<p><a href=\\\"https://reddit.qualtrics.com/jfe/form/SV_2642OgprccsDeQK?uuid=577b90d3-f6b6-43d9-995b-8c1b27216b0d&amp;c=US&amp;Q_lang=EN\\\">Take this survey</a> and let us know about your experiences! Thanks for your time!</p><p>-Reddit Research Team</p>\",\"sent_at\":\"2025-08-25T21:36:36Z\",\"read_at\":null,\"permalink\":\"https://www.reddit.com/notifications/a/ann_4ioij5\"}]}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Date": [
+            "Sat, 13 Jun 2026 06:43:44 GMT"
+          ],
+          "NEL": [
+            "{\"report_to\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": false, \"success_fraction\": 1.0, \"failure_fraction\": 1.0}"
+          ],
+          "Report-To": [
+            "{\"group\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": true,  \"endpoints\": [{ \"url\": \"https://w3-reporting-nel.reddit.com/reports\" }]}, {\"group\": \"w3-reporting\", \"max_age\": 14400, \"include_subdomains\": true, \"endpoints\": [{ \"url\": \"https://w3-reporting.reddit.com/reports\" }]}, {\"group\": \"w3-reporting-csp\", \"max_age\": 14400, \"include_subdomains\": true, \"endpoints\": [{ \"url\": \"https://w3-reporting-csp.reddit.com/reports\" }]}"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "csv=2; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000; includeSubdomains"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store"
+          ],
+          "content-length": [
+            "11727"
+          ],
+          "content-type": [
+            "application/json; charset=UTF-8"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "server-timing": [
+            "reddit-ct;desc=\"dn=FT,p=DEN,cs=MISS\""
+          ],
+          "x-public-api-version": [
+            "1"
+          ],
+          "x-ratelimit-remaining": [
+            "988.0"
+          ],
+          "x-ratelimit-reset": [
+            "375"
+          ],
+          "x-ratelimit-used": [
+            "12"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        }
+      }
+    },
+    {
+      "request": {
+        "body": "api_type=json&ids=ann_d53kma",
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "28"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "Cookie": [
+            "edgebucket=7zbcx1oVnIqeQCHkcF; csv=2"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/8.0.0rc3.dev0 prawcore/4.0.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/api/announcements/v1/hide?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "string": "{\"ok\":true}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "12"
+          ],
+          "Date": [
+            "Sat, 13 Jun 2026 06:43:45 GMT"
+          ],
+          "NEL": [
+            "{\"report_to\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": false, \"success_fraction\": 1.0, \"failure_fraction\": 1.0}"
+          ],
+          "Report-To": [
+            "{\"group\": \"w3-reporting-nel\", \"max_age\": 14400, \"include_subdomains\": true,  \"endpoints\": [{ \"url\": \"https://w3-reporting-nel.reddit.com/reports\" }]}, {\"group\": \"w3-reporting\", \"max_age\": 14400, \"include_subdomains\": true, \"endpoints\": [{ \"url\": \"https://w3-reporting.reddit.com/reports\" }]}, {\"group\": \"w3-reporting-csp\", \"max_age\": 14400, \"include_subdomains\": true, \"endpoints\": [{ \"url\": \"https://w3-reporting-csp.reddit.com/reports\" }]}"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000; includeSubdomains"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store"
+          ],
+          "content-type": [
+            "application/json; charset=UTF-8"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "server-timing": [
+            "reddit-ct;desc=\"dn=FT,p=DEN,cs=MISS\""
+          ],
+          "x-public-api-version": [
+            "1"
+          ],
+          "x-ratelimit-remaining": [
+            "987.0"
+          ],
+          "x-ratelimit-reset": [
+            "374"
+          ],
+          "x-ratelimit-used": [
+            "13"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        }
+      }
+    }
+  ],
+  "recorded_at": "2026-06-13T06:43:45",
+  "version": 1
+}
