@@ -57,6 +57,14 @@ praw follows `semantic versioning <https://semver.org/>`_.
   now be set before the submission is fetched; setting either after the submission has
   been fetched raises :class:`.ClientException` instead of logging a warning.
 - Require ``prawcore >=4, <5``.
+- Split ``praw/models/reddit/subreddit.py`` into a ``praw.models.reddit.subreddit``
+  package, with :class:`.Subreddit` and each of its helper classes (:class:`.Modmail`,
+  :class:`.SubredditFilters`, :class:`.SubredditFlair`, :class:`.SubredditModeration`,
+  :class:`.SubredditQuarantine`, :class:`.SubredditRelationship`,
+  :class:`.SubredditStream`, :class:`.SubredditStylesheet`, :class:`.SubredditWiki`, and
+  their related classes) moved to dedicated modules. All classes remain importable from
+  ``praw.models.reddit.subreddit`` and ``praw.models`` for backwards compatibility. See
+  the :ref:`migration guide <praw8_migration>` for the full mapping.
 
 **Removed**
 

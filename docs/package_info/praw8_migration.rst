@@ -443,6 +443,49 @@ New:
 
 See :ref:`refresh_token` for the complete guide to obtaining and using refresh tokens.
 
+*********************************
+ Subreddit Module Reorganization
+*********************************
+
+The single ``praw/models/reddit/subreddit.py`` file has been split into a
+``praw.models.reddit.subreddit`` package. The :class:`.Subreddit` class and each of its
+helper classes now live in their own module:
+
+.. list-table::
+    :header-rows: 1
+    :widths: 50 50
+
+    - - Class
+      - New module
+    - - :class:`.Subreddit`
+      - ``praw.models.reddit.subreddit.subreddit``
+    - - :class:`.Modmail`
+      - ``praw.models.reddit.subreddit.modmail``
+    - - :class:`.SubredditFilters`
+      - ``praw.models.reddit.subreddit.filters``
+    - - :class:`.SubredditFlair`, :class:`.SubredditFlairTemplates`,
+        :class:`.SubredditLinkFlairTemplates`, :class:`.SubredditRedditorFlairTemplates`
+      - ``praw.models.reddit.subreddit.flair``
+    - - :class:`.SubredditModeration`, :class:`.SubredditModerationStream`
+      - ``praw.models.reddit.subreddit.moderation``
+    - - :class:`.SubredditQuarantine`
+      - ``praw.models.reddit.subreddit.quarantine``
+    - - :class:`.SubredditRelationship`, :class:`.ContributorRelationship`,
+        :class:`.ModeratorRelationship`
+      - ``praw.models.reddit.subreddit.relationship``
+    - - :class:`.SubredditStream`
+      - ``praw.models.reddit.subreddit.stream``
+    - - :class:`.SubredditStylesheet`
+      - ``praw.models.reddit.subreddit.stylesheet``
+    - - :class:`.SubredditWiki`
+      - ``praw.models.reddit.subreddit.wiki``
+
+All of these classes remain importable from ``praw.models.reddit.subreddit`` and
+``praw.models`` for backwards compatibility, so existing imports of the form ``from
+praw.models.reddit.subreddit import Subreddit`` continue to work unchanged. Update
+direct imports only if you were depending on the module file's location on disk (for
+example, in tooling or monkeypatches).
+
 *****************************
  Removed without replacement
 *****************************
