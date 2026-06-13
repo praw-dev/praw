@@ -8,8 +8,23 @@ praw follows `semantic versioning <https://semver.org/>`_.
  Unreleased
 ************
 
+********************
+ 8.0.0 (2026/06/13)
+********************
+
 **Added**
 
+- Add support for Python 3.13.
+- Add support for Python 3.14.
+- Add support for optional Markdown-formatted ``selftext`` when submitting link, image,
+  gallery, and video posts.
+- Add a :ref:`migration guide <praw8_migration>` covering all breaking changes in PRAW
+  8.
+- Add :class:`.Media` and its subclasses :class:`.EmojiMedia`, :class:`.PostMedia`,
+  :class:`.StylesheetAsset`, :class:`.StylesheetImage`, and :class:`.WidgetMedia` to
+  consolidate media uploads. Media can be constructed from a file path, or from
+  ``bytes`` content along with a ``name``, so media no longer has to be written to disk
+  before uploading.
 - :meth:`.Redditor.overview` to iterate over a Redditor's combined comments and
   submissions, mirroring the user overview page on Reddit.
 - An ``exception_handler`` keyword argument to :func:`.stream_generator` (and thus all
@@ -31,68 +46,6 @@ praw follows `semantic versioning <https://semver.org/>`_.
   environment variable.
 - A ``py.typed`` marker (:PEP:`561`) so that downstream projects can type check against
   PRAW's inline annotations.
-
-**Changed**
-
-- Require ``prawcore >=3.2, <4`` for its public :class:`!Session` and authorizer
-  accessors and the widened :meth:`!Session.request` annotations, which let PRAW drop a
-  number of internal ``cast``\ s and type-checker suppressions.
-- Constrain the ``websocket-client`` dependency to ``<2`` to avoid silently adopting a
-  future, potentially breaking, major release.
-- Require ``update_checker >=1.0, <2.0`` and call ``update_check`` with keyword
-  arguments. The 1.0 release is dependency-free.
-- :meth:`.Submission.add_fetch_param` now raises :class:`.ClientException` when called
-  on a submission that has already been fetched, rather than logging a warning, since
-  the added parameters would have no effect.
-- The ``comment_sort`` and ``comment_limit`` attributes of a :class:`.Submission` must
-  now be set before the submission is fetched; setting either after the submission has
-  been fetched raises :class:`.ClientException` instead of logging a warning.
-- Require ``prawcore >=4, <5``.
-
-**Removed**
-
-- The ``warn_additional_fetch_params`` configuration option, which is obsolete now that
-  adding fetch parameters to an already-fetched submission raises
-  :class:`.ClientException`.
-- The ``warn_comment_sort`` configuration option, which is obsolete now that setting
-  ``comment_sort`` or ``comment_limit`` after the comments have been fetched raises
-  :class:`.ClientException`.
-
-***********************
- 8.0.0rc2 (2026/06/08)
-***********************
-
-**Changed**
-
-- ``Subreddit.submit_gallery``, ``Subreddit.submit_image``, ``Subreddit.submit_poll``,
-  and ``Subreddit.submit_video`` have been merged into :meth:`.Subreddit.submit`. The
-  kind of submission is selected with the ``gallery``, ``image``, ``poll``, ``url``, or
-  ``video`` keyword argument. At least one of those, or ``selftext``, must be provided,
-  and they are mutually exclusive, while ``selftext`` may accompany any of them as
-  optional Markdown-formatted body text. ``image`` takes a :class:`.PostMedia` instance;
-  ``gallery`` takes a list of :class:`.PostMedia` instances or ``dict``\ s with a
-  ``media`` key; ``video`` takes a :class:`.PostMedia` instance or a ``dict`` with a
-  ``media`` key and optional ``gif`` and ``thumbnail`` keys; and ``poll`` takes a
-  ``dict`` with ``duration`` and ``options`` keys. ``selftext`` is no longer required
-  for poll submissions.
-
-***********************
- 8.0.0rc1 (2026/06/08)
-***********************
-
-**Added**
-
-- Add support for Python 3.13.
-- Add support for Python 3.14.
-- Add support for optional Markdown-formatted ``selftext`` when submitting link, image,
-  gallery, and video posts.
-- Add a :ref:`migration guide <praw8_migration>` covering all breaking changes in PRAW
-  8.
-- Add :class:`.Media` and its subclasses :class:`.EmojiMedia`, :class:`.PostMedia`,
-  :class:`.StylesheetAsset`, :class:`.StylesheetImage`, and :class:`.WidgetMedia` to
-  consolidate media uploads. Media can be constructed from a file path, or from
-  ``bytes`` content along with a ``name``, so media no longer has to be written to disk
-  before uploading.
 
 **Changed**
 
@@ -140,6 +93,31 @@ praw follows `semantic versioning <https://semver.org/>`_.
 - Media uploads to Reddit's S3 buckets now respect the configured ``timeout`` and raise
   ``prawcore.RequestException`` on transport errors, consistent with all other requests,
   instead of having no timeout and raising raw ``requests`` exceptions.
+- ``Subreddit.submit_gallery``, ``Subreddit.submit_image``, ``Subreddit.submit_poll``,
+  and ``Subreddit.submit_video`` have been merged into :meth:`.Subreddit.submit`. The
+  kind of submission is selected with the ``gallery``, ``image``, ``poll``, ``url``, or
+  ``video`` keyword argument. At least one of those, or ``selftext``, must be provided,
+  and they are mutually exclusive, while ``selftext`` may accompany any of them as
+  optional Markdown-formatted body text. ``image`` takes a :class:`.PostMedia` instance;
+  ``gallery`` takes a list of :class:`.PostMedia` instances or ``dict``\ s with a
+  ``media`` key; ``video`` takes a :class:`.PostMedia` instance or a ``dict`` with a
+  ``media`` key and optional ``gif`` and ``thumbnail`` keys; and ``poll`` takes a
+  ``dict`` with ``duration`` and ``options`` keys. ``selftext`` is no longer required
+  for poll submissions.
+- Require ``prawcore >=3.2, <4`` for its public :class:`!Session` and authorizer
+  accessors and the widened :meth:`!Session.request` annotations, which let PRAW drop a
+  number of internal ``cast``\ s and type-checker suppressions.
+- Constrain the ``websocket-client`` dependency to ``<2`` to avoid silently adopting a
+  future, potentially breaking, major release.
+- Require ``update_checker >=1.0, <2.0`` and call ``update_check`` with keyword
+  arguments. The 1.0 release is dependency-free.
+- :meth:`.Submission.add_fetch_param` now raises :class:`.ClientException` when called
+  on a submission that has already been fetched, rather than logging a warning, since
+  the added parameters would have no effect.
+- The ``comment_sort`` and ``comment_limit`` attributes of a :class:`.Submission` must
+  now be set before the submission is fetched; setting either after the submission has
+  been fetched raises :class:`.ClientException` instead of logging a warning.
+- Require ``prawcore >=4, <5``.
 
 **Fixed**
 
@@ -168,6 +146,12 @@ praw follows `semantic versioning <https://semver.org/>`_.
 - Remove key ``reset_timestamp`` from :meth:`.limits`.
 - Remove ``SubredditMessage.mute`` and ``SubredditMessage.unmute`` methods.
 - Remove ``InboxableMixin.unblock_subreddit`` method.
+- The ``warn_additional_fetch_params`` configuration option, which is obsolete now that
+  adding fetch parameters to an already-fetched submission raises
+  :class:`.ClientException`.
+- The ``warn_comment_sort`` configuration option, which is obsolete now that setting
+  ``comment_sort`` or ``comment_limit`` after the comments have been fetched raises
+  :class:`.ClientException`.
 
 ********************
  7.8.1 (2024/10/25)
