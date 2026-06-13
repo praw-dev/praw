@@ -10,6 +10,15 @@ praw follows `semantic versioning <https://semver.org/>`_.
 
 **Added**
 
+- :class:`.Announcement` and :class:`.AnnouncementHelper`, exposed as
+  :attr:`.Reddit.announcements`, for listing, hiding, and marking the currently
+  authenticated user's announcements as read. Provides :meth:`.Announcement.hide`,
+  :meth:`.Announcement.mark_read`, :meth:`.AnnouncementHelper.hide`,
+  :meth:`.AnnouncementHelper.mark_read`, and :meth:`.AnnouncementHelper.mark_all_read`.
+  :attr:`.Announcement.sent_datetime` and :attr:`.Announcement.read_datetime` return the
+  announcement's ``sent_at`` and ``read_at`` timestamps as timezone-aware
+  :class:`datetime.datetime` objects (``read_datetime`` is ``None`` for unread
+  announcements).
 - :meth:`.Redditor.overview` to iterate over a Redditor's combined comments and
   submissions, mirroring the user overview page on Reddit.
 - An ``exception_handler`` keyword argument to :func:`.stream_generator` (and thus all
@@ -979,8 +988,8 @@ praw follows `semantic versioning <https://semver.org/>`_.
 
 **Fixed**
 
-- Calls to :meth:`.hide` and :meth:`.unhide` properly batch into requests of 50
-  submissions at a time.
+- Calls to :meth:`.Submission.hide` and :meth:`.Submission.unhide` properly batch into
+  requests of 50 submissions at a time.
 - Lowered the average maximum delay between inactive stream checks by 4x to 16 seconds.
   It was previously 64 seconds, which was too long.
 
@@ -1195,7 +1204,8 @@ as described below:
 
 **Fixed**
 
-- :meth:`.hide` and :meth:`.unhide` now accept a list of additional submissions.
+- :meth:`.Submission.hide` and :meth:`.Submission.unhide` now accept a list of
+  additional submissions.
 - :meth:`.replace_more` is now recoverable. Previously, when an exception was raised
   during the work done by :meth:`.replace_more`, all unreplaced :class:`.MoreComments`
   instances were lost. Now :class:`.MoreComments` instances are only removed once their

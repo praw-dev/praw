@@ -9,6 +9,7 @@
     :maxdepth: 2
     :caption: Helper Classes
 
+    reddit/announcements
     reddit/drafts
     reddit/front
     reddit/inbox

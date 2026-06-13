@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 
-from praw.models import Collection, Comment, Submission
+from praw.models import Announcement, Collection, Comment, Submission
 from praw.models.mod_note import ModNote
 from praw.models.reddit.poll import PollData
 
@@ -49,6 +49,24 @@ class TestUpdatedDatetime(UnitTest):
         )
         assert collection.updated_datetime.tzinfo is not None
         assert collection.updated_datetime.timestamp() == 1588200000.0
+
+
+class TestAnnouncementDatetime(UnitTest):
+    def test_sent_datetime(self, reddit):
+        announcement = Announcement(reddit, _data={"id": "ann_x", "sent_at": "2026-06-08T18:07:46Z", "read_at": None})
+        assert announcement.sent_datetime.tzinfo is not None
+        assert announcement.sent_datetime.timestamp() == 1780942066.0
+
+    def test_read_datetime__never_read(self, reddit):
+        announcement = Announcement(reddit, _data={"id": "ann_x", "sent_at": "2026-06-08T18:07:46Z", "read_at": None})
+        assert announcement.read_datetime is None
+
+    def test_read_datetime__when_read(self, reddit):
+        announcement = Announcement(
+            reddit, _data={"id": "ann_x", "sent_at": "2026-05-29T21:07:52Z", "read_at": "2026-06-03T14:12:57Z"}
+        )
+        assert announcement.read_datetime.tzinfo is not None
+        assert announcement.read_datetime.timestamp() == 1780495977.0
 
 
 class TestVotingEndDatetime(UnitTest):
