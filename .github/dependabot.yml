@@ -3,12 +3,12 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: quarterly
+      interval: monthly
     labels:
       - "Dependencies"
   - package-ecosystem: uv
     directory: /
     schedule:
-      interval: quarterly
+      interval: monthly
     labels:
       - "Dependencies"
