@@ -36,6 +36,10 @@ release = __version__
 version = ".".join(__version__.split(".", 2)[:2])
 
 
+def setup(app):
+    app.connect("autodoc-skip-member", skip)
+
+
 def skip(app, what, name, obj, skip, options):
     if name in {
         "__call__",
@@ -47,7 +51,3 @@ def skip(app, what, name, obj, skip, options):
     }:
         return False
     return skip
-
-
-def setup(app):
-    app.connect("autodoc-skip-member", skip)

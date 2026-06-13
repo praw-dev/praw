@@ -26,6 +26,14 @@ used_cassettes = set()
 URI_MATCHERS = ["scheme", "host", "port", "path", "query"]
 
 
+def _expand_uri_matcher(matchers):
+    """Replace the ``uri`` matcher with order-independent component matchers."""
+    expanded = []
+    for matcher in matchers:
+        expanded.extend(URI_MATCHERS if matcher == "uri" else [matcher])
+    return expanded
+
+
 class IntegrationTest:
     """Base class for PRAW integration tests."""
 
@@ -105,11 +113,3 @@ class IntegrationTest:
 
         with Reddit(**reddit_kwargs) as reddit:
             yield reddit
-
-
-def _expand_uri_matcher(matchers):
-    """Replace the ``uri`` matcher with order-independent component matchers."""
-    expanded = []
-    for matcher in matchers:
-        expanded.extend(URI_MATCHERS if matcher == "uri" else [matcher])
-    return expanded

@@ -4,7 +4,13 @@ from pathlib import Path
 import pytest
 
 from praw.exceptions import ClientException
-from praw.models import EmojiMedia, PostMedia, StylesheetAsset, StylesheetImage, WidgetMedia
+from praw.models import (
+    EmojiMedia,
+    PostMedia,
+    StylesheetAsset,
+    StylesheetImage,
+    WidgetMedia,
+)
 from praw.models.media import Media
 
 from .. import UnitTest
@@ -93,14 +99,6 @@ class TestPostMedia(UnitTest):
         assert str(excinfo.value) == message
 
 
-class TestStylesheetImage(UnitTest):
-    def test_image_type(self):
-        jpeg = StylesheetImage(b"\xff\xd8\xff data", name="image.jpg")
-        assert jpeg._image_type == "jpg"
-        png = StylesheetImage(b"\x89PNG data", name="image.png")
-        assert png._image_type == "png"
-
-
 class TestStylesheetAsset(UnitTest):
     def test_lease_data(self):
         media = StylesheetAsset(b"data", name="image.png")
@@ -109,3 +107,11 @@ class TestStylesheetAsset(UnitTest):
             "mimetype": "image/png",
             "imagetype": "bannerBackgroundImage",
         }
+
+
+class TestStylesheetImage(UnitTest):
+    def test_image_type(self):
+        jpeg = StylesheetImage(b"\xff\xd8\xff data", name="image.jpg")
+        assert jpeg._image_type == "jpg"
+        png = StylesheetImage(b"\x89PNG data", name="image.png")
+        assert png._image_type == "png"

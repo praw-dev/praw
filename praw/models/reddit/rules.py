@@ -18,91 +18,6 @@ if TYPE_CHECKING:
     from praw import models
 
 
-class Rule(CreatedMixin, RedditBase):
-    """An individual :class:`.Rule` object.
-
-    .. include:: ../../typical_attributes.rst
-
-    ==================== =============================================================
-    Attribute            Description
-    ==================== =============================================================
-    ``created_utc``      Time the rule was created, represented in `Unix Time`_.
-    ``description``      The description of the rule, if provided, otherwise a blank
-                         string.
-    ``kind``             The kind of rule. Can be ``"link"``, ``comment"``, or
-                         ``"all"``.
-    ``priority``         Represents where the rule is ranked. For example, the first
-                         rule is at priority ``0``. Serves as an index number on the
-                         list of rules.
-    ``short_name``       The name of the rule.
-    ``violation_reason`` The reason that is displayed on the report menu for the rule.
-    ==================== =============================================================
-
-    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
-
-    """
-
-    STR_FIELD = "short_name"
-
-    @cachedproperty
-    def mod(self) -> RuleModeration:
-        """Contain methods used to moderate rules.
-
-        To delete ``"No spam"`` from r/test try:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").rules["No spam"].mod.delete()
-
-        To update ``"No spam"`` from r/test try:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").removal_reasons["No spam"].mod.update(
-                description="Don't do this!", violation_reason="Spam post"
-            )
-
-        """
-        return RuleModeration(self)
-
-    def __getattribute__(self, attribute: str) -> Any:
-        """Get the value of an attribute."""
-        value = super().__getattribute__(attribute)
-        if attribute == "subreddit" and value is None:
-            msg = "The Rule is missing a subreddit. File a bug report at PRAW."
-            raise ValueError(msg)
-        return value
-
-    def __init__(
-        self,
-        reddit: praw.Reddit,
-        subreddit: models.Subreddit | None = None,
-        short_name: str | None = None,
-        _data: dict[str, str] | None = None,
-    ) -> None:
-        """Initialize a :class:`.Rule` instance."""
-        if (short_name, _data).count(None) != 1:
-            msg = "Either short_name or _data needs to be given."
-            raise ValueError(msg)
-        if short_name:
-            self.short_name = short_name
-        # Note: The subreddit parameter can be None, because the objector does not know
-        # this info. In that case, it is the responsibility of the caller to set the
-        # `subreddit` property on the returned value.
-        self.subreddit = subreddit
-        super().__init__(reddit, _data=_data)
-
-    def _fetch(self) -> None:
-        assert self.subreddit is not None
-        for rule in self.subreddit.rules:
-            if rule.short_name == self.short_name:
-                self.__dict__.update(rule.__dict__)
-                super()._fetch()
-                return
-        msg = f"Subreddit {self.subreddit} does not have the rule {self.short_name}"
-        raise ClientException(msg)
-
-
 class RuleModeration:
     """Contain methods used to moderate rules.
 
@@ -187,6 +102,91 @@ class RuleModeration:
         updated_rule = self.rule._reddit.post(API_PATH["update_subreddit_rule"], data=data)[0]
         updated_rule.subreddit = self.rule.subreddit
         return updated_rule
+
+
+class Rule(CreatedMixin, RedditBase):
+    """An individual :class:`.Rule` object.
+
+    .. include:: ../../typical_attributes.rst
+
+    ==================== =============================================================
+    Attribute            Description
+    ==================== =============================================================
+    ``created_utc``      Time the rule was created, represented in `Unix Time`_.
+    ``description``      The description of the rule, if provided, otherwise a blank
+                         string.
+    ``kind``             The kind of rule. Can be ``"link"``, ``comment"``, or
+                         ``"all"``.
+    ``priority``         Represents where the rule is ranked. For example, the first
+                         rule is at priority ``0``. Serves as an index number on the
+                         list of rules.
+    ``short_name``       The name of the rule.
+    ``violation_reason`` The reason that is displayed on the report menu for the rule.
+    ==================== =============================================================
+
+    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
+
+    """
+
+    STR_FIELD = "short_name"
+
+    @cachedproperty
+    def mod(self) -> RuleModeration:
+        """Contain methods used to moderate rules.
+
+        To delete ``"No spam"`` from r/test try:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").rules["No spam"].mod.delete()
+
+        To update ``"No spam"`` from r/test try:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").removal_reasons["No spam"].mod.update(
+                description="Don't do this!", violation_reason="Spam post"
+            )
+
+        """
+        return RuleModeration(self)
+
+    def __getattribute__(self, attribute: str) -> Any:
+        """Get the value of an attribute."""
+        value = super().__getattribute__(attribute)
+        if attribute == "subreddit" and value is None:
+            msg = "The Rule is missing a subreddit. File a bug report at PRAW."
+            raise ValueError(msg)
+        return value
+
+    def __init__(
+        self,
+        reddit: praw.Reddit,
+        subreddit: models.Subreddit | None = None,
+        short_name: str | None = None,
+        _data: dict[str, str] | None = None,
+    ) -> None:
+        """Initialize a :class:`.Rule` instance."""
+        if (short_name, _data).count(None) != 1:
+            msg = "Either short_name or _data needs to be given."
+            raise ValueError(msg)
+        if short_name:
+            self.short_name = short_name
+        # Note: The subreddit parameter can be None, because the objector does not know
+        # this info. In that case, it is the responsibility of the caller to set the
+        # `subreddit` property on the returned value.
+        self.subreddit = subreddit
+        super().__init__(reddit, _data=_data)
+
+    def _fetch(self) -> None:
+        assert self.subreddit is not None
+        for rule in self.subreddit.rules:
+            if rule.short_name == self.short_name:
+                self.__dict__.update(rule.__dict__)
+                super()._fetch()
+                return
+        msg = f"Subreddit {self.subreddit} does not have the rule {self.short_name}"
+        raise ClientException(msg)
 
 
 class SubredditRules:

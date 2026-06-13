@@ -17,13 +17,6 @@ class BaseList(PRAWBase):
 
     CHILD_ATTRIBUTE: ClassVar[str | None] = None
 
-    def _child_attribute(self) -> str:
-        """Return ``CHILD_ATTRIBUTE``, ensuring it has been set by a subclass."""
-        if self.CHILD_ATTRIBUTE is None:
-            msg = "BaseList must be extended."
-            raise NotImplementedError(msg)
-        return self.CHILD_ATTRIBUTE
-
     def __contains__(self, item: Any) -> bool:
         """Test if item exists in the list."""
         return item in getattr(self, self._child_attribute())
@@ -55,3 +48,10 @@ class BaseList(PRAWBase):
     def __str__(self) -> str:
         """Return a string representation of the list."""
         return str(getattr(self, self._child_attribute()))
+
+    def _child_attribute(self) -> str:
+        """Return ``CHILD_ATTRIBUTE``, ensuring it has been set by a subclass."""
+        if self.CHILD_ATTRIBUTE is None:
+            msg = "BaseList must be extended."
+            raise NotImplementedError(msg)
+        return self.CHILD_ATTRIBUTE

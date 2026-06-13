@@ -38,15 +38,15 @@ class Announcement(FullnameMixin, RedditBase):
 
     STR_FIELD = "id"
 
-    @property
-    def _kind(self) -> str:
-        """Return the object's kind shortcode."""
-        return "ann"
-
     @staticmethod
     def _parse_iso8601(value: str) -> datetime:
         # ``datetime.fromisoformat`` only accepts the ``Z`` suffix on Python 3.11+.
         return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone()
+
+    @property
+    def _kind(self) -> str:
+        """Return the object's kind shortcode."""
+        return "ann"
 
     @property
     def read_datetime(self) -> datetime | None:

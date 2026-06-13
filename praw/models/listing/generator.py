@@ -14,17 +14,6 @@ if TYPE_CHECKING:
     from praw.models.reddit.base import RedditBase
 
 
-class ListingGeneratorKwargs(TypedDict, total=False):
-    """The keyword arguments accepted by methods that return a :class:`.ListingGenerator`.
-
-    See :meth:`.ListingGenerator.__init__` for the meaning of each value.
-
-    """
-
-    limit: int | None
-    params: dict[str, str | int] | None
-
-
 class ListingGenerator(PRAWBase, Iterator):
     """Instances of this class generate :class:`.RedditBase` instances.
 
@@ -116,3 +105,14 @@ class ListingGenerator(PRAWBase, Iterator):
             self.params[self._listing.AFTER_PARAM] = self._listing.after
         else:
             self._exhausted = True
+
+
+class ListingGeneratorKwargs(TypedDict, total=False):
+    """The keyword arguments accepted by methods that return a :class:`.ListingGenerator`.
+
+    See :meth:`.ListingGenerator.__init__` for the meaning of each value.
+
+    """
+
+    limit: int | None
+    params: dict[str, str | int] | None

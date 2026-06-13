@@ -11,73 +11,6 @@ if TYPE_CHECKING:
     import praw
 
 
-class UserSubreddit(Subreddit):
-    """A class for :class:`.User` Subreddits.
-
-    To obtain an instance of this class execute:
-
-    .. code-block:: python
-
-        subreddit = reddit.user.me().subreddit
-
-    .. include:: ../../typical_attributes.rst
-
-    ========================= ==========================================================
-    Attribute                 Description
-    ========================= ==========================================================
-    ``can_assign_link_flair`` Whether users can assign their own link flair.
-    ``can_assign_user_flair`` Whether users can assign their own user flair.
-    ``created_utc``           Time the subreddit was created, represented in `Unix
-                              Time`_.
-    ``description``           Subreddit description, in Markdown.
-    ``description_html``      Subreddit description, in HTML.
-    ``display_name``          Name of the subreddit.
-    ``id``                    ID of the subreddit.
-    ``name``                  Fullname of the subreddit.
-    ``over18``                Whether the subreddit is NSFW.
-    ``public_description``    Description of the subreddit, shown in searches and on the
-                              "You must be invited to visit this community" page (if
-                              applicable).
-    ``spoilers_enabled``      Whether the spoiler tag feature is enabled.
-    ``subscribers``           Count of subscribers. This will be ``0`` unless the
-                              authenticated user is a moderator.
-    ``user_is_banned``        Whether the authenticated user is banned.
-    ``user_is_moderator``     Whether the authenticated user is a moderator.
-    ``user_is_subscriber``    Whether the authenticated user is subscribed.
-    ========================= ==========================================================
-
-    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
-
-    """
-
-    @cachedproperty
-    def mod(self) -> UserSubredditModeration:
-        """Provide an instance of :class:`.UserSubredditModeration`.
-
-        For example, to update the authenticated user's display name:
-
-        .. code-block:: python
-
-            reddit.user.me().subreddit.mod.update(title="New display name")
-
-        """
-        return UserSubredditModeration(self)
-
-    def __init__(self, reddit: praw.Reddit, *args: Any, **kwargs: Any) -> None:
-        """Initialize an :class:`.UserSubreddit` instance.
-
-        :param reddit: An instance of :class:`.Reddit`.
-
-        .. note::
-
-            This class should not be initialized directly. Instead, obtain an instance
-            via: ``reddit.user.me().subreddit`` or
-            ``reddit.redditor("redditor_name").subreddit``.
-
-        """
-        super().__init__(reddit, *args, **kwargs)
-
-
 # noinspection PyIncorrectDocstring
 class UserSubredditModeration(SubredditModeration):
     """Provides a set of moderation functions to a :class:`.UserSubreddit`.
@@ -200,3 +133,70 @@ class UserSubredditModeration(SubredditModeration):
             _reddit=self.subreddit._reddit,
             **current_settings,  # pyright: ignore[reportArgumentType]  # heterogeneous str | int | bool values are routed through _create_or_update's **other_settings
         )
+
+
+class UserSubreddit(Subreddit):
+    """A class for :class:`.User` Subreddits.
+
+    To obtain an instance of this class execute:
+
+    .. code-block:: python
+
+        subreddit = reddit.user.me().subreddit
+
+    .. include:: ../../typical_attributes.rst
+
+    ========================= ==========================================================
+    Attribute                 Description
+    ========================= ==========================================================
+    ``can_assign_link_flair`` Whether users can assign their own link flair.
+    ``can_assign_user_flair`` Whether users can assign their own user flair.
+    ``created_utc``           Time the subreddit was created, represented in `Unix
+                              Time`_.
+    ``description``           Subreddit description, in Markdown.
+    ``description_html``      Subreddit description, in HTML.
+    ``display_name``          Name of the subreddit.
+    ``id``                    ID of the subreddit.
+    ``name``                  Fullname of the subreddit.
+    ``over18``                Whether the subreddit is NSFW.
+    ``public_description``    Description of the subreddit, shown in searches and on the
+                              "You must be invited to visit this community" page (if
+                              applicable).
+    ``spoilers_enabled``      Whether the spoiler tag feature is enabled.
+    ``subscribers``           Count of subscribers. This will be ``0`` unless the
+                              authenticated user is a moderator.
+    ``user_is_banned``        Whether the authenticated user is banned.
+    ``user_is_moderator``     Whether the authenticated user is a moderator.
+    ``user_is_subscriber``    Whether the authenticated user is subscribed.
+    ========================= ==========================================================
+
+    .. _unix time: https://en.wikipedia.org/wiki/Unix_time
+
+    """
+
+    @cachedproperty
+    def mod(self) -> UserSubredditModeration:
+        """Provide an instance of :class:`.UserSubredditModeration`.
+
+        For example, to update the authenticated user's display name:
+
+        .. code-block:: python
+
+            reddit.user.me().subreddit.mod.update(title="New display name")
+
+        """
+        return UserSubredditModeration(self)
+
+    def __init__(self, reddit: praw.Reddit, *args: Any, **kwargs: Any) -> None:
+        """Initialize an :class:`.UserSubreddit` instance.
+
+        :param reddit: An instance of :class:`.Reddit`.
+
+        .. note::
+
+            This class should not be initialized directly. Instead, obtain an instance
+            via: ``reddit.user.me().subreddit`` or
+            ``reddit.redditor("redditor_name").subreddit``.
+
+        """
+        super().__init__(reddit, *args, **kwargs)
