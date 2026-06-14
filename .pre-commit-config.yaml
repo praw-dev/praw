@@ -3,12 +3,12 @@ repos:
       - id: docstrfmt
         require_serial: true
     repo: https://github.com/LilSpazJoekp/docstrfmt
-    rev: 06455715c8a81e176748e036c1c945f3e80d5b8d  # frozen: v2.1.0
+    rev: 8688ba6420d7b5ca95a8ba0edf8a9953babdc3da  # frozen: v2.1.1
 
   - hooks:
       - id: codesorter
     repo: https://github.com/praw-dev/CodeSorter
-    rev: a8b600db67edfc9f71a13e97f67c10d72f87fec7  # frozen: unreleased
+    rev: 33c79d5c2fab0b6f1a6850c97f92da1739951f2d  # frozen: v0.1.0
 
   - hooks:
       - id: auto-walrus
