@@ -29,11 +29,11 @@ class Config:
 
     CONFIG: configparser.ConfigParser | None = None
     CONFIG_NOT_SET = _NotSet()  # Represents a config value that is not set.
-    LOCK = Lock()
     INTERPOLATION_LEVEL = MappingProxyType({
         "basic": configparser.BasicInterpolation,
         "extended": configparser.ExtendedInterpolation,
     })
+    LOCK = Lock()
 
     # Attributes populated by _initialize_attributes. client_id and user_agent are
     # validated as present by Reddit.__init__, so they are typed as required.

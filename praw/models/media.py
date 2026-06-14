@@ -275,7 +275,7 @@ class StylesheetImage(Media):
                 "BAD_CSS_NAME",
                 "IMAGE_ERROR",
             }, "Please file a bug with PRAW."
-            raise RedditAPIException([RedditErrorItem(error_type=error_type, message=error_value or "", field="")])
+            raise RedditAPIException([RedditErrorItem(error_type=error_type, field="", message=error_value or "")])
         return response
 
 

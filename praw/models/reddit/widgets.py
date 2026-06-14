@@ -364,6 +364,656 @@ class SubredditWidgets(PRAWBase):
         self._fetch()
 
 
+class SubredditWidgetsModeration:
+    """Class for moderating a :class:`.Subreddit`'s widgets.
+
+    Get an instance of this class from :attr:`.SubredditWidgets.mod`.
+
+    Example usage:
+
+    .. code-block:: python
+
+        styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
+        reddit.subreddit("test").widgets.mod.add_text_area(
+            short_name="My title", text="**bold text**", styles=styles
+        )
+
+    .. note::
+
+        To use this class's methods, the authenticated user must be a moderator with
+        appropriate permissions.
+
+    """
+
+    def __init__(self, subreddit: models.Subreddit, reddit: praw.Reddit) -> None:
+        """Initialize a :class:`.SubredditWidgetsModeration` instance."""
+        self._subreddit = subreddit
+        self._reddit = reddit
+
+    # Returns Any: the concrete widget type is determined at runtime by objectifying the
+    # response. Each public ``add_*`` wrapper carries the precise return annotation.
+    def _create_widget(self, payload: dict[str, Any]) -> Any:
+        path = API_PATH["widget_create"].format(subreddit=self._subreddit)
+        widget = self._reddit.post(path, data={"json": dumps(payload, cls=WidgetEncoder)})
+        widget.subreddit = self._subreddit
+        return widget
+
+    def add_button_widget(
+        self,
+        *,
+        buttons: list[dict[str, dict[str, str | int] | str | int]],
+        description: str,
+        short_name: str,
+        styles: dict[str, str],
+        **other_settings: Any,
+    ) -> models.ButtonWidget:
+        """Add and return a :class:`.ButtonWidget`.
+
+        :param buttons: A list of dictionaries describing buttons, as specified in
+            `Reddit docs`_. As of this writing, the format is:
+
+            Each button is either a text button or an image button. A text button looks
+            like this:
+
+            .. code-block:: text
+
+                {
+                    "kind": "text",
+                    "text": a string no longer than 30 characters,
+                    "url": a valid URL,
+                    "color": a 6-digit rgb hex color, e.g., `#AABBCC`,
+                    "textColor": a 6-digit rgb hex color, e.g., `#AABBCC`,
+                    "fillColor": a 6-digit rgb hex color, e.g., `#AABBCC`,
+                    "hoverState": {...}
+                }
+
+            An image button looks like this:
+
+            .. code-block:: text
+
+                {
+                    "kind": "image",
+                    "text": a string no longer than 30 characters,
+                    "linkUrl": a valid URL,
+                    "url": a valid URL of a Reddit-hosted image,
+                    "height": an integer,
+                    "width": an integer,
+                    "hoverState": {...}
+                }
+
+            Both types of buttons have the field ``hoverState``. The field does not have
+            to be included (it is optional). If it is included, it can be one of two
+            types: ``"text"`` or ``"image"``. A text ``hoverState`` looks like this:
+
+            .. code-block:: text
+
+                {
+                    "kind": "text",
+                    "text": a string no longer than 30 characters,
+                    "color": a 6-digit rgb hex color, e.g., `#AABBCC`,
+                    "textColor": a 6-digit rgb hex color, e.g., `#AABBCC`,
+                    "fillColor": a 6-digit rgb hex color, e.g., `#AABBCC`
+                }
+
+            An image ``hoverState`` looks like this:
+
+            .. code-block:: text
+
+                {
+                    "kind": "image",
+                    "url": a valid URL of a Reddit-hosted image,
+                    "height": an integer,
+                    "width": an integer
+                }
+
+            .. note::
+
+                The method :meth:`.upload_image` can be used to upload images to Reddit
+                for a ``url`` field that holds a Reddit-hosted image.
+
+            .. note::
+
+                An image ``hoverState`` may be paired with a text widget, and a text
+                ``hoverState`` may be paired with an image widget.
+
+        :param description: Markdown text to describe the widget.
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
+
+        :returns: The created :class:`.ButtonWidget`.
+
+        .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+
+        Example usage:
+
+        .. code-block:: python
+
+            widget_moderation = reddit.subreddit("test").widgets.mod
+            my_image = widget_moderation.upload_image("/path/to/pic.jpg")
+            buttons = [
+                {
+                    "kind": "text",
+                    "text": "View source",
+                    "url": "https://github.com/praw-dev/praw",
+                    "color": "#FF0000",
+                    "textColor": "#00FF00",
+                    "fillColor": "#0000FF",
+                    "hoverState": {
+                        "kind": "text",
+                        "text": "ecruos weiV",
+                        "color": "#FFFFFF",
+                        "textColor": "#000000",
+                        "fillColor": "#0000FF",
+                    },
+                },
+                {
+                    "kind": "image",
+                    "text": "View documentation",
+                    "linkUrl": "https://praw.readthedocs.io",
+                    "url": my_image,
+                    "height": 200,
+                    "width": 200,
+                    "hoverState": {"kind": "image", "url": my_image, "height": 200, "width": 200},
+                },
+            ]
+            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
+            new_widget = widget_moderation.add_button_widget(
+                short_name="Things to click",
+                description="Click some of these *cool* links!",
+                buttons=buttons,
+                styles=styles,
+            )
+
+        """
+        button_widget = {
+            "buttons": buttons,
+            "description": description,
+            "kind": "button",
+            "shortName": short_name,
+            "styles": styles,
+        }
+        button_widget.update(other_settings)
+        return self._create_widget(button_widget)
+
+    def add_calendar(
+        self,
+        *,
+        configuration: dict[str, bool | int],
+        google_calendar_id: str,
+        requires_sync: bool,
+        short_name: str,
+        styles: dict[str, str],
+        **other_settings: Any,
+    ) -> models.Calendar:
+        """Add and return a :class:`.Calendar` widget.
+
+        :param configuration: A dictionary as specified in `Reddit docs`_. For example:
+
+            .. code-block:: python
+
+                {
+                    "numEvents": 10,
+                    "showDate": True,
+                    "showDescription": False,
+                    "showLocation": False,
+                    "showTime": True,
+                    "showTitle": True,
+                }
+
+        :param google_calendar_id: An email-style calendar ID. To share a Google
+            Calendar, make it public, then find the "Calendar ID".
+        :param requires_sync: Whether the calendar needs synchronization.
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
+
+        :returns: The created :class:`.Calendar`.
+
+        .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+
+        Example usage:
+
+        .. code-block:: python
+
+            widget_moderation = reddit.subreddit("test").widgets.mod
+            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
+            config = {
+                "numEvents": 10,
+                "showDate": True,
+                "showDescription": False,
+                "showLocation": False,
+                "showTime": True,
+                "showTitle": True,
+            }
+            calendar_id = "y6nm89jy427drk8l71w75w9wjn@group.calendar.google.com"
+            new_widget = widget_moderation.add_calendar(
+                short_name="Upcoming Events",
+                google_calendar_id=calendar_id,
+                requires_sync=True,
+                configuration=config,
+                styles=styles,
+            )
+
+        """
+        calendar = {
+            "configuration": configuration,
+            "googleCalendarId": google_calendar_id,
+            "kind": "calendar",
+            "requiresSync": requires_sync,
+            "shortName": short_name,
+            "styles": styles,
+        }
+        calendar.update(other_settings)
+        return self._create_widget(calendar)
+
+    def add_community_list(
+        self,
+        *,
+        data: list[str | models.Subreddit],
+        description: str = "",
+        short_name: str,
+        styles: dict[str, str],
+        **other_settings: Any,
+    ) -> models.CommunityList:
+        """Add and return a :class:`.CommunityList` widget.
+
+        :param data: A list of subreddits. Subreddits can be represented as ``str`` or
+            as :class:`.Subreddit`. These types may be mixed within the list.
+        :param description: A string containing Markdown (default: ``""``).
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
+
+        :returns: The created :class:`.CommunityList`.
+
+        Example usage:
+
+        .. code-block:: python
+
+            widget_moderation = reddit.subreddit("test").widgets.mod
+            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
+            subreddits = ["learnpython", reddit.subreddit("redditdev")]
+            new_widget = widget_moderation.add_community_list(
+                short_name="My fav subs", data=subreddits, styles=styles, description="description"
+            )
+
+        """
+        community_list = {
+            "data": data,
+            "description": description,
+            "kind": "community-list",
+            "shortName": short_name,
+            "styles": styles,
+        }
+        community_list.update(other_settings)
+        return self._create_widget(community_list)
+
+    def add_custom_widget(
+        self,
+        *,
+        css: str,
+        height: int,
+        image_data: list[dict[str, str | int]],
+        short_name: str,
+        styles: dict[str, str],
+        text: str,
+        **other_settings: Any,
+    ) -> models.CustomWidget:
+        """Add and return a :class:`.CustomWidget`.
+
+        :param css: The CSS for the widget, no longer than 100000 characters.
+
+            .. note::
+
+                As of this writing, Reddit will not accept empty CSS. If you wish to
+                create a custom widget without CSS, consider using ``"/**/"`` (an empty
+                comment) as your CSS.
+
+        :param height: The height of the widget, between 50 and 500.
+        :param image_data: A list of dictionaries as specified in `Reddit docs`_. Each
+            dictionary represents an image and has the key ``"url"`` which maps to the
+            URL of an image hosted on Reddit's servers. Images should be uploaded using
+            :meth:`.upload_image`.
+
+            For example:
+
+            .. code-block:: python
+
+                [
+                    {
+                        "url": "https://some.link",  # from upload_image()
+                        "width": 600,
+                        "height": 450,
+                        "name": "logo",
+                    },
+                    {
+                        "url": "https://other.link",  # from upload_image()
+                        "width": 450,
+                        "height": 600,
+                        "name": "icon",
+                    },
+                ]
+
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
+        :param text: The Markdown text displayed in the widget.
+
+        :returns: The created :class:`.CustomWidget`.
+
+        .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+
+        Example usage:
+
+        .. code-block:: python
+
+            widget_moderation = reddit.subreddit("test").widgets.mod
+            image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
+            image_urls = [widget_moderation.upload_image(img_path) for img_path in image_paths]
+            image_data = [
+                {"width": 600, "height": 450, "name": "logo", "url": image_urls[0]},
+                {"width": 450, "height": 600, "name": "icon", "url": image_urls[1]},
+            ]
+            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
+            new_widget = widget_moderation.add_custom_widget(
+                image_short_name="My widget",
+                text="# Hello world!",
+                css="/**/",
+                height=200,
+                image_data=image_data,
+                styles=styles,
+            )
+
+        """
+        custom_widget = {
+            "css": css,
+            "height": height,
+            "imageData": image_data,
+            "kind": "custom",
+            "shortName": short_name,
+            "styles": styles,
+            "text": text,
+        }
+        custom_widget.update(other_settings)
+        return self._create_widget(custom_widget)
+
+    def add_image_widget(
+        self,
+        *,
+        data: list[dict[str, str | int]],
+        short_name: str,
+        styles: dict[str, str],
+        **other_settings: Any,
+    ) -> models.ImageWidget:
+        """Add and return an :class:`.ImageWidget`.
+
+        :param data: A list of dictionaries as specified in `Reddit docs`_. Each
+            dictionary has the key ``"url"`` which maps to the URL of an image hosted on
+            Reddit's servers. Images should be uploaded using :meth:`.upload_image`.
+
+            For example:
+
+            .. code-block:: python
+
+                [
+                    {
+                        "url": "https://some.link",  # from upload_image()
+                        "width": 600,
+                        "height": 450,
+                        "linkUrl": "https://github.com/praw-dev/praw",
+                    },
+                    {
+                        "url": "https://other.link",  # from upload_image()
+                        "width": 450,
+                        "height": 600,
+                        "linkUrl": "https://praw.readthedocs.io",
+                    },
+                ]
+
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
+
+        :returns: The created :class:`.ImageWidget`.
+
+        .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+
+        Example usage:
+
+        .. code-block:: python
+
+            widget_moderation = reddit.subreddit("test").widgets.mod
+            image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
+            image_data = [
+                {
+                    "width": 600,
+                    "height": 450,
+                    "linkUrl": "",
+                    "url": widget_moderation.upload_image(img_path),
+                }
+                for img_path in image_paths
+            ]
+            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
+            new_widget = widget_moderation.add_image_widget(
+                short_name="My cool pictures", data=image_data, styles=styles
+            )
+
+        """
+        image_widget = {
+            "data": data,
+            "kind": "image",
+            "shortName": short_name,
+            "styles": styles,
+        }
+        image_widget.update(other_settings)
+        return self._create_widget(image_widget)
+
+    def add_menu(
+        self,
+        *,
+        data: list[dict[str, list[dict[str, str]] | str]],
+        **other_settings: Any,
+    ) -> models.Menu | Widget:
+        """Add and return a :class:`.Menu` widget.
+
+        :param data: A list of dictionaries describing menu contents, as specified in
+            `Reddit docs`_. As of this writing, the format is:
+
+            .. code-block:: text
+
+                [
+                    {
+                        "text": a string no longer than 20 characters,
+                        "url": a valid URL
+                    },
+
+                    OR
+
+                    {
+                        "children": [
+                            {
+                                "text": a string no longer than 20 characters,
+                                "url": a valid URL,
+                            },
+                            ...
+                        ],
+                        "text": a string no longer than 20 characters,
+                    },
+                    ...
+                ]
+
+
+        :returns: The created :class:`.Menu`.
+
+        .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+
+        Example usage:
+
+        .. code-block:: python
+
+            widget_moderation = reddit.subreddit("test").widgets.mod
+            menu_contents = [
+                {"text": "My homepage", "url": "https://example.com"},
+                {
+                    "text": "Python packages",
+                    "children": [
+                        {"text": "PRAW", "url": "https://praw.readthedocs.io/"},
+                        {"text": "requests", "url": "https://docs.python-requests.org/"},
+                    ],
+                },
+                {"text": "Reddit homepage", "url": "https://reddit.com"},
+            ]
+            new_widget = widget_moderation.add_menu(data=menu_contents)
+
+        """
+        menu = {"data": data, "kind": "menu"}
+        menu.update(other_settings)
+        return self._create_widget(menu)
+
+    def add_post_flair_widget(
+        self,
+        *,
+        display: str,
+        order: list[str],
+        short_name: str,
+        styles: dict[str, str],
+        **other_settings: Any,
+    ) -> models.PostFlairWidget | Widget:
+        """Add and return a :class:`.PostFlairWidget`.
+
+        :param display: Display style. Either ``"cloud"`` or ``"list"``.
+        :param order: A list of flair template IDs. You can get all flair template IDs
+            in a subreddit with:
+
+            .. code-block:: python
+
+                flairs = [f["id"] for f in subreddit.flair.link_templates]
+
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
+
+        :returns: The created :class:`.PostFlairWidget`.
+
+        Example usage:
+
+        .. code-block:: python
+
+            subreddit = reddit.subreddit("test")
+            widget_moderation = subreddit.widgets.mod
+            flairs = [f["id"] for f in subreddit.flair.link_templates]
+            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
+            new_widget = widget_moderation.add_post_flair_widget(
+                short_name="Some flairs", display="list", order=flairs, styles=styles
+            )
+
+        """
+        post_flair = {
+            "display": display,
+            "kind": "post-flair",
+            "order": order,
+            "shortName": short_name,
+            "styles": styles,
+        }
+        post_flair.update(other_settings)
+        return self._create_widget(post_flair)
+
+    def add_text_area(
+        self,
+        *,
+        short_name: str,
+        styles: dict[str, str],
+        text: str,
+        **other_settings: Any,
+    ) -> models.TextArea:
+        """Add and return a :class:`.TextArea` widget.
+
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param styles: A dictionary with keys ``"backgroundColor"`` and
+            ``"headerColor"``, and values of hex colors. For example,
+            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
+        :param text: The Markdown text displayed in the widget.
+
+        :returns: The created :class:`.TextArea`.
+
+        Example usage:
+
+        .. code-block:: python
+
+            widget_moderation = reddit.subreddit("test").widgets.mod
+            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
+            new_widget = widget_moderation.add_text_area(
+                short_name="My cool title", text="*Hello* **world**!", styles=styles
+            )
+
+        """
+        text_area = {
+            "kind": "textarea",
+            "shortName": short_name,
+            "styles": styles,
+            "text": text,
+        }
+        text_area.update(other_settings)
+        return self._create_widget(text_area)
+
+    def reorder(self, new_order: list[Widget | str], *, section: str = "sidebar") -> None:
+        """Reorder the widgets.
+
+        :param new_order: A list of widgets. Represented as a list that contains
+            :class:`.Widget` objects, or widget IDs as strings. These types may be
+            mixed.
+        :param section: The section to reorder (default: ``"sidebar"``).
+
+        Example usage:
+
+        .. code-block:: python
+
+            widgets = reddit.subreddit("test").widgets
+            order = list(widgets.sidebar)
+            order.reverse()
+            widgets.mod.reorder(order)
+
+        """
+        order = [thing.id if isinstance(thing, Widget) else str(thing) for thing in new_order]
+        path = API_PATH["widget_order"].format(section=section, subreddit=self._subreddit)
+        self._reddit.patch(path, data={"json": dumps(order), "section": section})
+
+    def upload_image(self, media: models.WidgetMedia, /) -> str:
+        """Upload an image to Reddit and get the URL.
+
+        :param media: The :class:`.WidgetMedia` to upload.
+
+        :returns: The URL of the uploaded image as a ``str``.
+
+        This method is used to upload images for widgets. For example, it can be used in
+        conjunction with :meth:`.add_image_widget`, :meth:`.add_custom_widget`, and
+        :meth:`.add_button_widget`.
+
+        Example usage:
+
+        .. code-block:: python
+
+            from praw.models import WidgetMedia
+
+            my_sub = reddit.subreddit("test")
+            image_url = my_sub.widgets.mod.upload_image(WidgetMedia("/path/to/image.jpg"))
+            image_data = [{"width": 300, "height": 300, "url": image_url, "linkUrl": ""}]
+            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
+            my_sub.widgets.mod.add_image_widget(
+                short_name="My cool pictures", data=image_data, styles=styles
+            )
+
+        """
+        return media._upload(self._subreddit)
+
+
 class Widget(DynamicAttributes, PRAWBase):
     """Base class to represent a :class:`.Widget`."""
 
@@ -396,20 +1046,6 @@ class Widget(DynamicAttributes, PRAWBase):
         self.id = ""  # in case it isn't in _data
         super().__init__(reddit, _data=_data)
         self._mod = None
-
-
-class WidgetEncoder(JSONEncoder):
-    """Class to encode widget-related objects."""
-
-    _subreddit_class: type[models.Subreddit]
-
-    def default(self, o: Any) -> Any:
-        """Serialize ``PRAWBase`` objects."""
-        if isinstance(o, self._subreddit_class):
-            return str(o)
-        if isinstance(o, PRAWBase):
-            return {key: val for key, val in vars(o).items() if not key.startswith("_")}
-        return JSONEncoder.default(self, o)
 
 
 class ButtonWidget(Widget, BaseList):
@@ -1058,656 +1694,6 @@ class RulesWidget(Widget, BaseList):
         super().__init__(reddit, _data=_data)
 
 
-class SubredditWidgetsModeration:
-    """Class for moderating a :class:`.Subreddit`'s widgets.
-
-    Get an instance of this class from :attr:`.SubredditWidgets.mod`.
-
-    Example usage:
-
-    .. code-block:: python
-
-        styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-        reddit.subreddit("test").widgets.mod.add_text_area(
-            short_name="My title", text="**bold text**", styles=styles
-        )
-
-    .. note::
-
-        To use this class's methods, the authenticated user must be a moderator with
-        appropriate permissions.
-
-    """
-
-    def __init__(self, subreddit: models.Subreddit, reddit: praw.Reddit) -> None:
-        """Initialize a :class:`.SubredditWidgetsModeration` instance."""
-        self._subreddit = subreddit
-        self._reddit = reddit
-
-    # Returns Any: the concrete widget type is determined at runtime by objectifying the
-    # response. Each public ``add_*`` wrapper carries the precise return annotation.
-    def _create_widget(self, payload: dict[str, Any]) -> Any:
-        path = API_PATH["widget_create"].format(subreddit=self._subreddit)
-        widget = self._reddit.post(path, data={"json": dumps(payload, cls=WidgetEncoder)})
-        widget.subreddit = self._subreddit
-        return widget
-
-    def add_button_widget(
-        self,
-        *,
-        buttons: list[dict[str, dict[str, str | int] | str | int]],
-        description: str,
-        short_name: str,
-        styles: dict[str, str],
-        **other_settings: Any,
-    ) -> models.ButtonWidget:
-        """Add and return a :class:`.ButtonWidget`.
-
-        :param buttons: A list of dictionaries describing buttons, as specified in
-            `Reddit docs`_. As of this writing, the format is:
-
-            Each button is either a text button or an image button. A text button looks
-            like this:
-
-            .. code-block:: text
-
-                {
-                    "kind": "text",
-                    "text": a string no longer than 30 characters,
-                    "url": a valid URL,
-                    "color": a 6-digit rgb hex color, e.g., `#AABBCC`,
-                    "textColor": a 6-digit rgb hex color, e.g., `#AABBCC`,
-                    "fillColor": a 6-digit rgb hex color, e.g., `#AABBCC`,
-                    "hoverState": {...}
-                }
-
-            An image button looks like this:
-
-            .. code-block:: text
-
-                {
-                    "kind": "image",
-                    "text": a string no longer than 30 characters,
-                    "linkUrl": a valid URL,
-                    "url": a valid URL of a Reddit-hosted image,
-                    "height": an integer,
-                    "width": an integer,
-                    "hoverState": {...}
-                }
-
-            Both types of buttons have the field ``hoverState``. The field does not have
-            to be included (it is optional). If it is included, it can be one of two
-            types: ``"text"`` or ``"image"``. A text ``hoverState`` looks like this:
-
-            .. code-block:: text
-
-                {
-                    "kind": "text",
-                    "text": a string no longer than 30 characters,
-                    "color": a 6-digit rgb hex color, e.g., `#AABBCC`,
-                    "textColor": a 6-digit rgb hex color, e.g., `#AABBCC`,
-                    "fillColor": a 6-digit rgb hex color, e.g., `#AABBCC`
-                }
-
-            An image ``hoverState`` looks like this:
-
-            .. code-block:: text
-
-                {
-                    "kind": "image",
-                    "url": a valid URL of a Reddit-hosted image,
-                    "height": an integer,
-                    "width": an integer
-                }
-
-            .. note::
-
-                The method :meth:`.upload_image` can be used to upload images to Reddit
-                for a ``url`` field that holds a Reddit-hosted image.
-
-            .. note::
-
-                An image ``hoverState`` may be paired with a text widget, and a text
-                ``hoverState`` may be paired with an image widget.
-
-        :param description: Markdown text to describe the widget.
-        :param short_name: A name for the widget, no longer than 30 characters.
-        :param styles: A dictionary with keys ``"backgroundColor"`` and
-            ``"headerColor"``, and values of hex colors. For example,
-            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
-
-        :returns: The created :class:`.ButtonWidget`.
-
-        .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
-
-        Example usage:
-
-        .. code-block:: python
-
-            widget_moderation = reddit.subreddit("test").widgets.mod
-            my_image = widget_moderation.upload_image("/path/to/pic.jpg")
-            buttons = [
-                {
-                    "kind": "text",
-                    "text": "View source",
-                    "url": "https://github.com/praw-dev/praw",
-                    "color": "#FF0000",
-                    "textColor": "#00FF00",
-                    "fillColor": "#0000FF",
-                    "hoverState": {
-                        "kind": "text",
-                        "text": "ecruos weiV",
-                        "color": "#FFFFFF",
-                        "textColor": "#000000",
-                        "fillColor": "#0000FF",
-                    },
-                },
-                {
-                    "kind": "image",
-                    "text": "View documentation",
-                    "linkUrl": "https://praw.readthedocs.io",
-                    "url": my_image,
-                    "height": 200,
-                    "width": 200,
-                    "hoverState": {"kind": "image", "url": my_image, "height": 200, "width": 200},
-                },
-            ]
-            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-            new_widget = widget_moderation.add_button_widget(
-                short_name="Things to click",
-                description="Click some of these *cool* links!",
-                buttons=buttons,
-                styles=styles,
-            )
-
-        """
-        button_widget = {
-            "buttons": buttons,
-            "description": description,
-            "kind": "button",
-            "shortName": short_name,
-            "styles": styles,
-        }
-        button_widget.update(other_settings)
-        return self._create_widget(button_widget)
-
-    def add_calendar(
-        self,
-        *,
-        configuration: dict[str, bool | int],
-        google_calendar_id: str,
-        requires_sync: bool,
-        short_name: str,
-        styles: dict[str, str],
-        **other_settings: Any,
-    ) -> models.Calendar:
-        """Add and return a :class:`.Calendar` widget.
-
-        :param configuration: A dictionary as specified in `Reddit docs`_. For example:
-
-            .. code-block:: python
-
-                {
-                    "numEvents": 10,
-                    "showDate": True,
-                    "showDescription": False,
-                    "showLocation": False,
-                    "showTime": True,
-                    "showTitle": True,
-                }
-
-        :param google_calendar_id: An email-style calendar ID. To share a Google
-            Calendar, make it public, then find the "Calendar ID".
-        :param requires_sync: Whether the calendar needs synchronization.
-        :param short_name: A name for the widget, no longer than 30 characters.
-        :param styles: A dictionary with keys ``"backgroundColor"`` and
-            ``"headerColor"``, and values of hex colors. For example,
-            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
-
-        :returns: The created :class:`.Calendar`.
-
-        .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
-
-        Example usage:
-
-        .. code-block:: python
-
-            widget_moderation = reddit.subreddit("test").widgets.mod
-            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-            config = {
-                "numEvents": 10,
-                "showDate": True,
-                "showDescription": False,
-                "showLocation": False,
-                "showTime": True,
-                "showTitle": True,
-            }
-            calendar_id = "y6nm89jy427drk8l71w75w9wjn@group.calendar.google.com"
-            new_widget = widget_moderation.add_calendar(
-                short_name="Upcoming Events",
-                google_calendar_id=calendar_id,
-                requires_sync=True,
-                configuration=config,
-                styles=styles,
-            )
-
-        """
-        calendar = {
-            "shortName": short_name,
-            "googleCalendarId": google_calendar_id,
-            "requiresSync": requires_sync,
-            "configuration": configuration,
-            "styles": styles,
-            "kind": "calendar",
-        }
-        calendar.update(other_settings)
-        return self._create_widget(calendar)
-
-    def add_community_list(
-        self,
-        *,
-        data: list[str | models.Subreddit],
-        description: str = "",
-        short_name: str,
-        styles: dict[str, str],
-        **other_settings: Any,
-    ) -> models.CommunityList:
-        """Add and return a :class:`.CommunityList` widget.
-
-        :param data: A list of subreddits. Subreddits can be represented as ``str`` or
-            as :class:`.Subreddit`. These types may be mixed within the list.
-        :param description: A string containing Markdown (default: ``""``).
-        :param short_name: A name for the widget, no longer than 30 characters.
-        :param styles: A dictionary with keys ``"backgroundColor"`` and
-            ``"headerColor"``, and values of hex colors. For example,
-            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
-
-        :returns: The created :class:`.CommunityList`.
-
-        Example usage:
-
-        .. code-block:: python
-
-            widget_moderation = reddit.subreddit("test").widgets.mod
-            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-            subreddits = ["learnpython", reddit.subreddit("redditdev")]
-            new_widget = widget_moderation.add_community_list(
-                short_name="My fav subs", data=subreddits, styles=styles, description="description"
-            )
-
-        """
-        community_list = {
-            "data": data,
-            "kind": "community-list",
-            "shortName": short_name,
-            "styles": styles,
-            "description": description,
-        }
-        community_list.update(other_settings)
-        return self._create_widget(community_list)
-
-    def add_custom_widget(
-        self,
-        *,
-        css: str,
-        height: int,
-        image_data: list[dict[str, str | int]],
-        short_name: str,
-        styles: dict[str, str],
-        text: str,
-        **other_settings: Any,
-    ) -> models.CustomWidget:
-        """Add and return a :class:`.CustomWidget`.
-
-        :param css: The CSS for the widget, no longer than 100000 characters.
-
-            .. note::
-
-                As of this writing, Reddit will not accept empty CSS. If you wish to
-                create a custom widget without CSS, consider using ``"/**/"`` (an empty
-                comment) as your CSS.
-
-        :param height: The height of the widget, between 50 and 500.
-        :param image_data: A list of dictionaries as specified in `Reddit docs`_. Each
-            dictionary represents an image and has the key ``"url"`` which maps to the
-            URL of an image hosted on Reddit's servers. Images should be uploaded using
-            :meth:`.upload_image`.
-
-            For example:
-
-            .. code-block:: python
-
-                [
-                    {
-                        "url": "https://some.link",  # from upload_image()
-                        "width": 600,
-                        "height": 450,
-                        "name": "logo",
-                    },
-                    {
-                        "url": "https://other.link",  # from upload_image()
-                        "width": 450,
-                        "height": 600,
-                        "name": "icon",
-                    },
-                ]
-
-        :param short_name: A name for the widget, no longer than 30 characters.
-        :param styles: A dictionary with keys ``"backgroundColor"`` and
-            ``"headerColor"``, and values of hex colors. For example,
-            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
-        :param text: The Markdown text displayed in the widget.
-
-        :returns: The created :class:`.CustomWidget`.
-
-        .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
-
-        Example usage:
-
-        .. code-block:: python
-
-            widget_moderation = reddit.subreddit("test").widgets.mod
-            image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
-            image_urls = [widget_moderation.upload_image(img_path) for img_path in image_paths]
-            image_data = [
-                {"width": 600, "height": 450, "name": "logo", "url": image_urls[0]},
-                {"width": 450, "height": 600, "name": "icon", "url": image_urls[1]},
-            ]
-            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-            new_widget = widget_moderation.add_custom_widget(
-                image_short_name="My widget",
-                text="# Hello world!",
-                css="/**/",
-                height=200,
-                image_data=image_data,
-                styles=styles,
-            )
-
-        """
-        custom_widget = {
-            "css": css,
-            "height": height,
-            "imageData": image_data,
-            "kind": "custom",
-            "shortName": short_name,
-            "styles": styles,
-            "text": text,
-        }
-        custom_widget.update(other_settings)
-        return self._create_widget(custom_widget)
-
-    def add_image_widget(
-        self,
-        *,
-        data: list[dict[str, str | int]],
-        short_name: str,
-        styles: dict[str, str],
-        **other_settings: Any,
-    ) -> models.ImageWidget:
-        """Add and return an :class:`.ImageWidget`.
-
-        :param data: A list of dictionaries as specified in `Reddit docs`_. Each
-            dictionary has the key ``"url"`` which maps to the URL of an image hosted on
-            Reddit's servers. Images should be uploaded using :meth:`.upload_image`.
-
-            For example:
-
-            .. code-block:: python
-
-                [
-                    {
-                        "url": "https://some.link",  # from upload_image()
-                        "width": 600,
-                        "height": 450,
-                        "linkUrl": "https://github.com/praw-dev/praw",
-                    },
-                    {
-                        "url": "https://other.link",  # from upload_image()
-                        "width": 450,
-                        "height": 600,
-                        "linkUrl": "https://praw.readthedocs.io",
-                    },
-                ]
-
-        :param short_name: A name for the widget, no longer than 30 characters.
-        :param styles: A dictionary with keys ``"backgroundColor"`` and
-            ``"headerColor"``, and values of hex colors. For example,
-            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
-
-        :returns: The created :class:`.ImageWidget`.
-
-        .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
-
-        Example usage:
-
-        .. code-block:: python
-
-            widget_moderation = reddit.subreddit("test").widgets.mod
-            image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
-            image_data = [
-                {
-                    "width": 600,
-                    "height": 450,
-                    "linkUrl": "",
-                    "url": widget_moderation.upload_image(img_path),
-                }
-                for img_path in image_paths
-            ]
-            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-            new_widget = widget_moderation.add_image_widget(
-                short_name="My cool pictures", data=image_data, styles=styles
-            )
-
-        """
-        image_widget = {
-            "data": data,
-            "kind": "image",
-            "shortName": short_name,
-            "styles": styles,
-        }
-        image_widget.update(other_settings)
-        return self._create_widget(image_widget)
-
-    def add_menu(
-        self,
-        *,
-        data: list[dict[str, list[dict[str, str]] | str]],
-        **other_settings: Any,
-    ) -> models.Menu | Widget:
-        """Add and return a :class:`.Menu` widget.
-
-        :param data: A list of dictionaries describing menu contents, as specified in
-            `Reddit docs`_. As of this writing, the format is:
-
-            .. code-block:: text
-
-                [
-                    {
-                        "text": a string no longer than 20 characters,
-                        "url": a valid URL
-                    },
-
-                    OR
-
-                    {
-                        "children": [
-                            {
-                                "text": a string no longer than 20 characters,
-                                "url": a valid URL,
-                            },
-                            ...
-                        ],
-                        "text": a string no longer than 20 characters,
-                    },
-                    ...
-                ]
-
-
-        :returns: The created :class:`.Menu`.
-
-        .. _reddit docs: https://www.reddit.com/dev/api#POST_api_widget
-
-        Example usage:
-
-        .. code-block:: python
-
-            widget_moderation = reddit.subreddit("test").widgets.mod
-            menu_contents = [
-                {"text": "My homepage", "url": "https://example.com"},
-                {
-                    "text": "Python packages",
-                    "children": [
-                        {"text": "PRAW", "url": "https://praw.readthedocs.io/"},
-                        {"text": "requests", "url": "https://docs.python-requests.org/"},
-                    ],
-                },
-                {"text": "Reddit homepage", "url": "https://reddit.com"},
-            ]
-            new_widget = widget_moderation.add_menu(data=menu_contents)
-
-        """
-        menu = {"data": data, "kind": "menu"}
-        menu.update(other_settings)
-        return self._create_widget(menu)
-
-    def add_post_flair_widget(
-        self,
-        *,
-        display: str,
-        order: list[str],
-        short_name: str,
-        styles: dict[str, str],
-        **other_settings: Any,
-    ) -> models.PostFlairWidget | Widget:
-        """Add and return a :class:`.PostFlairWidget`.
-
-        :param display: Display style. Either ``"cloud"`` or ``"list"``.
-        :param order: A list of flair template IDs. You can get all flair template IDs
-            in a subreddit with:
-
-            .. code-block:: python
-
-                flairs = [f["id"] for f in subreddit.flair.link_templates]
-
-        :param short_name: A name for the widget, no longer than 30 characters.
-        :param styles: A dictionary with keys ``"backgroundColor"`` and
-            ``"headerColor"``, and values of hex colors. For example,
-            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
-
-        :returns: The created :class:`.PostFlairWidget`.
-
-        Example usage:
-
-        .. code-block:: python
-
-            subreddit = reddit.subreddit("test")
-            widget_moderation = subreddit.widgets.mod
-            flairs = [f["id"] for f in subreddit.flair.link_templates]
-            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-            new_widget = widget_moderation.add_post_flair_widget(
-                short_name="Some flairs", display="list", order=flairs, styles=styles
-            )
-
-        """
-        post_flair = {
-            "kind": "post-flair",
-            "display": display,
-            "shortName": short_name,
-            "order": order,
-            "styles": styles,
-        }
-        post_flair.update(other_settings)
-        return self._create_widget(post_flair)
-
-    def add_text_area(
-        self,
-        *,
-        short_name: str,
-        styles: dict[str, str],
-        text: str,
-        **other_settings: Any,
-    ) -> models.TextArea:
-        """Add and return a :class:`.TextArea` widget.
-
-        :param short_name: A name for the widget, no longer than 30 characters.
-        :param styles: A dictionary with keys ``"backgroundColor"`` and
-            ``"headerColor"``, and values of hex colors. For example,
-            ``{"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}``.
-        :param text: The Markdown text displayed in the widget.
-
-        :returns: The created :class:`.TextArea`.
-
-        Example usage:
-
-        .. code-block:: python
-
-            widget_moderation = reddit.subreddit("test").widgets.mod
-            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-            new_widget = widget_moderation.add_text_area(
-                short_name="My cool title", text="*Hello* **world**!", styles=styles
-            )
-
-        """
-        text_area = {
-            "shortName": short_name,
-            "text": text,
-            "styles": styles,
-            "kind": "textarea",
-        }
-        text_area.update(other_settings)
-        return self._create_widget(text_area)
-
-    def reorder(self, new_order: list[Widget | str], *, section: str = "sidebar") -> None:
-        """Reorder the widgets.
-
-        :param new_order: A list of widgets. Represented as a list that contains
-            :class:`.Widget` objects, or widget IDs as strings. These types may be
-            mixed.
-        :param section: The section to reorder (default: ``"sidebar"``).
-
-        Example usage:
-
-        .. code-block:: python
-
-            widgets = reddit.subreddit("test").widgets
-            order = list(widgets.sidebar)
-            order.reverse()
-            widgets.mod.reorder(order)
-
-        """
-        order = [thing.id if isinstance(thing, Widget) else str(thing) for thing in new_order]
-        path = API_PATH["widget_order"].format(subreddit=self._subreddit, section=section)
-        self._reddit.patch(path, data={"json": dumps(order), "section": section})
-
-    def upload_image(self, media: models.WidgetMedia, /) -> str:
-        """Upload an image to Reddit and get the URL.
-
-        :param media: The :class:`.WidgetMedia` to upload.
-
-        :returns: The URL of the uploaded image as a ``str``.
-
-        This method is used to upload images for widgets. For example, it can be used in
-        conjunction with :meth:`.add_image_widget`, :meth:`.add_custom_widget`, and
-        :meth:`.add_button_widget`.
-
-        Example usage:
-
-        .. code-block:: python
-
-            from praw.models import WidgetMedia
-
-            my_sub = reddit.subreddit("test")
-            image_url = my_sub.widgets.mod.upload_image(WidgetMedia("/path/to/image.jpg"))
-            image_data = [{"width": 300, "height": 300, "url": image_url, "linkUrl": ""}]
-            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
-            my_sub.widgets.mod.add_image_widget(
-                short_name="My cool pictures", data=image_data, styles=styles
-            )
-
-        """
-        return media._upload(self._subreddit)
-
-
 class TextArea(Widget):
     """Class to represent a text area widget.
 
@@ -1765,6 +1751,20 @@ class TextArea(Widget):
     """
 
 
+class WidgetEncoder(JSONEncoder):
+    """Class to encode widget-related objects."""
+
+    _subreddit_class: type[models.Subreddit]
+
+    def default(self, o: Any) -> Any:
+        """Serialize ``PRAWBase`` objects."""
+        if isinstance(o, self._subreddit_class):
+            return str(o)
+        if isinstance(o, PRAWBase):
+            return {key: val for key, val in vars(o).items() if not key.startswith("_")}
+        return JSONEncoder.default(self, o)
+
+
 class WidgetModeration:
     """Class for moderating a particular widget.
 
@@ -1799,7 +1799,7 @@ class WidgetModeration:
             widget.mod.delete()
 
         """
-        path = API_PATH["widget_modify"].format(widget_id=self.widget.id, subreddit=self._subreddit)
+        path = API_PATH["widget_modify"].format(subreddit=self._subreddit, widget_id=self.widget.id)
         self._reddit.delete(path)
 
     def update(self, **kwargs: Any) -> Widget:
@@ -1823,7 +1823,7 @@ class WidgetModeration:
             check the Reddit documentation linked above.
 
         """
-        path = API_PATH["widget_modify"].format(widget_id=self.widget.id, subreddit=self._subreddit)
+        path = API_PATH["widget_modify"].format(subreddit=self._subreddit, widget_id=self.widget.id)
         payload = {key: value for key, value in vars(self.widget).items() if not key.startswith("_")}
         del payload["subreddit"]  # not JSON serializable
         payload.pop("mod", None)

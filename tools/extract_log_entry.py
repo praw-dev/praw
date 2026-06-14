@@ -6,6 +6,8 @@ import docutils.nodes
 import docutils.parsers.rst
 import docutils.utils
 
+source = pathlib.Path("CHANGES.rst").read_text()
+
 
 def get_entry_slice(doc):
     current_version = sys.stdin.readline().strip()
@@ -31,7 +33,6 @@ def parse_rst(text: str) -> docutils.nodes.document:
     return document
 
 
-source = pathlib.Path("CHANGES.rst").read_text()
 document = parse_rst(source)
 
 sys.stdout.write("\n".join(source.splitlines()[get_entry_slice(document)]))

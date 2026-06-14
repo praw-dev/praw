@@ -41,7 +41,7 @@ class TestLiveContributorRelationship(IntegrationTest):
     def test_invite__redditor(self, reddit):
         reddit.read_only = False
         thread = LiveThread(reddit, "xyu8kmjvfrww")
-        redditor = Redditor(reddit, _data={"name": "nmtake", "id": "ll32z"})
+        redditor = Redditor(reddit, _data={"id": "ll32z", "name": "nmtake"})
         thread.contributor.invite(redditor)
 
     def test_leave(self, reddit):
@@ -57,7 +57,7 @@ class TestLiveContributorRelationship(IntegrationTest):
     def test_remove__redditor(self, reddit):
         reddit.read_only = False
         thread = LiveThread(reddit, "xyu8kmjvfrww")
-        redditor = Redditor(reddit, _data={"name": "nmtake", "id": "ll32z"})
+        redditor = Redditor(reddit, _data={"id": "ll32z", "name": "nmtake"})
         thread.contributor.remove(redditor)
 
     def test_remove_invite__fullname(self, reddit):
@@ -68,7 +68,7 @@ class TestLiveContributorRelationship(IntegrationTest):
     def test_remove_invite__redditor(self, reddit):
         reddit.read_only = False
         thread = LiveThread(reddit, "xyu8kmjvfrww")
-        redditor = Redditor(reddit, _data={"name": "nmtake", "id": "ll32z"})
+        redditor = Redditor(reddit, _data={"id": "ll32z", "name": "nmtake"})
         thread.contributor.remove_invite(redditor)
 
     def test_update__empty_list(self, reddit):
@@ -158,10 +158,10 @@ class TestLiveThreadContribution(IntegrationTest):
 
     def test_update__full_settings(self, reddit):
         new_settings = {
-            "title": "new title 2",
             "description": "## new description 2",
             "nsfw": True,
             "resources": "## new resources 2",
+            "title": "new title 2",
         }
         reddit.read_only = False
         thread = LiveThread(reddit, "xyu8kmjvfrww")
@@ -173,9 +173,9 @@ class TestLiveThreadContribution(IntegrationTest):
 
     def test_update__other_settings(self, reddit):
         new_settings = {
-            "title": "new title",
             "other1": "other 1",
             "other2": "other 2",
+            "title": "new title",
         }
         reddit.read_only = False
         thread = LiveThread(reddit, "xyu8kmjvfrww")
@@ -183,12 +183,12 @@ class TestLiveThreadContribution(IntegrationTest):
 
     def test_update__partial_settings(self, reddit):
         old_settings = {
-            "title": "old title",
             "description": "## old description",
             "nsfw": False,
             "resources": "## old resources",
+            "title": "old title",
         }
-        new_settings = {"title": "new title", "nsfw": True}
+        new_settings = {"nsfw": True, "title": "new title"}
         reddit.read_only = False
         thread = LiveThread(reddit, "xyu8kmjvfrww")
         thread.contrib.update(**new_settings)

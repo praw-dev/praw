@@ -11,45 +11,6 @@ if TYPE_CHECKING:
     import datetime
 
 
-class PollOption(DynamicAttributes, PRAWBase):
-    """Class to represent one option of a poll.
-
-    If ``submission`` is a poll :class:`.Submission`, access the poll's options like so:
-
-    .. code-block:: python
-
-        poll_data = submission.poll_data
-
-        # By index -- print the first option
-        print(poll_data.options[0])
-
-        # By ID -- print the option with ID "576797"
-        print(poll_data.option("576797"))
-
-    .. include:: ../../typical_attributes.rst
-
-    ============== =================================================
-    Attribute      Description
-    ============== =================================================
-    ``id``         ID of the poll option.
-    ``text``       The text of the poll option.
-    ``vote_count`` The number of votes the poll option has received.
-    ============== =================================================
-
-    """
-
-    id: str
-    text: str
-
-    def __repr__(self) -> str:
-        """Return an object initialization representation of the instance."""
-        return f"PollOption(id={self.id!r})"
-
-    def __str__(self) -> str:
-        """Return a string version of the PollData, its text."""
-        return self.text
-
-
 class PollData(DynamicAttributes, PRAWBase):
     """Class to represent poll data on a poll submission.
 
@@ -129,3 +90,42 @@ class PollData(DynamicAttributes, PRAWBase):
 
         msg = f"No poll option with ID {option_id!r}."
         raise KeyError(msg)
+
+
+class PollOption(DynamicAttributes, PRAWBase):
+    """Class to represent one option of a poll.
+
+    If ``submission`` is a poll :class:`.Submission`, access the poll's options like so:
+
+    .. code-block:: python
+
+        poll_data = submission.poll_data
+
+        # By index -- print the first option
+        print(poll_data.options[0])
+
+        # By ID -- print the option with ID "576797"
+        print(poll_data.option("576797"))
+
+    .. include:: ../../typical_attributes.rst
+
+    ============== =================================================
+    Attribute      Description
+    ============== =================================================
+    ``id``         ID of the poll option.
+    ``text``       The text of the poll option.
+    ``vote_count`` The number of votes the poll option has received.
+    ============== =================================================
+
+    """
+
+    id: str
+    text: str
+
+    def __repr__(self) -> str:
+        """Return an object initialization representation of the instance."""
+        return f"PollOption(id={self.id!r})"
+
+    def __str__(self) -> str:
+        """Return a string version of the PollData, its text."""
+        return self.text

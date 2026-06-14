@@ -12,19 +12,6 @@ if TYPE_CHECKING:
     import praw
 
 
-class ModmailObject(RedditBase):
-    """A base class for objects within a modmail conversation."""
-
-    AUTHOR_ATTRIBUTE = "author"
-    STR_FIELD = "id"
-
-    def __setattr__(self, attribute: str, value: Any) -> None:
-        """Objectify the AUTHOR_ATTRIBUTE attribute."""
-        if attribute == self.AUTHOR_ATTRIBUTE:
-            value = self._reddit._objector.objectify(data=value)
-        super().__setattr__(attribute, value)
-
-
 class ModmailConversation(RedditBase):
     """A class for modmail conversations.
 
@@ -125,8 +112,8 @@ class ModmailConversation(RedditBase):
         reddit: praw.Reddit,
         id: str | None = None,
         *,
-        mark_read: bool = False,
         _data: dict[str, Any] | None = None,
+        mark_read: bool = False,
     ) -> None:
         """Initialize a :class:`.ModmailConversation` instance.
 
@@ -182,6 +169,34 @@ class ModmailConversation(RedditBase):
 
         """
         self._reddit.post(API_PATH["modmail_highlight"].format(id=self.id))
+
+    def mute(self, *, num_days: int = DEFAULT_NUMBER_OF_MUTE_DAYS) -> None:
+        """Mute the non-mod user associated with the conversation.
+
+        :param num_days: Duration of mute in days. Valid options are ``3``, ``7``, or
+            ``28`` (default: ``3``).
+
+        For example:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").modmail("2gmz").mute()
+
+        To mute for 7 days:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").modmail("2gmz").mute(num_days=7)
+
+        """
+        params: dict[str, str | int] = (
+            {"num_hours": num_days * 24} if num_days != self.DEFAULT_NUMBER_OF_MUTE_DAYS else {}
+        )
+        self._reddit.request(
+            method="POST",
+            params=params,
+            path=API_PATH["modmail_mute"].format(id=self.id),
+        )
 
     def read(self, *, other_conversations: list[ModmailConversation] | None = None) -> None:
         """Mark the conversation(s) as read.
@@ -297,33 +312,18 @@ class ModmailConversation(RedditBase):
         data = {"conversationIds": self._build_conversation_list(other_conversations)}
         self._reddit.post(API_PATH["modmail_unread"], data=data)
 
-    def mute(self, *, num_days: int = DEFAULT_NUMBER_OF_MUTE_DAYS) -> None:
-        """Mute the non-mod user associated with the conversation.
 
-        :param num_days: Duration of mute in days. Valid options are ``3``, ``7``, or
-            ``28`` (default: ``3``).
+class ModmailObject(RedditBase):
+    """A base class for objects within a modmail conversation."""
 
-        For example:
+    AUTHOR_ATTRIBUTE = "author"
+    STR_FIELD = "id"
 
-        .. code-block:: python
-
-            reddit.subreddit("test").modmail("2gmz").mute()
-
-        To mute for 7 days:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").modmail("2gmz").mute(num_days=7)
-
-        """
-        params: dict[str, str | int] = (
-            {"num_hours": num_days * 24} if num_days != self.DEFAULT_NUMBER_OF_MUTE_DAYS else {}
-        )
-        self._reddit.request(
-            method="POST",
-            params=params,
-            path=API_PATH["modmail_mute"].format(id=self.id),
-        )
+    def __setattr__(self, attribute: str, value: Any) -> None:
+        """Objectify the AUTHOR_ATTRIBUTE attribute."""
+        if attribute == self.AUTHOR_ATTRIBUTE:
+            value = self._reddit._objector.objectify(data=value)
+        super().__setattr__(attribute, value)
 
 
 class ModmailAction(ModmailObject):

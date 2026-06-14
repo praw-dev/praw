@@ -8,43 +8,6 @@ from praw.exceptions import ClientException
 from .. import UnitTest
 
 
-def installed_app():
-    return Reddit(
-        client_id="dummy client",
-        client_secret=None,
-        redirect_uri="https://dummy.tld/",
-        user_agent="dummy",
-    )
-
-
-def script_app():
-    return Reddit(
-        client_id="dummy client",
-        client_secret="dummy secret",
-        redirect_uri="https://dummy.tld/",
-        user_agent="dummy",
-    )
-
-
-def script_app_with_password():
-    return Reddit(
-        client_id="dummy client",
-        client_secret="dummy secret",
-        password="dummy password",
-        user_agent="dummy",
-        username="dummy username",
-    )
-
-
-def web_app():
-    return Reddit(
-        client_id="dummy client",
-        client_secret="dummy secret",
-        redirect_uri="https://dummy.tld/",
-        user_agent="dummy",
-    )
-
-
 class TestAuth(UnitTest):
     def test_implicit__from_script_app(self):
         with pytest.raises(ClientException):
@@ -101,3 +64,40 @@ class TestAuth(UnitTest):
         reddit = Reddit(client_id="dummy client", client_secret="dummy secret", user_agent="dummy")
         with pytest.raises(ClientException):
             reddit.auth.url(scopes=["dummy scope"], state="dummy state")
+
+
+def installed_app():
+    return Reddit(
+        client_id="dummy client",
+        client_secret=None,
+        redirect_uri="https://dummy.tld/",
+        user_agent="dummy",
+    )
+
+
+def script_app():
+    return Reddit(
+        client_id="dummy client",
+        client_secret="dummy secret",
+        redirect_uri="https://dummy.tld/",
+        user_agent="dummy",
+    )
+
+
+def script_app_with_password():
+    return Reddit(
+        client_id="dummy client",
+        client_secret="dummy secret",
+        password="dummy password",
+        user_agent="dummy",
+        username="dummy username",
+    )
+
+
+def web_app():
+    return Reddit(
+        client_id="dummy client",
+        client_secret="dummy secret",
+        redirect_uri="https://dummy.tld/",
+        user_agent="dummy",
+    )

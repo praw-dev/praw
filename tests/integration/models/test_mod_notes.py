@@ -36,7 +36,7 @@ class TestModNotes(IntegrationTest):
     def test_delete_note(self, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        result_note = subreddit.mod.notes.create(redditor=self.REDDITOR, note="test note")
+        result_note = subreddit.mod.notes.create(note="test note", redditor=self.REDDITOR)
         subreddit.mod.notes.delete(note_id=result_note.id, redditor=result_note.user)
         notes = list(subreddit.mod.notes.redditors(self.REDDITOR))
         assert result_note not in notes
@@ -44,7 +44,7 @@ class TestModNotes(IntegrationTest):
     def test_delete_note__all_notes(self, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        result_note = subreddit.mod.notes.create(redditor=self.REDDITOR, note="test note")
+        result_note = subreddit.mod.notes.create(note="test note", redditor=self.REDDITOR)
         subreddit.mod.notes.delete(delete_all=True, redditor=result_note.user)
         notes = list(subreddit.mod.notes.redditors(self.REDDITOR))
         assert len(notes) == 0

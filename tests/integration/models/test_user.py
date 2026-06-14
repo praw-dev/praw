@@ -88,12 +88,12 @@ class TestUser(IntegrationTest):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         submission_list = []
         for i in range(1, 5):
-            submission = subreddit.submit(title=f"PRAW Test {i}", selftext=f"Testing .pin method {i}")
+            submission = subreddit.submit(selftext=f"Testing .pin method {i}", title=f"PRAW Test {i}")
             submission_list.append(submission)
             reddit.user.pin(submission)
 
         for i in range(5, 9):
-            subreddit.submit(title=f"PRAW Test {i}", selftext=f"Testing .pin method {i}")
+            subreddit.submit(selftext=f"Testing .pin method {i}", title=f"PRAW Test {i}")
         new_posts = list(reddit.user.me().new(limit=4))
         new_posts.reverse()
         assert new_posts == submission_list
@@ -118,7 +118,7 @@ class TestUser(IntegrationTest):
         new_posts.reverse()
         for i in range(2, 4):
             reddit.user.pin(new_posts[i], state=False)
-        submission = subreddit.submit(title="PRAW Test 5", selftext="Testing .pin method 5")
+        submission = subreddit.submit(selftext="Testing .pin method 5", title="PRAW Test 5")
         reddit.user.pin(submission, num=4)
         new_posts = list(reddit.user.me().new(limit=4))
         new_posts.reverse()
@@ -141,7 +141,7 @@ class TestUser(IntegrationTest):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         submission_list = []
         for i in range(1, 5):
-            submission = subreddit.submit(title=f"PRAW Test {i}", selftext=f"Testing .pin method {i}")
+            submission = subreddit.submit(selftext=f"Testing .pin method {i}", title=f"PRAW Test {i}")
             submission_list.append(submission)
         submission_list.reverse()
         for num, submission in enumerate(submission_list, 1):
@@ -175,7 +175,7 @@ class TestUser(IntegrationTest):
         reddit.read_only = False
         reddit.validate_on_submit = True
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        submission = subreddit.submit(title="PRAW Test replace slot 1", selftext="Testing .pin method 1")
+        submission = subreddit.submit(selftext="Testing .pin method 1", title="PRAW Test replace slot 1")
         reddit.user.pin(submission, num=1)
         new_posts = list(reddit.user.me().new(limit=4))
         new_posts.reverse()

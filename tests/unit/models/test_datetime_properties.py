@@ -13,7 +13,7 @@ class TestAnnouncementDatetime(UnitTest):
     def test_read_datetime__never_read(self, reddit):
         announcement = Announcement(
             reddit,
-            _data={"id": "ann_x", "sent_at": "2026-06-08T18:07:46Z", "read_at": None},
+            _data={"id": "ann_x", "read_at": None, "sent_at": "2026-06-08T18:07:46Z"},
         )
         assert announcement.read_datetime is None
 
@@ -22,8 +22,8 @@ class TestAnnouncementDatetime(UnitTest):
             reddit,
             _data={
                 "id": "ann_x",
-                "sent_at": "2026-05-29T21:07:52Z",
                 "read_at": "2026-06-03T14:12:57Z",
+                "sent_at": "2026-05-29T21:07:52Z",
             },
         )
         assert announcement.read_datetime.tzinfo is not None
@@ -32,7 +32,7 @@ class TestAnnouncementDatetime(UnitTest):
     def test_sent_datetime(self, reddit):
         announcement = Announcement(
             reddit,
-            _data={"id": "ann_x", "sent_at": "2026-06-08T18:07:46Z", "read_at": None},
+            _data={"id": "ann_x", "read_at": None, "sent_at": "2026-06-08T18:07:46Z"},
         )
         assert announcement.sent_datetime.tzinfo is not None
         assert announcement.sent_datetime.timestamp() == 1780942066.0
@@ -40,7 +40,7 @@ class TestAnnouncementDatetime(UnitTest):
 
 class TestCreatedDatetime(UnitTest):
     def test_created_datetime__from_created_at(self, reddit):
-        note = ModNote(reddit, _data={"id": "n", "created_at": 1648167599})
+        note = ModNote(reddit, _data={"created_at": 1648167599, "id": "n"})
         assert note.created_datetime.tzinfo is not None
         assert note.created_datetime.timestamp() == 1648167599
 
@@ -57,7 +57,7 @@ class TestCreatedDatetime(UnitTest):
         assert collection.created_datetime.timestamp() == 1588137147.0
 
     def test_created_datetime__from_created_utc(self, reddit):
-        comment = Comment(reddit, _data={"id": "abc", "created_utc": 1588137147.0})
+        comment = Comment(reddit, _data={"created_utc": 1588137147.0, "id": "abc"})
         assert isinstance(comment.created_datetime, datetime)
         assert comment.created_datetime.tzinfo is not None
         assert comment.created_datetime.timestamp() == 1588137147.0
@@ -65,11 +65,11 @@ class TestCreatedDatetime(UnitTest):
 
 class TestEditedDatetime(UnitTest):
     def test_edited_datetime__never_edited(self, reddit):
-        comment = Comment(reddit, _data={"id": "abc", "edited": False})
+        comment = Comment(reddit, _data={"edited": False, "id": "abc"})
         assert comment.edited_datetime is None
 
     def test_edited_datetime__when_edited(self, reddit):
-        submission = Submission(reddit, _data={"id": "abc", "edited": 1341972591.0})
+        submission = Submission(reddit, _data={"edited": 1341972591.0, "id": "abc"})
         assert submission.edited_datetime.tzinfo is not None
         assert submission.edited_datetime.timestamp() == 1341972591.0
 

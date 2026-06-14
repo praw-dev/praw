@@ -44,15 +44,15 @@ class TestRedditor(IntegrationTest):
     def test_message(self, reddit):
         reddit.read_only = False
         redditor = reddit.redditor("subreddit_stats")
-        redditor.message(subject="PRAW test", message="This is a test from PRAW")
+        redditor.message(message="This is a test from PRAW", subject="PRAW test")
 
     def test_message_from_subreddit(self, reddit):
         reddit.read_only = False
         redditor = reddit.redditor("subreddit_stats")
         redditor.message(
-            subject="PRAW test",
-            message="This is a test from PRAW",
             from_subreddit=pytest.placeholders.test_subreddit,
+            message="This is a test from PRAW",
+            subject="PRAW test",
         )
 
     def test_moderated(self, reddit):

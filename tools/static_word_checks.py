@@ -6,26 +6,6 @@ import re
 import sys
 
 
-def main():
-    """The main function."""
-    parser = argparse.ArgumentParser(
-        description=("Run static line checks and optionally replace values that should not be used.")
-    )
-    parser.add_argument(
-        "-r",
-        "--replace",
-        action="store_true",
-        default=False,
-        help=(
-            "If it is possible, tries to reformat values. Not all checks can reformat"
-            " values, and those will have to be edited manually."
-        ),
-    )
-    args = parser.parse_args()
-    check = StaticChecker(args.replace)
-    return int(not check.run_checks())  # True -> False, False -> 0 (success)
-
-
 class StaticChecker:
     """Run simple checks on the entire document or specific lines."""
 
@@ -127,6 +107,26 @@ class StaticChecker:
                     for line_number, line in enumerate(lines, 1):
                         status &= check(filename, line_number, line)
         return status
+
+
+def main():
+    """The main function."""
+    parser = argparse.ArgumentParser(
+        description=("Run static line checks and optionally replace values that should not be used.")
+    )
+    parser.add_argument(
+        "-r",
+        "--replace",
+        action="store_true",
+        default=False,
+        help=(
+            "If it is possible, tries to reformat values. Not all checks can reformat"
+            " values, and those will have to be edited manually."
+        ),
+    )
+    args = parser.parse_args()
+    check = StaticChecker(args.replace)
+    return int(not check.run_checks())  # True -> False, False -> 0 (success)
 
 
 if __name__ == "__main__":

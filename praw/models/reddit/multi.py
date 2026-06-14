@@ -49,9 +49,9 @@ class Multireddit(SubredditListingMixin, CreatedMixin, RedditBase):
 
     """
 
+    RE_INVALID = re.compile(r"[\W_]+", re.UNICODE)
     SLUG_CUTOFF_LENGTH = 21
     STR_FIELD = "path"
-    RE_INVALID = re.compile(r"[\W_]+", re.UNICODE)
 
     @staticmethod
     def sluggify(title: str) -> str:
@@ -133,7 +133,7 @@ class Multireddit(SubredditListingMixin, CreatedMixin, RedditBase):
             reddit.multireddit(redditor="bboe", name="test").add(subreddit)
 
         """
-        url = API_PATH["multireddit_update"].format(multi=self.name, user=self._author, subreddit=subreddit)
+        url = API_PATH["multireddit_update"].format(multi=self.name, subreddit=subreddit, user=self._author)
         self._reddit.put(url, data={"model": dumps({"name": str(subreddit)})})
         self._reset_attributes("subreddits")
 
@@ -189,7 +189,7 @@ class Multireddit(SubredditListingMixin, CreatedMixin, RedditBase):
             reddit.multireddit(redditor="bboe", name="test").remove(subreddit)
 
         """
-        url = API_PATH["multireddit_update"].format(multi=self.name, user=self._author, subreddit=subreddit)
+        url = API_PATH["multireddit_update"].format(multi=self.name, subreddit=subreddit, user=self._author)
         self._reddit.delete(url, data={"model": dumps({"name": str(subreddit)})})
         self._reset_attributes("subreddits")
 

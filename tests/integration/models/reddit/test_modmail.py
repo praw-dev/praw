@@ -58,7 +58,7 @@ class TestModmailConversation(IntegrationTest):
     def test_reply__internal(self, reddit):
         reddit.read_only = False
         conversation = reddit.subreddit("all").modmail("1mahha")
-        reply = conversation.reply(internal=True, body="A message")
+        reply = conversation.reply(body="A message", internal=True)
         assert isinstance(reply, ModmailMessage)
 
     def test_unarchive(self, reddit):

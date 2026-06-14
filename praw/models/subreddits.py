@@ -105,8 +105,8 @@ class Subreddits(PRAWBase):
         self,
         query: str,
         *,
-        include_nsfw: bool = True,
         exact: bool = False,
+        include_nsfw: bool = True,
     ) -> list[models.Subreddit]:
         r"""Return list of :class:`.Subreddit`\ s whose names begin with ``query``.
 
@@ -117,7 +117,7 @@ class Subreddits(PRAWBase):
         """
         result = self._reddit.post(
             API_PATH["subreddits_name_search"],
-            data={"include_over_18": include_nsfw, "exact": exact, "query": query},
+            data={"exact": exact, "include_over_18": include_nsfw, "query": query},
         )
         return [self._reddit.subreddit(x) for x in result["names"]]
 

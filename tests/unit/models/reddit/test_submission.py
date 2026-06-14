@@ -61,7 +61,7 @@ class TestSubmission(UnitTest):
         assert str(excinfo.value) == message
 
         with pytest.raises(TypeError) as excinfo:
-            Submission(reddit, url="dummy", _data={"id": "dummy"})
+            Submission(reddit, _data={"id": "dummy"}, url="dummy")
         assert str(excinfo.value) == message
 
         with pytest.raises(TypeError) as excinfo:
