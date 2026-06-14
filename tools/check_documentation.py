@@ -13,6 +13,10 @@ from praw.models.reddit.modmail import ModmailObject
 from praw.util.cache import cachedproperty
 
 
+def main():
+    return int(not DocumentationChecker.check())
+
+
 class DocumentationChecker:
     """Checks for code block statements and attribute tables in subclasses.
 
@@ -68,10 +72,6 @@ class DocumentationChecker:
                         )
                         success = False
         return success
-
-
-def main():
-    return int(not DocumentationChecker.check())
 
 
 if __name__ == "__main__":

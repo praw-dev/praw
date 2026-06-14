@@ -57,39 +57,10 @@ class Config:
             return False
         return item.lower() in {"1", "yes", "true", "on"}
 
-    @classmethod
-    def _load_config(cls, *, config_interpolation: str | None = None) -> None:
-        """Attempt to load settings from various praw.ini files."""
-        if config_interpolation is not None:
-            interpolator_class = cls.INTERPOLATION_LEVEL[config_interpolation]()
-        else:
-            interpolator_class = None
-
-        config = configparser.ConfigParser(interpolation=interpolator_class)
-        assert __package__ is not None
-        with files(__package__).joinpath("praw.ini").open("r") as hdl:
-            config.read_file(hdl)
-
-        if "APPDATA" in os.environ:  # Windows
-            os_config_path = Path(os.environ["APPDATA"])
-        elif "XDG_CONFIG_HOME" in os.environ:  # Modern Linux
-            os_config_path = Path(os.environ["XDG_CONFIG_HOME"])
-        elif "HOME" in os.environ:  # Legacy Linux
-            os_config_path = Path(os.environ["HOME"]) / ".config"
-        else:
-            os_config_path = None
-
-        locations = ["praw.ini"]
-
-        if os_config_path is not None:
-            locations.insert(0, str(os_config_path / "praw.ini"))
-
-        cls._warn_on_endpoint_override(interpolator_class)
-        config.read(locations)
-        cls.CONFIG = config
-
     @staticmethod
-    def _warn_on_endpoint_override(interpolator_class: configparser.Interpolation | None) -> None:
+    def _warn_on_endpoint_override(
+        interpolator_class: configparser.Interpolation | None,
+    ) -> None:
         """Warn if a ``praw.ini`` in the current directory overrides OAuth endpoints.
 
         ``praw.ini`` is loaded from the current working directory, so a file planted
@@ -123,6 +94,37 @@ class Config:
                 " trusted.",
                 stacklevel=4,
             )
+
+    @classmethod
+    def _load_config(cls, *, config_interpolation: str | None = None) -> None:
+        """Attempt to load settings from various praw.ini files."""
+        if config_interpolation is not None:
+            interpolator_class = cls.INTERPOLATION_LEVEL[config_interpolation]()
+        else:
+            interpolator_class = None
+
+        config = configparser.ConfigParser(interpolation=interpolator_class)
+        assert __package__ is not None
+        with files(__package__).joinpath("praw.ini").open("r") as hdl:
+            config.read_file(hdl)
+
+        if "APPDATA" in os.environ:  # Windows
+            os_config_path = Path(os.environ["APPDATA"])
+        elif "XDG_CONFIG_HOME" in os.environ:  # Modern Linux
+            os_config_path = Path(os.environ["XDG_CONFIG_HOME"])
+        elif "HOME" in os.environ:  # Legacy Linux
+            os_config_path = Path(os.environ["HOME"]) / ".config"
+        else:
+            os_config_path = None
+
+        locations = ["praw.ini"]
+
+        if os_config_path is not None:
+            locations.insert(0, str(os_config_path / "praw.ini"))
+
+        cls._warn_on_endpoint_override(interpolator_class)
+        config.read(locations)
+        cls.CONFIG = config
 
     @property
     def short_url(self) -> str:

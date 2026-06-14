@@ -6,6 +6,11 @@ repos:
     rev: 06455715c8a81e176748e036c1c945f3e80d5b8d  # frozen: v2.1.0
 
   - hooks:
+      - id: codesorter
+    repo: https://github.com/praw-dev/CodeSorter
+    rev: a8b600db67edfc9f71a13e97f67c10d72f87fec7  # frozen: unreleased
+
+  - hooks:
       - id: auto-walrus
     repo: https://github.com/MarcoGorelli/auto-walrus
     rev: 1743edbed52f3d61886b59d98a27164a8af29c0d  # frozen: 0.4.1

@@ -9,6 +9,35 @@ from praw.models.reddit.poll import PollData
 from .. import UnitTest
 
 
+class TestAnnouncementDatetime(UnitTest):
+    def test_read_datetime__never_read(self, reddit):
+        announcement = Announcement(
+            reddit,
+            _data={"id": "ann_x", "sent_at": "2026-06-08T18:07:46Z", "read_at": None},
+        )
+        assert announcement.read_datetime is None
+
+    def test_read_datetime__when_read(self, reddit):
+        announcement = Announcement(
+            reddit,
+            _data={
+                "id": "ann_x",
+                "sent_at": "2026-05-29T21:07:52Z",
+                "read_at": "2026-06-03T14:12:57Z",
+            },
+        )
+        assert announcement.read_datetime.tzinfo is not None
+        assert announcement.read_datetime.timestamp() == 1780495977.0
+
+    def test_sent_datetime(self, reddit):
+        announcement = Announcement(
+            reddit,
+            _data={"id": "ann_x", "sent_at": "2026-06-08T18:07:46Z", "read_at": None},
+        )
+        assert announcement.sent_datetime.tzinfo is not None
+        assert announcement.sent_datetime.timestamp() == 1780942066.0
+
+
 class TestCreatedDatetime(UnitTest):
     def test_created_datetime__from_created_at(self, reddit):
         note = ModNote(reddit, _data={"id": "n", "created_at": 1648167599})
@@ -18,7 +47,11 @@ class TestCreatedDatetime(UnitTest):
     def test_created_datetime__from_created_at_utc(self, reddit):
         collection = Collection(
             reddit,
-            _data={"collection_id": "u", "created_at_utc": 1588137147.0, "last_update_utc": 1588200000.0},
+            _data={
+                "collection_id": "u",
+                "created_at_utc": 1588137147.0,
+                "last_update_utc": 1588200000.0,
+            },
         )
         assert collection.created_datetime.tzinfo is not None
         assert collection.created_datetime.timestamp() == 1588137147.0
@@ -45,28 +78,14 @@ class TestUpdatedDatetime(UnitTest):
     def test_updated_datetime(self, reddit):
         collection = Collection(
             reddit,
-            _data={"collection_id": "u", "created_at_utc": 1588137147.0, "last_update_utc": 1588200000.0},
+            _data={
+                "collection_id": "u",
+                "created_at_utc": 1588137147.0,
+                "last_update_utc": 1588200000.0,
+            },
         )
         assert collection.updated_datetime.tzinfo is not None
         assert collection.updated_datetime.timestamp() == 1588200000.0
-
-
-class TestAnnouncementDatetime(UnitTest):
-    def test_sent_datetime(self, reddit):
-        announcement = Announcement(reddit, _data={"id": "ann_x", "sent_at": "2026-06-08T18:07:46Z", "read_at": None})
-        assert announcement.sent_datetime.tzinfo is not None
-        assert announcement.sent_datetime.timestamp() == 1780942066.0
-
-    def test_read_datetime__never_read(self, reddit):
-        announcement = Announcement(reddit, _data={"id": "ann_x", "sent_at": "2026-06-08T18:07:46Z", "read_at": None})
-        assert announcement.read_datetime is None
-
-    def test_read_datetime__when_read(self, reddit):
-        announcement = Announcement(
-            reddit, _data={"id": "ann_x", "sent_at": "2026-05-29T21:07:52Z", "read_at": "2026-06-03T14:12:57Z"}
-        )
-        assert announcement.read_datetime.tzinfo is not None
-        assert announcement.read_datetime.timestamp() == 1780495977.0
 
 
 class TestVotingEndDatetime(UnitTest):

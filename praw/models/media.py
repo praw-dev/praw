@@ -41,6 +41,10 @@ class Media:
     LEASE_API_PATH: ClassVar[str]
     LEASE_RESPONSE_KEY: ClassVar[str] = "s3UploadLease"
 
+    @staticmethod
+    def _raise_upload_error(response: Response, /) -> None:
+        raise ServerError(response)
+
     def __eq__(self, other: object) -> bool:
         """Return whether the other instance equals the current."""
         return type(other) is type(self) and self.name == other.name and self._data == other._data
@@ -108,12 +112,11 @@ class Media:
     def _post_to_s3(self, reddit: praw.Reddit, upload_data: dict[str, str], upload_url: str, /) -> Response:
         assert reddit._core is not None
         return reddit._core.requestor.request(
-            "POST", upload_url, data=upload_data, files={"file": (self.name, self._data)}
+            "POST",
+            upload_url,
+            data=upload_data,
+            files={"file": (self.name, self._data)},
         )
-
-    @staticmethod
-    def _raise_upload_error(response: Response, /) -> None:
-        raise ServerError(response)
 
     def _upload(self, subreddit: models.Subreddit, /, **additional_lease_data: str) -> str:
         """Upload the media to Reddit.
@@ -180,7 +183,12 @@ class PostMedia(Media):
         Media._raise_upload_error(response)
 
     def _upload(  # pyright: ignore[reportIncompatibleMethodOverride]  # post media is uploaded with a Reddit instance rather than a Subreddit
-        self, reddit: praw.Reddit, /, *, expected_mime_prefix: str | None = None, upload_type: str = "link"
+        self,
+        reddit: praw.Reddit,
+        /,
+        *,
+        expected_mime_prefix: str | None = None,
+        upload_type: str = "link",
     ) -> str:
         """Upload the media to Reddit (undocumented endpoint).
 
