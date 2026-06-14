@@ -28,7 +28,7 @@ class TestComment(UnitTest):
         assert str(excinfo.value) == message
 
         with pytest.raises(TypeError) as excinfo:
-            Comment(reddit, url="dummy", _data={"id": "dummy"})
+            Comment(reddit, _data={"id": "dummy"}, url="dummy")
         assert str(excinfo.value) == message
 
         with pytest.raises(TypeError) as excinfo:

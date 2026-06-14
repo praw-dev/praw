@@ -152,7 +152,7 @@ class ThingModerationMixin(ModNoteMixin):
         """
         self.thing._reddit.post(API_PATH["lock"], data={"id": self.thing.fullname})
 
-    def remove(self, *, mod_note: str = "", spam: bool = False, reason_id: str | None = None) -> None:
+    def remove(self, *, mod_note: str = "", reason_id: str | None = None, spam: bool = False) -> None:
         """Remove a :class:`.Comment` or :class:`.Submission`.
 
         :param mod_note: A message for the other moderators.

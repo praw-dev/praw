@@ -19,54 +19,6 @@ if TYPE_CHECKING:
     from praw import models
 
 
-class RedditorStream:
-    """Provides submission and comment streams."""
-
-    def __init__(self, redditor: models.Redditor) -> None:
-        """Initialize a :class:`.RedditorStream` instance.
-
-        :param redditor: The redditor associated with the streams.
-
-        """
-        self.redditor = redditor
-
-    def comments(self, **stream_options: Any) -> Iterator[models.Comment]:
-        """Yield new comments as they become available.
-
-        Comments are yielded oldest first. Up to 100 historical comments will initially
-        be returned.
-
-        Keyword arguments are passed to :func:`.stream_generator`.
-
-        For example, to retrieve all new comments made by redditor u/spez, try:
-
-        .. code-block:: python
-
-            for comment in reddit.redditor("spez").stream.comments():
-                print(comment)
-
-        """
-        return stream_generator(self.redditor.comments.new, **stream_options)
-
-    def submissions(self, **stream_options: Any) -> Iterator[models.Submission]:
-        """Yield new submissions as they become available.
-
-        Submissions are yielded oldest first. Up to 100 historical submissions will
-        initially be returned.
-
-        Keyword arguments are passed to :func:`.stream_generator`.
-
-        For example, to retrieve all new submissions made by redditor u/spez, try:
-
-        .. code-block:: python
-
-            for submission in reddit.redditor("spez").stream.submissions():
-                print(submission)
-
-        """
-        return stream_generator(self.redditor.submissions.new, **stream_options)
-
-
 class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, CreatedMixin, RedditBase):
     """A class representing the users of Reddit.
 
@@ -213,7 +165,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, CreatedMix
         if name == "subreddit" and value:
             from praw.models.reddit.user_subreddit import UserSubreddit  # noqa: PLC0415
 
-            value = UserSubreddit(reddit=self._reddit, _data=value)
+            value = UserSubreddit(_data=value, reddit=self._reddit)
         super().__setattr__(name, value)
 
     def _fetch(self) -> None:
@@ -458,3 +410,51 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, CreatedMix
 
         """
         self._friend(data={"id": str(self)}, method="DELETE")
+
+
+class RedditorStream:
+    """Provides submission and comment streams."""
+
+    def __init__(self, redditor: models.Redditor) -> None:
+        """Initialize a :class:`.RedditorStream` instance.
+
+        :param redditor: The redditor associated with the streams.
+
+        """
+        self.redditor = redditor
+
+    def comments(self, **stream_options: Any) -> Iterator[models.Comment]:
+        """Yield new comments as they become available.
+
+        Comments are yielded oldest first. Up to 100 historical comments will initially
+        be returned.
+
+        Keyword arguments are passed to :func:`.stream_generator`.
+
+        For example, to retrieve all new comments made by redditor u/spez, try:
+
+        .. code-block:: python
+
+            for comment in reddit.redditor("spez").stream.comments():
+                print(comment)
+
+        """
+        return stream_generator(self.redditor.comments.new, **stream_options)
+
+    def submissions(self, **stream_options: Any) -> Iterator[models.Submission]:
+        """Yield new submissions as they become available.
+
+        Submissions are yielded oldest first. Up to 100 historical submissions will
+        initially be returned.
+
+        Keyword arguments are passed to :func:`.stream_generator`.
+
+        For example, to retrieve all new submissions made by redditor u/spez, try:
+
+        .. code-block:: python
+
+            for submission in reddit.redditor("spez").stream.submissions():
+                print(submission)
+
+        """
+        return stream_generator(self.redditor.submissions.new, **stream_options)

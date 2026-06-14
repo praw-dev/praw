@@ -88,8 +88,8 @@ class Reddit:
 
     """
 
-    update_checked = False
     _ratelimit_regex = re.compile(r"([0-9]{1,3}) (milliseconds?|seconds?|minutes?)")
+    update_checked = False
 
     @property
     def _next_unique(self) -> int:
@@ -515,13 +515,12 @@ class Reddit:
             self.config.kinds["submission"]: models.Submission,
             self.config.kinds["subreddit"]: models.Subreddit,
             self.config.kinds["trophy"]: models.Trophy,
+            "Announcement": models.Announcement,
+            "AnnouncementListing": models.AnnouncementListing,
             "Button": models.Button,
             "Collection": models.Collection,
             "Draft": models.Draft,
             "DraftList": models.DraftList,
-            "Announcement": models.Announcement,
-            "AnnouncementListing": models.AnnouncementListing,
-            "ann": models.Announcement,
             "Image": models.Image,
             "LabeledMulti": models.Multireddit,
             "Listing": models.Listing,
@@ -537,6 +536,7 @@ class Reddit:
             "TrophyList": models.TrophyList,
             "UserList": models.RedditorList,
             "UserSubreddit": models.UserSubreddit,
+            "ann": models.Announcement,
             "button": models.ButtonWidget,
             "calendar": models.Calendar,
             "community-list": models.CommunityList,
@@ -544,10 +544,10 @@ class Reddit:
             "id-card": models.IDCard,
             "image": models.ImageWidget,
             "menu": models.Menu,
+            "mod_note": models.ModNote,
             "modaction": models.ModAction,
             "moderator-list": models.ModeratorListing,
             "moderators": models.ModeratorsWidget,
-            "mod_note": models.ModNote,
             "more": models.MoreComments,
             "post-flair": models.PostFlairWidget,
             "rule": models.Rule,
@@ -583,10 +583,10 @@ class Reddit:
         # Only reached when client_secret is set (see _prepare_prawcore).
         assert self.config.client_secret is not None
         authenticator = TrustedAuthenticator(
-            requestor=requestor,
             client_id=self.config.client_id,
             client_secret=self.config.client_secret,
             redirect_uri=self.config.redirect_uri,
+            requestor=requestor,
         )
         read_only_authorizer = ReadOnlyAuthorizer(authenticator=authenticator)
         self._read_only_core = session(authorizer=read_only_authorizer, window_size=self.config.window_size)
@@ -603,7 +603,7 @@ class Reddit:
 
     def _prepare_untrusted_prawcore(self, requestor: prawcore.requestor.Requestor) -> None:
         authenticator = UntrustedAuthenticator(
-            requestor=requestor, client_id=self.config.client_id, redirect_uri=self.config.redirect_uri
+            client_id=self.config.client_id, redirect_uri=self.config.redirect_uri, requestor=requestor
         )
         read_only_authorizer = DeviceIDAuthorizer(authenticator=authenticator)
         self._read_only_core = session(authorizer=read_only_authorizer, window_size=self.config.window_size)
@@ -863,7 +863,7 @@ class Reddit:
         Either ``name`` or ``fullname`` can be provided, but not both.
 
         """
-        return models.Redditor(self, name=name, fullname=fullname)
+        return models.Redditor(self, fullname=fullname, name=name)
 
     def request(
         self,

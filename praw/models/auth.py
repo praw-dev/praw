@@ -78,7 +78,7 @@ class Auth(PRAWBase):
             raise InvalidImplicitAuth
         implicit_session = session(
             authorizer=ImplicitAuthorizer(
-                authenticator=authenticator, access_token=access_token, expires_in=expires_in, scope=scope
+                access_token=access_token, authenticator=authenticator, expires_in=expires_in, scope=scope
             ),
             window_size=self._reddit.config.window_size,
         )

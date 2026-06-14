@@ -19,15 +19,15 @@ class TestRedditor(UnitTest):
         assert str(excinfo.value) == message
 
         with pytest.raises(TypeError) as excinfo:
-            Redditor(reddit, name="dummy", fullname="t2_dummy")
+            Redditor(reddit, fullname="t2_dummy", name="dummy")
         assert str(excinfo.value) == message
 
         with pytest.raises(TypeError) as excinfo:
             Redditor(
                 reddit,
-                name="dummy",
-                fullname="t2_dummy",
                 _data={"id": "dummy"},
+                fullname="t2_dummy",
+                name="dummy",
             )
         assert str(excinfo.value) == message
 
@@ -43,9 +43,9 @@ class TestRedditor(UnitTest):
             Redditor(reddit, fullname="")
 
     def test_equality(self, reddit):
-        redditor1 = Redditor(reddit, _data={"name": "dummy1", "n": 1})
-        redditor2 = Redditor(reddit, _data={"name": "Dummy1", "n": 2})
-        redditor3 = Redditor(reddit, _data={"name": "dummy3", "n": 2})
+        redditor1 = Redditor(reddit, _data={"n": 1, "name": "dummy1"})
+        redditor2 = Redditor(reddit, _data={"n": 2, "name": "Dummy1"})
+        redditor3 = Redditor(reddit, _data={"n": 2, "name": "dummy3"})
         assert redditor1 == redditor1
         assert redditor2 == redditor2
         assert redditor3 == redditor3
@@ -56,13 +56,13 @@ class TestRedditor(UnitTest):
         assert redditor2 == "dummy1"
 
     def test_fullname(self, reddit):
-        redditor = Redditor(reddit, _data={"name": "name", "id": "dummy"})
+        redditor = Redditor(reddit, _data={"id": "dummy", "name": "name"})
         assert redditor.fullname == "t2_dummy"
 
     def test_hash(self, reddit):
-        redditor1 = Redditor(reddit, _data={"name": "dummy1", "n": 1})
-        redditor2 = Redditor(reddit, _data={"name": "Dummy1", "n": 2})
-        redditor3 = Redditor(reddit, _data={"name": "dummy3", "n": 2})
+        redditor1 = Redditor(reddit, _data={"n": 1, "name": "dummy1"})
+        redditor2 = Redditor(reddit, _data={"n": 2, "name": "Dummy1"})
+        redditor3 = Redditor(reddit, _data={"n": 2, "name": "dummy3"})
         assert hash(redditor1) == hash(redditor1)
         assert hash(redditor2) == hash(redditor2)
         assert hash(redditor3) == hash(redditor3)
@@ -71,7 +71,7 @@ class TestRedditor(UnitTest):
         assert hash(redditor1) != hash(redditor3)
 
     def test_pickle(self, reddit):
-        redditor = Redditor(reddit, _data={"name": "name", "id": "dummy"})
+        redditor = Redditor(reddit, _data={"id": "dummy", "name": "name"})
         for level in range(pickle.HIGHEST_PROTOCOL + 1):
             other = pickle.loads(pickle.dumps(redditor, protocol=level))
             assert redditor == other
@@ -81,7 +81,7 @@ class TestRedditor(UnitTest):
         assert repr(redditor) == "Redditor(name='RedditorName')"
 
     def test_str(self, reddit):
-        redditor = Redditor(reddit, _data={"name": "name", "id": "dummy"})
+        redditor = Redditor(reddit, _data={"id": "dummy", "name": "name"})
         assert str(redditor) == "name"
 
 

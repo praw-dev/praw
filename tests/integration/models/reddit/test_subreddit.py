@@ -110,10 +110,10 @@ class TestSubredditFlair(IntegrationTest):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         subreddit.flair.configure(
-            position=None,
-            self_assign=True,
             link_position=None,
             link_self_assign=True,
+            position=None,
+            self_assign=True,
         )
 
     def test_configure__defaults(self, reddit):
@@ -170,7 +170,7 @@ class TestSubredditFlair(IntegrationTest):
             redditor,
             "spez",
             {"user": "bsimpson"},
-            {"user": "spladug", "flair_text": "", "flair_css_class": ""},
+            {"flair_css_class": "", "flair_text": "", "user": "spladug"},
         ]
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         response = subreddit.flair.update(flair_list, css_class="default")
@@ -186,7 +186,7 @@ class TestSubredditFlair(IntegrationTest):
         reddit.read_only = False
         flair_list = [
             {"user": "bsimpson"},
-            {"user": "spladug", "flair_text": "a,b"},
+            {"flair_text": "a,b", "user": "spladug"},
         ]
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         response = subreddit.flair.update(flair_list, css_class="default")
@@ -711,7 +711,7 @@ class TestSubredditModmail(IntegrationTest):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         redditor = reddit.redditor(pytest.placeholders.username)
-        conversation = subreddit.modmail.create(subject="Subject", body="Body", recipient=redditor)
+        conversation = subreddit.modmail.create(body="Body", recipient=redditor, subject="Subject")
         assert isinstance(conversation, ModmailConversation)
 
     def test_subreddits(self, reddit):
@@ -1133,7 +1133,7 @@ class TestSubredditWiki(IntegrationTest):
     def test_create(self, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        wikipage = subreddit.wiki.create(name="PRAW New Page", content="This is the new wiki page")
+        wikipage = subreddit.wiki.create(content="This is the new wiki page", name="PRAW New Page")
         assert wikipage.name == "praw_new_page"
         assert wikipage.content_md == "This is the new wiki page"
 
@@ -1255,7 +1255,7 @@ class TestSubreddit(IntegrationTest):
     def test_message(self, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        subreddit.message(subject="Test from PRAW", message="Test content")
+        subreddit.message(message="Test content", subject="Test from PRAW")
 
     def test_post_requirements(self, reddit):
         reddit.read_only = False
@@ -1285,7 +1285,7 @@ class TestSubreddit(IntegrationTest):
 
     def test_search(self, reddit):
         subreddit = reddit.subreddit("all")
-        for item in subreddit.search("praw oauth search", syntax="cloudsearch", limit=None):
+        for item in subreddit.search("praw oauth search", limit=None, syntax="cloudsearch"):
             assert isinstance(item, Submission)
 
     def test_sticky(self, reddit):
@@ -1375,7 +1375,7 @@ class TestSubreddit(IntegrationTest):
         selftext = "Testing **PRAW** link submission *with markdown selftext*."
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        submission = subreddit.submit("Test Title", url=url, selftext=selftext)
+        submission = subreddit.submit("Test Title", selftext=selftext, url=url)
         assert submission.selftext == selftext
         assert submission.author == pytest.placeholders.username
         assert submission.url == url
@@ -1393,14 +1393,14 @@ class TestSubreddit(IntegrationTest):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         images = [
             {"media": PostMedia(image_path("test.png"))},
-            {"media": PostMedia(image_path("test.jpg")), "caption": "test.jpg"},
+            {"caption": "test.jpg", "media": PostMedia(image_path("test.jpg"))},
             {
                 "media": PostMedia(image_path("test.gif")),
                 "outbound_url": "https://example.com",
             },
             {
-                "media": PostMedia(image_path("test.png")),
                 "caption": "test.png",
+                "media": PostMedia(image_path("test.png")),
                 "outbound_url": "https://example.com",
             },
         ]
@@ -1423,14 +1423,14 @@ class TestSubreddit(IntegrationTest):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         images = [
             {"media": PostMedia(image_path("test.png"))},
-            {"media": PostMedia(image_path("test.jpg")), "caption": "test.jpg"},
+            {"caption": "test.jpg", "media": PostMedia(image_path("test.jpg"))},
             {
                 "media": PostMedia(image_path("test.gif")),
                 "outbound_url": "https://example.com",
             },
             {
-                "media": PostMedia(image_path("test.png")),
                 "caption": "test.png",
+                "media": PostMedia(image_path("test.png")),
                 "outbound_url": "https://example.com",
             },
         ]
@@ -1446,14 +1446,14 @@ class TestSubreddit(IntegrationTest):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         images = [
             {"media": PostMedia(image_path("test.png"))},
-            {"media": PostMedia(image_path("test.jpg")), "caption": "test.jpg"},
+            {"caption": "test.jpg", "media": PostMedia(image_path("test.jpg"))},
             {
                 "media": PostMedia(image_path("test.gif")),
                 "outbound_url": "https://example.com",
             },
             {
-                "media": PostMedia(image_path("test.png")),
                 "caption": "test.png",
+                "media": PostMedia(image_path("test.png")),
                 "outbound_url": "https://example.com",
             },
         ]
@@ -1476,16 +1476,16 @@ class TestSubreddit(IntegrationTest):
         images = [
             {"media": PostMedia(image_path("test.png"))},
             {
-                "media": PostMedia(image_path("test.jpg")),
                 "caption": "A JPG image.",
+                "media": PostMedia(image_path("test.jpg")),
             },
             {
                 "media": PostMedia(image_path("test.gif")),
                 "outbound_url": "https://example.com",
             },
             {
-                "media": PostMedia(image_path("test.png")),
                 "caption": "A PNG image.",
+                "media": PostMedia(image_path("test.png")),
                 "outbound_url": "https://example.com",
             },
         ]

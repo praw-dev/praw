@@ -17,21 +17,13 @@ from ..utils import (
 )
 
 CASSETTES_PATH = Path("tests/integration/cassettes")
-existing_cassettes = set()
-used_cassettes = set()
-
 # VCR's ``uri`` matcher compares the full URI as a string, which is sensitive to query
 # parameter order. Betamax compared query parameters order-independently, so expand
 # ``uri`` into components that use VCR's order-independent ``query`` matcher.
 URI_MATCHERS = ["scheme", "host", "port", "path", "query"]
+existing_cassettes = set()
 
-
-def _expand_uri_matcher(matchers):
-    """Replace the ``uri`` matcher with order-independent component matchers."""
-    expanded = []
-    for matcher in matchers:
-        expanded.extend(URI_MATCHERS if matcher == "uri" else [matcher])
-    return expanded
+used_cassettes = set()
 
 
 class IntegrationTest:
@@ -113,3 +105,11 @@ class IntegrationTest:
 
         with Reddit(**reddit_kwargs) as reddit:
             yield reddit
+
+
+def _expand_uri_matcher(matchers):
+    """Replace the ``uri`` matcher with order-independent component matchers."""
+    expanded = []
+    for matcher in matchers:
+        expanded.extend(URI_MATCHERS if matcher == "uri" else [matcher])
+    return expanded

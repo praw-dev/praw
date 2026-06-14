@@ -19,14 +19,14 @@ class MoreComments(PRAWBase):
 
     MAX_COMMENTS_IN_REPR = 4
 
+    _comments: CommentForest | list[models.Comment | MoreComments] | None
+    # Attached by CommentForest._gather_more_comments.
+    _remove_from: list[models.Comment | MoreComments]
     children: list[str]
     count: int
     name: str
     parent_id: str
     submission: Submission
-    _comments: CommentForest | list[models.Comment | MoreComments] | None
-    # Attached by CommentForest._gather_more_comments.
-    _remove_from: list[models.Comment | MoreComments]
 
     def __eq__(self, other: object) -> bool:
         """Return ``True`` if these :class:`.MoreComments` instances are the same."""

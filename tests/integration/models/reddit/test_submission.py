@@ -271,18 +271,18 @@ class TestSubmissionFlair(IntegrationTest):
         submission = Submission(reddit, "4t4t2h")
         expected = [
             {
-                "flair_text": "SATISFIED",
-                "flair_template_id": "680f43b8-1fec-11e3-80d1-12313b0b80bc",
-                "flair_text_editable": False,
-                "flair_position": "left",
                 "flair_css_class": "",
+                "flair_position": "left",
+                "flair_template_id": "680f43b8-1fec-11e3-80d1-12313b0b80bc",
+                "flair_text": "SATISFIED",
+                "flair_text_editable": False,
             },
             {
-                "flair_text": "STATS",
-                "flair_template_id": "16cabd0a-a68d-11e5-8349-0e8ff96e6679",
-                "flair_text_editable": False,
-                "flair_position": "left",
                 "flair_css_class": "",
+                "flair_position": "left",
+                "flair_template_id": "16cabd0a-a68d-11e5-8349-0e8ff96e6679",
+                "flair_text": "STATS",
+                "flair_text_editable": False,
             },
         ]
         assert expected == submission.flair.choices()
@@ -339,9 +339,9 @@ class TestSubmissionModeration(IntegrationTest):
     def test_flair_all(self, reddit):
         reddit.read_only = False
         reddit.submission("eh9xy1").mod.flair(
-            text="submission flair",
             css_class="submission flair",
             flair_template_id="0f7349d8-2a6d-11ea-8529-0e5dee3e1a9d",
+            text="submission flair",
         )
 
     def test_flair_just_css_class(self, reddit):
@@ -355,13 +355,13 @@ class TestSubmissionModeration(IntegrationTest):
     def test_flair_template_id(self, reddit):
         reddit.read_only = False
         reddit.submission("eh9xy1").mod.flair(
-            text="submission flair",
             flair_template_id="0f7349d8-2a6d-11ea-8529-0e5dee3e1a9d",
+            text="submission flair",
         )
 
     def test_flair_text_and_css_class(self, reddit):
         reddit.read_only = False
-        reddit.submission("eh9xy1").mod.flair(text="submission flair", css_class="submission flair")
+        reddit.submission("eh9xy1").mod.flair(css_class="submission flair", text="submission flair")
 
     def test_flair_text_only(self, reddit):
         reddit.read_only = False

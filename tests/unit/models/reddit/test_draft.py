@@ -19,12 +19,12 @@ class TestDraft(UnitTest):
         assert str(excinfo.value) == message
 
         with pytest.raises(TypeError) as excinfo:
-            Draft(reddit, id="dummy", _data={"id": "dummy"})
+            Draft(reddit, _data={"id": "dummy"}, id="dummy")
         assert str(excinfo.value) == message
 
     def test_create_failure(self, reddit):
         with pytest.raises(TypeError) as excinfo:
-            reddit.drafts.create(url="url", selftext="selftext")
+            reddit.drafts.create(selftext="selftext", url="url")
         assert str(excinfo.value) == "Exactly one of 'selftext' or 'url' must be provided."
 
     def test_equality(self, reddit):
@@ -40,9 +40,9 @@ class TestDraft(UnitTest):
         assert draft1 == "dummy1"
         assert draft2 == "dummy1"
 
-        draft1 = Draft(reddit, _data={"id": "dummy1", "body": "body1", "kind": "markdown"})
-        draft2 = Draft(reddit, _data={"id": "dummy1", "body": "body1", "kind": "markdown"})
-        draft3 = Draft(reddit, _data={"id": "dummy3", "body": "body2", "kind": "markdown"})
+        draft1 = Draft(reddit, _data={"body": "body1", "id": "dummy1", "kind": "markdown"})
+        draft2 = Draft(reddit, _data={"body": "body1", "id": "dummy1", "kind": "markdown"})
+        draft3 = Draft(reddit, _data={"body": "body2", "id": "dummy3", "kind": "markdown"})
         assert draft1 == draft1
         assert draft2 == draft2
         assert draft3 == draft3
@@ -50,9 +50,9 @@ class TestDraft(UnitTest):
         assert draft2 != draft3
         assert draft1 != draft3
 
-        draft1 = Draft(reddit, _data={"id": "dummy1", "body": "url1", "kind": "link"})
-        draft2 = Draft(reddit, _data={"id": "dummy1", "body": "url1", "kind": "link"})
-        draft3 = Draft(reddit, _data={"id": "dummy3", "body": "url3", "kind": "link"})
+        draft1 = Draft(reddit, _data={"body": "url1", "id": "dummy1", "kind": "link"})
+        draft2 = Draft(reddit, _data={"body": "url1", "id": "dummy1", "kind": "link"})
+        draft3 = Draft(reddit, _data={"body": "url3", "id": "dummy3", "kind": "link"})
         assert draft1 == draft1
         assert draft2 == draft2
         assert draft3 == draft3
@@ -61,9 +61,9 @@ class TestDraft(UnitTest):
         assert draft1 != draft3
 
     def test_hash(self, reddit):
-        draft1 = Draft(reddit, _data={"id": "dummy1", "body": "body1", "kind": "markdown"})
-        draft2 = Draft(reddit, _data={"id": "dummy1", "body": "body2", "kind": "markdown"})
-        draft3 = Draft(reddit, _data={"id": "dummy3", "body": "body2", "kind": "markdown"})
+        draft1 = Draft(reddit, _data={"body": "body1", "id": "dummy1", "kind": "markdown"})
+        draft2 = Draft(reddit, _data={"body": "body2", "id": "dummy1", "kind": "markdown"})
+        draft3 = Draft(reddit, _data={"body": "body2", "id": "dummy3", "kind": "markdown"})
         assert hash(draft1) == hash(draft1)
         assert hash(draft2) == hash(draft2)
         assert hash(draft3) == hash(draft3)
@@ -81,7 +81,7 @@ class TestDraft(UnitTest):
         draft = Draft(reddit, id="draft_id")
         assert repr(draft) == "Draft(id='draft_id')"
 
-        data = {"id": "draft_id", "body": "body", "kind": "markdown"}
+        data = {"body": "body", "id": "draft_id", "kind": "markdown"}
         subreddit = Subreddit(None, "subreddit")
         draft = Draft(reddit, _data={**data, "subreddit": subreddit, "title": None})
         assert repr(draft) == "Draft(id='draft_id' subreddit='subreddit')"
@@ -100,8 +100,8 @@ class TestDraft(UnitTest):
         draft = Draft(
             reddit,
             _data={
-                "id": "draft_id",
                 "body": "body",
+                "id": "draft_id",
                 "kind": "markdown",
                 "subreddit": None,
             },

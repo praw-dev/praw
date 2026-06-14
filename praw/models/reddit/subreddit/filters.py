@@ -72,8 +72,8 @@ class SubredditFilters:
         """
         url = API_PATH["subreddit_filter"].format(
             special=self.subreddit,
-            user=self.subreddit._reddit.user.me(),
             subreddit=subreddit,
+            user=self.subreddit._reddit.user.me(),
         )
         self.subreddit._reddit.put(url, data={"model": dumps({"name": str(subreddit)})})
 
@@ -87,7 +87,7 @@ class SubredditFilters:
         """
         url = API_PATH["subreddit_filter"].format(
             special=self.subreddit,
-            user=self.subreddit._reddit.user.me(),
             subreddit=str(subreddit),
+            user=self.subreddit._reddit.user.me(),
         )
         self.subreddit._reddit.delete(url)

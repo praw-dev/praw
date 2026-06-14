@@ -8,7 +8,7 @@ repos:
   - hooks:
       - id: codesorter
     repo: https://github.com/praw-dev/CodeSorter
-    rev: 33c79d5c2fab0b6f1a6850c97f92da1739951f2d  # frozen: v0.1.0
+    rev: 2eaa2ef4f23a9ac80dc51a1792ad74c783144419  # frozen: v0.2.6
 
   - hooks:
       - id: auto-walrus

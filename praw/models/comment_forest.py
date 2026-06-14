@@ -19,61 +19,6 @@ class CommentForest:
 
     """
 
-    def __getitem__(self, index: int) -> models.Comment | models.MoreComments:
-        """Return the comment at position ``index`` in the list.
-
-        This method is to be used like an array access, such as:
-
-        .. code-block:: python
-
-            first_comment = submission.comments[0]
-
-        Alternatively, the presence of this method enables one to iterate over all top
-        level comments, like so:
-
-        .. code-block:: python
-
-            for comment in submission.comments:
-                print(comment.body)
-
-        """
-        return self._comments[index]
-
-    def __len__(self) -> int:
-        """Return the number of top-level comments in the forest."""
-        return len(self._comments)
-
-    def _insert_comment(self, comment: models.Comment | models.MoreComments) -> None:
-        if comment.name in self._submission._comments_by_id:
-            raise DuplicateReplaceException
-        comment.submission = self._submission
-        if isinstance(comment, MoreComments) or comment.is_root:
-            self._comments.append(comment)
-        else:
-            assert comment.parent_id in self._submission._comments_by_id, (
-                "PRAW Error occurred. Please file a bug report and include the code that caused the error."
-            )
-            parent = self._submission._comments_by_id[comment.parent_id]
-            parent.replies._comments.append(comment)
-
-    def list(
-        self,
-    ) -> list[models.Comment | models.MoreComments]:
-        """Return a flattened list of all comments.
-
-        This list may contain :class:`.MoreComments` instances if :meth:`.replace_more`
-        was not called first.
-
-        """
-        comments: list[models.Comment | models.MoreComments] = []
-        queue = list(self._comments)
-        while queue:
-            comment = queue.pop(0)
-            comments.append(comment)
-            if not isinstance(comment, MoreComments):
-                queue.extend(comment.replies._comments)
-        return comments
-
     @staticmethod
     def _gather_more_comments(
         tree: list[models.Comment | models.MoreComments],
@@ -95,6 +40,26 @@ class CommentForest:
                 queue.extend((comment, item) for item in comment.replies)
         return more_comments
 
+    def __getitem__(self, index: int) -> models.Comment | models.MoreComments:
+        """Return the comment at position ``index`` in the list.
+
+        This method is to be used like an array access, such as:
+
+        .. code-block:: python
+
+            first_comment = submission.comments[0]
+
+        Alternatively, the presence of this method enables one to iterate over all top
+        level comments, like so:
+
+        .. code-block:: python
+
+            for comment in submission.comments:
+                print(comment.body)
+
+        """
+        return self._comments[index]
+
     def __init__(
         self,
         submission: models.Submission,
@@ -111,10 +76,45 @@ class CommentForest:
         self._comments: list[models.Comment | models.MoreComments] = comments if comments is not None else []
         self._submission = submission
 
+    def __len__(self) -> int:
+        """Return the number of top-level comments in the forest."""
+        return len(self._comments)
+
+    def _insert_comment(self, comment: models.Comment | models.MoreComments) -> None:
+        if comment.name in self._submission._comments_by_id:
+            raise DuplicateReplaceException
+        comment.submission = self._submission
+        if isinstance(comment, MoreComments) or comment.is_root:
+            self._comments.append(comment)
+        else:
+            assert comment.parent_id in self._submission._comments_by_id, (
+                "PRAW Error occurred. Please file a bug report and include the code that caused the error."
+            )
+            parent = self._submission._comments_by_id[comment.parent_id]
+            parent.replies._comments.append(comment)
+
     def _update(self, comments: list[models.Comment | models.MoreComments]) -> None:
         self._comments = comments
         for comment in comments:
             comment.submission = self._submission
+
+    def list(
+        self,
+    ) -> list[models.Comment | models.MoreComments]:
+        """Return a flattened list of all comments.
+
+        This list may contain :class:`.MoreComments` instances if :meth:`.replace_more`
+        was not called first.
+
+        """
+        comments: list[models.Comment | models.MoreComments] = []
+        queue = list(self._comments)
+        while queue:
+            comment = queue.pop(0)
+            comments.append(comment)
+            if not isinstance(comment, MoreComments):
+                queue.extend(comment.replies._comments)
+        return comments
 
     def replace_more(self, *, limit: int | None = 32, threshold: int = 0) -> list[models.MoreComments]:
         """Update the comment forest by resolving instances of :class:`.MoreComments`.

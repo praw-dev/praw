@@ -85,7 +85,7 @@ class RemovalReason(RedditBase):
             reddit.subreddit("test").mod.removal_reasons["141vv5c16py7d"].delete()
 
         """
-        url = API_PATH["removal_reason"].format(subreddit=self.subreddit, id=self.id)
+        url = API_PATH["removal_reason"].format(id=self.id, subreddit=self.subreddit)
         self._reddit.delete(url)
 
     def update(self, *, message: str | None = None, title: str | None = None) -> None:
@@ -107,7 +107,7 @@ class RemovalReason(RedditBase):
             )
 
         """
-        url = API_PATH["removal_reason"].format(subreddit=self.subreddit, id=self.id)
+        url = API_PATH["removal_reason"].format(id=self.id, subreddit=self.subreddit)
         data = {
             name: getattr(self, name) if value is None else value
             for name, value in {"message": message, "title": title}.items()

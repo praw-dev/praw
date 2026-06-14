@@ -117,7 +117,7 @@ class TestReddit(UnitTest):
         assert isinstance(gen, types.GeneratorType)
 
     def test_multireddit(self, reddit):
-        assert reddit.multireddit(redditor="bboe", name="aa").path == "/user/bboe/m/aa"
+        assert reddit.multireddit(name="aa", redditor="bboe").path == "/user/bboe/m/aa"
 
     @mock.patch(
         "praw.Reddit.request",
@@ -435,10 +435,10 @@ class TestRedditCustomRequestor(UnitTest):
             pass
 
         _reddit = Reddit(
-            requestor_class=CustomRequestor,
             client_id="dummy",
             client_secret="dummy",
             password="dummy",
+            requestor_class=CustomRequestor,
             user_agent="dummy",
             username="dummy",
         )
@@ -446,9 +446,9 @@ class TestRedditCustomRequestor(UnitTest):
         assert not isinstance(reddit._core.requestor, CustomRequestor)
 
         _reddit = Reddit(
-            requestor_class=CustomRequestor,
             client_id="dummy",
             client_secret="dummy",
+            requestor_class=CustomRequestor,
             user_agent="dummy",
         )
         assert isinstance(_reddit._core.requestor, CustomRequestor)
@@ -457,9 +457,9 @@ class TestRedditCustomRequestor(UnitTest):
     def test_requestor_kwargs(self):
         session = mock.Mock(headers={})
         reddit = Reddit(
-            requestor_kwargs={"session": session},
             client_id="dummy",
             client_secret="dummy",
+            requestor_kwargs={"session": session},
             user_agent="dummy",
         )
 

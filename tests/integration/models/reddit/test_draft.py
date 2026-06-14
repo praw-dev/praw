@@ -11,22 +11,22 @@ class TestDraft(IntegrationTest):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
 
-        draft = reddit.drafts.create(title="test", url="https://reddit.com", subreddit=subreddit)
+        draft = reddit.drafts.create(subreddit=subreddit, title="test", url="https://reddit.com")
         assert draft.subreddit == subreddit
         assert draft.title == "test"
         assert not hasattr(draft, "selftext")
         assert draft.url == "https://reddit.com"
 
-        draft = reddit.drafts.create(title="test2", selftext="", subreddit=subreddit)
+        draft = reddit.drafts.create(selftext="", subreddit=subreddit, title="test2")
         assert draft.subreddit == subreddit
         assert draft.selftext == ""
         assert draft.title == "test2"
         assert not hasattr(draft, "url")
 
         draft = reddit.drafts.create(
-            title="test2",
             selftext="selftext",
             subreddit=pytest.placeholders.test_subreddit,
+            title="test2",
         )
         assert draft.subreddit == subreddit
         assert draft.selftext == "selftext"
@@ -100,7 +100,7 @@ class TestDraft(IntegrationTest):
         reddit.read_only = False
         draft = reddit.drafts(draft_id="aca27b26-f0d1-11eb-8fde-5e1e94c8225c")
         assert draft.title == "title"
-        draft.update(title="new title", subreddit=pytest.placeholders.test_subreddit)
+        draft.update(subreddit=pytest.placeholders.test_subreddit, title="new title")
         assert draft.title == "new title"
         assert isinstance(draft.subreddit, Subreddit)
         assert draft.subreddit == pytest.placeholders.test_subreddit

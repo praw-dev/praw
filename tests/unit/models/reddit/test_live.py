@@ -20,7 +20,7 @@ class TestLiveThread(UnitTest):
         assert str(excinfo.value) == message
 
         with pytest.raises(TypeError) as excinfo:
-            LiveThread(reddit, id="dummy", _data={"id": "dummy"})
+            LiveThread(reddit, _data={"id": "dummy"}, id="dummy")
         assert str(excinfo.value) == message
 
         with pytest.raises(ValueError):
@@ -148,12 +148,12 @@ class TestLiveUpdate(UnitTest):
         update = LiveUpdate(reddit, thread_id, update_id)
         assert isinstance(update.contrib, LiveUpdateContribution)
 
-        data = {"id": "dummy_update_id", "author": "dummy_author"}
+        data = {"author": "dummy_author", "id": "dummy_update_id"}
         update = LiveUpdate(reddit, _data=data)
         assert isinstance(update.contrib, LiveUpdateContribution)
 
     def test_setattr(self, reddit):
-        data = {"id": "dummy_update_id", "author": "dummy_author"}
+        data = {"author": "dummy_author", "id": "dummy_update_id"}
         update = LiveUpdate(reddit, _data=data)
         assert isinstance(update.author, Redditor)
 

@@ -22,18 +22,18 @@ class TestAnnouncement(UnitTest):
         assert str(excinfo.value) == message
 
         with pytest.raises(TypeError) as excinfo:
-            Announcement(reddit, id="ann_x", _data={"id": "ann_x"})
+            Announcement(reddit, _data={"id": "ann_x"}, id="ann_x")
         assert str(excinfo.value) == message
 
     def test_data_populates_attributes(self, reddit):
         data = {
-            "id": "ann_d50580",
-            "subject": "Mod Monthly",
             "body": "body",
             "body_html": "<p>body</p>",
+            "id": "ann_d50580",
             "permalink": "https://www.reddit.com/notifications/a/ann_d50580",
             "read_at": None,
             "sent_at": "2026-06-08T18:07:46Z",
+            "subject": "Mod Monthly",
         }
         announcement = Announcement(reddit, _data=data)
         assert announcement.id == "ann_d50580"
@@ -85,22 +85,22 @@ class TestAnnouncement(UnitTest):
             "before": "",
             "data": [
                 {
-                    "id": "ann_d50580",
-                    "subject": "Mod Monthly",
                     "body": "b",
                     "body_html": "<p>b</p>",
+                    "id": "ann_d50580",
                     "permalink": "https://www.reddit.com/notifications/a/ann_d50580",
                     "read_at": None,
                     "sent_at": "2026-06-08T18:07:46Z",
+                    "subject": "Mod Monthly",
                 },
                 {
-                    "id": "ann_cqzpay",
-                    "subject": "Thanks",
                     "body": "b",
                     "body_html": "<p>b</p>",
+                    "id": "ann_cqzpay",
                     "permalink": "https://www.reddit.com/notifications/a/ann_cqzpay",
                     "read_at": "2026-06-03T14:12:57Z",
                     "sent_at": "2026-05-29T21:07:52Z",
+                    "subject": "Thanks",
                 },
             ],
         }

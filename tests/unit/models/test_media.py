@@ -104,8 +104,8 @@ class TestStylesheetAsset(UnitTest):
         media = StylesheetAsset(b"data", name="image.png")
         assert media._build_lease_data(imagetype="bannerBackgroundImage") == {
             "filepath": "image.png",
-            "mimetype": "image/png",
             "imagetype": "bannerBackgroundImage",
+            "mimetype": "image/png",
         }
 
 

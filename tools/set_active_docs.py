@@ -8,8 +8,8 @@ import time
 import packaging.version
 import requests
 
-PROJECT = "praw"
 HEADERS = {"Authorization": f"token {os.environ.get('READTHEDOCS_TOKEN')}"}
+PROJECT = "praw"
 
 
 def fetch_versions():
@@ -44,8 +44,8 @@ def main():
         # the Docs has synced the tag.
         response = requests.patch(
             f"https://readthedocs.org/api/v3/projects/{PROJECT}/versions/v{current_version}/",
-            json={"active": True, "hidden": False},
             headers=HEADERS,
+            json={"active": True, "hidden": False},
         )
         if response.status_code == 204:
             sys.stdout.write(f"Version {current_version!s} is active\n")
@@ -80,8 +80,8 @@ def main():
         ):
             response = requests.patch(
                 f"https://readthedocs.org/api/v3/projects/{PROJECT}/versions/v{version}/",
-                json={"active": True, "hidden": True},
                 headers=HEADERS,
+                json={"active": True, "hidden": True},
             )
             if response.status_code == 204:
                 sys.stderr.write(f"Version {version!s} was hidden successfully\n")

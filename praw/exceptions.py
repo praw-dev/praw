@@ -17,6 +17,97 @@ class PRAWException(Exception):  # noqa: N818
     """The base PRAW Exception that all other exception classes extend."""
 
 
+class ClientException(PRAWException):
+    """Indicate exceptions that don't involve interaction with Reddit's API."""
+
+
+class DuplicateReplaceException(ClientException):
+    """Indicate exceptions that involve the replacement of :class:`.MoreComments`."""
+
+    def __init__(self) -> None:
+        """Initialize a :class:`.DuplicateReplaceException` instance."""
+        super().__init__(
+            "A duplicate comment has been detected. Are you attempting to call 'replace_more_comments' more than once?"
+        )
+
+
+class InvalidFlairTemplateID(ClientException):
+    """Indicate exceptions where an invalid flair template ID is given."""
+
+    def __init__(self, template_id: str) -> None:
+        """Initialize an :class:`.InvalidFlairTemplateID` instance."""
+        super().__init__(
+            f"The flair template ID '{template_id}' is invalid. If you are trying to"
+            " create a flair, please use the 'add' method."
+        )
+
+
+class InvalidImplicitAuth(ClientException):
+    """Indicate exceptions where an implicit auth type is used incorrectly."""
+
+    def __init__(self) -> None:
+        """Initialize an :class:`.InvalidImplicitAuth` instance."""
+        super().__init__("Implicit authorization can only be used with installed apps.")
+
+
+class InvalidURL(ClientException):
+    """Indicate exceptions where an invalid URL is entered."""
+
+    def __init__(self, url: str, *, message: str = "Invalid URL: {}") -> None:
+        """Initialize an :class:`.InvalidURL` instance.
+
+        :param url: The invalid URL.
+        :param message: The message to display. Must contain a format identifier (``{}``
+            or ``{0}``) (default: ``"Invalid URL: {}"``).
+
+        """
+        super().__init__(message.format(url))
+
+
+class MissingRequiredAttributeException(ClientException):
+    """Indicate exceptions caused by not including a required attribute."""
+
+
+class ReadOnlyException(ClientException):
+    """Raised when a method call requires :attr:`.read_only` mode to be disabled."""
+
+
+class RedditAPIException(PRAWException):
+    """Container for error messages from Reddit's API."""
+
+    @staticmethod
+    def parse_exception_list(
+        exceptions: list[RedditErrorItem | list[str]],
+    ) -> list[RedditErrorItem]:
+        """Covert an exception list into a :class:`.RedditErrorItem` list."""
+        return [
+            (
+                exception
+                if isinstance(exception, RedditErrorItem)
+                else RedditErrorItem(
+                    error_type=exception[0],
+                    field=exception[2] if bool(exception[2]) else "",
+                    message=exception[1] if bool(exception[1]) else "",
+                )
+            )
+            for exception in exceptions
+        ]
+
+    def __init__(self, items: list[RedditErrorItem | list[str] | str]) -> None:
+        """Initialize a :class:`.RedditAPIException` instance.
+
+        :param items: Either a list of instances of :class:`.RedditErrorItem` or a list
+            containing lists of unformed errors.
+
+        """
+        if isinstance(items, list) and isinstance(items[0], str):
+            parsed_items: list[RedditErrorItem | list[str]] = [cast("list[str]", items)]
+        else:
+            parsed_items = cast("list[RedditErrorItem | list[str]]", items)
+        self.items = self.parse_exception_list(parsed_items)
+        super().__init__(*self.items)
+
+
 class RedditErrorItem:
     """Represents a single error returned from Reddit's API."""
 
@@ -73,61 +164,6 @@ class RedditErrorItem:
         return self.error_message
 
 
-class ClientException(PRAWException):
-    """Indicate exceptions that don't involve interaction with Reddit's API."""
-
-
-class DuplicateReplaceException(ClientException):
-    """Indicate exceptions that involve the replacement of :class:`.MoreComments`."""
-
-    def __init__(self) -> None:
-        """Initialize a :class:`.DuplicateReplaceException` instance."""
-        super().__init__(
-            "A duplicate comment has been detected. Are you attempting to call 'replace_more_comments' more than once?"
-        )
-
-
-class InvalidFlairTemplateID(ClientException):
-    """Indicate exceptions where an invalid flair template ID is given."""
-
-    def __init__(self, template_id: str) -> None:
-        """Initialize an :class:`.InvalidFlairTemplateID` instance."""
-        super().__init__(
-            f"The flair template ID '{template_id}' is invalid. If you are trying to"
-            " create a flair, please use the 'add' method."
-        )
-
-
-class InvalidImplicitAuth(ClientException):
-    """Indicate exceptions where an implicit auth type is used incorrectly."""
-
-    def __init__(self) -> None:
-        """Initialize an :class:`.InvalidImplicitAuth` instance."""
-        super().__init__("Implicit authorization can only be used with installed apps.")
-
-
-class InvalidURL(ClientException):
-    """Indicate exceptions where an invalid URL is entered."""
-
-    def __init__(self, url: str, *, message: str = "Invalid URL: {}") -> None:
-        """Initialize an :class:`.InvalidURL` instance.
-
-        :param url: The invalid URL.
-        :param message: The message to display. Must contain a format identifier (``{}``
-            or ``{0}``) (default: ``"Invalid URL: {}"``).
-
-        """
-        super().__init__(message.format(url))
-
-
-class MissingRequiredAttributeException(ClientException):
-    """Indicate exceptions caused by not including a required attribute."""
-
-
-class ReadOnlyException(ClientException):
-    """Raised when a method call requires :attr:`.read_only` mode to be disabled."""
-
-
 class TooLargeMediaException(ClientException):
     """Indicate exceptions from uploading media that's too large."""
 
@@ -167,39 +203,3 @@ class MediaPostFailed(WebSocketException):
             " corruption of media files. Check that the media file can be opened on"
             " your local machine.",
         )
-
-
-class RedditAPIException(PRAWException):
-    """Container for error messages from Reddit's API."""
-
-    @staticmethod
-    def parse_exception_list(
-        exceptions: list[RedditErrorItem | list[str]],
-    ) -> list[RedditErrorItem]:
-        """Covert an exception list into a :class:`.RedditErrorItem` list."""
-        return [
-            (
-                exception
-                if isinstance(exception, RedditErrorItem)
-                else RedditErrorItem(
-                    error_type=exception[0],
-                    field=exception[2] if bool(exception[2]) else "",
-                    message=exception[1] if bool(exception[1]) else "",
-                )
-            )
-            for exception in exceptions
-        ]
-
-    def __init__(self, items: list[RedditErrorItem | list[str] | str]) -> None:
-        """Initialize a :class:`.RedditAPIException` instance.
-
-        :param items: Either a list of instances of :class:`.RedditErrorItem` or a list
-            containing lists of unformed errors.
-
-        """
-        if isinstance(items, list) and isinstance(items[0], str):
-            parsed_items: list[RedditErrorItem | list[str]] = [cast("list[str]", items)]
-        else:
-            parsed_items = cast("list[RedditErrorItem | list[str]]", items)
-        self.items = self.parse_exception_list(parsed_items)
-        super().__init__(*self.items)

@@ -10,10 +10,6 @@ from praw.models import Redditor, StylesheetImage, WikiPage
 from ... import IntegrationTest
 
 
-def large_content():
-    return urlsafe_b64encode(pathlib.Path("tests/integration/files/too_large.jpg").read_bytes()).decode()
-
-
 class TestWikiPageModeration(IntegrationTest):
     def test_add(self, reddit):
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -52,9 +48,9 @@ class TestWikiPageModeration(IntegrationTest):
         with pytest.raises(Forbidden) as exc:
             page.revision(revision_id).mod.revert()
         assert exc.value.response.json() == {
-            "reason": "INVALID_CSS",
-            "message": "Forbidden",
             "explanation": "%(css_error)s",
+            "message": "Forbidden",
+            "reason": "INVALID_CSS",
         }
 
     def test_settings(self, reddit):
@@ -72,6 +68,10 @@ class TestWikiPageModeration(IntegrationTest):
         reddit.read_only = False
         updated = page.mod.update(listed=False, permlevel=1)
         assert updated == {"editors": [], "listed": False, "permlevel": 1}
+
+
+def large_content():
+    return urlsafe_b64encode(pathlib.Path("tests/integration/files/too_large.jpg").read_bytes()).decode()
 
 
 class TestWikiPage(IntegrationTest):

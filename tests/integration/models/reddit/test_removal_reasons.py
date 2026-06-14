@@ -47,7 +47,7 @@ class TestRemovalReason(IntegrationTest):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
         reason = subreddit.mod.removal_reasons["110nhk2cgmaxy"]
-        reason.update(title="New Title", message="New Message")
+        reason.update(message="New Message", title="New Title")
 
     def test_update_empty(self, reddit):
         reddit.read_only = False
@@ -69,5 +69,5 @@ class TestSubredditRemovalReasons(IntegrationTest):
     def test_add(self, reddit):
         reddit.read_only = False
         subreddit = reddit.subreddit(pytest.placeholders.test_subreddit)
-        reason = subreddit.mod.removal_reasons.add(title="Test", message="test")
+        reason = subreddit.mod.removal_reasons.add(message="test", title="Test")
         assert isinstance(reason, RemovalReason)

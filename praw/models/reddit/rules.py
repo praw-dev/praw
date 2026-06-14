@@ -18,92 +18,6 @@ if TYPE_CHECKING:
     from praw import models
 
 
-class RuleModeration:
-    """Contain methods used to moderate rules.
-
-    To delete ``"No spam"`` from r/test try:
-
-    .. code-block:: python
-
-        reddit.subreddit("test").rules["No spam"].mod.delete()
-
-    To update ``"No spam"`` from r/test try:
-
-    .. code-block:: python
-
-        reddit.subreddit("test").removal_reasons["No spam"].mod.update(
-            description="Don't do this!", violation_reason="Spam post"
-        )
-
-    """
-
-    def __init__(self, rule: models.Rule) -> None:
-        """Initialize a :class:`.RuleModeration` instance."""
-        self.rule = rule
-
-    def delete(self) -> None:
-        """Delete a rule from this subreddit.
-
-        To delete ``"No spam"`` from r/test try:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").rules["No spam"].mod.delete()
-
-        """
-        data = {
-            "r": str(self.rule.subreddit),
-            "short_name": self.rule.short_name,
-        }
-        self.rule._reddit.post(API_PATH["remove_subreddit_rule"], data=data)
-
-    def update(
-        self,
-        *,
-        description: str | None = None,
-        kind: str | None = None,
-        short_name: str | None = None,
-        violation_reason: str | None = None,
-    ) -> models.Rule:
-        """Update the rule from this subreddit.
-
-        .. note::
-
-            Existing values will be used for any unspecified arguments.
-
-        :param description: The new description for the rule. Can be empty.
-        :param kind: The kind of item that the rule applies to. One of ``"link"``,
-            ``"comment"``, or ``"all"``.
-        :param short_name: The name of the rule.
-        :param violation_reason: The reason that is shown on the report menu.
-
-        :returns: A Rule object containing the updated values.
-
-        To update ``"No spam"`` from r/test try:
-
-        .. code-block:: python
-
-            reddit.subreddit("test").removal_reasons["No spam"].mod.update(
-                description="Don't do this!", violation_reason="Spam post"
-            )
-
-        """
-        data = {
-            "r": str(self.rule.subreddit),
-            "old_short_name": self.rule.short_name,
-        }
-        for name, value in {
-            "description": description,
-            "kind": kind,
-            "short_name": short_name,
-            "violation_reason": violation_reason,
-        }.items():
-            data[name] = getattr(self.rule, name) if value is None else value
-        updated_rule = self.rule._reddit.post(API_PATH["update_subreddit_rule"], data=data)[0]
-        updated_rule.subreddit = self.rule.subreddit
-        return updated_rule
-
-
 class Rule(CreatedMixin, RedditBase):
     """An individual :class:`.Rule` object.
 
@@ -187,6 +101,92 @@ class Rule(CreatedMixin, RedditBase):
                 return
         msg = f"Subreddit {self.subreddit} does not have the rule {self.short_name}"
         raise ClientException(msg)
+
+
+class RuleModeration:
+    """Contain methods used to moderate rules.
+
+    To delete ``"No spam"`` from r/test try:
+
+    .. code-block:: python
+
+        reddit.subreddit("test").rules["No spam"].mod.delete()
+
+    To update ``"No spam"`` from r/test try:
+
+    .. code-block:: python
+
+        reddit.subreddit("test").removal_reasons["No spam"].mod.update(
+            description="Don't do this!", violation_reason="Spam post"
+        )
+
+    """
+
+    def __init__(self, rule: models.Rule) -> None:
+        """Initialize a :class:`.RuleModeration` instance."""
+        self.rule = rule
+
+    def delete(self) -> None:
+        """Delete a rule from this subreddit.
+
+        To delete ``"No spam"`` from r/test try:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").rules["No spam"].mod.delete()
+
+        """
+        data = {
+            "r": str(self.rule.subreddit),
+            "short_name": self.rule.short_name,
+        }
+        self.rule._reddit.post(API_PATH["remove_subreddit_rule"], data=data)
+
+    def update(
+        self,
+        *,
+        description: str | None = None,
+        kind: str | None = None,
+        short_name: str | None = None,
+        violation_reason: str | None = None,
+    ) -> models.Rule:
+        """Update the rule from this subreddit.
+
+        .. note::
+
+            Existing values will be used for any unspecified arguments.
+
+        :param description: The new description for the rule. Can be empty.
+        :param kind: The kind of item that the rule applies to. One of ``"link"``,
+            ``"comment"``, or ``"all"``.
+        :param short_name: The name of the rule.
+        :param violation_reason: The reason that is shown on the report menu.
+
+        :returns: A Rule object containing the updated values.
+
+        To update ``"No spam"`` from r/test try:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").removal_reasons["No spam"].mod.update(
+                description="Don't do this!", violation_reason="Spam post"
+            )
+
+        """
+        data = {
+            "old_short_name": self.rule.short_name,
+            "r": str(self.rule.subreddit),
+        }
+        for name, value in {
+            "description": description,
+            "kind": kind,
+            "short_name": short_name,
+            "violation_reason": violation_reason,
+        }.items():
+            data[name] = getattr(self.rule, name) if value is None else value
+        updated_rule = self.rule._reddit.post(API_PATH["update_subreddit_rule"], data=data)[0]
+        updated_rule.subreddit = self.rule.subreddit
+        return updated_rule
 
 
 class SubredditRules:
@@ -296,7 +296,7 @@ class SubredditRules:
         """
         if not isinstance(short_name, str):
             return self._rule_list[short_name]
-        return Rule(self._reddit, subreddit=self.subreddit, short_name=short_name)
+        return Rule(self._reddit, short_name=short_name, subreddit=self.subreddit)
 
     def __init__(self, subreddit: models.Subreddit) -> None:
         """Initialize a :class:`.SubredditRules` instance.
@@ -383,9 +383,9 @@ class SubredditRulesModeration:
 
         """
         data = {
-            "r": str(self.subreddit_rules.subreddit),
             "description": description,
             "kind": kind,
+            "r": str(self.subreddit_rules.subreddit),
             "short_name": short_name,
             "violation_reason": (short_name if violation_reason is None else violation_reason),
         }
@@ -415,8 +415,8 @@ class SubredditRulesModeration:
         """
         order_string = quote(",".join([rule.short_name for rule in rule_list]), safe=",")
         data = {
-            "r": str(self.subreddit_rules.subreddit),
             "new_rule_order": order_string,
+            "r": str(self.subreddit_rules.subreddit),
         }
         response = self.subreddit_rules._reddit.post(API_PATH["reorder_subreddit_rules"], data=data)
         for rule in response:

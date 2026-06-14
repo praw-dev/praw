@@ -9,10 +9,6 @@ class TestMore(IntegrationTest):
     @pytest.mark.recorder_kwargs(match_on=["uri", "method", "body"])
     def test_comments(self, reddit):
         data = {
-            "count": 9,
-            "name": "t1_cu5tt8h",
-            "id": "cu5tt8h",
-            "parent_id": "t3_3hahrw",
             "children": [
                 "cu5tt8h",
                 "cu5v9yd",
@@ -24,6 +20,10 @@ class TestMore(IntegrationTest):
                 "cu5tpek",
                 "cu5pbdh",
             ],
+            "count": 9,
+            "id": "cu5tt8h",
+            "name": "t1_cu5tt8h",
+            "parent_id": "t3_3hahrw",
         }
         more = MoreComments(reddit, data)
         more.submission = reddit.submission("3hahrw")
@@ -32,11 +32,11 @@ class TestMore(IntegrationTest):
     @pytest.mark.recorder_kwargs(match_on=["uri", "method", "body"])
     def test_comments__continue_thread_type(self, reddit):
         data = {
-            "count": 0,
-            "name": "t1__",
-            "id": "_",
-            "parent_id": "t1_cu5v5h7",
             "children": [],
+            "count": 0,
+            "id": "_",
+            "name": "t1__",
+            "parent_id": "t1_cu5v5h7",
         }
         more = MoreComments(reddit, data)
         more.submission = reddit.submission("3hahrw")

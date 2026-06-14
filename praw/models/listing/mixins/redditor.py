@@ -19,23 +19,6 @@ if TYPE_CHECKING:
     from praw.models.listing.generator import ListingGeneratorKwargs
 
 
-class SubListing(BaseListingMixin):
-    """Helper class for generating :class:`.ListingGenerator` objects."""
-
-    def __init__(self, reddit: praw.Reddit, base_path: str, subpath: str) -> None:
-        """Initialize a :class:`.SubListing` instance.
-
-        :param reddit: An instance of :class:`.Reddit`.
-        :param base_path: The path to the object up to this point.
-        :param subpath: The additional path to this sublisting.
-
-        """
-        super().__init__(reddit, _data=None)
-        self._listing_use_sort = True
-        self._reddit = reddit
-        self._path = urljoin(base_path, subpath)
-
-
 class RedditorListingMixin(BaseListingMixin):
     """Adds additional methods pertaining to :class:`.Redditor` instances."""
 
@@ -202,3 +185,20 @@ class RedditorListingMixin(BaseListingMixin):
 
         """
         return ListingGenerator(self._reddit, urljoin(self._path, "upvoted"), **generator_kwargs)
+
+
+class SubListing(BaseListingMixin):
+    """Helper class for generating :class:`.ListingGenerator` objects."""
+
+    def __init__(self, reddit: praw.Reddit, base_path: str, subpath: str) -> None:
+        """Initialize a :class:`.SubListing` instance.
+
+        :param reddit: An instance of :class:`.Reddit`.
+        :param base_path: The path to the object up to this point.
+        :param subpath: The additional path to this sublisting.
+
+        """
+        super().__init__(reddit, _data=None)
+        self._listing_use_sort = True
+        self._reddit = reddit
+        self._path = urljoin(base_path, subpath)

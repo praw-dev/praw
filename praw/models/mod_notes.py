@@ -178,9 +178,9 @@ class BaseModNotes:
             subreddit=subreddit,
         )
         data = {
-            "user": str(redditor),
-            "subreddit": str(subreddit),
             "note": note,
+            "subreddit": str(subreddit),
+            "user": str(redditor),
         }
         if label:
             data["label"] = label
@@ -273,9 +273,9 @@ class BaseModNotes:
                 note.delete()
         else:
             params = {
-                "user": str(redditor_),
-                "subreddit": str(subreddit_),
                 "note_id": note_id,
+                "subreddit": str(subreddit_),
+                "user": str(redditor_),
             }
             self._reddit.delete(API_PATH["mod_notes"], params=params)
 
