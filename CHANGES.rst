@@ -8,6 +8,13 @@ praw follows `semantic versioning <https://semver.org/>`_.
  Unreleased
 ************
 
+**Fixed**
+
+- Declare ``__all__`` in ``praw`` and ``praw.models`` so that, now that PRAW ships a
+  ``py.typed`` marker, type checkers recognize documented imports such as ``from praw
+  import Reddit`` and ``from praw.models import Redditor`` as public re-exports instead
+  of reporting them as private.
+
 ********************
  8.0.0 (2026/06/14)
 ********************
