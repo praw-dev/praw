@@ -1,9 +1,12 @@
+concurrency:
+  group: pypi-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   pypi-publish:
     environment: release
     name: Upload release to PyPI
     permissions:
-      id-token: write
+      id-token: write # required for PyPI trusted publishing
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
