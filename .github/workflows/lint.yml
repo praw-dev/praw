@@ -1,0 +1,15 @@
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  lint:
+    name: Lint workflows
+    permissions:
+      contents: read # required to check out the repository
+    uses: praw-dev/.github/.github/workflows/lint.yml@aa63811572338b6343772c542574909f1cbd8d78 # v1.5.0
+name: Lint workflows
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+permissions: {}
