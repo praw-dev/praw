@@ -4,9 +4,9 @@
 
 praw follows `semantic versioning <https://semver.org/>`_.
 
-************
- Unreleased
-************
+********************
+ 8.0.1 (2026/06/15)
+********************
 
 **Fixed**
 
