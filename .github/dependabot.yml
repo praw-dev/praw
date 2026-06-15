@@ -6,9 +6,13 @@ updates:
       interval: monthly
     labels:
       - "Dependencies"
+    cooldown:
+      default-days: 1
   - package-ecosystem: uv
     directory: /
     schedule:
       interval: monthly
     labels:
       - "Dependencies"
+    cooldown:
+      default-days: 1
