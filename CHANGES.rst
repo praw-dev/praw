@@ -8,6 +8,10 @@ praw follows `semantic versioning <https://semver.org/>`_.
  Unreleased
 ************
 
+********************
+ 8.0.1 (2026/06/15)
+********************
+
 **Fixed**
 
 - Declare ``__all__`` in ``praw`` and ``praw.models`` so that, now that PRAW ships a
