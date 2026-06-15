@@ -1,12 +1,13 @@
 jobs:
   stale_action:
     name: Close stale issues and PRs
+    permissions:
+      issues: write # required to comment on and close stale issues
+      pull-requests: write # required to comment on and close stale PRs
     uses: praw-dev/.github/.github/workflows/stale_action.yml@9ff8957d0cab4cf8c9d7cb5592aedb3d456cc058 # v1.4.0
 name: Close stale issues and PRs
 on:
   schedule:
     - cron: 0 */6 * * *
   workflow_dispatch:
-permissions:
-  issues: write
-  pull-requests: write
+permissions: {}
