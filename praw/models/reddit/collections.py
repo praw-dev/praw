@@ -98,7 +98,7 @@ class Collection(CreatedMixin, RedditBase):
 
     @property
     def updated_datetime(self) -> datetime.datetime:
-        """Return the last update time as a timezone-aware :class:`datetime.datetime`.
+        """The last update time as a timezone-aware :class:`datetime.datetime`.
 
         The returned object is localized to the system's timezone.
 

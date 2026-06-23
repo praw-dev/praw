@@ -123,7 +123,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, CreatedMix
 
     @property
     def _kind(self) -> str:
-        """Return the class's kind."""
+        """The class's kind."""
         return self._reddit.config.kinds["redditor"]
 
     @property

@@ -3,12 +3,12 @@ repos:
       - id: docstrfmt
         require_serial: true
     repo: https://github.com/LilSpazJoekp/docstrfmt
-    rev: 8688ba6420d7b5ca95a8ba0edf8a9953babdc3da  # frozen: v2.1.1
+    rev: a05381030e526dc863e2006d34824271d7681d08  # frozen: v2.2.0
 
   - hooks:
       - id: codesorter
     repo: https://github.com/praw-dev/CodeSorter
-    rev: 8aa6144b41e0f789124b2ca377d246ffd1fbb317  # frozen: v0.2.7
+    rev: 03a8cecfa6ae82183f9e152d1bbb16ea6a6c1d11  # frozen: v0.2.8
 
   - hooks:
       - id: auto-walrus
@@ -20,7 +20,7 @@ repos:
         id: ruff
       - id: ruff-format
     repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: 3b3f7c3f57fe9925356faf5fe6230835138be230  # frozen: v0.15.17
+    rev: 77039ccbba72c8aede339c5f8ae29b42aced0a2e  # frozen: v0.15.18
 
   - hooks:
       - files: ^(.*\.toml)$

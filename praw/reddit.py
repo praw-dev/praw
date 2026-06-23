@@ -99,7 +99,7 @@ class Reddit:
 
     @property
     def read_only(self) -> bool:
-        """Return ``True`` when using the ``ReadOnlyAuthorizer``."""
+        """``True`` when using the ``ReadOnlyAuthorizer``."""
         return self._core == self._read_only_core
 
     @read_only.setter

@@ -19,7 +19,7 @@ class Auth(PRAWBase):
 
     @property
     def limits(self) -> dict[str, str | int | None]:
-        """Return a dictionary containing the rate limit info.
+        """A dictionary containing the rate limit info.
 
         The keys are:
 
