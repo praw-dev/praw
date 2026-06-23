@@ -8,6 +8,12 @@ praw follows `semantic versioning <https://semver.org/>`_.
  Unreleased
 ************
 
+**Changed**
+
+- Reword property docstrings and clarify in the 8.0.0 change log that arguments
+  deprecated for positional use in v7 are now keyword-only. Maintenance and
+  documentation only; no functional changes.
+
 ********************
  8.0.1 (2026/06/15)
 ********************
