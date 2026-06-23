@@ -73,6 +73,12 @@ praw follows `semantic versioning <https://semver.org/>`_.
 
 **Changed**
 
+- Arguments deprecated for positional use in PRAW 7 are now keyword-only across most
+  methods, fulfilling the deprecation announced in 7.6.0. Notably, the ``time_filter``
+  argument to listing methods such as :meth:`.Subreddit.top` and
+  :meth:`.Subreddit.controversial` — shown positionally in older documentation (for
+  example ``subreddit.top("all")``) — must now be passed by keyword
+  (``subreddit.top(time_filter="all")``).
 - Bumped prawcore to 3.0.2.
 - Drop support for Python 3.8, which was end-of-life on 2024-10-07.
 - Drop support for Python 3.9, which was end-of-life on 2025-10-31.
