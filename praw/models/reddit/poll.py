@@ -59,7 +59,7 @@ class PollData(DynamicAttributes, PRAWBase):
 
     @property
     def voting_end_datetime(self) -> datetime.datetime:
-        """Return the poll's closing time as a timezone-aware :class:`datetime.datetime`.
+        """The poll's closing time as a timezone-aware :class:`datetime.datetime`.
 
         The returned object is localized to the system's timezone.
 

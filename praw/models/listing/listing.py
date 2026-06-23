@@ -42,7 +42,7 @@ class FlairListing(Listing):
 
     @property
     def after(self) -> Any | None:
-        """Return the next attribute or ``None``."""
+        """The next attribute or ``None``."""
         return getattr(self, "next", None)
 
 
@@ -54,7 +54,7 @@ class ModNoteListing(Listing):
 
     @property
     def after(self) -> Any | None:
-        """Return the next attribute or None."""
+        """The next attribute or None."""
         if not getattr(self, "has_next_page", True):
             return None
         return getattr(self, "end_cursor", None)
@@ -76,7 +76,7 @@ class ModmailConversationsListing(Listing):
 
     @property
     def after(self) -> str | None:
-        """Return the next attribute or ``None``."""
+        """The next attribute or ``None``."""
         try:
             return self.conversations[-1].id
         except IndexError:

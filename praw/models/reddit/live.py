@@ -680,12 +680,12 @@ class LiveUpdate(FullnameMixin, CreatedMixin, RedditBase):
 
     @property
     def _kind(self) -> str:
-        """Return the class's kind."""
+        """The class's kind."""
         return "LiveUpdate"
 
     @property
     def thread(self) -> LiveThread:
-        """Return :class:`.LiveThread` object the update object belongs to."""
+        """:class:`.LiveThread` object the update object belongs to."""
         return self._thread
 
     def __init__(

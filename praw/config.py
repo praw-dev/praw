@@ -128,7 +128,7 @@ class Config:
 
     @property
     def short_url(self) -> str:
-        """Return the short url.
+        """The short url.
 
         :raises: :class:`.ClientException` if it is not set.
 

@@ -96,12 +96,12 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, CreatedMixin, Red
 
     @property
     def _kind(self) -> str:
-        """Return the class's kind."""
+        """The class's kind."""
         return self._reddit.config.kinds["comment"]
 
     @property
     def is_root(self) -> bool:
-        """Return ``True`` when the comment is a top-level comment."""
+        """``True`` when the comment is a top-level comment."""
         parent_type = self.parent_id.split("_", 1)[0]
         return parent_type == self._reddit.config.kinds["submission"]
 
@@ -134,7 +134,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, CreatedMixin, Red
 
     @property
     def submission(self) -> models.Submission:
-        """Return the :class:`.Submission` object this comment belongs to."""
+        """The :class:`.Submission` object this comment belongs to."""
         if not self._submission:  # Comment not from submission
             self._submission = self._reddit.submission(self._extract_submission_id())
         return self._submission

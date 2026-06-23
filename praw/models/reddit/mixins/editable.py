@@ -29,7 +29,7 @@ class EditableMixin:
 
     @property
     def edited_datetime(self) -> datetime.datetime | None:
-        """Return the last edit time as a timezone-aware :class:`datetime.datetime`.
+        """The last edit time as a timezone-aware :class:`datetime.datetime`.
 
         Returns ``None`` if the object has never been edited. The returned object is
         localized to the system's timezone.

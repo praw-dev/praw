@@ -168,7 +168,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Create
 
     @property
     def _kind(self) -> str:
-        """Return the class's kind."""
+        """The class's kind."""
         return self._reddit.config.kinds["submission"]
 
     @property
@@ -207,7 +207,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Create
 
     @property
     def shortlink(self) -> str:
-        """Return a shortlink to the submission.
+        """A shortlink to the submission.
 
         For example, https://redd.it/eorhm is a shortlink for
         https://www.reddit.com/r/announcements/comments/eorhm/reddit_30_less_typing/.

@@ -45,12 +45,12 @@ class Announcement(FullnameMixin, RedditBase):
 
     @property
     def _kind(self) -> str:
-        """Return the object's kind shortcode."""
+        """The object's kind shortcode."""
         return "ann"
 
     @property
     def read_datetime(self) -> datetime | None:
-        """Return the time the announcement was read as a timezone-aware :class:`datetime.datetime`.
+        """The time the announcement was read as a timezone-aware :class:`datetime.datetime`.
 
         Returns ``None`` if the announcement has not been read. The returned object is
         localized to the system's timezone.
@@ -62,7 +62,7 @@ class Announcement(FullnameMixin, RedditBase):
 
     @property
     def sent_datetime(self) -> datetime:
-        """Return the time the announcement was sent as a timezone-aware :class:`datetime.datetime`.
+        """The time the announcement was sent as a timezone-aware :class:`datetime.datetime`.
 
         The returned object is localized to the system's timezone.
 

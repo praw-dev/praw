@@ -14,12 +14,12 @@ class FullnameMixin:
 
     @property
     def _kind(self) -> str | None:
-        """Return the object's kind shortcode (e.g. ``t1``); overridden by subclasses."""
+        """The object's kind shortcode (e.g. ``t1``); overridden by subclasses."""
         return None
 
     @property
     def fullname(self) -> str:
-        """Return the object's fullname.
+        """The object's fullname.
 
         A fullname is an object's kind mapping like ``t3`` followed by an underscore and
         the object's base36 ID, e.g., ``t1_c5s96e0``.

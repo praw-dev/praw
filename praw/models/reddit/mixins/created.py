@@ -22,7 +22,7 @@ class CreatedMixin:
 
     @property
     def created_datetime(self) -> datetime.datetime:
-        """Return the creation time as a timezone-aware :class:`datetime.datetime`.
+        """The creation time as a timezone-aware :class:`datetime.datetime`.
 
         The returned object is localized to the system's timezone.
 
