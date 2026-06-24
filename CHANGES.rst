@@ -8,6 +8,10 @@ praw follows `semantic versioning <https://semver.org/>`_.
  Unreleased
 ************
 
+********************
+ 8.0.2 (2026/06/24)
+********************
+
 **Changed**
 
 - Reword property docstrings and clarify in the 8.0.0 change log that arguments
