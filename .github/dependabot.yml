@@ -8,6 +8,10 @@ updates:
       - "Dependencies"
     cooldown:
       default-days: 1
+    groups:
+      github-actions:
+        patterns:
+          - "*"
   - package-ecosystem: uv
     directory: /
     schedule:
@@ -16,3 +20,7 @@ updates:
       - "Dependencies"
     cooldown:
       default-days: 1
+    groups:
+      python:
+        patterns:
+          - "*"
