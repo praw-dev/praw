@@ -25,7 +25,7 @@ class EditableMixin:
         edited: bool | float
 
         @property
-        def fullname(self) -> str: ...  # noqa: D102
+        def fullname(self) -> str: ...  # ruff:ignore[undocumented-public-method]
 
     @property
     def edited_datetime(self) -> datetime.datetime | None:

@@ -52,7 +52,7 @@ class SubredditModeration:
                 print(f"{note.label}: {note.note}")
 
         """
-        from praw.models.mod_notes import SubredditModNotes  # noqa: PLC0415
+        from praw.models.mod_notes import SubredditModNotes  # ruff:ignore[import-outside-top-level]
 
         return SubredditModNotes(self.subreddit._reddit, subreddit=self.subreddit)
 

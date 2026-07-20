@@ -198,7 +198,7 @@ class Reddit:
 
         try:
             config_section = (
-                site_name or os.getenv("praw_site") or "DEFAULT"  # noqa: SIM112
+                site_name or os.getenv("praw_site") or "DEFAULT"  # ruff:ignore[uncapitalized-environment-variables]
             )
             self.config = Config(config_section, config_interpolation, **config_settings)
         except configparser.NoSectionError as exc:
@@ -429,7 +429,7 @@ class Reddit:
             try:
                 asyncio.get_running_loop()
                 in_async = True
-            except Exception:  # noqa: BLE001,S110
+            except Exception:  # ruff:ignore[blind-except, try-except-pass]
                 pass  # Quietly fail if any exception occurs during the check
             if in_async:
                 logger.warning(

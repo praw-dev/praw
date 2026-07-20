@@ -13,7 +13,7 @@ from __future__ import annotations
 from typing import cast
 
 
-class PRAWException(Exception):  # noqa: N818
+class PRAWException(Exception):  # ruff:ignore[error-suffix-on-exception-name]
     """The base PRAW Exception that all other exception classes extend."""
 
 

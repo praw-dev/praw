@@ -59,7 +59,7 @@ class ExponentialCounter:
     def counter(self) -> int | float:
         """Increment the counter and return the current value with jitter."""
         max_jitter = self._base / 16.0
-        value = self._base + random.random() * max_jitter - max_jitter / 2  # noqa: S311
+        value = self._base + random.random() * max_jitter - max_jitter / 2  # ruff:ignore[suspicious-non-cryptographic-random-usage]
         self._base = min(self._base * 2, self._max)
         return value
 

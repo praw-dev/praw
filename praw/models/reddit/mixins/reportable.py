@@ -18,7 +18,7 @@ class ReportableMixin:
         _reddit: praw.Reddit
 
         @property
-        def fullname(self) -> str: ...  # noqa: D102
+        def fullname(self) -> str: ...  # ruff:ignore[undocumented-public-method]
 
     def report(self, reason: str) -> None:
         """Report this object to the moderators of its subreddit.
