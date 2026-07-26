@@ -18,7 +18,7 @@ class VotableMixin:
         _reddit: praw.Reddit
 
         @property
-        def fullname(self) -> str: ...  # noqa: D102
+        def fullname(self) -> str: ...  # ruff:ignore[undocumented-public-method]
 
     def _vote(self, direction: int) -> None:
         self._reddit.post(API_PATH["vote"], data={"dir": str(direction), "id": self.fullname})

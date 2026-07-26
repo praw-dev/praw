@@ -1086,7 +1086,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, CreatedM
             raise TypeError(msg)
         kind = provided[0] if provided else None
         # test for empty string in selftext for title-only submissions
-        if kind is None and not (bool(selftext) or selftext == ""):  # noqa: PLC1901
+        if kind is None and not (bool(selftext) or selftext == ""):  # ruff:ignore[compare-to-empty-string]
             msg = "At least one of 'gallery', 'image', 'poll', 'selftext', 'url', or 'video' must be provided."
             raise TypeError(msg)
         if inline_media and kind is not None:

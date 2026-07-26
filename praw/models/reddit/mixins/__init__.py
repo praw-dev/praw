@@ -189,7 +189,7 @@ class ThingModerationMixin(ModNoteMixin):
         *,
         message: str,
         title: str = "ignored",
-        type: str = "public",  # noqa: A002
+        type: str = "public",  # ruff:ignore[builtin-argument-shadowing]
     ) -> models.Comment | None:
         """Send a removal message for a :class:`.Comment` or :class:`.Submission`.
 

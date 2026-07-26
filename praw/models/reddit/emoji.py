@@ -125,7 +125,7 @@ class Emoji(RedditBase):
         data = {"name": self.name}
         for attribute, value in mapping.items():
             if value is None:
-                value = getattr(self, attribute)  # noqa: PLW2901
+                value = getattr(self, attribute)  # ruff:ignore[redefined-loop-name]
             data[attribute] = value
         url = API_PATH["emoji_update"].format(subreddit=self.subreddit)
         self._reddit.post(url, data=data)

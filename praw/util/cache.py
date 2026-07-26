@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
 
-class cachedproperty:  # noqa: N801
+class cachedproperty:  # ruff:ignore[invalid-class-name]
     """A decorator for caching a property's result.
 
     Similar to :py:class:`property`, but the wrapped method's result is cached on the

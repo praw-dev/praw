@@ -178,7 +178,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, CreatedMixin, Red
         if attribute == "author":
             value = Redditor.from_data(self._reddit, value)
         elif attribute == "replies":
-            listing: Any = None if value == "" else self._reddit._objector.objectify(data=value)  # noqa: PLC1901
+            listing: Any = None if value == "" else self._reddit._objector.objectify(data=value)  # ruff:ignore[compare-to-empty-string]
             value = [] if listing is None else listing.children
             attribute = "_replies"
         elif attribute == "subreddit":

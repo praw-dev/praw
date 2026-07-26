@@ -426,7 +426,7 @@ class LiveThread(CreatedMixin, RedditBase):
         url = API_PATH["live_discussions"].format(id=self.id)
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
-    def report(self, type: str) -> None:  # noqa: A002
+    def report(self, type: str) -> None:  # ruff:ignore[builtin-argument-shadowing]
         """Report the thread violating the Reddit rules.
 
         :param type: One of ``"spam"``, ``"vote-manipulation"``,

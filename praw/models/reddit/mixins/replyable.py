@@ -19,7 +19,7 @@ class ReplyableMixin:
         _reddit: praw.Reddit
 
         @property
-        def fullname(self) -> str: ...  # noqa: D102
+        def fullname(self) -> str: ...  # ruff:ignore[undocumented-public-method]
 
     def reply(self, body: str) -> models.Comment | models.Message | None:
         """Reply to the object.
