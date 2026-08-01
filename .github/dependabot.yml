@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: monthly
+      interval: daily
     labels:
       - "Dependencies"
     cooldown:
@@ -15,7 +15,7 @@ updates:
   - package-ecosystem: uv
     directory: /
     schedule:
-      interval: monthly
+      interval: daily
     labels:
       - "Dependencies"
     cooldown:
