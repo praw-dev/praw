@@ -6,7 +6,7 @@ jobs:
     name: Lint workflows
     permissions:
       contents: read # required to check out the repository
-    uses: praw-dev/.github/.github/workflows/lint.yml@ec3a733628adc5bd596def5294dae9fb4eb1e501 # v1.6.0
+    uses: praw-dev/.github/.github/workflows/lint.yml@34032c07a7e2f432e0bb13ff126ed667d96e2528 # v1.8.0
 name: Lint workflows
 on:
   pull_request:
