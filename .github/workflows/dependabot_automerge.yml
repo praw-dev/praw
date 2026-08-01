@@ -2,9 +2,11 @@ jobs:
   dependabot_automerge:
     name: Dependabot automerge
     permissions:
-      contents: write # required to merge the pull request
-      pull-requests: write # required to enable auto-merge on the pull request
-    uses: praw-dev/.github/.github/workflows/dependabot_automerge.yml@34032c07a7e2f432e0bb13ff126ed667d96e2528 # v1.8.0
+      pull-requests: read # required by fetch-metadata; the merge uses an app token
+    secrets:
+      APP_ID: ${{ secrets.APP_ID }}
+      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+    uses: praw-dev/.github/.github/workflows/dependabot_automerge.yml@ec52651e5b4e1de96c58ed3652e662588fb62dbb # v1.9.0
 name: Dependabot automerge
 on:
   pull_request:
