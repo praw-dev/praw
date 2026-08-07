@@ -1,6 +1,7 @@
 import asyncio
 import configparser
 import types
+from io import BytesIO
 from unittest import mock
 from unittest.mock import MagicMock
 
@@ -11,7 +12,7 @@ from prawcore.exceptions import BadRequest
 
 from praw import Reddit, __version__
 from praw.config import Config
-from praw.exceptions import ClientException, RedditAPIException
+from praw.exceptions import ClientException, RedditAPIException, RedditErrorItem
 
 from . import UnitTest
 
@@ -191,6 +192,43 @@ class TestReddit(UnitTest):
             reddit.post("test")
         assert exception.value.items[0].message == "You are doing that too much. Try again in 6 seconds."
         mock_sleep.assert_not_called()
+
+    def test_post_ratelimit__rewinds_file_streams(self, reddit):
+        upload = BytesIO(b"prefixcomplete file contents")
+        upload.seek(len(b"prefix"))
+        bodies_read = []
+        rate_limit_exception = RedditAPIException([
+            RedditErrorItem(
+                "RATELIMIT",
+                field="ratelimit",
+                message="Try again shortly.",
+            )
+        ])
+
+        def objectify_request(*, files, **_):
+            body = files["file"].read()
+            bodies_read.append(body)
+            if len(bodies_read) == 1:
+                raise rate_limit_exception
+            return body
+
+        with (
+            mock.patch.object(
+                reddit,
+                "_objectify_request",
+                side_effect=objectify_request,
+            ),
+            mock.patch.object(
+                reddit,
+                "_handle_rate_limit",
+                return_value=0,
+            ),
+            mock.patch("time.sleep", return_value=None),
+        ):
+            result = reddit.post("test", files={"file": upload})
+
+        assert result == b"complete file contents"
+        assert bodies_read == [b"complete file contents", b"complete file contents"]
 
     @mock.patch(
         "praw.Reddit.request",
