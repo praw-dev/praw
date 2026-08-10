@@ -807,6 +807,12 @@ class Reddit:
             provided, ``data`` should not be.
         :param params: The query parameters to add to the request (default: ``None``).
 
+        .. note::
+
+            This method automatically retries after a rate limit response. Only seekable
+            file objects are rewound between attempts; a non-seekable object may be
+            transmitted incompletely if a retry occurs.
+
         """
         if json is None:
             data = data or {}
@@ -821,12 +827,9 @@ class Reddit:
                     continue
                 file_positions[name] = position
 
-        max_attempts = 3
-        attempts = max_attempts
         last_exception: RedditAPIException | None = None
-        while attempts > 0:
-            attempts -= 1
-            if attempts < max_attempts - 1 and file_positions:
+        for attempt in range(3):
+            if attempt and file_positions:
                 assert files is not None
                 for name, position in file_positions.items():
                     files[name].seek(position)
