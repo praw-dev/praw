@@ -8,6 +8,12 @@ praw follows `semantic versioning <https://semver.org/>`_.
  Unreleased
 ************
 
+**Fixed**
+
+- :meth:`.Reddit.post` rewinds seekable file objects before retrying a request after a
+  rate limit response. Previously the retry read from the exhausted stream, which could
+  upload empty or truncated file contents.
+
 ********************
  8.0.2 (2026/06/24)
 ********************
