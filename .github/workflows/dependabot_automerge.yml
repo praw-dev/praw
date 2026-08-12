@@ -6,7 +6,7 @@ jobs:
     secrets:
       APP_ID: ${{ secrets.APP_ID }}
       APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
-    uses: praw-dev/.github/.github/workflows/dependabot_automerge.yml@ec52651e5b4e1de96c58ed3652e662588fb62dbb # v1.9.0
+    uses: praw-dev/.github/.github/workflows/dependabot_automerge.yml@97050199f9773073e4360d798053b7fb342e4c1f # v1.11.0
 name: Dependabot automerge
 on:
   pull_request:
