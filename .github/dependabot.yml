@@ -12,14 +12,6 @@ updates:
       github-actions:
         patterns:
           - "*"
-        update-types:
-          - "minor"
-          - "patch"
-      github-actions-major:
-        patterns:
-          - "*"
-        update-types:
-          - "major"
   - package-ecosystem: uv
     directory: /
     schedule:
