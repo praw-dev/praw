@@ -8,6 +8,10 @@ praw follows `semantic versioning <https://semver.org/>`_.
  Unreleased
 ************
 
+********************
+ 8.0.3 (2026/08/12)
+********************
+
 **Fixed**
 
 - :meth:`.Reddit.post` rewinds seekable file objects before retrying a request after a
