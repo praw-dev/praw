@@ -3,7 +3,7 @@ repos:
       - id: docstrfmt
         require_serial: true
     repo: https://github.com/LilSpazJoekp/docstrfmt
-    rev: a05381030e526dc863e2006d34824271d7681d08  # frozen: v2.2.0
+    rev: c1813841673cdcd6cf602dde1edb78a5d5e45235  # frozen: v2.2.1
 
   - hooks:
       - id: codesorter
@@ -20,7 +20,7 @@ repos:
         id: ruff
       - id: ruff-format
     repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: aab412d509121cb5f7533134b7e67f9fab59c682  # frozen: v0.16.4
+    rev: 1f1e8bf348ff38fc88619a38d3ca4d9c56abea49  # frozen: v0.16.5
 
   - hooks:
       - files: ^(.*\.toml)$
