@@ -166,6 +166,7 @@ ban-relative-imports = "all"
   "PLW", # pylint warning
   "PT", # pytest style
   "PTH", # use pathlib
+  "pytest-fixture-autouse", # autouse fixtures are core to the VCR test setup
   "PYI", # stub-only rules
   "RET", # unnecessary assignment before return
   "RSE", # raise
