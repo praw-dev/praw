@@ -6,8 +6,8 @@ requires = ["hatchling"]
 dev = [
   "packaging",
   "tox-uv>=1.35.2",
-  {include-group = "lint"},
-  {include-group = "test"}
+  { include-group = "lint" },
+  { include-group = "test" }
 ]
 docs = [
   "furo",
@@ -17,7 +17,7 @@ docs = [
 lint = [
   "pre-commit",
   "ruff>=0.15.17",
-  {include-group = "docs"}
+  { include-group = "docs" }
 ]
 test = [
   "coverage>=7.14.1",
@@ -27,11 +27,11 @@ test = [
 ]
 type = [
   "pyright>=1.1.410",
-  {include-group = "test"}
+  { include-group = "test" }
 ]
 
 [project]
-authors = [{email = "bbzbryce@gmail.com", name = "Bryce Boe"}]
+authors = [{ email = "bbzbryce@gmail.com", name = "Bryce Boe" }]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Console",
@@ -59,10 +59,10 @@ dependencies = [
 description = "Python Reddit API Wrapper."
 dynamic = ["version"]
 keywords = ["reddit", "api", "wrapper"]
-license = {file = "LICENSE.txt"}
+license = { file = "LICENSE.txt" }
 maintainers = [
-  {email = "bbzbryce@gmail.com", name = "Bryce Boe"},
-  {email = "lilspazjoekp@gmail.com", name = "Joel Payne"}
+  { email = "bbzbryce@gmail.com", name = "Bryce Boe" },
+  { email = "lilspazjoekp@gmail.com", name = "Joel Payne" }
 ]
 name = "praw"
 readme = "README.rst"

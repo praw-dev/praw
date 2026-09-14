@@ -20,13 +20,13 @@ repos:
         id: ruff
       - id: ruff-format
     repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: 321478e58f4938179c6b86e4ddfa923d1547a49b  # frozen: v0.16.6
+    rev: e8f7d69b957a30acb2c875078d5fd012de24b64c  # frozen: v0.16.7
 
   - hooks:
       - files: ^(.*\.toml)$
         id: toml-sort-fix
     repo: https://github.com/pappasam/toml-sort
-    rev: 2970ae9bb7124fe5117a27e10c10d2da051ce05a  # frozen: v0.24.4
+    rev: 6bcff12c5d156baa6897ca2a85f6d534af296e7c  # frozen: v0.25.0
 
   - hooks:
       - id: check-added-large-files
