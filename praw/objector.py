@@ -64,22 +64,17 @@ class Objector:
         :returns: An instance of :class:`.RedditBase`, or the ``data`` dict.
 
         """
-        if {"messages", "modActions"}.issubset(data) and {
-            "conversations",
-            "conversation",
-        }.intersection(data):
+        keys = set(data)
+        if keys.issuperset(("messages", "modActions")) and not keys.isdisjoint(("conversations", "conversation")):
             # fetched conversation
             data.update(data.pop("conversation") if "conversation" in data else data.pop("conversations"))
             parser = self.parsers["ModmailConversation"]
             parser._convert_conversation_objects(data, self._reddit)
-        elif {"messages", "modActions"}.issubset(data) or {
-            "legacyFirstMessageId",
-            "state",
-        }.issubset(data):
+        elif keys.issuperset(("messages", "modActions")) or keys.issuperset(("legacyFirstMessageId", "state")):
             # not fetched conversation i.e., from conversations()
             del data["objIds"]  # delete objIds since it could be missing data
             parser = self.parsers["ModmailConversation"]
-        elif {"conversationIds", "conversations", "messages"}.issubset(data):
+        elif keys.issuperset(("conversationIds", "conversations", "messages")):
             # modmail conversations
             conversations = []
             for conversation_id in data["conversationIds"]:
@@ -95,59 +90,55 @@ class Objector:
             data["conversations"] = conversations
             data = snake_case_keys(data)
             parser = self.parsers["ModmailConversations-list"]
-        elif {"actionTypeId", "author", "date"}.issubset(data):
+        elif keys.issuperset(("actionTypeId", "author", "date")):
             # Modmail mod action
             data = snake_case_keys(data)
             parser = self.parsers["ModmailAction"]
-        elif {"bodyMarkdown", "isInternal"}.issubset(data):
+        elif keys.issuperset(("bodyMarkdown", "isInternal")):
             # Modmail message
             data = snake_case_keys(data)
             parser = self.parsers["ModmailMessage"]
-        elif {"kind", "short_name", "violation_reason"}.issubset(data):
+        elif keys.issuperset(("kind", "short_name", "violation_reason")):
             # This is a Rule
             parser = self.parsers["rule"]
-        elif {"isAdmin", "isDeleted"}.issubset(data):
+        elif keys.issuperset(("isAdmin", "isDeleted")):
             # Modmail author
             data = snake_case_keys(data)
             # Prevent clobbering base-36 id
             del data["id"]
             data["is_subreddit_mod"] = data.pop("is_mod")
             parser = self.parsers[self._reddit.config.kinds["redditor"]]
-        elif {"banStatus", "muteStatus", "recentComments"}.issubset(data):
+        elif keys.issuperset(("banStatus", "muteStatus", "recentComments")):
             # Modmail user
             data = snake_case_keys(data)
             data["created_string"] = data.pop("created")
             parser = self.parsers[self._reddit.config.kinds["redditor"]]
-        elif {"displayName", "id", "type"}.issubset(data):
+        elif keys.issuperset(("displayName", "id", "type")):
             # Modmail subreddit
             data = snake_case_keys(data)
             parser = self.parsers[self._reddit.config.kinds[data["type"]]]
-        elif {"date", "id", "name"}.issubset(data) or {
-            "id",
-            "name",
-            "permissions",
-        }.issubset(data):
+        elif keys.issuperset(("date", "id", "name")) or keys.issuperset(("id", "name", "permissions")):
             parser = self.parsers[self._reddit.config.kinds["redditor"]]
-        elif {"text", "url"}.issubset(data):
+        elif keys.issuperset(("text", "url")):
             key = "Button" if "color" in data or "linkUrl" in data else "MenuLink"
             parser = self.parsers[key]
-        elif {"children", "text"}.issubset(data):
+        elif keys.issuperset(("children", "text")):
             parser = self.parsers["Submenu"]
-        elif {"height", "url", "width"}.issubset(data):
+        elif keys.issuperset(("height", "url", "width")):
             parser = self.parsers["Image"]
-        elif {"isSubscribed", "name", "subscribers"}.issubset(data):
+        elif keys.issuperset(("isSubscribed", "name", "subscribers")):
             # discards icon and subscribed information
             data["display_name"] = data["name"]
             del data["name"]
             parser = self.parsers[self._reddit.config.kinds["subreddit"]]
-        elif {"authorFlairType", "name"}.issubset(data):
+        elif keys.issuperset(("authorFlairType", "name")):
             # discards flair information
             parser = self.parsers[self._reddit.config.kinds["redditor"]]
-        elif {"parent_id"}.issubset(data):
+        elif "parent_id" in keys:
             parser = self.parsers[self._reddit.config.kinds["comment"]]
         elif "collection_id" in data:
             parser = self.parsers["Collection"]
-        elif {"moderators", "moderatorIds", "allUsersLoaded", "subredditId"}.issubset(data):
+        elif keys.issuperset(("moderators", "moderatorIds", "allUsersLoaded", "subredditId")):
             data = snake_case_keys(data)
             moderators = []
             for mod_id in data["moderator_ids"]:
@@ -159,18 +150,18 @@ class Objector:
         elif "username" in data:
             data["name"] = data.pop("username")
             parser = self.parsers[self._reddit.config.kinds["redditor"]]
-        elif {"mod_permissions", "name", "sr", "subscribers"}.issubset(data):
+        elif keys.issuperset(("mod_permissions", "name", "sr", "subscribers")):
             data["display_name"] = data["sr"]
             parser = self.parsers[self._reddit.config.kinds["subreddit"]]
         elif (
-            {"after", "before", "data"}.issubset(data)
+            keys.issuperset(("after", "before", "data"))
             and isinstance(data["data"], list)
             and all({"id", "subject", "sent_at"}.issubset(item) for item in data["data"])
         ):  # Announcement listing
             parser = self.parsers["AnnouncementListing"]
-        elif {"body_html", "permalink", "sent_at", "subject"}.issubset(data):  # Announcement
+        elif keys.issuperset(("body_html", "permalink", "sent_at", "subject")):  # Announcement
             parser = self.parsers["Announcement"]
-        elif {"drafts", "subreddits"}.issubset(data):  # Draft list
+        elif keys.issuperset(("drafts", "subreddits")):  # Draft list
             subreddit_parser = self.parsers[self._reddit.config.kinds["subreddit"]]
             user_subreddit_parser = self.parsers["UserSubreddit"]
             subreddits = {
@@ -186,7 +177,7 @@ class Objector:
                     draft["subreddit"] = subreddits[draft["subreddit"]]
                 draft["modified"] = datetime.fromtimestamp(draft["modified"] / 1000).astimezone()
             parser = self.parsers["DraftList"]
-        elif {"mod_action_data", "user_note_data"}.issubset(data):
+        elif keys.issuperset(("mod_action_data", "user_note_data")):
             redditor_parser = self.parsers[self._reddit.config.kinds["redditor"]]
             subreddit_parser = self.parsers[self._reddit.config.kinds["subreddit"]]
             data["moderator"] = redditor_parser(self._reddit, data["operator"])
